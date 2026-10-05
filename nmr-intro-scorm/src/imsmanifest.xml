@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="NMR_INTRO_MANIFEST" version="1.0"
+          xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+          xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                              http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd
+                              http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+
+  <organizations default="NMR_INTRO_ORG">
+    <organization identifier="NMR_INTRO_ORG">
+      <title>1H NMR: An Introduction</title>
+      <item identifier="NMR_INTRO_ITEM" identifierref="NMR_INTRO_RES" isvisible="true">
+        <!-- No masteryscore: this SCO reports completion, not a numeric grade. -->
+        <title>1H NMR: An Introduction</title>
+      </item>
+    </organization>
+  </organizations>
+
+  <resources>
+    <resource identifier="NMR_INTRO_RES" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="index.html"/>
+      <file href="css/styles.css"/>
+      <file href="js/shifts.js"/>
+      <file href="js/molecules.js"/>
+      <file href="js/analysis.js"/>
+      <file href="js/spectrum.js"/>
+      <file href="js/structures.js"/>
+      <file href="js/levels.js"/>
+      <file href="js/scorm.js"/>
+      <file href="js/game.js"/>
+    </resource>
+  </resources>
+
+</manifest>
