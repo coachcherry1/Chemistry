@@ -435,7 +435,7 @@ var App = (function () {
     if (spec.newman) {
       var m = molecule(spec.newman);
       var nm = GEOM.newmanAt(m, spec.phi);
-      return Draw.newman(nm, { offset: spec.phi % 120 === 0 ? 8 : 0, cls: cls || 'fig' });
+      return Draw.newman(nm, { offset: spec.phi % 120 === 0 ? Draw.ECLIPSE_OFFSET : 0, cls: cls || 'fig' });
     }
     if (spec.zigzag) return Draw.zigzag(molecule(spec.zigzag));
     if (spec.graph) {
@@ -645,7 +645,7 @@ var App = (function () {
       if (r.ok) {
         done = true;
         tray.classList.add('locked');
-        check.disabled = true; reset.disabled = true; hintBtn.hidden = true;
+        check.disabled = true; reset.disabled = true; hintBtn.hidden = true; tip.hidden = true;
         paint();
         complete('Correct!' + (r.turned ? ' You drew it turned as a whole — that is the same projection, ' +
           'just seen with your head tilted.' : '') + ' This is the conformation in the drawing.');
@@ -732,14 +732,16 @@ var App = (function () {
     var pp = peaks(sk, 0.02), rp = peaks(real, 0.3);
     out.push(pp === rp ? 'You drew ' + rp + ' peak' + (rp === 1 ? '' : 's') + ' — the real curve has ' + rp + '. ✓'
                        : 'You drew ' + pp + ' peak' + (pp === 1 ? '' : 's') + '; the real curve has ' + rp + '.');
-    var rh = where(real, 'max'), ph = where(sk, 'max');
-    var hitHigh = ph.some(function (a) { return rh.indexOf(a) >= 0; });
-    out.push('Highest: ' + (rh.length > 1 ? rh.join('°, ') + '° (tied)' : rh[0] + '°') +
-             (hitHigh ? ' — you had that. ✓' : ' — you had ' + ph.join('°, ') + '°.'));
-    var rl = where(real, 'min'), pl = where(sk, 'min');
-    var hitLow = pl.some(function (a) { return rl.indexOf(a) >= 0; });
-    out.push('Lowest: ' + (rl.length > 1 ? rl.join('°, ') + '° (tied)' : rl[0] + '°') +
-             (hitLow ? ' — you had that. ✓' : ' — you had ' + pl.join('°, ') + '°.'));
+    /* A sketch that ties four or more points has not really picked a
+       highest or lowest point, so it gets no tick for it. */
+    function verdict(word, r, p) {
+      var where = r.length > 1 ? r.join('°, ') + '° (tied)' : r[0] + '°';
+      if (p.length > 3) return word + ': ' + where + ' — your sketch did not single one out.';
+      var hit = p.some(function (a) { return r.indexOf(a) >= 0; });
+      return word + ': ' + where + (hit ? ' — you had that. ✓' : ' — you had ' + p.join('°, ') + '°.');
+    }
+    out.push(verdict('Highest', where(real, 'max'), where(sk, 'max')));
+    out.push(verdict('Lowest', where(real, 'min'), where(sk, 'min')));
     return 'Your prediction (dashed) vs. the real curve: ' + out.join('  ');
   }
 
@@ -1227,7 +1229,11 @@ var App = (function () {
         }, { title: 'Molecule ' + k, parts: true });
       });
       area.appendChild(h('div', { class: 'grid2' }, [rots.A.node, rots.B.node]));
-      area.appendChild(panel('Energy vs. ' + X + '–C2–C3–' + X + ' dihedral angle', null, [host, status]));
+      var legend = h('p', { class: 'legend-row' }, [
+        h('span', { class: 'key main', 'aria-hidden': 'true' }), ' Molecule A   ',
+        h('span', { class: 'key alt', 'aria-hidden': 'true' }), ' Molecule B'
+      ]);
+      area.appendChild(panel('Energy vs. dihedral angle', null, [host, legend, status]));
       haloBox = h('div');
       area.appendChild(haloBox);
       var yMax = EnergyGraph.niceMax(EnergyGraph.maxEnergy(['Cl', 'Br', 'I'].reduce(function (acc, x) {
@@ -1242,7 +1248,7 @@ var App = (function () {
     function paintGraph() {
       var m = mols();
       g.mol = m.A;
-      g.curves = [{ mol: m.A, cls: 'main', label: 'A', labelAt: 90 }, { mol: m.B, cls: 'alt', label: 'B', labelAt: 30 }];
+      g.curves = [{ mol: m.A, cls: 'main' }, { mol: m.B, cls: 'alt' }];
       g.marker = null;
       g.render();
       ['A', 'B'].forEach(function (k) {
@@ -1293,7 +1299,7 @@ var App = (function () {
         paintHalo();
       }));
       if (pr.halo != null) {
-        var row = h('div', { class: 'chips' });
+        var row = h('div', { class: 'chips', role: 'group', 'aria-label': 'Halogen' }, [h('span', { class: 'chips-label', text: 'Halogen:' })]);
         ['Cl', 'Br', 'I'].forEach(function (x) {
           var b = h('button', { type: 'button', class: 'chip' + (x === X ? ' current' : ''), text: x });
           b.addEventListener('click', function () {
@@ -1314,8 +1320,9 @@ var App = (function () {
         var gx = STRAIN.pair(X, X).gau;
         card.appendChild(h('p', { class: 'reveal-inline', text: (pr.halo === 0 ? 'Right: they go up. ' : 'They go up. ') +
           'Halogen/halogen gauche costs Cl 5, Br 7, I 9 kJ/mol: both atoms are big and both carry a partial ' +
-          'negative charge. With ' + X + ' (' + fmt(gx) + ' kJ/mol), watch the peaks near 60° and 300° in A. ' +
-          'The anti conformations hardly change — the halogens never touch there.' }));
+          'negative charge. Switch between Cl, Br and I and watch both curves at 60° and 300°, where the ' +
+          'halogens are gauche (' + X + '/' + X + ' gauche: ' + fmt(gx) + ' kJ/mol). At 180° nothing changes — ' +
+          'with the halogens anti, they never touch.' }));
         if (!pr.saw) card.appendChild(h('p', { class: 'muted', text: 'Try Cl or I to finish this step.' }));
       }
       haloBox.appendChild(card);
@@ -1388,7 +1395,7 @@ var App = (function () {
     el.instructions.textContent = 'Pick any molecule and turn it. Nothing here is saved or graded.';
     var sel = h('select', { class: 'select', 'aria-label': 'Molecule' }, ids.map(function (k) {
       var m = MOLECULES[k];
-      return h('option', { value: k, selected: k === mol.id, text: (m.tag ? m.tag + ' — ' : '') + m.name + (m.x && m.tag ? '' : '') });
+      return h('option', { value: k, selected: k === mol.id, text: (m.tag ? m.tag + ' — ' : '') + m.name });
     }));
     var m3 = model3D(mol);
     var host = h('div', { class: 'graph-host' });

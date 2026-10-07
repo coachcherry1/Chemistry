@@ -10,6 +10,7 @@
   --line:    #dde5ec;
   --grid:    #e2eaf1;
   --accent:  #0f5d8f;
+  --on-accent: #ffffff;
   --back:    #7a8fa1;
   --curve:   #0f5d8f;
   --alt:     #c0582b;
@@ -38,6 +39,7 @@
     --line:    #243444;
     --grid:    #21303d;
     --accent:  #5fb3e6;
+    --on-accent: #08131c;
     --back:    #7f95a8;
     --curve:   #5fb3e6;
     --alt:     #f08a5d;
@@ -108,7 +110,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
   cursor: pointer;
   white-space: pre;
 }
-.tab.current { background: var(--accent); border-color: var(--accent); color: #fff; }
+.tab.current { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .tab.locked { opacity: 0.45; cursor: not-allowed; }
 
 .statusline { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
@@ -149,7 +151,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
   padding: 9px 18px;
   border: 1px solid var(--accent);
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 .primary:hover:not(:disabled) { filter: brightness(1.08); }
 .primary:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -169,7 +171,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
   color: var(--ink);
 }
 .mini:hover { border-color: var(--accent); }
-.mini[aria-pressed="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+.mini[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 
 .muted { color: var(--muted); font-size: 0.85rem; }
 
@@ -184,13 +186,22 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .newman { display: block; width: 100%; max-width: 300px; height: auto; margin: 0 auto; overflow: visible; }
 .newman.big { max-width: 320px; }
 .newman.fig { max-width: 210px; }
-.newman.choice-fig { max-width: 150px; }
+.newman.choice-fig { max-width: 200px; }
 .nm-wrap { display: flex; flex-direction: column; align-items: center; }
 
 .nm-circle { fill: var(--panel); stroke: var(--back); stroke-width: 3; }
 .nm-bond-front { stroke: var(--ink); stroke-width: 3.2; stroke-linecap: round; }
 .nm-bond-back { stroke: var(--back); stroke-width: 6; stroke-linecap: round; }
-.nm-label { font: 600 17px system-ui, sans-serif; fill: var(--ink); }
+/* A halo in the panel colour keeps a back-carbon label readable when it sits
+   on top of a front bond, as it does in every eclipsed conformation. */
+.nm-label {
+  font: 600 17px system-ui, sans-serif;
+  fill: var(--ink);
+  paint-order: stroke;
+  stroke: var(--panel);
+  stroke-width: 6px;
+  stroke-linejoin: round;
+}
 .nm-caption { font: 11px system-ui, sans-serif; fill: var(--muted); }
 .nm-grip path { fill: none; stroke: var(--muted); stroke-width: 2; opacity: 0.6; }
 
@@ -238,11 +249,11 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .zz-bond { stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; }
 .zz-wedge { fill: var(--ink); }
 .zz-hash { stroke: var(--ink); stroke-width: 2; }
-.zz-label { font: 600 16px system-ui, sans-serif; }
+.zz-label { font: 600 16px system-ui, sans-serif; paint-order: stroke; stroke: var(--panel); stroke-width: 5px; stroke-linejoin: round; }
 .zz-num { font: 11px system-ui, sans-serif; fill: var(--muted); }
 .eye-white { fill: var(--panel); stroke: var(--accent); stroke-width: 2; }
 .eye-pupil { fill: var(--accent); }
-.eye-ray { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 4 3; }
+.eye-ray { fill: none; stroke: var(--accent); stroke-width: 1.6; }
 .legend { font-size: 0.75rem; color: var(--muted); text-align: center; margin: 4px 0 0; }
 .lg-wedge, .lg-dash, .lg-line { display: inline-block; width: 22px; height: 8px; vertical-align: middle; margin-left: 6px; }
 .lg-wedge { background: var(--ink); clip-path: polygon(0 50%, 100% 0, 100% 100%); }
@@ -279,7 +290,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
   touch-action: none;
 }
 .tile:hover { border-color: var(--accent); }
-.tile.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
+.tile.selected { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 .tile.dragging { opacity: 0.35; }
 .tile:disabled { cursor: default; opacity: 0.5; }
 .tile.term { font-size: 0.85rem; color: var(--ink); }
@@ -291,7 +302,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
   padding: 6px 10px;
   border-radius: 6px;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   font-size: 0.9rem;
   font-weight: 600;
   pointer-events: none;
@@ -321,7 +332,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .g-curve { fill: none; stroke: var(--curve); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .g-curve.ref { stroke: var(--back); stroke-width: 2.4; stroke-dasharray: 6 5; }
 .g-curve.alt { stroke: var(--alt); }
-.g-curve-label { font: 600 12px system-ui, sans-serif; fill: var(--curve); }
+.g-curve-label { font: 600 12px system-ui, sans-serif; fill: var(--curve); paint-order: stroke; stroke: var(--panel); stroke-width: 4px; stroke-linejoin: round; }
 .g-curve-label.ref { fill: var(--back); }
 .g-curve-label.alt { fill: var(--alt); }
 .g-sketch { fill: none; stroke: var(--sketch); stroke-width: 2.5; stroke-dasharray: 7 6; }
@@ -335,7 +346,11 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .g-handle-hit { fill: transparent; }
 .g-handle-dot { fill: var(--sketch); stroke: var(--panel); stroke-width: 2.5; }
 .g-handle:hover .g-handle-dot, .g-handle:focus-visible .g-handle-dot { stroke: var(--ink); stroke-width: 2.5; }
-.newman.thumb .nm-label { font-size: 19px; }
+.thumb { overflow: visible; }
+.thumb .nm-label { font-size: 28px; }
+.thumb .nm-bond-front { stroke-width: 5; }
+.thumb .nm-bond-back { stroke-width: 8; }
+.thumb .nm-circle { stroke-width: 4; }
 .gdrop { cursor: pointer; }
 .gdrop .slot-box { fill: var(--panel); stroke: var(--accent); stroke-width: 2; stroke-dasharray: 5 4; }
 .gdrop.filled .slot-box { fill: var(--good-bg); stroke: var(--good); stroke-dasharray: none; }
@@ -382,7 +397,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .q-fig .zigzag { max-width: 300px; }
 .fig-graph { width: 100%; max-width: 560px; }
 .q-choices { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
-.q-choices.figs { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.q-choices.figs { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
 .q-choices.compact { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
 .choice {
   font: inherit;
@@ -398,6 +413,9 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
   cursor: pointer;
 }
 .q-choices.figs .choice { flex-direction: column; }
+.q-choices.figs .choice .nm-label { stroke: var(--bg); }
+.q-choices.figs .choice.right .nm-label { stroke: var(--good-bg); }
+.q-choices.figs .choice.wrong .nm-label { stroke: var(--bad-bg); }
 .choice:hover:not(:disabled) { border-color: var(--accent); }
 .choice:disabled { cursor: default; }
 .choice-letter {
@@ -456,8 +474,13 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
   cursor: pointer;
 }
 .chip.done { border-color: var(--good); color: var(--good); }
-.chip.current { background: var(--accent); border-color: var(--accent); color: #fff; }
+.chip.current { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .chip:disabled { opacity: 0.45; cursor: not-allowed; }
+.chips-label { font-size: 0.8rem; color: var(--muted); align-self: center; margin-right: 2px; }
+.legend-row { margin: 4px 0 0; font-size: 0.8rem; color: var(--muted); }
+.legend-row .key { display: inline-block; width: 22px; height: 3px; vertical-align: middle; border-radius: 2px; }
+.legend-row .key.main { background: var(--curve); }
+.legend-row .key.alt { background: var(--alt); margin-left: 10px; }
 .swap-name { margin: 0; font-weight: 600; }
 .swap-frame { margin: 2px 0 8px; font-size: 0.82rem; color: var(--muted); }
 

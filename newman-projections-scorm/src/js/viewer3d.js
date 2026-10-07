@@ -186,7 +186,7 @@ var Viewer3D = (function () {
     ctx.clearRect(0, 0, W, H);
     var R = this.R, c = this.model.center;
     var scale = Math.min(W, H) / (2.15 * this.radius);
-    var D = this.radius * 4;
+    var D = this.radius * 2.8;      /* camera distance: enough perspective that front groups read as nearer */
     var cx = W / 2, cy = H / 2;
     var space = this.style === 'space';
 

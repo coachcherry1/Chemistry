@@ -34,10 +34,17 @@ var Draw = (function () {
 
   /* ------------------------------------------------------------ Newman */
 
-  var R = 34;          /* the back carbon's circle */
-  var FRONT = 80;      /* front bonds run from the centre to here */
-  var BACK = 60;       /* back bonds run from the circle's edge to here */
-  var FRONT_LABEL = 94, BACK_LABEL = 72;
+  /* Front labels sit well outside back labels, so an eclipsed pair on the
+     same ray still reads as two separate groups. */
+  var R = 30;          /* the back carbon's circle */
+  var FRONT = 84;      /* front bonds run from the centre to here */
+  var BACK = 54;       /* back bonds run from the circle's edge to here */
+  var FRONT_LABEL = 100, BACK_LABEL = 66;
+
+  /* Printed (not interactive) eclipsed conformations are drawn with the back
+     carbon nudged round a little, the way textbooks print them, so the back
+     bonds are not hidden behind the front ones. */
+  var ECLIPSE_OFFSET = 14;
 
   function label(g, key, r, a, cls) {
     var p = at(r, a);
@@ -54,7 +61,7 @@ var Draw = (function () {
      conformation still shows its back bonds, the way textbooks print it. */
   function newman(nm, opts) {
     opts = opts || {};
-    var s = svg('-125 -118 250 236', 'newman ' + (opts.cls || ''), opts.label || describe(nm));
+    var s = svg('-125 -118 250 236', (opts.bare ? '' : 'newman ') + (opts.cls || ''), opts.label || describe(nm));
     paintNewman(s, nm, opts);
     return s;
   }
@@ -75,8 +82,9 @@ var Draw = (function () {
       el('line', { x1: 0, y1: 0, x2: p[0], y2: p[1], class: 'nm-bond-front' }, front);
     });
     var labels = el('g', null, s);
-    nm.back.forEach(function (q) { label(labels, q.g, BACK_LABEL, q.a + off, 'nm-back-label'); });
-    nm.front.forEach(function (q) { label(labels, q.g, FRONT_LABEL, q.a); });
+    function shown(q) { return !(opts.hideH && q.g === 'H'); }
+    nm.back.filter(shown).forEach(function (q) { label(labels, q.g, BACK_LABEL, q.a + off, 'nm-back-label'); });
+    nm.front.filter(shown).forEach(function (q) { label(labels, q.g, FRONT_LABEL, q.a); });
   }
 
   var POS = { 0: 'top', 60: 'upper right', 120: 'lower right', 180: 'bottom',
@@ -260,8 +268,8 @@ var Draw = (function () {
       var eye = el('g', { class: 'zz-eye', transform: 'translate(' + ex + ' ' + ey + ') rotate(' + deg + ')' }, g);
       el('path', { d: 'M-16 0 Q0 -12 16 0 Q0 12 -16 0 Z', class: 'eye-white' }, eye);
       el('circle', { cx: 4, cy: 0, r: 5, class: 'eye-pupil' }, eye);
-      el('line', { x1: 22, y1: 0, x2: 82, y2: 0, class: 'eye-ray' }, eye);
-      el('path', { d: 'M76 -5 L84 0 L76 5', class: 'eye-ray' }, eye);
+      el('line', { x1: 22, y1: 0, x2: 80, y2: 0, class: 'eye-ray' }, eye);
+      el('path', { d: 'M73 -5 L82 0 L73 5', class: 'eye-ray' }, eye);
       pts.push([ex - 20, ey - 20], [ex + 20, ey + 20]);
     }
 
@@ -290,6 +298,7 @@ var Draw = (function () {
     Rotor: Rotor,
     template: template,
     SLOTS: SLOTS,
+    ECLIPSE_OFFSET: ECLIPSE_OFFSET,
     zigzag: zigzag
   };
 })();

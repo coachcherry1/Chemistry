@@ -4,7 +4,7 @@
 set -euo pipefail
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-name="${1:-ir-diagnostic-region-v1}"
+name="${1:-newman-projections-v1}"
 out="$here/dist/$name.zip"
 
 command -v zip >/dev/null || { echo "zip is not installed" >&2; exit 1; }

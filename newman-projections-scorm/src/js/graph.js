@@ -14,7 +14,7 @@
 var EnergyGraph = (function () {
   'use strict';
 
-  var W = 640;
+  var THUMB = 112;   /* thumbnail Newman projections, in plot units */
 
   function Graph(host, opts) {
     opts = opts || {};
@@ -22,8 +22,14 @@ var EnergyGraph = (function () {
     this.mol = opts.mol;
     this.thumbs = !!opts.thumbs;
     this.hideNumbers = !!opts.hideNumbers;
-    this.H = this.thumbs ? 372 : 300;
-    this.box = { x0: 58, x1: W - 16, y0: 14, y1: this.H - (this.thumbs ? 112 : 46) };
+    /* Size the drawing to the space it gets, so text stays a readable size
+       instead of scaling with the plot. */
+    var w = host.clientWidth || 640;
+    this.W = Math.max(340, Math.min(960, w));
+    var plot = Math.round(Math.max(190, Math.min(290, this.W * 0.3)));
+    this.H = 14 + plot + 46 + (this.thumbs ? THUMB + 16 : 0);
+    var pad = this.thumbs ? 30 : 0;   /* room for the 0° and 360° pictures */
+    this.box = { x0: 58 + pad, x1: this.W - 18 - pad, y0: 14, y1: 14 + plot };
     this.yMax = opts.yMax || niceMax(maxEnergy([this.mol]));
     this.curves = [];        /* [{mol, cls, label, visited?}] */
     this.marker = null;
@@ -32,7 +38,7 @@ var EnergyGraph = (function () {
     this.drops = null;
     this.letters = null;
     this.onSketch = null;
-    this.svg = Draw.svg('0 0 ' + W + ' ' + this.H, 'graph');
+    this.svg = Draw.svg('0 0 ' + this.W + ' ' + this.H, 'graph');
     host.appendChild(this.svg);
     this.attach();
   }
@@ -147,12 +153,12 @@ var EnergyGraph = (function () {
   /* A small Newman projection under each named angle, so a prediction is
      made from the pictures rather than from the numbers on the axis. */
   Graph.prototype.paintThumbs = function () {
-    var b = this.box, size = 66;
+    var b = this.box, size = Math.min(THUMB, (b.x1 - b.x0) / 6 - 6);
     for (var a = 0; a <= 360; a += 60) {
       var nm = GEOM.newmanAt(this.mol, a % 360);
-      var inner = Draw.newman(nm, { offset: a % 120 === 0 ? 8 : 0, cls: 'thumb' });
+      var inner = Draw.newman(nm, { offset: a % 120 === 0 ? 20 : 0, cls: 'thumb', bare: true, hideH: true });
       inner.setAttribute('x', (this.X(a) - size / 2).toFixed(1));
-      inner.setAttribute('y', (b.y1 + 44).toFixed(1));
+      inner.setAttribute('y', (b.y1 + 50).toFixed(1));
       inner.setAttribute('width', size);
       inner.setAttribute('height', (size * 236 / 250).toFixed(1));
       this.svg.appendChild(inner);
@@ -162,7 +168,7 @@ var EnergyGraph = (function () {
   /* ----------------------------------------------------- sketch handles */
 
   Graph.prototype.paintHandles = function () {
-    var self = this, el = Draw.el;
+    var el = Draw.el;
     for (var i = 0; i <= 6; i++) {
       var v = this.sketch[i % 6];
       var x = this.X(i * 60), y = this.Yfrac(v);
@@ -174,7 +180,6 @@ var EnergyGraph = (function () {
       el('circle', { cx: x, cy: y, r: 16, class: 'g-handle-hit' }, h);
       el('circle', { cx: x, cy: y, r: 8, class: 'g-handle-dot' }, h);
     }
-    void self;
   };
 
   Graph.prototype.attach = function () {
