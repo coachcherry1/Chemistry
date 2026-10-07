@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Newman Projections</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="titles">
+    <h1>Newman projections &mdash; conformations and strain</h1>
+  </div>
+  <div class="top-right">
+    <span id="score" class="score"></span>
+    <span id="lms" class="lms off">&nbsp;</span>
+  </div>
+</header>
+
+<nav id="parts" class="tabs" aria-label="Parts"></nav>
+
+<main>
+  <div class="statusline">
+    <h2 id="stepTitle"></h2>
+    <span id="counter" class="counter"></span>
+  </div>
+  <p id="instructions" class="instructions"></p>
+
+  <div id="stage" class="stage"></div>
+
+  <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+
+  <div class="controls">
+    <button id="back" type="button" class="ghostbtn">&larr; Back</button>
+    <button id="next" type="button" class="primary" disabled>Next &rarr;</button>
+  </div>
+
+  <details class="reference">
+    <summary>Strain table</summary>
+    <div id="strainBody"></div>
+  </details>
+  <details class="reference">
+    <summary>Vocabulary</summary>
+    <div id="vocabBody"></div>
+  </details>
+</main>
+
+<div id="screen" class="screen" hidden></div>
+
+<script src="js/groups.js"></script>
+<script src="js/strain.js"></script>
+<script src="js/geometry.js"></script>
+<script src="js/molecules.js"></script>
+<script src="js/draw.js"></script>
+<script src="js/viewer3d.js"></script>
+<script src="js/graph.js"></script>
+<script src="js/picker.js"></script>
+<script src="js/quiz.js"></script>
+<script src="js/scorm.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
