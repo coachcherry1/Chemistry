@@ -544,3 +544,15 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+/* ---------------------------------------------------- bond-line formulas */
+
+.sk-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 2px 0 12px; }
+.sk-card { margin: 0; padding: 8px 12px 6px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); text-align: center; }
+.sk-card figcaption { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+.skeletal { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+.sk-bond { stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; }
+.sk-view { stroke: var(--accent); stroke-width: 4.5; }
+.sk-label { font: 600 14px system-ui, sans-serif; }
+.sk-num { font: 10px system-ui, sans-serif; fill: var(--muted); }
+.sk-num-view { fill: var(--accent); font-weight: 700; }

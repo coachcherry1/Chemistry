@@ -56,6 +56,10 @@ the status with passed/failed.
 Each graded answer is also written as a `cmi.interactions` record (question id, letter chosen,
 right/wrong) for LMS reports that show them. The question ids are listed in `ANSWER_KEY.md`.
 
+Any question that names a substituted molecule shows its **bond-line formula** with the carbons
+numbered and the bond being looked down highlighted; the swap step shows one for each molecule too.
+They are listed in `SKELETAL` in `src/js/molecules.js`, and attached to a question with `struct`.
+
 Each checkpoint always includes its **core** questions (★ in the answer key) and fills the rest at
 random from a larger pool, so a retake sees a different mix. 40 questions in all.
 

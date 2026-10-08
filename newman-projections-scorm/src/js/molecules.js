@@ -158,3 +158,21 @@ function bestStaggered(mol) {
   });
   return best;
 }
+
+/* Bond-line (skeletal) formulas for the questions and screens that name a
+   molecule. `n` carbons in the main chain, numbered left to right; each
+   substituent hangs off carbon `at` (CH3 is drawn as a bare line, as in any
+   bond-line formula). `view` is the bond the Newman projection looks down. */
+var SKELETAL = {
+  butane:           { name: 'butane',                 n: 4, subs: [],                                             view: [2, 3] },
+  bromobutane:      { name: '2-bromobutane',          n: 4, subs: [[2, 'Br']],                                    view: [2, 3] },
+  chlorobutane:     { name: '2-chlorobutane',         n: 4, subs: [[2, 'Cl']],                                    view: [2, 3] },
+  iodobutane:       { name: '2-iodobutane',           n: 4, subs: [[2, 'I']],                                     view: [2, 3] },
+  methylbutane:     { name: '2-methylbutane',         n: 4, subs: [[2, 'CH3']],                                   view: [2, 3] },
+  dimethylbutane:   { name: '2,3-dimethylbutane',     n: 4, subs: [[2, 'CH3'], [3, 'CH3']],                       view: [2, 3] },
+  dimethylpentane:  { name: '2,3-dimethylpentane',    n: 5, subs: [[2, 'CH3'], [3, 'CH3']],                       view: [3, 4] },
+  trimethylpentane: { name: '2,2,3-trimethylpentane', n: 5, subs: [[2, 'CH3'], [2, 'CH3'], [3, 'CH3']],           view: [3, 4] },
+  dichlorobutane:   { name: '2,3-dichlorobutane',     n: 4, subs: [[2, 'Cl'], [3, 'Cl']],                         view: [2, 3] },
+  dibromobutane:    { name: '2,3-dibromobutane',      n: 4, subs: [[2, 'Br'], [3, 'Br']],                         view: [2, 3] },
+  diiodobutane:     { name: '2,3-diiodobutane',       n: 4, subs: [[2, 'I'], [3, 'I']],                           view: [2, 3] }
+};

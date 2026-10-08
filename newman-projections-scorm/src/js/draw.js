@@ -305,8 +305,62 @@ var Draw = (function () {
            '. The eye looks along the ' + mol.carbons[0] + '–' + mol.carbons[1] + ' bond from the ' + mol.carbons[0] + ' end.';
   }
 
+  /* ------------------------------------------------- bond-line formula */
+
+  /* A plain skeletal formula: a zigzag chain, substituents as branches
+     (methyl = a bare line, halogens labelled), carbons numbered, and the
+     bond the Newman projection looks down drawn heavier. */
+  function skeletal(id) {
+    var sk = SKELETAL[id];
+    var L = 38, dx = L * Math.cos(Math.PI / 6), dy = L * Math.sin(Math.PI / 6);
+    var s = svg('0 0 10 10', 'skeletal', 'Bond-line formula of ' + sk.name + ', carbons numbered 1 to ' + sk.n +
+      '; the highlighted bond is C' + sk.view[0] + '–C' + sk.view[1] + '.');
+    var g = el('g', null, s), pts = [];
+    function P(i) { return [i * dx, i % 2 ? 0 : dy]; }       /* carbon i (1-based): even down, odd up */
+    function up(i) { return i % 2 === 1; }
+    for (var i = 1; i < sk.n; i++) {
+      var a = P(i), b = P(i + 1);
+      var hot = (i === sk.view[0] && i + 1 === sk.view[1]);
+      el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], class: hot ? 'sk-bond sk-view' : 'sk-bond' }, g);
+    }
+    var count = {};
+    sk.subs.forEach(function (sub) { count[sub[0]] = (count[sub[0]] || 0) + 1; });
+    var seen = {};
+    sk.subs.forEach(function (sub) {
+      var at = sub[0], k = seen[at] = (seen[at] || 0) + 1, n = count[at];
+      var base = up(at) ? -90 : 90;
+      var ang = (base + (n === 1 ? 0 : (k === 1 ? -32 : 32))) * RAD;
+      var a = P(at), e = [a[0] + L * Math.cos(ang), a[1] + L * Math.sin(ang)];
+      if (sub[1] === 'CH3') {
+        el('line', { x1: a[0], y1: a[1], x2: e[0], y2: e[1], class: 'sk-bond' }, g);
+        pts.push(e);
+      } else {
+        var stop = 0.62;
+        el('line', { x1: a[0], y1: a[1], x2: a[0] + (e[0] - a[0]) * stop, y2: a[1] + (e[1] - a[1]) * stop, class: 'sk-bond' }, g);
+        var t = [a[0] + (e[0] - a[0]) * 0.86, a[1] + (e[1] - a[1]) * 0.86];
+        el('text', { x: t[0], y: t[1], 'text-anchor': 'middle', 'dominant-baseline': 'central',
+                     class: 'sk-label tone-' + groupTone(sub[1]) }, g, sub[1]);
+        pts.push([t[0] - 12, t[1] - 10], [t[0] + 12, t[1] + 10]);
+      }
+    });
+    for (var c = 1; c <= sk.n; c++) {
+      var q = P(c), below = up(c);
+      /* number on the open side of each carbon, away from any branch */
+      var ny = q[1] + (below ? 15 : -9);
+      el('text', { x: q[0], y: ny, 'text-anchor': 'middle', class: 'sk-num' + (sk.view.indexOf(c) >= 0 ? ' sk-num-view' : '') }, g, String(c));
+      pts.push(q, [q[0], ny + 4], [q[0], ny - 10]);
+    }
+    var xs = pts.map(function (p) { return p[0]; }), ys = pts.map(function (p) { return p[1]; });
+    var x0 = Math.min.apply(null, xs) - 12, x1 = Math.max.apply(null, xs) + 12;
+    var y0 = Math.min.apply(null, ys) - 8, y1 = Math.max.apply(null, ys) + 8;
+    s.setAttribute('viewBox', [x0, y0, x1 - x0, y1 - y0].map(function (v) { return v.toFixed(1); }).join(' '));
+    s.setAttribute('width', Math.round((x1 - x0) * 1.15));
+    return s;
+  }
+
   return {
     el: el,
+    skeletal: skeletal,
     svg: svg,
     newman: newman,
     describe: describe,

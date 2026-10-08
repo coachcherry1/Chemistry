@@ -474,6 +474,13 @@ var App = (function () {
     return h('span');
   }
 
+  /* Bond-line formulas with their names, side by side. */
+  function structures(ids) {
+    return h('div', { class: 'sk-row' }, ids.map(function (id) {
+      return h('figure', { class: 'sk-card' }, [Draw.skeletal(id), h('figcaption', { text: SKELETAL[id].name })]);
+    }));
+  }
+
   /* -------------------------------------------------------------- the steps */
 
   var RENDER = {};
@@ -925,6 +932,7 @@ var App = (function () {
       say('');
       box.appendChild(h('p', { class: 'q-count', text: 'Question ' + (n + 1) + ' of ' + ids.length }));
       box.appendChild(h('p', { class: 'q-text', text: q.q }));
+      if (q.struct) box.appendChild(structures(q.struct));
       if (q.fig) box.appendChild(h('div', { class: 'q-fig' }, [figure(q.fig)]));
       var figs = typeof q.choices[0] !== 'string';
       var row = h('div', { class: 'q-choices' + (figs ? ' figs' : '') });
@@ -1151,6 +1159,7 @@ var App = (function () {
       });
       card.innerHTML = '';
       card.appendChild(h('p', { class: 'swap-name', text: mol.name + ' — looking down ' + mol.carbons[0] + '–' + mol.carbons[1] }));
+      card.appendChild(structures([mol.id]));
       card.appendChild(h('p', { class: 'swap-frame', text: mol.carbons[0] + ' carries CH₃, H and ' + label(x) +
         '; ' + mol.carbons[1] + ' carries CH₃ and two H.' }));
       var q = 'In the lowest-energy conformation, which group on ' + mol.carbons[0] + ' is anti to the CH₃ on ' +

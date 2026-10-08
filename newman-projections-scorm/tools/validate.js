@@ -169,6 +169,7 @@ for (const k of Object.keys(QUIZZES)) {
       const id = f.newman || f.zigzag || f.graph;
       if (!MOLECULES[id] || !MOLECULES[id].front) fail(`${q.id}: figure uses unknown molecule ${id}`);
     }
+    for (const st of q.struct || []) if (!SKELETAL[st]) fail(`${q.id}: unknown bond-line structure ${st}`);
     const texts = q.choices.map((c) => typeof c === 'string' ? c : JSON.stringify(c));
     if (new Set(texts).size !== texts.length) fail(`${q.id}: duplicate choices`);
   }
@@ -205,6 +206,33 @@ const checks = {
 for (const id of Object.keys(checks)) {
   if (!ids.has(id)) { fail(`check for unknown question ${id}`); continue; }
   if (!checks[id]()) fail(`question ${id} no longer matches the strain table — update its text`);
+}
+
+/* ---------------------------------------------------- bond-line formulas */
+
+/* Each bond-line formula must carry the same groups on the viewed bond as
+   the molecule it stands for, and every molecule the swap step shows needs one. */
+for (const id of Object.keys(SKELETAL)) {
+  const sk = SKELETAL[id];
+  if (!MOLECULES[id] || !MOLECULES[id].front) continue;
+  const m = molecule(id);
+  const [f, b] = sk.view;
+  const heavy = (c) => {
+    const out = sk.subs.filter((x) => x[0] === c).map((x) => x[1] === 'CH3' ? 'C' : x[1]);
+    if (c - 1 >= 1 && c - 1 !== (c === f ? b : f)) out.push('C');
+    if (c + 1 <= sk.n && c + 1 !== (c === f ? b : f)) out.push('C');
+    return out.sort().join();
+  };
+  const fromMol = (side) => ['anchor', 'wedge', 'dash'].map((r) => m[side][r]).filter((g) => g !== 'H')
+    .map((g) => ['CH3', 'iPr', 'tBu'].includes(g) ? 'C' : g).sort().join();
+  if (heavy(f) !== fromMol('front') || heavy(b) !== fromMol('back')) {
+    fail(`bond-line formula ${id} does not match the molecule on C${f}–C${b}`);
+  }
+}
+for (const x of MOLECULES.SWAP_ORDER) {
+  const id = { Br: 'bromobutane', Cl: 'chlorobutane', I: 'iodobutane', CH3: 'methylbutane',
+               iPr: 'dimethylpentane', tBu: 'trimethylpentane' }[x];
+  if (!SKELETAL[id]) fail(`swap step: no bond-line formula for ${id}`);
 }
 
 /* ---------------------------------------------------- report */

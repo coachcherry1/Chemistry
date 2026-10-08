@@ -12,6 +12,8 @@
  *   { newman: molId, phi: n }       a Newman projection at that dihedral
  *   { zigzag: molId }               the wedge/dash drawing
  *   { graph: molId, letters: {...} } the energy curve with lettered points
+ * `struct` lists bond-line formulas (ids in SKELETAL, molecules.js) shown
+ * under the question whenever it names a molecule.
  * A choice can be a figure instead of text.
  *
  * Several answers are numbers from the strain table. If you change the table,
@@ -186,7 +188,7 @@ var QUIZZES = {
     draw: 4,
     core: ['c-best', 'c-bond'],
     pool: [
-      { id: 'c-best',
+      { id: 'c-best', struct: ['bromobutane'],
         q: 'Looking down C2–C3 of 2-bromobutane, which conformation is lowest in energy?',
         choices: [{ newman: 'bromobutane', phi: 180 }, { newman: 'bromobutane', phi: 60 },
                   { newman: 'bromobutane', phi: 300 }, { newman: 'bromobutane', phi: 0 }],
@@ -209,19 +211,19 @@ var QUIZZES = {
                   'CH₃ < CH(CH₃)₂ < C(CH₃)₃ < Br'],
         why: 'About 1, 3.8, 4.6 and 11.4 kJ/mol. Halogens are "small" in this sense; branching makes a group ' +
              'bulky fast.' },
-      { id: 'c-tbu',
+      { id: 'c-tbu', struct: ['trimethylpentane'],
         q: 'In the lowest-energy conformation of 2,2,3-trimethylpentane, viewed down C3–C4, which group on ' +
            'C3 is anti to the CH₃ on C4?',
         choices: ['C(CH₃)₃', 'CH₃', 'H', 'None — the lowest-energy conformation is eclipsed'],
         why: 'The tert-butyl group has by far the biggest gauche cost (11.4 kJ/mol), so it goes anti. The CH₃ ' +
              'is then gauche instead: 3.8 kJ/mol.' },
-      { id: 'c-ipr',
+      { id: 'c-ipr', struct: ['dimethylpentane'],
         q: 'In the lowest-energy conformation of 2,3-dimethylpentane, viewed down C3–C4, which group on C3 is ' +
            'anti to the CH₃ on C4?',
         choices: ['CH(CH₃)₂', 'CH₃', 'H', 'None — the lowest-energy conformation is eclipsed'],
         why: 'It is close. Isopropyl gauche to CH₃ costs 4.6 kJ/mol, CH₃ gauche to CH₃ costs 3.8, so the ' +
              'isopropyl group takes the anti position — but only by 0.8 kJ/mol.' },
-      { id: 'c-methylbutane',
+      { id: 'c-methylbutane', struct: ['methylbutane'],
         q: 'Looking down C2–C3 of 2-methylbutane, two staggered conformations cost 3.8 kJ/mol and one costs ' +
            '7.6 kJ/mol. What makes that one worse?',
         choices: ['The CH₃ on C3 is gauche to both CH₃ groups on C2',
@@ -230,13 +232,13 @@ var QUIZZES = {
                   'It has torsional strain'],
         why: 'When the H on C2 is anti to the CH₃ on C3, both CH₃ groups on C2 end up gauche to it: ' +
              '2 × 3.8 = 7.6 kJ/mol.' },
-      { id: 'c-count',
+      { id: 'c-count', struct: ['methylbutane'],
         q: 'How many CH₃/CH₃ gauche interactions does this conformation of 2-methylbutane have?',
         fig: { newman: 'methylbutane', phi: 300 },
         choices: ['2', '1', '0', '3'],
         why: 'The CH₃ on the back carbon sits 60° from both CH₃ groups on the front carbon: two gauche ' +
              'interactions, 7.6 kJ/mol.' },
-      { id: 'c-clbr',
+      { id: 'c-clbr', struct: ['bromobutane', 'chlorobutane'],
         q: 'Swap the Br in 2-bromobutane for a Cl. How does the energy of the best staggered conformation change?',
         choices: ['Hardly at all — Cl and Br cost about the same when gauche to a CH₃',
                   'It drops a lot, because Cl is a smaller atom',
@@ -260,13 +262,13 @@ var QUIZZES = {
     draw: 5,
     core: ['d-dmb', 'd-A', 'd-B'],
     pool: [
-      { id: 'd-dmb',
+      { id: 'd-dmb', struct: ['dimethylbutane'],
         q: 'Looking down C2–C3 of 2,3-dimethylbutane, how many CH₃/CH₃ gauche interactions does the best ' +
            'staggered conformation have?',
         choices: ['2', '0', '1', '3'],
         why: 'With the two H atoms anti, each CH₃ on C2 is anti to one CH₃ on C3 and gauche to the other: ' +
              '2 × 3.8 = 7.6 kJ/mol. No staggered conformation does better.' },
-      { id: 'd-dmb-calc',
+      { id: 'd-dmb-calc', struct: ['dimethylbutane'],
         q: 'Using the strain table, what is the energy of this conformation of 2,3-dimethylbutane?',
         fig: { newman: 'dimethylbutane', phi: 180 },
         choices: ['11.4 kJ/mol', '7.6 kJ/mol', '3.8 kJ/mol', '15.2 kJ/mol'],
@@ -298,7 +300,7 @@ var QUIZZES = {
                   'Yes — they are already the same conformation'],
         why: 'Rotation only changes the conformation; it can never move a Br from a wedge to a dash. You will ' +
              'learn the name for this relationship in the next unit.' },
-      { id: 'd-halo',
+      { id: 'd-halo', struct: ['dichlorobutane', 'dibromobutane', 'diiodobutane'],
         q: 'Going from 2,3-dichlorobutane to 2,3-dibromobutane to 2,3-diiodobutane, which conformations rise ' +
            'in energy the most?',
         choices: ['The ones where the two halogens are gauche or eclipsed with each other',
