@@ -86,7 +86,7 @@ var Viewer3D = (function () {
     this.ctx = canvas.getContext('2d');
     this.mol = mol;
     this.phi = GEOM.phi0(mol);
-    this.R = opts.view === 'newman' ? GEOM.VIEWS.newman : START;
+    this.R = opts.view === 'newman' ? (Draw.getFlip() ? GEOM.VIEWS.newmanFlip : GEOM.VIEWS.newman) : START;
     this.style = 'ball';
     this.anim = null;
     this.onView = opts.onView || null;
@@ -121,7 +121,8 @@ var Viewer3D = (function () {
   Viewer.prototype.setStyle = function (style) { this.style = style; this.draw(); };
 
   Viewer.prototype.setView = function (name) {
-    var target = name === 'newman' ? GEOM.VIEWS.newman : START;
+    var down = Draw.getFlip() ? GEOM.VIEWS.newmanFlip : GEOM.VIEWS.newman;
+    var target = name === 'newman' ? down : START;
     var self = this;
     if (reduceMotion) { this.R = target; this.draw(); return; }
     var qa = toQuat(this.R), qb = toQuat(target), t0 = null;

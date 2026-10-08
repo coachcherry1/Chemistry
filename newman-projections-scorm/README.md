@@ -29,6 +29,12 @@ A wrong build gets specific feedback and another try:
 - *right molecule, wrong conformation* — "in the zigzag the two chain groups point opposite ways, so
   they must be anti".
 
+A **Turn view 180°** button on the build template and on every rotatable projection turns the
+Newman projection upside down, so the front chain group can point *down* — the way the zigzag looks
+from the eye — instead of up. It is only a view (a projection turned as a whole is the same
+projection), so builds are checked the same way either way up. The choice is remembered for the rest
+of the activity, and the 3D "down the bond" view, quiz figures and graph thumbnails follow it.
+
 After one miss a tip appears; after two, a "Show me in 3D" button opens the drawing as a 3D model
 they can turn to the view from the eye. Turning the whole projection by 120° is accepted — it is the
 same picture with your head tilted.

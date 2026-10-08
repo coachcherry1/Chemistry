@@ -214,7 +214,7 @@ var App = (function () {
       /* keep the pool's own order, so related questions sit together */
       draws[k] = Q.pool.map(function (q) { return q.id; }).filter(function (id) { return ids.indexOf(id) >= 0; });
     });
-    return { v: SCHEMA, seed: seed, step: 0, max: 0, draws: draws, ans: {}, pick: {}, sk: {}, pr: {}, done: {}, fin: 0 };
+    return { v: SCHEMA, seed: seed, step: 0, max: 0, draws: draws, ans: {}, pick: {}, sk: {}, pr: {}, done: {}, fin: 0, flip: 0 };
   }
 
   function restore(saved) {
@@ -271,6 +271,7 @@ var App = (function () {
     if (i < 0 || i >= STEPS.length || i > state.max) return;
     if (ctl && ctl.destroy) ctl.destroy();
     ctl = null;
+    viewHooks = [];
     state.step = i;
     persist();
     var s = STEPS[i];
@@ -288,6 +289,27 @@ var App = (function () {
     paintParts();
     ctl = RENDER[s.kind](s) || null;
     window.scrollTo(0, 0);
+  }
+
+  /* ------------------------------------------------------ view turning */
+
+  /* Drawings on the current step that must redraw when the student turns
+     the view 180°. Cleared on every step change. */
+  var viewHooks = [];
+
+  function flipButton() {
+    var b = h('button', { type: 'button', class: 'mini toggle', 'aria-pressed': Draw.getFlip() ? 'true' : 'false',
+      title: 'Turn the Newman projection upside down. It is the same projection, seen from the other way up.',
+      text: '↻ Turn view 180°' });
+    b.addEventListener('click', function () {
+      Draw.setFlip(Draw.getFlip() ? 0 : 180);
+      if (state) { state.flip = Draw.getFlip(); persist(); }
+      var nodes = document.querySelectorAll('.flip-btn');
+      for (var i = 0; i < nodes.length; i++) nodes[i].setAttribute('aria-pressed', Draw.getFlip() ? 'true' : 'false');
+      viewHooks.forEach(function (fn) { fn(); });
+    });
+    b.classList.add('flip-btn');
+    return b;
   }
 
   /* ------------------------------------------------------- shared panels */
@@ -365,9 +387,11 @@ var App = (function () {
     var node = panel(opts.title || 'Newman projection', 'drag around it to turn the back carbon', [
       host,
       h('label', { class: 'range-row' }, [h('span', { text: 'Back carbon' }), range]),
-      read, parts
+      read, parts,
+      h('div', { class: 'btnrow' }, [flipButton()])
     ], 'prot');
     var rotor = new Draw.Rotor(host, mol, function (phi, prev) { update(phi, prev); });
+    viewHooks.push(function () { rotor.paint(); });
 
     function paintText(phi) {
       read.textContent = readoutText(rotor.mol, phi);
@@ -573,7 +597,7 @@ var App = (function () {
     var buildPanel = panel('Your Newman projection', 'looking from the eye', [
       tplHost,
       tray,
-      h('div', { class: 'btnrow' }, [check, reset, hintBtn]),
+      h('div', { class: 'btnrow' }, [check, reset, hintBtn, flipButton()]),
       tip
     ], 'p-build');
     var help3D = h('div', { class: 'help3d', hidden: true });
@@ -596,6 +620,7 @@ var App = (function () {
       if (!left) tray.appendChild(h('p', { class: 'tray-empty', text: done ? 'Built.' : 'All placed — press Check.' }));
     }
 
+    viewHooks.push(function () { paint(); if (wrong >= 2) tip.textContent = sideTip(); });
     var picker = Picker({
       tray: tray, stage: tplHost,
       label: function (k) { return label(tiles[+k].g); },
@@ -637,6 +662,16 @@ var App = (function () {
       if (after) setTimeout(function () { helper.viewer().setView('newman'); }, 650);
     }
 
+    /* With the view turned 180° the front chain group points down, and the
+       wedge/dash sides swap with it. */
+    function sideTip() {
+      var up = !Draw.getFlip();
+      return 'Tip: picture yourself at the eye, with the ' + GROUPS[mol.front.anchor].name + ' on ' +
+        mol.carbons[0] + ' pointing straight ' + (up ? 'up' : 'down') + '. A wedge comes out of the page ' +
+        'toward you — from where you stand, that is your ' + (up ? 'LEFT' : 'RIGHT') + '. A dash goes into ' +
+        'the page — your ' + (up ? 'RIGHT' : 'LEFT') + '.';
+    }
+
     check.addEventListener('click', function () {
       if (done) return;
       if (slots.some(function (x) { return x == null; })) { say('Fill all six positions first.', 'bad'); return; }
@@ -659,9 +694,7 @@ var App = (function () {
         tip.textContent = wrong === 1
           ? 'Tip: the front carbon is the one nearest the eye (' + mol.carbons[0] + '). Its groups go on the ' +
             'bonds that meet in the centre; the back carbon’s groups go on the bonds that start at the circle.'
-          : 'Tip: picture yourself at the eye, with the ' + GROUPS[mol.front.anchor].name + ' on ' +
-            mol.carbons[0] + ' pointing straight up. A wedge comes out of the page toward you — from where you ' +
-            'stand, that is your LEFT. A dash goes into the page — your RIGHT.';
+          : sideTip();
       }
       if (wrong >= 2) hintBtn.hidden = false;
     });
@@ -1177,6 +1210,7 @@ var App = (function () {
       });
     }
 
+    viewHooks.push(paint);
     paint();
     if (done) say('All groups compared.', 'good');
   };
@@ -1517,6 +1551,7 @@ var App = (function () {
       persist();
     }
 
+    Draw.setFlip(state.flip);
     el.next.addEventListener('click', function () { goTo(state.step + 1); });
     el.back.addEventListener('click', function () { goTo(state.step - 1); });
 

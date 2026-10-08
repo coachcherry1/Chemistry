@@ -10,6 +10,15 @@ var Draw = (function () {
 
   var NS = 'http://www.w3.org/2000/svg';
 
+  /* The student can turn every Newman projection 180°, so the front chain
+     group points down instead of up — the way the zigzag looks from the eye
+     without standing on your head. It is purely a view: turning the whole
+     projection never changes the conformation, so nothing is judged
+     differently. 0 or 180. */
+  var flip = 0;
+  function getFlip() { return flip; }
+  function setFlip(f) { flip = f ? 180 : 0; }
+
   function el(tag, attrs, parent, text) {
     var n = document.createElementNS(NS, tag);
     if (attrs) Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); });
@@ -61,14 +70,16 @@ var Draw = (function () {
      conformation still shows its back bonds, the way textbooks print it. */
   function newman(nm, opts) {
     opts = opts || {};
-    var s = svg('-125 -118 250 236', (opts.bare ? '' : 'newman ') + (opts.cls || ''), opts.label || describe(nm));
+    if (opts.flip == null) opts.flip = flip;
+    var s = svg('-125 -118 250 236', (opts.bare ? '' : 'newman ') + (opts.cls || ''), opts.label || describe(nm, opts.flip));
     paintNewman(s, nm, opts);
     return s;
   }
 
   function paintNewman(s, nm, opts) {
     while (s.firstChild) s.removeChild(s.firstChild);
-    var off = opts.offset || 0;
+    var turn = opts.flip || 0;
+    var off = (opts.offset || 0) + turn;
     var back = el('g', { class: 'nm-back' }, s);
     nm.back.forEach(function (q) {
       var a = q.a + off;
@@ -78,26 +89,28 @@ var Draw = (function () {
     el('circle', { cx: 0, cy: 0, r: R, class: 'nm-circle' }, s);
     var front = el('g', { class: 'nm-front' }, s);
     nm.front.forEach(function (q) {
-      var p = at(FRONT, q.a);
+      var p = at(FRONT, q.a + turn);
       el('line', { x1: 0, y1: 0, x2: p[0], y2: p[1], class: 'nm-bond-front' }, front);
     });
     var labels = el('g', null, s);
     function shown(q) { return !(opts.hideH && q.g === 'H'); }
     nm.back.filter(shown).forEach(function (q) { label(labels, q.g, BACK_LABEL, q.a + off, 'nm-back-label'); });
-    nm.front.filter(shown).forEach(function (q) { label(labels, q.g, FRONT_LABEL, q.a); });
+    nm.front.filter(shown).forEach(function (q) { label(labels, q.g, FRONT_LABEL, q.a + turn); });
   }
 
   var POS = { 0: 'top', 60: 'upper right', 120: 'lower right', 180: 'bottom',
               240: 'lower left', 300: 'upper left' };
 
   function where(a) {
+    a = ((a % 360) + 360) % 360;
     var r = Math.round(a / 60) * 60 % 360;
     return Math.abs(STRAIN.gap(a, r)) < 2 ? POS[r] : Math.round(a) + '°';
   }
 
-  function describe(nm) {
+  function describe(nm, turn) {
+    turn = turn == null ? flip : turn;
     function side(list) {
-      return list.map(function (q) { return GROUPS[q.g].name + ' ' + where(q.a); }).join(', ');
+      return list.map(function (q) { return GROUPS[q.g].name + ' ' + where(q.a + turn); }).join(', ');
     }
     return 'Newman projection. Front carbon: ' + side(nm.front) + '. Back carbon: ' + side(nm.back) + '.';
   }
@@ -151,10 +164,10 @@ var Draw = (function () {
   Rotor.prototype.setMolecule = function (mol) { this.mol = mol; this.paint(); };
 
   Rotor.prototype.paint = function () {
-    paintNewman(this.svg, GEOM.newmanAt(this.mol, this.phi), {});
+    paintNewman(this.svg, GEOM.newmanAt(this.mol, this.phi), { flip: flip });
     /* a curved arrow round the circle says "you can turn this" */
     var g = el('g', { class: 'nm-grip' }, this.svg);
-    var r = 112, a1 = 28, a2 = 62;
+    var r = 112, a1 = 76, a2 = 104;   /* clear of every label, either way up */
     var p1 = at(r, a1), p2 = at(r, a2);
     el('path', { d: 'M' + p1[0] + ' ' + p1[1] + ' A' + r + ' ' + r + ' 0 0 1 ' + p2[0] + ' ' + p2[1] }, g);
     var tip = at(r, a2), back1 = at(r - 6, a2 - 6), back2 = at(r + 6, a2 - 6);
@@ -172,26 +185,28 @@ var Draw = (function () {
   ];
 
   function template(filled, carbons) {
-    var s = svg('-125 -118 250 236', 'newman template');
+    var turn = flip;
+    function A(sl) { return (sl.a + turn) % 360; }
+    var s = svg('-125 -118 250 252', 'newman template');
     s.setAttribute('aria-label', 'Newman projection template with six positions');
     var back = el('g', null, s);
     SLOTS.forEach(function (sl) {
       if (sl.side !== 'back') return;
-      var p1 = at(R, sl.a), p2 = at(BACK - 8, sl.a);
+      var p1 = at(R, A(sl)), p2 = at(BACK - 8, A(sl));
       el('line', { x1: p1[0], y1: p1[1], x2: p2[0], y2: p2[1], class: 'nm-bond-back' }, back);
     });
     el('circle', { cx: 0, cy: 0, r: R, class: 'nm-circle' }, s);
     SLOTS.forEach(function (sl) {
       if (sl.side !== 'front') return;
-      var p = at(FRONT - 8, sl.a);
+      var p = at(FRONT - 8, A(sl));
       el('line', { x1: 0, y1: 0, x2: p[0], y2: p[1], class: 'nm-bond-front' }, s);
     });
     SLOTS.forEach(function (sl, i) {
       var r = sl.side === 'front' ? FRONT_LABEL - 2 : BACK_LABEL + 2;
-      var p = at(r, sl.a);
+      var p = at(r, A(sl));
       var key = filled[i];
       var where = (sl.side === 'front' ? 'Front carbon (' + carbons[0] + ')' : 'Back carbon (' + carbons[1] + ')') +
-                  ', ' + POS[sl.a] + ' position';
+                  ', ' + POS[A(sl)] + ' position';
       var g = el('g', {
         class: 'drop slot ' + sl.side + (key ? ' filled' : ''), 'data-drop': i, tabindex: 0, role: 'button',
         'aria-label': where + (key ? ', holds ' + GROUPS[key].name + '. Activate to remove it.' : ', empty')
@@ -206,8 +221,8 @@ var Draw = (function () {
                      class: 'slot-plus' }, g, '+');
       }
     });
-    el('text', { x: -122, y: 112, class: 'nm-caption' }, s, 'front: ' + carbons[0] + ' (centre)');
-    el('text', { x: 122, y: 112, 'text-anchor': 'end', class: 'nm-caption' }, s, 'back: ' + carbons[1] + ' (circle)');
+    el('text', { x: -122, y: 128, class: 'nm-caption' }, s, 'front: ' + carbons[0] + ' (centre)');
+    el('text', { x: 122, y: 128, 'text-anchor': 'end', class: 'nm-caption' }, s, 'back: ' + carbons[1] + ' (circle)');
     return s;
   }
 
@@ -299,6 +314,8 @@ var Draw = (function () {
     template: template,
     SLOTS: SLOTS,
     ECLIPSE_OFFSET: ECLIPSE_OFFSET,
+    getFlip: getFlip,
+    setFlip: setFlip,
     zigzag: zigzag
   };
 })();

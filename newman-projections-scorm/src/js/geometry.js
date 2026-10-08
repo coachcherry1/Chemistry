@@ -169,7 +169,9 @@ var GEOM = (function () {
      The camera looks down its own −z. */
   var VIEWS = {
     page: [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
-    newman: [RIGHT, UP, mul(W, -1)]
+    newman: [RIGHT, UP, mul(W, -1)],
+    /* the same view turned 180° about the line of sight */
+    newmanFlip: [mul(RIGHT, -1), mul(UP, -1), mul(W, -1)]
   };
 
   /* ---- the 2D wedge/dash drawing (page coordinates in ångströms, y up) */
