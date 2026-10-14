@@ -1,21 +1,22 @@
 /* app.js — the steps, their order, saving, scoring.
  *
  * Part 1  Molecules: a worked example (NH₃), then PCl₃, CH₂O, HCN
- * Part 2  Polyatomic ions: NH₄⁺, ClO₃⁻, SO₄²⁻
+ * Part 2  Polyatomic ions: NH₄⁺, SO₄²⁻
  * Part 3  Oxyacids: H₂SO₄, HNO₂
- * Part 4  On your own: one oxyanion, one oxyacid, one multiple-bond species,
- *         drawn at random per student
+ * Part 4  Exceptions to the octet: BF₃, BeF₂ (fewer than 8), SF₆, XeF₄ (more)
+ * Part 5  On your own: one molecule/ion/oxyacid and one exception, drawn at
+ *         random per student
  *
- * Only the four checkpoints are graded (first answer counts). Builds must be
+ * Only the five checkpoints are graded (first answer counts). Builds must be
  * finished to move on but are never scored.
  */
 
 var App = (function () {
   'use strict';
 
-  /* Bump whenever the step list, a quiz pool or a Part 4 pool changes: a save
+  /* Bump whenever the step list, a quiz pool or a Part 5 pool changes: a save
      from an older version is then discarded rather than resumed. */
-  var SCHEMA = 1;
+  var SCHEMA = 2;
 
   var h = UI.h;
 
@@ -23,8 +24,9 @@ var App = (function () {
     { n: 1, name: 'Molecules' },
     { n: 2, name: 'Polyatomic ions' },
     { n: 3, name: 'Oxyacids' },
-    { n: 4, name: 'On your own' },
-    { n: 5, name: 'Results' }
+    { n: 4, name: 'Octet exceptions' },
+    { n: 5, name: 'On your own' },
+    { n: 6, name: 'Results' }
   ];
 
   var STEPS = [
@@ -44,31 +46,40 @@ var App = (function () {
 
     { id: 'b-NH4', part: 2, kind: 'build', sp: 'NH4', table: true,
       text: 'Your first polyatomic ion. A + charge means the ion has LOST electrons.' },
-    { id: 'b-ClO3', part: 2, kind: 'build', sp: 'ClO3', table: true,
-      text: 'A − charge means the ion has GAINED electrons.' },
-    { id: 'b-SO4', part: 2, kind: 'build', sp: 'SO4', table: false,
-      text: 'S is in period 3. Follow the rules exactly, and only do what they tell you to. From here on, ' +
-            'Rule 1 is just the total.' },
+    { id: 'b-SO4', part: 2, kind: 'build', sp: 'SO4', table: true,
+      text: 'A − charge means the ion has GAINED electrons. S is in period 3: follow the rules exactly, and only ' +
+            'do what they tell you to.' },
     { id: 'quiz-B', part: 2, kind: 'quiz', quiz: 'B', title: 'Checkpoint 2',
       text: 'Graded: your first answer to each question counts.' },
 
     { id: 'b-H2SO4', part: 3, kind: 'build', sp: 'H2SO4', table: false,
-      text: 'An oxyacid: every H bonds to an O, and that O bonds to the central atom.' },
+      text: 'An oxyacid: every H bonds to an O, and that O bonds to the central atom. From here on, Rule 1 is ' +
+            'just the total.' },
     { id: 'b-HNO2', part: 3, kind: 'build', sp: 'HNO2', table: false,
       text: 'Another oxyacid — this time the central atom is in period 2.' },
     { id: 'quiz-C', part: 3, kind: 'quiz', quiz: 'C', title: 'Checkpoint 3',
       text: 'Graded: your first answer to each question counts.' },
 
-    { id: 'b-ion', part: 4, kind: 'build', pool: 'ion', table: false, solo: true,
-      text: 'On your own: same 5 rules, fewer hints.' },
-    { id: 'b-acid', part: 4, kind: 'build', pool: 'acid', table: false, solo: true,
-      text: 'On your own: an oxyacid.' },
-    { id: 'b-multi', part: 4, kind: 'build', pool: 'multi', table: false, solo: true,
-      text: 'On your own: watch for an electron-deficient central atom.' },
+    { id: 'b-BF3', part: 4, kind: 'build', sp: 'BF3', table: false,
+      text: 'The first exception. Watch what Rule 5 says about B — and read the note under Rule 5 on the left.' },
+    { id: 'b-BeF2', part: 4, kind: 'build', sp: 'BeF2', table: false,
+      text: 'Be is the other atom that is stable with fewer than 8.' },
+    { id: 'b-SF6', part: 4, kind: 'build', sp: 'SF6', table: false,
+      text: 'Rule 2 says to connect ALL the atoms to the central atom with single bonds — even when that is more ' +
+            'than four. There are spots on the diagonals too.' },
+    { id: 'b-XeF4', part: 4, kind: 'build', sp: 'XeF4', table: false,
+      text: 'Xe is a noble gas in group 18 — count its valence electrons carefully. Then watch Rule 4.' },
     { id: 'quiz-D', part: 4, kind: 'quiz', quiz: 'D', title: 'Checkpoint 4',
       text: 'Graded: your first answer to each question counts.' },
 
-    { id: 'results', part: 5, kind: 'results', title: 'Results', text: '' }
+    { id: 'b-mix', part: 5, kind: 'build', pool: 'mix', table: false, solo: true,
+      text: 'On your own: same 5 rules, fewer hints.' },
+    { id: 'b-exc', part: 5, kind: 'build', pool: 'exc', table: false, solo: true,
+      text: 'On your own: an exception to the octet. Let the rules tell you how many electrons the central atom ends with.' },
+    { id: 'quiz-E', part: 5, kind: 'quiz', quiz: 'E', title: 'Checkpoint 5',
+      text: 'Graded: your first answer to each question counts.' },
+
+    { id: 'results', part: 6, kind: 'results', title: 'Results', text: '' }
   ];
 
   var GRADED = Object.keys(QUIZZES).reduce(function (s, k) { return s + QUIZZES[k].draw; }, 0);
@@ -105,9 +116,9 @@ var App = (function () {
 
   /* The anti-AI message. In a build there is a central atom to name and a
      fix to give; in a checkpoint the explanation underneath does that. */
-  function snarkText(sp) {
+  function snarkText(sp, e) {
     snarks++;
-    var vars = { X: sp ? sp.center : '', F: sp ? sp.text : '', n: snarks };
+    var vars = { X: sp ? sp.center : '', F: sp ? sp.text : '', e: e != null ? e : 8, n: snarks };
     var line = snarks === 1 ? (sp ? pick(SNARK.first) : pick(SNARK.quiz)) : pick(SNARK.again);
     return UI.fill(line, vars) + ' ' + (sp ? UI.fill(SNARK.fix, vars) : '') + pick(SNARK.cheer);
   }
@@ -175,7 +186,7 @@ var App = (function () {
         type: 'button', class: 'tab' + (p.n === cur ? ' current' : '') + (open ? '' : ' locked'),
         disabled: !open, 'aria-current': p.n === cur ? 'step' : null,
         onclick: function () { if (open) goTo(first); }
-      }, [p.n < 5 ? p.n + '  ' + p.name : p.name]));
+      }, [p.n < PARTS.length ? p.n + '  ' + p.name : p.name]));
     });
     el.score.textContent = 'Checkpoint score: ' + correctCount() + ' / ' + GRADED;
   }
@@ -306,7 +317,7 @@ var App = (function () {
   function isSnark(q, ci) {
     if (q.snark && q.snark.indexOf(ci) >= 0) return true;
     var c = q.choices[ci];
-    return typeof c !== 'string' && Lewis.expanded(drawingOf(c));
+    return typeof c !== 'string' && Lewis.expanded(drawingOf(c), Lewis.species(c.lewis));
   }
 
   RENDER.quiz = function (s) {
@@ -422,7 +433,8 @@ var App = (function () {
       'Rule 2: the least electronegative atom (first written, not H) goes in the center. H is never central, and in an oxyacid every H bonds to an O.',
       'Rule 3: every outer atom gets an octet — except H, which is stable with a doublet.',
       'Rule 4: anything left goes on the central atom.',
-      'Rule 5: only if the central atom is electron deficient do lone pairs become double or triple bonds. If it already has 8 — even S, P or Cl — you are done.'
+      'Rule 5: only if the central atom is electron deficient do lone pairs become double or triple bonds. If it already has 8 — even S, P or Cl — you are done.',
+      'Exceptions: B is stable with 6 and Be with 4, so Rule 5 leaves them alone. A central atom in period 3 or below keeps whatever Rules 2 and 4 give it, even more than 8 (SF₆, XeF₄) — but never extra double bonds from Rule 5.'
     ].map(function (t) { return h('li', { text: t }); }))]);
     el.stage.appendChild(h('div', { class: 'grid2' }, [box, ideas]));
     if (!SCORM.isConnected() && !preview) {
@@ -487,7 +499,9 @@ var App = (function () {
       ['Octet', '8 electrons around an atom — count 2 for every bond line touching it and 2 for every lone pair on it.'],
       ['Doublet', '2 electrons. All H needs: one single bond gives it that.'],
       ['Central atom', 'The atom the others bond to: the least electronegative, which is the first one written, not counting H.'],
-      ['Electron deficient', 'A central atom with fewer than 8 electrons after Rule 4. Rule 5 fixes it.'],
+      ['Electron deficient', 'A central atom with fewer than 8 electrons after Rule 4. Rule 5 fixes it — except for B and Be.'],
+      ['Incomplete octet', 'Fewer than 8 electrons that is still stable: B with 6 (BF₃) and Be with 4 (BeF₂). They are not electron deficient.'],
+      ['Expanded octet', 'More than 8 electrons around a central atom from period 3 or below, because Rule 2 gave it more than four bonds (SF₆) or Rule 4 gave it the leftovers (XeF₄). A period-2 atom never has more than 8.'],
       ['Polyatomic ion', 'A group of bonded atoms with an overall charge, drawn in square brackets with the charge outside.'],
       ['Oxyacid', 'An acid made of H, O and one other element, such as H₂SO₄ or HNO₂. Each H is bonded to an O.']
     ].forEach(function (p) {
@@ -507,10 +521,11 @@ var App = (function () {
         h('li', { text: 'Part 1 — Molecules: a worked example, then PCl₃, CH₂O and HCN.' }),
         h('li', { text: 'Part 2 — Polyatomic ions: what a charge does to the electron count.' }),
         h('li', { text: 'Part 3 — Oxyacids: where the H atoms go.' }),
-        h('li', { text: 'Part 4 — On your own: three more, with fewer hints.' })
+        h('li', { text: 'Part 4 — Exceptions to the octet: BF₃, BeF₂, SF₆ and XeF₄.' }),
+        h('li', { text: 'Part 5 — On your own: two more, with fewer hints.' })
       ]),
-      h('p', { text: 'Builds are practice: you get feedback and as many tries as you need. The four checkpoints are ' +
-                     'graded — your first answer to each question counts. About 25–30 minutes. Your progress is saved ' +
+      h('p', { text: 'Builds are practice: you get feedback and as many tries as you need. The five checkpoints are ' +
+                     'graded — your first answer to each question counts. About 30–35 minutes. Your progress is saved ' +
                      'if you leave.' }),
       h('p', { class: 'screen-warn' }, [
         h('b', { text: 'Do your own work. ' }),
@@ -547,7 +562,7 @@ var App = (function () {
       state.max = STEPS.length - 1;
       var idx = /^\d+$/.test(jump) ? +jump - 1 : stepIndex(jump);
       state.step = Math.max(0, Math.min(STEPS.length - 1, idx < 0 ? 0 : idx));
-      var forced = params.get('pick');            /* ?step=b-ion&pick=PO4 */
+      var forced = params.get('pick');            /* ?step=b-exc&pick=PCl5 */
       if (forced && SPECIES[forced]) Object.keys(POOLS).forEach(function (k) {
         if (POOLS[k].ids.indexOf(forced) >= 0) state.pool[k] = forced;
       });

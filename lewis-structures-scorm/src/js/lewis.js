@@ -1,34 +1,47 @@
 /* lewis.js — the 5 rules, as an algorithm, and the structure model that the
  * builder, the drawings, the quiz and the validator all share.
  *
- * A structure sits on a cross-shaped grid of slots:
+ * A structure sits on a grid of slots: the central atom C, eight positions
+ * around it (N, NE, E, SE, S, SW, W, NW) bonded to C, and one position beyond
+ * each of those (N2, NE2, ...) bonded to the atom next to it — only an H on an
+ * oxyacid's O goes there.
  *
- *                 NN
- *                 N
- *        WW   W   C   E   EE
- *                 S
- *                 SS
- *
- * C is the central atom. N, E, S, W are bonded to C. NN, EE, SS, WW are
- * bonded to the atom next to them (only an H on an oxyacid's O goes there).
+ *          NW2      N2      NE2
+ *              NW   N   NE
+ *        W2    W    C    E    E2
+ *              SW   S   SE
+ *          SW2      S2      SE2
  *
  *   s = { charge, at: { slot: element }, lp: { slot: pairs }, bo: { slot: order } }
  *
- * bo is keyed by the OUTER end of each bond: bo.W is the C–W bond, bo.WW the
- * W–WW bond. Every atom has four sides (N, E, S, W); bonds take some, lone
- * pairs fill the rest — so no atom can be drawn with more than four
- * electron domains, which covers everything in this activity.
+ * bo is keyed by the OUTER end of each bond: bo.W is the C–W bond, bo.W2 the
+ * W–W2 bond. Around every atom, bonds and lone pairs share the same eight
+ * directions; a period-2 atom holds at most 4 electron domains and an atom
+ * from period 3 or below at most 6 (SF₆, XeF₄).
+ *
+ * What counts as "full" for the central atom (centerTarget):
+ *   B 6 and Be 4 — the incomplete-octet exceptions; Rule 5 leaves them alone
+ *   otherwise 8 — or more, when Rules 2 and 4 already gave a period-3+ atom
+ *   more (SF₆ 12, XeF₄ 12, PCl₅ 10). That is a legitimate expanded octet.
+ * Pushing the central atom past its target with Rule 5 is never allowed: for
+ * a period-3+ atom it is the "reduce the formal charge" answer from AI
+ * chatbots, and the student hears about it (see snark.js).
  */
 
 var Lewis = (function () {
   'use strict';
 
-  var DIRS = ['N', 'E', 'S', 'W'];
-  var VEC = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
-  var OPP = { N: 'S', S: 'N', E: 'W', W: 'E' };
-  var PERP = { N: ['W', 'E'], S: ['W', 'E'], E: ['N', 'S'], W: ['N', 'S'] };
-  var SLOTS = ['C', 'N', 'E', 'S', 'W', 'NN', 'EE', 'SS', 'WW'];
-  var WHERE = { N: 'above', E: 'right of', S: 'below', W: 'left of' };
+  var DIRS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];      /* clockwise from the top */
+  var CARD = ['N', 'E', 'S', 'W'];
+  var VEC = { N: [0, -1], NE: [1, -1], E: [1, 0], SE: [1, 1], S: [0, 1], SW: [-1, 1], W: [-1, 0], NW: [-1, -1] };
+  var OPP = {};
+  DIRS.forEach(function (d, i) { OPP[d] = DIRS[(i + 4) % 8]; });
+  var SLOTS = ['C'].concat(DIRS, DIRS.map(function (d) { return d + '2'; }));
+  var WHERE = { N: 'above', NE: 'upper right of', E: 'right of', SE: 'lower right of', S: 'below',
+                SW: 'lower left of', W: 'left of', NW: 'upper left of' };
+  /* tie-breaks when two directions are equally far from everything else */
+  var PREF_CENTER = ['N', 'S', 'W', 'E', 'NE', 'SW', 'NW', 'SE'];
+  var PREF_OUTER = ['N', 'S', 'W', 'E', 'NE', 'NW', 'SE', 'SW'];
 
   /* ------------------------------------------------------------ formulas */
 
@@ -91,16 +104,19 @@ var Lewis = (function () {
 
   /* ------------------------------------------------------------ the grid */
 
+  function isOuter(slot) { return /2$/.test(slot); }                    /* beyond an outer atom */
+  function isInner(slot) { return slot !== 'C' && !isOuter(slot); }     /* bonded to the center */
+
   function parentOf(slot) {
     if (slot === 'C') return null;
-    return slot.length === 1 ? 'C' : slot[0];
+    return isOuter(slot) ? slot.slice(0, -1) : 'C';
   }
 
-  function dirOf(slot) { return slot === 'C' ? null : slot[0]; }
+  function dirOf(slot) { return slot === 'C' ? null : slot.replace(/2$/, ''); }
 
   function pos(slot) {
     if (slot === 'C') return [0, 0];
-    var v = VEC[slot[0]], k = slot.length;
+    var v = VEC[dirOf(slot)], k = isOuter(slot) ? 2 : 1;
     return [v[0] * k, v[1] * k];
   }
 
@@ -124,8 +140,8 @@ var Lewis = (function () {
     return out;
   }
 
-  /* bonds touching one slot, as { other, order, side } — side is the side of
-     THIS atom the bond leaves from */
+  /* bonds touching one slot, as { other, order, side } — side is the
+     direction the bond leaves THIS atom in */
   function bondsOf(s, slot) {
     var out = [];
     if (slot === 'C') {
@@ -134,7 +150,7 @@ var Lewis = (function () {
     }
     var d = dirOf(slot), p = parentOf(slot);
     if (has(s, p)) out.push({ other: p, order: s.bo[slot] || 1, side: OPP[d] });
-    if (slot.length === 1 && has(s, d + d)) out.push({ other: d + d, order: s.bo[d + d] || 1, side: d });
+    if (isInner(slot) && has(s, slot + '2')) out.push({ other: slot + '2', order: s.bo[slot + '2'] || 1, side: d });
     return out;
   }
 
@@ -145,7 +161,11 @@ var Lewis = (function () {
   /* electrons around an atom: 2 for every bonding pair, 2 for every lone pair */
   function electrons(s, slot) { return 2 * (s.lp[slot] || 0) + 2 * bondSum(s, slot); }
 
+  /* what an OUTER atom needs: H a doublet, everything else an octet */
   function target(el) { return el === 'H' ? 2 : 8; }
+
+  /* bonds plus lone pairs an atom can be drawn with */
+  function maxDomains(el) { return ELEMENTS[el].period >= 3 ? 6 : 4; }
 
   function totalElectrons(s) {
     var n = 0;
@@ -158,36 +178,50 @@ var Lewis = (function () {
     return ELEMENTS[s.at[slot]].valence - 2 * (s.lp[slot] || 0) - bondSum(s, slot);
   }
 
-  /* Free sides of an atom, in the order lone pairs fill them. */
+  function steps(a, b) {
+    var i = Math.abs(DIRS.indexOf(a) - DIRS.indexOf(b));
+    return Math.min(i, 8 - i);
+  }
+
+  /* The directions an atom's lone pairs go in, in the order they fill:
+     each one as far as possible from the bonds and the pairs already there
+     (so one bond on the right puts the first pair on the left, then above,
+     then below). Only as many as the atom can hold. */
   function freeSides(s, slot) {
-    var taken = {};
-    bondsOf(s, slot).forEach(function (b) { taken[b.side] = 1; });
-    var order;
-    if (slot === 'C') {
-      var bs = bondsOf(s, slot);
-      order = bs.length === 1 ? [OPP[bs[0].side]].concat(PERP[bs[0].side]) : ['N', 'S', 'W', 'E'];
-    } else {
-      var d = dirOf(slot);
-      order = [d].concat(PERP[d]);
+    var el = s.at[slot];
+    var bs = bondsOf(s, slot);
+    var taken = bs.map(function (b) { return b.side; });
+    var limit = Math.max(0, (el ? maxDomains(el) : 4) - bs.length);
+    var pref = slot === 'C' ? PREF_CENTER : PREF_OUTER;
+    var order = [];
+    while (order.length < limit) {
+      var best = null, bestScore = -1;
+      pref.forEach(function (d) {
+        if (taken.indexOf(d) >= 0 || order.indexOf(d) >= 0) return;
+        var near = taken.concat(order);
+        var score = near.length ? Math.min.apply(null, near.map(function (x) { return steps(d, x); })) : 9;
+        if (score > bestScore) { best = d; bestScore = score; }
+      });
+      if (!best) break;
+      order.push(best);
     }
-    order = order.concat(DIRS.filter(function (x) { return order.indexOf(x) < 0; }));
-    return order.filter(function (x) { return !taken[x]; });
+    return order;
   }
 
   function roomFor(s, slot) { return freeSides(s, slot).length - (s.lp[slot] || 0); }
 
-  /* H atoms sitting on this outer atom */
+  /* an outer atom with an H on its far side (the O–H of an oxyacid) */
   function carriesH(s, slot) {
-    return slot.length === 1 && slot !== 'C' && s.at[slot + slot] === 'H';
+    return isInner(slot) && s.at[slot + '2'] === 'H';
   }
 
   /* Connectivity only: what is bonded to what. Two structures with the same
      signature are the same skeleton, wherever the atoms were placed. */
   function signature(s) {
     var inner = DIRS.filter(function (d) { return has(s, d); }).map(function (d) {
-      return s.at[d] + (has(s, d + d) ? '-' + s.at[d + d] : '');
+      return s.at[d] + (has(s, d + '2') ? '-' + s.at[d + '2'] : '');
     }).sort();
-    var stray = ['NN', 'EE', 'SS', 'WW'].filter(function (k) { return has(s, k) && !has(s, k[0]); });
+    var stray = DIRS.filter(function (d) { return has(s, d + '2') && !has(s, d); });
     return (s.at.C || '?') + '(' + inner.join(',') + ')' + (stray.length ? '+stray' : '');
   }
 
@@ -205,7 +239,7 @@ var Lewis = (function () {
       s.at[d] = a === 'OH' ? 'O' : a;
       s.lp[d] = 0;
       s.bo[d] = 1;
-      if (a === 'OH') { s.at[d + d] = 'H'; s.lp[d + d] = 0; s.bo[d + d] = 1; }
+      if (a === 'OH') { s.at[d + '2'] = 'H'; s.lp[d + '2'] = 0; s.bo[d + '2'] = 1; }
     });
     return s;
   }
@@ -241,8 +275,12 @@ var Lewis = (function () {
     var s4 = clone(s3), centerLP = left3 / 2;
     s4.lp.C += centerLP;
 
+    var after4 = electrons(s4, 'C');
+    var stable = ELEMENTS[sp.center].stable;            /* B 6, Be 4 */
+    var goal = stable || Math.max(8, after4);
+
     var s5 = clone(s4), moves = [];
-    while (electrons(s5, 'C') < 8) {
+    while (electrons(s5, 'C') < goal) {
       var d = pickCanonical(s5);
       if (!d) break;
       s5.lp[d] -= 1;
@@ -251,39 +289,46 @@ var Lewis = (function () {
     }
     return {
       total: v.total, valence: v, bonds: nb, used2: used2, left2: left2, outerLP: outerLP, left3: left3,
-      centerLP: centerLP, centerAfter4: electrons(s4, 'C'), moves: moves,
+      centerLP: centerLP, centerAfter4: after4, centerTarget: goal, moves: moves,
       s2: s2, s3: s3, s4: s4, s5: s5
     };
   }
 
   function canonical(sp) { return solve(sp).s5; }
 
+  /* How many electrons the central atom ends with: 6 for B, 4 for Be, else 8
+     — or more, if Rules 2 and 4 already gave it more. */
+  function centerTarget(sp) { return solve(sp).centerTarget; }
+
   /* Is a finished structure one the 5 rules allow? */
   function accepted(s, sp) {
     var problems = [];
     var want = skeleton(sp);
+    var goal = centerTarget(sp);
     if (signature(s) !== signature(want)) problems.push('skeleton');
     if (totalElectrons(s) !== valence(sp).total) problems.push('count');
     filled(s).forEach(function (k) {
       var e = electrons(s, k);
-      if (e !== target(s.at[k])) problems.push(k + ':' + e);
+      if (e !== (k === 'C' ? goal : target(s.at[k]))) problems.push(k + ':' + e);
     });
     return { ok: problems.length === 0, problems: problems };
   }
 
-  /* The central atom has more than 8 and sits in period 3 or below: the
-     expanded octet that this class treats as a looked-up answer. */
-  function expanded(s) {
-    return !!s.at.C && ELEMENTS[s.at.C].period >= 3 && electrons(s, 'C') > 8;
+  /* The looked-up answer: a central atom from period 3 or below with MORE
+     electrons than the rules give it — extra double bonds piled on by "Rule 5"
+     when it was not electron deficient. (SF₆'s 12 is not this: the rules give
+     S 12 there.) */
+  function expanded(s, sp) {
+    return !!s.at.C && ELEMENTS[s.at.C].period >= 3 && electrons(s, 'C') > centerTarget(sp);
   }
 
   /* Every finished structure Rule 5 can reach, taking a lone pair from ANY
      outer atom bonded to the center each time it runs. */
   function rule5Outcomes(sp) {
-    var start = solve(sp).s4, seen = {}, out = [];
+    var r = solve(sp), start = r.s4, goal = r.centerTarget, seen = {}, out = [];
     function key(s) { return JSON.stringify([s.lp, s.bo]); }
     (function walk(s) {
-      if (electrons(s, 'C') >= 8) {
+      if (electrons(s, 'C') >= goal) {
         var k = key(s);
         if (!seen[k]) { seen[k] = 1; out.push(s); }
         return;
@@ -307,7 +352,7 @@ var Lewis = (function () {
   /* A drawing for a quiz choice: the answer, or the answer changed on
      purpose.
        { expand: n }   n lone pairs on plain O atoms turned into bonds — the
-                       expanded-octet drawing a chatbot or a college book gives
+                       extra-double-bond drawing a chatbot or a college book gives
        { stage: 4 }    stop after Rule 4 (Rule 5 skipped)
        { set: { lp: {...}, bo: {...}, at: {...} } }  overwrite slots          */
   function variant(sp, mod) {
@@ -316,7 +361,7 @@ var Lewis = (function () {
     var s = clone(mod.stage === 4 ? r.s4 : mod.stage === 2 ? r.s2 : mod.stage === 3 ? r.s3 : r.s5);
     if (mod.expand) {
       var left = mod.expand;
-      ['N', 'S', 'E', 'W'].forEach(function (d) {
+      ['N', 'S', 'E', 'W', 'NE', 'SW', 'NW', 'SE'].forEach(function (d) {
         if (left && has(s, d) && s.at[d] === 'O' && !carriesH(s, d) && s.bo[d] === 1 && s.lp[d] > 0) {
           s.lp[d] -= 1; s.bo[d] += 1; left -= 1;
         }
@@ -341,7 +386,7 @@ var Lewis = (function () {
     var c = s.at.C;
     var parts = DIRS.filter(function (d) { return has(s, d); }).map(function (d) {
       var t = (ORDER[s.bo[d]] || s.bo[d] + '-fold') + ' bond to ' + s.at[d] + ' ' + WHERE[d] + ' it';
-      if (has(s, d + d)) t += ' (that ' + s.at[d] + ' also bonded to ' + s.at[d + d] + ')';
+      if (has(s, d + '2')) t += ' (that ' + s.at[d] + ' also bonded to ' + s.at[d + '2'] + ')';
       if (s.at[d] !== 'H' || s.lp[d]) t += ', ' + s.at[d] + ' with ' + pairs(s.lp[d] || 0);
       return t;
     });
@@ -350,7 +395,8 @@ var Lewis = (function () {
   }
 
   return {
-    DIRS: DIRS, VEC: VEC, OPP: OPP, SLOTS: SLOTS, WHERE: WHERE,
+    DIRS: DIRS, CARD: CARD, VEC: VEC, OPP: OPP, SLOTS: SLOTS, WHERE: WHERE,
+    isOuter: isOuter, isInner: isInner, dirOf: dirOf, maxDomains: maxDomains, centerTarget: centerTarget,
     parseFormula: parseFormula, display: display, chargeSup: chargeSup, chargeText: chargeText,
     species: species, valence: valence,
     parentOf: parentOf, pos: pos, empty: empty, clone: clone, has: has, filled: filled,

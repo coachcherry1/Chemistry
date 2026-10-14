@@ -5,9 +5,10 @@
  *
  * Exits non-zero if the activity would teach something that disagrees with
  * the 5 rules: a hand-written answer the rules don't produce, a species with
- * resonance, a central atom that is not the first one written, a quiz answer
- * that no longer matches the chemistry, a wrong drawing that the builder
- * would accept.
+ * resonance, a central atom that is not the first one written, a period-2
+ * atom with more than 8 electrons, an octet exception the rules don't
+ * explain, a quiz answer that no longer matches the chemistry, a wrong
+ * drawing that the builder would accept.
  */
 const fs = require('fs');
 const path = require('path');
@@ -48,7 +49,7 @@ for (const id of ids) {
   sp.parts.forEach((p) => { count[p.el] = (count[p.el] || 0) + p.n; });
   const placed = { [sp.center]: 1 };
   Object.keys(raw.layout).forEach((d) => {
-    if (!'NESW'.includes(d) || d.length !== 1) fail(`${id}: layout key ${d} is not N, E, S or W`);
+    if (Lewis.DIRS.indexOf(d) < 0) fail(`${id}: layout key ${d} is not one of ${Lewis.DIRS.join(' ')}`);
     const a = raw.layout[d];
     if (a === 'OH') { placed.O = (placed.O || 0) + 1; placed.H = (placed.H || 0) + 1; }
     else placed[a] = (placed[a] || 0) + 1;
@@ -82,19 +83,33 @@ for (const id of ids) {
   if (r.left2 < 0) fail(`${id}: not enough electrons for the single bonds`);
   if (r.left3 < 0) fail(`${id}: Rule 3 needs more electrons than there are`);
   if (r.left3 % 2) fail(`${id}: an odd number left for the central atom`);
-  if (r.centerAfter4 > 8) {
-    fail(`${id}: Rule 4 gives ${sp.center} ${r.centerAfter4} electrons — a legitimate expanded octet, which this activity leaves out`);
+  const P = ELEMENTS[sp.center].period;
+  if (r.centerAfter4 > 8 && P < 3) fail(`${id}: Rules 2 and 4 give period-2 ${sp.center} ${r.centerAfter4} electrons`);
+  if (r.bonds > 4 && P < 3 && Lewis.bondsOf(r.s2, 'C').length > 4) fail(`${id}: a period-2 central atom with more than four bonds`);
+  if (ELEMENTS[sp.center].stable && r.centerAfter4 !== ELEMENTS[sp.center].stable) {
+    fail(`${id}: ${sp.center} should end Rule 4 with ${ELEMENTS[sp.center].stable}, the rules give ${r.centerAfter4}`);
   }
+  if (!ELEMENTS[sp.center].stable && r.centerAfter4 < 8 && !r.moves.length) fail(`${id}: ${sp.center} is short and Rule 5 can't fix it`);
+  Object.keys(ELEMENTS).forEach((e) => {
+    if (ELEMENTS[e].stable && e !== sp.center && count[e]) fail(`${id}: ${e} as an outer atom — its exception only makes sense in the center`);
+  });
   const fin = r.s5;
   const acc = Lewis.accepted(fin, sp);
   if (!acc.ok) fail(`${id}: the rules' own answer is not accepted (${acc.problems.join(', ')})`);
-  if (Lewis.electrons(fin, 'C') !== 8) fail(`${id}: central atom ends with ${Lewis.electrons(fin, 'C')}`);
+  if (Lewis.electrons(fin, 'C') !== r.centerTarget) fail(`${id}: central atom ends with ${Lewis.electrons(fin, 'C')}, not ${r.centerTarget}`);
+  if (r.centerTarget > 8 && r.moves.length) fail(`${id}: Rule 5 ran on an atom that already had more than 8`);
   Lewis.filled(fin).forEach((k) => {
     const e = Lewis.electrons(fin, k);
     if (ELEMENTS[fin.at[k]].period === 2 && e > 8) fail(`${id}: ${fin.at[k]} in ${k} has ${e}`);
     if (Lewis.roomFor(fin, k) < 0) fail(`${id}: ${fin.at[k]} in ${k} has more lone pairs than free sides`);
   });
-  if (Lewis.expanded(fin)) fail(`${id}: the answer expands the octet`);
+  if (Lewis.expanded(fin, sp)) fail(`${id}: the answer has more electrons on ${sp.center} than the rules give`);
+  /* every step of the build can be drawn */
+  for (const [n, s] of [['Rule 2', r.s2], ['Rule 3', r.s3], ['Rule 4', r.s4], ['Rule 5', r.s5]]) {
+    Lewis.filled(s).forEach((k) => {
+      if (Lewis.roomFor(s, k) < 0) fail(`${id}: after ${n}, ${s.at[k]} in ${k} has more lone pairs than can be drawn`);
+    });
+  }
 
   /* the hand-written key */
   const bo = Lewis.DIRS.filter((d) => fin.at[d]).map((d) => fin.bo[d]).sort((a, b) => b - a).join('');
@@ -135,12 +150,16 @@ for (const k of Object.keys(POOLS)) {
   if (!POOLS[k].ids.length) fail(`pool ${k} is empty`);
   for (const id of POOLS[k].ids) if (!SPECIES[id]) fail(`pool ${k}: unknown species ${id}`);
 }
-const ionPool = POOLS.ion.ids.map((id) => Lewis.species(id));
-if (!ionPool.every((sp) => sp.ion && !sp.acid)) fail('the oxyanion pool holds something that is not a plain oxyanion');
-const acidPool = POOLS.acid.ids.map((id) => Lewis.species(id));
-if (!acidPool.every((sp) => sp.acid)) fail('the oxyacid pool holds something that is not an oxyacid');
-const multiPool = POOLS.multi.ids.map((id) => Lewis.species(id));
-if (!multiPool.every((sp) => Lewis.solve(sp).moves.length > 0)) fail('the multiple-bond pool holds something without a multiple bond');
+const mixPool = POOLS.mix.ids.map((id) => Lewis.species(id));
+if (!mixPool.every((sp) => Lewis.solve(sp).centerTarget === 8)) fail('the mixed pool holds an octet exception');
+if (!mixPool.some((sp) => Lewis.solve(sp).moves.length)) fail('the mixed pool has nothing with a multiple bond');
+const excPool = POOLS.exc.ids.map((id) => Lewis.species(id));
+if (!excPool.every((sp) => Lewis.solve(sp).centerTarget !== 8)) fail('the exceptions pool holds something with a plain octet');
+if (!excPool.some((sp) => Lewis.solve(sp).centerTarget < 8) || !excPool.some((sp) => Lewis.solve(sp).centerTarget > 8)) {
+  fail('the exceptions pool should hold both kinds of exception');
+}
+const part4 = App.STEPS.filter((s) => s.part === 4 && s.sp).map((s) => Lewis.solve(Lewis.species(s.sp)));
+if (!part4.some((r) => r.centerTarget < 8) || !part4.some((r) => r.centerTarget > 8)) fail('Part 4 should build both kinds of exception');
 
 /* ---------------------------------------------------------------- quizzes */
 
@@ -150,6 +169,7 @@ const FACT = {
   clp: (sp) => Lewis.solve(sp).s5.lp.C,
   after4: (sp) => Lewis.solve(sp).centerAfter4,
   center: (sp) => sp.center,
+  centerE: (sp) => Lewis.electrons(Lewis.solve(sp).s5, 'C'),
   bo: (sp, slot) => Lewis.solve(sp).s5.bo[slot]
 };
 
@@ -191,6 +211,7 @@ for (const k of Object.keys(QUIZZES)) {
         if (Lewis.roomFor(s, k2) < 0) fail(`${q.id}: choice ${i} has more lone pairs on ${k2} than can be drawn`);
       });
       if (i > 0 && JSON.stringify(s) === JSON.stringify(Lewis.canonical(sp))) fail(`${q.id}: choice ${i} draws the correct answer`);
+      if (i === 0 && Lewis.expanded(s, sp)) fail(`${q.id}: the correct drawing would trigger the anti-AI message`);
     });
     const drawings = q.choices.filter((c) => typeof c !== 'string').map((c) => JSON.stringify(Lewis.variant(Lewis.species(c.lewis), c.mod)));
     if (new Set(drawings).size !== drawings.length) fail(`${q.id}: two drawings are the same`);
@@ -206,12 +227,12 @@ if (graded !== App.GRADED) fail(`GRADED is ${App.GRADED} but the checkpoints dra
 
 for (const k of ['first', 'quiz', 'again', 'cheer']) if (!SNARK[k] || !SNARK[k].length) fail(`SNARK.${k} is empty`);
 for (const line of SNARK.again.concat(SNARK.quiz, SNARK.cheer)) {
-  if (/\{[XF]\}/.test(line)) fail(`a snark line that can show up without a species uses {X} or {F}: "${line.slice(0, 40)}…"`);
+  if (/\{[XFe]\}/.test(line)) fail(`a snark line that can show up without a species uses {X}, {F} or {e}: "${line.slice(0, 40)}…"`);
 }
 
 /* ------------------------------------------------- suspend_data headroom */
 
-const big = { v: 1, seed: 999999999, step: 16, max: 16, draws: {}, pool: { ion: 'H2PO4', acid: 'H2PO4', multi: 'H2CO3' },
+const big = { v: 2, seed: 999999999, step: 20, max: 20, draws: {}, pool: { mix: 'H2PO4', exc: 'BeCl2' },
   ans: {}, pick: {}, done: {}, fin: 1 };
 for (const k of Object.keys(QUIZZES)) {
   big.draws[k] = QUIZZES[k].pool.slice(0, QUIZZES[k].draw).map((q) => q.id);

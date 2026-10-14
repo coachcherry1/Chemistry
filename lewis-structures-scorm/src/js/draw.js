@@ -31,33 +31,41 @@ var Draw = (function () {
 
   function tone(sym) { return 'el-' + sym.toLowerCase(); }
 
+  /* unit vector for one of the eight directions */
+  function unit(dir) {
+    var v = Lewis.VEC[dir], n = Math.sqrt(v[0] * v[0] + v[1] * v[1]);
+    return [v[0] / n, v[1] / n];
+  }
+
+  /* distance from an atom's center to the edge of a box around its symbol,
+     along u — a box, not an ellipse, so a pair on a diagonal clears the
+     corner of a two-letter symbol like Xe */
+  function reach(u, a, b) {
+    var x = Math.abs(u[0]) > 1e-9 ? a / Math.abs(u[0]) : Infinity;
+    var y = Math.abs(u[1]) > 1e-9 ? b / Math.abs(u[1]) : Infinity;
+    return Math.min(x, y);
+  }
+
   /* where the two dots of a lone pair sit, on one side of an atom */
   function pairDots(slot, side, sym) {
-    var c = xy(slot), hw = halfW(sym), x = c[0], y = c[1];
-    if (side === 'N') return [[x - 5, y - 18], [x + 5, y - 18]];
-    if (side === 'S') return [[x - 5, y + 18], [x + 5, y + 18]];
-    if (side === 'E') return [[x + hw + 7, y - 5], [x + hw + 7, y + 5]];
-    return [[x - hw - 7, y - 5], [x - hw - 7, y + 5]];
+    var c = xy(slot), u = unit(side), r = reach(u, halfW(sym) + 7, 18);
+    var m = [c[0] + u[0] * r, c[1] + u[1] * r], perp = [-u[1], u[0]];
+    return [[m[0] - 5 * perp[0], m[1] - 5 * perp[1]], [m[0] + 5 * perp[0], m[1] + 5 * perp[1]]];
   }
 
   function bondLines(s, b, cls) {
     var a = xy(b.a), z = xy(b.b);
     var symA = s.at[b.a], symZ = s.at[b.b];
-    var horiz = a[1] === z[1];
+    var dx = z[0] - a[0], dy = z[1] - a[1], len = Math.sqrt(dx * dx + dy * dy);
+    var u = [dx / len, dy / len], perp = [-u[1], u[0]];
+    var ra = reach(u, halfW(symA) + 4, 14), rz = reach(u, halfW(symZ) + 4, 14);
     var g = el('g', { class: 'bond' + (cls ? ' ' + cls : ''), 'data-bond': b.key });
     var offs = b.order === 1 ? [0] : b.order === 2 ? [-3.6, 3.6] : b.order === 3 ? [-6, 0, 6] : [-8, -2.7, 2.7, 8];
     offs.forEach(function (o) {
-      var x1, y1, x2, y2;
-      if (horiz) {
-        var sg = z[0] > a[0] ? 1 : -1;
-        x1 = a[0] + sg * (halfW(symA) + 4); x2 = z[0] - sg * (halfW(symZ) + 4);
-        y1 = y2 = a[1] + o;
-      } else {
-        var sv = z[1] > a[1] ? 1 : -1;
-        y1 = a[1] + sv * 14; y2 = z[1] - sv * 14;
-        x1 = x2 = a[0] + o;
-      }
-      g.appendChild(el('line', { x1: x1, y1: y1, x2: x2, y2: y2 }));
+      g.appendChild(el('line', {
+        x1: a[0] + u[0] * ra + perp[0] * o, y1: a[1] + u[1] * ra + perp[1] * o,
+        x2: z[0] - u[0] * rz + perp[0] * o, y2: z[1] - u[1] * rz + perp[1] * o
+      }));
     });
     return g;
   }
@@ -131,12 +139,13 @@ var Draw = (function () {
       if (Lewis.has(s, k)) return;
       var p = xy(k);
       var g = el('g', { class: 'drop slot' + (k === 'C' ? ' center' : ''), 'data-drop': k, tabindex: 0, role: 'button',
-        'aria-label': k === 'C' ? 'Central atom position' : 'Empty position ' + Lewis.WHERE[k[0]] + ' ' + (k.length === 1 ? 'the central atom' : 'the ' + s.at[k[0]]) });
+        'aria-label': k === 'C' ? 'Central atom position' : 'Empty position ' + Lewis.WHERE[Lewis.dirOf(k)] + ' ' +
+          (Lewis.isInner(k) ? 'the central atom' : 'the ' + s.at[Lewis.parentOf(k)]) });
       g.appendChild(el('circle', { class: 'slot-ring', cx: p[0], cy: p[1], r: k === 'C' ? 24 : 19 }));
       g.appendChild(el('text', { class: 'slot-plus', x: p[0], y: p[1], text: '+' }));
       if (k === 'C') g.appendChild(el('text', { class: 'slot-cap', x: p[0], y: p[1] + 40, text: 'center' }));
-      if (k.length === 2) {
-        var q = xy(k[0]);
+      if (Lewis.isOuter(k)) {
+        var q = xy(Lewis.parentOf(k));
         g.appendChild(el('line', { class: 'slot-link', x1: (p[0] + q[0]) / 2 + (p[0] - q[0]) * 0.18, y1: (p[1] + q[1]) / 2 + (p[1] - q[1]) * 0.18,
           x2: (p[0] + q[0]) / 2 - (p[0] - q[0]) * 0.18, y2: (p[1] + q[1]) / 2 - (p[1] - q[1]) * 0.18 }));
       } else if (k !== 'C' && Lewis.has(s, 'C')) {
@@ -159,10 +168,8 @@ var Draw = (function () {
           g.setAttribute('tabindex', 0);
           g.setAttribute('role', 'button');
           g.setAttribute('aria-label', opts.lpLabel ? opts.lpLabel(k) : 'Lone pair on ' + s.at[k]);
-          var horiz = sides[i] === 'N' || sides[i] === 'S';
           var mx = (dots[0][0] + dots[1][0]) / 2, my = (dots[0][1] + dots[1][1]) / 2;
-          g.appendChild(el('rect', { class: 'lp-hit', x: mx - (horiz ? 12 : 8), y: my - (horiz ? 8 : 12),
-            width: horiz ? 24 : 16, height: horiz ? 16 : 24, rx: 6 }));
+          g.appendChild(el('circle', { class: 'lp-hit', cx: mx, cy: my, r: 11 }));
         }
         dots.forEach(function (d) { g.appendChild(el('circle', { class: 'dot', cx: d[0], cy: d[1], r: 2.7 })); });
         root.appendChild(g);

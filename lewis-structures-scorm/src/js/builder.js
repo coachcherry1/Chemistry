@@ -15,8 +15,12 @@
  *
  * Any finished structure where every atom has its octet (H its doublet) is
  * accepted — in HNO₂, H₂CO₃ and CO₂ Rule 5 can take its pair from more than
- * one oxygen. What is never accepted is a central atom with more than 8: a
- * period-2 atom gets told it can't; a period-3-or-below atom gets SNARK.
+ * one oxygen. The central atom is "full" at what the rules give it
+ * (Lewis.centerTarget): 8; or 6 for B and 4 for Be, the incomplete-octet
+ * exceptions; or more than 8 when Rules 2 and 4 already put more on a
+ * period-3-or-below atom (SF₆, XeF₄). Rule 5 can never push it past that:
+ * B or Be gets reminded it is an exception, a period-2 atom gets told it
+ * can't hold more than 8, and a period-3-or-below atom gets SNARK.
  */
 
 var RULES = [
@@ -25,15 +29,20 @@ var RULES = [
                  'and connect all atoms with single bonds.',
     note: 'Oxyacid? Each H bonds to an O, not to the central atom.' },
   { n: 3, title: 'Fill the octets of the external atoms — not H, which is stable with a doublet.' },
-  { n: 4, title: 'Place ANY remaining electrons on the central atom.' },
+  { n: 4, title: 'Place ANY remaining electrons on the central atom.',
+    note: 'Period 3 or below? The central atom can end up with more than 8 — an expanded octet.' },
   { n: 5, title: 'If the central atom is electron deficient, use lone pairs of electrons to create double ' +
-                 'and triple bonds.' }
+                 'and triple bonds.',
+    note: 'Exceptions: B is stable with 6 electrons and Be with 4 — they are not electron deficient.' }
 ];
 
 function Builder(o) {
   'use strict';
   var h = UI.h;
   var sp = o.sp, sol = Lewis.solve(sp), X = sp.center, V = Lewis.valence(sp);
+  var GOAL = sol.centerTarget;                 /* 8; 6 for B, 4 for Be; more when Rules 2 and 4 give more */
+  var STABLE = ELEMENTS[X].stable;             /* B 6, Be 4 */
+  var EXPANDED = sol.centerAfter4 > 8;         /* SF₆, XeF₄, PCl₅ ... */
   var showAfter = o.showAfter || 2;
 
   var rule = 1, phase = '1';
@@ -90,7 +99,7 @@ function Builder(o) {
 
   function where(k) {
     if (k === 'C') return 'in the center';
-    return Lewis.WHERE[k[0]] + (k.length === 1 ? ' the central atom' : ' the ' + s.at[k[0]]);
+    return Lewis.WHERE[Lewis.dirOf(k)] + (Lewis.isInner(k) ? ' the central atom' : ' the ' + s.at[Lewis.parentOf(k)]);
   }
 
   function miss(key) { misses[key] = (misses[key] || 0) + 1; paintShow(); return misses[key]; }
@@ -151,7 +160,7 @@ function Builder(o) {
   function dropSlots() {
     if (!s.at.C) return ['C'];
     var out = Lewis.DIRS.filter(function (d) { return !s.at[d]; });
-    Lewis.DIRS.forEach(function (d) { if (s.at[d] && s.at[d] !== 'H' && !s.at[d + d]) out.push(d + d); });
+    Lewis.DIRS.forEach(function (d) { if (s.at[d] && s.at[d] !== 'H' && !s.at[d + '2']) out.push(d + '2'); });
     return out;
   }
 
@@ -183,7 +192,7 @@ function Builder(o) {
       /* every lone pair can be clicked in Rule 5, but they only light up when
          the central atom actually needs one — an honest student is not
          invited to expand an octet */
-      if (phase === '5b') { d.lps = all; if (Lewis.electrons(s, 'C') < 8) d.cls = 'share'; }
+      if (phase === '5b') { d.lps = all; if (Lewis.electrons(s, 'C') < GOAL) d.cls = 'share'; }
     }
     canvas.innerHTML = '';
     canvas.appendChild(phase === '1' ? Builder.formulaBig(sp) : Draw.structure(s, d));
@@ -221,7 +230,7 @@ function Builder(o) {
   }
 
   function unplace(k) {
-    [k, k.length === 1 ? k + k : null].forEach(function (x) {
+    [k, Lewis.isInner(k) ? k + '2' : null].forEach(function (x) {
       if (!x || !s.at[x]) return;
       atoms.forEach(function (t) { if (t.slot === x) t.slot = null; });
       delete s.at[x]; delete s.lp[x]; delete s.bo[x];
@@ -259,7 +268,7 @@ function Builder(o) {
       }
       if (!s.at.C) { say('Start with the central atom: drop it on the center spot.'); return; }
       if (s.at[slot]) { say('That spot is taken. Click the atom there to send it back first.'); return; }
-      if (slot.length === 2 && !s.at[slot[0]]) return;
+      if (Lewis.isOuter(slot) && !s.at[Lewis.parentOf(slot)]) return;
       place(t, slot);
       say('');
       paint();
@@ -284,8 +293,9 @@ function Builder(o) {
       return;
     }
     flags = {};
-    var outerNonH = ['NN', 'EE', 'SS', 'WW'].filter(function (k) { return s.at[k] && s.at[k] !== 'H'; });
-    var outerH = ['NN', 'EE', 'SS', 'WW'].filter(function (k) { return s.at[k] === 'H'; });
+    var OUTER = Lewis.DIRS.map(function (d) { return d + '2'; });
+    var outerNonH = OUTER.filter(function (k) { return s.at[k] && s.at[k] !== 'H'; });
+    var outerH = OUTER.filter(function (k) { return s.at[k] === 'H'; });
     var innerH = Lewis.DIRS.filter(function (d) { return s.at[d] === 'H'; });
     miss('2b');
     if (outerNonH.length) {
@@ -354,11 +364,13 @@ function Builder(o) {
       say('Rule 5 shares a lone pair from an OUTER atom. ' + X + '’s own lone pairs stay where they are.');
       return;
     }
-    if (k.length === 2) { say('Only an atom bonded straight to ' + X + ' can share a pair with it.'); return; }
+    if (Lewis.isOuter(k)) { say('Only an atom bonded straight to ' + X + ' can share a pair with it.'); return; }
     var e = Lewis.electrons(s, 'C');
-    if (e + 2 > 8) {
+    if (e >= GOAL) {
       miss('5b');
-      if (ELEMENTS[X].period >= 3) say(o.snark(sp), 'snark');
+      if (STABLE) say(X + ' is one of the exceptions: it is stable with ' + STABLE + ' electrons, so it is not ' +
+                      'electron deficient and Rule 5 does not apply. No double bonds to ' + X + '.', 'bad');
+      else if (ELEMENTS[X].period >= 3) say(o.snark(sp, e), 'snark');
       else say('That would give ' + X + ' ' + (e + 2) + ' electrons. ' + X + ' is in period 2 and can never have ' +
                'more than 8.', 'bad');
       return;
@@ -370,8 +382,9 @@ function Builder(o) {
     paint();
     /* not finished automatically: the student looks at the result, then
        presses Done — or takes the bond back to try a different lone pair */
-    if (Lewis.electrons(s, 'C') >= 8) {
-      say(X + ' now has 8 — no longer electron deficient. Press Done, or “Undo last bond” to try a different lone pair.', 'good');
+    if (Lewis.electrons(s, 'C') >= GOAL) {
+      say(X + ' now has ' + GOAL + ' — no longer electron deficient. Press Done, or “Undo last bond” to try a ' +
+          'different lone pair.', 'good');
     } else {
       say(X + ' now has ' + Lewis.electrons(s, 'C') + '. Still short — share another pair.', '');
     }
@@ -528,10 +541,13 @@ function Builder(o) {
     else if (phase === '4') t = 'Click the central atom to give it the ' + plural(tally.left3, 'leftover electron') +
       (tally.left3 ? ' as lone pairs.' : '. Nothing left? Then Rule 4 has nothing to do — press Check.');
     else if (phase === '5a') t = 'Count the electrons around ' + X + ': 2 for every bond line touching it, 2 for every lone pair on it.';
-    else if (phase === '5b') t = Lewis.electrons(after4, 'C') < 8
+    else if (phase === '5b') t = Lewis.electrons(after4, 'C') < GOAL
       ? 'Click a lone pair on an outer atom to share it with ' + X + ' as a bond. Each pair you share gives ' + X +
         ' 2 more electrons. Changed your mind? “Undo last bond” takes the last one back. Press Done when ' + X +
-        ' has 8.'
+        ' has ' + GOAL + '.'
+      : STABLE ? X + ' is one of the exceptions — stable with ' + STABLE + ' electrons. Nothing to fix: press Done.'
+      : EXPANDED ? X + ' has ' + sol.centerAfter4 + ' — an expanded octet, straight from the rules. It is not ' +
+        'electron deficient, so there is nothing to fix: press Done.'
       : X + ' has its octet. If there is nothing to fix, press Done.';
     howTo.textContent = t;
   }
@@ -704,13 +720,27 @@ function Builder(o) {
     setHow();
     buildForm();
     paint();
-    if (e === 8) say('Right — ' + X + ' has 8. It is not electron deficient.', 'good');
-    else say('Right — ' + X + ' has only ' + e + ', so it is electron deficient: it needs ' + (8 - e) + ' more.', 'good');
+    if (e >= GOAL) say('Right — ' + X + ' has ' + e + '. ' + whyFull(e), 'good');
+    else say('Right — ' + X + ' has only ' + e + ', so it is electron deficient: it needs ' + (GOAL - e) + ' more.', 'good');
+  }
+
+  /* why the central atom counts as full at e electrons */
+  function whyFull(e) {
+    if (STABLE) return X + ' is one of the exceptions: it is stable with ' + STABLE + ' electrons, so it is not ' +
+      'electron deficient.';
+    if (e > 8) return 'More than 8 is fine here: ' + expandedWhy() + ', and ' + X + ' is in period ' +
+      ELEMENTS[X].period + ', so it can hold an expanded octet. It is not electron deficient.';
+    return 'It is not electron deficient.';
+  }
+
+  function expandedWhy() {
+    var nb = Lewis.bondsOf(after4 || s, 'C').length;
+    return nb > 4 ? 'Rule 2 gave ' + X + ' ' + nb + ' bonds' : 'Rule 4 put the leftover electrons on ' + X;
   }
 
   function check5b() {
     var e = Lewis.electrons(s, 'C');
-    if (e < 8) {
+    if (e < GOAL) {
       miss('5b');
       say(X + ' still has only ' + e + ' electrons — it is electron deficient. Rule 5: click a lone pair on an outer ' +
           'atom to share it as a bond.', 'bad');
@@ -768,13 +798,13 @@ function Builder(o) {
     } else if (phase === '5b') {
       s = Lewis.clone(after4);
       shared = [];
-      for (var d = Lewis.pickCanonical(s); d && Lewis.electrons(s, 'C') < 8; d = Lewis.pickCanonical(s)) {
+      for (var d = Lewis.pickCanonical(s); d && Lewis.electrons(s, 'C') < GOAL; d = Lewis.pickCanonical(s)) {
         s.lp[d] -= 1;
         s.bo[d] += 1;
         shared.push(d);
       }
-      say(r.moves.length ? 'Lone pairs from the outer atoms became bonds until ' + X + ' had 8. Press Done.'
-        : X + ' already had 8, so there is nothing to change. Press Done.');
+      say(r.moves.length ? 'Lone pairs from the outer atoms became bonds until ' + X + ' had ' + GOAL + '. Press Done.'
+        : X + ' already had ' + GOAL + ', so there is nothing to change. Press Done.');
     }
     paint();
   });
@@ -783,10 +813,15 @@ function Builder(o) {
 
   function bondSummary() {
     var multi = Lewis.DIRS.filter(function (d) { return s.at[d] && s.bo[d] > 1; }).map(function (d) { return s.bo[d]; });
-    if (!multi.length) return X + ' had its octet after Rule 4, so Rule 5 had nothing to do.';
+    if (!multi.length) {
+      if (STABLE) return X + ' is stable with ' + STABLE + ' electrons — one of the exceptions — so Rule 5 had nothing to do.';
+      if (EXPANDED) return X + ' ends with ' + sol.centerAfter4 + ' electrons, an expanded octet: ' + expandedWhy() +
+        '. Rule 5 had nothing to do.';
+      return X + ' had its octet after Rule 4, so Rule 5 had nothing to do.';
+    }
     var words = multi.map(function (b) { return b === 2 ? 'a double bond' : 'a triple bond'; });
     if (multi.length === 2 && multi[0] === multi[1]) words = [multi[0] === 2 ? 'two double bonds' : 'two triple bonds'];
-    return 'Rule 5 made ' + words.join(' and ') + ', and ' + X + ' has 8.';
+    return 'Rule 5 made ' + words.join(' and ') + ', and ' + X + ' has ' + GOAL + '.';
   }
 
   function finish(quiet) {

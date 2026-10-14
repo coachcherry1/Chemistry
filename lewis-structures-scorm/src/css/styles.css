@@ -30,6 +30,9 @@
   --e-s:  #8a6d00;
   --e-br: #9a2f24;
   --e-i:  #7a3a9e;
+  --e-b:  #a0522d;
+  --e-be: #4f7a28;
+  --e-xe: #1b7f8c;
   --radius:  8px;
 }
 
@@ -62,6 +65,9 @@
     --e-s:  #e3c14b;
     --e-br: #e0786c;
     --e-i:  #c08ae0;
+    --e-b:  #e3a072;
+    --e-be: #a6d47a;
+    --e-xe: #5fd0dc;
   }
 }
 :root[data-theme="dark"] {
@@ -70,6 +76,7 @@
   --snark: #d3a6ff; --snark-bg: #2a1a3c; --note-bg: #16283a; --warn-bg: #33270d; --warn: #f2c46b;
   --e-h: #b3c2ce; --e-c: #e6edf3; --e-n: #79a3f2; --e-o: #f2766f; --e-f: #7fd38a; --e-cl: #5fcf8f;
   --e-p: #f39a6b; --e-s: #e3c14b; --e-br: #e0786c; --e-i: #c08ae0;
+  --e-b: #e3a072; --e-be: #a6d47a; --e-xe: #5fd0dc;
 }
 
 * { box-sizing: border-box; }
@@ -299,6 +306,9 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .el-s { color: var(--e-s); }
 .el-br { color: var(--e-br); }
 .el-i { color: var(--e-i); }
+.el-b { color: var(--e-b); }
+.el-be { color: var(--e-be); }
+.el-xe { color: var(--e-xe); }
 
 .atom-ring { fill: transparent; stroke: none; }
 .atom.active, .atom.drop { cursor: pointer; }

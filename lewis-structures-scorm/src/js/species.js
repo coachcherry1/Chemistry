@@ -3,9 +3,10 @@
  *   formula  written the way students see it; the central atom is worked out
  *            from it by Rule 2 (the first atom written, not counting H)
  *   charge   0 for a molecule
- *   layout   where the other atoms sit in the drawn answer: W, E, N, S around
- *            the central atom. 'OH' is an oxygen with its H on the outside —
- *            in an oxyacid every H bonds to an O, never to the central atom.
+ *   layout   where the other atoms sit in the drawn answer: N, NE, E, SE, S,
+ *            SW, W, NW around the central atom. 'OH' is an oxygen with its H
+ *            on the outside — in an oxyacid every H bonds to an O, never to
+ *            the central atom.
  *   key      the answer, written by hand so tools/validate.js can check that
  *            the 5-rule engine (lewis.js) gets the same thing:
  *              e    total valence electrons
@@ -14,10 +15,17 @@
  *   note     shown when the student finishes the build (optional)
  *
  * Every species here was chosen so the 5 rules give ONE structure: no
- * resonance (no O₃, CO₃²⁻, NO₃⁻, NO₂⁻, HNO₃, HCO₃⁻, SO₂, SO₃, SCN⁻), no boron
- * (it stops at 6), and nothing where Rule 4 legitimately gives the central
- * atom more than 8 (SF₄, XeF₄, PCl₅) — so "more than 8 is wrong" stays true
- * for the whole activity. tools/validate.js enforces all three.
+ * resonance (no O₃, CO₃²⁻, NO₃⁻, NO₂⁻, HNO₃, HCO₃⁻, SO₂, SO₃, SCN⁻).
+ *
+ * Octet exceptions (Part 4 and the second Part 5 pool) come straight out of
+ * the 5 rules: B and Be are stable with 6 and 4 electrons, so Rule 5 leaves
+ * them alone (BF₃, BeF₂); and a period-3-or-below central atom keeps every
+ * electron Rules 2 and 4 give it, even past 8 (SF₆ from six bonds, XeF₄ from
+ * leftover lone pairs). A period-2 central atom never goes past 8, and Rule 5
+ * never takes any atom past what the rules give it. tools/validate.js
+ * enforces all of this. Five-domain species with three lone pairs or two
+ * lone pairs and three bonds (XeF₂, ClF₃, I₃⁻) are left out: in a flat
+ * drawing two of their lone pairs always end up crowded together.
  */
 
 var SPECIES = {
@@ -64,7 +72,25 @@ var SPECIES = {
            note: 'N is in period 2 and had only 6 electrons after Rule 4, so Rule 5 made one N=O double ' +
                  'bond.' },
 
-  /* ---- Part 4 pools: oxyanions */
+  /* ---- Part 4: exceptions to the octet */
+  BF3:   { formula: 'BF3', charge: 0, name: 'boron trifluoride',
+           layout: { W: 'F', E: 'F', S: 'F' }, key: { e: 24, bo: '111', clp: 0 },
+           note: 'B ends with only 6 electrons: three single bonds and no lone pairs. B is one of the exceptions — ' +
+                 'it is stable with 6 — so it is not electron deficient, and Rule 5 leaves it alone.' },
+  BeF2:  { formula: 'BeF2', charge: 0, name: 'beryllium fluoride',
+           layout: { W: 'F', E: 'F' }, key: { e: 16, bo: '11', clp: 0 },
+           note: 'Be ends with just 4 electrons: two single bonds. Be is the other exception — it is stable with 4 — ' +
+                 'so Rule 5 has nothing to fix.' },
+  SF6:   { formula: 'SF6', charge: 0, name: 'sulfur hexafluoride',
+           layout: { W: 'F', E: 'F', NW: 'F', NE: 'F', SW: 'F', SE: 'F' }, key: { e: 48, bo: '111111', clp: 0 },
+           note: 'S ends with 12 electrons, because Rule 2 gave it six single bonds. That is an expanded octet: an ' +
+                 'atom in period 3 or below can hold more than 8. Rule 5 never ran — S was never short.' },
+  XeF4:  { formula: 'XeF4', charge: 0, name: 'xenon tetrafluoride',
+           layout: { N: 'F', E: 'F', S: 'F', W: 'F' }, key: { e: 36, bo: '1111', clp: 2 },
+           note: 'Rule 4 put the 4 leftover electrons on Xe as two lone pairs, so Xe ends with 12 — an expanded ' +
+                 'octet. Xe is in period 5, so it can hold them.' },
+
+  /* ---- Part 5 pools: oxyanions */
   PO4:   { formula: 'PO4', charge: -3, name: 'phosphate ion',
            layout: { W: 'O', E: 'O', N: 'O', S: 'O' }, key: { e: 32, bo: '1111', clp: 0 } },
   SO3:   { formula: 'SO3', charge: -2, name: 'sulfite ion',
@@ -78,7 +104,7 @@ var SPECIES = {
   IO4:   { formula: 'IO4', charge: -1, name: 'periodate ion',
            layout: { W: 'O', E: 'O', N: 'O', S: 'O' }, key: { e: 32, bo: '1111', clp: 0 } },
 
-  /* ---- Part 4 pools: oxyacids */
+  /* ---- Part 5 pools: oxyacids */
   H3PO4: { formula: 'H3PO4', charge: 0, name: 'phosphoric acid',
            layout: { W: 'OH', E: 'OH', S: 'OH', N: 'O' }, key: { e: 32, bo: '1111', clp: 0 } },
   H2SO3: { formula: 'H2SO3', charge: 0, name: 'sulfurous acid',
@@ -92,7 +118,7 @@ var SPECIES = {
   H2PO4: { formula: 'H2PO4', charge: -1, name: 'dihydrogen phosphate ion',
            layout: { W: 'OH', E: 'OH', N: 'O', S: 'O' }, key: { e: 32, bo: '1111', clp: 0 } },
 
-  /* ---- Part 4 pools: multiple bonds */
+  /* ---- Part 5 pools: multiple bonds */
   H2CO3: { formula: 'H2CO3', charge: 0, name: 'carbonic acid',
            layout: { W: 'OH', E: 'OH', N: 'O' }, key: { e: 24, bo: '211', clp: 0 } },
   CO:    { formula: 'CO', charge: 0, name: 'carbon monoxide',
@@ -101,6 +127,20 @@ var SPECIES = {
            layout: { E: 'N' }, key: { e: 10, bo: '3', clp: 1 } },
   CO2:   { formula: 'CO2', charge: 0, name: 'carbon dioxide',
            layout: { W: 'O', E: 'O' }, key: { e: 16, bo: '22', clp: 0 } },
+
+  /* ---- Part 5 pools: exceptions */
+  BCl3:  { formula: 'BCl3', charge: 0, name: 'boron trichloride',
+           layout: { W: 'Cl', E: 'Cl', S: 'Cl' }, key: { e: 24, bo: '111', clp: 0 } },
+  BeCl2: { formula: 'BeCl2', charge: 0, name: 'beryllium chloride',
+           layout: { W: 'Cl', E: 'Cl' }, key: { e: 16, bo: '11', clp: 0 } },
+  PCl5:  { formula: 'PCl5', charge: 0, name: 'phosphorus pentachloride',
+           layout: { N: 'Cl', W: 'Cl', E: 'Cl', SW: 'Cl', SE: 'Cl' }, key: { e: 40, bo: '11111', clp: 0 } },
+  SF4:   { formula: 'SF4', charge: 0, name: 'sulfur tetrafluoride',
+           layout: { W: 'F', E: 'F', NW: 'F', NE: 'F' }, key: { e: 34, bo: '1111', clp: 1 } },
+  ICl4:  { formula: 'ICl4', charge: -1, name: 'tetrachloroiodate ion',
+           layout: { N: 'Cl', E: 'Cl', S: 'Cl', W: 'Cl' }, key: { e: 36, bo: '1111', clp: 2 } },
+  PF6:   { formula: 'PF6', charge: -1, name: 'hexafluorophosphate ion',
+           layout: { W: 'F', E: 'F', NW: 'F', NE: 'F', SW: 'F', SE: 'F' }, key: { e: 48, bo: '111111', clp: 0 } },
 
   /* ---- used only in checkpoint questions */
   NF3:   { formula: 'NF3', charge: 0, name: 'nitrogen trifluoride',
@@ -115,10 +155,12 @@ var SPECIES = {
            layout: { W: 'O', E: 'O', S: 'O' }, key: { e: 26, bo: '111', clp: 1 } }
 };
 
-/* Part 4 ("On your own"): each student gets one species from each pool, at
+/* Part 5 ("On your own"): each student gets one species from each pool, at
    random, and keeps it if they leave and come back. */
 var POOLS = {
-  ion:   { title: 'An oxyanion',        ids: ['PO4', 'SO3', 'ClO4', 'ClO2', 'BrO3', 'IO4'] },
-  acid:  { title: 'An oxyacid',         ids: ['H3PO4', 'H2SO3', 'HClO4', 'HClO3', 'HSO4', 'H2PO4'] },
-  multi: { title: 'A multiple bond',    ids: ['H2CO3', 'CO', 'CN', 'CO2'] }
+  mix:   { title: 'A molecule, ion or oxyacid',
+           ids: ['ClO3', 'PO4', 'SO3', 'ClO4', 'ClO2', 'BrO3', 'IO4', 'H3PO4', 'H2SO3', 'HClO4', 'HClO3', 'HSO4',
+                 'H2PO4', 'H2CO3', 'CO', 'CN', 'CO2'] },
+  exc:   { title: 'An exception to the octet',
+           ids: ['BCl3', 'BeCl2', 'PCl5', 'SF4', 'ICl4', 'PF6'] }
 };

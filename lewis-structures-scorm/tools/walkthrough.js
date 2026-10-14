@@ -6,7 +6,8 @@
  *
  * It makes a wrong Rule 1 answer and a wrong central atom in every build,
  * tries to expand the octet of every period-3 central atom (and checks the
- * anti-AI message appears and the build refuses it), makes and then undoes
+ * anti-AI message appears and the build refuses it) and to add a double bond
+ * to B and Be (and checks they are refused as exceptions), makes and then undoes
  * every Rule 5 bond in the builds that need one, answers some checkpoint
  * questions wrongly on purpose — two of them with the expanded-octet choice —
  * reloads the page halfway to check that progress resumes, and finally checks
@@ -24,9 +25,10 @@ catch (e) {
 
 const URL = 'file://' + path.join(__dirname, '..', 'src', 'index.html');
 const SHOTS = process.env.SHOTS;
-/* answered wrongly on purpose; the last two pick the expanded-octet choice */
-const WRONG = { 'a-nf3-total': 1, 'c-h-where': 1, 'b-clo4-struct': 'expand', 'd-spot': 1 };
-const SNARKY = new Set(['b-clo4-struct', 'd-spot']);
+/* answered wrongly on purpose; the 'expand' ones and e-spot pick the extra-double-bond choice */
+const WRONG = { 'a-nf3-total': 1, 'c-h-where': 1, 'b-clo4-struct': 'expand', 'd-bf3-rule5': 1, 'd-sf6-struct': 'expand',
+  'e-spot': 1 };
+const SNARKY = new Set(['b-clo4-struct', 'd-sf6-struct', 'e-spot']);
 
 const fakeLMS = () => {
   const data = JSON.parse(sessionStorage.getItem('lms') || '{}');
@@ -89,8 +91,8 @@ const fakeLMS = () => {
       const sp = Lewis.species(s.sp || App.state().pool[s.pool]);
       const r = Lewis.solve(sp);
       return { sp, r: { total: r.total, neutral: r.valence.neutral, rows: r.valence.rows, adjust: r.valence.adjust,
-        used2: r.used2, left2: r.left2, left3: r.left3, s2: r.s2, s3: r.s3, s4: r.s4, moves: r.moves, after4: r.centerAfter4 },
-        period: ELEMENTS[sp.center].period };
+        used2: r.used2, left2: r.left2, left3: r.left3, s2: r.s2, s3: r.s3, s4: r.s4, moves: r.moves, after4: r.centerAfter4,
+        target: r.centerTarget }, period: ELEMENTS[sp.center].period, stable: !!ELEMENTS[sp.center].stable };
     });
     const { sp, r } = info;
     const check = (label) => page.click(`.work button:has-text("${label || 'Check'}")`);
@@ -117,7 +119,7 @@ const fakeLMS = () => {
     expect((await fbClass()).includes('bad'), `${id}: ${wrong} accepted as the central atom`);
     await page.click(`.tray .tile[aria-label="Atom ${sp.center}"] >> nth=0`);
     await page.click('.drop[data-drop="C"]');
-    const slots = Object.keys(r.s2.at).filter((k) => k !== 'C').sort((a, b) => a.length - b.length);
+    const slots = Object.keys(r.s2.at).filter((k) => k !== 'C').sort((a, b) => a.endsWith('2') - b.endsWith('2'));
     for (const k of slots) {
       await page.click(`.tray .tile[aria-label="Atom ${r.s2.at[k]}"] >> nth=0`);
       await page.click(`.drop[data-drop="${k}"]`);
@@ -146,12 +148,13 @@ const fakeLMS = () => {
     /* Rule 5 */
     await page.fill('.rule-form input', String(r.after4));
     await check();
-    if (r.after4 === 8) {
-      const k = Object.keys(r.s4.at).find((x) => x.length === 1 && x !== 'C' && r.s4.lp[x] > 0);
+    if (r.after4 >= r.target) {
+      const k = Object.keys(r.s4.at).find((x) => x !== 'C' && !x.endsWith('2') && r.s4.lp[x] > 0);
       if (k) {
         await page.click(`.lp.active[data-slot="${k}"] >> nth=0`);
         const cls = await fbClass();
-        if (info.period >= 3) expect(cls.includes('snark'), `${id}: expanding ${sp.center}'s octet got no anti-AI message`);
+        if (info.stable) expect(cls.includes('bad') && /exception/.test(await feedback()), `${id}: a double bond to ${sp.center} was not refused as an exception`);
+        else if (info.period >= 3) expect(cls.includes('snark'), `${id}: a double bond on full ${sp.center} got no anti-AI message`);
         else expect(cls.includes('bad') && /never have more than 8/.test(await feedback()), `${id}: a period-2 octet was expanded`);
         const allSingle = await page.evaluate(() =>
           [...document.querySelectorAll('.work .bond')].every((b) => b.querySelectorAll('line').length === 1));
@@ -214,19 +217,20 @@ const fakeLMS = () => {
   for (let i = 0; i < 3; i++) await build();
   await quiz();
 
-  /* Part 2, then a reload in the middle of it */
+  /* Part 2, with a reload in the middle of it */
   await build();
   await page.reload();
   await page.click('.screen .primary');
-  expect((await stepId()) === 'b-ClO3', 'did not resume at the step after the reload: ' + (await stepId()));
-  await build();
+  expect((await stepId()) === 'b-SO4', 'did not resume at the step after the reload: ' + (await stepId()));
   await build();
   await quiz();
 
-  /* Parts 3 and 4 */
+  /* Part 3: oxyacids; Part 4: octet exceptions; Part 5: on your own */
   for (let i = 0; i < 2; i++) await build();
   await quiz();
-  for (let i = 0; i < 3; i++) await build();
+  for (let i = 0; i < 4; i++) await build();
+  await quiz();
+  for (let i = 0; i < 2; i++) await build();
   await quiz();
 
   /* results */
@@ -249,6 +253,6 @@ const fakeLMS = () => {
     console.error(problems.map((p) => '✗ ' + p).join('\n'));
     process.exit(1);
   }
-  console.log(`✓ walkthrough passed: 11 builds, 16 checkpoint answers, score ${lms['cmi.core.score.raw']}, ` +
+  console.log(`✓ walkthrough passed: 13 builds, 16 checkpoint answers, score ${lms['cmi.core.score.raw']}, ` +
     `status ${lms['cmi.core.lesson_status']}, resumed after a reload, no anti-AI reporting.`);
 })();

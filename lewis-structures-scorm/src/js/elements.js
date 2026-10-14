@@ -1,9 +1,13 @@
 /* elements.js — the main-group elements the activity uses, and the periodic
  * table students see.
  *
- * `valence` is what Rule 1 adds up. `period` decides what happens when a
- * student tries to give a central atom more than 8 electrons: a period-2 atom
- * just gets told it can't, a period-3-or-below atom gets the anti-AI speech.
+ * `valence` is what Rule 1 adds up. `period` decides two things: only an
+ * atom from period 3 or below can end up with more than 8 electrons (when
+ * Rules 2 and 4 give it more — SF₆, XeF₄), and what happens when a student
+ * uses Rule 5 to push a central atom past what the rules give it: a period-2
+ * atom just gets told it can't, a period-3-or-below atom gets the anti-AI
+ * speech. `stable` marks the incomplete-octet exceptions — B is stable with
+ * 6 electrons and Be with 4, so Rule 5 leaves them alone.
  * `en` (Pauling) is only used by tools/validate.js, to check that "the first
  * atom written, not counting H" really is the least electronegative one in
  * every formula the activity uses.
@@ -11,6 +15,8 @@
 
 var ELEMENTS = {
   H:  { name: 'hydrogen',   group: 1,  period: 1, valence: 1, en: 2.20 },
+  Be: { name: 'beryllium',  group: 2,  period: 2, valence: 2, en: 1.57, stable: 4 },
+  B:  { name: 'boron',      group: 13, period: 2, valence: 3, en: 2.04, stable: 6 },
   C:  { name: 'carbon',     group: 14, period: 2, valence: 4, en: 2.55 },
   N:  { name: 'nitrogen',   group: 15, period: 2, valence: 5, en: 3.04 },
   O:  { name: 'oxygen',     group: 16, period: 2, valence: 6, en: 3.44 },
@@ -19,7 +25,8 @@ var ELEMENTS = {
   S:  { name: 'sulfur',     group: 16, period: 3, valence: 6, en: 2.58 },
   Cl: { name: 'chlorine',   group: 17, period: 3, valence: 7, en: 3.16 },
   Br: { name: 'bromine',    group: 17, period: 4, valence: 7, en: 2.96 },
-  I:  { name: 'iodine',     group: 17, period: 5, valence: 7, en: 2.66 }
+  I:  { name: 'iodine',     group: 17, period: 5, valence: 7, en: 2.66 },
+  Xe: { name: 'xenon',      group: 18, period: 5, valence: 8, en: 2.60 }
 };
 
 /* The periodic table in the reference panel: main groups only, periods 1–5.
