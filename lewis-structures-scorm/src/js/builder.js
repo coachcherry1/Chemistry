@@ -6,7 +6,8 @@
  *   Rule 3  click outer atoms to add lone pairs; type what is left
  *   Rule 4  click the central atom to place what is left
  *   Rule 5  type how many electrons the central atom has; if it is short,
- *           click outer lone pairs to share them as bonds; press Done
+ *           click outer lone pairs to share them as bonds ("Undo last bond"
+ *           takes one back); press Done
  *
  * A rule unlocks only when the one before it checks out. Nothing in a build
  * is graded: a mistake gets specific feedback, and after a few misses on the
@@ -37,7 +38,9 @@ function Builder(o) {
 
   var rule = 1, phase = '1';
   var s = Lewis.empty(sp.charge);
-  var after4 = null;                 /* the structure as Rule 5 found it, for "Undo" */
+  var after4 = null;                 /* the structure as Rule 5 found it */
+  var shared = [];                   /* outer atoms whose lone pair Rule 5 has shared, in order — for "Undo last bond" */
+  var undoBtn = null;
   var tally = {};
   var misses = {};
   var flags = {}, pulse = null;
@@ -201,7 +204,12 @@ function Builder(o) {
     if (!any) tray.appendChild(h('p', { class: 'tray-empty', text: 'Every atom is placed. Press Check.' }));
   }
 
-  function paint() { paintSide(); paintDrawing(); paintShow(); }
+  function paint() {
+    paintSide();
+    paintDrawing();
+    paintShow();
+    if (undoBtn) undoBtn.disabled = finished || phase !== '5b' || !shared.length;
+  }
 
   /* ------------------------------------------------------------- Rule 2 */
 
@@ -357,10 +365,27 @@ function Builder(o) {
     }
     s.lp[k] -= 1;
     s.bo[k] += 1;
+    shared.push(k);
     pulse = k;
     paint();
-    if (Lewis.electrons(s, 'C') >= 8) { finish(); return; }
-    say(X + ' now has ' + Lewis.electrons(s, 'C') + '. Still short — share another pair.', '');
+    /* not finished automatically: the student looks at the result, then
+       presses Done — or takes the bond back to try a different lone pair */
+    if (Lewis.electrons(s, 'C') >= 8) {
+      say(X + ' now has 8 — no longer electron deficient. Press Done, or “Undo last bond” to try a different lone pair.', 'good');
+    } else {
+      say(X + ' now has ' + Lewis.electrons(s, 'C') + '. Still short — share another pair.', '');
+    }
+  }
+
+  function undoShare() {
+    if (finished || phase !== '5b' || !shared.length) return;
+    var k = shared.pop();
+    s.lp[k] += 1;
+    s.bo[k] -= 1;
+    flags = {};
+    paint();
+    say('Took back one ' + X + '–' + s.at[k] + ' bond: that pair is a lone pair on ' + s.at[k] + ' again. ' + X +
+        ' has ' + Lewis.electrons(s, 'C') + '.');
   }
 
   function delegate(ev) {
@@ -390,6 +415,7 @@ function Builder(o) {
     form.innerHTML = '';
     inputs = {};
     extraBtns.innerHTML = '';
+    undoBtn = null;
     checkBtn.hidden = false;
     checkBtn.textContent = 'Check';
 
@@ -477,14 +503,10 @@ function Builder(o) {
 
     if (phase === '5b') {
       checkBtn.textContent = 'Done';
-      var undo = h('button', { type: 'button', class: 'ghostbtn', text: 'Undo Rule 5' });
-      undo.addEventListener('click', function () {
-        s = Lewis.clone(after4);
-        flags = {};
-        say('Back to the structure after Rule 4.');
-        paint();
-      });
-      extraBtns.appendChild(undo);
+      undoBtn = h('button', { type: 'button', class: 'ghostbtn', text: '↶ Undo last bond',
+        title: 'Turn the last bond you made in Rule 5 back into a lone pair' });
+      undoBtn.addEventListener('click', undoShare);
+      extraBtns.appendChild(undoBtn);
     }
   }
 
@@ -508,7 +530,8 @@ function Builder(o) {
     else if (phase === '5a') t = 'Count the electrons around ' + X + ': 2 for every bond line touching it, 2 for every lone pair on it.';
     else if (phase === '5b') t = Lewis.electrons(after4, 'C') < 8
       ? 'Click a lone pair on an outer atom to share it with ' + X + ' as a bond. Each pair you share gives ' + X +
-        ' 2 more electrons.'
+        ' 2 more electrons. Changed your mind? “Undo last bond” takes the last one back. Press Done when ' + X +
+        ' has 8.'
       : X + ' has its octet. If there is nothing to fix, press Done.';
     howTo.textContent = t;
   }
@@ -517,7 +540,7 @@ function Builder(o) {
     rule = n;
     phase = n === 2 ? '2a' : n === 5 ? '5a' : String(n);
     flags = {};
-    if (n === 5) after4 = Lewis.clone(s);
+    if (n === 5) { after4 = Lewis.clone(s); shared = []; }
     setHow();
     buildForm();
     paint();
@@ -744,9 +767,11 @@ function Builder(o) {
       say(X + ' has ' + Lewis.electrons(s, 'C') + ' electrons around it. Press Check.');
     } else if (phase === '5b') {
       s = Lewis.clone(after4);
+      shared = [];
       for (var d = Lewis.pickCanonical(s); d && Lewis.electrons(s, 'C') < 8; d = Lewis.pickCanonical(s)) {
         s.lp[d] -= 1;
         s.bo[d] += 1;
+        shared.push(d);
       }
       say(r.moves.length ? 'Lone pairs from the outer atoms became bonds until ' + X + ' had 8. Press Done.'
         : X + ' already had 8, so there is nothing to change. Press Done.');

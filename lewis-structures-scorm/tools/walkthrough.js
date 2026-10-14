@@ -6,7 +6,8 @@
  *
  * It makes a wrong Rule 1 answer and a wrong central atom in every build,
  * tries to expand the octet of every period-3 central atom (and checks the
- * anti-AI message appears and the build refuses it), answers some checkpoint
+ * anti-AI message appears and the build refuses it), makes and then undoes
+ * every Rule 5 bond in the builds that need one, answers some checkpoint
  * questions wrongly on purpose — two of them with the expanded-octet choice —
  * reloads the page halfway to check that progress resumes, and finally checks
  * what reached the "LMS": the score, the completion status, the interaction
@@ -156,11 +157,24 @@ const fakeLMS = () => {
           [...document.querySelectorAll('.work .bond')].every((b) => b.querySelectorAll('line').length === 1));
         expect(allSingle, `${id}: the refused double bond was drawn anyway`);
       }
+      expect(await page.isDisabled('button:has-text("Undo last bond")'), `${id}: Undo enabled with nothing to undo`);
       await check('Done');
     } else {
+      const bonds = () => page.evaluate(() =>
+        [...document.querySelectorAll('.work .bond')].map((b) => b.querySelectorAll('line').length).join(''));
+      expect(await page.isDisabled('button:has-text("Undo last bond")'), `${id}: Undo enabled before any bond was made`);
       await check('Done');
       expect(/electron deficient/.test(await feedback()), `${id}: Done accepted with ${sp.center} short`);
+      /* make every bond, take them all back one at a time, then make them again */
+      const before = await bonds();
       for (const k of r.moves) await page.click(`.lp.active[data-slot="${k}"] >> nth=0`);
+      expect(!/^Done!/.test((await feedback()).trim()), `${id}: finished before Done was pressed`);
+      expect(!(await page.isDisabled('button:has-text("Undo last bond")')), `${id}: Undo disabled after making a bond`);
+      for (let i = 0; i < r.moves.length; i++) await page.click('button:has-text("Undo last bond")');
+      expect((await bonds()) === before, `${id}: Undo did not restore the structure (${await bonds()} vs ${before})`);
+      expect(await page.isDisabled('button:has-text("Undo last bond")'), `${id}: Undo still enabled with nothing left to undo`);
+      for (const k of r.moves) await page.click(`.lp.active[data-slot="${k}"] >> nth=0`);
+      await check('Done');
     }
     expect(/^Done!/.test((await feedback()).trim()), `${id}: build did not finish: ${await feedback()}`);
     await next();
