@@ -311,6 +311,8 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .el-xe { color: var(--e-xe); }
 
 .atom-ring { fill: transparent; stroke: none; }
+/* an atom that cannot be clicked must not swallow clicks meant for its lone pairs */
+.atom:not(.active):not(.drop) { pointer-events: none; }
 .atom.active, .atom.drop { cursor: pointer; }
 .atom.active .atom-ring { fill: var(--note-bg); }
 .atom.active:hover .atom-ring, .atom.drop:hover .atom-ring { stroke: var(--accent); stroke-width: 2; stroke-dasharray: none; fill: var(--note-bg); }

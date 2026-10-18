@@ -16,8 +16,8 @@
  *
  * bo is keyed by the OUTER end of each bond: bo.W is the C–W bond, bo.W2 the
  * W–W2 bond. Around every atom, bonds and lone pairs share the same eight
- * directions; a period-2 atom holds at most 4 electron domains and an atom
- * from period 3 or below at most 6 (SF₆, XeF₄).
+ * directions; an atom holds at most 4 electron domains, except a central
+ * atom from period 3 or below, which can hold 6 (SF₆, XeF₄).
  *
  * What counts as "full" for the central atom (centerTarget):
  *   B 6 and Be 4 — the incomplete-octet exceptions; Rule 5 leaves them alone
@@ -164,8 +164,10 @@ var Lewis = (function () {
   /* what an OUTER atom needs: H a doublet, everything else an octet */
   function target(el) { return el === 'H' ? 2 : 8; }
 
-  /* bonds plus lone pairs an atom can be drawn with */
-  function maxDomains(el) { return ELEMENTS[el].period >= 3 ? 6 : 4; }
+  /* bonds plus lone pairs an atom can be drawn with: 4 (an octet), except a
+     CENTRAL atom from period 3 or below, which can hold 6 (SF₆, XeF₄). An
+     outer Cl is no different from an outer F: it stops at 8. */
+  function maxDomains(el, slot) { return slot === 'C' && ELEMENTS[el].period >= 3 ? 6 : 4; }
 
   function totalElectrons(s) {
     var n = 0;
@@ -183,32 +185,62 @@ var Lewis = (function () {
     return Math.min(i, 8 - i);
   }
 
-  /* The directions an atom's lone pairs go in, in the order they fill:
-     each one as far as possible from the bonds and the pairs already there
-     (so one bond on the right puts the first pair on the left, then above,
-     then below). Only as many as the atom can hold. */
-  function freeSides(s, slot) {
-    var el = s.at[slot];
-    var bs = bondsOf(s, slot);
-    var taken = bs.map(function (b) { return b.side; });
-    var limit = Math.max(0, (el ? maxDomains(el) : 4) - bs.length);
-    var pref = slot === 'C' ? PREF_CENTER : PREF_OUTER;
-    var order = [];
-    while (order.length < limit) {
-      var best = null, bestScore = -1;
-      pref.forEach(function (d) {
-        if (taken.indexOf(d) >= 0 || order.indexOf(d) >= 0) return;
-        var near = taken.concat(order);
-        var score = near.length ? Math.min.apply(null, near.map(function (x) { return steps(d, x); })) : 9;
-        if (score > bestScore) { best = d; bestScore = score; }
-      });
-      if (!best) break;
-      order.push(best);
-    }
-    return order;
+  /* how many lone pairs an atom can hold, given its bonds */
+  function capacity(s, slot) {
+    var el = s.at[slot], nb = bondsOf(s, slot).length;
+    return Math.max(0, Math.min((el ? maxDomains(el, slot) : 4) - nb, DIRS.length - nb));
   }
 
-  function roomFor(s, slot) { return freeSides(s, slot).length - (s.lp[slot] || 0); }
+  /* The directions an atom's n lone pairs (default: the ones it has) are
+     drawn in. They are chosen together, as the set that keeps every pair as
+     far as possible from the bonds and then from the other pairs — so two
+     pairs never end up squeezed side by side when there is room to spread
+     them (ClO₂⁻ with its O atoms on two sides, XeF₄ however its F atoms are
+     placed). Ties go to the first directions in the preference order. */
+  function freeSides(s, slot, n) {
+    var taken = bondsOf(s, slot).map(function (b) { return b.side; });
+    var pref = slot === 'C' ? PREF_CENTER : PREF_OUTER;
+    var free = pref.filter(function (d) { return taken.indexOf(d) < 0; });
+    n = Math.min(n == null ? (s.lp[slot] || 0) : n, capacity(s, slot), free.length);
+    if (n <= 0) return [];
+
+    function score(set) {
+      var nearAny = 9, nearPair = 9, sum = 0;
+      set.forEach(function (d, i) {
+        var mine = 9;
+        taken.forEach(function (x) { mine = Math.min(mine, steps(d, x)); });
+        set.forEach(function (x, j) {
+          if (j === i) return;
+          mine = Math.min(mine, steps(d, x));
+          nearPair = Math.min(nearPair, steps(d, x));
+        });
+        nearAny = Math.min(nearAny, mine);
+        sum += mine;
+      });
+      return [nearAny, nearPair, sum];
+    }
+    function better(a, b) {
+      for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return a[i] > b[i];
+      return false;
+    }
+
+    var best = null, bestScore = null;
+    (function choose(start, set) {
+      if (set.length === n) {
+        var sc = score(set);
+        if (!best || better(sc, bestScore)) { best = set.slice(); bestScore = sc; }
+        return;
+      }
+      for (var i = start; i <= free.length - (n - set.length); i++) {
+        set.push(free[i]);
+        choose(i + 1, set);
+        set.pop();
+      }
+    })(0, []);
+    return best;
+  }
+
+  function roomFor(s, slot) { return capacity(s, slot) - (s.lp[slot] || 0); }
 
   /* an outer atom with an H on its far side (the O–H of an oxyacid) */
   function carriesH(s, slot) {
@@ -402,6 +434,7 @@ var Lewis = (function () {
     parentOf: parentOf, pos: pos, empty: empty, clone: clone, has: has, filled: filled,
     bonds: bonds, bondsOf: bondsOf, bondSum: bondSum, electrons: electrons, target: target,
     totalElectrons: totalElectrons, formalCharge: formalCharge, freeSides: freeSides, roomFor: roomFor,
+    capacity: capacity, steps: steps,
     carriesH: carriesH, signature: signature,
     skeleton: skeleton, solve: solve, canonical: canonical, accepted: accepted, expanded: expanded,
     rule5Outcomes: rule5Outcomes, variant: variant, describe: describe, pairs: pairs, pickCanonical: pickCanonical

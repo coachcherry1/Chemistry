@@ -85,7 +85,6 @@ for (const id of ids) {
   if (r.left3 % 2) fail(`${id}: an odd number left for the central atom`);
   const P = ELEMENTS[sp.center].period;
   if (r.centerAfter4 > 8 && P < 3) fail(`${id}: Rules 2 and 4 give period-2 ${sp.center} ${r.centerAfter4} electrons`);
-  if (r.bonds > 4 && P < 3 && Lewis.bondsOf(r.s2, 'C').length > 4) fail(`${id}: a period-2 central atom with more than four bonds`);
   if (ELEMENTS[sp.center].stable && r.centerAfter4 !== ELEMENTS[sp.center].stable) {
     fail(`${id}: ${sp.center} should end Rule 4 with ${ELEMENTS[sp.center].stable}, the rules give ${r.centerAfter4}`);
   }
@@ -97,17 +96,20 @@ for (const id of ids) {
   const acc = Lewis.accepted(fin, sp);
   if (!acc.ok) fail(`${id}: the rules' own answer is not accepted (${acc.problems.join(', ')})`);
   if (Lewis.electrons(fin, 'C') !== r.centerTarget) fail(`${id}: central atom ends with ${Lewis.electrons(fin, 'C')}, not ${r.centerTarget}`);
-  if (r.centerTarget > 8 && r.moves.length) fail(`${id}: Rule 5 ran on an atom that already had more than 8`);
   Lewis.filled(fin).forEach((k) => {
     const e = Lewis.electrons(fin, k);
     if (ELEMENTS[fin.at[k]].period === 2 && e > 8) fail(`${id}: ${fin.at[k]} in ${k} has ${e}`);
     if (Lewis.roomFor(fin, k) < 0) fail(`${id}: ${fin.at[k]} in ${k} has more lone pairs than free sides`);
   });
-  if (Lewis.expanded(fin, sp)) fail(`${id}: the answer has more electrons on ${sp.center} than the rules give`);
-  /* every step of the build can be drawn */
+  /* every step of the build can be drawn, and no atom's lone pairs are
+     squeezed side by side (why XeF₂, ClF₃ and I₃⁻ are left out) */
   for (const [n, s] of [['Rule 2', r.s2], ['Rule 3', r.s3], ['Rule 4', r.s4], ['Rule 5', r.s5]]) {
     Lewis.filled(s).forEach((k) => {
       if (Lewis.roomFor(s, k) < 0) fail(`${id}: after ${n}, ${s.at[k]} in ${k} has more lone pairs than can be drawn`);
+      const dirs = Lewis.freeSides(s, k);
+      dirs.forEach((a, i) => dirs.forEach((b, j) => {
+        if (j > i && Lewis.steps(a, b) === 1) fail(`${id}: after ${n}, two lone pairs on ${s.at[k]} in ${k} are squeezed together (${a}, ${b})`);
+      }));
     });
   }
 
@@ -121,6 +123,9 @@ for (const id of ids) {
   for (const s of Lewis.rule5Outcomes(sp)) {
     const a = Lewis.accepted(s, sp);
     if (!a.ok) fail(`${id}: Rule 5 can reach a structure the builder rejects (${a.problems.join(', ')})`);
+    if (Lewis.electrons(s, 'C') !== r.centerTarget) {
+      fail(`${id}: Rule 5 can leave ${sp.center} with ${Lewis.electrons(s, 'C')} instead of ${r.centerTarget}`);
+    }
   }
   const n = resonance(sp);
   if (n !== 1) fail(`${id}: ${n} equally good structures — resonance, which this activity avoids`);

@@ -92,6 +92,8 @@ Rule 1 is the total only, and "Show me" appears after 3 misses on a rule instead
 | SF₄ | sulfur tetrafluoride | 6 + 4 × 7 = 34 | 4 bonds: −8 → 26 | −24 → 2 | 1 lone pair on S | S has 10 — **expanded octet** from Rule 4, nothing to do |
 | ICl₄⁻ | tetrachloroiodate ion | 7 + 4 × 7 + 1 = 36 | 4 bonds: −8 → 28 | −24 → 4 | 2 lone pairs on I | I has 12 — **expanded octet** from Rule 4, nothing to do |
 | PF₆⁻ | hexafluorophosphate ion | 5 + 6 × 7 + 1 = 48 | 6 bonds: −12 → 36 | −36 → 0 | no lone pairs on P | P has 12 — **expanded octet** from Rule 2, nothing to do |
+| XeF₂ | xenon difluoride | 8 + 2 × 7 = 22 | 2 bonds: −4 → 18 | −12 → 6 | 3 lone pairs on Xe | Xe has 10 — **expanded octet** from Rule 4, nothing to do |
+| ClF₃ | chlorine trifluoride | 7 + 3 × 7 = 28 | 3 bonds: −6 → 22 | −18 → 4 | 2 lone pairs on Cl | Cl has 10 — **expanded octet** from Rule 4, nothing to do |
 
 ## Also accepted
 
@@ -102,8 +104,9 @@ every octet. The builder accepts all of them (the tables above show the usual dr
 - **H₂CO₃** — also: double bond to an O–H oxygen, single bond to O, single bond to an O–H oxygen
 - **CO₂** — also: single bond to O, triple bond to O
 
-A period-2 central atom is never allowed past 8 (the builder says so); a period-3-or-below central atom
-pushed past 8 gets the anti-AI message.
+Rule 5 can never push the central atom past what the rules give it (8; 6 for B; 4 for Be; 12 for S in
+SF₆): B and Be get a reminder that they are exceptions, a period-2 atom is told it can never have more
+than 8, and a period-3-or-below atom gets the anti-AI message.
 
 ## Checkpoint questions (graded)
 
@@ -467,16 +470,13 @@ page reloads. Edit `src/js/snark.js` to change the wording. `{X}` is the central
 
 **First time, in a build** (one at random, then the fix and a line of encouragement):
 
-- Oh, a double bond on {X}? Fancy. That’s how an AI chatbot draws {F}, and it is not how this class does it. Quit using AI to look up your chemistry answers and follow the 5 simple rules your teacher taught you.
 - Interesting. Rule 5 says IF the central atom is electron deficient. {X} has {e}. The only thing telling you to give it more is a chatbot. Close that tab and follow the 5 simple rules your teacher taught you.
-- Let me guess: the internet says {X} gets double bonds. The internet is not your chemistry teacher. Stop looking up answers with AI and use the 5 simple rules you were taught.
 - Beep boop. This answer smells like AI. Nothing in the 5 rules your teacher taught you says to pile double bonds onto a central atom that already has {e} electrons. Put the chatbot down and follow the rules.
 
 **First time, in a checkpoint:**
 
-- That’s the AI answer. Quit using AI to look up your chemistry answers and follow the 5 simple rules your teacher taught you.
-- Extra double bonds on a central atom that already had its electrons? That’s what a chatbot would pick. Rule 5 only fixes a central atom that is short — follow the 5 simple rules.
 - Nice try, chatbot. In this class double bonds only come from Rule 5, and only when the central atom is short. Put the AI away and follow the 5 simple rules your teacher taught you.
+- Rule 5 is for a central atom that is SHORT. This one wasn’t. Put the AI down and follow the 5 simple rules your teacher taught you.
 
 **Every time after that:**
 
@@ -527,6 +527,8 @@ page reloads. Edit `src/js/snark.js` to change the wording. `{X}` is the central
 | `SF4` | SF₄ | sulfur tetrafluoride | Part 5 pool, Checkpoint D |
 | `ICl4` | ICl₄⁻ | tetrachloroiodate ion | Part 5 pool |
 | `PF6` | PF₆⁻ | hexafluorophosphate ion | Part 5 pool |
+| `XeF2` | XeF₂ | xenon difluoride | Part 5 pool |
+| `ClF3` | ClF₃ | chlorine trifluoride | Part 5 pool |
 | `NF3` | NF₃ | nitrogen trifluoride | Checkpoint A |
 | `OF2` | OF₂ | oxygen difluoride | Checkpoint A |
 | `CCl4` | CCl₄ | carbon tetrachloride | Checkpoint A |

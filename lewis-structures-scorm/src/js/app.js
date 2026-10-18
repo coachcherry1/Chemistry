@@ -33,10 +33,10 @@ var App = (function () {
     { id: 'demo', part: 1, kind: 'demo', sp: 'NH3',
       title: 'How the 5 rules work: ammonia, NH₃',
       text: 'Watch the 5 rules build ammonia one rule at a time. Press “Next rule” to step through, and keep an ' +
-            'eye on the electron bookkeeping on the left.' },
+            'eye on the electron bookkeeping in the rules card.' },
     { id: 'b-PCl3', part: 1, kind: 'build', sp: 'PCl3', table: true,
       text: 'Your turn. Work through the rules in order — each one unlocks when the one before it checks out. ' +
-            'The 5 rules stay on the left the whole time.' },
+            'The 5 rules stay on screen the whole time, in the rules card.' },
     { id: 'b-CH2O', part: 1, kind: 'build', sp: 'CH2O', table: true,
       text: 'Keep an eye on the central atom when you reach Rule 5.' },
     { id: 'b-HCN', part: 1, kind: 'build', sp: 'HCN', table: true,
@@ -61,7 +61,7 @@ var App = (function () {
       text: 'Graded: your first answer to each question counts.' },
 
     { id: 'b-BF3', part: 4, kind: 'build', sp: 'BF3', table: false,
-      text: 'The first exception. Watch what Rule 5 says about B — and read the note under Rule 5 on the left.' },
+      text: 'The first exception. Watch what Rule 5 says about B — and read the note under Rule 5 in the rules card.' },
     { id: 'b-BeF2', part: 4, kind: 'build', sp: 'BeF2', table: false,
       text: 'Be is the other atom that is stable with fewer than 8.' },
     { id: 'b-SF6', part: 4, kind: 'build', sp: 'SF6', table: false,
@@ -99,6 +99,15 @@ var App = (function () {
     el.feedback.className = 'feedback' + (kind ? ' ' + kind : '');
   }
 
+  /* During a build the feedback line lives inside the builder, under its
+     buttons, so on a phone a message appears next to what was just clicked
+     instead of below the rules card. Every other step puts it back. */
+  function feedbackInto(builderNode) {
+    var work = builderNode && builderNode.querySelector('.work');
+    if (work) work.appendChild(el.feedback);
+    else el.fbHome.parent.insertBefore(el.feedback, el.fbHome.next);
+  }
+
   function stepIndex(id) {
     for (var i = 0; i < STEPS.length; i++) if (STEPS[i].id === id) return i;
     return -1;
@@ -115,12 +124,20 @@ var App = (function () {
   function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
 
   /* The anti-AI message. In a build there is a central atom to name and a
-     fix to give; in a checkpoint the explanation underneath does that. */
-  function snarkText(sp, e) {
+     fix to give; in a checkpoint the explanation underneath does that. The
+     lines that say a chatbot draws it that way are only used when it is true:
+     a species with O in it (S=O, P=O). `quizSp` is the species a checkpoint
+     drawing shows, if any; a text question is about S and O. */
+  function hasO(sp) { return sp.parts.some(function (p) { return p.el === 'O'; }); }
+
+  function snarkText(sp, e, quizSp) {
     snarks++;
     var vars = { X: sp ? sp.center : '', F: sp ? sp.text : '', e: e != null ? e : 8, n: snarks };
-    var line = snarks === 1 ? (sp ? pick(SNARK.first) : pick(SNARK.quiz)) : pick(SNARK.again);
-    return UI.fill(line, vars) + ' ' + (sp ? UI.fill(SNARK.fix, vars) : '') + pick(SNARK.cheer);
+    var lines;
+    if (snarks > 1) lines = SNARK.again;
+    else if (sp) lines = hasO(sp) ? SNARK.first.concat(SNARK.firstOxy) : SNARK.first;
+    else lines = !quizSp || hasO(quizSp) ? SNARK.quiz.concat(SNARK.quizOxy) : SNARK.quiz;
+    return UI.fill(pick(lines), vars) + ' ' + (sp ? UI.fill(SNARK.fix, vars) : '') + pick(SNARK.cheer);
   }
 
   /* ------------------------------------------------------------------ state */
@@ -202,6 +219,7 @@ var App = (function () {
     el.counter.textContent = 'Step ' + (i + 1) + ' of ' + STEPS.length;
     el.instructions.textContent = s.text;
     el.instructions.hidden = !s.text;
+    feedbackInto(null);
     el.stage.innerHTML = '';
     el.stage.className = 'stage stage-' + s.kind;
     say('');
@@ -298,6 +316,7 @@ var App = (function () {
       onDone: function () { complete(null); }
     });
     el.stage.appendChild(b.node);
+    feedbackInto(b.node);
     if (state.done[s.id]) say('Already built. Press Next to go on.', 'good');
     return b;
   };
@@ -394,7 +413,10 @@ var App = (function () {
         why.hidden = false;
         why.textContent = q.why;
         if (right) say('Correct.', 'good');
-        else if (isSnark(q, ci)) say(snarkText(null), 'snark');
+        else if (isSnark(q, ci)) {
+          var c = q.choices[ci];
+          say(snarkText(null, null, typeof c !== 'string' ? Lewis.species(c.lewis) : null), 'snark');
+        }
         else say('Not quite — the correct answer is highlighted.', 'bad');
         paintParts();
         next.hidden = false;
@@ -470,12 +492,14 @@ var App = (function () {
     var b = null;
     function load() {
       if (b) b.destroy();
+      feedbackInto(null);
       host.innerHTML = '';
       say('');
       var sp = Lewis.species(sel.value);
       el.stepTitle.textContent = 'Build ' + sp.text + ' — ' + sp.name;
       b = Builder({ sp: sp, table: table.checked, showAfter: 1, say: say, snark: snarkText, onDone: function () {} });
       host.appendChild(b.node);
+      feedbackInto(b.node);
     }
     sel.addEventListener('change', load);
     table.addEventListener('change', load);
@@ -499,7 +523,7 @@ var App = (function () {
       ['Octet', '8 electrons around an atom — count 2 for every bond line touching it and 2 for every lone pair on it.'],
       ['Doublet', '2 electrons. All H needs: one single bond gives it that.'],
       ['Central atom', 'The atom the others bond to: the least electronegative, which is the first one written, not counting H.'],
-      ['Electron deficient', 'A central atom with fewer than 8 electrons after Rule 4. Rule 5 fixes it — except for B and Be.'],
+      ['Electron deficient', 'A central atom with fewer electrons than it needs after Rule 4: fewer than 8 — except B, which is stable with 6, and Be, which is stable with 4. Rule 5 fixes it.'],
       ['Incomplete octet', 'Fewer than 8 electrons that is still stable: B with 6 (BF₃) and Be with 4 (BeF₂). They are not electron deficient.'],
       ['Expanded octet', 'More than 8 electrons around a central atom from period 3 or below, because Rule 2 gave it more than four bonds (SF₆) or Rule 4 gave it the leftovers (XeF₄). A period-2 atom never has more than 8.'],
       ['Polyatomic ion', 'A group of bonded atoms with an overall charge, drawn in square brackets with the charge outside.'],
@@ -546,6 +570,7 @@ var App = (function () {
   function start() {
     ['parts', 'stepTitle', 'counter', 'instructions', 'stage', 'feedback', 'next', 'back', 'score', 'lms',
      'screen', 'rulesBody', 'ptBody', 'vocabBody'].forEach(function (id) { el[id] = $(id); });
+    el.fbHome = { parent: el.feedback.parentNode, next: el.feedback.nextSibling };
     buildReference();
 
     var connected = SCORM.init();

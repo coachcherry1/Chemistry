@@ -108,8 +108,9 @@ for (const id of Object.keys(SPECIES)) {
   if (alts.length) P(`- **${Lewis.species(id).text}** — also: ${alts.join('; ')}`);
 }
 P();
-P('A period-2 central atom is never allowed past 8 (the builder says so); a period-3-or-below central atom');
-P('pushed past 8 gets the anti-AI message.');
+P('Rule 5 can never push the central atom past what the rules give it (8; 6 for B; 4 for Be; 12 for S in');
+P('SF₆): B and Be get a reminder that they are exceptions, a period-2 atom is told it can never have more');
+P('than 8, and a period-3-or-below atom gets the anti-AI message.');
 P();
 
 P('## Checkpoint questions (graded)');

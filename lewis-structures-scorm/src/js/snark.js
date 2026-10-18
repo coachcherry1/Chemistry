@@ -13,6 +13,11 @@
  * Nothing here is reported to the LMS. The count of offenses lives only in
  * the open page, so it starts over if the student reloads.
  *
+ * The *Oxy lines say outright that a chatbot draws it that way. That is true
+ * for oxyanions and oxyacids (S=O, P=O, Cl=O), so they are only used when the
+ * species has O in it; for SF₆, XeF₄, PCl₅ and the like nobody draws S=F or
+ * Xe=F, so those get the other lines.
+ *
  * Placeholders: {X} the central atom, {F} the formula, {e} how many electrons
  * {X} already has, {n} how many times.
  */
@@ -21,24 +26,32 @@ var SNARK = {
 
   /* first offense, in a build — one of these, at random */
   first: [
-    'Oh, a double bond on {X}? Fancy. That’s how an AI chatbot draws {F}, and it is not how this class does ' +
-      'it. Quit using AI to look up your chemistry answers and follow the 5 simple rules your teacher taught you.',
     'Interesting. Rule 5 says IF the central atom is electron deficient. {X} has {e}. The only thing telling ' +
       'you to give it more is a chatbot. Close that tab and follow the 5 simple rules your teacher taught you.',
-    'Let me guess: the internet says {X} gets double bonds. The internet is not your chemistry teacher. Stop ' +
-      'looking up answers with AI and use the 5 simple rules you were taught.',
     'Beep boop. This answer smells like AI. Nothing in the 5 rules your teacher taught you says to pile double ' +
       'bonds onto a central atom that already has {e} electrons. Put the chatbot down and follow the rules.'
+  ],
+  /* ...and these too, when the species has O in it */
+  firstOxy: [
+    'Oh, a double bond on {X}? Fancy. That’s how an AI chatbot draws {F}, and it is not how this class does ' +
+      'it. Quit using AI to look up your chemistry answers and follow the 5 simple rules your teacher taught you.',
+    'Let me guess: the internet says {X} gets double bonds. The internet is not your chemistry teacher. Stop ' +
+      'looking up answers with AI and use the 5 simple rules you were taught.'
   ],
 
   /* first offense, on a checkpoint question (the explanation underneath gives the fix) */
   quiz: [
+    'Nice try, chatbot. In this class double bonds only come from Rule 5, and only when the central atom is ' +
+      'short. Put the AI away and follow the 5 simple rules your teacher taught you.',
+    'Rule 5 is for a central atom that is SHORT. This one wasn’t. Put the AI down and follow the 5 simple ' +
+      'rules your teacher taught you.'
+  ],
+  /* ...and these too, when the question is about a species with O in it */
+  quizOxy: [
     'That’s the AI answer. Quit using AI to look up your chemistry answers and follow the 5 simple rules your ' +
       'teacher taught you.',
     'Extra double bonds on a central atom that already had its electrons? That’s what a chatbot would pick. ' +
-      'Rule 5 only fixes a central atom that is short — follow the 5 simple rules.',
-    'Nice try, chatbot. In this class double bonds only come from Rule 5, and only when the central atom is ' +
-      'short. Put the AI away and follow the 5 simple rules your teacher taught you.'
+      'Rule 5 only fixes a central atom that is short — follow the 5 simple rules.'
   ],
 
   /* second offense and after, anywhere */

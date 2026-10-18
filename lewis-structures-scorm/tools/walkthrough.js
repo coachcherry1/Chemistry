@@ -2,6 +2,7 @@
  * real browser, against a fake LMS. Optional: needs Playwright.
  *
  *   node tools/walkthrough.js            # headless run, prints a report
+ *   ALL=1 node tools/walkthrough.js      # first builds every species once (slower)
  *   SHOTS=dir node tools/walkthrough.js  # also saves a screenshot per step
  *
  * It makes a wrong Rule 1 answer and a wrong central atom in every build,
@@ -9,7 +10,7 @@
  * anti-AI message appears and the build refuses it) and to add a double bond
  * to B and Be (and checks they are refused as exceptions), makes and then undoes
  * every Rule 5 bond in the builds that need one, answers some checkpoint
- * questions wrongly on purpose — two of them with the expanded-octet choice —
+ * questions wrongly on purpose — three of them with the extra-double-bond choice —
  * reloads the page halfway to check that progress resumes, and finally checks
  * what reached the "LMS": the score, the completion status, the interaction
  * records, and that nothing about the anti-AI messages was sent.
@@ -76,6 +77,20 @@ const fakeLMS = () => {
     await page.click('#next');
   }
 
+  /* ALL=1: first build every species once, in board mode (?build=ID, which
+     uses the Rule 1 table), so a problem with any one of them shows up
+     rather than only when the random Part 5 pick happens to land on it */
+  if (process.env.ALL) {
+    const ids = await page.evaluate(() => Object.keys(SPECIES));
+    for (const sid of ids) {
+      await page.goto(URL + '?build=' + sid);
+      await build(sid);
+    }
+    await page.goto(URL);
+    await page.evaluate(() => { localStorage.clear(); sessionStorage.clear(); });
+    await page.reload();
+  }
+
   await page.click('.screen .primary');
 
   /* ---- the worked example */
@@ -84,16 +99,18 @@ const fakeLMS = () => {
   await next();
 
   /* ---- one build, start to finish */
-  async function build() {
-    const id = await stepId();
-    const info = await page.evaluate(() => {
-      const s = App.STEPS[App.state().step];
-      const sp = Lewis.species(s.sp || App.state().pool[s.pool]);
+  /* `only` = a species id: build it in the teacher's board mode (?build=ID)
+     instead of the current step, and do not press Next */
+  async function build(only) {
+    const id = only || await stepId();
+    const info = await page.evaluate((only) => {
+      const s = only ? null : App.STEPS[App.state().step];
+      const sp = Lewis.species(only || s.sp || App.state().pool[s.pool]);
       const r = Lewis.solve(sp);
       return { sp, r: { total: r.total, neutral: r.valence.neutral, rows: r.valence.rows, adjust: r.valence.adjust,
         used2: r.used2, left2: r.left2, left3: r.left3, s2: r.s2, s3: r.s3, s4: r.s4, moves: r.moves, after4: r.centerAfter4,
         target: r.centerTarget }, period: ELEMENTS[sp.center].period, stable: !!ELEMENTS[sp.center].stable };
-    });
+    }, only || null);
     const { sp, r } = info;
     const check = (label) => page.click(`.work button:has-text("${label || 'Check'}")`);
 
@@ -180,7 +197,7 @@ const fakeLMS = () => {
       await check('Done');
     }
     expect(/^Done!/.test((await feedback()).trim()), `${id}: build did not finish: ${await feedback()}`);
-    await next();
+    if (!only) await next();
   }
 
   /* ---- a checkpoint */
@@ -253,6 +270,7 @@ const fakeLMS = () => {
     console.error(problems.map((p) => '✗ ' + p).join('\n'));
     process.exit(1);
   }
-  console.log(`✓ walkthrough passed: 13 builds, 16 checkpoint answers, score ${lms['cmi.core.score.raw']}, ` +
+  console.log(`✓ walkthrough passed: ${process.env.ALL ? 'every species in board mode, then ' : ''}13 builds, ` +
+    `16 checkpoint answers, score ${lms['cmi.core.score.raw']}, ` +
     `status ${lms['cmi.core.lesson_status']}, resumed after a reload, no anti-AI reporting.`);
 })();

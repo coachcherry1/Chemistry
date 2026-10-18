@@ -119,8 +119,9 @@ var Draw = (function () {
     Lewis.bonds(s).forEach(function (b) { gb.appendChild(bondLines(s, b, opts.pulse === b.key ? 'pulse' : '')); });
     root.appendChild(gb);
 
-    /* brackets and charge */
-    if (s.charge && filled.length) {
+    /* brackets and charge — not while atoms are being placed (Rule 2), where
+       they would cut across the drop spots */
+    if (s.charge && filled.length && !full) {
       var bx0 = Infinity, bx1 = -Infinity, by0 = Infinity, by1 = -Infinity;
       filled.forEach(function (k) {
         var p = xy(k);
@@ -154,28 +155,6 @@ var Draw = (function () {
       root.appendChild(g);
     });
 
-    /* lone pairs */
-    var lpActive = opts.lps || [];
-    filled.forEach(function (k) {
-      var n = s.lp[k] || 0;
-      if (!n) return;
-      var sides = Lewis.freeSides(s, k);
-      for (var i = 0; i < n && i < sides.length; i++) {
-        var dots = pairDots(k, sides[i], s.at[k]);
-        var on = lpActive.indexOf(k) >= 0;
-        var g = el('g', { class: 'lp' + (on ? ' active' : ''), 'data-slot': k, 'data-i': i });
-        if (on) {
-          g.setAttribute('tabindex', 0);
-          g.setAttribute('role', 'button');
-          g.setAttribute('aria-label', opts.lpLabel ? opts.lpLabel(k) : 'Lone pair on ' + s.at[k]);
-          var mx = (dots[0][0] + dots[1][0]) / 2, my = (dots[0][1] + dots[1][1]) / 2;
-          g.appendChild(el('circle', { class: 'lp-hit', cx: mx, cy: my, r: 11 }));
-        }
-        dots.forEach(function (d) { g.appendChild(el('circle', { class: 'dot', cx: d[0], cy: d[1], r: 2.7 })); });
-        root.appendChild(g);
-      }
-    });
-
     /* atoms */
     var atomActive = opts.atoms || [];
     var flags = opts.flags || {};
@@ -194,6 +173,29 @@ var Draw = (function () {
       g.appendChild(el('circle', { class: 'atom-ring', cx: p[0], cy: p[1], r: halfW(sym) + 5.5 }));
       g.appendChild(el('text', { class: 'sym', x: p[0], y: p[1], text: sym }));
       root.appendChild(g);
+    });
+
+    /* lone pairs — drawn after the atoms, so a pair sitting close to a wide
+       symbol (Cl, Xe) is on top and a click on it reaches the pair */
+    var lpActive = opts.lps || [];
+    filled.forEach(function (k) {
+      var n = s.lp[k] || 0;
+      if (!n) return;
+      var sides = Lewis.freeSides(s, k);
+      for (var i = 0; i < n && i < sides.length; i++) {
+        var dots = pairDots(k, sides[i], s.at[k]);
+        var on = lpActive.indexOf(k) >= 0;
+        var g = el('g', { class: 'lp' + (on ? ' active' : ''), 'data-slot': k, 'data-i': i });
+        if (on) {
+          g.setAttribute('tabindex', 0);
+          g.setAttribute('role', 'button');
+          g.setAttribute('aria-label', opts.lpLabel ? opts.lpLabel(k) : 'Lone pair on ' + s.at[k]);
+          var mx = (dots[0][0] + dots[1][0]) / 2, my = (dots[0][1] + dots[1][1]) / 2;
+          g.appendChild(el('circle', { class: 'lp-hit', cx: mx, cy: my, r: 9 }));
+        }
+        dots.forEach(function (d) { g.appendChild(el('circle', { class: 'dot', cx: d[0], cy: d[1], r: 2.7 })); });
+        root.appendChild(g);
+      }
     });
 
     return root;

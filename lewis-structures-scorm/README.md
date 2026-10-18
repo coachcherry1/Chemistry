@@ -25,11 +25,11 @@ answers with AI and follow the 5 rules. About 30–35 minutes.
 | 2 Polyatomic ions | 3 | **NH₄⁺** (a + charge takes an electron away) and **SO₄²⁻** (a − charge adds two; S already has 8 after Rule 4 — the first extra-double-bond trap). **Checkpoint 2** (3). |
 | 3 Oxyacids | 3 | **H₂SO₄** (every H bonds to an O; the second trap) and **HNO₂** (Rule 5 with a period-2 central atom). **Checkpoint 3** (3). |
 | 4 Octet exceptions | 5 | **BF₃** (B is stable with 6 — Rule 5 leaves it alone), **BeF₂** (Be is stable with 4), **SF₆** (Rule 2 gives S six bonds: 12 electrons) and **XeF₄** (Rule 4 puts the leftovers on Xe: 12 electrons). **Checkpoint 4** (3). |
-| 5 On your own | 3 | Two builds picked at random per student: one molecule, ion or oxyacid (ClO₃⁻, PO₄³⁻, SO₃²⁻, ClO₄⁻, ClO₂⁻, BrO₃⁻, IO₄⁻, H₃PO₄, H₂SO₃, HClO₄, HClO₃, HSO₄⁻, H₂PO₄⁻, H₂CO₃, CO, CN⁻, CO₂) and one exception (BCl₃, BeCl₂, PCl₅, SF₄, ICl₄⁻, PF₆⁻). **Checkpoint 5** (4). |
+| 5 On your own | 3 | Two builds picked at random per student: one molecule, ion or oxyacid (ClO₃⁻, PO₄³⁻, SO₃²⁻, ClO₄⁻, ClO₂⁻, BrO₃⁻, IO₄⁻, H₃PO₄, H₂SO₃, HClO₄, HClO₃, HSO₄⁻, H₂PO₄⁻, H₂CO₃, CO, CN⁻, CO₂) and one exception (BCl₃, BeCl₂, PCl₅, SF₄, ICl₄⁻, PF₆⁻, XeF₂, ClF₃). **Checkpoint 5** (4). |
 
 ### The builder
 
-The 5 rules stay on the left the whole time, with an **electron bookkeeping** table that fills in as
+The 5 rules stay on screen the whole time (on the left; below the drawing on a phone), with an **electron bookkeeping** table that fills in as
 each rule checks out (32 → −12 → 20 left → −20 → 0 left …). A rule unlocks only when the one before it
 is right.
 
@@ -124,8 +124,9 @@ What is in scope was chosen so the rules give one answer, and `tools/validate.js
 - **Exceptions only where the rules explain them.** Every expanded octet is on a period-3-or-below
   central atom and comes from Rule 2 or Rule 4; no period-2 atom ever passes 8; B and Be only appear as
   central atoms and end Rule 4 with exactly 6 and 4.
-- **No crowded drawings.** XeF₂, ClF₃ and I₃⁻ are left out: with five electron domains, two of the
-  central atom's lone pairs end up squeezed together in a flat drawing.
+- **No crowded drawings.** No two lone pairs on one atom are drawn side by side: lone pairs are placed as
+  a set, as far from the bonds and from each other as the eight directions allow (so XeF₂'s three pairs
+  and ClF₃'s two spread out), and the validator checks every step of every build.
 - **The first atom written really is the least electronegative** in every formula (checked against
   Pauling values).
 
@@ -166,7 +167,7 @@ reported. A *Start over* button on the results screen clears the saved progress.
 ```
 src/index.html?build                 build any species with the class — pick from a list
 src/index.html?build=H2SO4           start on one species (IDs are in ANSWER_KEY.md)
-src/index.html?step=b-SO4            jump to any step (ids or numbers 1–17) to preview it
+src/index.html?step=b-SO4            jump to any step (ids or numbers 1–20) to preview it
 src/index.html?step=b-exc&pick=PCl5  preview a Part 5 step with a chosen species
 ```
 
@@ -196,7 +197,9 @@ node tools/answer-key.js > ANSWER_KEY.md
 `tools/validate.js` refuses an activity where:
 
 - a species' hand-written answer is not what the 5 rules give;
-- a species has resonance, a legitimate expanded octet, or an odd electron count;
+- a species has resonance, an odd electron count, or an octet exception the rules don't produce (a period-2
+  atom past 8, B or Be not ending Rule 4 at 6 or 4, Rule 5 able to leave the central atom anywhere but its target);
+- two lone pairs on one atom would be drawn squeezed side by side;
 - the first atom written (not H) is not the least electronegative;
 - an oxyacid has an H on the central atom, or the layout doesn't hold the formula's atoms;
 - a Part 5 pool holds the wrong kind of species, or Part 4 does not build both kinds of exception;

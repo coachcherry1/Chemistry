@@ -23,9 +23,8 @@
  * electron Rules 2 and 4 give it, even past 8 (SF₆ from six bonds, XeF₄ from
  * leftover lone pairs). A period-2 central atom never goes past 8, and Rule 5
  * never takes any atom past what the rules give it. tools/validate.js
- * enforces all of this. Five-domain species with three lone pairs or two
- * lone pairs and three bonds (XeF₂, ClF₃, I₃⁻) are left out: in a flat
- * drawing two of their lone pairs always end up crowded together.
+ * enforces all of this, and that no two lone pairs on an atom are drawn
+ * squeezed side by side.
  */
 
 var SPECIES = {
@@ -141,6 +140,10 @@ var SPECIES = {
            layout: { N: 'Cl', E: 'Cl', S: 'Cl', W: 'Cl' }, key: { e: 36, bo: '1111', clp: 2 } },
   PF6:   { formula: 'PF6', charge: -1, name: 'hexafluorophosphate ion',
            layout: { W: 'F', E: 'F', NW: 'F', NE: 'F', SW: 'F', SE: 'F' }, key: { e: 48, bo: '111111', clp: 0 } },
+  XeF2:  { formula: 'XeF2', charge: 0, name: 'xenon difluoride',
+           layout: { W: 'F', E: 'F' }, key: { e: 22, bo: '11', clp: 3 } },
+  ClF3:  { formula: 'ClF3', charge: 0, name: 'chlorine trifluoride',
+           layout: { N: 'F', E: 'F', S: 'F' }, key: { e: 28, bo: '111', clp: 2 } },
 
   /* ---- used only in checkpoint questions */
   NF3:   { formula: 'NF3', charge: 0, name: 'nitrogen trifluoride',
@@ -162,5 +165,5 @@ var POOLS = {
            ids: ['ClO3', 'PO4', 'SO3', 'ClO4', 'ClO2', 'BrO3', 'IO4', 'H3PO4', 'H2SO3', 'HClO4', 'HClO3', 'HSO4',
                  'H2PO4', 'H2CO3', 'CO', 'CN', 'CO2'] },
   exc:   { title: 'An exception to the octet',
-           ids: ['BCl3', 'BeCl2', 'PCl5', 'SF4', 'ICl4', 'PF6'] }
+           ids: ['BCl3', 'BeCl2', 'PCl5', 'SF4', 'ICl4', 'PF6', 'XeF2', 'ClF3'] }
 };
