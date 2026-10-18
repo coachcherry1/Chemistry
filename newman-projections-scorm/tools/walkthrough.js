@@ -6,8 +6,9 @@
  *
  * It answers some checkpoint questions wrongly on purpose, makes one wrong
  * build, one wrong label and one wrong lock-in, reloads the page halfway to
- * check that progress resumes, and finally checks what reached the "LMS":
- * the score, the completion status and the interaction records.
+ * check that progress resumes, checks what reached the "LMS" (the score, the
+ * completion status and the interaction records), and finally opens a fresh
+ * attempt in the same browser to check it does NOT resume.
  */
 const path = require('path');
 const fs = require('fs');
@@ -43,7 +44,8 @@ const fakeLMS = () => {
 
 (async () => {
   const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1180, height: 860 } });
+  const context = await browser.newContext({ viewport: { width: 1180, height: 860 } });
+  const page = await context.newPage();
   const problems = [];
   page.on('pageerror', (e) => problems.push('page error: ' + e.message));
   page.on('console', (m) => { if (m.type() === 'error') problems.push('console: ' + m.text()); });
@@ -226,10 +228,8 @@ const fakeLMS = () => {
   /* ---- what reached the LMS */
   const lms = await page.evaluate(() => JSON.parse(sessionStorage.getItem('lms')));
   const graded = await page.evaluate(() => App.GRADED);
-  const wrongDrawn = await page.evaluate((w) => {
-    const st = JSON.parse(localStorage.getItem('newman-state'));
-    return Object.keys(st.ans).filter((k) => w.includes(k)).length;
-  }, [...WRONG]);
+  const st = JSON.parse(lms['cmi.suspend_data']);
+  const wrongDrawn = Object.keys(st.ans).filter((k) => WRONG.has(k)).length;
   const expected = Math.round(100 * (graded - wrongDrawn) / graded);
   expect(lms['cmi.core.lesson_status'] === 'completed', 'status is ' + lms['cmi.core.lesson_status']);
   expect(+lms['cmi.core.score.raw'] === expected, 'score.raw ' + lms['cmi.core.score.raw'] + ', expected ' + expected);
@@ -238,9 +238,22 @@ const fakeLMS = () => {
   expect((lms['cmi.suspend_data'] || '').length < 4000, 'suspend_data too long');
   const big = await page.textContent('.big-score');
 
+  /* a reset attempt (or the next student on the same Chromebook): a new tab
+     in the same browser has the same localStorage but an empty LMS, and must
+     start from the beginning, not resume this student's finished attempt */
+  const fresh = await context.newPage();
+  fresh.on('pageerror', (e) => problems.push('fresh attempt: page error: ' + e.message));
+  await fresh.addInitScript(fakeLMS);
+  await fresh.goto(URL);
+  const startText = (await fresh.textContent('.screen .primary')).trim();
+  expect(startText === 'Start', `a fresh attempt offered "${startText}" instead of starting over`);
+  const freshScore = (await fresh.textContent('#score')).trim();
+  expect(/: 0 \//.test(freshScore), 'a fresh attempt showed an old score: ' + freshScore);
+
   console.log('Results screen: ' + big.trim());
   console.log('LMS: status=' + lms['cmi.core.lesson_status'] + ' score.raw=' + lms['cmi.core.score.raw'] +
               ' interactions=' + nInteractions + ' suspend_data=' + (lms['cmi.suspend_data'] || '').length + ' chars');
+  console.log('Fresh attempt in the same browser: intro button "' + startText + '"');
   console.log(problems.length ? 'PROBLEMS:\n  ' + problems.join('\n  ') : 'Walkthrough passed.');
   await browser.close();
   process.exit(problems.length ? 1 : 0);

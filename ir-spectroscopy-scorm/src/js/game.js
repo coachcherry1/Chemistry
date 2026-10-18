@@ -533,7 +533,6 @@ var Game = (function () {
       }
       state.index = itemCount(cfg.n) - 1;
       persist();
-      SCORM.markComplete();
       showScreen('finish');
       return;
     }
@@ -606,6 +605,9 @@ var Game = (function () {
       box.appendChild(go);
 
     } else {
+      /* every time the finish screen is shown, not only from one caller: it is
+         idempotent, and the screen below says completion was sent */
+      SCORM.markComplete();
       box.appendChild(make('h2', null, 'All three levels complete'));
       box.appendChild(make('p', null, accuracyLine()));
       box.appendChild(make('p', 'screen-note', SCORM.isConnected()
@@ -658,6 +660,10 @@ var Game = (function () {
   }
 
   function startDrag(ev) {
+    /* a new press starts fresh: if the last drag's trailing click never
+       arrived (the tile was re-rendered away, or it was a touch drag), the
+       flag must not swallow this click instead */
+    suppressClick = false;
     var idx = tileIndexOf(ev.target);
     if (idx < 0) return;
     var tileNode = ev.target.closest('.tile');

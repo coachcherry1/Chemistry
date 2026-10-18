@@ -66,8 +66,10 @@ random from a larger pool, so a retake sees a different mix. 40 questions in all
 Answered questions stay answered: re-opening the activity resumes where the student left off and
 does not allow re-answering. To give a student a fresh attempt, reset their attempt in Schoology.
 
-Progress is saved to `cmi.suspend_data` (about 1.3 KB of the 4 KB allowed) and mirrored to
-`localStorage`. The save carries a schema version (`SCHEMA` in `src/js/app.js`): **bump it whenever
+Progress is saved to `cmi.suspend_data` (about 1.3 KB of the 4 KB allowed), which belongs to one
+student's one attempt — so resetting an attempt in Schoology really does start it over, and a second
+student on the same Chromebook starts fresh. (`localStorage` is used only when the page runs without an
+LMS.) The save carries a schema version (`SCHEMA` in `src/js/app.js`): **bump it whenever
 you change the step list, a quiz pool or a molecule**, or a student resuming an old save will carry a
 stale set of questions.
 
@@ -203,8 +205,8 @@ node tools/answer-key.js > ANSWER_KEY.md
 - a quiz pool is smaller than its draw, or a question id cannot be a SCORM interaction id.
 
 `tools/walkthrough.js` (optional, needs Playwright) plays the whole activity in a headless browser
-against a fake LMS — wrong builds, wrong answers, a reload halfway — and checks the score, status
-and interaction records that arrive.
+against a fake LMS — wrong builds, wrong answers, a reload halfway, a fresh attempt in the same browser
+(which must start over) — and checks the score, status and interaction records that arrive.
 
 To shorten the activity, lower `draw` in `src/js/quiz.js` or remove steps from `STEPS` in
 `src/js/app.js`, then bump `SCHEMA`.

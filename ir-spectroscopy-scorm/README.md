@@ -179,9 +179,10 @@ To report a percent instead, set `cmi.core.score.raw` alongside the status in
 `src/imsmanifest.xml`.
 
 Progress is saved to `cmi.suspend_data` when the activity opens and after every answer, so
-a student who closes the window mid-activity resumes where they left off. It also mirrors
-to `localStorage`, which is what makes resume work when the activity is opened outside an
-LMS.
+a student who closes the window mid-activity resumes where they left off. `suspend_data`
+belongs to one student's one attempt — so resetting an attempt in Schoology really does start
+it over, and a second student on the same Chromebook starts fresh. (`localStorage` is used
+only when the activity is opened outside an LMS, which is what makes resume work there.)
 
 The save carries a schema version (`SCHEMA` in `src/js/game.js`). **Bump it whenever you
 change the level list, the draw or the group vocabulary** — a save written by an older

@@ -1387,8 +1387,10 @@ var App = (function () {
       state.fin = 1;
       state.done.results = 1;
       persist();
-      if (!preview) { reportScore(); SCORM.markComplete(); }
     }
+    /* every visit, not just the first: both calls are idempotent, and a
+       resumed attempt must still end up with its score and status */
+    if (!preview) { reportScore(); SCORM.markComplete(); }
     var right = correctCount();
     var pct = Math.round(100 * right / GRADED);
     var rows = Object.keys(QUIZZES).map(function (k) {
