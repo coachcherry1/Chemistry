@@ -11,7 +11,8 @@
  * to B and Be (and checks they are refused as exceptions), makes and then undoes
  * every Rule 5 bond in the builds that need one, answers some checkpoint
  * questions wrongly on purpose — three of them with the extra-double-bond choice —
- * reloads the page halfway to check that progress resumes, and finally checks
+ * reloads the page halfway to check that progress resumes, opens a fresh
+ * attempt in the same browser to check it does NOT resume, and finally checks
  * what reached the "LMS": the score, the completion status, the interaction
  * records, and that nothing about the anti-AI messages was sent.
  */
@@ -52,7 +53,8 @@ const fakeLMS = () => {
 
 (async () => {
   const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1180, height: 900 } });
+  const context = await browser.newContext({ viewport: { width: 1180, height: 900 } });
+  const page = await context.newPage();
   const problems = [];
   page.on('pageerror', (e) => problems.push('page error: ' + e.message));
   page.on('console', (m) => { if (m.type() === 'error') problems.push('console: ' + m.text()); });
@@ -177,7 +179,7 @@ const fakeLMS = () => {
           [...document.querySelectorAll('.work .bond')].every((b) => b.querySelectorAll('line').length === 1));
         expect(allSingle, `${id}: the refused double bond was drawn anyway`);
       }
-      expect(await page.isDisabled('button:has-text("Undo last bond")'), `${id}: Undo enabled with nothing to undo`);
+      expect(!(await page.$('button:has-text("Undo last bond")')), `${id}: Undo shown where no bond can ever be made`);
       await check('Done');
     } else {
       const bonds = () => page.evaluate(() =>
@@ -265,12 +267,22 @@ const fakeLMS = () => {
   const leaks = Object.keys(lms).filter((k) => /snark|chatbot/i.test(k + ' ' + lms[k]));
   expect(leaks.length === 0, 'something about the anti-AI messages reached the LMS: ' + leaks.join(', '));
 
+  /* a reset attempt (or the next student on the same Chromebook): a new tab
+     in the same browser has the same localStorage but an empty LMS, and must
+     start from the beginning, not resume this student's finished attempt */
+  const fresh = await context.newPage();
+  await fresh.addInitScript(fakeLMS);
+  await fresh.goto(URL);
+  const startText = (await fresh.textContent('.screen .primary')).trim();
+  expect(startText === 'Start', `a fresh attempt offered "${startText}" instead of starting over`);
+  expect(/: 0 \/ 16/.test(await fresh.textContent('#score')), 'a fresh attempt showed an old score');
+
   await browser.close();
   if (problems.length) {
     console.error(problems.map((p) => '✗ ' + p).join('\n'));
     process.exit(1);
   }
   console.log(`✓ walkthrough passed: ${process.env.ALL ? 'every species in board mode, then ' : ''}13 builds, ` +
-    `16 checkpoint answers, score ${lms['cmi.core.score.raw']}, ` +
+    `16 checkpoint answers, score ${lms['cmi.core.score.raw']}, a reset attempt starts fresh, ` +
     `status ${lms['cmi.core.lesson_status']}, resumed after a reload, no anti-AI reporting.`);
 })();

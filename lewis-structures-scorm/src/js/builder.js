@@ -166,7 +166,8 @@ function Builder(o) {
 
   function atomLabel(k) {
     var el = s.at[k];
-    if (rule === 2) return el + ' ' + where(k) + '. Press Enter to send it back to the tray.';
+    if (rule === 2) return k === 'C' ? 'Central atom ' + el + '. It stays in the center.'
+      : el + ' ' + where(k) + '. Press Enter to send it back to the tray.';
     if (rule === 3 && k === 'C') return 'Central atom ' + el + ' — it waits for Rule 4.';
     var e = Lewis.electrons(s, k);
     return el + ' ' + where(k) + ', ' + plural(s.lp[k] || 0, 'lone pair') + ', ' + e + ' electrons around it. ' +
@@ -247,8 +248,12 @@ function Builder(o) {
       var t = atoms[+key];
       if (!t || t.slot) return;
       flags = {};
+      var kb = keyboardIn();
       if (slot === 'C') {
-        if (s.at.C) return;
+        if (s.at.C) {
+          say(X + ' is already in the center. Put ' + t.el + ' in one of the spots around it.');
+          return;
+        }
         if (t.el === X) {
           place(t, 'C');
           phase = '2b';
@@ -264,6 +269,7 @@ function Builder(o) {
               'written in ' + sp.text + ', not counting H.', 'bad');
         }
         paint();
+        if (kb) refocus(null);
         return;
       }
       if (!s.at.C) { say('Start with the central atom: drop it on the center spot.'); return; }
@@ -272,13 +278,41 @@ function Builder(o) {
       place(t, slot);
       say('');
       paint();
+      if (kb) refocus(null);
     },
     empty: function (slot) {
-      if (finished || phase !== '2b') return;
-      if (slot !== 'C' && s.at[slot]) { flags = {}; unplace(slot); say(''); paint(); }
-      else if (!s.at[slot]) say('Choose an atom in the tray first, then a spot.');
+      if (finished || (phase !== '2a' && phase !== '2b')) return;
+      var kb = keyboardIn();
+      if (slot === 'C' && s.at.C) {
+        say(X + ' is the central atom — it stays. Click an atom around it to send that one back.');
+      } else if (s.at[slot]) {
+        flags = {};
+        unplace(slot);
+        say('');
+        paint();
+        if (kb) refocus(slot);
+      } else {
+        say('Choose an atom in the tray first, then a spot.');
+      }
     }
   });
+
+  /* Rule 2 redraws the drawing and the tray after every placement, which
+     throws away whatever had keyboard focus. When the student is working
+     from the keyboard, put focus somewhere useful: the next atom in the tray
+     (or Check, once the tray is empty), or the spot an atom was sent back
+     from. */
+  function keyboardIn() {
+    var a = document.activeElement;
+    return !!a && a !== document.body && node.contains(a) && !a.matches(':hover');
+  }
+
+  function refocus(slot) {
+    var target = slot != null ? canvas.querySelector('[data-drop="' + slot + '"]') : null;
+    if (!target) target = tray.querySelector('.tile');
+    if (!target && !checkBtn.hidden) target = checkBtn;
+    if (target && target.focus) target.focus({ preventScroll: true });
+  }
 
   function check2b() {
     var waiting = atoms.filter(function (t) { return !t.slot; }).length;
@@ -516,10 +550,14 @@ function Builder(o) {
 
     if (phase === '5b') {
       checkBtn.textContent = 'Done';
-      undoBtn = h('button', { type: 'button', class: 'ghostbtn', text: '↶ Undo last bond',
-        title: 'Turn the last bond you made in Rule 5 back into a lone pair' });
-      undoBtn.addEventListener('click', undoShare);
-      extraBtns.appendChild(undoBtn);
+      /* only when the central atom is short, so a bond can actually be made;
+         a button that can never do anything is worse than no button */
+      if (Lewis.electrons(after4, 'C') < GOAL) {
+        undoBtn = h('button', { type: 'button', class: 'ghostbtn', text: '↶ Undo last bond',
+          title: 'Turn the last bond you made in Rule 5 back into a lone pair' });
+        undoBtn.addEventListener('click', undoShare);
+        extraBtns.appendChild(undoBtn);
+      }
     }
   }
 

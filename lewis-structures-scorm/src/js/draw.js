@@ -161,7 +161,7 @@ var Draw = (function () {
     filled.forEach(function (k) {
       var p = xy(k), sym = s.at[k];
       var on = atomActive.indexOf(k) >= 0;
-      var dropBack = opts.dropFilled && k !== 'C';
+      var dropBack = opts.dropFilled;          /* the central atom too: a click on it gets an answer */
       var g = el('g', { class: 'atom ' + tone(sym) + (on ? ' active' : '') + (dropBack ? ' drop filled' : '') +
         (flags[k] ? ' flag-' + flags[k] : ''), 'data-slot': k });
       if (dropBack) g.setAttribute('data-drop', k);

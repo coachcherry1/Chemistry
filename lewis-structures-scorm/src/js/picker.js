@@ -58,6 +58,10 @@ function Picker(opts) {
   }
 
   function onDown(ev) {
+    /* a new press starts fresh: if the last drag's trailing click never
+       arrived (the tile was re-rendered away, or it was a touch drag), the
+       flag must not swallow this click instead */
+    suppressClick = false;
     var key = tileKey(ev.target);
     if (key == null) return;
     var node = ev.target.closest('.tile');

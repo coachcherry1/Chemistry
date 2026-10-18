@@ -434,8 +434,10 @@ var App = (function () {
       state.fin = 1;
       state.done.results = 1;
       persist();
-      if (!preview) { reportScore(); SCORM.markComplete(); }
     }
+    /* every visit, not just the first: both calls are idempotent, and a
+       resumed attempt must still end up with its score and status */
+    if (!preview) { reportScore(); SCORM.markComplete(); }
     var right = correctCount();
     var pct = Math.round(100 * right / GRADED);
     var rows = Object.keys(QUIZZES).map(function (k) {
@@ -563,7 +565,14 @@ var App = (function () {
     el.screen.innerHTML = '';
     el.screen.appendChild(box);
     el.screen.hidden = false;
-    go.addEventListener('click', function () { el.screen.hidden = true; goTo(state.step); });
+    /* a real modal: nothing behind the dialog can be tabbed to or clicked */
+    var behind = [document.querySelector('.topbar'), el.parts, document.querySelector('main')];
+    behind.forEach(function (n) { if (n) n.setAttribute('inert', ''); });
+    go.addEventListener('click', function () {
+      behind.forEach(function (n) { if (n) n.removeAttribute('inert'); });
+      el.screen.hidden = true;
+      goTo(state.step);
+    });
     go.focus();
   }
 
@@ -571,6 +580,7 @@ var App = (function () {
     ['parts', 'stepTitle', 'counter', 'instructions', 'stage', 'feedback', 'next', 'back', 'score', 'lms',
      'screen', 'rulesBody', 'ptBody', 'vocabBody'].forEach(function (id) { el[id] = $(id); });
     el.fbHome = { parent: el.feedback.parentNode, next: el.feedback.nextSibling };
+    el.back.hidden = true;           /* until a step is open there is nothing to go back to */
     buildReference();
 
     var connected = SCORM.init();

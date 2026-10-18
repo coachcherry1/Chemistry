@@ -73,21 +73,31 @@ var SCORM = (function () {
     return pad(Math.floor(total / 3600)) + ':' + pad(Math.floor(total % 3600 / 60)) + ':' + pad(total % 60) + '.00';
   }
 
-  /* suspend_data is capped at 4096 characters in SCORM 1.2. */
+  /* suspend_data is capped at 4096 characters in SCORM 1.2.
+
+     Inside the LMS, progress lives ONLY in cmi.suspend_data, which belongs to
+     one learner's one attempt. localStorage belongs to the browser, so using
+     it there would hand a reset attempt — or the next student on the same
+     Chromebook — somebody else's answers, with nothing left to answer and no
+     score sent. It is used only when there is no LMS (index.html opened
+     straight from disk). */
   function saveState(obj) {
     var json;
     try { json = JSON.stringify(obj); } catch (e) { return false; }
     if (json.length > 4000) return false;
-    try { localStorage.setItem(STORE, json); } catch (e) { /* private mode */ }
-    if (!connected) return false;
+    if (!connected) {
+      try { localStorage.setItem(STORE, json); } catch (e) { /* private mode */ }
+      return false;
+    }
     var ok = set('cmi.suspend_data', json);
     commit();
     return ok;
   }
 
   function loadState() {
-    var json = get('cmi.suspend_data');
-    if (!json) {
+    var json = '';
+    if (connected) json = get('cmi.suspend_data');
+    else {
       try { json = localStorage.getItem(STORE) || ''; } catch (e) { json = ''; }
     }
     if (!json) return null;

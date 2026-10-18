@@ -90,8 +90,10 @@ and fills the rest at random from its pool, so a retake sees a different mix. 37
 Answered questions stay answered: re-opening the activity resumes where the student left off and does
 not allow re-answering. To give a student a fresh attempt, reset their attempt in Schoology.
 
-Progress is saved to `cmi.suspend_data` (about 1 KB of the 4 KB allowed) and mirrored to
-`localStorage`. A build in progress is not saved — a student who leaves mid-build starts that build
+Progress is saved to `cmi.suspend_data` (about 1 KB of the 4 KB allowed), which belongs to one
+student's one attempt — so resetting an attempt in Schoology really does start it over, and a second
+student on the same Chromebook starts fresh. (`localStorage` is used only when the page runs without an
+LMS.) A build in progress is not saved — a student who leaves mid-build starts that build
 over. The save carries a schema version (`SCHEMA` in `src/js/app.js`): **bump it whenever you change the
 step list, a quiz pool or a Part 5 pool.** (It is at 2: progress saved by the first version, before the
 exceptions were added, is discarded, so a student who had started that version begins again.)
@@ -208,10 +210,11 @@ node tools/answer-key.js > ANSWER_KEY.md
 - a quiz pool is smaller than its draw, or a question id cannot be a SCORM interaction id;
 - the saved state could outgrow SCORM 1.2's 4 KB.
 
-`tools/walkthrough.js` (optional, needs Playwright) plays the whole activity in a headless browser
+`tools/walkthrough.js` (optional, needs Playwright; `ALL=1` first builds every species once) plays the whole activity in a headless browser
 against a fake LMS — wrong totals, wrong central atoms, an extra double bond on every central atom that
 is already full (snark for S, P, Cl, Xe; the exception reminder for B and Be), making and undoing every
-Rule 5 bond, wrong checkpoint answers (three of them extra-double-bond drawings), a reload halfway — and checks the
+Rule 5 bond, wrong checkpoint answers (three of them extra-double-bond drawings), a reload halfway, a
+fresh attempt in the same browser (which must start over) — and checks the
 score, status and interaction records that arrive, and that nothing about the anti-AI messages does.
 
 To shorten the activity, lower `draw` in `src/js/quiz.js` or remove steps from `STEPS` in
