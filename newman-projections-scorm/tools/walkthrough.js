@@ -2,7 +2,6 @@
  * real browser, against a fake LMS. Optional: needs Playwright.
  *
  *   node tools/walkthrough.js            # headless run, prints a report
- *   VARIANT=qualitative node tools/walkthrough.js   # the qualitative package
  *   SHOTS=dir node tools/walkthrough.js  # also saves a screenshot per step
  *
  * It answers some checkpoint questions wrongly on purpose, makes one wrong
@@ -19,12 +18,11 @@ catch (e) {
   catch (e2) { console.error('Playwright is not installed; skipping.'); process.exit(0); }
 }
 
-const VARIANT = process.env.VARIANT === 'qualitative' ? 'qualitative' : 'quantitative';
-const URL = 'file://' + path.join(__dirname, '..', 'src', 'index.html') + '?variant=' + VARIANT;
-const STORE = 'newman-state' + (VARIANT === 'qualitative' ? '-qual' : '');
+const URL = 'file://' + path.join(__dirname, '..', 'src', 'index.html');
+const STORE = 'newman-state';
 const SHOTS = process.env.SHOTS;
-/* answered wrongly on purpose: one core question per checkpoint in each package */
-const WRONG = new Set(['a-front', 'b-steric', 'qb-steric', 'c-bond', 'qc-bond', 'd-B']);
+/* answered wrongly on purpose: one core question per checkpoint */
+const WRONG = new Set(['a-front', 'b-steric', 'c-bond', 'd-B']);
 
 const fakeLMS = () => {
   const data = JSON.parse(sessionStorage.getItem('lms') || '{}');
@@ -144,11 +142,6 @@ const fakeLMS = () => {
   }
 
   async function quiz() {
-    if (VARIANT === 'qualitative') {
-      expect(await page.$('.quiz-table[open] table'), 'qualitative checkpoint has no open strain table');
-    } else {
-      expect(!(await page.$('.quiz-table')), 'quantitative checkpoint should not show the side strain table');
-    }
     for (;;) {
       const btn = await page.$('.quiz .choice');
       if (!btn) break;
@@ -247,10 +240,28 @@ const fakeLMS = () => {
   expect((lms['cmi.suspend_data'] || '').length < 4000, 'suspend_data too long');
   const big = await page.textContent('.big-score');
 
-  const h1 = await page.textContent('h1');
-  expect(/qualitative/.test(h1) === (VARIANT === 'qualitative'), 'heading does not match the package: ' + h1);
+  /* ---- a second attempt: everything cleared, best score kept */
+  await page.click('button:has-text("Start a new attempt")');
+  await page.click('button:has-text("Yes, start again")');
+  const fresh = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), STORE);
+  expect(fresh.att === 2, 'attempt counter is ' + fresh.att);
+  expect(Object.keys(fresh.ans).length === 0, 'old answers survived the new attempt');
+  expect(Object.keys(fresh.done).length === 0, 'old builds/steps survived the new attempt');
+  expect(Math.round(fresh.best) === expected, 'best score not kept: ' + fresh.best);
+  expect((await stepId()) === 'meet', 'new attempt did not start at step 1');
+  /* parts stay open: jump to checkpoint 1 with Next, answer it all correctly */
+  while ((await stepId()) !== 'quiz-A') await page.click('#next');
+  for (;;) {
+    if (!(await page.$('.quiz .choice'))) break;
+    await page.click('.quiz .choice[data-choice="0"]');
+    await page.click('.quiz .btnrow .primary');
+  }
+  const lms2 = await page.evaluate(() => JSON.parse(sessionStorage.getItem('lms')));
+  expect(+lms2['cmi.core.score.raw'] === expected, 'retry lowered the gradebook score to ' + lms2['cmi.core.score.raw']);
+  expect(lms2['cmi.core.lesson_status'] === 'completed', 'retry changed the status to ' + lms2['cmi.core.lesson_status']);
+  expect(/best \d+%/.test(await page.textContent('#score')), 'header does not show the best score');
+  console.log('Retry: attempt 2 started clean; gradebook kept ' + lms2['cmi.core.score.raw'] + '%');
 
-  console.log('Package: ' + VARIANT);
   console.log('Results screen: ' + big.trim());
   console.log('LMS: status=' + lms['cmi.core.lesson_status'] + ' score.raw=' + lms['cmi.core.score.raw'] +
               ' interactions=' + nInteractions + ' suspend_data=' + (lms['cmi.suspend_data'] || '').length + ' chars');

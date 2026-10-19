@@ -15,7 +15,7 @@ global.window = { addEventListener() {} };
 global.document = { addEventListener() {} };
 global.localStorage = { getItem() { return null; }, setItem() {}, removeItem() {} };
 const src = path.join(__dirname, '..', 'src', 'js');
-for (const f of ['variant.js', 'groups.js', 'strain.js', 'geometry.js', 'molecules.js', 'draw.js', 'quiz.js', 'scorm.js', 'app.js']) {
+for (const f of ['groups.js', 'strain.js', 'geometry.js', 'molecules.js', 'draw.js', 'quiz.js', 'scorm.js', 'app.js']) {
   (0, eval)(fs.readFileSync(path.join(src, f), 'utf8'));
 }
 
@@ -153,27 +153,14 @@ for (const s of App.STEPS.filter((x) => x.kind === 'find')) {
 /* ---------------------------------------------------- quiz bank */
 
 const ids = new Set();
-const SETS = { quantitative: QUIZZES, qualitative: QUIZZES_QUAL };
-for (const [setName, SET] of Object.entries(SETS)) {
- const setIds = new Set();
- if (Object.keys(SET).join() !== Object.keys(QUIZZES).join()) fail(`${setName}: checkpoints differ from A–D`);
- for (const k of Object.keys(SET)) {
-  const Q = SET[k];
-  if (Q.draw !== QUIZZES[k].draw) fail(`${setName} ${k}: draws ${Q.draw}, the other package draws ${QUIZZES[k].draw}`);
-  if (Q.pool.length < Q.draw) fail(`${setName} ${k}: pool of ${Q.pool.length} is smaller than the draw of ${Q.draw}`);
-  for (const c of Q.core) if (!Q.pool.some((q) => q.id === c)) fail(`${setName} ${k}: core question ${c} is not in the pool`);
-  if (Q.core.length > Q.draw) fail(`${setName} ${k}: more core questions than the draw`);
+for (const k of Object.keys(QUIZZES)) {
+  const Q = QUIZZES[k];
+  if (Q.pool.length < Q.draw) fail(`quiz ${k}: pool of ${Q.pool.length} is smaller than the draw of ${Q.draw}`);
+  for (const c of Q.core) if (!Q.pool.some((q) => q.id === c)) fail(`quiz ${k}: core question ${c} is not in the pool`);
+  if (Q.core.length > Q.draw) fail(`quiz ${k}: more core questions than the draw`);
   for (const q of Q.pool) {
-    if (setIds.has(q.id)) fail(`${setName}: duplicate question id ${q.id}`);
-    setIds.add(q.id);
+    if (ids.has(q.id)) fail(`duplicate question id ${q.id}`);
     ids.add(q.id);
-    /* the qualitative package never asks for a number */
-    if (setName === 'qualitative') {
-      for (const c of q.choices) {
-        if (typeof c === 'string' && /\d\s*kJ/.test(c)) fail(`qualitative ${q.id}: choice "${c}" is a calculated value`);
-      }
-      if (/\d\s*kJ/.test(q.q)) fail(`qualitative ${q.id}: the question quotes an energy — reword it to compare instead`);
-    }
     if (q.choices.length < 2 || q.choices.length > 4) fail(`${q.id}: ${q.choices.length} choices`);
     if (!q.why) fail(`${q.id}: no explanation`);
     if (/[^A-Za-z0-9-]/.test(q.id)) fail(`${q.id}: ids must be letters, digits and hyphens (they become SCORM interaction ids)`);
@@ -186,34 +173,12 @@ for (const [setName, SET] of Object.entries(SETS)) {
     const texts = q.choices.map((c) => typeof c === 'string' ? c : JSON.stringify(c));
     if (new Set(texts).size !== texts.length) fail(`${q.id}: duplicate choices`);
   }
- }
 }
 
 /* Questions whose answer is a number or a picture from the model. If you
    change the strain table, these tell you which question text to update. */
 const fmt = STRAIN.fmt;
-const staggered = (id) => namedEnergies(molecule(id)).filter((n) => n.phi % 120);
 const checks = {
-  'qa-higher': () => E('ethane', 0) > E('ethane', 60),
-  'qb-rank': () => E('butane', 180) < E('butane', 60) && E('butane', 60) < E('butane', 120) && E('butane', 120) < E('butane', 0),
-  'qb-compare': () => E('butane', 60) > E('butane', 180) &&
-                      GEOM.breakdownAt(molecule('butane'), 60).every((p) => p.kind === 'gauche'),
-  'qb-which-strain': () => GEOM.breakdownAt(molecule('butane'), 0).some((p) => p.label === 'CH₃/CH₃' && p.kind === 'eclipsed'),
-  'qb-steric': () => near(E('butane', 60), STRAIN.pair('CH3', 'CH3').gau),
-  'qb-total': () => STRAIN.pair('CH3', 'CH3').ecl > STRAIN.pair('H', 'CH3').ecl,
-  'qb-ch3h': () => STRAIN.pair('H', 'CH3').ecl > STRAIN.pair('H', 'H').ecl,
-  'qc-bond': () => STRAIN.pair('Br', 'CH3').gau < STRAIN.pair('CH3', 'CH3').gau,
-  'qc-methylbutane': () => staggered('methylbutane').filter((n) => n.e > bestStaggered(molecule('methylbutane')).e + 0.05).length === 1,
-  'qc-higher': () => { const s = staggered('bromobutane'); return Math.max(...s.map((n) => n.e)) === E('bromobutane', 300); },
-  'qc-table': () => ['iPr', 'CH3', 'Br'].every((g) => STRAIN.pair('tBu', 'CH3').gau > STRAIN.pair(g, 'CH3').gau),
-  'qd-dmb-best': () => bestStaggered(molecule('dimethylbutane')).phi === 60,
-  'qd-dmb-why': () => {
-    const nm = GEOM.newmanAt(molecule('dimethylbutane'), 60);
-    const fh = nm.front.find((q) => q.g === 'H').a, bh = nm.back.find((q) => q.g === 'H').a;
-    return STRAIN.gap(fh, bh) === 180;
-  },
-  'qd-AvsB': () => bestStaggered(molecule('pairB_Br')).e > bestStaggered(molecule('pairA_Br')).e,
-  'qd-brbr': () => STRAIN.pair('Br', 'Br').gau > STRAIN.pair('Br', 'CH3').gau,
   'a-each': () => near(STRAIN.pair('H', 'H').ecl, 4) && near(E('ethane', 0), 12),
   'a-count': () => namedEnergies(molecule('ethane')).filter((n) => near(n.e, 12)).length === 3,
   'b-lowest': () => bestStaggered(molecule('butane')).phi === 180,
@@ -272,10 +237,8 @@ for (const x of MOLECULES.SWAP_ORDER) {
 
 /* ---------------------------------------------------- report */
 
-const count = (S) => Object.values(S).reduce((n, Q) => n + Q.pool.length, 0);
-console.log(`${mols.length} molecules, ${builds.length} builds, ${count(QUIZZES)} quantitative and ` +
-            `${count(QUIZZES_QUAL)} qualitative questions (${App.GRADED} graded per attempt in each), ` +
-            `${STRAIN.ROWS.length} strain-table rows.`);
+console.log(`${mols.length} molecules, ${builds.length} builds, ${ids.size} questions ` +
+            `(${App.GRADED} graded per attempt), ${STRAIN.ROWS.length} strain-table rows.`);
 if (problems.length) {
   console.log('\nPROBLEMS:\n  ' + problems.join('\n  '));
   process.exit(1);

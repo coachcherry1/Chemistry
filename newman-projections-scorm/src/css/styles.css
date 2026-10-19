@@ -557,7 +557,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .sk-num { font: 10px system-ui, sans-serif; fill: var(--muted); }
 .sk-num-view { fill: var(--accent); font-weight: 700; }
 
-/* qualitative package: the strain table beside the checkpoint questions */
-.quiz-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 320px); gap: 12px; align-items: start; }
-.quiz-grid .quiz-table { margin-top: 0; position: sticky; top: 8px; }
-@media (max-width: 760px) { .quiz-grid { grid-template-columns: minmax(0, 1fr); } .quiz-grid .quiz-table { position: static; } }
+/* results screen: retry */
+.best-line { font-weight: 600; margin: 10px 0 0; }
+.confirm { margin-top: 10px; padding: 10px 12px; border-radius: var(--radius); border: 1px solid var(--accent); background: var(--note-bg); }
+.confirm p { margin: 0 0 4px; font-size: 0.88rem; }

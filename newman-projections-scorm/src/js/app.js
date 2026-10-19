@@ -131,10 +131,7 @@ var App = (function () {
       text: '' }
   ];
 
-  /* The checkpoint set for this package: quantitative or qualitative
-     (variant.js). Everything else in the activity is the same. */
-  var QZ = activeQuizzes();
-  var QUAL = VARIANT === 'qualitative';
+  var QZ = QUIZZES;
 
   var GRADED = Object.keys(QZ).reduce(function (s, k) { return s + QZ[k].draw; }, 0);
 
@@ -219,7 +216,9 @@ var App = (function () {
       /* keep the pool's own order, so related questions sit together */
       draws[k] = Q.pool.map(function (q) { return q.id; }).filter(function (id) { return ids.indexOf(id) >= 0; });
     });
-    return { v: SCHEMA, seed: seed, step: 0, max: 0, draws: draws, ans: {}, pick: {}, sk: {}, pr: {}, done: {}, fin: 0, flip: 0 };
+    /* `best` is the best finished attempt's percentage; `att` counts attempts */
+    return { v: SCHEMA, seed: seed, step: 0, max: 0, draws: draws, ans: {}, pick: {}, sk: {}, pr: {}, done: {}, fin: 0, flip: 0,
+             best: 0, att: 1 };
   }
 
   function restore(saved) {
@@ -244,9 +243,33 @@ var App = (function () {
 
   function answeredCount() { return Object.keys(state.ans).length; }
 
+  function attemptPercent() { return 100 * correctCount() / GRADED; }
+
+  /* The gradebook gets the better of this attempt and the best finished one,
+     so starting a new attempt can never lower a student's grade. */
   function reportScore() {
     if (preview) return;
-    SCORM.setScore(100 * correctCount() / GRADED);
+    SCORM.setScore(Math.max(state.best || 0, attemptPercent()));
+  }
+
+  /* A fresh attempt: new checkpoint questions, every answer, build and
+     prediction cleared. The parts already reached stay open, so a student
+     can go straight to whatever they want to redo. */
+  function newAttempt() {
+    var keep = {
+      best: Math.max(state.best || 0, state.fin ? attemptPercent() : 0),
+      att: (state.att || 1) + 1,
+      max: state.max,
+      flip: state.flip
+    };
+    state = newState();
+    state.best = keep.best;
+    state.att = keep.att;
+    state.max = keep.max;
+    state.flip = keep.flip;
+    persist();
+    reportScore();
+    goTo(0);
   }
 
   function complete(msg, kind) {
@@ -275,7 +298,8 @@ var App = (function () {
       }, [p.n < 5 ? p.n + '  ' + p.name : p.name]);
       el.parts.appendChild(b);
     });
-    el.score.textContent = 'Checkpoint score: ' + correctCount() + ' / ' + GRADED;
+    el.score.textContent = 'Checkpoint score: ' + correctCount() + ' / ' + GRADED +
+      (state.att > 1 ? '  ·  best ' + Math.round(state.best || 0) + '%' : '');
   }
 
   function goTo(i) {
@@ -288,12 +312,8 @@ var App = (function () {
     var s = STEPS[i];
     el.stepTitle.textContent = s.title;
     el.counter.textContent = 'Step ' + (i + 1) + ' of ' + STEPS.length;
-    var text = (QUAL && s.kind === 'quiz')
-      ? 'Graded: your first answer to each question counts. The strain table is open beside the questions — ' +
-        'use it to compare interactions. Nothing needs to be calculated.'
-      : s.text;
-    el.instructions.textContent = text;
-    el.instructions.hidden = !text;
+    el.instructions.textContent = s.text;
+    el.instructions.hidden = !s.text;
     el.stage.innerHTML = '';
     el.stage.className = 'stage stage-' + s.kind;
     say('');
@@ -916,16 +936,7 @@ var App = (function () {
     var Q = QZ[s.quiz];
     var ids = state.draws[s.quiz];
     var box = h('div', { class: 'quiz' });
-    if (QUAL) {
-      /* Checkpoints 1–2 only need Klein's H/CH₃ rows; 3–4 need them all. */
-      var all = s.quiz === 'C' || s.quiz === 'D';
-      var side = h('details', { class: 'reference quiz-table', open: true }, [
-        h('summary', { text: 'Strain table' }), strainTable(all)
-      ]);
-      el.stage.appendChild(h('div', { class: 'quiz-grid' }, [panel(Q.title, null, [box]), side]));
-    } else {
-      el.stage.appendChild(panel(Q.title, null, [box]));
-    }
+    el.stage.appendChild(panel(Q.title, null, [box]));
 
     function summary() {
       box.innerHTML = '';
@@ -1410,21 +1421,26 @@ var App = (function () {
     if (!state.fin) {
       state.fin = 1;
       state.done.results = 1;
+      state.best = Math.max(state.best || 0, attemptPercent());
       persist();
       if (!preview) { reportScore(); SCORM.markComplete(); }
+      paintParts();
     }
     var right = correctCount();
     var pct = Math.round(100 * right / GRADED);
+    var best = Math.round(state.best || 0);
     var rows = Object.keys(QZ).map(function (k) {
       var ids = state.draws[k];
       var r = ids.filter(function (id) { return state.ans[id]; }).length;
       return h('tr', null, [h('td', { text: QZ[k].title }), h('td', { class: 'num', text: r + ' / ' + ids.length })]);
     });
-    var box = panel('Your score', null, [
+    var box = panel(state.att > 1 ? 'Attempt ' + state.att : 'Your score', null, [
       h('p', { class: 'big-score', text: right + ' / ' + GRADED + '  (' + pct + '%)' }),
       h('table', { class: 'ref-table' }, rows),
+      state.att > 1 ? h('p', { class: 'best-line', text: 'Best attempt: ' + best + '%' +
+        (best > pct ? ' — that is the score the gradebook keeps.' : '') }) : null,
       h('p', { class: 'muted', text: SCORM.isConnected()
-        ? 'Your score has been sent to the gradebook and the activity is marked complete.'
+        ? 'Your ' + (state.att > 1 ? 'best ' : '') + 'score has been sent to the gradebook and the activity is marked complete.'
         : 'Standalone mode — nothing was sent to a gradebook.' })
     ]);
     var ideas = panel('Big ideas', null, [h('ul', { class: 'keylist' }, [
@@ -1435,16 +1451,24 @@ var App = (function () {
       'Wedges and dashes decide which groups can be anti together — and rotation can never change a wedge into a dash.'
     ].map(function (t) { return h('li', { text: t }); }))]);
     el.stage.appendChild(h('div', { class: 'grid2' }, [box, ideas]));
-    if (!SCORM.isConnected() && !preview) {
-      var again = h('button', { type: 'button', class: 'ghostbtn', text: 'Start over (clears saved progress)' });
-      again.addEventListener('click', function () {
-        SCORM.clearLocal();
-        state = newState();
-        persist();
-        goTo(0);
-      });
-      el.stage.appendChild(h('div', { class: 'btnrow' }, [again]));
-    }
+    /* Two clicks, so nobody wipes their work by accident. */
+    var again = h('button', { type: 'button', class: 'primary', text: 'Start a new attempt' });
+    var sure = h('div', { class: 'confirm', hidden: true }, [
+      h('p', { text: 'This clears all your answers, builds and predictions and gives you a new set of checkpoint ' +
+                     'questions. Your best score so far (' + Math.max(best, pct) + '%) stays in the gradebook.' }),
+      h('div', { class: 'btnrow' }, [
+        h('button', { type: 'button', class: 'primary', text: 'Yes, start again', onclick: newAttempt }),
+        h('button', { type: 'button', class: 'ghostbtn', text: 'Cancel',
+          onclick: function () { sure.hidden = true; again.hidden = false; again.focus(); } })
+      ])
+    ]);
+    again.addEventListener('click', function () { again.hidden = true; sure.hidden = false; sure.querySelector('.primary').focus(); });
+    el.stage.appendChild(panel('Try it again?', null, [
+      h('p', { class: 'muted', text: 'You can redo the whole activity with new checkpoint questions. Parts you have ' +
+                                     'already reached stay open, so you can jump straight to any of them.' }),
+      h('div', { class: 'btnrow' }, [again]),
+      sure
+    ]));
     say('Activity complete.', 'good');
   };
 
@@ -1491,15 +1515,13 @@ var App = (function () {
 
   /* --------------------------------------------------------- references */
 
-  /* The strain table. `all` false gives Klein's three H/CH₃ rows only. */
-  function strainTable(all) {
+  function strainTable() {
     var wrap = h('div');
     var t = h('table', { class: 'ref-table' });
     t.appendChild(h('tr', null, ['Interaction', 'Eclipsed (kJ/mol)', 'Gauche (kJ/mol)', ''].map(function (x) {
       return h('th', { text: x });
     })));
     STRAIN.ROWS.forEach(function (r, i) {
-      if (!all && i >= 3) return;
       if (i === 3) {
         t.appendChild(h('tr', { class: 'ref-sub' }, [h('td', { colspan: 4, text: 'Halogens and branched groups (parts 3 and 4)' })]));
       }
@@ -1512,14 +1534,14 @@ var App = (function () {
       ]));
     });
     wrap.appendChild(t);
-    wrap.appendChild(h('p', { class: 'ref-foot', text: (all ? 'Rows marked Klein are the textbook values. Values ' +
-      'marked * are not in the textbook: they are estimates built from measured data. ' : '') +
+    wrap.appendChild(h('p', { class: 'ref-foot', text: 'Rows marked Klein are the textbook values. Values ' +
+      'marked * are not in the textbook: they are estimates built from measured data. ' +
       'Gauche interactions with H are counted as 0. Anti (180°) and 120° cost nothing.' }));
     return wrap;
   }
 
   function buildReference() {
-    el.strainBody.appendChild(strainTable(true));
+    el.strainBody.appendChild(strainTable());
 
     var dl = h('dl', { class: 'vocab' });
     [
@@ -1557,8 +1579,6 @@ var App = (function () {
       ]),
       h('p', { text: 'Predictions and builds are never graded — try things. The four checkpoints are graded: your ' +
                      'first answer to each question counts. About 30–40 minutes. Your progress is saved if you leave.' }),
-      QUAL ? h('p', { text: 'In this version the checkpoint questions ask you to compare, rank and explain. The strain ' +
-                            'table is open beside every question — nothing needs to be calculated.' }) : null,
       h('p', { class: 'screen-note', text: 'Everything works with a mouse, a touch screen or the keyboard (Tab and Enter).' })
     ]);
     var go = h('button', { type: 'button', class: 'primary', text: state.max > 0 ? 'Continue where you left off' : 'Start' });
@@ -1574,10 +1594,6 @@ var App = (function () {
     ['parts', 'stepTitle', 'counter', 'instructions', 'stage', 'feedback', 'next', 'back', 'score', 'lms',
      'screen', 'strainBody', 'vocabBody'].forEach(function (id) { el[id] = $(id); });
     buildReference();
-    if (QUAL) {
-      document.querySelector('.titles h1').textContent = 'Newman projections — conformations and strain (qualitative)';
-      document.title = 'Newman Projections (Qualitative)';
-    }
 
     var connected = SCORM.init();
     el.lms.textContent = connected ? 'Connected to the LMS' : 'Standalone — no LMS detected';

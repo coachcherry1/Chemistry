@@ -27,7 +27,6 @@
     <resource identifier="NEWMAN_RES" type="webcontent" adlcp:scormtype="sco" href="index.html">
       <file href="index.html"/>
       <file href="css/styles.css"/>
-      <file href="js/variant.js"/>
       <file href="js/groups.js"/>
       <file href="js/strain.js"/>
       <file href="js/geometry.js"/>

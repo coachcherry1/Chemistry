@@ -16,8 +16,7 @@
 var SCORM = (function () {
   var api = null, connected = false, finished = false;
   var started = Date.now();
-  /* each package keeps its own save, so both can sit in one course */
-  var STORE = 'newman-state' + (typeof VARIANT !== 'undefined' && VARIANT === 'qualitative' ? '-qual' : '');
+  var STORE = 'newman-state';
 
   function findAPI(win, depth) {
     while (win && depth-- > 0) {
@@ -94,10 +93,6 @@ var SCORM = (function () {
     try { return JSON.parse(json); } catch (e) { return null; }
   }
 
-  function clearLocal() {
-    try { localStorage.removeItem(STORE); } catch (e) { /* private mode */ }
-  }
-
   /* raw is 0–100. */
   function setScore(raw) {
     if (!connected) return false;
@@ -146,7 +141,6 @@ var SCORM = (function () {
     isConnected: function () { return connected; },
     saveState: saveState,
     loadState: loadState,
-    clearLocal: clearLocal,
     setScore: setScore,
     recordAnswer: recordAnswer,
     markComplete: markComplete,
