@@ -10,6 +10,28 @@ without naming it). About 35 minutes.
 
 ---
 
+## Two packages
+
+The same activity is built two ways. Builds, rotations, graphs, predictions and scoring are
+identical; only the four graded checkpoints differ.
+
+| Package | Checkpoint questions | Answer key |
+| --- | --- | --- |
+| `dist/newman-projections-v1.zip` | Include calculations from the strain table ("what is the energy of this conformation?"). The table is in a collapsible panel at the bottom of the page. | `ANSWER_KEY.md` |
+| `dist/newman-projections-qualitative-v1.zip` | Compare, rank, identify and explain only — nothing to calculate. **The strain table is open beside every checkpoint question** (Klein's three rows for checkpoints 1–2, the full table for 3–4). | `ANSWER_KEY-qualitative.md` |
+
+The qualitative package keeps every question that was already qualitative, rewords the ones whose
+wording leaned on a number ("gauche butane is 3.8 kJ/mol higher…" becomes "gauche and anti are both
+staggered, yet gauche is higher…"), drops the three pure calculations, and adds new ranking and
+comparison items — for example *rank butane's conformations from lowest to highest*, *which of these
+staggered conformations of 2-bromobutane is highest?*, *which conformation of 2,3-dimethylbutane is
+lowest?* It draws the same 4 + 5 + 4 + 5 = 18 graded questions, from a pool of 46.
+
+The two packages have different course titles, SCORM identifiers and saved-progress keys, so both
+can sit in one Schoology course (say, one per section) with their own gradebook columns.
+
+---
+
 ## What students do
 
 | Part | Steps | What happens |
@@ -61,7 +83,7 @@ numbered and the bond being looked down highlighted; the swap step shows one for
 They are listed in `SKELETAL` in `src/js/molecules.js`, and attached to a question with `struct`.
 
 Each checkpoint always includes its **core** questions (★ in the answer key) and fills the rest at
-random from a larger pool, so a retake sees a different mix. 40 questions in all.
+random from a larger pool, so a retake sees a different mix: 40 questions in all in the quantitative package, 46 in the qualitative one.
 
 Answered questions stay answered: re-opening the activity resumes where the student left off and
 does not allow re-answering. To give a student a fresh attempt, reset their attempt in Schoology.
@@ -134,17 +156,22 @@ and every dash on the right; `tools/validate.js` checks this.
 ## Building and uploading
 
 ```bash
-./build.sh                       # → dist/newman-projections-v1.zip
-./build.sh newman-unit4-practice # → dist/newman-unit4-practice.zip
+./build.sh                                 # both packages, into dist/
+./build.sh quantitative                    # → dist/newman-projections-v1.zip
+./build.sh qualitative                     # → dist/newman-projections-qualitative-v1.zip
+./build.sh qualitative newman-unit4-qual   # → dist/newman-unit4-qual.zip
 ```
 
-`imsmanifest.xml` has to sit at the root of the zip, which is why `build.sh` zips from inside `src/`.
-Zipping the `src` folder itself produces a package Schoology rejects.
+`imsmanifest.xml` has to sit at the root of the zip, which is why `build.sh` zips from inside a
+copy of `src/`. Zipping the `src` folder itself produces a package Schoology rejects. The only
+differences between the two packages are the line in `src/js/variant.js` and the title and
+identifiers in the manifest, which `build.sh` writes into its copy; `src/` itself is never changed.
 
 To upload:
 
 1. In your Schoology course, **Add Materials → Add File/Link/External Tool → Add File** and upload
-   `dist/newman-projections-v1.zip`, or use **Add Materials → Package** if your install shows it.
+   `dist/newman-projections-v1.zip` (or the qualitative zip), or use **Add Materials → Package** if your
+   install shows it.
 2. Schoology detects the SCORM manifest and creates a SCORM item.
 3. Open the item's settings and enable the gradebook column. It receives the 0–100 score.
 4. Open it once as a student (Preview as Student) and check that the badge in the top right reads
@@ -154,12 +181,13 @@ If that badge reads **Standalone — no LMS detected** inside Schoology, the SCO
 SCORM API — almost always because Schoology served the zip as a plain file rather than launching it
 as SCORM.
 
-A built `dist/newman-projections-v1.zip` is committed, so you can upload it without running anything.
+Both built zips are committed, so you can upload either without running anything.
 
 ### Testing without an LMS
 
 Open `src/index.html` in a browser. Everything works; the badge reads *Standalone* and nothing is
-reported. A *Start over* button on the results screen clears the saved progress.
+reported. Add `?variant=qualitative` to see the qualitative package's checkpoints (it combines with
+the links below, e.g. `?variant=qualitative&step=quiz-C`). A *Start over* button on the results screen clears the saved progress.
 
 ### Teacher links for class
 
@@ -179,7 +207,7 @@ Neither mode saves progress or reports anything.
 | --- | --- |
 | `src/js/strain.js` | The strain table, with the source of every number |
 | `src/js/molecules.js` | Every molecule, as its wedge/dash drawing |
-| `src/js/quiz.js` | The checkpoint questions. The correct choice is written **first**; the order is shuffled on screen. `why` is the explanation shown after answering. |
+| `src/js/quiz.js` | The checkpoint questions: `QUIZZES` for the quantitative package, `QUIZZES_QUAL` for the qualitative one (which reuses shared questions by id). The correct choice is written **first**; the order is shuffled on screen. `why` is the explanation shown after answering. |
 | `src/js/app.js` | The step list (`STEPS`), the prediction questions and the build feedback wording |
 
 After any edit:
@@ -187,6 +215,7 @@ After any edit:
 ```bash
 node tools/validate.js                  # must pass
 node tools/answer-key.js > ANSWER_KEY.md
+node tools/answer-key.js qualitative > ANSWER_KEY-qualitative.md
 ./build.sh
 ```
 
@@ -200,11 +229,13 @@ node tools/answer-key.js > ANSWER_KEY.md
 - a build accepts any arrangement other than the right answer turned 0°, 120° or 240° (it tries every
   arrangement of the six groups);
 - a prediction's key or a question's answer no longer matches the strain table;
-- a quiz pool is smaller than its draw, or a question id cannot be a SCORM interaction id.
+- a quiz pool is smaller than its draw, or a question id cannot be a SCORM interaction id;
+- a qualitative question quotes an energy or offers a calculated value as an answer.
 
 `tools/walkthrough.js` (optional, needs Playwright) plays the whole activity in a headless browser
 against a fake LMS — wrong builds, wrong answers, a reload halfway — and checks the score, status
-and interaction records that arrive.
+and interaction records that arrive. `VARIANT=qualitative node tools/walkthrough.js` runs the
+qualitative package and also checks that its strain table is open beside every checkpoint.
 
 To shorten the activity, lower `draw` in `src/js/quiz.js` or remove steps from `STEPS` in
 `src/js/app.js`, then bump `SCHEMA`.
@@ -220,6 +251,7 @@ newman-projections-scorm/
 │   ├── index.html
 │   ├── css/styles.css
 │   └── js/
+│       ├── variant.js    which package this is (build.sh sets it)
 │       ├── groups.js     substituents and element colours
 │       ├── strain.js     the strain table and the energy model
 │       ├── geometry.js   wedge/dash → Newman angles → 3D coordinates
@@ -233,10 +265,11 @@ newman-projections-scorm/
 │       └── app.js        steps, saving, scoring
 ├── tools/
 │   ├── validate.js       chemistry and item-bank checks
-│   ├── answer-key.js     regenerates ANSWER_KEY.md
+│   ├── answer-key.js     regenerates both answer keys
 │   └── walkthrough.js    end-to-end browser test (optional)
 ├── build.sh
-├── ANSWER_KEY.md         generated
+├── ANSWER_KEY.md         generated — quantitative package
+├── ANSWER_KEY-qualitative.md  generated — qualitative package
 └── README.md
 ```
 

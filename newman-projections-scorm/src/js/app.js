@@ -131,7 +131,12 @@ var App = (function () {
       text: '' }
   ];
 
-  var GRADED = Object.keys(QUIZZES).reduce(function (s, k) { return s + QUIZZES[k].draw; }, 0);
+  /* The checkpoint set for this package: quantitative or qualitative
+     (variant.js). Everything else in the activity is the same. */
+  var QZ = activeQuizzes();
+  var QUAL = VARIANT === 'qualitative';
+
+  var GRADED = Object.keys(QZ).reduce(function (s, k) { return s + QZ[k].draw; }, 0);
 
   var el = {};
   var state = null;
@@ -204,8 +209,8 @@ var App = (function () {
     var seed = Math.floor(Math.random() * 1e9);
     var rand = rng(seed);
     var draws = {};
-    Object.keys(QUIZZES).forEach(function (k) {
-      var Q = QUIZZES[k];
+    Object.keys(QZ).forEach(function (k) {
+      var Q = QZ[k];
       var core = Q.core.slice();
       var rest = shuffle(Q.pool.map(function (q) { return q.id; }).filter(function (id) {
         return core.indexOf(id) < 0;
@@ -219,7 +224,13 @@ var App = (function () {
 
   function restore(saved) {
     if (!saved || saved.v !== SCHEMA || !saved.draws) return null;
-    return saved;
+    /* every drawn question must exist in this package's set */
+    var ok = Object.keys(QZ).every(function (k) {
+      return (saved.draws[k] || []).length === QZ[k].draw && saved.draws[k].every(function (id) {
+        return QZ[k].pool.some(function (q) { return q.id === id; });
+      });
+    });
+    return ok ? saved : null;
   }
 
   function persist() {
@@ -277,8 +288,12 @@ var App = (function () {
     var s = STEPS[i];
     el.stepTitle.textContent = s.title;
     el.counter.textContent = 'Step ' + (i + 1) + ' of ' + STEPS.length;
-    el.instructions.textContent = s.text;
-    el.instructions.hidden = !s.text;
+    var text = (QUAL && s.kind === 'quiz')
+      ? 'Graded: your first answer to each question counts. The strain table is open beside the questions — ' +
+        'use it to compare interactions. Nothing needs to be calculated.'
+      : s.text;
+    el.instructions.textContent = text;
+    el.instructions.hidden = !text;
     el.stage.innerHTML = '';
     el.stage.className = 'stage stage-' + s.kind;
     say('');
@@ -890,18 +905,27 @@ var App = (function () {
   /* ---- quiz */
 
   function question(id) {
-    for (var k in QUIZZES) {
-      var pool = QUIZZES[k].pool;
+    for (var k in QZ) {
+      var pool = QZ[k].pool;
       for (var i = 0; i < pool.length; i++) if (pool[i].id === id) return pool[i];
     }
     return null;
   }
 
   RENDER.quiz = function (s) {
-    var Q = QUIZZES[s.quiz];
+    var Q = QZ[s.quiz];
     var ids = state.draws[s.quiz];
     var box = h('div', { class: 'quiz' });
-    el.stage.appendChild(panel(Q.title, null, [box]));
+    if (QUAL) {
+      /* Checkpoints 1–2 only need Klein's H/CH₃ rows; 3–4 need them all. */
+      var all = s.quiz === 'C' || s.quiz === 'D';
+      var side = h('details', { class: 'reference quiz-table', open: true }, [
+        h('summary', { text: 'Strain table' }), strainTable(all)
+      ]);
+      el.stage.appendChild(h('div', { class: 'quiz-grid' }, [panel(Q.title, null, [box]), side]));
+    } else {
+      el.stage.appendChild(panel(Q.title, null, [box]));
+    }
 
     function summary() {
       box.innerHTML = '';
@@ -1391,10 +1415,10 @@ var App = (function () {
     }
     var right = correctCount();
     var pct = Math.round(100 * right / GRADED);
-    var rows = Object.keys(QUIZZES).map(function (k) {
+    var rows = Object.keys(QZ).map(function (k) {
       var ids = state.draws[k];
       var r = ids.filter(function (id) { return state.ans[id]; }).length;
-      return h('tr', null, [h('td', { text: QUIZZES[k].title }), h('td', { class: 'num', text: r + ' / ' + ids.length })]);
+      return h('tr', null, [h('td', { text: QZ[k].title }), h('td', { class: 'num', text: r + ' / ' + ids.length })]);
     });
     var box = panel('Your score', null, [
       h('p', { class: 'big-score', text: right + ' / ' + GRADED + '  (' + pct + '%)' }),
@@ -1467,12 +1491,15 @@ var App = (function () {
 
   /* --------------------------------------------------------- references */
 
-  function buildReference() {
+  /* The strain table. `all` false gives Klein's three H/CH₃ rows only. */
+  function strainTable(all) {
+    var wrap = h('div');
     var t = h('table', { class: 'ref-table' });
     t.appendChild(h('tr', null, ['Interaction', 'Eclipsed (kJ/mol)', 'Gauche (kJ/mol)', ''].map(function (x) {
       return h('th', { text: x });
     })));
     STRAIN.ROWS.forEach(function (r, i) {
+      if (!all && i >= 3) return;
       if (i === 3) {
         t.appendChild(h('tr', { class: 'ref-sub' }, [h('td', { colspan: 4, text: 'Halogens and branched groups (parts 3 and 4)' })]));
       }
@@ -1484,10 +1511,15 @@ var App = (function () {
         h('td', { class: 'note', text: est ? '' : 'Klein' })
       ]));
     });
-    el.strainBody.appendChild(t);
-    el.strainBody.appendChild(h('p', { class: 'ref-foot', text: 'Rows marked Klein are the textbook values. Values ' +
-      'marked * are not in the textbook: they are estimates built from measured data. Gauche interactions with H ' +
-      'are counted as 0. Anti (180°) and 120° cost nothing.' }));
+    wrap.appendChild(t);
+    wrap.appendChild(h('p', { class: 'ref-foot', text: (all ? 'Rows marked Klein are the textbook values. Values ' +
+      'marked * are not in the textbook: they are estimates built from measured data. ' : '') +
+      'Gauche interactions with H are counted as 0. Anti (180°) and 120° cost nothing.' }));
+    return wrap;
+  }
+
+  function buildReference() {
+    el.strainBody.appendChild(strainTable(true));
 
     var dl = h('dl', { class: 'vocab' });
     [
@@ -1525,6 +1557,8 @@ var App = (function () {
       ]),
       h('p', { text: 'Predictions and builds are never graded — try things. The four checkpoints are graded: your ' +
                      'first answer to each question counts. About 30–40 minutes. Your progress is saved if you leave.' }),
+      QUAL ? h('p', { text: 'In this version the checkpoint questions ask you to compare, rank and explain. The strain ' +
+                            'table is open beside every question — nothing needs to be calculated.' }) : null,
       h('p', { class: 'screen-note', text: 'Everything works with a mouse, a touch screen or the keyboard (Tab and Enter).' })
     ]);
     var go = h('button', { type: 'button', class: 'primary', text: state.max > 0 ? 'Continue where you left off' : 'Start' });
@@ -1540,6 +1574,10 @@ var App = (function () {
     ['parts', 'stepTitle', 'counter', 'instructions', 'stage', 'feedback', 'next', 'back', 'score', 'lms',
      'screen', 'strainBody', 'vocabBody'].forEach(function (id) { el[id] = $(id); });
     buildReference();
+    if (QUAL) {
+      document.querySelector('.titles h1').textContent = 'Newman projections — conformations and strain (qualitative)';
+      document.title = 'Newman Projections (Qualitative)';
+    }
 
     var connected = SCORM.init();
     el.lms.textContent = connected ? 'Connected to the LMS' : 'Standalone — no LMS detected';
@@ -1569,7 +1607,7 @@ var App = (function () {
     showIntro();
   }
 
-  return { start: start, STEPS: STEPS, judgeBuild: judgeBuild, targetSlots: targetSlots, GRADED: GRADED };
+  return { start: start, STEPS: STEPS, judgeBuild: judgeBuild, targetSlots: targetSlots, GRADED: GRADED, QZ: QZ };
 })();
 
 document.addEventListener('DOMContentLoaded', App.start);

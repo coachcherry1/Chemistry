@@ -16,7 +16,8 @@
 var SCORM = (function () {
   var api = null, connected = false, finished = false;
   var started = Date.now();
-  var STORE = 'newman-state';
+  /* each package keeps its own save, so both can sit in one course */
+  var STORE = 'newman-state' + (typeof VARIANT !== 'undefined' && VARIANT === 'qualitative' ? '-qual' : '');
 
   function findAPI(win, depth) {
     while (win && depth-- > 0) {

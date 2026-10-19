@@ -2,6 +2,7 @@
  * real browser, against a fake LMS. Optional: needs Playwright.
  *
  *   node tools/walkthrough.js            # headless run, prints a report
+ *   VARIANT=qualitative node tools/walkthrough.js   # the qualitative package
  *   SHOTS=dir node tools/walkthrough.js  # also saves a screenshot per step
  *
  * It answers some checkpoint questions wrongly on purpose, makes one wrong
@@ -18,9 +19,12 @@ catch (e) {
   catch (e2) { console.error('Playwright is not installed; skipping.'); process.exit(0); }
 }
 
-const URL = 'file://' + path.join(__dirname, '..', 'src', 'index.html');
+const VARIANT = process.env.VARIANT === 'qualitative' ? 'qualitative' : 'quantitative';
+const URL = 'file://' + path.join(__dirname, '..', 'src', 'index.html') + '?variant=' + VARIANT;
+const STORE = 'newman-state' + (VARIANT === 'qualitative' ? '-qual' : '');
 const SHOTS = process.env.SHOTS;
-const WRONG = new Set(['a-front', 'b-steric', 'c-bond', 'd-B']);   /* answered wrongly on purpose */
+/* answered wrongly on purpose: one core question per checkpoint in each package */
+const WRONG = new Set(['a-front', 'b-steric', 'qb-steric', 'c-bond', 'qc-bond', 'd-B']);
 
 const fakeLMS = () => {
   const data = JSON.parse(sessionStorage.getItem('lms') || '{}');
@@ -140,12 +144,17 @@ const fakeLMS = () => {
   }
 
   async function quiz() {
+    if (VARIANT === 'qualitative') {
+      expect(await page.$('.quiz-table[open] table'), 'qualitative checkpoint has no open strain table');
+    } else {
+      expect(!(await page.$('.quiz-table')), 'quantitative checkpoint should not show the side strain table');
+    }
     for (;;) {
       const btn = await page.$('.quiz .choice');
       if (!btn) break;
       const id = await page.evaluate(() => {
         const t = document.querySelector('.q-text').textContent;
-        for (const k in QUIZZES) for (const q of QUIZZES[k].pool) if (q.q === t) return q.id;
+        for (const k in App.QZ) for (const q of App.QZ[k].pool) if (q.q === t) return q.id;
         return null;
       });
       const pick = WRONG.has(id) ? 1 : 0;
@@ -227,9 +236,9 @@ const fakeLMS = () => {
   const lms = await page.evaluate(() => JSON.parse(sessionStorage.getItem('lms')));
   const graded = await page.evaluate(() => App.GRADED);
   const wrongDrawn = await page.evaluate((w) => {
-    const st = JSON.parse(localStorage.getItem('newman-state'));
-    return Object.keys(st.ans).filter((k) => w.includes(k)).length;
-  }, [...WRONG]);
+    const st = JSON.parse(localStorage.getItem(w.store));
+    return Object.keys(st.ans).filter((k) => w.list.includes(k)).length;
+  }, { list: [...WRONG], store: STORE });
   const expected = Math.round(100 * (graded - wrongDrawn) / graded);
   expect(lms['cmi.core.lesson_status'] === 'completed', 'status is ' + lms['cmi.core.lesson_status']);
   expect(+lms['cmi.core.score.raw'] === expected, 'score.raw ' + lms['cmi.core.score.raw'] + ', expected ' + expected);
@@ -238,6 +247,10 @@ const fakeLMS = () => {
   expect((lms['cmi.suspend_data'] || '').length < 4000, 'suspend_data too long');
   const big = await page.textContent('.big-score');
 
+  const h1 = await page.textContent('h1');
+  expect(/qualitative/.test(h1) === (VARIANT === 'qualitative'), 'heading does not match the package: ' + h1);
+
+  console.log('Package: ' + VARIANT);
   console.log('Results screen: ' + big.trim());
   console.log('LMS: status=' + lms['cmi.core.lesson_status'] + ' score.raw=' + lms['cmi.core.score.raw'] +
               ' interactions=' + nInteractions + ' suspend_data=' + (lms['cmi.suspend_data'] || '').length + ' chars');
