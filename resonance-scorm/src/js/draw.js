@@ -58,7 +58,7 @@ var Draw = (function () {
   /* `order` may be fractional (a resonance hybrid): then the bond is a solid
      line for the whole part plus a dashed line for the part that is shared
      out — the usual way to draw a partial double bond. */
-  function bondLines(s, b, cls, order) {
+  function bondLines(s, b, cls, order, align) {
     var a = xy(b.a), z = xy(b.b);
     var symA = s.at[b.a], symZ = s.at[b.b];
     var dx = z[0] - a[0], dy = z[1] - a[1], len = Math.sqrt(dx * dx + dy * dy);
@@ -70,6 +70,7 @@ var Draw = (function () {
     var lines = [];
     var offs = whole === 1 ? [0] : whole === 2 ? [-3.6, 3.6] : whole === 3 ? [-6, 0, 6] : [-8, -2.7, 2.7, 8];
     if (part) offs = whole === 1 ? [-3.2] : offs.map(function (o) { return o - 3.2; });
+    else if (align && whole === 1) offs = [-3.6];      /* on one line of a double bond: see opts.alignSingles */
     offs.forEach(function (o) { lines.push({ o: o, dashed: false }); });
     if (part) lines.push({ o: offs[offs.length - 1] + 7.2, dashed: true });
     lines.forEach(function (l) {
@@ -99,6 +100,9 @@ var Draw = (function () {
        labels     { slot: '1½' } bond-order labels, at the middle of the bond
        roomy      true: leave extra room inside the brackets for the δ signs
                   (every layer of an overlay must agree, so it is not automatic)
+       alignSingles  true: draw a single bond on the line one side of a double
+                  bond would use, so resonance structures laid on top of each
+                  other show 1 + 1 lines, not a triple bond
        flags      { slot: 'bad' | 'good' }
        pulse      slot whose bond to its parent was just made
        atomLabel / lpLabel  functions(slot) → accessible names
@@ -146,7 +150,8 @@ var Draw = (function () {
     /* bonds next, under the atoms */
     var gb = el('g', { class: 'bonds' });
     Lewis.bonds(s).forEach(function (b) {
-      gb.appendChild(bondLines(s, b, opts.pulse === b.key ? 'pulse' : '', opts.orders ? opts.orders[b.key] : null));
+      gb.appendChild(bondLines(s, b, opts.pulse === b.key ? 'pulse' : '', opts.orders ? opts.orders[b.key] : null,
+        opts.alignSingles));
     });
     root.appendChild(gb);
 

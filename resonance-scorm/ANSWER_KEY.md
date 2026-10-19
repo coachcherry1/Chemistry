@@ -213,14 +213,14 @@ correct one is listed first. 🤖 marks a choice that triggers the anti-AI messa
 
 *Why:* In each resonance structure the single-bonded O carries the extra electrons — but it is a different O each time. In the real ion the charge is shared: each O is partly negative (δ−).
 
-**Which ion has the LONGER N–O bonds: nitrite (NO₂⁻) or nitrate (NO₃⁻)?** `b-longer`
+**Put these from LONGEST to SHORTEST: a typical N–O single bond, a typical N=O double bond, and an N–O bond in the nitrate ion.** `b-rank`
 
-- ✅ Nitrate — its bond order is lower (1⅓ instead of 1½)
-- Nitrite — it has fewer bonds
-- They are exactly the same length
-- Nitrate — because it has a 1− charge
+- ✅ N–O single, then nitrate’s N–O, then N=O double
+- N=O double, then nitrate’s N–O, then N–O single
+- Nitrate’s N–O, then N–O single, then N=O double
+- N–O single, then N=O double, then nitrate’s N–O
 
-*Why:* A lower bond order means a longer, weaker bond. Nitrate’s 1⅓ bonds are a little longer than nitrite’s 1½ bonds (about 125 pm and 124 pm).
+*Why:* A higher bond order means a shorter bond. Nitrate’s bonds (bond order 1⅓) fall between a single bond (1) and a double bond (2): about 140 pm, 125 pm and 120 pm.
 
 ### Checkpoint 3 — carbonate — 3 of 6
 
@@ -338,7 +338,7 @@ correct one is listed first. 🤖 marks a choice that triggers the anti-AI messa
 
 - ✅ [drawing of SO₃] the hybrid: every shared bond a solid + dashed line, cloud, δ signs
 - [drawing of SO₃] one resonance structure (one double bond, the rest single)
-- [drawing of SO₃] every shared bond a full double bond
+- [drawing of SO₃] every shared bond a full double bond 🤖
 - [drawing of SO₃] only some bonds drawn as partial double bonds
 
 *Why:* Three identical S–O bonds, each 1⅓, with the O atoms partly negative — the same pattern as nitrate and carbonate. Three S=O double bonds would mean Rule 5 ran three times, but S was only one pair short.
@@ -354,13 +354,13 @@ Edit `src/js/snark.js` to change the wording.
 
 - Interesting. Rule 5 says IF the central atom is electron deficient. {X} has {e}. The only thing telling you to give it more is a chatbot. Close that tab and follow the 5 simple rules your teacher taught you.
 - Beep boop. This answer smells like AI. Nothing in the 5 rules your teacher taught you says to pile double bonds onto a central atom that already has {e} electrons. Put the chatbot down and follow the rules.
-- Oh, a double bond on {X}? Fancy. That’s how an AI chatbot draws {F}, and it is not how this class does it. Quit using AI to look up your chemistry answers and follow the 5 simple rules your teacher taught you.
-- Let me guess: the internet says {X} gets double bonds. The internet is not your chemistry teacher. Stop looking up answers with AI and use the 5 simple rules you were taught.
+- Oh, ANOTHER double bond on {X}? Fancy. That’s how an AI chatbot draws {F}, and it is not how this class does it. Quit using AI to look up your chemistry answers and follow the 5 simple rules your teacher taught you.
+- Let me guess: the internet gave {X} a double bond to every O. The internet is not your chemistry teacher. Stop looking up answers with AI and use the 5 simple rules you were taught.
 
 **First time, in a checkpoint:**
 
-- Nice try, chatbot. In this class double bonds only come from Rule 5, and only when the central atom is short. Put the AI away and follow the 5 simple rules your teacher taught you.
-- Rule 5 is for a central atom that is SHORT. This one wasn’t. Put the AI down and follow the 5 simple rules your teacher taught you.
+- Nice try, chatbot. Rule 5 stops the moment the central atom has 8 — one double bond, not a pile of them. Put the AI away and follow the 5 simple rules your teacher taught you.
+- Rule 5 fixes a central atom that is SHORT, and stops when it has 8. Extra double bonds after that are the AI answer. Put the AI down and follow the 5 simple rules your teacher taught you.
 - That’s the AI answer. Quit using AI to look up your chemistry answers and follow the 5 simple rules your teacher taught you.
 - Extra double bonds on a central atom that already had its electrons? That’s what a chatbot would pick. Rule 5 only fixes a central atom that is short — follow the 5 simple rules.
 

@@ -8,9 +8,11 @@
  *
  * Builds: a wrong Rule 1 total and a wrong central atom every time, Rule 5
  * made, undone and made again. Finding resonance structures: "found them all"
- * too early, "Add" before Rule 5, a structure that repeats one already found,
- * an undo, a second double bond (refused — and the anti-AI message for S in
- * the teacher demo), then every structure. Hybrids: a wrong prediction first,
+ * too early, "Add" before Rule 5, a structure that repeats one already found
+ * (taken back for the student), an undo, a lone pair shared from the keyboard
+ * (focus must stay put), "found them all" with a new structure not yet added,
+ * a second double bond (refused — and the anti-AI message for S in the
+ * teacher demo), then every structure. Hybrids: a wrong prediction first,
  * the averaging animation, the bond-length ruler. Some checkpoint questions are
  * answered wrongly on purpose, one with the extra-double-bond drawing. The page
  * is reloaded halfway to check that progress resumes, Back is used to check a
@@ -31,8 +33,9 @@ catch (e) {
 const URL = 'file://' + path.join(__dirname, '..', 'src', 'index.html');
 const SHOTS = process.env.SHOTS;
 /* answered wrongly on purpose; 'expand' picks the extra-double-bond drawing */
-const WRONG = { 'a-o3-order': 1, 'b-no2-charge': 1, 'c-co3-hybrid': 1, 'd-so2-rules': 'expand', 'd-which': 3 };
-const SNARKY = new Set(['d-so2-rules']);
+const WRONG = { 'a-o3-order': 1, 'b-no2-charge': 1, 'c-co3-hybrid': 1, 'd-so2-rules': 'expand', 'd-which': 3,
+  'd-so3-hybrid': 2 };
+const SNARKY = new Set(['d-so2-rules', 'd-so3-hybrid']);
 
 const fakeLMS = () => {
   const data = JSON.parse(sessionStorage.getItem('lms') || '{}');
@@ -185,16 +188,29 @@ const fakeLMS = () => {
     await page.click('button:has-text("Add this structure")');
     expect((await fbClass()).includes('bad') && /Rule 5/.test(await feedback()), `${id}: a structure after Rule 4 was added`);
 
-    /* structure A again: refused as a repeat, then undone */
+    /* structure A again: refused as a repeat and taken back */
     await share(info.structs[0][0]);
     await page.click('button:has-text("Add this structure")');
     expect(/already have/.test(await feedback()), `${id}: a repeat of structure A was not refused`);
+    expect((await doubles()) === 0, `${id}: the repeat was left on the drawing`);
+    expect(await page.isDisabled('.finder button:has-text("Undo last bond")'), `${id}: Undo enabled with nothing to undo`);
+    /* undo */
+    await share(info.structs[1][0]);
     await page.click('.finder button:has-text("Undo last bond")');
     expect((await doubles()) === 0, `${id}: Undo did not take the bond back`);
-    expect(await page.isDisabled('.finder button:has-text("Undo last bond")'), `${id}: Undo enabled with nothing to undo`);
 
     for (let i = 1; i < n; i++) {
-      for (const k of info.structs[i]) await share(k);
+      if (i === 1) {
+        /* from the keyboard: focus must not fall out of the activity */
+        await page.focus(`.finder .work .lp.active[data-slot="${info.structs[1][0]}"]`);
+        await page.keyboard.press('Enter');
+        const inside = await page.evaluate(() => document.querySelector('.finder').contains(document.activeElement));
+        expect(inside, `${id}: Enter on a lone pair lost the keyboard focus`);
+        expect((await doubles()) === 1, `${id}: Enter on a lone pair did not share it`);
+        for (const k of info.structs[i].slice(1)) await share(k);
+        await page.click('button:has-text("found them all")');
+        expect(/Add this structure.{0,3} first/.test(await feedback()), `${id}: "found them all" ignored a structure not yet added`);
+      } else for (const k of info.structs[i]) await share(k);
       if (i === n - 1) {
         /* a second double bond: the central atom already has 8 */
         const other = info.structs[0][0];
@@ -276,6 +292,9 @@ const fakeLMS = () => {
           return 1;
         }, id);
       } else if (WRONG[id]) pick = WRONG[id];
+      const giveaway = await page.evaluate(() => [...document.querySelectorAll('.quiz .choice')].filter((b) => b.querySelector('svg'))
+        .some((b) => /hybrid/i.test((b.getAttribute('aria-label') || '') + b.querySelector('svg').getAttribute('aria-label'))));
+      expect(!giveaway, `${id}: a choice's accessible name says which drawing is the hybrid`);
       await page.click(`.choice[data-choice="${pick}"]`);
       const cls = await fbClass();
       if (pick === 0) expect(cls.includes('good'), `${id}: right answer not marked right`);
@@ -310,10 +329,13 @@ const fakeLMS = () => {
   const pool = await page.evaluate(() => App.state().pool.own);
   await page.click('.screen .primary');
 
-  /* Part 1 */
+  /* Part 1, with a step back to the finished hybrid */
   await build();
   await compare();
   await hybrid();
+  await page.click('#back');
+  expect(/You predicted 135 pm/.test(await page.textContent('.ruler-box .reveal')), 'a revisited ruler lost the prediction');
+  await page.click('#next');
   await quiz();
 
   /* Part 2, with a reload and a step back in the middle */
@@ -346,6 +368,7 @@ const fakeLMS = () => {
     Object.keys(WRONG));
   const want = Math.round(100 * (graded - wrongDrawn) / graded);
   expect(lms['cmi.core.lesson_status'] === 'completed', 'status is ' + lms['cmi.core.lesson_status']);
+  expect(lms['cmi.core.exit'] === 'suspend', 'the reload did not exit with "suspend" (exit: ' + lms['cmi.core.exit'] + ')');
   expect(Math.round(+lms['cmi.core.score.raw']) === want, `score is ${lms['cmi.core.score.raw']}, expected ${want}`);
   expect(answered === graded, `${answered} interaction records, expected ${graded}`);
   const leaks = Object.keys(lms).filter((k) => /snark|chatbot/i.test(k + ' ' + lms[k]));

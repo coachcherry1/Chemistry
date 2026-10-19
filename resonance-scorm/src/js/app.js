@@ -21,7 +21,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or the Part 4 pool changes: a
      save from an older version is then discarded rather than resumed. */
-  var SCHEMA = 1;
+  var SCHEMA = 2;
 
   var h = UI.h;
 
@@ -47,7 +47,8 @@ var App = (function () {
     { id: 'b-NO2', part: 2, kind: 'build', sp: 'NO2', table: true,
       text: 'The nitrite ion. Watch Rule 5 — does it give you a choice?' },
     { id: 'r-NO2', part: 2, kind: 'res', sp: 'NO2', title: 'Find every resonance structure of NO₂⁻',
-      text: 'Structure A is the one you just built, redrawn with the atoms in standard positions. Is there another?' },
+      text: 'Structure A is your answer from the build, turned if needed so the atoms sit in standard positions. Is there ' +
+            'another way?' },
     { id: 'h-NO2', part: 2, kind: 'hybrid', sp: 'NO2', title: 'The nitrite hybrid',
       text: 'Predict the bond order, then average the structures and check the evidence.' },
     { id: 'r-NO3', part: 2, kind: 'res', sp: 'NO3', given: true, title: 'Find every resonance structure of NO₃⁻',
@@ -61,7 +62,7 @@ var App = (function () {
     { id: 'b-CO3', part: 3, kind: 'build', sp: 'CO3', table: false,
       text: 'The carbonate ion. From here on, Rule 1 is just the total.' },
     { id: 'r-CO3', part: 3, kind: 'res', sp: 'CO3', title: 'Find every resonance structure of CO₃²⁻',
-      text: 'Structure A is the one you just built. Find the others.' },
+      text: 'Structure A is your answer from the build (turned, if needed, to match). Find the others.' },
     { id: 'h-CO3', part: 3, kind: 'hybrid', sp: 'CO3', title: 'The carbonate hybrid',
       text: 'Predict, average, and check the evidence.' },
     { id: 'quiz-C', part: 3, kind: 'quiz', quiz: 'C', title: 'Checkpoint 3',
@@ -70,7 +71,7 @@ var App = (function () {
     { id: 'b-own', part: 4, kind: 'build', pool: 'own', table: false, solo: true,
       text: 'On your own: same 5 rules, fewer hints.' },
     { id: 'r-own', part: 4, kind: 'res', pool: 'own',
-      text: 'Structure A is the one you just built. Find every other resonance structure.' },
+      text: 'Structure A is your answer from the build (turned, if needed, to match). Find every other resonance structure.' },
     { id: 'h-own', part: 4, kind: 'hybrid', pool: 'own',
       text: 'Predict the bond order, then average the structures.' },
     { id: 'quiz-D', part: 4, kind: 'quiz', quiz: 'D', title: 'Checkpoint 4',
@@ -121,6 +122,13 @@ var App = (function () {
   }
 
   function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
+
+  /* after a control disables or hides itself the keyboard focus falls to the
+     page: send it on to `target` */
+  function keepFocus(target) {
+    var a = document.activeElement;
+    if (!a || a === document.body || a.disabled || a.closest('[hidden]')) target.focus({ preventScroll: true });
+  }
 
   /* The anti-AI message (see snark.js). The lines that say a chatbot draws
      it that way are only used for species with O in it, where it is true. */
@@ -313,7 +321,7 @@ var App = (function () {
   RENDER.res = function (s) {
     var sp = stepSpecies(s);
     var f = ResonanceFinder({ sp: sp, say: say, snark: snarkText, done: !!state.done[s.id],
-      onDone: function () { complete(null); } });
+      onDone: function () { complete(null); keepFocus(el.next); } });
     el.stage.appendChild(f.node);
     feedbackInto(f.node);
     if (state.done[s.id]) say('All found. Press Next to see the hybrid.', 'good');
@@ -330,12 +338,12 @@ var App = (function () {
     /* 1 — predict the bond order */
     var other = r.order === '1½' ? '1⅓' : '1½';
     var choices = UI.shuffle([r.order, '1', '2', other], UI.rng(state.seed ^ UI.hash(s.id)))
-      .concat(['One bond is 2 and the others are 1']);
+      .concat([k === 2 ? 'One bond is 2 and the other is 1' : 'One bond is 2 and the others are 1']);
     var orderCount = r.structures.length;
     var reveal = 'Each ' + pair + ' bond is a double bond in ONE of the ' + orderCount + ' structures and a single bond in the ' +
       'other' + (orderCount > 2 ? 's' : '') + ': (2' + new Array(orderCount).join(' + 1') + ') ÷ ' + orderCount + ' = ' +
-      r.order + '. All ' + k + ' bonds are the same: a bond order of ' + r.order + ' — more than a single bond, less ' +
-      'than a double.';
+      r.order + '. ' + (k === 2 ? 'Both bonds are' : 'All ' + k + ' bonds are') + ' the same: a bond order of ' + r.order +
+      ' — more than a single bond, less than a double.';
 
     /* 2 — average them */
     var ov = Hybrid.overlay(sp);
@@ -362,7 +370,11 @@ var App = (function () {
       ov.node, h('div', { class: 'btnrow' }, [avg]), key, mule]);
 
     /* 3 — the evidence */
-    var rul = Hybrid.ruler(sp, { done: done, onLocked: function () { if (!done) complete('That is the hybrid. On to the next one.'); } });
+    var rul = Hybrid.ruler(sp, { done: done, predicted: state.pick[s.id], onLocked: function (p) {
+      if (done) return;
+      state.pick[s.id] = p;                  /* so a revisit shows the student's own prediction */
+      complete('That is the hybrid. On to the next one.');
+    } });
     var evPanel = rul ? panel('The evidence: bond length', 'predict, then check', [
       h('p', { class: 'muted', text: 'Where do you think the real ' + pair + ' bonds in ' + sp.text + ' fall? Slide the marker, ' +
         'then lock it in.' }), rul.node]) : null;
@@ -386,8 +398,11 @@ var App = (function () {
         if (mule) mule.hidden = false;
         avg.textContent = 'Play it again';
         avg.disabled = false;
-        if (evPanel) { evPanel.hidden = false; if (!done) say('One more: the evidence. Make your prediction on the ruler.'); }
-        else if (!done) complete('That is the hybrid.');
+        keepFocus(avg);
+        if (evPanel) {
+          evPanel.hidden = false;
+          if (!state.done[s.id]) say('One more: the evidence. Make your prediction on the ruler.');
+        } else if (!state.done[s.id]) complete('That is the hybrid.');
       });
     });
     if (done) { ov.play(); avg.textContent = 'Play it again'; say('Done. Press Next to go on.', 'good'); }
@@ -405,15 +420,19 @@ var App = (function () {
   }
 
   function figureOf(c, cls) {
-    if (c.hybrid) return Hybrid.draw(Lewis.species(c.hybrid), { variant: c.variant, labels: false, cls: 'fig ' + (cls || '') });
+    if (c.hybrid) return Hybrid.draw(Lewis.species(c.hybrid), { variant: c.variant, labels: false, neutral: true,
+      cls: 'fig ' + (cls || '') });
     return Draw.figure(Lewis.variant(Lewis.species(c.lewis), c.mod), cls);
   }
 
   function describeChoice(c) {
-    if (c.hybrid) return figureOf(c).getAttribute('aria-label');
+    if (c.hybrid) return Hybrid.drawingText(Lewis.species(c.hybrid), c.variant);
     return Lewis.describe(Lewis.variant(Lewis.species(c.lewis), c.mod));
   }
 
+  /* a drawing that gives a period-3 central atom more double bonds than Rule 5
+     does: a Lewis drawing (checked by the engine), or a choice listed in
+     q.snark (text, or a hybrid drawn with every bond double) */
   function isSnark(q, ci) {
     if (q.snark && q.snark.indexOf(ci) >= 0) return true;
     var c = q.choices[ci];

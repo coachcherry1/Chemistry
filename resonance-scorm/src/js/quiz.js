@@ -14,8 +14,8 @@
  *   { lewis: 'SO2' }                       a Lewis structure from the 5 rules
  *   { lewis: 'SO2', mod: { expand: 1 } }   changed on purpose (lewis.js variant)
  * A Lewis drawing that piles extra double bonds onto a period-3+ central atom
- * gets the anti-AI message automatically; for text choices list those
- * indices in `snark`.
+ * gets the anti-AI message automatically; for text choices, and for a hybrid
+ * of an S species drawn with every bond double, list those indices in `snark`.
  *
  * `fact` ties an answer to the engine, so `node tools/validate.js` catches an
  * answer that no longer matches the chemistry:
@@ -107,14 +107,15 @@ var QUIZZES = {
                   'It jumps from one O to the other'],
         why: 'In each resonance structure the single-bonded O carries the extra electrons — but it is a different O ' +
              'each time. In the real ion the charge is shared: each O is partly negative (δ−).' },
-      { id: 'b-longer',
-        q: 'Which ion has the LONGER N–O bonds: nitrite (NO₂⁻) or nitrate (NO₃⁻)?',
-        choices: ['Nitrate — its bond order is lower (1⅓ instead of 1½)',
-                  'Nitrite — it has fewer bonds',
-                  'They are exactly the same length',
-                  'Nitrate — because it has a 1− charge'],
-        why: 'A lower bond order means a longer, weaker bond. Nitrate’s 1⅓ bonds are a little longer than nitrite’s ' +
-             '1½ bonds (about 125 pm and 124 pm).' }
+      { id: 'b-rank',
+        q: 'Put these from LONGEST to SHORTEST: a typical N–O single bond, a typical N=O double bond, and an N–O bond ' +
+           'in the nitrate ion.',
+        choices: ['N–O single, then nitrate’s N–O, then N=O double',
+                  'N=O double, then nitrate’s N–O, then N–O single',
+                  'Nitrate’s N–O, then N–O single, then N=O double',
+                  'N–O single, then N=O double, then nitrate’s N–O'],
+        why: 'A higher bond order means a shorter bond. Nitrate’s bonds (bond order 1⅓) fall between a single bond (1) ' +
+             'and a double bond (2): about 140 pm, 125 pm and 120 pm.' }
     ]
   },
 
@@ -210,7 +211,7 @@ var QUIZZES = {
                   'The first structure the 5 rules give you'],
         why: 'The resonance structures are drawings we need because one Lewis drawing can’t show a partial double ' +
              'bond. The hybrid — their average — is what the molecule or ion really is.' },
-      { id: 'd-so3-hybrid',
+      { id: 'd-so3-hybrid', snark: [2],
         q: 'Which drawing shows the resonance hybrid of sulfur trioxide, SO₃?',
         choices: [{ hybrid: 'SO3' },
                   { hybrid: 'SO3', variant: 'one' },

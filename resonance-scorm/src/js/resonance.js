@@ -1,12 +1,16 @@
 /* resonance.js — find every resonance structure.
  *
  * The student starts from the structure after Rule 4 (drawn in the answer's
- * layout) with structure A already found — the one the 5 rules gave them.
+ * layout) with structure A already found — their own answer from the build,
+ * turned if needed so the atoms sit in the standard positions (equivalent
+ * structures are all the same structure turned around).
  * Each round they redo Rule 5 a different way: click a lone pair on an outer
  * atom to share it, "Add this structure", and it joins the row. When they
  * think they have them all they press "I've found them all".
  *
- *   - a structure they already have: told which one it repeats
+ *   - a structure they already have: told which one it repeats, and the
+ *     bond is taken back for them
+ *   - "found them all" with a new structure still on the canvas: told to add it
  *   - "found them all" too early: told there is still an atom that has not
  *     had the double bond
  *   - sharing a pair when the central atom already has 8: the same messages
@@ -87,6 +91,15 @@ function ResonanceFinder(o) {
     say(Lewis.electrons(s, 'C') >= 8 ? X + ' has 8 again. Press “Add this structure”.' : X + ' still needs more.', '');
   }
 
+  /* a control that just disabled itself, or a drawing that was just redrawn,
+     takes the keyboard focus with it: put it somewhere useful */
+  function refocus() {
+    var a = document.activeElement;
+    if (a && a !== document.body && node.contains(a) && !a.disabled) return;
+    var t = Lewis.electrons(s, 'C') >= 8 && !addBtn.disabled ? addBtn : canvas.querySelector('.lp.active');
+    if (t) t.focus({ preventScroll: true });
+  }
+
   undoBtn.addEventListener('click', function () {
     if (!shared.length || finished) return;
     var k = shared.pop();
@@ -94,6 +107,7 @@ function ResonanceFinder(o) {
     s.bo[k] -= 1;
     paint();
     say('Took that bond back.');
+    refocus();
   });
 
   addBtn.addEventListener('click', function () {
@@ -107,8 +121,12 @@ function ResonanceFinder(o) {
     var k = key(s);
     for (var i = 0; i < found.length; i++) {
       if (key(found[i]) === k) {
-        say('You already have that one — it is the same as structure ' + String.fromCharCode(65 + i) + ': the double ' +
-            'bond goes to the same ' + s.at[shared[0]] + '. Take it back and pick a different one.', 'bad');
+        var el = s.at[shared[0]];
+        reset();
+        paint();
+        refocus();
+        say('You already have that one — it is structure ' + String.fromCharCode(65 + i) + ': the double bond went to ' +
+            'the same ' + el + '. I took it back. Share a pair from a different ' + el + '.', 'bad');
         return;
       }
     }
@@ -121,6 +139,10 @@ function ResonanceFinder(o) {
 
   doneBtn.addEventListener('click', function () {
     if (finished) return;
+    if (found.length < total && shared.length && Lewis.electrons(s, 'C') >= 8) {
+      say('Press “Add this structure” first — the one on the drawing is not in your row yet.', 'bad');
+      return;
+    }
     if (found.length < total) {
       var used = {};
       found.forEach(function (t) { Lewis.DIRS.forEach(function (d) { if (t.at[d] && t.bo[d] > 1) used[d] = 1; }); });
@@ -158,11 +180,12 @@ function ResonanceFinder(o) {
     if (!t || !canvas.contains(t)) return;
     if (ev.type === 'keydown') ev.preventDefault();
     share(t.getAttribute('data-slot'));
+    if (ev.type === 'keydown') refocus();
   }
   canvas.addEventListener('click', delegate);
   canvas.addEventListener('keydown', delegate);
 
-  howTo.textContent = 'Structure A is the one the 5 rules gave you. Below is the structure after Rule 4 again. Do Rule 5 a ' +
+  howTo.textContent = 'Structure A is already in your row. Below is the structure after Rule 4 again. Do Rule 5 a ' +
     'DIFFERENT way: click a lone pair on a different outer atom, then “Add this structure”. Keep going until there are no ' +
     'new ways left.';
   paintGallery();

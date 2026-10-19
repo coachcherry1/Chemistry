@@ -143,6 +143,11 @@ var SCORM = (function () {
   function finish() {
     if (!connected || finished) return;
     finished = true;
+    /* "suspend" so the LMS keeps suspend_data and resumes this attempt on the
+       next launch (SCORM 1.2 only promises a resume after a suspend exit) —
+       finished attempts too, so reopening one shows the results, not a new
+       start that would overwrite the score */
+    set('cmi.core.exit', 'suspend');
     set('cmi.core.session_time', sessionTime());
     commit();
     try { api.LMSFinish(''); } catch (e) { /* LMS already tore the API down */ }

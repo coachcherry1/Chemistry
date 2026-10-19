@@ -90,8 +90,9 @@ random from its pool, so a retake sees a different mix. 24 questions in all.
 
 Progress is saved to `cmi.suspend_data` (under 1 KB of the 4 KB allowed), which belongs to one student's
 one attempt — resetting an attempt in Schoology starts it over, and a second student on the same
-Chromebook starts fresh. (`localStorage` is used only when the page runs without an LMS.) A build or
-search in progress is not saved. **Bump `SCHEMA` in `src/js/app.js` whenever you change the step list, a
+Chromebook starts fresh. (`localStorage` is used only when the page runs without an LMS.) On leaving, the
+SCO sets `cmi.core.exit` to `suspend`, so the LMS resumes the attempt next time — a finished attempt
+reopens on its results instead of starting over. A build or search in progress is not saved. **Bump `SCHEMA` in `src/js/app.js` whenever you change the step list, a
 quiz pool or the Part 4 pool.**
 
 ---

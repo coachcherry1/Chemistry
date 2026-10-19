@@ -1,14 +1,16 @@
 /* snark.js — what a student hears when they pile double bonds onto a
  * central atom that already has its electrons.
  *
- * In this class double bonds come from Rule 5 only, and Rule 5 only runs when
- * the central atom is electron deficient. Drawing S=O double bonds in sulfate
- * or phosphoric acid — the "reduce the formal charge" answer from college
- * textbooks and AI chatbots — means the student did not follow the 5 rules.
- * (More than 8 is NOT the problem by itself: the rules give S 12 in SF₆ and
- * Xe 12 in XeF₄. The problem is a double bond the rules never asked for, on
- * a central atom from period 3 or below.) They get one of these, then the
- * actual fix.
+ * In this class double bonds come from Rule 5 only, and Rule 5 only runs while
+ * the central atom is electron deficient. In SO₂ and SO₃ that means exactly
+ * ONE S=O double bond: S has 8 as soon as one O shares a pair. A second or
+ * third S=O — the "reduce the formal charge" answer from college textbooks and
+ * AI chatbots — means the student did not follow the 5 rules. (The first
+ * double bond is right, so these lines say "another" / "extra", never "a
+ * double bond on S".) They get one of these, then the actual fix.
+ *
+ * Same file as the Lewis structures activity, with the lines reworded for
+ * resonance.
  *
  * Nothing here is reported to the LMS. The count of offenses lives only in
  * the open page, so it starts over if the student reloads.
@@ -33,18 +35,18 @@ var SNARK = {
   ],
   /* ...and these too, when the species has O in it */
   firstOxy: [
-    'Oh, a double bond on {X}? Fancy. That’s how an AI chatbot draws {F}, and it is not how this class does ' +
-      'it. Quit using AI to look up your chemistry answers and follow the 5 simple rules your teacher taught you.',
-    'Let me guess: the internet says {X} gets double bonds. The internet is not your chemistry teacher. Stop ' +
-      'looking up answers with AI and use the 5 simple rules you were taught.'
+    'Oh, ANOTHER double bond on {X}? Fancy. That’s how an AI chatbot draws {F}, and it is not how this class ' +
+      'does it. Quit using AI to look up your chemistry answers and follow the 5 simple rules your teacher taught you.',
+    'Let me guess: the internet gave {X} a double bond to every O. The internet is not your chemistry teacher. ' +
+      'Stop looking up answers with AI and use the 5 simple rules you were taught.'
   ],
 
   /* first offense, on a checkpoint question (the explanation underneath gives the fix) */
   quiz: [
-    'Nice try, chatbot. In this class double bonds only come from Rule 5, and only when the central atom is ' +
-      'short. Put the AI away and follow the 5 simple rules your teacher taught you.',
-    'Rule 5 is for a central atom that is SHORT. This one wasn’t. Put the AI down and follow the 5 simple ' +
-      'rules your teacher taught you.'
+    'Nice try, chatbot. Rule 5 stops the moment the central atom has 8 — one double bond, not a pile of them. ' +
+      'Put the AI away and follow the 5 simple rules your teacher taught you.',
+    'Rule 5 fixes a central atom that is SHORT, and stops when it has 8. Extra double bonds after that are the ' +
+      'AI answer. Put the AI down and follow the 5 simple rules your teacher taught you.'
   ],
   /* ...and these too, when the question is about a species with O in it */
   quizOxy: [

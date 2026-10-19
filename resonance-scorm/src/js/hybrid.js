@@ -87,10 +87,37 @@ var Hybrid = (function () {
       (r.marks.C === 'δ+' ? '; the central atom carries a partial positive charge' : '') + '.';
   }
 
+  var WORD = { 1: 'one', 2: 'two', 3: 'three', 4: 'four' };
+
+  /* What a drawing shows, in plain words and WITHOUT naming it: the text
+     alternative for a checkpoint choice, where "Resonance hybrid of …" would
+     give the answer away. */
+  function drawingText(sp, variant) {
+    var r = compute(sp), v = variant || 'hybrid', k = r.cloud.length, pair = pairName(sp);
+    var dbl = pair.replace('–', '='), plural = function (n, w) { return WORD[n] + ' ' + w + (n === 1 ? '' : 's'); };
+    var bonds = {
+      hybrid: 'all ' + WORD[k] + ' ' + pair + ' bonds drawn as a solid line plus a dashed line, with shading over them',
+      one: 'one ' + dbl + ' double bond and ' + plural(k - 1, pair + ' single bond'),
+      double: 'all ' + WORD[k] + ' ' + pair + ' bonds drawn as double bonds',
+      single: 'all ' + WORD[k] + ' ' + pair + ' bonds drawn as single bonds',
+      some: 'one ' + pair + ' single bond and ' + WORD[k - 1] + ' drawn as a solid line plus a dashed line, with shading ' +
+            'over those'
+    }[v];
+    var others = Lewis.DIRS.filter(function (d) { return r.base.at[d] && r.cloud.indexOf(d) < 0; })
+      .map(function (d) { return sp.center + '–' + r.base.at[d] + ' single bond'; });
+    var marks = v === 'one' ? {} : Object.assign({}, r.marks);
+    if (v === 'some') delete marks[r.cloud[0]];
+    var neg = Object.keys(marks).filter(function (x) { return x !== 'C' && marks[x] === 'δ−'; }).length;
+    return sp.text + ': ' + sp.center + ' in the center; ' + bonds + (others.length ? '; a ' + others.join(', a ') : '') +
+      (neg ? '; δ− on ' + (neg === 1 ? 'one ' : WORD[neg] + ' ') + 'outer atom' + (neg === 1 ? '' : 's') : '') +
+      (marks.C === 'δ+' ? '; δ+ on ' + sp.center : '') + '.';
+  }
+
   /* opts: variant 'hybrid' (default) | 'one' (just one resonance structure,
      drawn hybrid-style) | 'double' (every shared bond double) | 'some' (only
      some bonds shared) | 'single' (every shared bond single);
-     labels, marks, cloud: false to leave them out; cls, scale */
+     labels, marks, cloud: false to leave them out; neutral: describe what is
+     drawn without naming it (checkpoint choices); cls, scale */
   function draw(sp, opts) {
     opts = opts || {};
     var r = compute(sp), v = opts.variant || 'hybrid';
@@ -113,7 +140,7 @@ var Hybrid = (function () {
     return Draw.structure(r.base, {
       scale: opts.scale || 1, noLP: true, roomy: true, orders: orders, labels: labels, cloud: cloud, marks: marks,
       cls: 'hybrid' + (opts.cls ? ' ' + opts.cls : ''),
-      title: v === 'hybrid' ? describe(sp, r) : 'A drawing of ' + sp.text + ' (' + {
+      title: opts.neutral ? 'Drawing of ' + drawingText(sp, v) : v === 'hybrid' ? describe(sp, r) : 'A drawing of ' + sp.text + ' (' + {
         one: 'one double bond and the rest single', double: 'every bond to ' + sp.center + ' double',
         single: 'every bond single', some: 'only some bonds drawn as partial double bonds'
       }[v] + ')'
@@ -145,7 +172,7 @@ var Hybrid = (function () {
     var r = compute(sp), scale = opts.scale || 1.25;
     var stack = h('div', { class: 'stack' });
     var layers = r.structures.map(function (s) {
-      var svg = Draw.structure(s, { scale: scale, roomy: true, cls: 'layer', title: '' });
+      var svg = Draw.structure(s, { scale: scale, roomy: true, alignSingles: true, cls: 'layer', title: '' });
       svg.setAttribute('aria-hidden', 'true');
       stack.appendChild(svg);
       return svg;
@@ -174,11 +201,13 @@ var Hybrid = (function () {
       caption.textContent = 'Structure A on its own…';
       timers.push(setTimeout(function () {
         set('stacked');
-        caption.textContent = 'All ' + r.n + ' structures laid on top of each other: the double bond is in every place at once…';
+        caption.textContent = (r.n === 2 ? 'Both structures' : 'All ' + WORD[r.n] + ' structures') + ' laid on top of each ' +
+          'other: each bond is double in one structure and single in the ' + (r.n === 2 ? 'other' : 'others') + '…';
       }, 900));
       timers.push(setTimeout(function () {
         set('hybrid');
-        caption.textContent = '…and the average is the hybrid: ' + r.n + ' identical bonds, each a ' + r.order + ' bond.';
+        caption.textContent = '…and the average is the hybrid: ' + WORD[r.cloud.length] + ' identical bonds, each a ' +
+          r.order + ' bond.';
       }, 3300));
       /* once the hybrid has finished fading in (the CSS transition is 1.4 s) */
       if (done) timers.push(setTimeout(done, 3300 + 1450));
@@ -188,7 +217,8 @@ var Hybrid = (function () {
 
   /* The bond-length ruler: a typical double bond, a typical single bond, the
      student's prediction, and (after they lock it in) the measured length.
-     Returns { node } and calls opts.onLocked(predicted) once. */
+     Returns { node } and calls opts.onLocked(predicted) once. opts.done shows
+     it already locked, at opts.predicted (the saved prediction) if given. */
   function ruler(sp, opts) {
     opts = opts || {};
     var b = BONDS[sp.id];
@@ -237,7 +267,7 @@ var Hybrid = (function () {
       'aria-label': 'Predict the length of the ' + pairName(sp) + ' bonds in ' + sp.text + ', in picometers' });
     var out = h('output', { class: 'r-out', text: mid + ' pm' });
     var lock = h('button', { type: 'button', class: 'primary', text: 'Lock in my prediction' });
-    var msg = h('p', { class: 'reveal', hidden: true });
+    var msg = h('p', { class: 'reveal', hidden: true, tabindex: '-1', 'aria-live': 'polite' });
 
     function moveGuess(pm) {
       var x = X(pm);
@@ -260,23 +290,29 @@ var Hybrid = (function () {
         b.actual + ' pm', ay - 52 - (Math.abs(X(p) - X(b.actual)) < 90 ? 16 : 0));
       var k = compute(sp).cloud.length;
       msg.hidden = false;
-      msg.textContent = 'You predicted ' + p + ' pm. The real ' + pairName(sp) + ' bonds in ' + sp.text + ' are ' + b.actual +
+      msg.textContent = (opts.done && opts.predicted == null ? '' : 'You predicted ' + p + ' pm. ') + 'The real ' + pairName(sp) + ' bonds in ' + sp.text + ' are ' + b.actual +
         ' pm — shorter than a single bond (' + b.single + '), longer than a double bond (' + b.double + '), and ' +
         (k === 2 ? 'BOTH' : 'ALL ' + k) + ' of them are exactly the same length. No single resonance structure has ' +
         'that; only the hybrid does.';
       if (opts.onLocked) opts.onLocked(p);
     }
-    lock.addEventListener('click', doLock);
+    lock.addEventListener('click', function () {
+      doLock();
+      msg.focus({ preventScroll: true });          /* the button just disabled itself */
+    });
 
     var node = h('div', { class: 'ruler-box' }, [
       svg,
       h('div', { class: 'r-controls' }, [h('label', { class: 'r-field' }, ['Your prediction: ', range, out]), lock]),
       msg
     ]);
-    if (opts.done) { range.value = b.actual; moveGuess(b.actual); doLock(); }
+    if (opts.done) {
+      var was = opts.predicted != null ? opts.predicted : b.actual;
+      range.value = was; moveGuess(was); doLock();
+    }
     return { node: node, locked: function () { return locked; } };
   }
 
   return { structures: structures, compute: compute, draw: draw, row: row, overlay: overlay, ruler: ruler,
-           describe: describe, fracText: fracText, pairName: pairName };
+           describe: describe, drawingText: drawingText, fracText: fracText, pairName: pairName };
 })();

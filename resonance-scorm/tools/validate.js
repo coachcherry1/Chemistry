@@ -254,10 +254,25 @@ for (const k of Object.keys(QUIZZES)) {
     (q.snark || []).forEach((i) => {
       if (i === 0) fail(`${q.id}: the correct answer is marked as snark`);
       if (i >= q.choices.length) fail(`${q.id}: snark index ${i} out of range`);
+      const c = q.choices[i];
+      if (c && c.hybrid && (c.variant !== 'double' || ELEMENTS[Lewis.species(c.hybrid).center].period < 3)) {
+        fail(`${q.id}: snark on a hybrid drawing that is not extra double bonds on a period-3 atom`);
+      }
     });
   }
 }
 if (graded !== App.GRADED) fail(`GRADED is ${App.GRADED} but the checkpoints draw ${graded}`);
+/* every bond length quoted in a question or explanation is one from bonds.js */
+const known = new Set();
+Object.values(BONDS).forEach((b) => [b.single, b.double, b.actual].forEach((v) => known.add(v)));
+for (const k of Object.keys(QUIZZES)) {
+  for (const q of QUIZZES[k].pool) {
+    const text = [q.q, q.why].concat(q.choices.filter((c) => typeof c === 'string')).join(' ');
+    for (const m of text.matchAll(/(\d{2,3})(?= pm)/g)) {
+      if (!known.has(+m[1])) fail(`${q.id}: quotes ${m[1]} pm, which is not in bonds.js`);
+    }
+  }
+}
 /* the anti-AI message has something to catch in the checkpoints */
 if (!Object.keys(QUIZZES).some((k) => QUIZZES[k].pool.some((q) => q.choices.some((c, i) => App.isSnark(q, i))))) {
   fail('no checkpoint choice triggers the anti-AI message');
@@ -278,7 +293,7 @@ for (const id of POOLS.own.ids) {
 
 /* ------------------------------------------------- suspend_data headroom */
 
-const big = { v: 1, seed: 999999999, step: 18, max: 18, draws: {}, pool: { own: 'HCO2' }, ans: {}, pick: {}, done: {}, fin: 1 };
+const big = { v: 2, seed: 999999999, step: 18, max: 18, draws: {}, pool: { own: 'HCO2' }, ans: {}, pick: {}, done: {}, fin: 1 };
 for (const k of Object.keys(QUIZZES)) {
   big.draws[k] = QUIZZES[k].pool.slice(0, QUIZZES[k].draw).map((q) => q.id);
   big.draws[k].forEach((id) => { big.ans[id] = 1; big.pick[id] = 3; });
