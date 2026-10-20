@@ -120,6 +120,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
   white-space: nowrap;
 }
 .lms.on { color: var(--good); border-color: var(--good); }
+.ver { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
 
 .tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
 .tab {

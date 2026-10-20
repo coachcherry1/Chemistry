@@ -130,16 +130,24 @@ quiz answers and the answer key cannot disagree.
 ## Building and uploading
 
 ```bash
-./build.sh                  # → dist/resonance-v1.zip
+./build.sh                  # → dist/resonance-v3.zip (the number comes from the VERSION file)
 ./build.sh resonance-test   # → dist/resonance-test.zip
 ```
 
-`imsmanifest.xml` has to sit at the root of the zip, which is why `build.sh` zips from inside `src/`.
+`imsmanifest.xml` has to sit at the root of the zip, which is why `build.sh` zips from a copy of `src/`.
+
+**Every release has a number** (the `VERSION` file). `build.sh` stamps it into the zip's `index.html`:
+the top bar reads **version 3**, and every script and stylesheet link carries `?v=3`. The second part
+matters: Schoology and the browser cache files by URL, so a new package whose files have the same names
+as the old one can keep running the old code. A new number gives every file a new URL. **Bump `VERSION`
+before building a zip you hand out**, and after uploading, check the number in the top bar. (Opened
+straight from `src/`, the page reads *version dev*.)
 
 To upload: in your Schoology course, **Add Materials → Add File/Link/External Tool → Add File** (or
-**Package**) and upload `dist/resonance-v1.zip`; enable the gradebook column in the item's settings; open
-it once as a student and check the badge in the top right reads **Connected to the LMS**. A built
-`dist/resonance-v1.zip` is committed, so you can upload it without running anything.
+**Package**) and upload `dist/resonance-v3.zip`; enable the gradebook column in the item's settings; open
+it once as a student and check the top bar: **Connected to the LMS** and the version you just uploaded.
+If it still shows an older version, add the new zip as a new item instead of replacing the old one. The
+built zip is committed, so you can upload it without running anything.
 
 ### Testing without an LMS
 
@@ -224,7 +232,8 @@ resonance-scorm/
 │   ├── validate.js       chemistry and item-bank checks
 │   ├── answer-key.js     regenerates ANSWER_KEY.md
 │   └── walkthrough.js    end-to-end browser test (optional)
-├── build.sh
+├── build.sh              packages src/ as dist/resonance-vN.zip, stamping the version in
+├── VERSION               the release number
 ├── ANSWER_KEY.md         generated
 └── README.md
 ```
