@@ -1,4 +1,4 @@
-/* graph.js — energy versus dihedral angle.
+/* graph.js: energy versus dihedral angle.
  *
  * One SVG plot that serves every step:
  *   trace    the curve appears only where the student has turned the molecule

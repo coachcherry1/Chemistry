@@ -1,4 +1,4 @@
-/* strain.js — the strain table and the energy curve built from it.
+/* strain.js: the strain table and the energy curve built from it.
  *
  * Every curve in the activity is the sum of pairwise interactions between a
  * group on the front carbon and a group on the back carbon, using the same
@@ -18,7 +18,7 @@
  * Between the tabulated angles the curve is the smoothest one through them: a
  * short cosine series whose value at 0°, 60°, 120° and 180° is exactly the
  * table entry. Summed over a molecule that gives the familiar textbook curve
- * — ethane comes out as 6(1 + cos 3φ) — with minima at the staggered angles.
+ * (ethane comes out as 6(1 + cos 3φ)), with minima at the staggered angles.
  */
 
 var STRAIN = (function () {
@@ -144,7 +144,7 @@ var STRAIN = (function () {
     return items.reduce(function (s, it) { return s + it.cost * it.n; }, 0);
   }
 
-  /* Tidy numbers for display: 3.8, 12, 4.8 — never 3.8000000001. */
+  /* Tidy numbers for display: 3.8, 12, 4.8, never 3.8000000001. */
   function fmt(x) {
     var r = Math.round(x * 10) / 10;
     if (Math.abs(r) < 0.05) r = 0;

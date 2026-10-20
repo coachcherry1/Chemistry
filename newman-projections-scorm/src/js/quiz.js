@@ -1,11 +1,11 @@
-/* quiz.js — the graded checkpoint questions.
+/* quiz.js: the graded checkpoint questions.
  *
  * Four checkpoints, one at the end of each part. Each draws `draw` questions
  * from its pool: every `core` question, then a random fill. A retry of the
  * activity (a new attempt in the LMS) therefore sees a different mix.
  *
  * The correct choice is always written FIRST here; the order is shuffled on
- * screen. `why` is shown after the student answers, right or wrong — that
+ * screen. `why` is shown after the student answers, right or wrong, and that
  * explanation is the point of the question.
  *
  * Figures:
@@ -26,7 +26,7 @@
 var QUIZZES = {
 
   A: {
-    title: 'Checkpoint 1 — ethane and the vocabulary',
+    title: 'Checkpoint 1: ethane and the vocabulary',
     draw: 4,
     core: ['a-front', 'a-torsional'],
     pool: [
@@ -57,7 +57,7 @@ var QUIZZES = {
         q: 'What is this conformation of ethane called?',
         fig: { newman: 'ethane', phi: 60 },
         choices: ['Staggered', 'Eclipsed', 'Totally eclipsed', 'Gauche'],
-        why: 'Every back bond points exactly between two front bonds. That is staggered — the lowest-energy ' +
+        why: 'Every back bond points exactly between two front bonds. That is staggered, the lowest-energy ' +
              'shape of ethane.' },
       { id: 'a-torsional',
         q: 'Why is eclipsed ethane higher in energy than staggered ethane?',
@@ -65,13 +65,13 @@ var QUIZZES = {
                   'Steric strain: the hydrogen atoms are big enough to bump into each other',
                   'The C–C bond has to stretch to reach the eclipsed shape',
                   'Eclipsed ethane has fewer bonds'],
-        why: 'Hydrogen atoms are too small to collide here. The 12 kJ/mol is torsional strain — the cost of ' +
+        why: 'Hydrogen atoms are too small to collide here. The 12 kJ/mol is torsional strain: the cost of ' +
              'lining bonds up one behind the other.' },
       { id: 'a-each',
         q: 'Eclipsed ethane is 12 kJ/mol higher than staggered ethane and has three H/H eclipsing ' +
            'interactions. How much does each one cost?',
         choices: ['4 kJ/mol', '12 kJ/mol', '3 kJ/mol', '36 kJ/mol'],
-        why: '12 ÷ 3 = 4 kJ/mol for each H/H eclipsing interaction — the first entry in the strain table.' },
+        why: '12 ÷ 3 = 4 kJ/mol for each H/H eclipsing interaction. That is the first entry in the strain table.' },
       { id: 'a-count',
         q: 'As the back carbon of ethane turns through a full 360°, how many times does the molecule pass ' +
            'through an eclipsed conformation?',
@@ -80,7 +80,7 @@ var QUIZZES = {
              'three peaks.' },
       { id: 'a-same',
         q: 'Staggered ethane and eclipsed ethane are…',
-        choices: ['Two conformations of the same molecule — turning about the C–C single bond changes one into the other',
+        choices: ['Two conformations of the same molecule: turning about the C–C single bond changes one into the other',
                   'Two different compounds',
                   'Two isomers that cannot change into each other',
                   'Resonance structures'],
@@ -98,7 +98,7 @@ var QUIZZES = {
   },
 
   B: {
-    title: 'Checkpoint 2 — butane, torsional and steric strain',
+    title: 'Checkpoint 2: butane, torsional and steric strain',
     draw: 5,
     core: ['b-lowest', 'b-steric', 'b-calc'],
     pool: [
@@ -115,10 +115,10 @@ var QUIZZES = {
         why: 'Totally eclipsed: CH₃ eclipsing CH₃ (11) plus two H/H (4 + 4) = 19 kJ/mol.' },
       { id: 'b-steric',
         q: 'Gauche butane is 3.8 kJ/mol higher in energy than anti butane. What kind of strain is that?',
-        choices: ['Steric strain — the two CH₃ groups are close enough that their electron clouds repel',
-                  'Torsional strain — bonds are lined up behind each other',
+        choices: ['Steric strain: the two CH₃ groups are close enough that their electron clouds repel',
+                  'Torsional strain: bonds are lined up behind each other',
                   'Both torsional and steric strain',
-                  'Angle strain — the bond angles are squeezed'],
+                  'Angle strain: the bond angles are squeezed'],
         why: 'Gauche is staggered, so no bonds line up and there is no torsional strain. The 3.8 kJ/mol is ' +
              'steric strain from two CH₃ groups 60° apart.' },
       { id: 'b-calc',
@@ -133,7 +133,7 @@ var QUIZZES = {
                   'Totally eclipsed butane has four eclipsing interactions',
                   'Its CH₃ groups are anti',
                   'It has a gauche interaction as well'],
-        why: 'CH₃/CH₃ eclipsed costs 11 kJ/mol — torsional and steric strain together — compared with 6 for ' +
+        why: 'CH₃/CH₃ eclipsed costs 11 kJ/mol (torsional and steric strain together), compared with 6 for ' +
              'CH₃/H. 11 + 4 + 4 = 19.' },
       { id: 'b-count',
         q: 'How many CH₃/CH₃ gauche interactions does this conformation of butane have?',
@@ -145,7 +145,7 @@ var QUIZZES = {
         choices: ['In anti the CH₃ groups are 180° apart; in gauche they are 60° apart',
                   'Anti is staggered and gauche is eclipsed',
                   'In gauche the CH₃ groups are 180° apart; in anti they are 60° apart',
-                  'There is none — they have the same energy'],
+                  'There is none, because they have the same energy'],
         why: 'Both are staggered. Anti puts the CH₃ groups opposite each other (180°); gauche puts them next ' +
              'to each other (60°), which costs 3.8 kJ/mol.' },
       { id: 'b-graph',
@@ -187,7 +187,7 @@ var QUIZZES = {
   },
 
   C: {
-    title: 'Checkpoint 3 — halogens and branched groups',
+    title: 'Checkpoint 3: halogens, branched groups and bond length',
     draw: 4,
     core: ['c-best', 'c-bond'],
     pool: [
@@ -217,15 +217,15 @@ var QUIZZES = {
       { id: 'c-tbu', struct: ['trimethylpentane'],
         q: 'In the lowest-energy conformation of 2,2,3-trimethylpentane, viewed down C3–C4, which group on ' +
            'C3 is anti to the CH₃ on C4?',
-        choices: ['C(CH₃)₃', 'CH₃', 'H', 'None — the lowest-energy conformation is eclipsed'],
+        choices: ['C(CH₃)₃', 'CH₃', 'H', 'None, because the lowest-energy conformation is eclipsed'],
         why: 'The tert-butyl group has by far the biggest gauche cost (11.4 kJ/mol), so it goes anti. The CH₃ ' +
              'is then gauche instead: 3.8 kJ/mol.' },
       { id: 'c-ipr', struct: ['dimethylpentane'],
         q: 'In the lowest-energy conformation of 2,3-dimethylpentane, viewed down C3–C4, which group on C3 is ' +
            'anti to the CH₃ on C4?',
-        choices: ['CH(CH₃)₂', 'CH₃', 'H', 'None — the lowest-energy conformation is eclipsed'],
+        choices: ['CH(CH₃)₂', 'CH₃', 'H', 'None, because the lowest-energy conformation is eclipsed'],
         why: 'It is close. Isopropyl gauche to CH₃ costs 4.6 kJ/mol, CH₃ gauche to CH₃ costs 3.8, so the ' +
-             'isopropyl group takes the anti position — but only by 0.8 kJ/mol.' },
+             'isopropyl group takes the anti position, but only by 0.8 kJ/mol.' },
       { id: 'c-methylbutane', struct: ['methylbutane'],
         q: 'Looking down C2–C3 of 2-methylbutane, two staggered conformations cost 3.8 kJ/mol and one costs ' +
            '7.6 kJ/mol. What makes that one worse?',
@@ -243,7 +243,7 @@ var QUIZZES = {
              'interactions, 7.6 kJ/mol.' },
       { id: 'c-clbr', struct: ['bromobutane', 'chlorobutane'],
         q: 'Swap the Br in 2-bromobutane for a Cl. How does the energy of the best staggered conformation change?',
-        choices: ['Hardly at all — Cl and Br cost about the same when gauche to a CH₃',
+        choices: ['Hardly at all, because Cl and Br cost about the same when gauche to a CH₃',
                   'It drops a lot, because Cl is a smaller atom',
                   'It rises a lot, because Cl is more electronegative',
                   'The best conformation becomes an eclipsed one'],
@@ -256,14 +256,52 @@ var QUIZZES = {
                   'Put the two hydrogens anti to each other',
                   'Eclipse the two largest groups'],
         why: 'Weight does not matter; crowding does. 2-bromobutane breaks "heaviest anti": Br is heavy but ' +
-             'crowds a neighbour less than CH₃ does.' }
+             'crowds a neighbour less than CH₃ does.' },
+      { id: 'c-longbond', struct: ['bromobutane'],
+        q: 'The C–Br bond (1.94 Å) is longer than a C–C bond (1.54 Å). How does that extra length change how ' +
+           'much the Br crowds a gauche CH₃?',
+        choices: ['It holds the Br farther from the CH₃, so the Br crowds it less than its size alone would suggest',
+                  'It pushes the Br closer to the CH₃, so the Br crowds it more',
+                  'It has no effect, because only the size of the atom matters',
+                  'It makes the Br atom itself smaller'],
+        why: 'A longer bond carries the atom farther out from its own carbon, and so farther from the groups on ' +
+             'the next carbon. In this activity the Br sits 3.18 Å from the gauche CH₃, while a CH₃ in the same ' +
+             'place sits only 2.95 Å away.' },
+      { id: 'c-methylsize',
+        q: 'A carbon atom is smaller than a bromine atom. Why does a CH₃ group still crowd a gauche neighbour ' +
+           'more than a Br does?',
+        choices: ['Its three H atoms make the group about as wide as a Br atom, and its shorter bond holds it closer',
+                  'Carbon atoms carry a negative charge that repels the neighbour',
+                  'A CH₃ group is always eclipsed',
+                  'The C–C bond is longer than the C–Br bond'],
+        why: 'Counting its H atoms, a CH₃ group reaches about 2.0 Å, a little more than a Br atom (1.85 Å). It ' +
+             'also sits on a 1.54 Å bond instead of a 1.94 Å one, so it is closer to its neighbour. More reach and ' +
+             'less distance both mean more overlap.' },
+      { id: 'c-hypo',
+        q: 'Imagine a group X as big as a Br atom but attached by a bond as short as a C–C bond. Compared with ' +
+           'Br, how much would X crowd a gauche CH₃?',
+        choices: ['More, because it is the same size but sits closer',
+                  'Less, because a shorter bond is weaker',
+                  'The same, because only the size of the atom matters',
+                  'Less, because it would be pulled toward its own carbon'],
+        why: 'Same size, shorter bond: the group sits closer to its neighbour, so their electron clouds overlap ' +
+             'more. The long C–Br and C–I bonds are what keep those big atoms from crowding.' },
+      { id: 'c-iodine', struct: ['iodobutane', 'chlorobutane'],
+        q: 'Iodine is a much bigger atom than chlorine, yet an I/CH₃ gauche interaction costs about the same as a ' +
+           'Cl/CH₃ one. Why?',
+        choices: ['The C–I bond is longer, which moves the bigger atom farther away, and the two effects cancel',
+                  'Iodine is actually smaller than chlorine',
+                  'Iodine and chlorine have the same number of electrons',
+                  'Gauche interactions do not depend on the group at all'],
+        why: 'Going from Cl to I, the radius of the atom grows by about 0.2 Å, but the bond grows by about 0.4 Å. ' +
+             'The longer bond carries the iodine far enough out to make up for its extra size.' }
     ]
   },
 
   D: {
-    title: 'Checkpoint 4 — wedges, dashes and the best conformation',
+    title: 'Checkpoint 4: wedges, dashes and the best conformation',
     draw: 5,
-    core: ['d-dmb', 'd-A', 'd-B'],
+    core: ['d-dmb', 'd-A', 'd-B', 'd-eye'],
     pool: [
       { id: 'd-dmb', struct: ['dimethylbutane'],
         q: 'Looking down C2–C3 of 2,3-dimethylbutane, how many CH₃/CH₃ gauche interactions does the best ' +
@@ -284,7 +322,7 @@ var QUIZZES = {
              'Br/CH₃ gauche interactions remain: 2.0 kJ/mol.' },
       { id: 'd-B',
         q: 'This is Molecule B. When its two Br atoms are anti, the two CH₃ groups are…',
-        fig: { zigzag: 'pairB_Br' },
+        fig: { zigzag: 'pairB_Br_R' },
         choices: ['Gauche', 'Anti', 'Eclipsed', '120° apart'],
         why: 'In B, putting the Br atoms anti forces the CH₃ groups gauche: 3.8 + 1 + 1 = 5.8 kJ/mol.' },
       { id: 'd-AvsB',
@@ -297,10 +335,10 @@ var QUIZZES = {
              'both pairs can; in B one pair has to go gauche.' },
       { id: 'd-rotate',
         q: 'Can you turn Molecule A into Molecule B just by rotating about the C2–C3 bond?',
-        choices: ['No — you would have to swap two groups on one carbon, which means breaking bonds. They are different molecules.',
-                  'Yes — turn the back carbon 120°',
-                  'Yes — turn the back carbon 180°',
-                  'Yes — they are already the same conformation'],
+        choices: ['No. You would have to swap two groups on one carbon, which means breaking bonds. They are different molecules.',
+                  'Yes, by turning the back carbon 120°',
+                  'Yes, by turning the back carbon 180°',
+                  'Yes, because they are already the same conformation'],
         why: 'Rotation only changes the conformation; it can never move a Br from a wedge to a dash. You will ' +
              'learn the name for this relationship in the next unit.' },
       { id: 'd-halo', struct: ['dichlorobutane', 'dibromobutane', 'diiodobutane'],
@@ -309,7 +347,7 @@ var QUIZZES = {
         choices: ['The ones where the two halogens are gauche or eclipsed with each other',
                   'The ones where the two halogens are anti',
                   'Every conformation rises by the same amount',
-                  'None of them — the halogens never affect the energy'],
+                  'None of them, because the halogens never affect the energy'],
         why: 'Halogen/halogen contacts grow Cl < Br < I (gauche: about 5, 7 and 9 kJ/mol). When the halogens ' +
              'are anti they never touch, so those conformations barely change.' },
       { id: 'd-brbr',
@@ -333,7 +371,16 @@ var QUIZZES = {
                   'An eclipsed conformation can be lowest if the groups are small',
                   'All staggered conformations have the same energy'],
         why: 'Staggered always wins, because it has no torsional strain. WHICH staggered conformation wins ' +
-             'depends on the gauche costs.' }
+             'depends on the gauche costs.' },
+      { id: 'd-eye',
+        q: 'In this drawing the eye is at the right-hand end. Which Newman projection shows what the eye sees?',
+        fig: { zigzag: 'bromobutane_R' },
+        choices: [{ newman: 'bromobutane_R', phi: 180 }, { newman: 'bromobutane', phi: 180 },
+                  { newman: 'bromobutane_R', phi: 180, twist: 'swapBack' }, { newman: 'bromobutane_R', phi: 300 }],
+        why: 'From the right, C3 is the front carbon, so its groups (a CH₃ and two H) meet in the centre and the ' +
+             'groups on C2 sit on the circle. In the drawing the two CH₃ groups point in opposite directions, so ' +
+             'they are anti. Of the wrong choices, one puts C2 in front, one swaps the Br and the H on C2 (a ' +
+             'different molecule), and one turns the back carbon 120° (a different conformation).' }
     ]
   }
 };

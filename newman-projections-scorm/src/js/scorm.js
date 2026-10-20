@@ -1,4 +1,4 @@
-/* scorm.js — minimal SCORM 1.2 run-time wrapper.
+/* scorm.js: minimal SCORM 1.2 run-time wrapper.
  *
  * This package reports a SCORE: the percentage of checkpoint questions the
  * student answered correctly on the first try, out of every graded question
@@ -93,6 +93,12 @@ var SCORM = (function () {
     try { return JSON.parse(json); } catch (e) { return null; }
   }
 
+  /* The score the LMS already holds for this learner, 0 if none. */
+  function priorScore() {
+    var v = parseFloat(get('cmi.core.score.raw'));
+    return isNaN(v) ? 0 : v;
+  }
+
   /* raw is 0–100. */
   function setScore(raw) {
     if (!connected) return false;
@@ -142,6 +148,7 @@ var SCORM = (function () {
     saveState: saveState,
     loadState: loadState,
     setScore: setScore,
+    priorScore: priorScore,
     recordAnswer: recordAnswer,
     markComplete: markComplete,
     finish: finish,

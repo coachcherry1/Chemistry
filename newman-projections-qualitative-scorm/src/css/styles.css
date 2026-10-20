@@ -1,4 +1,4 @@
-/* styles.css — self-contained; no web fonts, no CDN, nothing that a locked-down
+/* styles.css: self-contained. No web fonts, no CDN, nothing that a locked-down
    LMS iframe could fail to load. Same palette as the IR activity. */
 
 :root {
@@ -557,12 +557,29 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .sk-num { font: 10px system-ui, sans-serif; fill: var(--muted); }
 .sk-num-view { fill: var(--accent); font-weight: 700; }
 
-/* qualitative package: the strain table beside the checkpoint questions */
-.quiz-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 320px); gap: 12px; align-items: start; }
-.quiz-grid .quiz-table { margin-top: 0; position: sticky; top: 8px; }
-@media (max-width: 760px) { .quiz-grid { grid-template-columns: minmax(0, 1fr); } .quiz-grid .quiz-table { position: static; } }
-
 /* results screen: retry */
 .best-line { font-weight: 600; margin: 10px 0 0; }
 .confirm { margin-top: 10px; padding: 10px 12px; border-radius: var(--radius); border: 1px solid var(--accent); background: var(--note-bg); }
 .confirm p { margin: 0 0 4px; font-size: 0.88rem; }
+
+/* bond-length step: electron clouds to scale */
+.contact-host { width: 100%; }
+.contact { display: block; width: 100%; max-width: 470px; height: auto; margin: 0 auto; }
+.ct-bg { fill: transparent; }
+.ct-row.current .ct-bg { fill: var(--note-bg); }
+.ct-cloud { stroke-width: 1.5; fill-opacity: 0.28; }
+.ct-me { fill: var(--muted); stroke: var(--muted); }
+.ct-c { fill: var(--muted); stroke: var(--ink); }
+.ct-cl { fill: var(--t-cl); stroke: var(--t-cl); }
+.ct-br { fill: var(--t-br); stroke: var(--t-br); }
+.ct-i { fill: var(--t-i); stroke: var(--t-i); }
+.ct-overlap { fill: var(--bad); fill-opacity: 0.55; stroke: none; }
+.ct-in { font: 600 11px system-ui, sans-serif; fill: var(--ink); }
+.ct-label { font: 600 13px system-ui, sans-serif; fill: var(--ink); }
+.ct-row.current .ct-label { fill: var(--accent); }
+.ct-sub { font: 12px system-ui, sans-serif; fill: var(--muted); }
+
+/* qualitative package: the strain table beside the checkpoint questions */
+.quiz-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 320px); gap: 12px; align-items: start; }
+.quiz-grid .quiz-table { margin-top: 0; position: sticky; top: 8px; }
+@media (max-width: 760px) { .quiz-grid { grid-template-columns: minmax(0, 1fr); } .quiz-grid .quiz-table { position: static; } }

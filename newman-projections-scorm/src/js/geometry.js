@@ -1,4 +1,4 @@
-/* geometry.js — from a wedge/dash drawing to a Newman projection and a 3D model.
+/* geometry.js: from a wedge/dash drawing to a Newman projection and a 3D model.
  *
  * Every molecule is authored the way a student sees it: a zigzag in the plane
  * of the page, and on each of the two central carbons one group in the plane
@@ -13,9 +13,13 @@
  *           projection, z = "right". Angles are measured clockwise from up,
  *           as the viewer at the front carbon sees them.
  *
- * With the eye placed where the zigzag drawing puts it and the front chain
- * group straight up, every wedge lands on the LEFT of the Newman projection
- * and every dash on the RIGHT. tools/validate.js checks this.
+ * The eye can sit at either end of the central bond. A molecule with
+ * `eye: 'right'` is the same drawing looked at from the C3 end, so C3 is the
+ * front carbon (molecules.js makes these by swapping front and back).
+ *
+ * From either end, with the front chain group straight up, every wedge lands
+ * on the LEFT of the Newman projection and every dash on the RIGHT.
+ * tools/validate.js checks this for every molecule and both ends.
  */
 
 var GEOM = (function () {
@@ -37,42 +41,55 @@ var GEOM = (function () {
 
   /* ---- the zigzag as drawn on the page */
 
+  /* The left carbon of the drawing (C2 in butane) sits at the origin; the
+     right one (C3) down and to the right of it. */
   var Z = Math.PI / 2 - HALF;                   /* 35.26°: chain bonds' tilt */
-  var U = [Math.cos(Z), -Math.sin(Z), 0];       /* C2 → C3, down and to the right */
+  var U = [Math.cos(Z), -Math.sin(Z), 0];       /* left carbon → right carbon */
+  var POS = { left: [0, 0, 0], right: mul(U, CC) };
   var CHAIN = {
-    front: [-Math.cos(Z), -Math.sin(Z), 0],     /* C2 → C1, down and to the left */
-    back:  [Math.cos(Z), Math.sin(Z), 0]        /* C3 → C4, up and to the right */
+    left:  [-Math.cos(Z), -Math.sin(Z), 0],     /* left carbon → C1, down and to the left */
+    right: [Math.cos(Z), Math.sin(Z), 0]        /* right carbon → C4, up and to the right */
   };
   var c = Math.cos(HALF), s = Math.sin(HALF);
-  var OUT = { front: [0, 1, 0], back: [0, -1, 0] };   /* bisector away from the chain */
+  var OUT = { left: [0, 1, 0], right: [0, -1, 0] };   /* bisector away from the chain */
   var WORLD_DIRS = {
-    front: { anchor: CHAIN.front, wedge: [0, c, s],  dash: [0, c, -s] },
-    back:  { anchor: CHAIN.back,  wedge: [0, -c, s], dash: [0, -c, -s] }
+    left:  { anchor: CHAIN.left,  wedge: [0, c, s],  dash: [0, c, -s] },
+    right: { anchor: CHAIN.right, wedge: [0, -c, s], dash: [0, -c, -s] }
   };
 
-  /* ---- the Newman frame */
+  /* ---- the Newman frames, one for each end the eye can look from */
 
-  var W = U;
-  var UP = unit(sub(CHAIN.front, mul(W, dot(CHAIN.front, W))));
-  var RIGHT = cross(W, UP);
+  function frame(near) {
+    var far = near === 'left' ? 'right' : 'left';
+    var W = unit(sub(POS[far], POS[near]));                   /* line of sight */
+    var UP = unit(sub(CHAIN[near], mul(W, dot(CHAIN[near], W))));
+    return { near: near, far: far, origin: POS[near], W: W, UP: UP, RIGHT: cross(W, UP) };
+  }
+  var FRAMES = { left: frame('left'), right: frame('right') };
+
+  /* The frame for a molecule: which end its eye is at. */
+  function frameOf(mol) { return FRAMES[mol.eye === 'right' ? 'right' : 'left']; }
 
   function wrap(a) { return ((a % 360) + 360) % 360; }
 
-  function newmanAngle(d) {
-    var p = sub(d, mul(W, dot(d, W)));
-    var a = Math.atan2(dot(p, RIGHT), dot(p, UP)) * 180 / Math.PI;
+  function newmanAngle(F, d) {
+    var p = sub(d, mul(F.W, dot(d, F.W)));
+    var a = Math.atan2(dot(p, F.RIGHT), dot(p, F.UP)) * 180 / Math.PI;
     return wrap(Math.round(a));
   }
 
   var ROLES = ['anchor', 'dash', 'wedge'];
 
   /* The Newman projection of the molecule as drawn: the front chain group at
-     0°, so the back chain group sits at 180°. */
+     0°, so the back chain group sits at 180°. The front carbon is the one
+     nearest the eye. */
   function newmanOf(mol) {
+    var F = frameOf(mol);
     var out = { front: [], back: [] };
-    ['front', 'back'].forEach(function (side) {
+    [['front', F.near], ['back', F.far]].forEach(function (pair) {
+      var side = pair[0], page = pair[1];
       ROLES.forEach(function (role) {
-        out[side].push({ g: mol[side][role], a: newmanAngle(WORLD_DIRS[side][role]), role: role });
+        out[side].push({ g: mol[side][role], a: newmanAngle(F, WORLD_DIRS[page][role]), role: role });
       });
       out[side].sort(function (p, q) { return p.a - q.a; });
     });
@@ -127,7 +144,7 @@ var GEOM = (function () {
     return add(C, add(mul(bc, d[0]), add(mul(m, d[1]), mul(n, d[2]))));
   }
 
-  function toWorld(p) { return add(add(mul(W, p[0]), mul(UP, p[1])), mul(RIGHT, p[2])); }
+  function toWorld(F, p) { return add(F.origin, add(add(mul(F.W, p[0]), mul(F.UP, p[1])), mul(F.RIGHT, p[2]))); }
 
   /* All atoms and bonds with the back carbon turned to dihedral `phi`, in
      world (page) coordinates. Each atom knows which carbon it hangs from. */
@@ -161,23 +178,41 @@ var GEOM = (function () {
       grow(q.g, add(C3, mul(dir, GROUPS[q.g].bond)), C3, C2, 1, 'back');
     });
 
-    list.forEach(function (at) { at.p = toWorld(at.p); });
-    return { atoms: list, bonds: bonds, center: toWorld([CC / 2, 0, 0]) };
+    var F = frameOf(mol);
+    list.forEach(function (at) { at.p = toWorld(F, at.p); });
+    return { atoms: list, bonds: bonds, center: toWorld(F, [CC / 2, 0, 0]) };
+  }
+
+  /* Distance (Å) between the first atom of a group on the front carbon and
+     one on the back carbon, `gap` degrees apart in the Newman projection
+     (60 = gauche), for C–X bond lengths `bf` and `bb`. */
+  function contact(bf, bb, gap) {
+    var t = gap * Math.PI / 180;
+    var f = [-AX * bf, PERP * bf, 0];
+    var b = [CC + AX * bb, PERP * bb * Math.cos(t), PERP * bb * Math.sin(t)];
+    var d = sub(f, b);
+    return Math.sqrt(dot(d, d));
   }
 
   /* Camera orientations as rows of a rotation matrix (world → camera).
      The camera looks down its own −z. */
-  var VIEWS = {
-    page: [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
-    newman: [RIGHT, UP, mul(W, -1)],
-    /* the same view turned 180° about the line of sight */
-    newmanFlip: [mul(RIGHT, -1), mul(UP, -1), mul(W, -1)]
-  };
+  var VIEWS = { page: [[1, 0, 0], [0, 1, 0], [0, 0, 1]] };
+
+  /* Looking down the central bond from the molecule's eye, matching its
+     Newman projection; `turned` is the same view turned 180°. */
+  function newmanView(mol, turned) {
+    var F = frameOf(mol), k = turned ? -1 : 1;
+    return [mul(F.RIGHT, k), mul(F.UP, k), mul(F.W, -1)];
+  }
 
   /* ---- the 2D wedge/dash drawing (page coordinates in ångströms, y up) */
 
   function drawing(mol) {
-    var C2 = [0, 0], C3 = [U[0] * CC, U[1] * CC];
+    var F = frameOf(mol);
+    var L = [0, 0], R = [U[0] * CC, U[1] * CC];
+    /* the drawing never changes with the eye: the left carbon keeps its groups */
+    var spec = F.near === 'left' ? { left: mol.front, right: mol.back } : { left: mol.back, right: mol.front };
+    var labels = F.near === 'left' ? [mol.carbons[0], mol.carbons[1]] : [mol.carbons[1], mol.carbons[0]];
     function end(from, dir, len) { return [from[0] + dir[0] * len, from[1] + dir[1] * len]; }
     var spread = 30 * Math.PI / 180;
     function splay(dir, sign) {
@@ -188,17 +223,17 @@ var GEOM = (function () {
        apart for legibility. Which side each goes is cosmetic: what carries
        the stereochemistry is wedge versus dash. */
     var bonds = [];
-    [['front', C2], ['back', C3]].forEach(function (pair) {
+    [['left', L], ['right', R]].forEach(function (pair) {
       var side = pair[0], at = pair[1];
-      var m = mol[side];
+      var m = spec[side];
       var chain = CHAIN[side];
       bonds.push({ side: side, role: 'anchor', g: m.anchor, from: at, to: end(at, chain, 1.05) });
       var out = OUT[side];
-      var sw = side === 'front' ? 1 : -1;
+      var sw = side === 'left' ? 1 : -1;
       bonds.push({ side: side, role: 'wedge', g: m.wedge, from: at, to: end(at, splay(out, sw), 0.9) });
       bonds.push({ side: side, role: 'dash', g: m.dash, from: at, to: end(at, splay(out, -sw), 0.9) });
     });
-    return { C2: C2, C3: C3, axis: [U[0], U[1]], bonds: bonds };
+    return { L: L, R: R, axis: [U[0], U[1]], bonds: bonds, eye: F.near, labels: labels };
   }
 
   return {
@@ -211,6 +246,8 @@ var GEOM = (function () {
     atoms: atoms,
     drawing: drawing,
     VIEWS: VIEWS,
+    newmanView: newmanView,
+    contact: contact,
     wrap: wrap,
     vec: { add: add, sub: sub, mul: mul, dot: dot, cross: cross, unit: unit }
   };

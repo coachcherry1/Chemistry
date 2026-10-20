@@ -1,4 +1,4 @@
-/* picker.js — put a tile on a target, three ways.
+/* picker.js: put a tile on a target, three ways.
  *
  * Every drop in the activity (groups onto the Newman template, vocabulary onto
  * the graph) goes through here, so all of them work with a mouse, a touch

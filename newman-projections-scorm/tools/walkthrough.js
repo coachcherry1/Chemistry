@@ -1,4 +1,4 @@
-/* tools/walkthrough.js — plays the whole activity as a student would, in a
+/* tools/walkthrough.js: plays the whole activity as a student would, in a
  * real browser, against a fake LMS. Optional: needs Playwright.
  *
  *   node tools/walkthrough.js            # headless run, prints a report
@@ -80,7 +80,12 @@ const fakeLMS = () => {
   await next();
 
   /* ---- build helper: place every group, optionally after one wrong try */
-  async function build(molId, wrongFirst) {
+  /* `expectEye` is the end the step should show the eye at; the molecule
+     itself is read from the step, so right-eye builds are checked too. */
+  async function build(expectEye, wrongFirst) {
+    const molId = await page.evaluate(() => App.STEPS[+document.getElementById('counter').textContent.match(/\d+/)[0] - 1].mol);
+    const eye = (await page.getAttribute('.zigzag', 'aria-label')).match(/eye is at the (\w+) end/)[1];
+    expect(eye === expectEye, molId + ': eye drawn at the ' + eye + ' end, expected ' + expectEye);
     const want = await page.evaluate((id) => App.targetSlots(molecule(id)), molId);
     const names = await page.evaluate((w) => w.map((g) => GROUPS[g].name), want);
     let order = want.map((_, i) => i);
@@ -173,7 +178,7 @@ const fakeLMS = () => {
     expect(await page.$('.reveal'), 'no reveal after lock-in');
   }
 
-  await build('ethane', true); await next();
+  await build('left', true); await next();
   await sketch(); await next();
   await trace(); await next();
   await label(true); await next();
@@ -185,14 +190,24 @@ const fakeLMS = () => {
   await page.click('.screen .primary');
   expect((await stepId()) === before, 'resume went to ' + (await stepId()) + ' instead of ' + before);
 
-  await build('butane', true); await next();
+  await build('left', true); await next();
   await sketch(); await next();
   await trace(); await next();
   await label(false); await next();
   await quiz(); await next();
 
-  await build('bromobutane', true); await next();
+  await build('right', true); await next();
   await find(0, 60); await next();
+
+  /* ---- bond length: predict, look at all four groups, predict again */
+  await page.click('.predict .choice >> nth=2');
+  expect(/Still to look at/.test(await feedback()), 'bond-length step did not ask for the other groups');
+  for (const g of ['CH₃', 'Cl', 'I']) await page.click(`.chip:has-text("${g}")`);
+  const ctRows = await page.$$eval('.ct-row', (r) => r.length);
+  expect(ctRows === 4, 'contact diagram has ' + ctRows + ' rows');
+  await page.click('.predict >> nth=1 >> .choice >> nth=0');
+  expect(/size and its distance/.test(await feedback()), 'bond-length step did not complete: ' + (await feedback()));
+  await next();
 
   /* ---- swap: five groups */
   for (let i = 0; i < 5; i++) {
@@ -205,10 +220,10 @@ const fakeLMS = () => {
   await next();
 
   await quiz(); await next();
-  await build('dimethylbutane', false); await next();
+  await build('right', false); await next();
   await find(1, 180); await next();
-  await build('pairA_Br', true); await next();
-  await build('pairB_Br', false); await next();
+  await build('left', true); await next();
+  await build('right', false); await next();
 
   /* ---- pair */
   await page.click('.predict .choice >> nth=0');
@@ -219,7 +234,7 @@ const fakeLMS = () => {
   await setRange('.rotor-range >> nth=1', 180);
   await page.click('.predict >> nth=2 >> .choice >> nth=0');
   await page.click('.chip:has-text("I")');
-  expect(/Same atoms, same bonds/.test(await feedback()), 'pair step did not complete: ' + (await feedback()));
+  expect(/Same atoms and same bonds/.test(await feedback()), 'pair step did not complete: ' + (await feedback()));
   await next();
 
   await quiz(); await next();

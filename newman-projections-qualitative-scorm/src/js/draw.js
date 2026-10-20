@@ -1,4 +1,4 @@
-/* draw.js — the 2D drawings: Newman projections (static, rotatable and the
+/* draw.js: the 2D drawings: Newman projections (static, rotatable and the
  * empty template students build on) and the wedge/dash zigzag.
  *
  * Everything is SVG so it stays sharp at any size and every part a student
@@ -11,7 +11,7 @@ var Draw = (function () {
   var NS = 'http://www.w3.org/2000/svg';
 
   /* The student can turn every Newman projection 180°, so the front chain
-     group points down instead of up — the way the zigzag looks from the eye
+     group points down instead of up, the way the zigzag looks from the eye
      without standing on your head. It is purely a view: turning the whole
      projection never changes the conformation, so nothing is judged
      differently. 0 or 180. */
@@ -236,11 +236,11 @@ var Draw = (function () {
     function P(p) { return [p[0] * SCALE, -p[1] * SCALE]; }
     var s = svg('0 0 10 10', 'zigzag', zigzagText(mol));
     var g = el('g', null, s);
-    var c2 = P(d.C2), c3 = P(d.C3);
+    var cl = P(d.L), cr = P(d.R);
 
-    el('line', { x1: c2[0], y1: c2[1], x2: c3[0], y2: c3[1], class: 'zz-bond' }, g);
+    el('line', { x1: cl[0], y1: cl[1], x2: cr[0], y2: cr[1], class: 'zz-bond' }, g);
 
-    var pts = [c2, c3];
+    var pts = [cl, cr];
     d.bonds.forEach(function (b) {
       var a = P(b.from), z = P(b.to);
       var dx = z[0] - a[0], dy = z[1] - a[1];
@@ -272,13 +272,15 @@ var Draw = (function () {
     });
 
     /* carbon numbers sit in the open angle of each vertex */
-    el('text', { x: c2[0], y: c2[1] + 24, 'text-anchor': 'middle', class: 'zz-num' }, g, mol.carbons[0]);
-    el('text', { x: c3[0], y: c3[1] - 18, 'text-anchor': 'middle', class: 'zz-num' }, g, mol.carbons[1]);
+    el('text', { x: cl[0], y: cl[1] + 24, 'text-anchor': 'middle', class: 'zz-num' }, g, d.labels[0]);
+    el('text', { x: cr[0], y: cr[1] - 18, 'text-anchor': 'middle', class: 'zz-num' }, g, d.labels[1]);
 
-    /* the eye, looking along the central bond from the front carbon */
+    /* the eye, looking along the central bond from whichever end is in front */
     if (opts.eye !== false) {
-      var ax = d.axis[0], ay = -d.axis[1];
-      var ex = c2[0] - ax * 112, ey = c2[1] - ay * 112;
+      var k = d.eye === 'left' ? 1 : -1;                /* the direction the eye looks */
+      var ax = d.axis[0] * k, ay = -d.axis[1] * k;
+      var near = d.eye === 'left' ? cl : cr;
+      var ex = near[0] - ax * 112, ey = near[1] - ay * 112;
       var deg = Math.atan2(ay, ax) / RAD;
       var eye = el('g', { class: 'zz-eye', transform: 'translate(' + ex + ' ' + ey + ') rotate(' + deg + ')' }, g);
       el('path', { d: 'M-16 0 Q0 -12 16 0 Q0 12 -16 0 Z', class: 'eye-white' }, eye);
@@ -301,8 +303,10 @@ var Draw = (function () {
       return mol.carbons[i] + ' carries ' + GROUPS[m.anchor].name + ' in the plane of the page, ' +
              GROUPS[m.wedge].name + ' on a wedge (toward you) and ' + GROUPS[m.dash].name + ' on a dash (away from you)';
     }
+    var side = mol.eye === 'right' ? 'right' : 'left';
     return 'Wedge and dash drawing of ' + mol.name + '. ' + c('front', 0) + '. ' + c('back', 1) +
-           '. The eye looks along the ' + mol.carbons[0] + '–' + mol.carbons[1] + ' bond from the ' + mol.carbons[0] + ' end.';
+           '. The eye is at the ' + side + ' end and looks along the ' + mol.carbons[0] + '–' + mol.carbons[1] +
+           ' bond, so ' + mol.carbons[0] + ' is in front.';
   }
 
   /* ------------------------------------------------- bond-line formula */

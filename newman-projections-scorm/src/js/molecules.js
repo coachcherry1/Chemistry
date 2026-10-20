@@ -1,4 +1,4 @@
-/* molecules.js — every molecule in the activity, authored as its wedge/dash
+/* molecules.js: every molecule in the activity, authored as its wedge/dash
  * drawing.
  *
  * Looking down the central bond, `front` is the carbon nearest the eye and
@@ -102,6 +102,25 @@ var MOLECULES = (function () {
       front: { anchor: 'CH3', wedge: x, dash: 'H' },
       back:  { anchor: 'CH3', wedge: x, dash: 'H' },
       ref: ['wedge', 'wedge'], axis: axis, vocab: 'generic'
+    };
+  });
+
+  /* Every molecule can also be looked at from the other end. `id + '_R'` is
+     the same drawing with the eye at the right-hand carbon, so that carbon
+     (C3 in butane) is in front: front and back swap, and so do the carbon
+     labels and the reference groups. Builds alternate between the two ends so
+     students cannot learn "the left carbon is always in front". */
+  Object.keys(M).forEach(function (id) {
+    var m = M[id];
+    if (!m || !m.front) return;
+    var axis = m.axis.replace(m.carbons[0] + '–' + m.carbons[1], m.carbons[1] + '–' + m.carbons[0]);
+    if (id === 'ethane') axis = 'Dihedral angle, blue H to red H';
+    M[id + '_R'] = {
+      id: id + '_R', base: id, eye: 'right',
+      name: m.name, tag: m.tag, formula: m.formula, x: m.x,
+      carbons: [m.carbons[1], m.carbons[0]], ends: m.ends ? [m.ends[1], m.ends[0]] : null,
+      front: m.back, back: m.front, ref: [m.ref[1], m.ref[0]],
+      axis: axis, vocab: m.vocab
     };
   });
 

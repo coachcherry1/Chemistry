@@ -1,4 +1,4 @@
-/* tools/validate.js — chemistry and item-bank checks. Run after ANY edit to
+/* tools/validate.js: chemistry and item-bank checks. Run after ANY edit to
  * the strain table, a molecule or a question.
  *
  *   node tools/validate.js
@@ -85,6 +85,29 @@ for (const id of mols) {
   if (maxStag >= minEcl) fail(`${id}: a staggered conformation (${maxStag}) is not below every eclipsed one (${minEcl})`);
 }
 
+/* ---------------------------------------------------- either end of the bond */
+
+/* Looking from the other end changes the picture, never the molecule: the
+   energy at every dihedral angle must be the same, and the front carbon must
+   be the one at the eye. */
+for (const id of mols.filter((k) => MOLECULES[k].eye === 'right')) {
+  const R = molecule(id), L = molecule(MOLECULES[id].base);
+  for (let p = 0; p < 360; p += 5) {
+    if (!near(GEOM.energyAt(R, p), GEOM.energyAt(L, p), 1e-6)) { fail(`${id}: energy at ${p}° differs from ${L.id}`); break; }
+  }
+  if (GEOM.phi0(R) !== GEOM.phi0(L)) fail(`${id}: drawn conformation differs from ${L.id}`);
+  if (R.carbons[0] !== L.carbons[1]) fail(`${id}: the front carbon should be ${L.carbons[1]}`);
+}
+
+/* Two Newman descriptions show the same thing if one is the other turned as
+   a whole (by 120° steps: front positions stay front positions). */
+function key(nm, turn) {
+  const at = (side) => nm[side].map((q) => GEOM.wrap(q.a + turn) + ':' + GROUPS[q.g].label + (q.g === 'Hr' || q.g === 'Hb' ? q.g : ''))
+    .sort().join(',');
+  return at('front') + '|' + at('back');
+}
+function sameView(a, b) { return [0, 120, 240].some((t) => key(a, t) === key(b, 0)); }
+
 /* ---------------------------------------------------- the A / B pair */
 
 for (const x of MOLECULES.HALOGENS) {
@@ -139,8 +162,10 @@ for (const s of App.STEPS.filter((x) => x.kind === 'find')) {
   const best = bestStaggered(m);
   const nm = GEOM.newmanAt(m, best.phi);
   if (s.id === 'find-bromo') {
-    const back = nm.back.find((q) => q.role === 'anchor').a;
-    const anti = nm.front.find((q) => STRAIN.gap(q.a, back + 180) === 0).g;
+    /* "which group on C2 is anti to the CH₃ on C3", whichever end the eye is at */
+    const c2 = m.carbons[0] === 'C2' ? 'front' : 'back', c3 = c2 === 'front' ? 'back' : 'front';
+    const ch3 = nm[c3].find((q) => q.role === 'anchor').a;
+    const anti = nm[c2].find((q) => STRAIN.gap(q.a, ch3 + 180) === 0).g;
     const label = GROUPS[anti].label;
     if (s.predict.choices[s.predict.answer] !== label) fail(`find-bromo: model says ${label} is anti, prediction key says ${s.predict.choices[s.predict.answer]}`);
   }
@@ -178,7 +203,15 @@ for (const k of Object.keys(QUIZZES)) {
 /* Questions whose answer is a number or a picture from the model. If you
    change the strain table, these tell you which question text to update. */
 const fmt = STRAIN.fmt;
+const over = (g, bond) => GROUPS[g].radius + GROUPS.CH3.radius - GEOM.contact(bond || GROUPS[g].bond, GROUPS.CH3.bond, 60);
 const checks = {
+  'c-longbond': () => GEOM.contact(GROUPS.Br.bond, 1.54, 60) > GEOM.contact(GROUPS.CH3.bond, 1.54, 60) &&
+                      near(GEOM.contact(GROUPS.Br.bond, 1.54, 60), 3.18, 0.005) && near(GEOM.contact(1.54, 1.54, 60), 2.95, 0.005),
+  'c-methylsize': () => GROUPS.CH3.radius >= GROUPS.Br.radius && GROUPS.CH3.bond < GROUPS.Br.bond &&
+                        over('CH3') > over('Br'),
+  'c-hypo': () => over('Br', GROUPS.CH3.bond) > over('Br'),
+  'c-iodine': () => near(over('I'), over('Cl'), 0.05) && near(STRAIN.pair('I', 'CH3').gau, STRAIN.pair('Cl', 'CH3').gau),
+  'd-eye': () => true,     /* checked above: only the first choice matches the drawing */
   'a-each': () => near(STRAIN.pair('H', 'H').ecl, 4) && near(E('ethane', 0), 12),
   'a-count': () => namedEnergies(molecule('ethane')).filter((n) => near(n.e, 12)).length === 3,
   'b-lowest': () => bestStaggered(molecule('butane')).phi === 180,
@@ -205,7 +238,7 @@ const checks = {
 };
 for (const id of Object.keys(checks)) {
   if (!ids.has(id)) { fail(`check for unknown question ${id}`); continue; }
-  if (!checks[id]()) fail(`question ${id} no longer matches the strain table — update its text`);
+  if (!checks[id]()) fail(`question ${id} no longer matches the strain table, so update its text`);
 }
 
 /* ---------------------------------------------------- bond-line formulas */
@@ -233,6 +266,39 @@ for (const x of MOLECULES.SWAP_ORDER) {
   const id = { Br: 'bromobutane', Cl: 'chlorobutane', I: 'iodobutane', CH3: 'methylbutane',
                iPr: 'dimethylpentane', tBu: 'trimethylpentane' }[x];
   if (!SKELETAL[id]) fail(`swap step: no bond-line formula for ${id}`);
+}
+
+/* "Which projection does the eye see?" questions: exactly one choice may
+   match the drawing in the figure. */
+for (const k of Object.keys(QUIZZES)) for (const q of QUIZZES[k].pool) {
+  if (!q.fig || !q.fig.zigzag || typeof q.choices[0] === 'string' || !q.choices[0].newman) continue;
+  const m = molecule(q.fig.zigzag);
+  const drawn = GEOM.newmanAt(m, GEOM.phi0(m));
+  const hits = q.choices.map((c) => sameView(App.nmFor(c), drawn));
+  if (!hits[0]) fail(`${q.id}: the first (correct) choice is not what the eye sees`);
+  if (hits.slice(1).some(Boolean)) fail(`${q.id}: a wrong choice also matches the drawing`);
+}
+
+/* ---------------------------------------------------- no em dashes */
+
+/* Nothing a student or teacher reads may contain an em dash. */
+{
+  const root = path.join(__dirname, '..');
+  const DASH = new RegExp('\u2014|&' + 'mdash;');   /* split so this line does not match itself */
+  const files = [];
+  (function walk(dir) {
+    for (const f of fs.readdirSync(dir)) {
+      const full = path.join(dir, f);
+      if (fs.statSync(full).isDirectory()) { if (f !== 'dist' && f[0] !== '.') walk(full); }
+      else if (/\.(js|html|css|md|xml|sh)$/.test(f)) files.push(full);
+    }
+  })(root);
+  for (const f of files) {
+    const lines = fs.readFileSync(f, 'utf8').split('\n');
+    lines.forEach((l, i) => {
+      if (DASH.test(l)) fail(`em dash in ${path.relative(root, f)}:${i + 1}`);
+    });
+  }
 }
 
 /* ---------------------------------------------------- report */

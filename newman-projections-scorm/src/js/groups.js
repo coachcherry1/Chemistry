@@ -1,4 +1,4 @@
-/* groups.js — the substituents that can sit on a Newman projection, and the
+/* groups.js: the substituents that can sit on a Newman projection, and the
  * elements they are drawn from.
  *
  * `strain` is the key the strain table in strain.js looks up. The red and blue
@@ -10,6 +10,11 @@
  *
  * `kids` builds a group out of atoms for the 3D model: a methyl carbon carries
  * three H, an isopropyl carbon an H and two methyls, and so on.
+ *
+ * `radius` is how far the group's electron cloud reaches (Å): the van der
+ * Waals radius for a single atom, and Pauling's 2.0 Å for a whole CH₃ group,
+ * whose three H atoms make it wider than a bare carbon atom. Part 3 uses it
+ * to show why Cl, Br and I crowd a neighbour less than CH₃ does.
  */
 
 var ELEMENTS = {
@@ -26,11 +31,11 @@ var GROUPS = {
   H:   { label: 'H', name: 'H', el: 'H', bond: 1.09, strain: 'H' },
   Hr:  { label: 'H', name: 'red H', el: 'Hr', bond: 1.09, strain: 'H', tint: 'red' },
   Hb:  { label: 'H', name: 'blue H', el: 'Hb', bond: 1.09, strain: 'H', tint: 'blue' },
-  CH3: { label: 'CH₃', name: 'CH₃', el: 'C', bond: 1.54, strain: 'CH3',
+  CH3: { label: 'CH₃', name: 'CH₃', el: 'C', bond: 1.54, strain: 'CH3', radius: 2.0,
          kids: ['H', 'H', 'H'] },
-  Cl:  { label: 'Cl', name: 'Cl', el: 'Cl', bond: 1.78, strain: 'Cl' },
-  Br:  { label: 'Br', name: 'Br', el: 'Br', bond: 1.94, strain: 'Br' },
-  I:   { label: 'I', name: 'I', el: 'I', bond: 2.14, strain: 'I' },
+  Cl:  { label: 'Cl', name: 'Cl', el: 'Cl', bond: 1.78, strain: 'Cl', radius: 1.75 },
+  Br:  { label: 'Br', name: 'Br', el: 'Br', bond: 1.94, strain: 'Br', radius: 1.85 },
+  I:   { label: 'I', name: 'I', el: 'I', bond: 2.14, strain: 'I', radius: 1.98 },
   iPr: { label: 'CH(CH₃)₂', name: 'isopropyl, CH(CH₃)₂', el: 'C', bond: 1.54, strain: 'iPr',
          kids: ['H', 'CH3', 'CH3'] },
   tBu: { label: 'C(CH₃)₃', name: 'tert-butyl, C(CH₃)₃', el: 'C', bond: 1.54, strain: 'tBu',

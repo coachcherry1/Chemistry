@@ -1,4 +1,4 @@
-/* viewer3d.js — a small ball-and-stick renderer on a 2D canvas.
+/* viewer3d.js: a small ball-and-stick renderer on a 2D canvas.
  *
  * No WebGL and no library: a dozen to thirty atoms sorted back to front is
  * well within what a Chromebook draws at full frame rate, and it cannot fail
@@ -86,7 +86,7 @@ var Viewer3D = (function () {
     this.ctx = canvas.getContext('2d');
     this.mol = mol;
     this.phi = GEOM.phi0(mol);
-    this.R = opts.view === 'newman' ? (Draw.getFlip() ? GEOM.VIEWS.newmanFlip : GEOM.VIEWS.newman) : START;
+    this.R = opts.view === 'newman' ? GEOM.newmanView(mol, Draw.getFlip()) : START;
     this.style = 'ball';
     this.anim = null;
     this.onView = opts.onView || null;
@@ -121,7 +121,7 @@ var Viewer3D = (function () {
   Viewer.prototype.setStyle = function (style) { this.style = style; this.draw(); };
 
   Viewer.prototype.setView = function (name) {
-    var down = Draw.getFlip() ? GEOM.VIEWS.newmanFlip : GEOM.VIEWS.newman;
+    var down = GEOM.newmanView(this.mol, Draw.getFlip());
     var target = name === 'newman' ? down : START;
     var self = this;
     if (reduceMotion) { this.R = target; this.draw(); return; }

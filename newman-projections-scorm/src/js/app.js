@@ -1,4 +1,4 @@
-/* app.js — the steps, their order, saving, scoring.
+/* app.js: the steps, their order, saving, scoring.
  *
  * Part 1  Ethane: look down the bond, build, predict, rotate, label, quiz
  * Part 2  Butane: the same loop, now with gauche and totally eclipsed
@@ -17,7 +17,7 @@ var App = (function () {
 
   /* Bump whenever the step list, the quiz draw or a molecule changes: a save
      from an older build is then discarded rather than resumed. */
-  var SCHEMA = 1;
+  var SCHEMA = 2;
 
   var PARTS = [
     { n: 1, name: 'Ethane' },
@@ -40,15 +40,16 @@ var App = (function () {
       title: 'Predict: how does the energy change?',
       text: 'Next you will turn the back carbon all the way around. First, predict. Drag the dots up or down to ' +
             'show where you think the energy is high and where it is low. The pictures under the graph show each ' +
-            'conformation. Any prediction is fine — it is not graded.' },
+            'conformation. Any prediction is fine, and it is not graded.' },
     { id: 'trace-ethane', part: 1, kind: 'trace', mol: 'ethane', sketch: 'sketch-ethane',
       title: 'Turn the back carbon a full circle',
       text: 'Drag around the Newman projection, use the slider, or use the arrow keys. The graph fills in as you ' +
-            'go — fill in the whole curve. Stop on a peak or a valley to see where its energy comes from.' },
+            'go, so keep turning until the whole curve is drawn. Stop on a peak or a valley to see where its ' +
+            'energy comes from.' },
     { id: 'label-ethane', part: 1, kind: 'label', mol: 'ethane', terms: ['staggered', 'eclipsed'],
       title: 'Name the peaks and valleys',
-      text: 'Put a word on every point. Choose a word, then the point it describes; a word can be used more ' +
-            'than once. The Newman projections under the graph will help.' },
+      text: 'Put a word on every point. Choose a word, then the point it describes. A word can be used more ' +
+            'than once, and the Newman projections under the graph will help.' },
     { id: 'quiz-A', part: 1, kind: 'quiz', quiz: 'A',
       title: 'Checkpoint 1',
       text: 'Graded: your first answer to each question counts. Read the explanation after each one.' },
@@ -60,7 +61,7 @@ var App = (function () {
     { id: 'sketch-butane', part: 2, kind: 'sketch', mol: 'butane',
       title: 'Predict butane’s energy curve',
       text: 'Butane has two CH₃ groups that can crowd each other. Sketch how you think the energy changes as the ' +
-            'back carbon turns. Which conformation will be highest? Which lowest? Not graded.' },
+            'back carbon turns. Which conformation will be highest? Which will be lowest? This is not graded.' },
     { id: 'trace-butane', part: 2, kind: 'trace', mol: 'butane', sketch: 'sketch-butane',
       title: 'Turn butane a full circle',
       text: 'Fill in the whole curve. On each peak and valley, read the breakdown under the slider: every ' +
@@ -68,17 +69,18 @@ var App = (function () {
     { id: 'label-butane', part: 2, kind: 'label', mol: 'butane',
       terms: ['anti', 'gauche', 'eclipsed', 'totally eclipsed'],
       title: 'Name butane’s conformations',
-      text: 'Put a word on every point. Choose a word, then the point it describes; a word can be used more ' +
+      text: 'Put a word on every point. Choose a word, then the point it describes. A word can be used more ' +
             'than once.' },
     { id: 'quiz-B', part: 2, kind: 'quiz', quiz: 'B',
       title: 'Checkpoint 2',
       text: 'Graded: your first answer to each question counts. Open the strain table below if you need it.' },
 
-    { id: 'build-bromo', part: 3, kind: 'build', mol: 'bromobutane',
+    { id: 'build-bromo', part: 3, kind: 'build', mol: 'bromobutane_R',
       title: 'Build 2-bromobutane',
-      text: 'Now the wedge and the dash matter. C2 carries three different groups, and swapping any two of them ' +
-            'makes a different molecule. Check which group is on the wedge and which is on the dash.' },
-    { id: 'find-bromo', part: 3, kind: 'find', mol: 'bromobutane',
+      text: 'The eye has moved. It now looks from the right-hand end, so C3 is the front carbon and C2 is the ' +
+            'circle. The wedge and the dash also matter now: C2 carries three different groups, and swapping any ' +
+            'two of them makes a different molecule.' },
+    { id: 'find-bromo', part: 3, kind: 'find', mol: 'bromobutane_R',
       title: 'Find the lowest-energy conformation',
       text: 'Predict first. Then turn the back carbon until you reach the lowest energy, and press “Lock in”.',
       predict: {
@@ -86,10 +88,14 @@ var App = (function () {
            'to the CH₃ on C3?',
         choices: ['Br', 'CH₃', 'H'],
         answer: 1,
-        reveal: 'The CH₃ goes anti, not the Br. A Br/CH₃ gauche interaction costs only about 1 kJ/mol — less ' +
-                'than a third of a CH₃/CH₃ gauche interaction (3.8). The C–Br bond is 1.94 Å long, so the Br ' +
-                'sits well away from its neighbours. Switch the 3D model to space-filling to see it.'
+        reveal: 'The CH₃ goes anti, not the Br. A Br/CH₃ gauche interaction costs only about 1 kJ/mol, less ' +
+                'than a third of a CH₃/CH₃ gauche interaction (3.8). Switch the 3D model to space-filling and ' +
+                'look at how far out the Br sits. The next step shows why.'
       } },
+    { id: 'bond-length', part: 3, kind: 'bondlength',
+      title: 'Why a big atom can crowd less',
+      text: 'How hard a group pushes on its gauche neighbour depends on two things: how big the group is, and how ' +
+            'far away its bond holds it. Predict first, then compare a CH₃, a Cl, a Br and an I on C2.' },
     { id: 'swap', part: 3, kind: 'swap',
       title: 'Swap the group on C2',
       text: 'What if the Br were a different group? For each one, predict which group ends up anti to the CH₃ on ' +
@@ -97,10 +103,11 @@ var App = (function () {
     { id: 'quiz-C', part: 3, kind: 'quiz', quiz: 'C',
       title: 'Checkpoint 3',
       text: 'Graded: your first answer to each question counts.' },
-    { id: 'build-dmb', part: 3, kind: 'build', mol: 'dimethylbutane',
+    { id: 'build-dmb', part: 3, kind: 'build', mol: 'dimethylbutane_R',
       title: 'Build 2,3-dimethylbutane',
-      text: 'Each central carbon carries two CH₃ groups and an H. Build the conformation shown in the drawing.' },
-    { id: 'find-dmb', part: 3, kind: 'find', mol: 'dimethylbutane',
+      text: 'Each central carbon carries two CH₃ groups and an H. Check where the eye is before you place ' +
+            'anything: which carbon is in front this time? Build the conformation shown in the drawing.' },
+    { id: 'find-dmb', part: 3, kind: 'find', mol: 'dimethylbutane_R',
       title: 'Find the best staggered conformation',
       text: 'Predict first. Then turn the back carbon to the lowest-energy conformation and lock it in.',
       predict: {
@@ -109,16 +116,17 @@ var App = (function () {
         answer: 2,
         reveal: 'Two. With four CH₃ groups on two neighbouring carbons, some CH₃ has to be gauche to another. ' +
                 'The best you can do is put the two H atoms anti, which leaves two gauche interactions ' +
-                '(7.6 kJ/mol). The drawing showed the worst staggered conformation: three (11.4).'
+                '(7.6 kJ/mol). The drawing showed the worst staggered conformation, with three (11.4).'
       } },
 
     { id: 'build-A', part: 4, kind: 'build', mol: 'pairA_Br',
       title: 'Build Molecule A',
       text: 'Molecules A and B are both 2,3-dibromobutane: the same atoms, joined in the same order. Look closely ' +
-            'at the wedges and dashes. Build A first.' },
-    { id: 'build-B', part: 4, kind: 'build', mol: 'pairB_Br',
+            'at the wedges and dashes. The eye is on the left for A, so C2 is in front.' },
+    { id: 'build-B', part: 4, kind: 'build', mol: 'pairB_Br_R',
       title: 'Build Molecule B',
-      text: 'Compare B’s drawing with A’s — one wedge and dash on C3 are the other way round. Build B.' },
+      text: 'B’s drawing differs from A’s in one place: the wedge and the dash on C3 are the other way round. ' +
+            'The eye is on the right for B, so C3 is in front this time.' },
     { id: 'pair', part: 4, kind: 'pair',
       title: 'Put the bromines anti',
       text: 'Predict first. Then turn each molecule until its two Br atoms are anti, and compare.' },
@@ -130,6 +138,12 @@ var App = (function () {
       title: 'Results',
       text: '' }
   ];
+
+  /* The step order saved by the first release (schema 1), so a save from it
+     can be carried over to this one instead of thrown away. */
+  var V1_STEPS = ['meet', 'build-ethane', 'sketch-ethane', 'trace-ethane', 'label-ethane', 'quiz-A',
+    'build-butane', 'sketch-butane', 'trace-butane', 'label-butane', 'quiz-B', 'build-bromo', 'find-bromo',
+    'swap', 'quiz-C', 'build-dmb', 'find-dmb', 'build-A', 'build-B', 'pair', 'quiz-D', 'results'];
 
   var QZ = QUIZZES;
 
@@ -222,7 +236,15 @@ var App = (function () {
   }
 
   function restore(saved) {
-    if (!saved || saved.v !== SCHEMA || !saved.draws) return null;
+    if (!saved || !saved.draws) return null;
+    /* schema 1 saved step positions in the old step list: map them by id */
+    if (saved.v === 1) {
+      var move = function (n) { var i = stepIndex(V1_STEPS[n]); return i < 0 ? 0 : i; };
+      saved.step = move(saved.step);
+      saved.max = move(saved.max);
+      saved.v = 2;
+    }
+    if (saved.v !== SCHEMA) return null;
     /* every drawn question must exist in this package's set */
     var ok = Object.keys(QZ).every(function (k) {
       return (saved.draws[k] || []).length === QZ[k].draw && saved.draws[k].every(function (id) {
@@ -363,14 +385,19 @@ var App = (function () {
     var bond = mol.carbons[0] + '–' + mol.carbons[1];
     var bPage = h('button', { type: 'button', class: 'mini', text: 'As drawn' });
     var bDown = h('button', { type: 'button', class: 'mini', text: 'Down the ' + bond + ' bond' });
-    var bFill = h('button', { type: 'button', class: 'mini toggle', 'aria-pressed': 'false', text: 'Space-filling' });
+    var space = opts.style === 'space';
+    var bFill = h('button', { type: 'button', class: 'mini toggle', 'aria-pressed': space ? 'true' : 'false',
+                              text: 'Space-filling' });
     var node = panel('3D model', 'drag to turn', [
       h('div', { class: 'c3d-wrap' }, [canvas]),
       h('div', { class: 'btnrow' }, [bPage, bDown, bFill])
     ], 'p3d');
     var viewer = null;
     function ensure() {
-      if (!viewer) viewer = new Viewer3D(canvas, mol, { view: opts.view, onView: opts.onView });
+      if (!viewer) {
+        viewer = new Viewer3D(canvas, mol, { view: opts.view, onView: opts.onView });
+        if (space) viewer.setStyle('space');
+      }
       return viewer;
     }
     bPage.addEventListener('click', function () { ensure().setView('page'); if (opts.onView) opts.onView('page'); });
@@ -490,10 +517,21 @@ var App = (function () {
 
   /* --------------------------------------------------------------- figures */
 
+  /* The Newman description a figure shows. `twist: 'swapBack'` swaps the two
+     non-chain groups on the back carbon, which makes the mirror-image molecule:
+     a wrong answer for "which projection matches this drawing?" questions. */
+  function nmFor(spec) {
+    var nm = GEOM.newmanAt(molecule(spec.newman), spec.phi);
+    if (spec.twist === 'swapBack') {
+      var two = nm.back.filter(function (q) { return q.role !== 'anchor'; });
+      var a = two[0].a; two[0].a = two[1].a; two[1].a = a;
+    }
+    return nm;
+  }
+
   function figure(spec, cls) {
     if (spec.newman) {
-      var m = molecule(spec.newman);
-      var nm = GEOM.newmanAt(m, spec.phi);
+      var nm = nmFor(spec);
       return Draw.newman(nm, { offset: spec.phi % 120 === 0 ? Draw.ECLIPSE_OFFSET : 0, cls: cls || 'fig' });
     }
     if (spec.zigzag) return Draw.zigzag(molecule(spec.zigzag));
@@ -583,7 +621,7 @@ var App = (function () {
     if (!sameMultiset(gf, wf) || !sameMultiset(gb, wb)) {
       if (sameMultiset(gf, wb) && sameMultiset(gb, wf)) {
         return { kind: 'swapped', msg: 'Front and back are the wrong way round. The front carbon is ' + F +
-          ', the one nearest the eye — its groups go on the bonds that meet in the centre.' };
+          ', the one nearest the eye. Its groups go on the bonds that meet in the centre.' };
       }
       var which = !sameMultiset(gf, wf) ? 'front carbon (' + F + ')' : 'back carbon (' + B + ')';
       return { kind: 'groups', msg: 'The ' + which + ' has the wrong groups. In the drawing, ' + F + ' carries ' +
@@ -606,7 +644,7 @@ var App = (function () {
     var fa = GROUPS[mol.front.anchor].name, ba = GROUPS[mol.back.anchor].name;
     return { kind: 'conformation', msg: 'Both carbons are right, but the back carbon is turned 120° away from ' +
       'the drawing. In the zigzag, the ' + fa + ' on ' + F + ' and the ' + ba + ' on ' + B + ' both lie in the ' +
-      'page, pointing opposite ways — so in the Newman projection they must be anti, 180° apart.' };
+      'page, pointing opposite ways, so in the Newman projection they must be anti, 180° apart.' };
   }
 
   RENDER.build = function (s) {
@@ -659,7 +697,7 @@ var App = (function () {
           'aria-label': 'Group ' + GROUPS[t.g].name
         }, [label(t.g)]));
       });
-      if (!left) tray.appendChild(h('p', { class: 'tray-empty', text: done ? 'Built.' : 'All placed — press Check.' }));
+      if (!left) tray.appendChild(h('p', { class: 'tray-empty', text: done ? 'Built.' : 'All placed. Press Check.' }));
     }
 
     viewHooks.push(function () { paint(); if (wrong >= 2) tip.textContent = sideTip(); });
@@ -710,8 +748,8 @@ var App = (function () {
       var up = !Draw.getFlip();
       return 'Tip: picture yourself at the eye, with the ' + GROUPS[mol.front.anchor].name + ' on ' +
         mol.carbons[0] + ' pointing straight ' + (up ? 'up' : 'down') + '. A wedge comes out of the page ' +
-        'toward you — from where you stand, that is your ' + (up ? 'LEFT' : 'RIGHT') + '. A dash goes into ' +
-        'the page — your ' + (up ? 'RIGHT' : 'LEFT') + '.';
+        'toward you, and from where you stand that is your ' + (up ? 'LEFT' : 'RIGHT') + '. A dash goes into ' +
+        'the page, to your ' + (up ? 'RIGHT' : 'LEFT') + '.';
     }
 
     check.addEventListener('click', function () {
@@ -724,7 +762,7 @@ var App = (function () {
         tray.classList.add('locked');
         check.disabled = true; reset.disabled = true; hintBtn.hidden = true; tip.hidden = true;
         paint();
-        complete('Correct!' + (r.turned ? ' You drew it turned as a whole — that is the same projection, ' +
+        complete('Correct!' + (r.turned ? ' You drew it turned as a whole, which is the same projection ' +
           'just seen with your head tilted.' : '') + ' This is the conformation in the drawing.');
         show3D(true);
         return;
@@ -789,7 +827,7 @@ var App = (function () {
   function compareSketch(mol, sk) {
     var real = NAMED_ANGLES.map(function (a) { return GEOM.energyAt(mol, a); });
     var span = Math.max.apply(null, sk) - Math.min.apply(null, sk);
-    if (span < 0.05) return 'You left the line flat, but the energy does change as the molecule turns — look at the peaks.';
+    if (span < 0.05) return 'You left the line flat, but the energy does change as the molecule turns. Look at the peaks.';
     function peaks(v, tol) {
       var n = 0;
       for (var i = 0; i < 6; i++) {
@@ -805,15 +843,15 @@ var App = (function () {
     }
     var out = [];
     var pp = peaks(sk, 0.02), rp = peaks(real, 0.3);
-    out.push(pp === rp ? 'You drew ' + rp + ' peak' + (rp === 1 ? '' : 's') + ' — the real curve has ' + rp + '. ✓'
+    out.push(pp === rp ? 'You drew ' + rp + ' peak' + (rp === 1 ? '' : 's') + ', the same as the real curve. ✓'
                        : 'You drew ' + pp + ' peak' + (pp === 1 ? '' : 's') + '; the real curve has ' + rp + '.');
     /* A sketch that ties four or more points has not really picked a
        highest or lowest point, so it gets no tick for it. */
     function verdict(word, r, p) {
       var where = r.length > 1 ? r.join('°, ') + '° (tied)' : r[0] + '°';
-      if (p.length > 3) return word + ': ' + where + ' — your sketch did not single one out.';
+      if (p.length > 3) return word + ': ' + where + '. Your sketch did not single one out.';
       var hit = p.some(function (a) { return r.indexOf(a) >= 0; });
-      return word + ': ' + where + (hit ? ' — you had that. ✓' : ' — you had ' + p.join('°, ') + '°.');
+      return word + ': ' + where + (hit ? '. You had that. ✓' : '. You had ' + p.join('°, ') + '°.');
     }
     out.push(verdict('Highest', where(real, 'max'), where(sk, 'max')));
     out.push(verdict('Lowest', where(real, 'min'), where(sk, 'min')));
@@ -866,8 +904,8 @@ var App = (function () {
 
   function termWhy(mol, phi, wrongTerm) {
     var right = termAt(mol, phi);
-    var shape = phi % 120 === 0 ? 'eclipsed — the back bonds line up behind the front bonds' :
-                                  'staggered — every back bond sits between two front bonds';
+    var shape = phi % 120 === 0 ? 'eclipsed (the back bonds line up behind the front bonds)' :
+                                  'staggered (every back bond sits between two front bonds)';
     var rel = mol.vocab === 'ethane' ? '' : ', with ' + refRelation(mol, phi);
     return 'Not “' + wrongTerm + '”. At ' + phi + '° the molecule is ' + shape + rel + '. That point is “' + right + '”.';
   }
@@ -907,7 +945,7 @@ var App = (function () {
               ? 'All labelled. Staggered conformations are the valleys; eclipsed ones are the peaks, 12 kJ/mol higher.'
               : 'All labelled. Anti is lowest, gauche is 3.8 kJ/mol higher, and totally eclipsed is the highest peak.');
           } else {
-            say('Yes — ' + d.phi + '° is ' + term + '. ' + left + ' to go.', 'good');
+            say('Yes, ' + d.phi + '° is ' + term + '. ' + left + ' to go.', 'good');
           }
         } else {
           say(termWhy(mol, d.phi, term), 'bad');
@@ -981,7 +1019,7 @@ var App = (function () {
           h('span', { class: 'choice-letter', text: letter }),
           typeof c === 'string' ? h('span', { class: 'choice-text', text: c }) : figure(c, 'fig choice-fig')
         ]);
-        if (typeof c !== 'string') b.setAttribute('aria-label', 'Choice ' + letter + ': ' + Draw.describe(GEOM.newmanAt(molecule(c.newman), c.phi)));
+        if (typeof c !== 'string') b.setAttribute('aria-label', 'Choice ' + letter + ': ' + Draw.describe(nmFor(c)));
         b.addEventListener('click', function () { answer(ci); });
         row.appendChild(b);
       });
@@ -1006,7 +1044,7 @@ var App = (function () {
         }
         why.hidden = false;
         why.textContent = q.why;
-        say(right ? 'Correct.' : 'Not quite — the correct answer is highlighted.', right ? 'good' : 'bad');
+        say(right ? 'Correct.' : 'Not quite. The correct answer is highlighted.', right ? 'good' : 'bad');
         paintParts();
         next.hidden = false;
         next.focus({ preventScroll: true });
@@ -1027,7 +1065,7 @@ var App = (function () {
 
   function predictCard(p, chosen, onPick) {
     var box = h('div', { class: 'predict' }, [
-      h('p', { class: 'predict-kicker', text: 'Predict — not graded' }),
+      h('p', { class: 'predict-kicker', text: 'Predict (not graded)' }),
       h('p', { class: 'q-text', text: p.q })
     ]);
     var row = h('div', { class: 'q-choices compact' });
@@ -1097,14 +1135,14 @@ var App = (function () {
           done = true;
           paint(hit);
           lockBtn.hidden = true;
-          complete('Locked in: ' + fmt(GEOM.energyAt(mol, hit)) + ' kJ/mol — the lowest conformation.');
+          complete('Locked in: ' + fmt(GEOM.energyAt(mol, hit)) + ' kJ/mol, the lowest conformation.');
           reveal();
           return;
         }
         var named = conformationName(mol, phi);
         var stag = named && phi % 120 !== 0;
         if (!named || !stag) {
-          say('Not this one. Eclipsed conformations are never the lowest — turn to a staggered conformation first.', 'bad');
+          say('Not this one. Eclipsed conformations are never the lowest, so turn to a staggered conformation first.', 'bad');
         } else {
           say('This is staggered, but not the lowest: ' + partsText(mol, phi) + ' Is there a staggered ' +
               'conformation with less strain?', 'bad');
@@ -1128,6 +1166,182 @@ var App = (function () {
     if (state.pr[s.id] != null) openArea();
   };
 
+  /* ---- bond length: why a big atom on a long bond can crowd less */
+
+  /* The four groups compared, each on C2 of a 2-substituted butane, gauche
+     to the CH₃ on C3 (the molecule's lowest conformation, dihedral 180°). */
+  var BL_GROUPS = ['CH3', 'Cl', 'Br', 'I'];
+  var BL_MOL = { CH3: 'methylbutane', Cl: 'chlorobutane', Br: 'bromobutane', I: 'iodobutane' };
+
+  /* Distance from group g (on a bond of length `bond`) to the gauche CH₃ on
+     the other carbon, and how far their electron clouds overlap. */
+  function crowding(g, bond) {
+    var d = GEOM.contact(bond == null ? GROUPS[g].bond : bond, GROUPS.CH3.bond, 60);
+    return { bond: bond == null ? GROUPS[g].bond : bond, r: GROUPS[g].radius, d: d,
+             over: GROUPS[g].radius + GROUPS.CH3.radius - d };
+  }
+
+  function f2(x) { return x.toFixed(2); }
+
+  /* Each group drawn to scale next to the CH₃ on C3: two electron clouds at
+     their real distance apart, with the overlap shaded. */
+  function contactDiagram(sel) {
+    var S = 20, rm = GROUPS.CH3.radius;
+    var rowH = 2 * rm * S + 16, W = 470;
+    var s = Draw.svg('0 0 ' + W + ' ' + (rowH * BL_GROUPS.length), 'contact',
+      'Scale drawing of each group next to the CH₃ on C3, with the overlap of their electron clouds shaded.');
+    BL_GROUPS.forEach(function (g, i) {
+      var c = crowding(g), y = rowH * i + rowH / 2;
+      var x0 = 8 + rm * S, x1 = x0 + c.d * S, rx = c.r * S;
+      var row = Draw.el('g', { class: 'ct-row' + (g === sel ? ' current' : '') }, s);
+      Draw.el('rect', { x: 0, y: rowH * i + 2, width: W, height: rowH - 4, rx: 8, class: 'ct-bg' }, row);
+      var clip = 'ct-clip-' + g;
+      var cp = Draw.el('clipPath', { id: clip }, row);
+      Draw.el('circle', { cx: x0, cy: y, r: rm * S }, cp);
+      Draw.el('circle', { cx: x0, cy: y, r: rm * S, class: 'ct-cloud ct-me' }, row);
+      Draw.el('circle', { cx: x1, cy: y, r: rx, class: 'ct-cloud ct-' + groupTone(g) }, row);
+      Draw.el('circle', { cx: x1, cy: y, r: rx, class: 'ct-overlap', 'clip-path': 'url(#' + clip + ')' }, row);
+      Draw.el('text', { x: x0 - 12, y: y, 'text-anchor': 'middle', 'dominant-baseline': 'central', class: 'ct-in' }, row,
+              'CH₃');
+      Draw.el('text', { x: x1 + 6, y: y, 'text-anchor': 'middle', 'dominant-baseline': 'central',
+                        class: 'ct-in tone-' + groupTone(g) }, row, GROUPS[g].label);
+      var tx = 8 + 2 * rm * S + 3.4 * S + 8;
+      Draw.el('text', { x: tx, y: y - 9, class: 'ct-label' }, row, GROUPS[g].label + ' on C2, ' + c.bond.toFixed(2) + ' Å bond');
+      Draw.el('text', { x: tx, y: y + 11, class: 'ct-sub' }, row, 'overlap ' + f2(c.over) + ' Å');
+    });
+    return s;
+  }
+
+  RENDER.bondlength = function (s) {
+    var pr = state.pr.bl || {};
+    var done = !!state.done[s.id];
+    var top = h('div'), area = h('div');
+    el.stage.appendChild(top);
+    el.stage.appendChild(area);
+    function save() { state.pr.bl = pr; persist(); }
+
+    var P1 = { q: 'Carbon is a small atom and iodine is a big one. When each of these groups on C2 is gauche to the ' +
+                  'CH₃ on C3, which one do you think crowds that CH₃ the most?',
+               choices: ['CH₃', 'Cl', 'Br', 'I'], answer: 0 };
+    var P2 = { q: 'Imagine an atom as big as Br, but held to C2 by a bond as short as a C–C bond (1.54 Å). ' +
+                  'Compared with a real Br, how much would it crowd the CH₃ on C3?',
+               choices: ['More than Br', 'Less than Br', 'The same as Br'], answer: 0 };
+
+    function paintTop() {
+      top.innerHTML = '';
+      top.appendChild(panel('Your prediction', null, [predictCard(P1, pr.a, function (i) {
+        pr.a = i; save(); paintTop(); open(); check();
+      })]));
+    }
+
+    var opened = false;
+    function open() {
+      if (opened) return;
+      opened = true;
+      pr.seen = pr.seen || {};
+      var cur = 'Br';
+      pr.seen[cur] = 1;
+      save();
+      var m3 = model3D(molecule(BL_MOL[cur]), { view: 'newman', style: 'space' });
+      var chips = h('div', { class: 'chips', role: 'group', 'aria-label': 'Group on C2' });
+      var diag = h('div', { class: 'contact-host' });
+      var table = h('table', { class: 'ref-table' });
+      var right = panel('Electron clouds, to scale', null, [chips, diag,
+        h('p', { class: 'muted', text: 'In each row, the grey circle on the left is the CH₃ on C3 and the circle ' +
+          'on the right is the group on C2, drawn at their real distance apart. Red shows where the two electron ' +
+          'clouds overlap.' })]);
+      area.appendChild(h('div', { class: 'grid2' }, [m3.node, right]));
+      area.appendChild(panel('The numbers', null, [table]));
+      var why = h('div');
+      area.appendChild(why);
+      m3.start(180);
+
+      function paint() {
+        chips.innerHTML = '';
+        chips.appendChild(h('span', { class: 'chips-label', text: 'Group on C2:' }));
+        BL_GROUPS.forEach(function (g) {
+          var b = h('button', { type: 'button', class: 'chip' + (g === cur ? ' current' : '') +
+                                (pr.seen[g] ? ' done' : ''), text: GROUPS[g].label });
+          b.addEventListener('click', function () {
+            cur = g;
+            pr.seen[g] = 1;
+            save();
+            m3.setMolecule(molecule(BL_MOL[g]), 180);
+            paint();
+            check();
+          });
+          chips.appendChild(b);
+        });
+        diag.innerHTML = '';
+        diag.appendChild(contactDiagram(cur));
+      }
+
+      table.appendChild(h('tr', null, ['Group on C2', 'Bond to C2 (Å)', 'Radius (Å)', 'Distance to the CH₃ on C3 (Å)',
+        'Overlap (Å)'].map(function (t) { return h('th', { text: t }); })));
+      BL_GROUPS.forEach(function (g) {
+        var c = crowding(g);
+        table.appendChild(h('tr', null, [h('td', { text: GROUPS[g].label }), h('td', { class: 'num', text: c.bond.toFixed(2) }),
+          h('td', { class: 'num', text: c.r.toFixed(2) }), h('td', { class: 'num', text: f2(c.d) }),
+          h('td', { class: 'num', text: f2(c.over) })]));
+      });
+
+      var me = crowding('CH3'), br = crowding('Br'), io = crowding('I'), cl = crowding('Cl');
+      var picked = P1.choices[pr.a];
+      why.appendChild(h('div', { class: 'reveal' }, [
+        h('p', { text: (pr.a === P1.answer ? 'You predicted the CH₃, and you were right.' :
+          'You predicted ' + picked + '. The CH₃ crowds its neighbour the most.') +
+          ' Turn on the other groups and watch the overlap.' }),
+        h('p', { text: 'Going from Cl to Br to I, the atom gets bigger (radius ' + cl.r.toFixed(2) + ', then ' +
+          br.r.toFixed(2) + ', then ' + io.r.toFixed(2) + ' Å). Its bond to C2 also gets longer (' +
+          cl.bond.toFixed(2) + ', ' + br.bond.toFixed(2) + ', ' + io.bond.toFixed(2) + ' Å), and a longer bond ' +
+          'carries the atom farther from the CH₃ on C3. The extra size and the extra distance cancel out, so all ' +
+          'three halogens overlap that CH₃ by about the same amount, close to ' + f2(br.over) + ' Å.' }),
+        h('p', { text: 'A CH₃ group looks small because carbon is a small atom. But its three H atoms stick out, ' +
+          'and the whole group is about as wide as a Br atom (radius ' + me.r.toFixed(1) + ' Å). It also sits on ' +
+          'the shortest bond, ' + me.bond.toFixed(2) + ' Å, so it gets closest to its neighbour: ' + f2(me.d) +
+          ' Å away, compared with ' + f2(br.d) + ' Å for Br. That gives the biggest overlap, ' + f2(me.over) +
+          ' Å. More overlap means more steric strain, which is why a CH₃/CH₃ gauche interaction costs more ' +
+          'than a Br/CH₃ one in the strain table.' })
+      ]));
+      var second = h('div');
+      why.appendChild(second);
+      function paintSecond() {
+        second.innerHTML = '';
+        second.appendChild(panel('One more prediction', null, [predictCard(P2, pr.b, function (i) {
+          pr.b = i; save(); paintSecond(); check();
+        })]));
+        if (pr.b != null) {
+          var fake = crowding('Br', GROUPS.CH3.bond);
+          second.appendChild(h('div', { class: 'reveal' }, [h('p', { text:
+            (pr.b === P2.answer ? 'Right: more. ' : 'It would crowd more. ') +
+            'Same size as Br, but the short bond holds it ' + f2(br.d - fake.d) + ' Å closer to the CH₃ (' +
+            f2(fake.d) + ' Å instead of ' + f2(br.d) + ' Å), so the overlap grows from ' + f2(br.over) + ' to ' +
+            f2(fake.over) + ' Å. Only the bond length changed, and the crowding got worse. A long bond is what ' +
+            'keeps Br and I from crowding their neighbours.' })]));
+        }
+      }
+      paint();
+      paintSecond();
+    }
+
+    function check() {
+      var all = BL_GROUPS.every(function (g) { return pr.seen && pr.seen[g]; });
+      if (!state.done[s.id] && pr.a != null && pr.b != null && all) {
+        done = true;
+        complete('Two things set how much a group crowds a gauche neighbour: its size and its distance. Long ' +
+                 'C–X bonds keep Cl, Br and I far enough away that they crowd less than a CH₃.');
+      } else if (!state.done[s.id] && pr.a != null) {
+        var left = BL_GROUPS.filter(function (g) { return !(pr.seen && pr.seen[g]); });
+        say(left.length ? 'Still to look at: ' + left.map(function (g) { return GROUPS[g].label; }).join(', ') + '.'
+                        : pr.b == null ? 'Now make the last prediction.' : '');
+      }
+    }
+
+    paintTop();
+    if (pr.a != null) { open(); check(); }
+    if (done) say('Done. Move on when you are ready.', 'good');
+  };
+
   /* ---- swap: the same frame with different groups on the front carbon */
 
   var SWAP_NOTES = {
@@ -1135,7 +1349,7 @@ var App = (function () {
     I: 'Even iodine, the biggest atom here, costs only about 1 kJ/mol gauche to a CH₃: the C–I bond is 2.14 Å long.',
     CH3: 'Now both groups are CH₃, so either one anti gives 3.8 kJ/mol. Putting the H anti would leave the back CH₃ ' +
          'gauche to both: 7.6.',
-    iPr: 'Branching makes a group bulky. CH(CH₃)₂ gauche to CH₃ costs 4.6 kJ/mol — more than CH₃’s 3.8 — so the ' +
+    iPr: 'Branching makes a group bulky. CH(CH₃)₂ gauche to CH₃ costs 4.6 kJ/mol, more than the 3.8 for CH₃, so the ' +
          'isopropyl group takes the anti position. A close call: 0.8 kJ/mol.',
     tBu: 'C(CH₃)₃ is huge: 11.4 kJ/mol gauche to a CH₃. It goes anti, no contest.'
   };
@@ -1175,7 +1389,7 @@ var App = (function () {
     var g = new EnergyGraph(host, { mol: ref, yMax: yMax });
 
     function options(x) {
-      return x === 'CH3' ? ['A CH₃ (either one — they are identical)', 'H'] : [label(x), 'CH₃', 'H'];
+      return x === 'CH3' ? ['A CH₃ (either one, since they are identical)', 'H'] : [label(x), 'CH₃', 'H'];
     }
     function answerIndex(x) {
       var a = antiGroup(swapMol(x));
@@ -1193,7 +1407,7 @@ var App = (function () {
         chips.appendChild(b);
       });
       card.innerHTML = '';
-      card.appendChild(h('p', { class: 'swap-name', text: mol.name + ' — looking down ' + mol.carbons[0] + '–' + mol.carbons[1] }));
+      card.appendChild(h('p', { class: 'swap-name', text: mol.name + ', looking down ' + mol.carbons[0] + '–' + mol.carbons[1] }));
       card.appendChild(structures([mol.id]));
       card.appendChild(h('p', { class: 'swap-frame', text: mol.carbons[0] + ' carries CH₃, H and ' + label(x) +
         '; ' + mol.carbons[1] + ' carries CH₃ and two H.' }));
@@ -1233,7 +1447,7 @@ var App = (function () {
       if (all && !done) {
         done = true;
         complete('Ranked by gauche cost with CH₃: halogens about 1, CH₃ 3.8, CH(CH₃)₂ 4.6, C(CH₃)₃ 11.4 kJ/mol. ' +
-                 'Size of the ATOM is not what matters — crowding is.');
+                 'What matters is how much a group crowds its neighbour, not how heavy its atom is.');
       }
     }
 
@@ -1337,7 +1551,7 @@ var App = (function () {
       });
       if (reached.A && reached.B) {
         status.textContent = '';
-        if (!state.done[s.id] && pr.halo != null && pr.saw) complete('Done. Same atoms, same bonds — but the wedges and dashes decide which groups can be anti together.');
+        if (!state.done[s.id] && pr.halo != null && pr.saw) complete('Done. Same atoms and same bonds, but the wedges and dashes decide which groups can be anti together.');
         paintReveal();
       } else {
         status.textContent = 'Turn each molecule until its two ' + X + ' atoms are anti (180°). ' +
@@ -1353,11 +1567,11 @@ var App = (function () {
       ['A', 'B'].forEach(function (k) {
         var right = k === 'A' ? 0 : 1;
         lines.push('Molecule ' + k + ': with the Br atoms anti, the CH₃ groups are ' + choices[right].toLowerCase() +
-          (pr[k] === right ? ' — as you predicted.' : ' — you predicted ' + choices[pr[k]].toLowerCase() + '.'));
+          (pr[k] === right ? ', as you predicted.' : '. You predicted ' + choices[pr[k]].toLowerCase() + '.'));
       });
       var a = bestStaggered(molecule('pairA_Br')), b = bestStaggered(molecule('pairB_Br'));
       lines.push('So A’s best conformation (' + fmt(a.e) + ' kJ/mol) puts both pairs anti, while B can never manage ' +
-        'that: its best is ' + fmt(b.e) + ' kJ/mol. No rotation turns A into B — they are different molecules, and ' +
+        'that: its best is ' + fmt(b.e) + ' kJ/mol. No rotation turns A into B. They are different molecules, and ' +
         'you will learn their names in the next unit.');
       area.insertBefore(h('div', { class: 'reveal' }, lines.map(function (t) { return h('p', { text: t }); })), haloBox);
       paintHalo();
@@ -1399,20 +1613,20 @@ var App = (function () {
         card.appendChild(h('p', { class: 'reveal-inline', text: (pr.halo === 0 ? 'Right: they go up. ' : 'They go up. ') +
           'Halogen/halogen gauche costs Cl 5, Br 7, I 9 kJ/mol: both atoms are big and both carry a partial ' +
           'negative charge. Switch between Cl, Br and I and watch both curves at 60° and 300°, where the ' +
-          'halogens are gauche (' + X + '/' + X + ' gauche: ' + fmt(gx) + ' kJ/mol). At 180° nothing changes — ' +
+          'halogens are gauche (' + X + '/' + X + ' gauche: ' + fmt(gx) + ' kJ/mol). At 180° nothing changes, because ' +
           'with the halogens anti, they never touch.' }));
         if (!pr.saw) card.appendChild(h('p', { class: 'muted', text: 'Try Cl or I to finish this step.' }));
       }
       haloBox.appendChild(card);
       if (reached.A && reached.B && pr.halo != null && pr.saw && !state.done[s.id]) {
         done = true;
-        complete('Done. Same atoms, same bonds — but the wedges and dashes decide which groups can be anti together.');
+        complete('Done. Same atoms and same bonds, but the wedges and dashes decide which groups can be anti together.');
       }
     }
 
     paintPredict();
     if (pr.A != null && pr.B != null) openArea();
-    if (done) say('Done. Same atoms, same bonds — but the wedges and dashes decide which groups can be anti together.', 'good');
+    if (done) say('Done. Same atoms and same bonds, but the wedges and dashes decide which groups can be anti together.', 'good');
   };
 
   /* ---- results */
@@ -1438,17 +1652,17 @@ var App = (function () {
       h('p', { class: 'big-score', text: right + ' / ' + GRADED + '  (' + pct + '%)' }),
       h('table', { class: 'ref-table' }, rows),
       state.att > 1 ? h('p', { class: 'best-line', text: 'Best attempt: ' + best + '%' +
-        (best > pct ? ' — that is the score the gradebook keeps.' : '') }) : null,
+        (best > pct ? '. That is the score the gradebook keeps.' : '') }) : null,
       h('p', { class: 'muted', text: SCORM.isConnected()
         ? 'Your ' + (state.att > 1 ? 'best ' : '') + 'score has been sent to the gradebook and the activity is marked complete.'
-        : 'Standalone mode — nothing was sent to a gradebook.' })
+        : 'Standalone mode: nothing was sent to a gradebook.' })
     ]);
     var ideas = panel('Big ideas', null, [h('ul', { class: 'keylist' }, [
       'Staggered conformations are always lower than eclipsed ones: eclipsing costs torsional strain.',
       'Among staggered conformations, the one with the fewest and smallest gauche interactions wins (steric strain).',
       'Add up the table: every eclipsed or gauche pair contributes its cost.',
       'Big atoms on long bonds (Cl, Br, I) crowd a neighbour less than a CH₃ does; branched groups crowd it more.',
-      'Wedges and dashes decide which groups can be anti together — and rotation can never change a wedge into a dash.'
+      'Wedges and dashes decide which groups can be anti together, and rotation can never change a wedge into a dash.'
     ].map(function (t) { return h('li', { text: t }); }))]);
     el.stage.appendChild(h('div', { class: 'grid2' }, [box, ideas]));
     /* Two clicks, so nobody wipes their work by accident. */
@@ -1482,11 +1696,12 @@ var App = (function () {
     el.back.hidden = true;
     el.score.hidden = true;
     el.stepTitle.textContent = 'Explore';
-    el.counter.textContent = 'Teacher demo — nothing is saved';
+    el.counter.textContent = 'Teacher demo: nothing is saved';
     el.instructions.textContent = 'Pick any molecule and turn it. Nothing here is saved or graded.';
     var sel = h('select', { class: 'select', 'aria-label': 'Molecule' }, ids.map(function (k) {
       var m = MOLECULES[k];
-      return h('option', { value: k, selected: k === mol.id, text: (m.tag ? m.tag + ' — ' : '') + m.name });
+      return h('option', { value: k, selected: k === mol.id, text: (m.tag ? m.tag + ': ' : '') + m.name +
+        (m.eye === 'right' ? ' (eye on the right)' : '') });
     }));
     var m3 = model3D(mol);
     var host = h('div', { class: 'graph-host' });
@@ -1552,7 +1767,7 @@ var App = (function () {
       ['Eclipsed', 'Every back bond sits directly behind a front bond (dihedral angles 0°, 120°, 240°).'],
       ['Anti', 'Two groups 180° apart in a staggered conformation.'],
       ['Gauche', 'Two groups 60° apart in a staggered conformation.'],
-      ['Totally eclipsed', 'The eclipsed conformation in which the two largest groups eclipse each other — for butane, CH₃ behind CH₃. The highest point on the curve.'],
+      ['Totally eclipsed', 'The eclipsed conformation in which the two largest groups eclipse each other. For butane that is CH₃ behind CH₃, the highest point on the curve.'],
       ['Torsional strain', 'The extra energy of an eclipsed conformation, from bonds lining up one behind another. Ethane’s 12 kJ/mol is all torsional strain.'],
       ['Steric strain', 'The extra energy when two groups are forced too close together, so their electron clouds repel.'],
       ['Gauche interaction', 'The steric strain between two groups that are gauche: 3.8 kJ/mol for CH₃/CH₃.'],
@@ -1572,12 +1787,12 @@ var App = (function () {
       h('p', { text: 'You will build Newman projections from wedge-and-dash drawings, turn molecules in 3D, and watch ' +
                      'how their energy changes as they rotate.' }),
       h('ul', { class: 'screen-list' }, [
-        h('li', { text: 'Part 1 — Ethane: staggered and eclipsed, torsional strain.' }),
-        h('li', { text: 'Part 2 — Butane: anti, gauche, totally eclipsed, steric strain.' }),
-        h('li', { text: 'Part 3 — Substituted butanes: halogens, branched groups, the best staggered conformation.' }),
-        h('li', { text: 'Part 4 — Two molecules that differ only in a wedge and a dash.' })
+        h('li', { text: 'Part 1, Ethane: staggered and eclipsed, torsional strain.' }),
+        h('li', { text: 'Part 2, Butane: anti, gauche, totally eclipsed, steric strain.' }),
+        h('li', { text: 'Part 3, Substituted butanes: halogens, branched groups, bond length and the best staggered conformation.' }),
+        h('li', { text: 'Part 4, Wedges and dashes: two molecules that differ only in one wedge and one dash.' })
       ]),
-      h('p', { text: 'Predictions and builds are never graded — try things. The four checkpoints are graded: your ' +
+      h('p', { text: 'Predictions and builds are never graded, so try things. The four checkpoints are graded: your ' +
                      'first answer to each question counts. About 30–40 minutes. Your progress is saved if you leave.' }),
       h('p', { class: 'screen-note', text: 'Everything works with a mouse, a touch screen or the keyboard (Tab and Enter).' })
     ]);
@@ -1596,7 +1811,7 @@ var App = (function () {
     buildReference();
 
     var connected = SCORM.init();
-    el.lms.textContent = connected ? 'Connected to the LMS' : 'Standalone — no LMS detected';
+    el.lms.textContent = connected ? 'Connected to the LMS' : 'Standalone: no LMS detected';
     el.lms.className = 'lms ' + (connected ? 'on' : 'off');
 
     var params = new URLSearchParams(location.search);
@@ -1611,6 +1826,9 @@ var App = (function () {
       state.step = Math.max(0, Math.min(STEPS.length - 1, idx < 0 ? 0 : idx));
     } else {
       state = restore(SCORM.loadState()) || newState();
+      /* whatever the gradebook already holds is a floor: a re-launch, a lost
+         save or a new release never reports a lower score */
+      state.best = Math.max(state.best || 0, SCORM.priorScore());
       persist();
     }
 
@@ -1623,7 +1841,8 @@ var App = (function () {
     showIntro();
   }
 
-  return { start: start, STEPS: STEPS, judgeBuild: judgeBuild, targetSlots: targetSlots, GRADED: GRADED, QZ: QZ };
+  return { start: start, STEPS: STEPS, judgeBuild: judgeBuild, targetSlots: targetSlots, GRADED: GRADED, QZ: QZ,
+           nmFor: nmFor, crowding: crowding };
 })();
 
 document.addEventListener('DOMContentLoaded', App.start);
