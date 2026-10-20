@@ -37,8 +37,6 @@ var Draw = (function () {
     return [v[0] / n, v[1] / n];
   }
 
-  function angle(dir) { var v = Lewis.VEC[dir]; return Math.atan2(-v[1], v[0]) * 180 / Math.PI; }
-
   /* distance from an atom's center to the edge of a box around its symbol,
      along u — a box, not an ellipse, so a pair on a diagonal clears the
      corner of a two-letter symbol like Xe */
@@ -96,10 +94,7 @@ var Draw = (function () {
        noLP       true: leave the lone pairs out
        cloud      slots whose bonds to the center sit in the shaded
                   "electron cloud" (the shared-out electrons)
-       marks      { slot: 'δ−' | 'δ+' } partial charges
        labels     { slot: '1½' } bond-order labels, at the middle of the bond
-       roomy      true: leave extra room inside the brackets for the δ signs
-                  (every layer of an overlay must agree, so it is not automatic)
        alignSingles  true: draw a single bond on the line one side of a double
                   bond would use, so resonance structures laid on top of each
                   other show 1 + 1 lines, not a triple bond
@@ -128,8 +123,7 @@ var Draw = (function () {
         minY = Math.min(minY, p[1]); maxY = Math.max(maxY, p[1]);
       });
     }
-    var room = opts.roomy ? 12 : 0;
-    var pad = 34, bracket = s.charge ? 14 + room : 0, chargeRoom = s.charge ? 26 : 0;
+    var pad = 34, bracket = s.charge ? 14 : 0, chargeRoom = s.charge ? 26 : 0;
     var vx = minX - pad - bracket, vy = minY - pad - bracket - (s.charge ? 4 : 0);
     var vw = maxX - minX + 2 * (pad + bracket) + chargeRoom, vh = maxY - minY + 2 * (pad + bracket) + (s.charge ? 4 : 0);
     if (full) { vx = -2 * D - 46; vy = -2 * D - 46; vw = 4 * D + 92 + 24; vh = 4 * D + 92; }
@@ -163,7 +157,7 @@ var Draw = (function () {
         var p = xy(k);
         bx0 = Math.min(bx0, p[0]); bx1 = Math.max(bx1, p[0]); by0 = Math.min(by0, p[1]); by1 = Math.max(by1, p[1]);
       });
-      bx0 -= 32 + room; bx1 += 32 + room; by0 -= 30 + room; by1 += 30 + room;
+      bx0 -= 32; bx1 += 32; by0 -= 30; by1 += 30;
       var tick = 8;
       root.appendChild(el('path', { class: 'bracket', d:
         'M' + (bx0 + tick) + ' ' + by0 + 'H' + bx0 + 'V' + by1 + 'H' + (bx0 + tick) +
@@ -232,36 +226,6 @@ var Draw = (function () {
         dots.forEach(function (d) { g.appendChild(el('circle', { class: 'dot', cx: d[0], cy: d[1], r: 2.7 })); });
         root.appendChild(g);
       }
-    });
-
-    /* partial charges, outside each atom, away from the center */
-    var marks = opts.marks || {};
-    Object.keys(marks).forEach(function (k) {
-      if (!Lewis.has(s, k)) return;
-      var p = xy(k), sym = s.at[k], x, y;
-      if (k === 'C') {
-        /* the central atom's sign goes in the widest gap between its bonds */
-        var bonded = Lewis.DIRS.filter(function (d) { return Lewis.has(s, d); }).map(function (d) { return angle(d); });
-        var best = null, gap = -1;
-        ['N', 'S', 'E', 'W', 'NE', 'NW', 'SE', 'SW'].forEach(function (d) {
-          var g = Math.min.apply(null, bonded.map(function (a) {
-            var t = Math.abs(a - angle(d)) % 360;
-            return Math.min(t, 360 - t);
-          }).concat([360]));
-          if (g > gap + 1e-9) { gap = g; best = d; }
-        });
-        var uc = unit(best), rc = reach(uc, halfW(sym) + 9, 22);
-        x = p[0] + uc[0] * rc; y = p[1] + uc[1] * rc;
-      } else {
-        /* straight above an upper atom, straight below a lower one: clear of
-           the bond, the cloud and the corners of the brackets */
-        var u = unit(Lewis.dirOf(k));
-        if (Math.abs(u[1]) > 0.1) u = [0, u[1] > 0 ? 1 : -1];
-        var r = reach(u, halfW(sym) + 12, 23);
-        x = p[0] + u[0] * r; y = p[1] + u[1] * r;
-        if (Math.abs(u[1]) < 0.1) y -= 14;                 /* beside a horizontal bond: lift it */
-      }
-      root.appendChild(el('text', { class: 'delta', x: x, y: y, text: marks[k] }));
     });
 
     /* bond-order labels, beside the middle of each bond */

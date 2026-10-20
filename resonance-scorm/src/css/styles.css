@@ -520,12 +520,6 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
   stroke-linejoin: round;
   opacity: 0.16;
 }
-.delta {
-  font: 700 16px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  fill: var(--accent);
-  text-anchor: middle;
-  dominant-baseline: central;
-}
 .bo-label {
   font: 600 13px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   fill: var(--muted);
@@ -634,6 +628,28 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .r-range { width: min(260px, 60vw); accent-color: var(--accent); }
 .r-out { font-weight: 700; font-variant-numeric: tabular-nums; min-width: 4.5em; }
 .ruler-box > .reveal { margin-top: 0; }
+
+/* bond strength: the hybrid next to molecules with no resonance */
+.strength-row { gap: 10px 30px; align-items: flex-end; }
+.strength-row figcaption { font-weight: 600; color: var(--ink); letter-spacing: 0; text-align: center; }
+.strength-table { border-collapse: collapse; margin: 4px 0 10px; font-size: 0.86rem; font-variant-numeric: tabular-nums;
+  width: 100%; max-width: 560px; background: var(--panel); border-radius: 6px; }
+.strength-table th, .strength-table td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; }
+.strength-table thead th { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+.strength-table tbody th { font-weight: 700; white-space: nowrap; }
+.strength-table .num { white-space: nowrap; }
+.strength-table tr.is-hybrid { background: var(--note-bg); }
+.e-cell { display: flex; align-items: center; gap: 8px; }
+.e-track { flex: 0 0 160px; }
+.e-bar { display: block; height: 10px; border-radius: 0 4px 4px 0; background: var(--accent); }
+.e-val { white-space: nowrap; }
+@media (max-width: 560px) {
+  .strength-row { align-items: center; }
+  .strength-table th, .strength-table td { padding: 5px 4px; }
+  .e-cell { flex-direction: column; align-items: stretch; gap: 3px; }
+  .e-track { flex: none; }
+  .e-val { white-space: normal; }
+}
 
 /* finding every resonance structure */
 .finder { display: flex; flex-direction: column; gap: 12px; }

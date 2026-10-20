@@ -113,24 +113,16 @@ for (const id of ids) {
   const hy = Hybrid.compute(sp);
   if (hy.n !== outs.length) fail(`${id}: the hybrid averages ${hy.n} structures, not ${outs.length}`);
   if (JSON.stringify(hy.structures[0]) !== JSON.stringify(Lewis.canonical(sp))) fail(`${id}: structure A is not the answer key's structure`);
-  const fcSum = Object.keys(hy.fc).reduce((a, k) => a + hy.fc[k], 0);
-  if (Math.abs(fcSum - sp.charge) > 1e-9) fail(`${id}: the hybrid's charges add up to ${fcSum}, not ${sp.charge}`);
   if (hy.n > 1) {
     const vals = hy.cloud.map((k) => hy.orders[k]);
     if (hy.cloud.length < 2) fail(`${id}: resonance, but fewer than two bonds share the electrons`);
     if (new Set(vals).size !== 1) fail(`${id}: the shared bonds are not all the same order (${vals.join(', ')})`);
     if (['1½', '1⅓'].indexOf(hy.order) < 0) fail(`${id}: bond order ${hy.order} — this activity only explains 1½ and 1⅓`);
     if (Math.abs(hy.orderValue - (1 + 1 / hy.n)) > 1e-9) fail(`${id}: bond order ${hy.orderValue} is not 1 + 1/${hy.n}`);
-    hy.cloud.forEach((k) => {
-      if (sp.charge < 0 && hy.marks[k] !== 'δ−') fail(`${id}: an outer atom in the cloud has no δ− in an anion`);
-    });
     Object.keys(hy.orders).forEach((k) => {
       if (hy.cloud.indexOf(k) < 0 && hy.orders[k] % 1) fail(`${id}: a fractional bond outside the cloud`);
     });
-    Object.keys(hy.marks).forEach((k) => {
-      if ((hy.marks[k] === 'δ−') !== (hy.fc[k] < 0)) fail(`${id}: δ sign on ${k} disagrees with its average formal charge`);
-    });
-  } else if (hy.cloud.length || Object.keys(hy.marks).length) fail(`${id}: no resonance, but the hybrid has a cloud or δ signs`);
+  } else if (hy.cloud.length) fail(`${id}: no resonance, but the hybrid has a cloud`);
 }
 
 /* the equivalence check must catch the cases this class leaves out */
@@ -158,6 +150,38 @@ for (const id of Object.keys(BONDS)) {
   if (ELEMENTS[sp.center].period > 2) fail(`BONDS.${id}: a period-3 central atom — its measured bonds fit the expanded-octet picture`);
 }
 
+/* ---------------------------------------------------------- bond strength */
+
+/* the bond order of the bond being compared: the hybrid's, or the one bond
+   between two atoms of `pair` in a molecule with no resonance */
+const orderOf = (sp, pair) => {
+  const hy = Hybrid.compute(sp);
+  if (hy.n > 1) return hy.orderValue;
+  const [a, b] = pair.split('–');
+  const s = Lewis.solve(sp).s5;
+  const found = Lewis.bonds(s).filter((x) => [s.at[x.a], s.at[x.b]].sort().join() === [a, b].sort().join());
+  return found.length === 1 ? s.bo[found[0].key] : NaN;
+};
+for (const id of Object.keys(STRENGTH)) {
+  const S = STRENGTH[id];
+  if (!BONDS[id]) fail(`STRENGTH.${id}: no bond lengths for it in BONDS`);
+  if (S.pair !== BONDS[id].pair) fail(`STRENGTH.${id}: pair ${S.pair}, BONDS says ${BONDS[id].pair}`);
+  const rows = S.rows;
+  if (rows.length !== 3) fail(`STRENGTH.${id}: the comparison needs exactly 3 rows (single, hybrid, double)`);
+  if (rows.filter((r) => SPECIES[r.id] && count(Lewis.species(r.id)) > 1).length !== 1 || rows[1].id !== id) {
+    fail(`STRENGTH.${id}: the middle row must be ${id}, the only species with resonance`);
+  }
+  rows.forEach((r, i) => {
+    if (!SPECIES[r.id]) { fail(`STRENGTH.${id}: unknown species ${r.id}`); return; }
+    const o = orderOf(Lewis.species(r.id), S.pair);
+    if (Hybrid.fracText(Math.round(o * 6), 6) !== r.order) fail(`STRENGTH.${id}: ${r.id} bond order is ${o}, the row says ${r.order}`);
+    if (i && !(r.energy > rows[i - 1].energy)) fail(`STRENGTH.${id}: energies are not weakest to strongest`);
+    if (i && !(r.length < rows[i - 1].length)) fail(`STRENGTH.${id}: lengths do not shrink as the bonds get stronger`);
+  });
+  const want = [BONDS[id].single, BONDS[id].actual, BONDS[id].double];
+  rows.forEach((r, i) => { if (r.length !== want[i]) fail(`STRENGTH.${id}: ${r.id} is ${r.length} pm, BONDS says ${want[i]}`); });
+}
+
 /* --------------------------------------------------------- steps and pools */
 
 const resonant = (id) => SPECIES[id] && count(Lewis.species(id)) >= 2;
@@ -165,11 +189,12 @@ for (const s of App.STEPS) {
   if (s.sp && !SPECIES[s.sp]) fail(`step ${s.id}: unknown species ${s.sp}`);
   if (s.pool && !POOLS[s.pool]) fail(`step ${s.id}: unknown pool ${s.pool}`);
   if (s.kind === 'quiz' && !QUIZZES[s.quiz]) fail(`step ${s.id}: unknown checkpoint ${s.quiz}`);
-  if (['build', 'compare', 'res', 'hybrid'].indexOf(s.kind) >= 0 && s.sp && !resonant(s.sp)) {
+  if (['build', 'compare', 'res', 'hybrid', 'strength'].indexOf(s.kind) >= 0 && s.sp && !resonant(s.sp)) {
     fail(`step ${s.id}: ${s.sp} has no resonance`);
   }
   if (s.kind === 'compare' && count(Lewis.species(s.sp)) !== 2) fail(`step ${s.id}: compare shows exactly two structures`);
   if (s.kind === 'hybrid' && s.sp && !BONDS[s.sp]) fail(`step ${s.id}: no bond-length evidence for ${s.sp}`);
+  if (s.kind === 'strength' && !STRENGTH[s.sp]) fail(`step ${s.id}: no bond-strength data for ${s.sp}`);
 }
 for (const k of Object.keys(POOLS)) {
   if (!POOLS[k].ids.length) fail(`pool ${k} is empty`);
@@ -219,6 +244,16 @@ for (const k of Object.keys(QUIZZES)) {
           if (q.choices[i] !== sp.text) fail(`${q.id}: choice ${i} reads ${q.choices[i]}, species ${sid} is ${sp.text}`);
           if ((i === 0) !== (count(sp) >= 2)) fail(`${q.id}: ${sid} ${count(sp) >= 2 ? 'has' : 'has no'} resonance`);
         });
+      } else if (kind === 'strength') {
+        if (!STRENGTH[arg]) { fail(`${q.id}: no STRENGTH data for ${arg}`); continue; }
+        const texts = STRENGTH[arg].rows.map((r) => Lewis.species(r.id).text);
+        /* each name found after the one before it ("O₂" also sits inside "H₂O₂") */
+        let from = 0;
+        const inOrder = texts.every((t) => { const x = q.choices[0].indexOf(t, from); from = x + t.length; return x >= 0; });
+        if (!inOrder) {
+          fail(`${q.id}: answer "${q.choices[0]}" is not ${texts.join(', ')} (weakest to strongest)`);
+        }
+        if (q.choices.slice(1).some((c) => c === q.choices[0])) fail(`${q.id}: a wrong choice equals the right answer`);
       } else if (!FACT[kind]) fail(`${q.id}: unknown fact ${kind}`);
       else if (!SPECIES[arg]) fail(`${q.id}: fact names unknown species ${arg}`);
       else {

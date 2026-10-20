@@ -33,7 +33,7 @@ catch (e) {
 const URL = 'file://' + path.join(__dirname, '..', 'src', 'index.html');
 const SHOTS = process.env.SHOTS;
 /* answered wrongly on purpose; 'expand' picks the extra-double-bond drawing */
-const WRONG = { 'a-o3-order': 1, 'b-no2-charge': 1, 'c-co3-hybrid': 1, 'd-so2-rules': 'expand', 'd-which': 3,
+const WRONG = { 'a-o3-order': 1, 'a-strength': 2, 'b-strength': 1, 'c-co3-hybrid': 1, 'd-so2-rules': 'expand', 'd-which': 3,
   'd-so3-hybrid': 2 };
 const SNARKY = new Set(['d-so2-rules', 'd-so3-hybrid']);
 
@@ -264,6 +264,23 @@ const fakeLMS = () => {
     await next();
   }
 
+  /* ---- bond strength next to molecules with no resonance */
+  async function strength() {
+    const id = await speciesId();
+    expect(await page.isDisabled('#next'), `${id} strength: Next enabled before answering`);
+    const drawn = await page.evaluate(() => document.querySelectorAll('.strength-row .res-card svg').length);
+    expect(drawn === 3, `${id} strength: ${drawn} structures drawn, expected 3`);
+    /* a wrong ranking first: "all the same" */
+    await page.click('.predict .choice:has-text("All the same")');
+    const right = (await page.textContent('.predict .choice.right')).trim();
+    const want = await page.evaluate((sid) => STRENGTH[sid].rows.map((r) => Lewis.species(r.id).text).join(', then '), id);
+    expect(right === want, `${id} strength: "${right}" marked right, expected "${want}"`);
+    const rows = await page.$$('.strength-table tbody tr');
+    expect(rows.length === 3, `${id} strength: the evidence table has ${rows.length} rows`);
+    expect(!(await page.isDisabled('#next')), `${id} strength: Next still disabled after answering`);
+    await next();
+  }
+
   /* ---- ozone's two students */
   async function compare() {
     expect(await page.isDisabled('#next'), 'compare: Next enabled before answering');
@@ -336,6 +353,7 @@ const fakeLMS = () => {
   await page.click('#back');
   expect(/You predicted 135 pm/.test(await page.textContent('.ruler-box .reveal')), 'a revisited ruler lost the prediction');
   await page.click('#next');
+  await strength();
   await quiz();
 
   /* Part 2, with a reload and a step back in the middle */
@@ -389,7 +407,7 @@ const fakeLMS = () => {
     process.exit(1);
   }
   console.log(`✓ walkthrough passed: ${process.env.ALL ? 'every resonance species in board mode, then ' : ''}` +
-    `4 builds (Part 4: ${pool}), 5 resonance searches, 5 hybrids, ${graded} checkpoint answers, score ` +
+    `4 builds (Part 4: ${pool}), 5 resonance searches, 5 hybrids, a bond-strength ranking, ${graded} checkpoint answers, score ` +
     `${lms['cmi.core.score.raw']}, status ${lms['cmi.core.lesson_status']}, resumed after a reload, a fresh attempt ` +
     `starts over, no anti-AI reporting.`);
 })();

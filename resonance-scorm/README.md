@@ -14,8 +14,10 @@ same way. Students use the same 5 rules and the same builder; this time Rule 5 h
 Written for honors chemistry, **equivalent resonance structures only**: ozone, nitrite, nitrate,
 carbonate, and on their own SO₂, SO₃ or formate. Non-equivalent resonance (CO₂'s O≡C–O, HNO₃, HCO₃⁻,
 acetone…) is beyond the class and left out. The goal is the picture students should carry away: **the
-real molecule is the hybrid** — every shared bond identical, a solid line plus a dashed line, the
-electrons and the charge spread out — and it never flips between the structures. About 25–30 minutes.
+real molecule is the hybrid** — every shared bond identical, a solid line plus a dashed line, the shared
+electrons spread out — and it never flips between the structures. Its bonds are in between a single and a
+double bond in length *and* in strength, which students compare against molecules with no resonance
+(H–O–O–H and O=O for ozone). About 25–30 minutes.
 
 ---
 
@@ -23,7 +25,7 @@ electrons and the charge spread out — and it never flips between the structure
 
 | Part | Steps | What happens |
 | --- | --- | --- |
-| 1 Ozone | 4 | Build **O₃** with the 5 rules. *Two students, two answers*: both followed the rules, so which is right? (Both — and neither is the real molecule.) Resonance structures and the ↔ arrow are introduced. Then **the hybrid**, the mule analogy, and the bond-length evidence. **Checkpoint 1** (3 questions). |
+| 1 Ozone | 5 | Build **O₃** with the 5 rules. *Two students, two answers*: both followed the rules, so which is right? (Both — and neither is the real molecule.) Resonance structures and the ↔ arrow are introduced. Then **the hybrid**, the mule analogy, and the bond-length evidence. **How strong are ozone's bonds?** — rank the O–O bonds of hydrogen peroxide (single), ozone (1½) and oxygen gas (double), then see the bond orders, lengths and energies. **Checkpoint 1** (4 questions). |
 | 2 Nitrite & nitrate | 6 | Build **NO₂⁻**, find its other resonance structure, its hybrid. Then **NO₃⁻** from the structure after Rule 4: find all three, the hybrid (bond order 1⅓). **Checkpoint 2** (3). |
 | 3 Carbonate | 4 | Build **CO₃²⁻**, find all three, the hybrid and the evidence. **Checkpoint 3** (3). |
 | 4 On your own | 4 | One of **SO₂, SO₃** or **formate (HCO₂⁻)**, picked at random per student: build it with fewer hints, find every structure, the hybrid. **Checkpoint 4** (4). |
@@ -55,9 +57,7 @@ Drawn from the structures by averaging, never by hand:
 
 - every shared bond is a **solid line plus a dashed line**, labelled with its bond order (1½ or 1⅓);
 - a **shaded cloud** over those bonds — where the shared electrons spread out;
-- **δ−** on atoms whose charge is shared (every O in nitrate and carbonate), **δ+** on a central atom that
-  is positive in every structure (O in ozone, N in nitrate, S in SO₂/SO₃). Formal-charge numbers are
-  never shown; they are only used to place the δ signs;
+- **no partial charges** (δ+/δ−) and no formal charges;
 - **no lone pairs**, to keep the picture clear (the key says so);
 - the same atoms in the same places as the resonance structures, so the overlay lines up exactly.
 
@@ -76,17 +76,19 @@ The wording is in `src/js/snark.js`.
 
 ## Grading
 
-**A score, from the four checkpoints only.** 13 questions per attempt (3 + 3 + 3 + 4); the **first
+**A score, from the four checkpoints only.** 14 questions per attempt (4 + 3 + 3 + 4); the **first
 answer** to each counts. Builds, resonance searches and predictions are required to move on but never
-graded. The SCO writes `cmi.core.score.raw` (0–100) after every answer, out of all 13; `lesson_status`
+graded. The SCO writes `cmi.core.score.raw` (0–100) after every answer, out of all 14; `lesson_status`
 becomes `completed` on the results screen. There is no `masteryscore`, so the LMS will not overwrite the
 status with passed/failed. Each answer is also a `cmi.interactions` record (question id, letter chosen,
 right/wrong); the ids are in `ANSWER_KEY.md`.
 
 Each checkpoint always asks its **core** questions (★ in the answer key) — "does ozone flip back and
-forth?", "pick the nitrate hybrid", "how many structures does nitrate have?", "pick the carbonate
-hybrid", "which of these has resonance?", "which SO₂ structure follows the rules?" — and fills the rest at
-random from its pool, so a retake sees a different mix. 24 questions in all.
+forth?", "rank the O–O bonds of H₂O₂, O₃ and O₂ by strength", "pick the nitrate hybrid", "how strong is a
+nitrate N–O bond next to a single and a double bond?", "pick the carbonate hybrid", "rank the C–O bonds of
+methanol, carbonate and formaldehyde by strength", "which of these has resonance?", "which SO₂ structure
+follows the rules?" — and fills the rest at random from its pool, so a retake sees a different mix. 25
+questions in all.
 
 Progress is saved to `cmi.suspend_data` (under 1 KB of the 4 KB allowed), which belongs to one student's
 one attempt — resetting an attempt in Schoology starts it over, and a second student on the same
@@ -109,13 +111,19 @@ quiz answers and the answer key cannot disagree.
   HCO₃⁻.
 - **Bond order** = (2 + 1 + …) ÷ number of structures: 1½ for two, 1⅓ for three. Formate's C–H stays a
   single bond (the validator checks no unshared bond is fractional).
-- **The charges add up.** The averaged formal charges sum to the ion's charge (checked).
 - **Bond lengths** (`src/js/bonds.js`, sources in the file): O₃ 128 pm (O–O 148, O=O 121); NO₂⁻ 124 and
   NO₃⁻ 125 pm (N–O 140, N=O 120); CO₃²⁻ 129 pm (C–O 143, C=O 120). The lesson is qualitative — the bonds
   are all the same length, between a single and a double — and the activity never claims the length is a
   straight-line average of the two (it isn't: the real values sit nearer the double bond). **SO₂ and SO₃
   get no ruler on purpose**: their measured S–O bonds are as short as an S=O double bond, which is the
   expanded-octet picture this class doesn't use.
+- **Bond strength** (`STRENGTH` in `src/js/bonds.js`): the energy to break the O–O bond — hydrogen
+  peroxide about 210 kJ/mol, ozone about 300, oxygen gas about 500. Ozone's is the **average per bond**
+  (pulling O₃ apart into atoms takes about 605 kJ/mol), and the screen says so: breaking just *one* ozone
+  bond takes only about 106 kJ/mol, because the O₂ left behind gets a full double bond — a subtlety the
+  activity avoids. If your class uses a bond-energy table with O–O at 146 kJ/mol, change 210 to 146 in
+  that file; the ranking is the same. The validator checks the ranking, the bond orders and that the
+  lengths match the ruler.
 
 ---
 
@@ -143,7 +151,7 @@ reported. A *Start over* button on the results screen clears the saved progress.
 ```
 src/index.html?build               pick any species; build it, find its resonance structures, or show its hybrid
 src/index.html?build=CO3           start on one species (IDs are in ANSWER_KEY.md)
-src/index.html?step=h-CO3          jump to any step (ids or numbers 1–19) to preview it
+src/index.html?step=h-CO3          jump to any step (ids or numbers 1–20) to preview it
 src/index.html?step=r-own&pick=SO3 preview a Part 4 step with a chosen species
 ```
 
@@ -157,7 +165,7 @@ None of these links save progress or report anything.
 | File | What it holds |
 | --- | --- |
 | `src/js/species.js` | Every molecule and ion, the hand-written answer (`n` = how many resonance structures), and the Part 4 pool |
-| `src/js/bonds.js` | The bond lengths for the ruler |
+| `src/js/bonds.js` | The bond lengths for the ruler, and the bond energies for the strength comparison |
 | `src/js/quiz.js` | The checkpoint questions. The correct choice is written **first**; the order is shuffled on screen. A choice can be a hybrid drawing (`{ hybrid: 'NO3', variant: 'one' }`) or a Lewis drawing (`{ lewis: 'SO2', mod: { expand: 1 } }`). `fact` ties an answer to the chemistry so the validator can check it. |
 | `src/js/app.js` | The step list (`STEPS`), the instructions above each step, the ozone comparison, the hybrid step |
 | `src/js/snark.js` | The anti-AI messages |
@@ -201,7 +209,7 @@ resonance-scorm/
 │       ├── util.js       small DOM and random-number helpers
 │       ├── elements.js   valence electrons, periods, the periodic table
 │       ├── species.js    the molecules and ions, and the Part 4 pool
-│       ├── bonds.js      measured bond lengths
+│       ├── bonds.js      measured bond lengths and bond energies
 │       ├── lewis.js      the 5 rules as an algorithm (same as the Lewis activity)
 │       ├── draw.js       Lewis structures and hybrids as SVG
 │       ├── picker.js     drag, click or keyboard placement
@@ -228,8 +236,9 @@ Chromebook.
 
 Everything works by mouse, touch or keyboard: atoms, lone pairs and choices are buttons (Tab, Enter), and
 the ruler is a standard slider (arrow keys). Every drawing has a text description — nitrate's hybrid
-says "3 identical N–O bonds, each drawn as a solid line plus a dashed line (bond order 1⅓); the 3 outer
-atoms each carry a partial negative charge; …" — and the animation's captions are announced. Feedback goes through
+says "3 identical N–O bonds, each drawn as a solid line plus a dashed line (bond order 1⅓), with the
+shared electrons spread over all of them" — and the animation's captions are announced. The bond-strength
+evidence is a real table (the bars are decoration; the numbers are in the text). Feedback goes through
 a live region, element colors are never the only signal, the page follows the system light/dark setting,
 and `prefers-reduced-motion` skips the animation straight to the hybrid. On a phone the resonance
 structures stack vertically with ↕-turned arrows.

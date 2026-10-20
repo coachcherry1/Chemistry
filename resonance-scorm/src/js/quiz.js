@@ -23,14 +23,16 @@
  *   ['order', id]      bond order of each shared bond in the hybrid ('1⅓')
  *   ['total', id]      valence electrons
  *   ['resonant', [ids]] choice 0's species has resonance, the others do not
+ *   ['strength', id]   choice 0 names the species of STRENGTH[id] (bonds.js)
+ *                      from weakest to strongest
  */
 
 var QUIZZES = {
 
   A: {
     title: 'Checkpoint 1 — ozone and the idea of resonance',
-    draw: 3,
-    core: ['a-flip', 'a-what-moves'],
+    draw: 4,
+    core: ['a-flip', 'a-what-moves', 'a-strength'],
     pool: [
       { id: 'a-flip',
         q: 'Which statement about ozone, O₃, is true?',
@@ -48,6 +50,15 @@ var QUIZZES = {
                   'The two end O atoms swap places'],
         why: 'Resonance structures have the same atoms in the same places and the same number of electrons. Only ' +
              'electrons move: here, which end O shares its pair in Rule 5.' },
+      { id: 'a-strength', fact: ['strength', 'O3'],
+        q: 'Rank the O–O bonds from WEAKEST to STRONGEST: hydrogen peroxide (H–O–O–H), ozone (O₃) and oxygen gas (O=O).',
+        choices: ['H₂O₂, then O₃, then O₂',
+                  'O₂, then O₃, then H₂O₂',
+                  'O₃, then H₂O₂, then O₂',
+                  'All three are equally strong — they are all O–O bonds'],
+        why: 'Bond strength follows bond order: H₂O₂ has a single bond (1), each of ozone’s bonds is a bond and a half ' +
+             '(1½), and O₂ has a double bond (2). More shared electrons hold the two atoms together more tightly, so ' +
+             'ozone’s bonds land in between — stronger than a single bond, weaker than a double.' },
       { id: 'a-o3-order', fact: ['order', 'O3'],
         q: 'What is the bond order of each O–O bond in the ozone hybrid?',
         choices: ['1½', '1', '2', '1⅓'],
@@ -75,7 +86,7 @@ var QUIZZES = {
   B: {
     title: 'Checkpoint 2 — nitrite and nitrate',
     draw: 3,
-    core: ['b-no3-hybrid', 'b-no3-count'],
+    core: ['b-no3-hybrid', 'b-strength'],
     pool: [
       { id: 'b-no3-hybrid',
         q: 'Which drawing shows the resonance hybrid of the nitrate ion, NO₃⁻?',
@@ -84,8 +95,8 @@ var QUIZZES = {
                   { hybrid: 'NO3', variant: 'double' },
                   { hybrid: 'NO3', variant: 'some' }],
         why: 'In the hybrid all three N–O bonds are identical: each is a solid line plus a dashed line (a partial ' +
-             'double bond), and the extra electrons are spread over all three O atoms (δ−). One double bond and two ' +
-             'single bonds is just one resonance structure, not the real ion.' },
+             'double bond), with the shared electrons spread over all three. One double bond and two single bonds is ' +
+             'just one resonance structure, not the real ion.' },
       { id: 'b-no3-count', fact: ['n', 'NO3'],
         q: 'How many resonance structures does the nitrate ion, NO₃⁻, have?',
         choices: ['3', '1', '2', '4'],
@@ -99,14 +110,14 @@ var QUIZZES = {
         q: 'What is the bond order of each N–O bond in the nitrite hybrid, NO₂⁻?',
         choices: ['1½', '1⅓', '2', '1'],
         why: 'Two resonance structures; each N–O bond is double in one and single in the other: (2 + 1) ÷ 2 = 1½.' },
-      { id: 'b-no2-charge',
-        q: 'Where is the 1− charge of the nitrite ion in the hybrid?',
-        choices: ['Spread over both O atoms — each carries part of it (δ−)',
-                  'On the single-bonded O atom only',
-                  'On the N atom',
-                  'It jumps from one O to the other'],
-        why: 'In each resonance structure the single-bonded O carries the extra electrons — but it is a different O ' +
-             'each time. In the real ion the charge is shared: each O is partly negative (δ−).' },
+      { id: 'b-strength',
+        q: 'Compared with a typical N–O single bond and a typical N=O double bond, an N–O bond in the nitrate ion is…',
+        choices: ['Stronger than the single bond and weaker than the double bond',
+                  'Stronger than both',
+                  'Weaker than both',
+                  'Exactly as strong as the double bond'],
+        why: 'Nitrate’s N–O bonds have bond order 1⅓ — between 1 and 2 — so they are in between: stronger and shorter ' +
+             'than a single bond, weaker and longer than a double bond.' },
       { id: 'b-rank',
         q: 'Put these from LONGEST to SHORTEST: a typical N–O single bond, a typical N=O double bond, and an N–O bond ' +
            'in the nitrate ion.',
@@ -122,7 +133,7 @@ var QUIZZES = {
   C: {
     title: 'Checkpoint 3 — carbonate',
     draw: 3,
-    core: ['c-co3-hybrid', 'c-co3-length'],
+    core: ['c-co3-hybrid', 'c-strength'],
     pool: [
       { id: 'c-co3-hybrid',
         q: 'Which drawing shows the resonance hybrid of the carbonate ion, CO₃²⁻?',
@@ -130,8 +141,8 @@ var QUIZZES = {
                   { hybrid: 'CO3', variant: 'one' },
                   { hybrid: 'CO3', variant: 'single' },
                   { hybrid: 'CO3', variant: 'some' }],
-        why: 'All three C–O bonds in carbonate are identical partial double bonds (bond order 1⅓), and the 2− charge ' +
-             'is spread over all three O atoms (δ−).' },
+        why: 'All three C–O bonds in carbonate are identical partial double bonds (bond order 1⅓) — not one double ' +
+             'and two singles, and not all double or all single.' },
       { id: 'c-co3-length',
         q: 'What are the three C–O bonds in the carbonate ion like?',
         choices: ['All the same length — between a C–O single bond and a C=O double bond',
@@ -144,14 +155,15 @@ var QUIZZES = {
         q: 'How many resonance structures does the carbonate ion have?',
         choices: ['3', '2', '1', '4'],
         why: 'C is 2 electrons short after Rule 4, and any of the three O atoms can share a pair: three structures.' },
-      { id: 'c-co3-charge',
-        q: 'How is carbonate’s 2− charge spread out in the hybrid?',
-        choices: ['Over all three O atoms — each is partly negative (δ−)',
-                  'On the two single-bonded O atoms only',
-                  'On the C atom',
-                  'On one O atom'],
-        why: 'Which two O atoms are single-bonded changes from structure to structure. In the real ion every O carries ' +
-             'part of the charge.' },
+      { id: 'c-strength',
+        q: 'Rank these C–O bonds from WEAKEST to STRONGEST: the C–O single bond in methanol (CH₃–OH), a C–O bond in ' +
+           'the carbonate ion, and the C=O double bond in formaldehyde (CH₂O).',
+        choices: ['Methanol, then carbonate, then formaldehyde',
+                  'Formaldehyde, then carbonate, then methanol',
+                  'Carbonate, then methanol, then formaldehyde',
+                  'All three are equally strong — they are all C–O bonds'],
+        why: 'Bond orders 1, 1⅓ and 2. The higher the bond order, the stronger (and shorter) the bond, so carbonate’s ' +
+             'resonance bonds fall in between a single and a double bond.' },
       { id: 'c-co3-order', fact: ['order', 'CO3'],
         q: 'What is the bond order of each C–O bond in carbonate?',
         choices: ['1⅓', '1½', '2', '1'],
@@ -217,7 +229,7 @@ var QUIZZES = {
                   { hybrid: 'SO3', variant: 'one' },
                   { hybrid: 'SO3', variant: 'double' },
                   { hybrid: 'SO3', variant: 'some' }],
-        why: 'Three identical S–O bonds, each 1⅓, with the O atoms partly negative — the same pattern as nitrate and ' +
+        why: 'Three identical S–O bonds, each 1⅓ — the same pattern as nitrate and ' +
              'carbonate. Three S=O double bonds would mean Rule 5 ran three times, but S was only one pair short.' }
     ]
   }

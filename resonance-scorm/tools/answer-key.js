@@ -46,14 +46,10 @@ function structureText(s, i) {
 function hybridBlock(sp) {
   const h = Hybrid.compute(sp);
   const b = BONDS[sp.id];
-  const neg = Object.keys(h.marks).filter((k) => h.marks[k] === 'δ−').map((k) => h.base.at[k]);
   P(`**${sp.text}** — ${h.n} resonance structures (${h.structures.map(structureText).join(' ↔ ')})`);
   P();
   P(`- Hybrid: ${h.cloud.length} identical ${Hybrid.pairName(sp)} bonds, bond order **${h.order}** ` +
     `= (2${' + 1'.repeat(h.n - 1)}) ÷ ${h.n}`);
-  P(`- δ−: ${neg.length === h.cloud.length ? 'every' : neg.length} outer ${[...new Set(neg)].join('/')}` +
-    (h.marks.C === 'δ+' ? `; δ+: the central ${sp.center}` : '') +
-    (sp.charge ? ` (the ${Math.abs(sp.charge)}${sp.charge < 0 ? '−' : '+'} charge is shared out)` : ''));
   const other = Lewis.DIRS.filter((k) => h.base.at[k] && h.cloud.indexOf(k) < 0);
   if (other.length) P(`- Not shared: ${other.map((k) => `${sp.center}–${h.base.at[k]}`).join(', ')} stays a single bond`);
   if (b) P(`- Evidence: ${b.pair} single ${b.single} pm, ${b.pair.replace('–', '=')} double ${b.double} pm, measured in ` +
@@ -72,9 +68,11 @@ P('- **Equivalent resonance only.** Every species here gets the same structure f
 P('  make, just turned around (ozone, nitrite, nitrate, carbonate, SO₂, SO₃, formate). Species whose choices');
 P('  give *different* structures — CO₂, HCO₃⁻, HNO₃, N₃⁻, SCN⁻, acetone — are left out (`tools/validate.js`');
 P('  rejects them).');
-P('- **The hybrid** is drawn with a solid line plus a dashed line for each partial double bond, a shaded cloud');
-P('  over the bonds that share the electrons, and δ− / δ+ where the average formal charge is negative /');
-P('  positive. Lone pairs are left out of the hybrid. Formal-charge numbers are never shown to students.');
+P('- **The hybrid** is drawn with a solid line plus a dashed line for each partial double bond, labelled with');
+P('  its bond order, and a shaded cloud over the bonds that share the electrons. Lone pairs are left out of the');
+P('  hybrid. No partial charges or formal charges are shown.');
+P('- **Bond strength** follows bond order: in Part 1 ozone’s O–O bonds are ranked against hydrogen peroxide');
+P('  (single) and oxygen gas (double). Checkpoints 1–3 each ask a strength comparison (a core question).');
 P('- **Bond lengths** are shown only for O₃, NO₂⁻, NO₃⁻ and CO₃²⁻. The point is qualitative: all the bonds are');
 P('  the same length, between a single and a double bond. (The real values sit nearer the double bond than a');
 P('  straight-line "average" would suggest; the activity never claims otherwise.) The sulfur species are left');
@@ -116,6 +114,22 @@ for (const s of App.STEPS) {
     P();
   }
   if (s.kind === 'hybrid' && s.sp) hybridBlock(Lewis.species(s.sp));
+  if (s.kind === 'strength') {
+    const S = STRENGTH[s.sp];
+    P(`*${s.title}* (ungraded): rank the ${S.pair} bonds from weakest to strongest. Answer: ` +
+      `**${S.rows.map((r) => Lewis.species(r.id).text).join(' < ')}**. Shown after they answer:`);
+    P();
+    P(`| | ${S.pair} bond order | Length | Energy to break it |`);
+    P('| --- | --- | --- | --- |');
+    S.rows.forEach((r) => P(`| ${Lewis.species(r.id).name}, ${Lewis.species(r.id).text} | ${r.order} | ${r.length} pm | ` +
+      `about ${r.energy} kJ/mol${r.average ? ' (average per bond)' : ''} |`));
+    P();
+    P('For ozone the energy is the average per bond (about 605 kJ/mol to pull O₃ apart into atoms ÷ 2). Breaking');
+    P('just one ozone bond takes only about 106 kJ/mol, because the O₂ left behind gets a full double bond — a');
+    P('subtlety the activity avoids. Textbook tables list a typical O–O single bond as 146 kJ/mol; H₂O₂’s own');
+    P('O–O bond is about 210. Either way the ranking is the same (values in `src/js/bonds.js`).');
+    P();
+  }
   if (s.kind === 'quiz') { P(`Then **${QUIZZES[s.quiz].title}** (graded, below).`); P(); }
 }
 
@@ -138,7 +152,7 @@ P('correct one is listed first. 🤖 marks a choice that triggers the anti-AI me
 P();
 
 const VARIANT = {
-  hybrid: 'the hybrid: every shared bond a solid + dashed line, cloud, δ signs',
+  hybrid: 'the hybrid: every shared bond a solid + dashed line, with the shaded cloud',
   one: 'one resonance structure (one double bond, the rest single)',
   double: 'every shared bond a full double bond',
   single: 'every shared bond a single bond',

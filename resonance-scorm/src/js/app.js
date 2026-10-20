@@ -1,7 +1,8 @@
 /* app.js — the steps, their order, saving, scoring.
  *
  * Part 1  Ozone: build O₃ with the 5 rules; two students' answers (both
- *         right, neither the real thing); the hybrid and the evidence
+ *         right, neither the real thing); the hybrid and the evidence; how
+ *         strong ozone's bonds are next to H–O–O–H and O=O (no resonance)
  * Part 2  Nitrite and nitrate: build NO₂⁻, find its resonance structures,
  *         its hybrid; then nitrate's three structures and its hybrid
  * Part 3  Carbonate: build, find all three, the hybrid
@@ -10,6 +11,7 @@
  * Step kinds: build (the 5-rule builder from the Lewis activity), compare
  * (ozone's two answers), res (find every resonance structure), hybrid (the
  * averaging animation, a bond-order prediction and the bond-length ruler),
+ * strength (ranking bond strength against molecules with no resonance),
  * quiz, results.
  *
  * Only the four checkpoints are graded (first answer counts). Everything
@@ -21,7 +23,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or the Part 4 pool changes: a
      save from an older version is then discarded rather than resumed. */
-  var SCHEMA = 2;
+  var SCHEMA = 3;
 
   var h = UI.h;
 
@@ -41,6 +43,9 @@ var App = (function () {
       text: 'Two students followed the 5 rules for ozone and got these. Which one is right?' },
     { id: 'h-O3', part: 1, kind: 'hybrid', sp: 'O3', mule: true, title: 'The real ozone: the resonance hybrid',
       text: 'Neither drawing is the real molecule on its own. Predict first, then average the two structures.' },
+    { id: 'st-O3', part: 1, kind: 'strength', sp: 'O3', title: 'How strong are ozone’s bonds?',
+      text: 'Hydrogen peroxide and oxygen gas each have just one Lewis structure — no resonance. How do ozone’s O–O ' +
+            'bonds compare with theirs?' },
     { id: 'quiz-A', part: 1, kind: 'quiz', quiz: 'A', title: 'Checkpoint 1',
       text: 'Graded: your first answer to each question counts. Read the explanation after each one.' },
 
@@ -353,10 +358,6 @@ var App = (function () {
         'bond — bond order ' + r.order]),
       h('li', null, [h('span', { class: 'k-cloud', 'aria-hidden': 'true' }), ' shaded: where the shared electrons spread out, ' +
         (k === 2 ? 'over both bonds at once' : 'over all ' + k + ' bonds at once')]),
-      h('li', null, [h('b', { text: 'δ−' }), ' a partial negative charge: ' + (sp.charge
-        ? 'the ion’s ' + Math.abs(sp.charge) + (sp.charge < 0 ? '−' : '+') + ' charge is shared out over these atoms — no single atom holds it'
-        : 'these atoms hold a little extra electron density')]),
-      r.marks.C === 'δ+' ? h('li', null, [h('b', { text: 'δ+' }), ' a partial positive charge on the central atom']) : null,
       h('li', { class: 'muted', text: 'Lone pairs are left out of the hybrid to keep the picture clear.' })
     ]);
     var mule = s.mule ? h('div', { class: 'callout', hidden: !done }, [
@@ -407,6 +408,62 @@ var App = (function () {
     });
     if (done) { ov.play(); avg.textContent = 'Play it again'; say('Done. Press Next to go on.', 'good'); }
     return { destroy: function () { ov.stop(); } };
+  };
+
+  /* ---- bond strength: the resonance species next to molecules with no resonance */
+
+  RENDER.strength = function (s) {
+    var data = STRENGTH[s.sp], done = !!state.done[s.id];
+    var rows = data.rows.map(function (row) { return Object.assign({ sp: Lewis.species(row.id) }, row); });
+    var cards = h('div', { class: 'res-row strength-row' }, rows.map(function (row) {
+      var hyb = Hybrid.compute(row.sp).n > 1;
+      return h('figure', { class: 'res-card' }, [
+        hyb ? Hybrid.draw(row.sp, { scale: 0.9 })
+            : Draw.structure(Lewis.canonical(row.sp), { scale: 0.9, cls: 'res-fig' }),
+        h('figcaption', { class: 'cap-name', text: row.sp.name + ', ' + row.sp.text + (hyb ? ' — the hybrid' : '') })
+      ]);
+    }));
+    el.stage.appendChild(panel('Three ' + data.pair + ' bonds', null, [cards]));
+
+    /* the evidence: a small table, with bars for the energy */
+    var top = Math.max.apply(null, rows.map(function (r) { return r.energy; }));
+    var table = h('table', { class: 'strength-table' }, [
+      h('thead', null, [h('tr', null, [h('th', { text: '' }), h('th', { text: data.pair + ' bond order' }),
+        h('th', { text: 'Length' }), h('th', { text: 'Energy to break it' })])]),
+      h('tbody', null, rows.map(function (r) {
+        return h('tr', { class: Hybrid.compute(r.sp).n > 1 ? 'is-hybrid' : '' }, [
+          h('th', { scope: 'row', text: r.sp.text }),
+          h('td', { class: 'num', text: r.order }),
+          h('td', { class: 'num', text: r.length + ' pm' }),
+          h('td', null, [h('span', { class: 'e-cell' }, [
+            h('span', { class: 'e-track', 'aria-hidden': 'true' }, [
+              h('span', { class: 'e-bar', style: 'width:' + Math.round(100 * r.energy / top) + '%' })]),
+            h('span', { class: 'e-val', text: 'about ' + r.energy + ' kJ/mol' + (r.average ? ' *' : '') })])])
+        ]);
+      }))
+    ]);
+    var names = rows.map(function (r) { return r.sp.text; });
+    var hybName = rows.filter(function (r) { return Hybrid.compute(r.sp).n > 1; })[0].sp;
+    var reveal = [
+      'Bond strength follows bond order. ' + names[0] + ' has a single bond (1) and ' + names[2] + ' a double bond (2); ' +
+        'each of ' + hybName.name + '’s bonds is a bond and a half (' + rows[1].order + '). So ' + hybName.name + ' lands in ' +
+        'between: stronger than the single bond, weaker than the double.',
+      table,
+      'More shared electrons between two atoms hold them together more tightly: a higher bond order means a SHORTER and ' +
+        'STRONGER bond. Either resonance structure alone would give ' + hybName.name + ' one weak bond and one strong one. ' +
+        'Really both are the same, in between — the hybrid again.',
+      h('p', { class: 'small muted', text: '* For ozone, the average energy per bond to pull the molecule apart into atoms.' })
+    ];
+    /* weakest → strongest; three orders that are wrong, then "all the same" */
+    var right = names.join(', then ');
+    var wrong = [[2, 1, 0], [1, 0, 2]].map(function (o) { return o.map(function (i) { return names[i]; }).join(', then '); });
+    var choices = UI.shuffle([right].concat(wrong), UI.rng(state.seed ^ UI.hash(s.id)))
+      .concat(['All the same — they are all ' + data.pair + ' bonds']);
+    el.stage.appendChild(panel('Weakest to strongest', 'Predict', [
+      predict('Rank the ' + data.pair + ' bonds from WEAKEST to STRONGEST.', choices, choices.indexOf(right), reveal,
+        function () { if (!state.done[s.id]) complete('Higher bond order: shorter and stronger.'); }, done)
+    ]));
+    if (done) say('Press Next for the checkpoint.', 'good');
   };
 
   /* ---- checkpoints */
@@ -558,7 +615,7 @@ var App = (function () {
       'Draw every structure, with a double-headed arrow (↔) between them.',
       'The real molecule or ion is the hybrid — the average of the structures. It never flips between them.',
       'In the hybrid every shared bond is identical: bond order 1½ (two structures) or 1⅓ (three), between a single ' +
-        'and a double bond — and any charge is spread over the atoms that share it.'
+        'and a double bond, in length and in strength.'
     ].map(function (t) { return h('li', { text: t }); }))]);
     var gallery = panel('The hybrids you met', null, [h('div', { class: 'hyb-gallery' },
       ['O3', 'NO2', 'NO3', 'CO3', state.pool.own].map(function (id) {
@@ -656,8 +713,8 @@ var App = (function () {
       ['Resonance hybrid', 'The one real structure: the average of all the resonance structures. Drawn with a solid line plus a dashed line for each partial double bond.'],
       ['Bond order', 'How many bonds there are between two atoms: 1 for single, 2 for double. In a hybrid it can be a fraction — 1½ for ozone and nitrite, 1⅓ for nitrate and carbonate.'],
       ['Delocalized electrons', 'Electrons spread over several atoms at once instead of sitting in one bond — the shaded cloud in the hybrid.'],
-      ['δ− (partial negative)', 'An atom with a little extra electron density. In an ion’s hybrid, the charge is shared out over these atoms.'],
-      ['Bond length', 'The distance between two bonded atoms, in picometers (pm). Higher bond order means a shorter bond.']
+      ['Bond length', 'The distance between two bonded atoms, in picometers (pm). Higher bond order means a shorter bond.'],
+      ['Bond strength', 'How much energy it takes to break a bond, in kJ/mol. Higher bond order means a stronger bond.']
     ].forEach(function (p) {
       dl.appendChild(h('dt', { text: p[0] }));
       dl.appendChild(h('dd', { text: p[1] }));
@@ -673,7 +730,7 @@ var App = (function () {
       h('p', { text: 'Sometimes the 5 rules give you a choice. This activity is about what that choice means, and what the ' +
                      'molecule really looks like.' }),
       h('ul', { class: 'screen-list' }, [
-        h('li', { text: 'Part 1 — Ozone: two right answers, and the real molecule.' }),
+        h('li', { text: 'Part 1 — Ozone: two right answers, the real molecule, and how strong its bonds are.' }),
         h('li', { text: 'Part 2 — Nitrite and nitrate: find every resonance structure, then the hybrid.' }),
         h('li', { text: 'Part 3 — Carbonate: three structures, one hybrid, and the evidence.' }),
         h('li', { text: 'Part 4 — On your own: one more, with fewer hints.' })

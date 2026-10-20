@@ -43,6 +43,13 @@ var SPECIES = {
   HCO2:  { formula: 'HCO2', charge: -1, name: 'formate ion',
            layout: { N: 'H', SW: 'O', SE: 'O' }, key: { e: 18, bo: '211', clp: 0, n: 2 } },
 
+  /* ---- no resonance: the bond-strength comparison in Part 1 (H–O–O–H is
+     drawn with the second O as an "OH" outer atom) */
+  H2O2:  { formula: 'H2O2', charge: 0, name: 'hydrogen peroxide',
+           layout: { W: 'OH', E: 'H' }, key: { e: 14, bo: '11', clp: 2, n: 1 } },
+  O2:    { formula: 'O2', charge: 0, name: 'oxygen',
+           layout: { E: 'O' }, key: { e: 12, bo: '2', clp: 2, n: 1 } },
+
   /* ---- no resonance: used in checkpoint questions, for comparison */
   CH2O:  { formula: 'CH2O', charge: 0, name: 'formaldehyde',
            layout: { W: 'H', E: 'H', N: 'O' }, key: { e: 12, bo: '211', clp: 0, n: 1 } },

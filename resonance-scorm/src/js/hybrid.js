@@ -6,10 +6,6 @@
  *                      orders   bond order of every bond (4/3 for carbonate)
  *                      labels   '1⅓' on every bond that is not a whole number
  *                      cloud    the bonds the shared-out electrons spread over
- *                      marks    δ− / δ+ on atoms whose AVERAGE formal charge is
- *                               negative / positive (formal charge is only used
- *                               here, to place the δ signs; students never see
- *                               a formal-charge number)
  *   draw(sp, opts)   the hybrid as SVG — or, for checkpoint distractors, a
  *                    deliberately wrong "hybrid" (opts.variant)
  *   row(sp)          the resonance structures in standard notation: A ↔ B ↔ C
@@ -50,23 +46,15 @@ var Hybrid = (function () {
   function compute(sp) {
     if (cache[sp.id]) return cache[sp.id];
     var outs = structures(sp), n = outs.length, s0 = outs[0];
-    var orders = {}, labels = {}, cloud = [], marks = {}, fc = {};
+    var orders = {}, labels = {}, cloud = [];
     Lewis.bonds(s0).forEach(function (b) {
       var tot = 0;
       outs.forEach(function (s) { tot += s.bo[b.key] || 1; });
       orders[b.key] = tot / n;
       if (tot % n) { labels[b.key] = fracText(tot, n); if (b.a === 'C') cloud.push(b.key); }
     });
-    Lewis.filled(s0).forEach(function (k) {
-      var t = 0;
-      outs.forEach(function (s) { t += Lewis.formalCharge(s, k); });
-      fc[k] = t / n;
-      if (n > 1 && fc[k] < -1e-9) marks[k] = 'δ−';
-      else if (n > 1 && fc[k] > 1e-9) marks[k] = 'δ+';
-    });
     var order = cloud.length ? labels[cloud[0]] : null;
-    var r = { n: n, structures: outs, base: s0, orders: orders, labels: labels, cloud: cloud, marks: marks, fc: fc,
-              order: order, orderValue: cloud.length ? orders[cloud[0]] : null };
+    var r = { n: n, structures: outs, base: s0, orders: orders, labels: labels, cloud: cloud, order: order, orderValue: cloud.length ? orders[cloud[0]] : null };
     cache[sp.id] = r;
     return r;
   }
@@ -79,12 +67,9 @@ var Hybrid = (function () {
 
   function describe(sp, r) {
     r = r || compute(sp);
-    var k = r.cloud.length;
-    var neg = Object.keys(r.marks).filter(function (x) { return r.marks[x] === 'δ−'; }).length;
-    return 'Resonance hybrid of ' + sp.text + ': ' + sp.center + ' in the center, ' + k + ' identical ' + pairName(sp) +
-      ' bonds, each drawn as a solid line plus a dashed line (bond order ' + r.order + ')' +
-      (neg ? '; the ' + (neg === k ? k + ' ' : '') + 'outer atoms each carry a partial negative charge' : '') +
-      (r.marks.C === 'δ+' ? '; the central atom carries a partial positive charge' : '') + '.';
+    return 'Resonance hybrid of ' + sp.text + ': ' + sp.center + ' in the center, ' + r.cloud.length + ' identical ' +
+      pairName(sp) + ' bonds, each drawn as a solid line plus a dashed line (bond order ' + r.order + '), with the ' +
+      'shared electrons spread over all of them.';
   }
 
   var WORD = { 1: 'one', 2: 'two', 3: 'three', 4: 'four' };
@@ -105,40 +90,33 @@ var Hybrid = (function () {
     }[v];
     var others = Lewis.DIRS.filter(function (d) { return r.base.at[d] && r.cloud.indexOf(d) < 0; })
       .map(function (d) { return sp.center + '–' + r.base.at[d] + ' single bond'; });
-    var marks = v === 'one' ? {} : Object.assign({}, r.marks);
-    if (v === 'some') delete marks[r.cloud[0]];
-    var neg = Object.keys(marks).filter(function (x) { return x !== 'C' && marks[x] === 'δ−'; }).length;
-    return sp.text + ': ' + sp.center + ' in the center; ' + bonds + (others.length ? '; a ' + others.join(', a ') : '') +
-      (neg ? '; δ− on ' + (neg === 1 ? 'one ' : WORD[neg] + ' ') + 'outer atom' + (neg === 1 ? '' : 's') : '') +
-      (marks.C === 'δ+' ? '; δ+ on ' + sp.center : '') + '.';
+    return sp.text + ': ' + sp.center + ' in the center; ' + bonds + (others.length ? '; a ' + others.join(', a ') : '') + '.';
   }
 
   /* opts: variant 'hybrid' (default) | 'one' (just one resonance structure,
      drawn hybrid-style) | 'double' (every shared bond double) | 'some' (only
      some bonds shared) | 'single' (every shared bond single);
-     labels, marks, cloud: false to leave them out; neutral: describe what is
+     labels, cloud: false to leave them out; neutral: describe what is
      drawn without naming it (checkpoint choices); cls, scale */
   function draw(sp, opts) {
     opts = opts || {};
     var r = compute(sp), v = opts.variant || 'hybrid';
     var orders = Object.assign({}, r.orders), labels = Object.assign({}, r.labels), cloud = r.cloud.slice();
-    var marks = Object.assign({}, r.marks);
     if (v === 'one') {
       Object.keys(orders).forEach(function (k) { orders[k] = r.base.bo[k]; });
-      labels = {}; cloud = []; marks = {};
+      labels = {}; cloud = [];
     } else if (v === 'double' || v === 'single') {
       r.cloud.forEach(function (k) { orders[k] = v === 'double' ? 2 : 1; });
       labels = {}; cloud = [];
     } else if (v === 'some') {
       var k0 = r.cloud[0];
-      orders[k0] = 1; delete labels[k0]; delete marks[k0];
+      orders[k0] = 1; delete labels[k0];
       cloud = r.cloud.slice(1);
     }
     if (opts.labels === false) labels = {};
-    if (opts.marks === false) marks = {};
     if (opts.cloud === false) cloud = [];
     return Draw.structure(r.base, {
-      scale: opts.scale || 1, noLP: true, roomy: true, orders: orders, labels: labels, cloud: cloud, marks: marks,
+      scale: opts.scale || 1, noLP: true, orders: orders, labels: labels, cloud: cloud,
       cls: 'hybrid' + (opts.cls ? ' ' + opts.cls : ''),
       title: opts.neutral ? 'Drawing of ' + drawingText(sp, v) : v === 'hybrid' ? describe(sp, r) : 'A drawing of ' + sp.text + ' (' + {
         one: 'one double bond and the rest single', double: 'every bond to ' + sp.center + ' double',
@@ -172,7 +150,7 @@ var Hybrid = (function () {
     var r = compute(sp), scale = opts.scale || 1.25;
     var stack = h('div', { class: 'stack' });
     var layers = r.structures.map(function (s) {
-      var svg = Draw.structure(s, { scale: scale, roomy: true, alignSingles: true, cls: 'layer', title: '' });
+      var svg = Draw.structure(s, { scale: scale, alignSingles: true, cls: 'layer', title: '' });
       svg.setAttribute('aria-hidden', 'true');
       stack.appendChild(svg);
       return svg;
@@ -293,7 +271,8 @@ var Hybrid = (function () {
       msg.textContent = (opts.done && opts.predicted == null ? '' : 'You predicted ' + p + ' pm. ') + 'The real ' + pairName(sp) + ' bonds in ' + sp.text + ' are ' + b.actual +
         ' pm — shorter than a single bond (' + b.single + '), longer than a double bond (' + b.double + '), and ' +
         (k === 2 ? 'BOTH' : 'ALL ' + k) + ' of them are exactly the same length. No single resonance structure has ' +
-        'that; only the hybrid does.';
+        'that; only the hybrid does. (Shorter also means stronger: these bonds are stronger than a single bond and ' +
+        'weaker than a double.)';
       if (opts.onLocked) opts.onLocked(p);
     }
     lock.addEventListener('click', function () {
