@@ -55,11 +55,51 @@ var Draw = (function () {
      bonds are not hidden behind the front ones. */
   var ECLIPSE_OFFSET = 14;
 
-  function label(g, key, r, a, cls) {
+  /* Thumbnails print their labels much larger next to the bonds (.thumb
+     .nm-label in styles.css), so in an eclipsed thumbnail a back label can
+     run into the front label or bond beside it. When it would, it is written
+     out on its other side instead. Widths are rough, on the generous side. */
+  var THUMB_FONT = 28;
+
+  function thumbBox(key, r, a, anchor) {
+    var p = at(r, a), text = GROUPS[key].label, w = 0;
+    for (var i = 0; i < text.length; i++) {
+      var c = text.charAt(i);
+      w += c === 'I' ? 0.32 : /[()]/.test(c) ? 0.38 : /[\u2080-\u2089]/.test(c) ? 0.5 : /[a-z]/.test(c) ? 0.62 : 0.78;
+    }
+    w *= THUMB_FONT;
+    var x0 = anchor === 'start' ? p[0] : anchor === 'end' ? p[0] - w : p[0] - w / 2;
+    return { x0: x0, x1: x0 + w, y0: p[1] - 0.4 * THUMB_FONT, y1: p[1] + 0.4 * THUMB_FONT };
+  }
+
+  function boxesMeet(a, b) { return a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1; }
+
+  function bondCrosses(box, a) {
+    for (var r = 0; r <= FRONT; r += 4) {
+      var p = at(r, a);
+      if (p[0] > box.x0 && p[0] < box.x1 && p[1] > box.y0 && p[1] < box.y1) return true;
+    }
+    return false;
+  }
+
+  function thumbBackAnchor(key, a, front) {
+    var usual = anchorFor(a);
+    var tries = [usual].concat(['start', 'end', 'middle'].filter(function (x) { return x !== usual; }));
+    for (var i = 0; i < tries.length; i++) {
+      var box = thumbBox(key, BACK_LABEL, a, tries[i]);
+      var clear = front.every(function (f) {
+        return !boxesMeet(box, thumbBox(f.g, FRONT_LABEL, f.a, anchorFor(f.a))) && !bondCrosses(box, f.a);
+      });
+      if (clear) return tries[i];
+    }
+    return usual;
+  }
+
+  function label(g, key, r, a, cls, anchor) {
     var p = at(r, a);
     var t = el('text', {
       x: p[0].toFixed(1), y: p[1].toFixed(1),
-      'text-anchor': anchorFor(a), 'dominant-baseline': 'central',
+      'text-anchor': anchor || anchorFor(a), 'dominant-baseline': 'central',
       class: 'nm-label tone-' + groupTone(key) + (cls ? ' ' + cls : '')
     }, g, GROUPS[key].label);
     return t;
@@ -67,7 +107,9 @@ var Draw = (function () {
 
   /* Static Newman projection of `nm` ({front:[{g,a}], back:[{g,a}]}).
      `opts.offset` nudges the back carbon a few degrees so an eclipsed
-     conformation still shows its back bonds, the way textbooks print it. */
+     conformation still shows its back bonds, the way textbooks print it.
+     `opts.thumb` lays the labels out for a thumbnail. Every group is
+     labelled, H included: a bare bond reads as a methyl to a beginner. */
   function newman(nm, opts) {
     opts = opts || {};
     if (opts.flip == null) opts.flip = flip;
@@ -93,9 +135,12 @@ var Draw = (function () {
       el('line', { x1: 0, y1: 0, x2: p[0], y2: p[1], class: 'nm-bond-front' }, front);
     });
     var labels = el('g', null, s);
-    function shown(q) { return !(opts.hideH && q.g === 'H'); }
-    nm.back.filter(shown).forEach(function (q) { label(labels, q.g, BACK_LABEL, q.a + off, 'nm-back-label'); });
-    nm.front.filter(shown).forEach(function (q) { label(labels, q.g, FRONT_LABEL, q.a + turn); });
+    var frontAt = nm.front.map(function (q) { return { g: q.g, a: q.a + turn }; });
+    nm.back.forEach(function (q) {
+      var a = q.a + off;
+      label(labels, q.g, BACK_LABEL, a, 'nm-back-label', opts.thumb ? thumbBackAnchor(q.g, a, frontAt) : null);
+    });
+    frontAt.forEach(function (q) { label(labels, q.g, FRONT_LABEL, q.a); });
   }
 
   var POS = { 0: 'top', 60: 'upper right', 120: 'lower right', 180: 'bottom',

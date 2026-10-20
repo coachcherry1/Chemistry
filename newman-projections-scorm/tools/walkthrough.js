@@ -153,7 +153,26 @@ const fakeLMS = () => {
     expect(/Correct/.test(fb), molId + ': correct build not accepted: ' + fb);
   }
 
+  /* Every thumbnail under the graph names all six groups, H included (a
+     bare bond reads as a methyl), and no two of its labels overlap. */
+  async function thumbLabels() {
+    const bad = await page.evaluate(() => [...document.querySelectorAll('svg.thumb')].map((t, i) => {
+      const r = [...t.querySelectorAll('.nm-label')].map((n) => {
+        const b = n.getBoundingClientRect(), pad = b.height * 0.25;   /* the box includes line spacing */
+        return { t: n.textContent, x0: b.left, x1: b.right, y0: b.top + pad, y1: b.bottom - pad };
+      });
+      if (r.length !== 6) return (i * 60) + '°: ' + r.length + ' labels';
+      for (let a = 0; a < 6; a++) for (let b = a + 1; b < 6; b++) {
+        const p = r[a], q = r[b];
+        if (p.x0 < q.x1 && q.x0 < p.x1 && p.y0 < q.y1 && q.y0 < p.y1) return (i * 60) + '°: ' + p.t + ' overlaps ' + q.t;
+      }
+      return null;
+    }).filter(Boolean));
+    expect(!bad.length, 'thumbnails on ' + (await stepId()) + ': ' + bad.join('; '));
+  }
+
   async function sketch() {
+    await thumbLabels();
     await page.focus('.g-handle[data-handle="0"]');
     for (let i = 0; i < 6; i++) await page.keyboard.press('ArrowUp');
     await page.click('button:has-text("Lock in my prediction")');
@@ -168,6 +187,7 @@ const fakeLMS = () => {
   }
 
   async function label(wrongFirst) {
+    await thumbLabels();
     const plan = await page.evaluate(() => {
       const s = App.STEPS.filter((x) => x.kind === 'label')
         .find((x) => document.getElementById('stepTitle').textContent === x.title);

@@ -59,6 +59,10 @@ from the eye, instead of up. It is only a view (a projection turned as a whole i
 projection), so builds are checked the same way either way up. The choice is remembered for the rest
 of the activity, and the 3D "down the bond" view, quiz figures and graph thumbnails follow it.
 
+Every Newman projection labels all six groups, H included, down to the small ones under the graphs.
+A bare bond with no label reads as a methyl to a beginner. In the small eclipsed drawings a back
+label that would run into the front label beside it is written on its other side.
+
 After one miss a tip appears; after two, a "Show me in 3D" button opens the drawing as a 3D model
 they can turn to the view from the eye. Turning the whole projection by 120° is accepted, because it is
 the same picture with your head tilted.
@@ -269,7 +273,9 @@ node tools/answer-key.js > ANSWER_KEY.md
 against a fake LMS (wrong builds, wrong answers, a reload halfway) and checks the score, status
 and interaction records that arrive. It then starts a second attempt and checks that it begins clean
 while the gradebook keeps the best score. Before any of that it checks that a first-release save, or a
-save the browser kept from another copy, is ignored and the student starts at step 1.
+save the browser kept from another copy, is ignored and the student starts at step 1. On every sketch and
+label step it checks that each small Newman projection under the graph shows six labels and that
+none of them overlap.
 
 To shorten the activity, lower `draw` in `src/js/quiz.js` or remove steps from `STEPS` in
 `src/js/app.js`, then bump `SCHEMA`.

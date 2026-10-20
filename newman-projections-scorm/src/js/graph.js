@@ -156,7 +156,7 @@ var EnergyGraph = (function () {
     var b = this.box, size = Math.min(THUMB, (b.x1 - b.x0) / 6 - 6);
     for (var a = 0; a <= 360; a += 60) {
       var nm = GEOM.newmanAt(this.mol, a % 360);
-      var inner = Draw.newman(nm, { offset: a % 120 === 0 ? 20 : 0, cls: 'thumb', bare: true, hideH: true });
+      var inner = Draw.newman(nm, { offset: a % 120 === 0 ? 20 : 0, cls: 'thumb', bare: true, thumb: true });
       inner.setAttribute('x', (this.X(a) - size / 2).toFixed(1));
       inner.setAttribute('y', (b.y1 + 50).toFixed(1));
       inner.setAttribute('width', size);

@@ -347,7 +347,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .g-handle-dot { fill: var(--sketch); stroke: var(--panel); stroke-width: 2.5; }
 .g-handle:hover .g-handle-dot, .g-handle:focus-visible .g-handle-dot { stroke: var(--ink); stroke-width: 2.5; }
 .thumb { overflow: visible; }
-.thumb .nm-label { font-size: 28px; }
+.thumb .nm-label { font-size: 28px; }   /* THUMB_FONT in draw.js must match */
 .thumb .nm-bond-front { stroke-width: 5; }
 .thumb .nm-bond-back { stroke-width: 8; }
 .thumb .nm-circle { stroke-width: 4; }
