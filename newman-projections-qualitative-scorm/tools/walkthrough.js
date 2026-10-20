@@ -7,7 +7,9 @@
  * It answers some checkpoint questions wrongly on purpose, makes one wrong
  * build, one wrong label and one wrong lock-in, reloads the page halfway to
  * check that progress resumes, and finally checks what reached the "LMS":
- * the score, the completion status and the interaction records.
+ * the score, the completion status and the interaction records. Before all
+ * that it checks that a save from the first release, or one the browser kept
+ * from another copy of the package, is ignored and the student starts fresh.
  */
 const path = require('path');
 const fs = require('fs');
@@ -25,6 +27,11 @@ const SHOTS = process.env.SHOTS;
 const WRONG = new Set(['a-front', 'qb-steric', 'qc-bond', 'd-B']);
 
 const fakeLMS = () => {
+  /* What the LMS should hold for the next load is staged in 'lms-next': writing
+     'lms' directly is undone by the page being unloaded, whose finish() saves
+     its own copy on the way out. */
+  const staged = sessionStorage.getItem('lms-next');
+  if (staged != null) { sessionStorage.setItem('lms', staged); sessionStorage.removeItem('lms-next'); }
   const data = JSON.parse(sessionStorage.getItem('lms') || '{}');
   const save = () => sessionStorage.setItem('lms', JSON.stringify(data));
   window.API = {
@@ -71,6 +78,38 @@ const fakeLMS = () => {
   async function setRange(sel, v) {
     await page.$eval(sel, (el, val) => { el.value = val; el.dispatchEvent(new Event('input')); }, v);
   }
+  const saved = () => page.evaluate(() => JSON.parse(JSON.parse(sessionStorage.getItem('lms'))['cmi.suspend_data']));
+
+  /* ---- fresh start: a first-release save in the LMS, then a current save the
+     browser kept from another copy of the package; neither may be resumed */
+  async function startsFresh(lmsVersion, browserVersion, what) {
+    await page.evaluate((a) => {
+      const draws = {};
+      Object.keys(QUIZZES).forEach((k) => { draws[k] = QUIZZES[k].pool.slice(0, QUIZZES[k].draw).map((q) => q.id); });
+      const ans = {};
+      ans[draws[Object.keys(draws)[0]][0]] = 0;
+      const old = (v) => JSON.stringify({ v: v, seed: 1, step: 12, max: 14, draws: draws, ans: ans, pick: {}, sk: {},
+                                          pr: {}, done: { 'build-ethane': 1 }, fin: 0, flip: 1, best: 61, att: 1 });
+      const lms = { 'cmi.core.score.raw': '61', 'cmi.core.lesson_status': 'incomplete' };
+      if (a.lms) lms['cmi.suspend_data'] = old(a.lms);
+      sessionStorage.setItem('lms-next', JSON.stringify(lms));
+      localStorage.clear();
+      if (a.browser) localStorage.setItem(a.key, old(a.browser));
+    }, { lms: lmsVersion, browser: browserVersion, key: STORE });
+    await page.reload();
+    await page.click('.screen .primary');
+    expect((await stepId()) === 'meet', what + ' was resumed at ' + (await stepId()));
+    const clean = await saved();
+    expect(clean.v === (await page.evaluate(() => App.SCHEMA)), what + ': save not rewritten with the current schema');
+    expect(Object.keys(clean.ans).length === 0 && Object.keys(clean.done).length === 0, what + ': old answers carried over');
+    expect(clean.best === 0 && clean.att === 1 && clean.max === 0 && clean.flip === 0, what + ': old score or progress carried over');
+  }
+  const schema = await page.evaluate(() => App.SCHEMA);
+  await startsFresh(2, 0, 'a first-release save in the LMS');
+  await startsFresh(0, schema, 'a save left in the browser by another copy');
+  console.log('Fresh start: a first-release LMS save and a leftover browser save are both ignored');
+  await page.evaluate(() => { sessionStorage.setItem('lms-next', '{}'); localStorage.clear(); });
+  await page.reload();
 
   await page.click('.screen .primary');
 
@@ -244,10 +283,7 @@ const fakeLMS = () => {
   /* ---- what reached the LMS */
   const lms = await page.evaluate(() => JSON.parse(sessionStorage.getItem('lms')));
   const graded = await page.evaluate(() => App.GRADED);
-  const wrongDrawn = await page.evaluate((w) => {
-    const st = JSON.parse(localStorage.getItem(w.store));
-    return Object.keys(st.ans).filter((k) => w.list.includes(k)).length;
-  }, { list: [...WRONG], store: STORE });
+  const wrongDrawn = Object.keys((await saved()).ans).filter((k) => WRONG.has(k)).length;
   const expected = Math.round(100 * (graded - wrongDrawn) / graded);
   expect(lms['cmi.core.lesson_status'] === 'completed', 'status is ' + lms['cmi.core.lesson_status']);
   expect(+lms['cmi.core.score.raw'] === expected, 'score.raw ' + lms['cmi.core.score.raw'] + ', expected ' + expected);
@@ -259,7 +295,7 @@ const fakeLMS = () => {
   /* ---- a second attempt: everything cleared, best score kept */
   await page.click('button:has-text("Start a new attempt")');
   await page.click('button:has-text("Yes, start again")');
-  const fresh = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)), STORE);
+  const fresh = await saved();
   expect(fresh.att === 2, 'attempt counter is ' + fresh.att);
   expect(Object.keys(fresh.ans).length === 0, 'old answers survived the new attempt');
   expect(Object.keys(fresh.done).length === 0, 'old builds/steps survived the new attempt');

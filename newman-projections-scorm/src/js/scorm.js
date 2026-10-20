@@ -10,7 +10,10 @@
  * id, the letter chosen, right or wrong), for LMS reports that show them.
  *
  * If no LMS API is found the wrapper switches to a local no-op mode so the
- * activity still runs when index.html is opened straight from disk.
+ * activity still runs when index.html is opened straight from disk. Only then
+ * is progress kept in localStorage. Inside the LMS, cmi.suspend_data is the
+ * only save, so a newly posted copy of the package always starts fresh
+ * instead of picking up another copy's progress from the browser.
  */
 
 var SCORM = (function () {
@@ -77,26 +80,23 @@ var SCORM = (function () {
     var json;
     try { json = JSON.stringify(obj); } catch (e) { return false; }
     if (json.length > 4000) return false;
-    try { localStorage.setItem(STORE, json); } catch (e) { /* private mode */ }
-    if (!connected) return false;
+    if (!connected) {
+      try { localStorage.setItem(STORE, json); } catch (e) { /* private mode */ }
+      return false;
+    }
     var ok = set('cmi.suspend_data', json);
     commit();
     return ok;
   }
 
   function loadState() {
-    var json = get('cmi.suspend_data');
-    if (!json) {
+    var json;
+    if (connected) json = get('cmi.suspend_data');
+    else {
       try { json = localStorage.getItem(STORE) || ''; } catch (e) { json = ''; }
     }
     if (!json) return null;
     try { return JSON.parse(json); } catch (e) { return null; }
-  }
-
-  /* The score the LMS already holds for this learner, 0 if none. */
-  function priorScore() {
-    var v = parseFloat(get('cmi.core.score.raw'));
-    return isNaN(v) ? 0 : v;
   }
 
   /* raw is 0–100. */
@@ -148,7 +148,6 @@ var SCORM = (function () {
     saveState: saveState,
     loadState: loadState,
     setScore: setScore,
-    priorScore: priorScore,
     recordAnswer: recordAnswer,
     markComplete: markComplete,
     finish: finish,

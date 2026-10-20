@@ -18,8 +18,8 @@ var App = (function () {
   'use strict';
 
   /* Bump whenever the step list, the quiz draw or a molecule changes: a save
-     from an older build is then discarded rather than resumed. */
-  var SCHEMA = 2;
+     from an older build is then discarded and the student starts fresh. */
+  var SCHEMA = 3;
 
   var PARTS = [
     { n: 1, name: 'Ethane' },
@@ -141,12 +141,6 @@ var App = (function () {
       text: '' }
   ];
 
-  /* The step order saved by the first release (schema 1), so a save from it
-     can be carried over to this one instead of thrown away. */
-  var V1_STEPS = ['meet', 'build-ethane', 'sketch-ethane', 'trace-ethane', 'label-ethane', 'quiz-A',
-    'build-butane', 'sketch-butane', 'trace-butane', 'label-butane', 'quiz-B', 'build-bromo', 'find-bromo',
-    'swap', 'quiz-C', 'build-dmb', 'find-dmb', 'build-A', 'build-B', 'pair', 'quiz-D', 'results'];
-
   var QZ = QUIZZES;
 
   var GRADED = Object.keys(QZ).reduce(function (s, k) { return s + QZ[k].draw; }, 0);
@@ -238,15 +232,8 @@ var App = (function () {
   }
 
   function restore(saved) {
-    if (!saved || !saved.draws) return null;
-    /* schema 1 saved step positions in the old step list: map them by id */
-    if (saved.v === 1) {
-      var move = function (n) { var i = stepIndex(V1_STEPS[n]); return i < 0 ? 0 : i; };
-      saved.step = move(saved.step);
-      saved.max = move(saved.max);
-      saved.v = 2;
-    }
-    if (saved.v !== SCHEMA) return null;
+    /* a save from any earlier release is ignored: the student starts fresh */
+    if (!saved || !saved.draws || saved.v !== SCHEMA) return null;
     /* every drawn question must exist in this package's set */
     var ok = Object.keys(QZ).every(function (k) {
       return (saved.draws[k] || []).length === QZ[k].draw && saved.draws[k].every(function (id) {
@@ -1842,9 +1829,6 @@ var App = (function () {
       state.step = Math.max(0, Math.min(STEPS.length - 1, idx < 0 ? 0 : idx));
     } else {
       state = restore(SCORM.loadState()) || newState();
-      /* whatever the gradebook already holds is a floor: a re-launch, a lost
-         save or a new release never reports a lower score */
-      state.best = Math.max(state.best || 0, SCORM.priorScore());
       persist();
     }
 
@@ -1857,8 +1841,8 @@ var App = (function () {
     showIntro();
   }
 
-  return { start: start, STEPS: STEPS, judgeBuild: judgeBuild, targetSlots: targetSlots, GRADED: GRADED, QZ: QZ,
-           nmFor: nmFor, crowding: crowding };
+  return { start: start, SCHEMA: SCHEMA, STEPS: STEPS, judgeBuild: judgeBuild, targetSlots: targetSlots,
+           GRADED: GRADED, QZ: QZ, nmFor: nmFor, crowding: crowding };
 })();
 
 document.addEventListener('DOMContentLoaded', App.start);

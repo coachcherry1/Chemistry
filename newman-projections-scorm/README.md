@@ -94,10 +94,14 @@ open, so a student can jump straight to the one they want to redo. The gradebook
 **best** score: during and after a retake the SCO reports the better of the best finished attempt
 and the current one, so retaking can never lower a grade, and the status stays `completed`.
 
-Progress is saved to `cmi.suspend_data` (about 1.3 KB of the 4 KB allowed) and mirrored to
-`localStorage`. The save carries a schema version (`SCHEMA` in `src/js/app.js`): **bump it whenever
-you change the step list, a quiz pool or a molecule**, or a student resuming an old save will carry a
-stale set of questions.
+Progress is saved to `cmi.suspend_data` (about 1.3 KB of the 4 KB allowed). `localStorage` is used
+only when the page runs outside an LMS, so a newly posted copy in Schoology always starts fresh rather
+than picking up progress the browser kept from another copy.
+
+The save carries a schema version (`SCHEMA` in `src/js/app.js`). A save from any other version is
+ignored and the student starts from step 1 with no answers and no score carried over. **Bump it
+whenever you change the step list, a quiz pool or a molecule.** Version 2 of the zips uses schema 3,
+so nothing saved by a v1 zip is resumed.
 
 ---
 
@@ -183,7 +187,7 @@ and every dash on the right; `tools/validate.js` checks this.
 ## Building and uploading
 
 ```bash
-./build.sh                       # → dist/newman-projections-v1.zip
+./build.sh                       # → dist/newman-projections-v2.zip
 ./build.sh newman-unit4-practice # → dist/newman-unit4-practice.zip
 ```
 
@@ -193,17 +197,22 @@ Zipping the `src` folder itself produces a package Schoology rejects.
 To upload:
 
 1. In your Schoology course, **Add Materials → Add File/Link/External Tool → Add File** and upload
-   `dist/newman-projections-v1.zip`, or use **Add Materials → Package** if your install shows it.
+   `dist/newman-projections-v2.zip`, or use **Add Materials → Package** if your install shows it.
 2. Schoology detects the SCORM manifest and creates a SCORM item.
 3. Open the item's settings and enable the gradebook column. It receives the 0–100 score.
 4. Open it once as a student (Preview as Student) and check that the badge in the top right reads
    **Connected to the LMS**.
 
+**Replacing an earlier version.** Post the new zip as a new item and delete or unpublish the old
+one. Every student starts the new item from step 1, with no answers and an empty gradebook column.
+Even if a package is swapped inside an existing item, nobody resumes: saves from the v1 zips
+are ignored. The old item's gradebook column keeps its scores until you remove it.
+
 If that badge reads **Standalone: no LMS detected** inside Schoology, the SCO could not find the
 SCORM API. That is almost always because Schoology served the zip as a plain file rather than launching it
 as SCORM.
 
-A built `dist/newman-projections-v1.zip` is committed, so you can upload it without running anything.
+A built `dist/newman-projections-v2.zip` is committed, so you can upload it without running anything.
 
 ### Testing without an LMS
 
@@ -259,7 +268,8 @@ node tools/answer-key.js > ANSWER_KEY.md
 `tools/walkthrough.js` (optional, needs Playwright) plays the whole activity in a headless browser
 against a fake LMS (wrong builds, wrong answers, a reload halfway) and checks the score, status
 and interaction records that arrive. It then starts a second attempt and checks that it begins clean
-while the gradebook keeps the best score.
+while the gradebook keeps the best score. Before any of that it checks that a first-release save, or a
+save the browser kept from another copy, is ignored and the student starts at step 1.
 
 To shorten the activity, lower `draw` in `src/js/quiz.js` or remove steps from `STEPS` in
 `src/js/app.js`, then bump `SCHEMA`.
