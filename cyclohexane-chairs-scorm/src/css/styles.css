@@ -32,6 +32,7 @@
   --topf:    #2f62cc;
   --botf:    #a5367a;
   --crowd:   #d1382f;
+  --kbox:    #cfe8b4;
   --radius:  8px;
 }
 
@@ -66,6 +67,7 @@
     --topf:    #79a3f2;
     --botf:    #e58cc4;
     --crowd:   #f2766f;
+    --kbox:    #2c4a22;
   }
 }
 
@@ -99,6 +101,7 @@
   --topf:    #79a3f2;
   --botf:    #e58cc4;
   --crowd:   #f2766f;
+  --kbox:    #2c4a22;
 }
 
 * { box-sizing: border-box; }
@@ -750,3 +753,33 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .q-choices.figs .newman { max-width: 190px; }
 .chair-pair .newman { max-width: 220px; }
 .p3d .c3d-wrap { background: transparent; }
+
+/* the chair as two Newman projections (Klein's drawing) */
+.klein { display: block; width: 100%; height: auto; max-width: 420px; margin: 0 auto; overflow: visible; }
+.klein.small { max-width: 320px; }
+.klein.fig { max-width: 360px; }
+.q-choices.figs .klein { max-width: 300px; }
+.kn-ring { stroke: var(--ink); }
+.nm-bond-back.kn-ring { stroke: var(--back); stroke-width: 6; }
+.nm-bond-front.kn-ring { stroke: var(--ink); stroke-width: 3.2; }
+.kn-bond-v { stroke: var(--back); stroke-width: 3; stroke-linecap: round; }
+.kn-front .kn-bond-v { stroke: var(--ink); stroke-width: 3; }
+.nm-bond-back.red, .nm-bond-front.red, .kn-bond-v.red { stroke: var(--crowd); }
+.nm-label.red { fill: var(--crowd); }
+.kn-box { fill: var(--kbox); stroke: none; }
+.klein .t-red { stroke: var(--t-red); }
+.klein .t-blue { stroke: var(--t-blue); }
+.kn-num { font: 700 12px system-ui, sans-serif; fill: var(--t-blue); }
+.kn-ghost { stroke: var(--muted); stroke-width: 2.4; stroke-dasharray: 4 4; opacity: 0.7; stroke-linecap: round; }
+.kn-move { fill: none; stroke: var(--accent); stroke-width: 2.4; }
+.kn-move-head { fill: var(--accent); }
+.klein-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.klein-pair figure { margin: 0; text-align: center; padding: 6px; border-radius: var(--radius); border: 2px solid transparent; }
+.klein-pair figure.current { border-color: var(--accent); background: var(--note-bg); }
+.klein-pair figcaption { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+.klein-pair figure.current figcaption { color: var(--ink); font-weight: 600; }
+@media (max-width: 620px) { .klein-pair { grid-template-columns: minmax(0, 1fr); } }
+.compare-pair { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr); gap: 10px; align-items: end; }
+.compare-pair figure { margin: 0; text-align: center; }
+.compare-pair figcaption { font-size: 0.82rem; font-weight: 700; color: var(--ink); margin-top: 4px; }
+@media (max-width: 620px) { .compare-pair { grid-template-columns: minmax(0, 1fr); } }

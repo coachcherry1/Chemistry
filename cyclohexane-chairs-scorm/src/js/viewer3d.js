@@ -132,6 +132,8 @@ var Viewer3D = (function () {
      picture does not breathe; a new molecule may rescale. */
   Viewer.prototype.setModel = function (m, rescale) {
     this.model = m;
+    /* a view down a bond follows the bond as the ring flips */
+    if (this.view === 'newman' && !this.anim) this.R = this.cameraFor('newman');
     if (rescale) this.radius = Math.max(this.radius, this.measure(m));
     this.draw();
   };
@@ -236,6 +238,9 @@ var Viewer3D = (function () {
     var R = this.R;
     var scale = Math.min(W, H) / (1.8 * this.radius);
     var D = this.radius * 2.8;      /* camera distance: enough perspective that front atoms read as nearer */
+    /* looking down two bonds at once, front and back atoms must line up as
+       they do in the drawing, so that view has no perspective */
+    var ortho = this.view === 'newman';
     var cx = W / 2, cy = H / 2;
     var space = this.style === 'space';
     var tint = this.tint, glow = this.glow, hot = this.hot;
@@ -252,7 +257,7 @@ var Viewer3D = (function () {
     var pts = this.model.atoms.map(function (a) {
       var p = V.sub(a.p, f);
       var x = V.dot(R[0], p), y = V.dot(R[1], p), z = V.dot(R[2], p);
-      var k = D / (D - z);
+      var k = ortho ? 1 : D / (D - z);
       return { x: cx + x * scale * k, y: cy - y * scale * k, z: z, k: k, a: a };
     });
 

@@ -112,6 +112,37 @@ for (let i = 0; i <= 40; i++) {
   }
 }
 
+/* ---------------------------------------------------- the chair as Newman projections */
+
+/* Klein's drawing looks down C1–C2 and C5–C4 at once. In both chairs C2 must
+   sit exactly behind C1 and C4 behind C5, side by side; C3 joins the back
+   carbons and C6 the front ones, swapping top and bottom in a flip. A flip
+   must turn every bond on a front carbon 60° one way and every bond on its
+   back carbon 60° the other way, with axial bonds straight up or down. */
+{
+  const near2 = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]) < 1e-6;
+  const L = [0, 1].map((k) => Draw.kleinLayout(molecule('methyl'), k));
+  for (const k of [0, 1]) {
+    const pt = L[k].pt;
+    if (!near2(pt.C1, pt.C2) || !near2(pt.C5, pt.C4)) fail(`Newman view, chair ${k + 1}: a back carbon is not hidden behind its front carbon`);
+    if (Math.abs(pt.C1[1] - pt.C5[1]) > 1e-6 || !(pt.C1[0] > pt.C5[0])) fail(`Newman view, chair ${k + 1}: the projections are not side by side, C1 on the right`);
+    const c3up = pt.C3[1] < pt.C1[1], c6up = pt.C6[1] < pt.C1[1];
+    if (c3up !== (k === 0) || c6up !== (k === 1)) fail(`Newman view, chair ${k + 1}: C3 and C6 are not where Klein draws them`);
+    for (const p of CHAIR.POSITIONS) {
+      const q = L[k].pos[p];
+      if (q.bridge || !CHAIR.isAxial(p, k)) continue;
+      if (!(Math.abs(q.a) < 0.5 || Math.abs(q.a - 180) < 0.5 || Math.abs(q.a - 360) < 0.5)) fail(`Newman view, chair ${k + 1}: axial ${p} is not vertical`);
+    }
+  }
+  const turn = { 1: 60, 2: -60, 4: 60, 5: -60 };
+  for (const p of CHAIR.POSITIONS) {
+    const c = CHAIR.carbonOf(p);
+    if (!turn[c]) continue;
+    const d = ((L[1].pos[p].a - L[0].pos[p].a) % 360 + 540) % 360 - 180;
+    if (Math.abs(d - turn[c]) > 0.5) fail(`Newman view: ${p} turns ${d.toFixed(1)}° in a flip, expected ${turn[c]}°`);
+  }
+}
+
 /* ---------------------------------------------------- 1,3-diaxial crowding */
 
 /* An axial group crowds exactly the two axial H atoms on its face, two
@@ -241,7 +272,13 @@ if (AVAL.better(molecule('methyl')) !== 1 || !/equatorial/.test(key(P.lower))) f
 if (Object.keys(CHAIR.crowdedBy(CHAIR.model(molecule('methyl'), 1), '1t', true)).length !== 0 || key(P.count) !== 'None') {
   fail('compare: an equatorial CH₃ should crowd no H atoms');
 }
-if (!/^Gauche/.test(key(P.gauche)) || key(P.c1c6) !== 'C5') fail('newman: a prediction key is wrong');
+{
+  const gapTo3 = (k) => { const L = Draw.kleinLayout(molecule('methyl'), k);
+    const a3 = Math.atan2(L.p3[0] - L.cR[0], -(L.p3[1] - L.cR[1])) * 180 / Math.PI;
+    return CHAIR.gap(L.pos['1t'].a, a3); };
+  if (!/^Gauche/.test(key(P.gauche)) || Math.round(gapTo3(0)) !== 60) fail('newman: the key for the axial CH₃ and C3 is wrong');
+  if (!/^Anti/.test(key(P.anti)) || Math.round(gapTo3(1)) !== 180) fail('newman: the key for the equatorial CH₃ and C3 is wrong');
+}
 for (const x of MOLECULES.SWAP_ORDER) {
   const want = A(x) < A('CH3') ? 0 : A(x) - A('CH3') < 5 ? 1 : 2;
   if (App.swapAnswer(x) !== want) fail(`swap: the key for ${x} is wrong`);
@@ -278,7 +315,7 @@ for (const k of Object.keys(QUIZZES)) {
     if (/\d\s*kJ/.test(q.q)) fail(`${q.id}: the question quotes an energy, so reword it to compare instead`);
     const figs = [q.fig].concat(q.choices.filter((c) => typeof c !== 'string')).filter(Boolean);
     for (const f of figs) {
-      const id = f.chair || f.flat || f.newman;
+      const id = f.chair || f.flat || f.newman || f.klein;
       if (!f.boat && !MOLECULES[id]) fail(`${q.id}: figure uses unknown molecule ${id}`);
       for (const p of Object.keys(f.letters || {}).concat(Object.keys(f.mark || {}))) {
         if (!CHAIR.POSITIONS.includes(p)) fail(`${q.id}: figure marks unknown position ${p}`);
@@ -328,6 +365,10 @@ const checks = {
   'b-ax-to-eq': () => CHAIR.POSITIONS.every((p) => ax(p, 0) !== ax(p, 1)),
   'b-up-stays': () => true, /* checked above: no position changes face */
   'b-methyl-after': () => ax('1t', 0) && !ax('1t', 1),
+  'b-newman-flip': () => { const K = [0, 1].map((k) => Draw.kleinLayout(molecule('methyl'), k).pos['1t'].a);
+                           return Draw.clock(K[0]) === '12 o’clock' && Qn('b-newman-flip').choices[0].startsWith('To ' + Draw.clock(K[1])) &&
+                             !ax('1t', 1); },
+  'b-newman-turn': () => true,   /* checked above: every bond on C1 turns 60° */
   'b-letter': () => { const p = at('b-letter', 'A');
                       return Qn('b-letter').choices[0] === (ax(p, 1) ? 'Axial' : 'Equatorial') + ', pointing ' +
                         (ax(p, 1) ? '' : 'slightly ') + (up(p) ? 'up' : 'down') && ax(p, 0) !== ax(p, 1); },
@@ -342,6 +383,10 @@ const checks = {
   'c-tbu': () => share('tertbutyl') > 0.999,
   'c-br': () => A('Br') < A('CH3') && GROUPS.Br.bond > GROUPS.CH3.bond,
   'c-newman': () => true,   /* checked above: axial CH₃ gauche to C3 */
+  'c-newman-h': () => { const L = Qn('c-newman-h').fig.letters;
+                        const hit = Object.keys(L).filter((p) => CHAIR.synAxial('1t').includes(p)).map((p) => L[p]);
+                        return hit.join() === Qn('c-newman-h').choices[0]; },
+  'c-newman-eq': () => !ax('1t', 1),   /* anti: checked with the step keys above */
   'c-same': () => near(A('CH3') / 2, 3.8),
   'c-eq-none': () => !Object.keys(CHAIR.crowdedBy(CHAIR.model(molecule('methyl'), 1), '1t', true)).length,
   'c-mostly': () => share('methyl') > 0.9,

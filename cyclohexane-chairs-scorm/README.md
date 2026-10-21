@@ -1,8 +1,9 @@
 # Cyclohexane Chairs: Ring Flips and Axial Crowding
 
 A SCORM 1.2 activity for Schoology. Students turn cyclohexane rings in 3D, label axial and equatorial
-positions, flip rings from one chair to the other, find the H atoms an axial group crowds, and use
-A-values to pick the more stable chair of rings carrying one or two groups. **Every checkpoint question is
+positions, flip rings from one chair to the other (in chair drawings and in Klein-style Newman
+projections of the chair), find the H atoms an axial group crowds, and use A-values to pick the more
+stable chair of rings carrying one or two groups. **Every checkpoint question is
 qualitative** (compare, rank, identify, explain). The A-value table sits open beside the questions in
 checkpoints 3 and 4, and nothing has to be calculated.
 
@@ -21,9 +22,9 @@ equatorial wins, and the bigger the group, the stronger the preference.
 
 | Part | Steps | What happens |
 | --- | --- | --- |
-| 1 The chair | 5 | **Predict** what strain a flat ring would have, then turn a 3D cyclohexane and look from the side, from the top and down the C1–C2 bond (a staggered Newman projection). **Chair or boat?** Predict, then compare: the boat's flagpole H atoms glow red and its C2–C3 bond is eclipsed. Label all twelve H atoms **axial or equatorial** on a chair drawing (the 3D model lights up each one). Predict the **up/down** pattern, then click every H that points up. **Checkpoint 1** (4 questions). |
-| 2 The ring flip | 3 | **Predict** where a red axial-up H goes, then drag the flip slider: the 3D model, the chair drawing and an energy hump move together. Every axial H becomes equatorial and **up stays up**; a button colours all six axial H atoms so students watch them change at once. **Draw the other chair**: put the CH₃ and H of methylcyclohexane in their places on chair 2. **Checkpoint 2** (4). |
-| 3 Axial crowding | 5 | **Who does the axial CH₃ bump into?** Click the two H atoms it crowds (the axial H atoms on C3 and C5, which glow red in 3D); every wrong click explains itself. **Flip it equatorial**: predict, flip, count what the equatorial CH₃ crowds (nothing), and see the energy gap (the A-value) and a bar showing about 19 in 20 molecules equatorial. **Down the C1–C2 bond**: Newman projections show the axial CH₃ gauche to C3 and C5, the gauche-butane interactions from the Newman unit. **Bigger groups push harder**: Cl, Br, CH(CH₃)₂ and C(CH₃)₃, predicting each against CH₃. **Checkpoint 3** (5). |
+| 1 The chair | 5 | **Predict** what strain a flat ring would have, then turn a 3D cyclohexane and look from the side, from the top and down two ring bonds at once (the chair as two staggered Newman projections, drawn as in Klein). **Chair or boat?** Predict, then compare: the boat's flagpole H atoms glow red and its C2–C3 bond is eclipsed. Label all twelve H atoms **axial or equatorial** on a chair drawing (the 3D model lights up each one). Predict the **up/down** pattern, then click every H that points up. **Checkpoint 1** (4 questions). |
+| 2 The ring flip | 4 | **Predict** where a red axial-up H goes, then drag the flip slider: the 3D model, the chair drawing and an energy hump move together. Every axial H becomes equatorial and **up stays up**; a button colours all six axial H atoms so students watch them change at once. Below, the same flip in **Newman projections of the chair**: chair 1 and chair 2 side by side, with arrows showing the red H turn from 12 o'clock to 2 o'clock and the blue H from 4 to 6. **Draw the other chair**: put the CH₃ and H of methylcyclohexane in their places on chair 2. **The flip in Newman projections**: the same build on chair 2 drawn as Newman projections. **Checkpoint 2** (4). |
+| 3 Axial crowding | 5 | **Who does the axial CH₃ bump into?** Click the two H atoms it crowds (the axial H atoms on C3 and C5, which glow red in 3D); every wrong click explains itself. **Flip it equatorial**: predict, flip, count what the equatorial CH₃ crowds (nothing), and see the energy gap (the A-value) and a bar showing about 19 in 20 molecules equatorial. **Axial crowding in Newman projections**: gauche butane beside axial methylcyclohexane drawn as Newman projections, highlighted as in Klein's Figure 4.28 (the CH₃ gauche to C3, the axial H on C3 boxed); then the equatorial chair, with an arrow showing the CH₃ turning to anti. **Bigger groups push harder**: Cl, Br, CH(CH₃)₂ and C(CH₃)₃, predicting each against CH₃. **Checkpoint 3** (5). |
 | 4 Two groups | 4 | **From flat ring to chair**: trans-1,4-dimethylcyclohexane drawn flat with a wedge and a dash; place both CH₃ groups on the chair. **Which chair wins?** Predict and flip trans- and cis-1,4-dimethylcyclohexane: trans goes diaxial to diequatorial, cis has one axial group either way; can a flip turn cis into trans? **Lock in the better chair**: cis-1-tert-butyl-4-methyl (the bigger group takes equatorial) and cis-1,3-dimethyl (two axial CH₃ groups on one face collide). **Checkpoint 4** (5). |
 
 Every build, label, flip and prediction has to be finished to move on, but none of them is graded. A wrong
@@ -38,6 +39,30 @@ up the axial crowding in Part 3. The twist-boat is named once, in that step's ex
 again. The ring-flip animation passes through a boat, and the top of the energy hump is labelled only "in-between
 shapes: all less stable". No graded question asks about the twist-boat or the half-chair; one question in
 the checkpoint 1 pool asks why the boat is less stable than the chair.
+
+### The chair as Newman projections (Klein's drawing)
+
+The C1–C2 and C5–C4 bonds of a chair are parallel, so looking down both at once turns the chair into two
+Newman projections side by side: C1 in front of C2 on the right, C5 in front of C4 on the left, joined
+through C3 and C6. This is how Klein draws the 1,3-diaxial interaction (Figures 4.28 and 4.29), and the
+activity uses it in the first step, the ring-flip step, a build in Part 2, the Part 3 comparison with
+gauche butane, the teacher's explore mode, and five checkpoint questions (a sixth asks what a flip does
+in this view).
+
+The drawing is an exact projection of the 3D model, and the 3D model has a matching "Newman view" (no
+perspective, so front and back atoms line up as in the drawing). Seen this way, a ring flip is a turn
+about C–C bonds, like the rotations in the Newman activity: every bond on C1 turns 60° one way and every
+bond on C2 turns 60° the other way. The activity describes the turns with a clock face (the axial CH₃ at
+12 o'clock ends at 2 o'clock) and draws arrows from where each group was.
+
+**One difference from the textbook.** Klein's Figure 4.29 draws the equatorial chair turned over, so its
+CH₃ points down and to the right. Here chair 2 is drawn from the same direction as chair 1, so the CH₃
+stays on the top side (2 o'clock) and C3 moves from the top of the drawing to the bottom. It is the same
+molecule, but drawn this way the flip never appears to move a group to the other face. Students who
+compare with the book may need to hear that Klein's picture is the same chair turned upside down.
+
+As in Klein, the equatorial H on C3 (and on C6) points straight along the line of sight, so it is drawn
+as the second arm of a V.
 
 ### Chair 1 and chair 2
 
@@ -62,7 +87,7 @@ Any question that names a disubstituted molecule shows its flat drawing, and sev
 or Newman projections as the question or as the choices.
 
 Each checkpoint always includes its **core** questions (★ in the answer key) and fills the rest at
-random from a larger pool, so a retake sees a different mix. 47 questions in all.
+random from a larger pool, so a retake sees a different mix. 51 questions in all.
 
 **Retakes.** Re-opening the activity resumes where the student left off. Once they reach the
 results screen, a **Start a new attempt** button (with an "are you sure?" step) clears every answer,
@@ -77,7 +102,8 @@ than picking up progress the browser kept from another copy.
 
 The save carries a schema version (`SCHEMA` in `src/js/app.js`). A save from any other version is
 ignored and the student starts from step 1 with no answers and no score carried over. **Bump it
-whenever you change the step list, a quiz pool or a molecule.**
+whenever you change the step list, a quiz pool or a molecule.** Version 2 of the zip (with the Newman
+projections of the chair) uses schema 2, so nothing saved by the v1 zip is resumed.
 
 ---
 
@@ -137,7 +163,7 @@ questions and notes then need rewording.
 ## Building and uploading
 
 ```bash
-./build.sh                      # → dist/cyclohexane-chairs-v1.zip
+./build.sh                      # → dist/cyclohexane-chairs-v2.zip
 ./build.sh cyclohexane-unit5    # → dist/cyclohexane-unit5.zip
 ```
 
@@ -147,7 +173,7 @@ Zipping the `src` folder itself produces a package Schoology rejects.
 To upload:
 
 1. In your Schoology course, **Add Materials → Add File/Link/External Tool → Add File** and upload
-   `dist/cyclohexane-chairs-v1.zip`, or use **Add Materials → Package** if your install shows it.
+   `dist/cyclohexane-chairs-v2.zip`, or use **Add Materials → Package** if your install shows it.
 2. Schoology detects the SCORM manifest and creates a SCORM item.
 3. Open the item's settings and enable the gradebook column. It receives the 0–100 score.
 4. Open it once as a student (Preview as Student) and check that the badge in the top right reads
@@ -160,7 +186,11 @@ If that badge reads **Standalone: no LMS detected** inside Schoology, the SCO co
 SCORM API. That is almost always because Schoology served the zip as a plain file rather than launching it
 as SCORM.
 
-A built `dist/cyclohexane-chairs-v1.zip` is committed, so you can upload it without running anything.
+A built `dist/cyclohexane-chairs-v2.zip` is committed, so you can upload it without running anything.
+
+**Replacing v1.** If you posted the first zip, post v2 as a new item and delete or unpublish the old one.
+Saves from v1 are ignored, so every student starts v2 from step 1 with an empty gradebook column; the old
+item's column keeps its scores until you remove it.
 
 ### Testing without an LMS
 
@@ -170,9 +200,9 @@ reported. The *Start a new attempt* button on the results screen works here too.
 ### Teacher links for class
 
 ```
-src/index.html?explore              flip any molecule, with its energy diagram, for the board
+src/index.html?explore              flip any molecule, with its Newman projections and energy diagram, for the board
 src/index.html?explore=cisTM        start on one molecule (ids are listed in ANSWER_KEY.md)
-src/index.html?step=crowd           jump to any step (ids or numbers 1–18) to preview it
+src/index.html?step=crowd           jump to any step (ids or numbers 1–19) to preview it
 ```
 
 Neither mode saves progress or reports anything.
@@ -205,6 +235,9 @@ node tools/answer-key.js > ANSWER_KEY.md
 - a ring flip leaves any position axial (or equatorial) in both chairs, changes a bond length, or moves a
   position to the other face;
 - the boat's C2–C3 and C5–C6 bonds are not eclipsed, or its flagpole H atoms are not its most crowded pair;
+- in the Newman projections of the chair, a back carbon is not hidden exactly behind its front carbon, C3
+  and C6 are not where Klein draws them, an axial bond is not vertical, or a flip turns any bond on C1, C2,
+  C4 or C5 by anything but 60°;
 - the second chair drawing is not the mirror image of the first, an axial bond is not vertical in a
   drawing, or an equatorial bond is not parallel to its two ring bonds;
 - an axial group crowds anything but the axial H atoms on C3 and C5, an equatorial CH₃, Cl or Br crowds
@@ -244,7 +277,8 @@ cyclohexane-chairs-scorm/
 │       ├── chair.js      the 3D ring, the flip, crowding, cameras, Newman projections
 │       ├── molecules.js  the molecules, as flat drawings
 │       ├── avalues.js    A-values and chair energies
-│       ├── draw.js       chair drawings, flat rings, Newman projections, the energy diagram
+│       ├── draw.js       chair drawings, flat rings, Newman projections (one bond, or the
+│       │                 whole chair as Klein draws it), the energy diagram
 │       ├── viewer3d.js   ball-and-stick / space-filling 3D on a canvas
 │       ├── picker.js     drag, click or keyboard placement
 │       ├── quiz.js       checkpoint questions

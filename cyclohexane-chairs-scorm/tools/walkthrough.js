@@ -147,9 +147,10 @@ const fakeLMS = () => {
 
   /* ---- Part 1 */
   await page.click('.predict .choice >> nth=0');
-  for (const b of ['Side view', 'Top view', 'Down the C1–C2 bond']) await page.click(`button:has-text("${b}")`);
+  for (const b of ['Side view', 'Top view', 'Down two ring bonds']) await page.click(`button:has-text("${b}")`);
   await page.waitForTimeout(800);
   await fb(/most stable shape/, 'meet did not complete');
+  expect(await page.$('.klein'), 'meet step shows no Newman projections of the chair');
   await next();
 
   await page.click('.predict .choice >> nth=1');
@@ -191,6 +192,8 @@ const fakeLMS = () => {
   await fb(/Axial becomes equatorial/, 'flip did not complete');
   expect(/Chair 2.*Red H: equatorial, pointing slightly up/.test(await page.textContent('.readout')), 'flip readout wrong at chair 2');
   expect(/You predicted/.test(await page.textContent('.reveal')), 'flip reveal does not mention the prediction');
+  expect(await page.$('.klein-pair figure.current:nth-child(2)'), 'flip step does not highlight chair 2 in the Newman projections');
+  expect((await page.$$('.kn-move')).length === 2, 'flip step does not show the two arrows in chair 2');
   await next();
 
   await place('CH₃', '1b'); await place('H', '1t');
@@ -200,6 +203,17 @@ const fakeLMS = () => {
   await place('CH₃', '1t'); await place('H', '1b');
   await page.click('button:has-text("Check")');
   await fb(/Correct/, 'correct flip build not accepted');
+  await next();
+
+  /* the same build in Newman projections */
+  expect((await page.$$('.klein')).length === 2, 'Newman build should show two Newman drawings');
+  await place('CH₃', '1b'); await place('H', '1t');
+  await page.click('button:has-text("Check")');
+  await fb(/wrong side.*o’clock/, 'wrong Newman build not explained');
+  await page.click('button:has-text("Clear")');
+  await place('CH₃', '1t'); await place('H', '1b');
+  await page.click('button:has-text("Check")');
+  await fb(/Correct.*12 o’clock to 2 o’clock/, 'correct Newman build not accepted');
   await next();
 
   await quiz(false); await next();
@@ -228,9 +242,11 @@ const fakeLMS = () => {
   await next();
 
   await page.click('.predict .choice >> nth=0');
+  expect((await page.$$('.kn-box')).length >= 2, 'newman step does not highlight the 1,3-diaxial interaction');
   await page.click('.predict >> nth=1 >> .choice >> nth=1');
-  await fb(/two ring carbons/, 'newman step did not complete');
-  expect((await page.$$('.newman')).length === 3, 'newman step should show three Newman projections');
+  await fb(/Equatorial CH₃: anti/, 'newman step did not complete');
+  expect((await page.$$('.klein')).length === 2 && (await page.$$('svg.newman')).length === 1,
+    'newman step should show gauche butane and two chairs as Newman projections');
   await next();
 
   for (let i = 0; i < 4; i++) {

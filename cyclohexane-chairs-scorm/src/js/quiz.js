@@ -18,6 +18,8 @@
  *   { chair: molId, k: 0 | 1, show, letters, mark }  a chair drawing (k = which chair)
  *   { flat: molId }                                    the flat ring drawing
  *   { newman: molId, k, bond: [i, j] }                 a Newman projection down a ring bond
+ *   { klein: molId, k, letters, box }                  the chair as two Newman projections, down
+ *                                                      C1–C2 and C5–C4 at once (as Klein draws it)
  *   { boat: true }                                     the boat
  * `struct` lists molecules whose flat drawings are shown under the question.
  * A choice can be a figure instead of text.
@@ -93,8 +95,8 @@ var QUIZZES = {
         why: 'Both angle strain (120° instead of about 109.5°) and torsional strain (every bond eclipsed). Folding ' +
              'into a chair removes both.' },
       { id: 'a-newman',
-        q: 'Looking down any C–C bond of the chair, the Newman projection shows the bonds…',
-        fig: { newman: 'cyclohexane', k: 0, bond: [1, 2] },
+        q: 'These Newman projections look down the C1–C2 and C5–C4 bonds of the chair at once. They show the bonds…',
+        fig: { klein: 'cyclohexane', k: 0, show: 'all' },
         choices: ['Staggered', 'Eclipsed', 'Totally eclipsed', 'Half staggered and half eclipsed'],
         why: 'Every bond on the back carbon sits exactly between two bonds on the front carbon. Every ring bond of ' +
              'the chair is staggered, which is why the chair has no torsional strain.' }
@@ -104,7 +106,7 @@ var QUIZZES = {
   B: {
     title: 'Checkpoint 2: the ring flip',
     draw: 4,
-    core: ['b-ax-to-eq', 'b-up-stays'],
+    core: ['b-ax-to-eq', 'b-up-stays', 'b-newman-flip'],
     pool: [
       { id: 'b-ax-to-eq',
         q: 'In a ring flip, what happens to a group that was axial?',
@@ -121,6 +123,24 @@ var QUIZZES = {
         choices: ['Equatorial, pointing slightly up', 'Axial, pointing down', 'Equatorial, pointing slightly down',
                   'Still axial, pointing up'],
         why: 'Axial becomes equatorial, and the CH₃ stays on the top face, so it points out and slightly up.' },
+      { id: 'b-newman-flip',
+        q: 'These Newman projections show chair 1 of methylcyclohexane, looking down C1–C2 and C5–C4. The CH₃ on C1 ' +
+           'points to 12 o’clock. After a ring flip, where does it point?',
+        fig: { klein: 'methyl', k: 0, box: ['1t'] },
+        choices: ['To 2 o’clock: equatorial, still on the upper side',
+                  'To 6 o’clock: axial, pointing down',
+                  'Still to 12 o’clock: still axial',
+                  'To 4 o’clock: equatorial, on the lower side'],
+        why: 'A ring flip turns every bond on C1 by 60°, two hours on the clock face. Axial (straight up) becomes ' +
+             'equatorial, and up stays up, so the CH₃ ends at 2 o’clock.' },
+      { id: 'b-newman-turn',
+        q: 'Seen as Newman projections, what does a ring flip do to the bonds on C1?',
+        choices: ['They all turn 60° about the C1–C2 bond, like turning a carbon in a Newman projection',
+                  'They break and form again in new places',
+                  'They stay exactly where they are; only the ring moves',
+                  'Only the axial bond moves; the others stay put'],
+        why: 'A ring flip is just turning about C–C single bonds. Every bond on C1 turns 60° one way and every bond on ' +
+             'C2 turns 60° the other way, so axial bonds become equatorial and equatorial bonds become axial.' },
       { id: 'b-letter',
         q: 'After a ring flip, the H labelled A will be…',
         fig: { chair: 'cyclohexane', show: 'all', letters: { '4t': 'A' }, mark: { '4t': 'hot' } },
@@ -222,13 +242,26 @@ var QUIZZES = {
         why: 'The same long-bond effect as in Newman projections. The C–Br bond (1.94 Å) holds the Br out beyond ' +
              'the axial H atoms, while a CH₃ on its shorter bond, with its own H atoms, reaches right into them.' },
       { id: 'c-newman',
-        q: 'This Newman projection looks down C1–C2 of methylcyclohexane with the CH₃ axial. How is the CH₃ ' +
-           'arranged relative to the ring carbon C3?',
-        fig: { newman: 'methyl', k: 0, bond: [1, 2], hot: ['1t', 'R3'] },
+        q: 'These Newman projections look down C1–C2 and C5–C4 of methylcyclohexane with the CH₃ axial. How is the ' +
+           'CH₃ arranged relative to the ring carbon C3?',
+        fig: { klein: 'methyl', k: 0, box: ['1t', 'C3'] },
         choices: ['Gauche, like the two CH₃ groups in gauche butane', 'Anti, like anti butane', 'Eclipsed',
                   'Too far apart to say'],
         why: 'The CH₃ and C3 are 60° apart: gauche. Looking down C1–C6, it is gauche to C5 too. These two gauche ' +
              'interactions are the two 1,3-diaxial interactions seen from a different direction.' },
+      { id: 'c-newman-h',
+        q: 'In these Newman projections of methylcyclohexane the CH₃ on C1 is axial. Which lettered H does it crowd?',
+        fig: { klein: 'methyl', k: 0, letters: { '3t': 'A', '3b': 'B', '2t': 'C', '2b': 'D' } },
+        choices: ['A', 'B', 'C', 'D'],
+        why: 'A is the axial H on C3. It points straight up, the same way as the CH₃, and the CH₃ is gauche to C3: ' +
+             'that is the 1,3-diaxial interaction. B is C3’s equatorial H, and C and D are on C2, next to C1.' },
+      { id: 'c-newman-eq',
+        q: 'These Newman projections show chair 2 of methylcyclohexane. The CH₃ on C1 is…',
+        fig: { klein: 'methyl', k: 1, box: ['1t'] },
+        choices: ['Equatorial, and anti to C3', 'Axial, and gauche to C3', 'Axial, and anti to C3',
+                  'Equatorial, and gauche to C3'],
+        why: 'It points to 2 o’clock, out to the side: equatorial. C3 is now at the bottom, 180° from the CH₃, so they ' +
+             'are anti and the gauche (1,3-diaxial) interaction is gone.' },
       { id: 'c-same',
         q: 'The steric strain of an axial CH₃ is the same kind of strain as…',
         choices: ['The gauche interaction between the two CH₃ groups in butane',

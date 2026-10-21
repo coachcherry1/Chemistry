@@ -59,6 +59,10 @@ From chair 1 (CH₃ on C1, axial, pointing up) to chair 2:
 - C1, equatorial, pointing slightly up: **CH₃**
 - C1, axial, pointing down: **H**
 
+### The flip in Newman projections: Methylcyclohexane
+
+In Newman projections down C1–C2 and C5–C4 (C1 the front carbon on the right). Every bond on C1 turns 60° in the flip: CH₃ from 12 o’clock to **2 o’clock** (equatorial, pointing slightly up); H from 4 o’clock to **6 o’clock** (axial, pointing down).
+
 ### From flat ring to chair: trans-1,4-Dimethylcyclohexane
 
 From the flat drawing (CH₃ on C1 on a wedge, CH₃ on C4 on a dash) to chair 1:
@@ -75,7 +79,7 @@ From the flat drawing (CH₃ on C1 on a wedge, CH₃ on C4 on a dash) to chair 1
 - **Up or down?** The axial H on C1 points up. Which way does the axial H on C2, the next carbon round, point? *Down.* Which way does the equatorial H on C1 point? *Out, and slightly down.*
 - **Flip the ring**: The red H on C1 is axial and points up. After the ring flips, where will the red H be? *Equatorial, still pointing up.*
 - **Flip it equatorial**: Which chair of methylcyclohexane is lower in energy? *The chair with the CH₃ equatorial.* In chair 2, how many H atoms does the equatorial CH₃ crowd? *None.*
-- **Down the C1–C2 bond**: Look down the C1–C2 bond of chair 1, where the CH₃ is axial. How are the CH₃ on C1 and the ring carbon C3 (attached to C2) arranged? *Gauche: 60° apart.* Now look down the C1–C6 bond of the same chair. Which ring carbon is the axial CH₃ gauche to this time? *C5.*
+- **Down the C1–C2 bond**: Look down the C1–C2 bond of chair 1, where the CH₃ is axial. How are the CH₃ on C1 and the ring carbon C3 (attached to C2) arranged? *Gauche: 60° apart.* Now the ring flips and the CH₃ becomes equatorial (chair 2). In the same view, how are the CH₃ and C3 arranged? *Anti: 180° apart.*
 - **Bigger groups push harder**: compared with CH₃, how strongly does the group prefer equatorial? Cl: *less strongly* (A-value 2, about 7 in 10 equatorial); Br: *less strongly* (A-value 2, about 7 in 10 equatorial); CH(CH₃)₂: *a little more strongly* (A-value 9.2, about 39 in 40 equatorial); C(CH₃)₃: *far more strongly* (A-value 22.8, all but about 1 in 10,000 equatorial).
 - **Which chair wins?** Flipping chair 1 to chair 2, the energy of trans-1,4-dimethylcyclohexane *goes down* (diaxial to diequatorial); that of cis-1,4-dimethylcyclohexane *stays the same*. Can a ring flip turn cis-1,4-dimethylcyclohexane into trans-1,4-dimethylcyclohexane? *No: a flip never moves a group to the other face, so cis stays cis.*
 - **Lock in the better chair**: In the more stable chair of cis-1-tert-butyl-4-methylcyclohexane… *The C(CH₃)₃ is equatorial and the CH₃ is axial* (chair 2).
@@ -125,13 +129,13 @@ Each attempt draws 4 + 4 + 5 + 5 = 18 questions. Core questions (★) are always
    - Answer: A flat ring would have 120° bond angles and every C–C bond eclipsed
    - Distractors: A flat ring would not have room for twelve H atoms · Rings of carbon atoms can never be flat · A flat ring would have too few bonds
    - Explanation shown: Both angle strain (120° instead of about 109.5°) and torsional strain (every bond eclipsed). Folding into a chair removes both.
-10. **Looking down any C–C bond of the chair, the Newman projection shows the bonds…** `a-newman`
-   - Figure: Newman projection down C1–C2 of chair 1 of Cyclohexane
+10. **These Newman projections look down the C1–C2 and C5–C4 bonds of the chair at once. They show the bonds…** `a-newman`
+   - Figure: chair 1 of Cyclohexane as two Newman projections (down C1–C2 and C5–C4); 
    - Answer: Staggered
    - Distractors: Eclipsed · Totally eclipsed · Half staggered and half eclipsed
    - Explanation shown: Every bond on the back carbon sits exactly between two bonds on the front carbon. Every ring bond of the chair is staggered, which is why the chair has no torsional strain.
 
-### Checkpoint 2: the ring flip (4 of 11)
+### Checkpoint 2: the ring flip (4 of 13)
 
 1. **In a ring flip, what happens to a group that was axial?** ★ `b-ax-to-eq`
    - Answer: It becomes equatorial
@@ -146,41 +150,50 @@ Each attempt draws 4 + 4 + 5 + 5 = 18 questions. Core questions (★) are always
    - Answer: Equatorial, pointing slightly up
    - Distractors: Axial, pointing down · Equatorial, pointing slightly down · Still axial, pointing up
    - Explanation shown: Axial becomes equatorial, and the CH₃ stays on the top face, so it points out and slightly up.
-4. **After a ring flip, the H labelled A will be…** `b-letter`
+4. **These Newman projections show chair 1 of methylcyclohexane, looking down C1–C2 and C5–C4. The CH₃ on C1 points to 12 o’clock. After a ring flip, where does it point?** ★ `b-newman-flip`
+   - Figure: chair 1 of Methylcyclohexane as two Newman projections (down C1–C2 and C5–C4); CH₃ on C1 at 12 o’clock
+   - Answer: To 2 o’clock: equatorial, still on the upper side
+   - Distractors: To 6 o’clock: axial, pointing down · Still to 12 o’clock: still axial · To 4 o’clock: equatorial, on the lower side
+   - Explanation shown: A ring flip turns every bond on C1 by 60°, two hours on the clock face. Axial (straight up) becomes equatorial, and up stays up, so the CH₃ ends at 2 o’clock.
+5. **Seen as Newman projections, what does a ring flip do to the bonds on C1?** `b-newman-turn`
+   - Answer: They all turn 60° about the C1–C2 bond, like turning a carbon in a Newman projection
+   - Distractors: They break and form again in new places · They stay exactly where they are; only the ring moves · Only the axial bond moves; the others stay put
+   - Explanation shown: A ring flip is just turning about C–C single bonds. Every bond on C1 turns 60° one way and every bond on C2 turns 60° the other way, so axial bonds become equatorial and equatorial bonds become axial.
+6. **After a ring flip, the H labelled A will be…** `b-letter`
    - Figure: chair 1 of Cyclohexane; lettered: A = H on C4, equatorial, pointing slightly up
    - Answer: Axial, pointing up
    - Distractors: Axial, pointing down · Equatorial, pointing slightly up · Equatorial, pointing slightly down
    - Explanation shown: A is equatorial and points slightly up. A flip makes it axial, and it stays on the top face: axial, up.
-5. **An equatorial H points out and slightly down. After a ring flip it is…** `b-eq-down`
+7. **An equatorial H points out and slightly down. After a ring flip it is…** `b-eq-down`
    - Answer: Axial, pointing straight down
    - Distractors: Axial, pointing straight up · Equatorial, pointing slightly up · Still equatorial, pointing slightly down
    - Explanation shown: Equatorial becomes axial, and down stays down.
-6. **Does a ring flip break any bonds?** `b-bonds`
+8. **Does a ring flip break any bonds?** `b-bonds`
    - Answer: No: it only turns about single bonds, so the two chairs are conformations of the same molecule
    - Distractors: Yes: two C–C bonds break and form again · Yes: the C–H bonds break and the H atoms move · Only when the ring carries a substituent
    - Explanation shown: A flip is like turning the back carbon of a Newman projection: bonds turn, nothing breaks. The two chairs are two conformations of one molecule.
-7. **At room temperature, cyclohexane rings flip…** `b-speed`
+9. **At room temperature, cyclohexane rings flip…** `b-speed`
    - Answer: Many thousands of times every second
    - Distractors: About once a day · Never: the chair is locked · Only when the sample is heated strongly
    - Explanation shown: The energy hump between the chairs is small, so each ring flips roughly 100,000 times a second at room temperature.
-8. **During a ring flip the ring passes through shapes in between the two chairs. Compared with the chairs, these shapes are…** `b-between`
+10. **During a ring flip the ring passes through shapes in between the two chairs. Compared with the chairs, these shapes are…** `b-between`
    - Answer: Less stable (higher in energy)
    - Distractors: More stable (lower in energy) · Exactly as stable · Not real: the ring jumps straight from one chair to the other
    - Explanation shown: That is the hump on the energy diagram. Every shape in between, such as the boat, is less stable than either chair, so the molecules spend almost all their time as chairs.
-9. **For cyclohexane itself (every position an H), the two chairs are…** `b-same`
+11. **For cyclohexane itself (every position an H), the two chairs are…** `b-same`
    - Answer: The same shape with the same energy
    - Distractors: Different energies, because one has more axial H atoms · Two different compounds · Impossible to tell apart, because cyclohexane cannot flip
    - Explanation shown: Each chair has six axial and six equatorial H atoms. A flip only swaps which H is which.
-10. **A ring flips, then flips again. An H that started axial is now…** `b-twice`
+12. **A ring flips, then flips again. An H that started axial is now…** `b-twice`
    - Answer: Axial again, pointing the same way as at the start
    - Distractors: Equatorial · Axial, on the other face · Gone from the ring
    - Explanation shown: Each flip swaps axial and equatorial, so two flips bring every H back to where it started.
-11. **In chair 1 of cyclohexane, six H atoms are axial. After a ring flip, how many of those six are still axial?** `b-all`
+13. **In chair 1 of cyclohexane, six H atoms are axial. After a ring flip, how many of those six are still axial?** `b-all`
    - Answer: None
    - Distractors: Three · Six · One
    - Explanation shown: All six become equatorial at once, and the six equatorial H atoms become axial.
 
-### Checkpoint 3: axial crowding and A-values (5 of 14)
+### Checkpoint 3: axial crowding and A-values (5 of 16)
 
 1. **The CH₃ in this chair is axial. Which two lettered H atoms does it crowd?** ★ `c-which-h`
    - Figure: chair 1 of Methylcyclohexane (CH₃ on C1, axial, pointing up); lettered: A = H on C3, axial, pointing up; B = H on C5, axial, pointing up; C = H on C2, axial, pointing down; D = H on C2, equatorial, pointing slightly up; E = H on C4, equatorial, pointing slightly up
@@ -207,36 +220,46 @@ Each attempt draws 4 + 4 + 5 + 5 = 18 questions. Core questions (★) are always
    - Answer: The C–Br bond is long, so the Br sits farther from the axial H atoms
    - Distractors: A Br atom is smaller than a CH₃ group · Br attracts the axial H atoms · Br can never be axial
    - Explanation shown: The same long-bond effect as in Newman projections. The C–Br bond (1.94 Å) holds the Br out beyond the axial H atoms, while a CH₃ on its shorter bond, with its own H atoms, reaches right into them.
-7. **This Newman projection looks down C1–C2 of methylcyclohexane with the CH₃ axial. How is the CH₃ arranged relative to the ring carbon C3?** `c-newman`
-   - Figure: Newman projection down C1–C2 of chair 1 of Methylcyclohexane
+7. **These Newman projections look down C1–C2 and C5–C4 of methylcyclohexane with the CH₃ axial. How is the CH₃ arranged relative to the ring carbon C3?** `c-newman`
+   - Figure: chair 1 of Methylcyclohexane as two Newman projections (down C1–C2 and C5–C4); CH₃ on C1 at 12 o’clock
    - Answer: Gauche, like the two CH₃ groups in gauche butane
    - Distractors: Anti, like anti butane · Eclipsed · Too far apart to say
    - Explanation shown: The CH₃ and C3 are 60° apart: gauche. Looking down C1–C6, it is gauche to C5 too. These two gauche interactions are the two 1,3-diaxial interactions seen from a different direction.
-8. **The steric strain of an axial CH₃ is the same kind of strain as…** `c-same`
+8. **In these Newman projections of methylcyclohexane the CH₃ on C1 is axial. Which lettered H does it crowd?** `c-newman-h`
+   - Figure: chair 1 of Methylcyclohexane as two Newman projections (down C1–C2 and C5–C4); CH₃ on C1 at 12 o’clock; lettered: A = H on C3, axial, pointing up; B = H on C3, equatorial, pointing slightly down; C = H on C2, equatorial, pointing slightly up; D = H on C2, axial, pointing down
+   - Answer: A
+   - Distractors: B · C · D
+   - Explanation shown: A is the axial H on C3. It points straight up, the same way as the CH₃, and the CH₃ is gauche to C3: that is the 1,3-diaxial interaction. B is C3’s equatorial H, and C and D are on C2, next to C1.
+9. **These Newman projections show chair 2 of methylcyclohexane. The CH₃ on C1 is…** `c-newman-eq`
+   - Figure: chair 2 of Methylcyclohexane as two Newman projections (down C1–C2 and C5–C4); CH₃ on C1 at 2 o’clock
+   - Answer: Equatorial, and anti to C3
+   - Distractors: Axial, and gauche to C3 · Axial, and anti to C3 · Equatorial, and gauche to C3
+   - Explanation shown: It points to 2 o’clock, out to the side: equatorial. C3 is now at the bottom, 180° from the CH₃, so they are anti and the gauche (1,3-diaxial) interaction is gone.
+10. **The steric strain of an axial CH₃ is the same kind of strain as…** `c-same`
    - Answer: The gauche interaction between the two CH₃ groups in butane
    - Distractors: The torsional strain of eclipsed ethane · The angle strain of a flat ring · The attraction between opposite charges
    - Explanation shown: Each CH₃/H 1,3-diaxial interaction is a gauche-butane interaction in disguise (the CH₃ is gauche to a ring carbon), so Klein gives each one the same value as gauche butane.
-9. **How many 1,3-diaxial interactions does an equatorial CH₃ have?** `c-eq-none`
+11. **How many 1,3-diaxial interactions does an equatorial CH₃ have?** `c-eq-none`
    - Answer: None
    - Distractors: One · Two · Four
    - Explanation shown: An equatorial group points out, away from the ring, past the axial H atoms. It has no 1,3-diaxial interactions at all.
-10. **Which chair of methylcyclohexane is lower in energy?** `c-lower`
+12. **Which chair of methylcyclohexane is lower in energy?** `c-lower`
    - Answer: chair 2 of Methylcyclohexane (CH₃ on C1, equatorial, pointing slightly up)
    - Distractors: chair 1 of Methylcyclohexane (CH₃ on C1, axial, pointing up)
    - Explanation shown: The chair with the CH₃ equatorial: no 1,3-diaxial interactions. With the CH₃ axial it crowds the axial H atoms on C3 and C5.
-11. **At any moment, most methylcyclohexane molecules are…** `c-mostly`
+13. **At any moment, most methylcyclohexane molecules are…** `c-mostly`
    - Answer: In the chair with the CH₃ equatorial, though each one keeps flipping back and forth
    - Distractors: In the chair with the CH₃ axial · Split evenly between the two chairs · Stuck in one chair for good
    - Explanation shown: About 19 in 20 are in the equatorial chair at any moment. Each molecule still flips many times a second; it just spends most of its time in the more stable chair.
-12. **An axial CH(CH₃)₂ costs only a little more than an axial CH₃. Why?** `c-ipr`
+14. **An axial CH(CH₃)₂ costs only a little more than an axial CH₃. Why?** `c-ipr`
    - Answer: It can turn so that its small H points in over the ring, keeping its CH₃ groups away
    - Distractors: It is smaller than a CH₃ group · It is never axial · Its two CH₃ groups attract the axial H atoms
    - Explanation shown: Only the H of the isopropyl group has to face the axial H atoms; both CH₃ groups point outward.
-13. **Why does C(CH₃)₃ prefer the equatorial position so much more strongly than CH(CH₃)₂?** `c-tbu-why`
+15. **Why does C(CH₃)₃ prefer the equatorial position so much more strongly than CH(CH₃)₂?** `c-tbu-why`
    - Answer: However it turns, one of its CH₃ groups points straight at the axial H atoms
    - Distractors: Its bond to the ring is longer · It is lighter than CH(CH₃)₂ · It has fewer H atoms than CH(CH₃)₂
    - Explanation shown: C(CH₃)₃ has three CH₃ groups and no H, so axial, one CH₃ always points in over the ring and crashes into the axial H atoms. That is why its A-value is so large.
-14. **According to the A-value table, which group has the weakest preference for the equatorial position?** `c-table`
+16. **According to the A-value table, which group has the weakest preference for the equatorial position?** `c-table`
    - Answer: Cl
    - Distractors: CH₃ · CH(CH₃)₂ · C(CH₃)₃
    - Explanation shown: Cl has the smallest A-value of these: its long C–Cl bond keeps it away from the axial H atoms.

@@ -30,6 +30,13 @@ function figText(f) {
   if (f.boat) return 'the boat, all twelve H atoms drawn';
   if (f.flat) return `flat drawing of ${molecule(f.flat).name}`;
   if (f.newman) return `Newman projection down C${f.bond[0]}–C${f.bond[1]} of chair ${(f.k || 0) + 1} of ${molecule(f.newman).name}`;
+  if (f.klein) {
+    const k = f.k || 0, L = Draw.kleinLayout(molecule(f.klein), k).pos;
+    let t = `chair ${k + 1} of ${molecule(f.klein).name} as two Newman projections (down C1–C2 and C5–C4); ` +
+      MOLECULES.groups(molecule(f.klein)).map((g) => `${name(g.g)} on C${g.c} at ${Draw.clock(L[g.pos].a)}`).join(', ');
+    if (f.letters) t += '; lettered: ' + Object.keys(f.letters).map((p) => `${f.letters[p]} = H on ${where(p, k)}`).join('; ');
+    return t;
+  }
   if (f.chair) {
     const m = molecule(f.chair), k = f.k || 0;
     let t = `chair ${k + 1} of ${m.name}` + (MOLECULES.groups(m).length ? ` (${placed(m, k)})` : '');
@@ -106,6 +113,14 @@ for (const s of App.STEPS.filter((x) => x.kind === 'build')) {
   const m = molecule(s.mol);
   P(`### ${s.title}: ${m.name}`);
   P();
+  if (s.source === 'newman') {
+    const K = [0, 1].map((k) => Draw.kleinLayout(m, k).pos);
+    P('In Newman projections down C1–C2 and C5–C4 (C1 the front carbon on the right). Every bond on C1 turns 60° ' +
+      'in the flip: ' + s.slots.map((p) => `${name(MOLECULES.groupAt(m, CHAIR.carbonOf(p), CHAIR.faceOf(p)))} from ` +
+      `${Draw.clock(K[0][p].a)} to **${Draw.clock(K[1][p].a)}** (${CHAIR.describe(p, 1)})`).join('; ') + '.');
+    P();
+    continue;
+  }
   P(s.source === 'flat'
     ? `From the flat drawing (${MOLECULES.groups(m).map((g) => `${name(g.g)} on C${g.c} on a ${g.f === 't' ? 'wedge' : 'dash'}`).join(', ')}) to chair ${s.k + 1}:`
     : `From chair 1 (${placed(m, 0)}) to chair 2:`);
@@ -127,7 +142,7 @@ P(`- **Chair or boat?** ${PR.boat.q} *${key(PR.boat)}.* The boat has steric stra
 P(`- **Up or down?** ${PR.axialC2.q} *${key(PR.axialC2)}.* ${PR.eqC1.q} *${key(PR.eqC1)}.*`);
 P(`- **Flip the ring**: ${PR.flip.q} *${key(PR.flip)}.*`);
 P(`- **Flip it equatorial**: ${PR.lower.q} *${key(PR.lower)}.* ${PR.count.q} *${key(PR.count)}.*`);
-P(`- **Down the C1–C2 bond**: ${PR.gauche.q} *${key(PR.gauche)}.* ${PR.c1c6.q} *${key(PR.c1c6)}.*`);
+P(`- **Down the C1–C2 bond**: ${PR.gauche.q} *${key(PR.gauche)}.* ${PR.anti.q} *${key(PR.anti)}.*`);
 P('- **Bigger groups push harder**: compared with CH₃, how strongly does the group prefer equatorial? ' +
   MOLECULES.SWAP_ORDER.map((x) => {
     const c = ['less strongly', 'a little more strongly', 'far more strongly'][App.swapAnswer(x)];

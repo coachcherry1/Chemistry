@@ -294,8 +294,8 @@ var CHAIR = (function () {
      the ring axis up, matching newman(). */
   function camera(name, m, i, j) {
     if (name === 'top') return TOP;
-    if (name === 'bond') {
-      var F = bondFrame(m, i, j);
+    if (name === 'bond' || name === 'newman') {
+      var F = name === 'newman' ? bondFrame(m, 1, 2) : bondFrame(m, i, j);
       return [F.RIGHT, F.UP, mul(F.W, -1)];
     }
     if (name === 'above') return sideCam(m ? m.t : 0, 42 * Math.PI / 180);
