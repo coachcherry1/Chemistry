@@ -59,6 +59,14 @@ from the eye, instead of up. It is only a view (a projection turned as a whole i
 projection), so builds are checked the same way either way up. The choice is remembered for the rest
 of the activity, and the 3D "down the bond" view, quiz figures and graph thumbnails follow it.
 
+**Sized for a Chromebook.** On every step where a molecule turns, the Newman projection and the
+energy graph sit side by side (with the 3D model beside them when there is room), so a student
+turning the molecule watches the curve grow without scrolling or zooming out. This holds on a
+1366 × 650 browser tab and in a frame as short as 520 px. On a narrower window the graph sits beside
+the Newman projection and stays in view as the page scrolls. After a prediction, the page scrolls just
+far enough to bring the molecule and graph on screen. **Back** and **Next** appear above each step as
+well as below it.
+
 Every Newman projection labels all six groups, H included, down to the small ones under the graphs.
 A bare bond with no label reads as a methyl to a beginner. In the small eclipsed drawings a back
 label that would run into the front label beside it is written on its other side.
@@ -275,7 +283,14 @@ and interaction records that arrive. It then starts a second attempt and checks 
 while the gradebook keeps the best score. Before any of that it checks that a first-release save, or a
 save the browser kept from another copy, is ignored and the student starts at step 1. On every sketch and
 label step it checks that each small Newman projection under the graph shows six labels and that
-none of them overlap.
+none of them overlap. It uses the Next buttons above and below the step in turn and checks that
+they always agree.
+
+`tools/layout.js` (optional, needs Playwright) opens every step at Chromebook and LMS-frame window
+sizes, from 900 × 600 to 1920 × 950, including 1366 × 650 and 1366 × 520. On each step where a
+molecule turns it scrolls to the Newman projection and fails unless the projection, its slider and
+the whole graph are on screen together. It also fails any step that scrolls sideways. Run it after
+any change to the page layout.
 
 To shorten the activity, lower `draw` in `src/js/quiz.js` or remove steps from `STEPS` in
 `src/js/app.js`, then bump `SCHEMA`.
@@ -305,7 +320,8 @@ newman-projections-scorm/
 ├── tools/
 │   ├── validate.js       chemistry and item-bank checks
 │   ├── answer-key.js     regenerates ANSWER_KEY.md
-│   └── walkthrough.js    end-to-end browser test (optional)
+│   ├── walkthrough.js    end-to-end browser test (optional)
+│   └── layout.js         fits-a-Chromebook check (optional)
 ├── build.sh
 ├── ANSWER_KEY.md         generated
 └── README.md

@@ -113,9 +113,22 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .tab.current { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .tab.locked { opacity: 0.45; cursor: not-allowed; }
 
-.statusline { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.statusline { display: flex; align-items: center; justify-content: space-between; gap: 6px 12px; flex-wrap: wrap; }
 .counter { color: var(--muted); font-size: 0.8rem; white-space: nowrap; }
-.instructions { margin: 4px 0 12px; font-size: 0.9rem; max-width: 80ch; }
+/* Back and Next again above the step, so nobody has to scroll down for them */
+.topnav { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.topnav .primary, .topnav .ghostbtn { padding: 5px 12px; font-size: 0.84rem; }
+.instructions { margin: 4px 0 12px; font-size: 0.9rem; max-width: 110ch; }
+
+/* A short screen (a Chromebook, or the frame the LMS opens it in) gives as
+   much of its height as it can to the activity itself. */
+@media (max-height: 760px) {
+  body { padding-top: 8px; }
+  .topbar { margin-bottom: 6px; }
+  .tabs { margin-bottom: 8px; }
+  .tab { padding: 4px 11px; }
+  .instructions { margin: 2px 0 8px; }
+}
 
 /* ------------------------------------------------------------------ layout */
 
@@ -128,6 +141,37 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
   align-items: start;
 }
 @media (max-width: 760px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+
+/* Steps where a molecule turns. The 3D model, the Newman projection and the
+   graph share one row, so a student turning the molecule watches the curve
+   grow without scrolling. On a narrower screen the graph sits beside the
+   Newman projection and stays in view (sticky) while the page scrolls. */
+.work { display: grid; gap: 12px; align-items: start; }
+.work-turn { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 1.75fr); grid-template-areas: "m3 rot graph"; }
+.work-pair { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr); grid-template-areas: "a b graph"; }
+.work-swap { grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr) minmax(0, 1.6fr); grid-template-areas: "q nm graph"; }
+.w-m3 { grid-area: m3; }
+.w-rot { grid-area: rot; }
+.w-a { grid-area: a; }
+.w-b { grid-area: b; }
+.w-q { grid-area: q; }
+.w-nm { grid-area: nm; }
+.w-graph { grid-area: graph; }
+.find-area, .pair-area { display: flex; flex-direction: column; gap: 12px; }
+@media (max-width: 1180px) {
+  .work-turn, .work-pair, .work-swap { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); }
+  .work-turn { grid-template-areas: "rot graph" "m3 graph"; }
+  .work-pair { grid-template-areas: "a graph" "b graph"; }
+  .work-swap { grid-template-areas: "q graph" "nm graph"; }
+  .w-graph { position: sticky; top: 8px; }
+}
+@media (max-width: 760px) {
+  .work-turn, .work-pair, .work-swap { grid-template-columns: minmax(0, 1fr); }
+  .work-turn { grid-template-areas: "rot" "graph" "m3"; }
+  .work-pair { grid-template-areas: "a" "b" "graph"; }
+  .work-swap { grid-template-areas: "q" "nm" "graph"; }
+  .w-graph { position: static; }
+}
 
 .panel {
   background: var(--panel);
@@ -177,7 +221,8 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 
 /* ---------------------------------------------------------------- 3D model */
 
-.c3d-wrap { position: relative; height: 290px; }
+/* shorter on a short screen (a Chromebook), so the whole row fits */
+.c3d-wrap { position: relative; height: clamp(190px, 40vh, 290px); }
 .c3d { width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
 .c3d.grabbing { cursor: grabbing; }
 
@@ -185,6 +230,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 
 .newman { display: block; width: 100%; max-width: 300px; height: auto; margin: 0 auto; overflow: visible; }
 .newman.big { max-width: 320px; }
+.newman.rotor { max-width: clamp(210px, 42vh, 300px); }
 .newman.fig { max-width: 210px; }
 .newman.choice-fig { max-width: 200px; }
 .nm-wrap { display: flex; flex-direction: column; align-items: center; }
@@ -276,6 +322,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
   touch-action: none;
 }
 .tray.locked { opacity: 0.6; }
+.tray.terms { margin: 0 0 8px; }   /* above the graph on the label steps */
 .tray-empty { margin: 0; font-size: 0.8rem; color: var(--muted); align-self: center; }
 
 .tile {
@@ -322,7 +369,9 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 /* ------------------------------------------------------------------- graph */
 
 .graph-host { width: 100%; }
-.graph { display: block; width: 100%; height: auto; touch-action: none; }
+/* never drawn larger than its own size (960 wide), or a full-width graph
+   grows taller than a Chromebook screen */
+.graph { display: block; width: 100%; max-width: 960px; height: auto; margin: 0 auto; touch-action: none; }
 .g-grid .g-h { stroke: var(--grid); stroke-width: 1; }
 .g-grid .g-ecl { stroke: var(--grid); stroke-width: 1; }
 .g-grid .g-stag { stroke: var(--grid); stroke-width: 1; stroke-dasharray: 3 4; }

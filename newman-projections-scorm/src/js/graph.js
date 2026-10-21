@@ -26,7 +26,10 @@ var EnergyGraph = (function () {
        instead of scaling with the plot. */
     var w = host.clientWidth || 640;
     this.W = Math.max(340, Math.min(960, w));
-    var plot = Math.round(Math.max(190, Math.min(290, this.W * 0.3)));
+    var plot = Math.round(Math.max(190, Math.min(290, this.W * 0.4)));
+    /* a short window (a Chromebook, or the LMS frame) gets a flatter plot, so
+       the whole graph fits on screen beside the molecule */
+    plot = Math.min(plot, Math.max(160, Math.round((window.innerHeight || 800) * 0.36)));
     this.H = 14 + plot + 46 + (this.thumbs ? THUMB + 16 : 0);
     var pad = this.thumbs ? 30 : 0;   /* room for the 0° and 360° pictures */
     this.box = { x0: 58 + pad, x1: this.W - 18 - pad, y0: 14, y1: 14 + plot };

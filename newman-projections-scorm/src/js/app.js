@@ -281,12 +281,15 @@ var App = (function () {
     goTo(0);
   }
 
+  /* Back and Next appear above the step and below it: set both copies. */
+  function nav(name, prop, value) { el[name][prop] = value; el[name + 'Top'][prop] = value; }
+
   function complete(msg, kind) {
     var s = STEPS[state.step];
     state.done[s.id] = 1;
     if (state.step + 1 > state.max) state.max = state.step + 1;
     persist();
-    el.next.disabled = false;
+    nav('next', 'disabled', false);
     paintParts();
     if (msg) say(msg, kind || 'good');
   }
@@ -326,10 +329,10 @@ var App = (function () {
     el.stage.innerHTML = '';
     el.stage.className = 'stage stage-' + s.kind;
     say('');
-    el.next.disabled = !(state.done[s.id] || i < state.max);
-    el.next.hidden = s.kind === 'results';
-    el.next.textContent = STEPS[i + 1] && STEPS[i + 1].kind === 'results' ? 'See results →' : 'Next →';
-    el.back.hidden = i === 0;
+    nav('next', 'disabled', !(state.done[s.id] || i < state.max));
+    nav('next', 'hidden', s.kind === 'results');
+    nav('next', 'textContent', STEPS[i + 1] && STEPS[i + 1].kind === 'results' ? 'See results →' : 'Next →');
+    nav('back', 'hidden', i === 0);
     paintParts();
     ctl = RENDER[s.kind](s) || null;
     window.scrollTo(0, 0);
@@ -362,6 +365,22 @@ var App = (function () {
     return h('section', { class: 'panel ' + (cls || '') }, [
       h('div', { class: 'panel-head' }, [h('h3', { text: title }), hint ? h('span', { class: 'hint', text: hint }) : null])
     ].concat(kids || []));
+  }
+
+  /* Bring a newly opened work area on screen, scrolling no further than it
+     takes, so the prediction above it stays in view as far as it can. */
+  function showArea(node) {
+    try { node.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) { node.scrollIntoView(false); }
+  }
+
+  /* Steps where a molecule turns lay their panels out on one row (.work in
+     styles.css), so the curve stays in view while the student turns it.
+     Each panel is tagged with the grid area it fills. */
+  function work(kind, cells) {
+    return h('div', { class: 'work work-' + kind }, Object.keys(cells).map(function (k) {
+      cells[k].classList.add('w-' + k);
+      return cells[k];
+    }));
   }
 
   /* 3D model with its view buttons. */
@@ -433,7 +452,7 @@ var App = (function () {
       'aria-label': 'Turn the back carbon (dihedral angle)' });
     var read = h('p', { class: 'readout' });
     var parts = opts.parts === false ? null : h('p', { class: 'parts' });
-    var node = panel(opts.title || 'Newman projection', 'drag around it to turn the back carbon', [
+    var node = panel(opts.title || 'Newman projection', 'drag to turn', [
       host,
       h('label', { class: 'range-row' }, [h('span', { text: 'Back carbon' }), range]),
       read, parts,
@@ -861,8 +880,8 @@ var App = (function () {
       cov.mark(prev == null ? phi : prev, phi);
       paintGraph(phi);
     });
-    el.stage.appendChild(h('div', { class: 'grid2' }, [m3.node, rot.node]));
-    el.stage.appendChild(panel('Energy vs. dihedral angle', null, [host, h('div', { class: 'meter-row' }, [meter, meterText])]));
+    el.stage.appendChild(work('turn', { m3: m3.node, rot: rot.node,
+      graph: panel('Energy vs. dihedral angle', null, [host, h('div', { class: 'meter-row' }, [meter, meterText])]) }));
     g = new EnergyGraph(host, { mol: mol });
     if (state.sk[s.sketch]) g.sketch = state.sk[s.sketch];
     m3.start(rot.rotor.phi);
@@ -902,7 +921,8 @@ var App = (function () {
     var done = !!state.done[s.id];
     var host = h('div', { class: 'graph-host' });
     var tray = h('div', { class: 'tray terms', 'aria-label': 'Words to place' });
-    el.stage.appendChild(panel('Energy vs. dihedral angle', null, [host, tray]));
+    /* the words sit above the graph, so choosing one and then its point needs no scrolling */
+    el.stage.appendChild(panel('Energy vs. dihedral angle', null, [tray, host]));
     var g = new EnergyGraph(host, { mol: mol, thumbs: true });
     g.curves = [{ mol: mol }];
     g.drops = NAMED_ANGLES.map(function (a) { return { phi: a, text: done ? termAt(mol, a) : null }; });
@@ -1082,6 +1102,7 @@ var App = (function () {
         persist();
         paintPredict();
         openArea();
+        showArea(area);
       })]));
     }
 
@@ -1099,8 +1120,8 @@ var App = (function () {
         cov.mark(prev == null ? phi : prev, phi);
         paint(phi);
       });
-      area.appendChild(h('div', { class: 'grid2' }, [m3.node, rot.node]));
-      area.appendChild(panel('Energy vs. dihedral angle', 'fills in as you turn', [host, h('div', { class: 'btnrow' }, [lockBtn])]));
+      area.appendChild(work('turn', { m3: m3.node, rot: rot.node,
+        graph: panel('Energy vs. dihedral angle', 'fills in as you turn', [host, h('div', { class: 'btnrow' }, [lockBtn])]) }));
       g = new EnergyGraph(host, { mol: mol });
       m3.start(rot.rotor.phi);
       cov.mark(rot.rotor.phi, rot.rotor.phi);
@@ -1367,11 +1388,11 @@ var App = (function () {
     var nmHost = h('div', { class: 'nm-wrap' });
     var host = h('div', { class: 'graph-host' });
     var table = h('table', { class: 'ref-table swap-table' });
-    el.stage.appendChild(h('div', { class: 'grid2 swap-top' }, [
-      panel('Group on the front carbon', null, [chips, card]),
-      panel('Lowest-energy conformation', null, [nmHost])
-    ]));
-    el.stage.appendChild(panel('Energy vs. dihedral angle', null, [host]));
+    el.stage.appendChild(work('swap', {
+      q: panel('Group on the front carbon', null, [chips, card]),
+      nm: panel('Lowest-energy conformation', null, [nmHost]),
+      graph: panel('Energy vs. dihedral angle', null, [host])
+    }));
     el.stage.appendChild(panel('What you found', null, [table]));
     var g = new EnergyGraph(host, { mol: ref, yMax: yMax });
 
@@ -1468,7 +1489,7 @@ var App = (function () {
     var X = pr.x || 'Br';
     var reached = { A: done, B: done };
     var top = h('div');
-    var area = h('div');
+    var area = h('div', { class: 'pair-area' });
     el.stage.appendChild(top);
     el.stage.appendChild(area);
     var choices = ['Anti', 'Gauche'];
@@ -1485,7 +1506,7 @@ var App = (function () {
               state.pr.pair = pr;
               persist();
               paintPredict();
-              if (pr.A != null && pr.B != null) openArea();
+              if (pr.A != null && pr.B != null) { openArea(); showArea(area); }
             })
         ]);
       });
@@ -1507,12 +1528,12 @@ var App = (function () {
           paintGraph();
         }, { title: 'Molecule ' + k, parts: true });
       });
-      area.appendChild(h('div', { class: 'grid2' }, [rots.A.node, rots.B.node]));
       var legend = h('p', { class: 'legend-row' }, [
         h('span', { class: 'key main', 'aria-hidden': 'true' }), ' Molecule A   ',
         h('span', { class: 'key alt', 'aria-hidden': 'true' }), ' Molecule B'
       ]);
-      area.appendChild(panel('Energy vs. dihedral angle', null, [host, legend, status]));
+      area.appendChild(work('pair', { a: rots.A.node, b: rots.B.node,
+        graph: panel('Energy vs. dihedral angle', null, [host, legend, status]) }));
       haloBox = h('div');
       area.appendChild(haloBox);
       var yMax = EnergyGraph.niceMax(EnergyGraph.maxEnergy(['Cl', 'Br', 'I'].reduce(function (acc, x) {
@@ -1679,8 +1700,8 @@ var App = (function () {
     var ids = Object.keys(MOLECULES).filter(function (k) { return MOLECULES[k].front; });
     var mol = molecule(ids.indexOf(id) >= 0 ? id : 'butane');
     el.parts.hidden = true;
-    el.next.hidden = true;
-    el.back.hidden = true;
+    nav('next', 'hidden', true);
+    nav('back', 'hidden', true);
     el.score.hidden = true;
     el.stepTitle.textContent = 'Explore';
     el.counter.textContent = 'Teacher demo: nothing is saved';
@@ -1695,8 +1716,7 @@ var App = (function () {
     var g;
     var rot = rotator(mol, function (phi) { m3.viewer().setPhi(phi); g.marker = phi; g.render(); });
     el.stage.appendChild(h('div', { class: 'btnrow' }, [sel]));
-    el.stage.appendChild(h('div', { class: 'grid2' }, [m3.node, rot.node]));
-    el.stage.appendChild(panel('Energy vs. dihedral angle', null, [host]));
+    el.stage.appendChild(work('turn', { m3: m3.node, rot: rot.node, graph: panel('Energy vs. dihedral angle', null, [host]) }));
     g = new EnergyGraph(host, { mol: mol });
     g.curves = [{ mol: mol }];
     g.marker = rot.rotor.phi;
@@ -1793,8 +1813,8 @@ var App = (function () {
   }
 
   function start() {
-    ['parts', 'stepTitle', 'counter', 'instructions', 'stage', 'feedback', 'next', 'back', 'score', 'lms',
-     'screen', 'strainBody', 'vocabBody'].forEach(function (id) { el[id] = $(id); });
+    ['parts', 'stepTitle', 'counter', 'instructions', 'stage', 'feedback', 'next', 'back', 'nextTop', 'backTop',
+     'score', 'lms', 'screen', 'strainBody', 'vocabBody'].forEach(function (id) { el[id] = $(id); });
     buildReference();
 
     var connected = SCORM.init();
@@ -1817,8 +1837,8 @@ var App = (function () {
     }
 
     Draw.setFlip(state.flip);
-    el.next.addEventListener('click', function () { goTo(state.step + 1); });
-    el.back.addEventListener('click', function () { goTo(state.step - 1); });
+    [el.next, el.nextTop].forEach(function (b) { b.addEventListener('click', function () { goTo(state.step + 1); }); });
+    [el.back, el.backTop].forEach(function (b) { b.addEventListener('click', function () { goTo(state.step - 1); }); });
 
     if (preview) { goTo(state.step); return; }
     paintParts();
