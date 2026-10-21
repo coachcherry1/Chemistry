@@ -73,11 +73,16 @@ const fakeLMS = () => {
     await page.waitForTimeout(150);
     await page.screenshot({ path: path.join(SHOTS, String(++shot).padStart(2, '0') + '-' + name + '.png'), fullPage: true });
   }
+  /* Next appears above the step and below it: use each in turn, and check
+     the two always agree */
+  let nexts = 0;
   async function next() {
     const id = await stepId();
     expect(!(await page.isDisabled('#next')), 'Next is still disabled on ' + id);
     await snap(id);
-    await page.click('#next');
+    await page.click(++nexts % 2 ? '#nextTop' : '#next');
+    const [bottom, top] = [await page.isDisabled('#next'), await page.isDisabled('#nextTop')];
+    expect(bottom === top, 'top and bottom Next disagree on ' + (await stepId()));
   }
   async function setRange(sel, v) {
     await page.$eval(sel, (el, val) => { el.value = val; el.dispatchEvent(new Event('input')); }, v);

@@ -32,6 +32,14 @@ build gets specific feedback ("The CH₃ on C1 is on the wrong face. It is on a 
 it belongs on the top face. In this chair, C1's up position is the axial one, pointing straight up."), a
 tip, and after two misses a "Show me in 3D" button.
 
+**Sized for a Chromebook.** On every step where the ring flips (flip the ring, flip it equatorial,
+which chair wins) and on bigger groups push harder, the chair drawing with its flip slider and the
+energy plot sit side by side (with the 3D model beside them when there is room), so a student dragging
+the slider watches the plot without scrolling or zooming out. This holds on a 1366 × 650 browser tab and
+in a frame as short as 520 px. On a narrower window the plot sits beside the chair drawing and stays in
+view as the page scrolls. After a prediction, the page scrolls just far enough to bring the molecule
+and plot on screen. **Back** and **Next** appear above each step as well as below it.
+
 ### The twist-boat
 
 The boat gets one short step, because its flagpole H atoms are the first steric clash students meet and set
@@ -257,7 +265,15 @@ halfway) and checks the score, status and interaction records that arrive, and t
 open beside checkpoints 3 and 4 only. It then starts a second attempt and checks that it begins clean while
 the gradebook keeps the best score. Before any of that it checks that a save from another release, or a
 save the browser kept from another copy, is ignored and the student starts at step 1. `SHOTS=dir` saves a
-screenshot of every step and `DARK=1` runs it in dark mode.
+screenshot of every step and `DARK=1` runs it in dark mode. It uses the Next buttons above and below the
+step in turn and checks that they always agree.
+
+`tools/layout.js` (optional, needs Playwright) opens every step at Chromebook and LMS-frame window
+sizes, from 900 × 600 to 1920 × 950, including 1366 × 650 and 1366 × 520, answering every prediction.
+It fails unless each flip slider, the chair drawing it moves and the energy plot are on screen together;
+each tray of words or groups and the drawing they go on; each drawing whose atoms are clicked; and each
+answer revealed beside a plot, with the plot. It also fails any step that scrolls sideways. Run it after
+any change to the page layout. `SHOTS=dir` saves a screenshot of each view it checks.
 
 To shorten the activity, lower `draw` in `src/js/quiz.js` or remove steps from `STEPS` in
 `src/js/app.js`, then bump `SCHEMA`.
@@ -287,7 +303,8 @@ cyclohexane-chairs-scorm/
 ├── tools/
 │   ├── validate.js       chemistry and item-bank checks
 │   ├── answer-key.js     regenerates ANSWER_KEY.md
-│   └── walkthrough.js    end-to-end browser test (optional)
+│   ├── walkthrough.js    end-to-end browser test (optional)
+│   └── layout.js         fits-a-Chromebook check (optional)
 ├── build.sh
 ├── ANSWER_KEY.md         generated
 └── README.md

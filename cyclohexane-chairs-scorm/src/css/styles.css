@@ -159,9 +159,22 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .tab.current { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .tab.locked { opacity: 0.45; cursor: not-allowed; }
 
-.statusline { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.statusline { display: flex; align-items: center; justify-content: space-between; gap: 6px 12px; flex-wrap: wrap; }
 .counter { color: var(--muted); font-size: 0.8rem; white-space: nowrap; }
-.instructions { margin: 4px 0 12px; font-size: 0.9rem; max-width: 80ch; }
+/* Back and Next again above the step, so nobody has to scroll down for them */
+.topnav { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.topnav .primary, .topnav .ghostbtn { padding: 5px 12px; font-size: 0.84rem; }
+.instructions { margin: 4px 0 12px; font-size: 0.9rem; max-width: 110ch; }
+
+/* A short screen (a Chromebook, or the frame the LMS opens it in) gives as
+   much of its height as it can to the activity itself. */
+@media (max-height: 760px) {
+  body { padding-top: 8px; }
+  .topbar { margin-bottom: 6px; }
+  .tabs { margin-bottom: 8px; }
+  .tab { padding: 4px 11px; }
+  .instructions { margin: 2px 0 8px; }
+}
 
 /* ------------------------------------------------------------------ layout */
 
@@ -174,6 +187,34 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
   align-items: start;
 }
 @media (max-width: 760px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+
+/* Steps where the ring flips. The 3D model, the chair drawing with its slider
+   and the energy plot share one row, so a student flipping the ring watches
+   all three without scrolling. On a narrower screen the plot sits beside the
+   chair drawing. The plot stays in view (sticky) while the page scrolls. */
+.work { display: grid; gap: 12px; align-items: start; }
+.work-turn { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr) minmax(0, 1.35fr); grid-template-areas: "m3 chair plot"; }
+.work-pair { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.2fr); grid-template-areas: "a b plot"; }
+.work-swap { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.8fr) minmax(0, 1.25fr); grid-template-areas: "q m3 plot"; }
+.w-m3 { grid-area: m3; }
+.w-chair { grid-area: chair; }
+.w-a { grid-area: a; }
+.w-b { grid-area: b; }
+.w-q { grid-area: q; }
+.w-plot { grid-area: plot; position: sticky; top: 8px; }
+@media (max-width: 1180px) {
+  .work-turn, .work-pair, .work-swap { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
+  .work-turn { grid-template-areas: "chair plot" "m3 plot"; }
+  .work-pair { grid-template-areas: "a plot" "b plot"; }
+  .work-swap { grid-template-areas: "q plot" "m3 plot"; }
+}
+@media (max-width: 760px) {
+  .work-turn, .work-pair, .work-swap { grid-template-columns: minmax(0, 1fr); }
+  .work-turn { grid-template-areas: "chair" "plot" "m3"; }
+  .work-pair { grid-template-areas: "a" "b" "plot"; }
+  .work-swap { grid-template-areas: "q" "plot" "m3"; }
+  .w-plot { position: static; }
+}
 
 .panel {
   background: var(--panel);
@@ -223,7 +264,8 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 
 /* ---------------------------------------------------------------- 3D model */
 
-.c3d-wrap { position: relative; height: 300px; }
+/* shorter on a short screen (a Chromebook), so a whole row fits */
+.c3d-wrap { position: relative; height: clamp(190px, 40vh, 300px); }
 .c3d { width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
 .c3d.grabbing { cursor: grabbing; }
 
@@ -639,6 +681,9 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .chair.fig { max-width: 320px; }
 .chair.choice-fig { max-width: 230px; }
 .chair-wrap { display: flex; flex-direction: column; align-items: center; }
+/* in a row beside the plot, a short screen gets a smaller drawing */
+.work .chair { max-width: min(440px, 62vh); }
+.work .chair.small { max-width: min(320px, 52vh); }
 .ch-halo { stroke: var(--panel); stroke-width: 9; stroke-linecap: round; }
 .ch-ring { stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
 .ch-sub { stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; }
@@ -736,7 +781,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .checklist li::before { content: '\25CB  '; }
 .checklist li.done::before { content: '\2713  '; }
 
-.c3d-wrap.short { height: 250px; }
+.c3d-wrap.short { height: clamp(180px, 36vh, 250px); }
 .view-note { font-size: 0.75rem; color: var(--muted); margin: 4px 0 0; }
 .chair-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .chair-pair figure { margin: 0; text-align: center; }

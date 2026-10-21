@@ -302,12 +302,15 @@ var App = (function () {
     goTo(0);
   }
 
+  /* Back and Next appear above the step and below it: set both copies. */
+  function nav(name, prop, value) { el[name][prop] = value; el[name + 'Top'][prop] = value; }
+
   function complete(msg, kind) {
     var s = STEPS[state.step];
     state.done[s.id] = 1;
     if (state.step + 1 > state.max) state.max = state.step + 1;
     persist();
-    el.next.disabled = false;
+    nav('next', 'disabled', false);
     paintParts();
     if (msg) say(msg, kind || 'good');
   }
@@ -351,10 +354,10 @@ var App = (function () {
     el.stage.innerHTML = '';
     el.stage.className = 'stage stage-' + s.kind;
     say('');
-    el.next.disabled = !(state.done[s.id] || i < state.max);
-    el.next.hidden = s.kind === 'results';
-    el.next.textContent = STEPS[i + 1] && STEPS[i + 1].kind === 'results' ? 'See results →' : 'Next →';
-    el.back.hidden = i === 0;
+    nav('next', 'disabled', !(state.done[s.id] || i < state.max));
+    nav('next', 'hidden', s.kind === 'results');
+    nav('next', 'textContent', STEPS[i + 1] && STEPS[i + 1].kind === 'results' ? 'See results →' : 'Next →');
+    nav('back', 'hidden', i === 0);
     paintParts();
     ctl = RENDER[s.kind](s) || null;
     window.scrollTo(0, 0);
@@ -366,6 +369,23 @@ var App = (function () {
     return h('section', { class: 'panel ' + (cls || '') }, [
       h('div', { class: 'panel-head' }, [h('h3', { text: title }), hint ? h('span', { class: 'hint', text: hint }) : null])
     ].concat(kids || []));
+  }
+
+  /* Bring a newly opened work area on screen, scrolling no further than it
+     takes, so the prediction above it stays in view as far as it can. */
+  function showArea(node) {
+    try { node.scrollIntoView({ block: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' }); }
+    catch (e) { node.scrollIntoView(false); }
+  }
+
+  /* Steps where the ring flips lay their panels out on one row (.work in
+     styles.css), so the energy plot stays in view while the student flips the
+     ring. Each panel is tagged with the grid area it fills. */
+  function work(kind, cells) {
+    return h('div', { class: 'work work-' + kind }, Object.keys(cells).map(function (k) {
+      cells[k].classList.add('w-' + k);
+      return cells[k];
+    }));
   }
 
   function predictCard(p, chosen, onPick) {
@@ -587,7 +607,7 @@ var App = (function () {
     function paintTop() {
       top.innerHTML = '';
       top.appendChild(panel('Your prediction', null, [predictCard(P, pr.p, function (i) {
-        pr.p = i; save(); paintTop(); open(); check();
+        pr.p = i; save(); paintTop(); open(); check(); showArea(area);
       })]));
       if (pr.p != null) {
         top.appendChild(reveal([verdict(P, pr.p) + 'A flat ring would have both. 120° is far from the 109.5° that ' +
@@ -654,7 +674,7 @@ var App = (function () {
     function paintTop() {
       top.innerHTML = '';
       top.appendChild(panel('Your prediction', null, [predictCard(P, pr.p, function (i) {
-        pr.p = i; save(); paintTop(); open(); check();
+        pr.p = i; save(); paintTop(); open(); check(); showArea(area);
       })]));
     }
 
@@ -808,8 +828,8 @@ var App = (function () {
     function paintTop() {
       top.innerHTML = '';
       top.appendChild(h('div', { class: 'grid2' }, [
-        panel('Prediction 1', null, [predictCard(P1, pr.a, function (i) { pr.a = i; save(); paintTop(); open(); })]),
-        panel('Prediction 2', null, [predictCard(P2, pr.b, function (i) { pr.b = i; save(); paintTop(); open(); })])
+        panel('Prediction 1', null, [predictCard(P1, pr.a, function (i) { pr.a = i; save(); paintTop(); open(); shown(); })]),
+        panel('Prediction 2', null, [predictCard(P2, pr.b, function (i) { pr.b = i; save(); paintTop(); open(); shown(); })])
       ]));
       if (pr.a != null && pr.b != null) {
         top.appendChild(reveal([
@@ -820,6 +840,8 @@ var App = (function () {
         ]));
       }
     }
+
+    function shown() { if (pr.a != null && pr.b != null) showArea(area); }
 
     var opened = false, host, m3, picker;
     function open() {
@@ -897,7 +919,7 @@ var App = (function () {
     function paintTop() {
       top.innerHTML = '';
       top.appendChild(panel('Your prediction', null, [predictCard(P, pr.p, function (i) {
-        pr.p = i; save(); paintTop(); open();
+        pr.p = i; save(); paintTop(); open(); showArea(area);
       })]));
     }
 
@@ -920,12 +942,13 @@ var App = (function () {
       var fl = flipper(function (t) { update(t); }, { t: 0 });
       var plotHost = h('div', { class: 'graph-host' });
       var why = h('div');
-      area.appendChild(h('div', { class: 'grid2' }, [m3.node, panel('Chair drawing', null, [host, read, fl.node,
-        h('div', { class: 'btnrow' }, [tog]), keyRow([['ax', 'axial in chair 1']])])]));
+      area.appendChild(work('turn', { m3: m3.node,
+        chair: panel('Chair drawing', null, [host, read, fl.node,
+          h('div', { class: 'btnrow' }, [tog]), keyRow([['ax', 'axial in chair 1']])]),
+        plot: panel('Energy during the flip', null, [plotHost,
+          h('p', { class: 'muted', text: 'Chair 1 and chair 2 of cyclohexane are the same shape, so they have the same ' +
+            'energy. Every shape in between is less stable.' })]) }));
       area.appendChild(panel('The same flip in Newman projections', 'down C1–C2 and C5–C4', [h('div', { class: 'klein-pair' }, figs)]));
-      area.appendChild(panel('Energy during the flip', null, [plotHost,
-        h('p', { class: 'muted', text: 'Chair 1 and chair 2 of cyclohexane are the same shape, so they have the same ' +
-          'energy. Every shape in between is less stable.' })]));
       area.appendChild(why);
       m3.start();
       var plot = new Draw.FlipPlot(plotHost, { mol: cy });
@@ -1314,7 +1337,7 @@ var App = (function () {
     function paintTop() {
       top.innerHTML = '';
       top.appendChild(panel('Your prediction', null, [predictCard(P, pr.p, function (i) {
-        pr.p = i; save(); paintTop(); open();
+        pr.p = i; save(); paintTop(); open(); showArea(area);
       })]));
     }
 
@@ -1329,8 +1352,8 @@ var App = (function () {
       var plotHost = h('div', { class: 'graph-host' });
       var parts = h('div');
       var after = h('div');
-      area.appendChild(h('div', { class: 'grid2' }, [m3.node, panel('Chair drawing', null, [host, read, fl.node])]));
-      area.appendChild(panel('Energy of the two chairs', null, [plotHost, parts]));
+      area.appendChild(work('turn', { m3: m3.node, chair: panel('Chair drawing', null, [host, read, fl.node]),
+        plot: panel('Energy of the two chairs', null, [plotHost, parts]) }));
       area.appendChild(after);
       m3.start();
       var plot = new Draw.FlipPlot(plotHost, { mol: mol, captions: ['CH₃ axial', 'CH₃ equatorial'] });
@@ -1407,7 +1430,9 @@ var App = (function () {
     function paint() {
       top.innerHTML = '';
       area.innerHTML = '';
-      top.appendChild(panel('Prediction 1', null, [predictCard(P1, pr.a, function (i) { pr.a = i; save(); paint(); })]));
+      top.appendChild(panel('Prediction 1', null, [predictCard(P1, pr.a, function (i) {
+        pr.a = i; save(); paint(); showArea(area);
+      })]));
       if (pr.a == null) return;
       var K = [0, 1].map(function (k) { return Draw.kleinLayout(mol, k).pos; });
       area.appendChild(panel('Gauche butane beside axial methylcyclohexane', 'both seen as Newman projections', [
@@ -1441,7 +1466,9 @@ var App = (function () {
       area.appendChild(h('div', { class: 'grid2' }, [h('div', null, [m3.node, chips]), card2]));
       m3.start();
       m3.viewer().setGlow(crowdGlow(mol, 0));
-      card2.appendChild(panel('Prediction 2', null, [predictCard(P2, pr.b, function (i) { pr.b = i; save(); paint(); check(); })]));
+      card2.appendChild(panel('Prediction 2', null, [predictCard(P2, pr.b, function (i) {
+        pr.b = i; save(); paint(); check(); showArea(area.lastChild);
+      })]));
       if (pr.b == null) return;
       area.appendChild(panel('Chair 2, CH₃ equatorial', 'the arrow shows how the CH₃ moved', [
         h('div', { class: 'chair-wrap' }, [Draw.klein(mol, 1, { box: ['1t'], from: 0, track: ['1t'] })])
@@ -1499,11 +1526,11 @@ var App = (function () {
     var plotHost = h('div', { class: 'graph-host' });
     var below = h('div');
     var table = h('table', { class: 'ref-table swap-table' });
-    el.stage.appendChild(h('div', { class: 'grid2' }, [
-      panel('Group on C1', null, [chips, card]),
-      h('div', null, [m3.node, h('div', { class: 'btnrow' }, [axBtn, eqBtn])])
-    ]));
-    el.stage.appendChild(below);
+    el.stage.appendChild(work('swap', {
+      q: panel('Group on C1', null, [chips, card]),
+      m3: h('div', null, [m3.node, h('div', { class: 'btnrow' }, [axBtn, eqBtn])]),
+      plot: below
+    }));
     el.stage.appendChild(panel('What you found', null, [table]));
     m3.start();
     var showK = 0, plot = null;
@@ -1544,6 +1571,7 @@ var App = (function () {
         state.pr.swap = got;
         persist();
         paint();
+        showArea(card.lastChild);
       }));
       if (answered) {
         card.appendChild(reveal([(got[x] === swapAnswer(x) ? 'Right. ' : 'Not quite: ' + opts(x)[swapAnswer(x)].toLowerCase() + '. ') +
@@ -1612,16 +1640,18 @@ var App = (function () {
       h('span', { class: 'key alt', 'aria-hidden': 'true' }), ' cis'
     ])]);
     var after = h('div');
-    el.stage.appendChild(h('div', { class: 'grid2' }, IDS.map(function (id) {
+    var cells = {};
+    IDS.forEach(function (id, i) {
       var m = molecule(id);
       hosts[id] = h('div', { class: 'chair-wrap' });
       reads[id] = h('p', { class: 'parts' });
       cols[id] = h('div');
-      return panel(m.name, m.rel === 'cis' ? 'cis: same face' : 'trans: opposite faces', [
+      cells[i ? 'b' : 'a'] = panel(m.name, m.rel === 'cis' ? 'cis: same face' : 'trans: opposite faces', [
         flatRow([id]), hosts[id], reads[id], cols[id]
       ]);
-    })));
-    el.stage.appendChild(plotPanel);
+    });
+    cells.plot = plotPanel;   /* after the molecules, for keyboard and screen-reader order */
+    el.stage.appendChild(work('pair', cells));
     el.stage.appendChild(after);
     var plot = new Draw.FlipPlot(plotHost, { mols: IDS.map(molecule) });
 
@@ -1767,7 +1797,7 @@ var App = (function () {
       card.innerHTML = '';
       area.innerHTML = '';
       card.appendChild(h('div', { class: 'grid2' }, [flatRow([b.id]),
-        predictCard({ q: b.q, choices: b.choices }, me.p, function (i) { me.p = i; save(); paint(); })]));
+        predictCard({ q: b.q, choices: b.choices }, me.p, function (i) { me.p = i; save(); paint(); showArea(area); })]));
       if (me.p == null) return;
       var host = h('div', { class: 'chair-wrap' });
       var read = h('p', { class: 'parts' });
@@ -2039,8 +2069,8 @@ var App = (function () {
     var ids = Object.keys(MOLECULES);
     var mol = molecule(ids.indexOf(id) >= 0 ? id : 'methyl');
     el.parts.hidden = true;
-    el.next.hidden = true;
-    el.back.hidden = true;
+    nav('next', 'hidden', true);
+    nav('back', 'hidden', true);
     el.score.hidden = true;
     el.stepTitle.textContent = 'Explore';
     el.counter.textContent = 'Teacher demo: nothing is saved';
@@ -2056,9 +2086,9 @@ var App = (function () {
     var fl = flipper(function (t) { update(t); });
     var plotHost = h('div', { class: 'graph-host' });
     el.stage.appendChild(h('div', { class: 'btnrow' }, [sel]));
-    el.stage.appendChild(h('div', { class: 'grid2' }, [m3.node, panel('Chair drawing', null, [host, read, fl.node])]));
+    el.stage.appendChild(work('turn', { m3: m3.node, chair: panel('Chair drawing', null, [host, read, fl.node]),
+      plot: panel('Energy during the flip', null, [plotHost]) }));
     el.stage.appendChild(panel('Newman projections, down C1–C2 and C5–C4', 'the nearer chair', [kHost]));
-    el.stage.appendChild(panel('Energy during the flip', null, [plotHost]));
     var plot = new Draw.FlipPlot(plotHost, { mol: mol });
     m3.start();
     function update(t) {
@@ -2140,8 +2170,8 @@ var App = (function () {
   }
 
   function start() {
-    ['parts', 'stepTitle', 'counter', 'instructions', 'stage', 'feedback', 'next', 'back', 'score', 'lms',
-     'screen', 'strainBody', 'vocabBody'].forEach(function (id) { el[id] = $(id); });
+    ['parts', 'stepTitle', 'counter', 'instructions', 'stage', 'feedback', 'next', 'back', 'nextTop', 'backTop',
+     'score', 'lms', 'screen', 'strainBody', 'vocabBody'].forEach(function (id) { el[id] = $(id); });
     buildReference();
 
     var connected = SCORM.init();
@@ -2163,8 +2193,8 @@ var App = (function () {
       persist();
     }
 
-    el.next.addEventListener('click', function () { goTo(state.step + 1); });
-    el.back.addEventListener('click', function () { goTo(state.step - 1); });
+    [el.next, el.nextTop].forEach(function (b) { b.addEventListener('click', function () { goTo(state.step + 1); }); });
+    [el.back, el.backTop].forEach(function (b) { b.addEventListener('click', function () { goTo(state.step - 1); }); });
 
     if (preview) { goTo(state.step); return; }
     paintParts();

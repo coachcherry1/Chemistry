@@ -32,7 +32,12 @@ node tools/validate.js                    # must pass
 node tools/answer-key.js > ANSWER_KEY.md
 ./build.sh                                # zip into dist/
 node tools/walkthrough.js                 # Playwright, fake LMS; SHOTS=dir DARK=1 optional
+node tools/layout.js                      # Playwright: fits a Chromebook (1366x650, 1366x520 LMS frame)
 ```
+
+Students use school Chromebooks. Whatever a student works with (a slider or molecule and the plot or
+graph it moves, a tray and its drop targets) must be on screen together at 1366x520 without zooming;
+`tools/layout.js` checks this. Back and Next sit above each step as well as below it.
 
 Playwright lives at `/opt/node22/lib/node_modules/playwright` with Chromium preinstalled. To look at a
 step, open `src/index.html?step=<id or number>`. To keep context small, screenshot the panel you need,
