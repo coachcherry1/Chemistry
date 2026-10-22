@@ -10,6 +10,7 @@ picker, 3D viewer) usually belong in every folder that has a copy.
 | `newman-projections-scorm/` | Newman projections, with calculations |
 | `newman-projections-qualitative-scorm/` | Same, qualitative (no calculations) |
 | `cyclohexane-chairs-scorm/` | Chairs, ring flips, 1,3-diaxial crowding (qualitative) |
+| `chirality-scorm/` | Chirality, R and S, enantiomers, diastereomers and meso compounds (qualitative) |
 
 ## House rules
 
@@ -62,5 +63,33 @@ not the full page.
   - `avalues.js`: A-values and energies
   - `draw.js`: chair, flat, Newman, Klein, energy plot
   - `viewer3d.js`: 3D viewer
+  - `app.js`: `STEPS`, `PREDICT`, renderers
+  - `quiz.js`: question bank
+
+## chirality-scorm (branch `claude/hopeful-feynman-fuhl6t`, zip v1, SCHEMA 1)
+
+- **Key objective:** name a chirality centre R or S by rotating the molecule until 4 is on the dash, never by swapping
+  groups; then tell enantiomers, diastereomers and meso compounds apart.
+- 17 steps in 4 parts; 16 graded questions (4+4+4+4) from a pool of 48. The atomic-number table is open beside checkpoints 2–4.
+- **Teacher's wording:** the rule on screen is "If 4 is not on the dash, rotate the molecule." R is "rockwise" and S
+  "sountersockwise" (the teacher's joke, credited to them) in exactly three places: the steering-wheel step, Big ideas and
+  Vocabulary, never in `quiz.js`. Swap, switch, interchange and reverse never appear in student text. The validator checks all of it.
+- **Scope:** no calculations, no optical activity, no Fischer projections (the validator uses Fischer only for its textbook
+  anchors). The mirror image is drawn both beside the molecule and behind the page. Rings: cis/trans 1,3- and
+  1,4-dimethylcyclohexane from the chairs activity. Molecules A and B (2,3-dibromobutane) come from the Newman activity.
+- **Geometry:** one 3D model per molecule drives everything.
+  - Drawings are projections of it (x right, y up, z toward the reader). A bond whose unit vector has z above 0.3 is a
+    wedge, below −0.3 a dash.
+  - R/S is read from the model's handedness; CIP priorities come from a hierarchical digraph with duplicate atoms.
+  - Relationships are found twice, from the R/S labels and by superposing the models, and must agree.
+  - Turns snap to the 12 drawable orientations of each template; a mirror reflects beside (x) or behind (z) the page.
+- **Files:**
+  - `geom.js`: vectors, rotations, superposition
+  - `groups.js`: elements and substituents
+  - `molecules.js`: molecule specs and builders
+  - `cip.js`: priorities, explanations, R/S
+  - `stereo.js`: turns, mirrors, relationships, meso and mirror planes
+  - `draw.js`: wedge-and-dash, flat ring and Newman drawings
+  - `viewer3d.js`: 3D viewer (2D canvas, linked mirror image)
   - `app.js`: `STEPS`, `PREDICT`, renderers
   - `quiz.js`: question bank
