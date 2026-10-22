@@ -1,0 +1,142 @@
+/* styles.css — self-contained: no web fonts, no CDN. Same palette as the Lewis
+   and resonance activities. The drawing itself does not use these styles —
+   render.js writes its colors into the SVG, so copies and downloads match. */
+
+:root {
+  --bg: #f2f5f8; --panel: #ffffff; --ink: #12212e; --muted: #5d7283; --line: #dde5ec;
+  --accent: #0f5d8f; --on-accent: #ffffff; --good: #0f7a52; --good-bg: #e4f4ec; --bad: #b3261e; --bad-bg: #fdeceb;
+  --note-bg: #eef4fa; --radius: 8px;
+  --e-h: #4b5966; --e-c: #12212e; --e-n: #2f62cc; --e-o: #c9302a; --e-f: #2e7d32; --e-cl: #1e7b48; --e-p: #b4501f;
+  --e-s: #8a6d00; --e-br: #9a2f24; --e-i: #7a3a9e; --e-b: #a0522d; --e-be: #4f7a28; --e-xe: #1b7f8c; --e-na: #5b4fc4;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1218; --panel: #141f29; --ink: #e6edf3; --muted: #93a7b6; --line: #243444;
+    --accent: #5fb3e6; --on-accent: #08131c; --good: #57c99a; --good-bg: #123028; --bad: #f08a82; --bad-bg: #3a1a18;
+    --note-bg: #16283a;
+    --e-h: #b3c2ce; --e-c: #e6edf3; --e-n: #79a3f2; --e-o: #f2766f; --e-f: #7fd38a; --e-cl: #5fcf8f; --e-p: #f39a6b;
+    --e-s: #e3c14b; --e-br: #e0786c; --e-i: #c08ae0; --e-b: #e3a072; --e-be: #a6d47a; --e-xe: #5fd0dc; --e-na: #b9b0ff;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1218; --panel: #141f29; --ink: #e6edf3; --muted: #93a7b6; --line: #243444;
+  --accent: #5fb3e6; --on-accent: #08131c; --good: #57c99a; --good-bg: #123028; --bad: #f08a82; --bad-bg: #3a1a18;
+  --note-bg: #16283a;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  padding: 12px 16px 24px;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+h1 { font-size: 1.05rem; margin: 0; }
+h2 { font-size: 0.78rem; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.top-right { display: flex; gap: 8px; align-items: center; }
+.lms { font-size: 0.72rem; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+.lms.on { color: var(--good); border-color: var(--good); }
+.ver { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+
+.layout { display: grid; grid-template-columns: minmax(260px, 310px) minmax(0, 1fr); gap: 12px; align-items: start; }
+@media (max-width: 860px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .side { order: 2; }
+}
+.side, .work { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px 12px; }
+
+.primary, .ghostbtn, .mini { font: inherit; border-radius: 6px; cursor: pointer; }
+.primary { font-weight: 600; padding: 7px 14px; border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent); }
+.primary:hover { filter: brightness(1.08); }
+.ghostbtn { padding: 6px 11px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+.ghostbtn:hover { border-color: var(--accent); }
+.mini { padding: 4px 9px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-size: 0.85rem; }
+.mini:hover:not(:disabled) { border-color: var(--accent); }
+.mini:disabled { opacity: 0.4; cursor: not-allowed; }
+.mini[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.mini.danger { color: var(--bad); }
+.btnrow { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+
+.text-in, .select {
+  font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink);
+  min-width: 0;
+}
+.text-in { flex: 1; font-size: 1rem; }
+.text-in:focus, .select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.formula-row { display: flex; gap: 6px; align-items: center; }
+.formula-row + .formula-row { margin-top: 8px; }
+.grow { flex: 1; }
+.hint { font-size: 0.78rem; color: var(--muted); margin: 6px 0 0; }
+.hint.bad { color: var(--bad); }
+
+.seg { display: flex; flex-wrap: wrap; gap: 4px; }
+.palette { margin-top: 10px; }
+.el-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+.el-btn {
+  font: 700 0.95rem system-ui, sans-serif; padding: 6px 0; border: 1px solid var(--line); border-bottom-width: 3px;
+  border-radius: 6px; background: var(--bg); cursor: pointer; color: var(--ink);
+}
+.el-btn:hover { border-color: var(--accent); }
+.el-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent) !important; }
+.el-h { color: var(--e-h); } .el-c { color: var(--e-c); } .el-n { color: var(--e-n); } .el-o { color: var(--e-o); }
+.el-f { color: var(--e-f); } .el-cl { color: var(--e-cl); } .el-p { color: var(--e-p); } .el-s { color: var(--e-s); }
+.el-br { color: var(--e-br); } .el-i { color: var(--e-i); } .el-b { color: var(--e-b); } .el-be { color: var(--e-be); }
+.el-xe { color: var(--e-xe); } .el-na { color: var(--e-na); } .el-si { color: var(--muted); }
+.small-sel { margin-top: 6px; width: 100%; }
+
+.inspector { display: flex; flex-direction: column; gap: 6px; font-size: 0.88rem; }
+.insp-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.stepper, .nudge { display: flex; align-items: center; gap: 6px; }
+.st-label { min-width: 118px; font-size: 0.85rem; }
+.st-val { min-width: 1.6em; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.toolbar { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.spacer { flex: 1; }
+.msg { margin: 0; min-height: 1.4em; font-size: 0.85rem; color: var(--muted); }
+.msg.good { color: var(--good); }
+.msg.bad { color: var(--bad); }
+
+/* the drawing area: always white (or a dark slide), whatever the page theme,
+   so the screen matches what gets copied */
+.canvas { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: #ffffff; }
+.canvas.bg-dark { background: #0d1b2a; }
+.board { display: block; width: 100%; height: auto; touch-action: none; user-select: none; -webkit-user-select: none; }
+.board:focus { outline: none; }
+.board:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+.canvas.tool-atom .board, .canvas.tool-arrow .board { cursor: crosshair; }
+.canvas.tool-erase .board { cursor: not-allowed; }
+.board .hit { cursor: pointer; }
+.canvas.tool-erase .board .hit { cursor: pointer; }
+.status { margin: 0; font-size: 0.85rem; color: var(--muted); }
+
+.options { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
+.check { display: inline-flex; gap: 6px; align-items: center; font-size: 0.88rem; }
+
+.more summary { cursor: pointer; font-weight: 600; font-size: 0.88rem; }
+.more[open] summary { margin-bottom: 8px; }
+.lib { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.lib li { display: flex; gap: 6px; align-items: center; }
+.lib-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.howto { margin: 0; padding-left: 18px; font-size: 0.86rem; }
+.howto li { margin-bottom: 6px; }
+
+/* Snip view: nothing on screen but the structure */
+.snip {
+  position: fixed; inset: 0; z-index: 50; background: #ffffff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: zoom-out;
+}
+.snip.dark { background: #0d1b2a; }
+.snip svg { max-width: 92vw; max-height: 80vh; }
+.snip-hint {
+  position: fixed; left: 12px; bottom: 8px; margin: 0; font: 12px system-ui, sans-serif; color: #8a99a6;
+}
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
