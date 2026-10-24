@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="IRMS_TWO_SPECTRA_MANIFEST" version="1.0"
+          xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+          xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                              http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd
+                              http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+
+  <organizations default="IRMS_ORG">
+    <organization identifier="IRMS_ORG">
+      <title>IR and Mass Spectrometry: Two Spectra, One Compound</title>
+      <item identifier="IRMS_ITEM" identifierref="IRMS_RES" isvisible="true">
+        <!-- No masteryscore: this SCO reports completion, not a numeric grade. -->
+        <title>IR and Mass Spectrometry: Two Spectra, One Compound</title>
+      </item>
+    </organization>
+  </organizations>
+
+  <resources>
+    <resource identifier="IRMS_RES" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="index.html"/>
+      <file href="css/styles.css"/>
+      <file href="js/groups.js"/>
+      <file href="js/fragments.js"/>
+      <file href="js/compounds.js"/>
+      <file href="js/spectrum.js"/>
+      <file href="js/massspec.js"/>
+      <file href="js/structures.js"/>
+      <file href="js/evidence.js"/>
+      <file href="js/scorm.js"/>
+      <file href="js/game.js"/>
+    </resource>
+  </resources>
+
+</manifest>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IR and Mass Spec — Two Spectra, One Compound</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <h1>IR and mass spectrometry &mdash; two spectra, one compound</h1>
+  <nav id="tabs" class="tabs" aria-label="Levels"></nav>
+  <span id="lms" class="lms off">&nbsp;</span>
+</header>
+
+<main>
+  <div class="statusline">
+    <div class="level-head">
+      <h2 id="levelName"></h2>
+      <p id="blurb" class="blurb"></p>
+    </div>
+    <div class="status-tools">
+      <span id="counter" class="counter"></span>
+      <button id="hint" type="button" class="secondary small" hidden>Hint</button>
+      <button id="howto" type="button" class="secondary small">How to read these</button>
+    </div>
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="plots">
+      <section id="msWrap" class="plotwrap ms" data-spec="ms" aria-label="Mass spectrum">
+        <h3 class="plot-title"><span class="spec-tag">MS</span> Mass spectrum</h3>
+        <div class="plotbox">
+          <canvas id="msPlot" aria-label="Mass spectrum"></canvas>
+          <div id="msOverlay" class="overlay"></div>
+        </div>
+      </section>
+      <section id="irWrap" class="plotwrap ir" data-spec="ir" aria-label="Infrared spectrum">
+        <h3 class="plot-title"><span class="spec-tag">IR</span> Infrared spectrum</h3>
+        <div class="plotbox">
+          <canvas id="irPlot" aria-label="Infrared spectrum"></canvas>
+          <div id="irOverlay" class="overlay"></div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="side">
+      <div id="card" class="card"></div>
+      <div id="tray" class="tray" tabindex="-1" aria-label="Labels to place"></div>
+      <div id="board" class="board" aria-label="Case file"></div>
+    </aside>
+  </div>
+
+  <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+
+  <div id="explain" class="explain" hidden></div>
+  <div id="fragments" class="fragments" hidden></div>
+
+  <div class="controls">
+    <button id="next" type="button" class="primary" hidden>Next compound &rarr;</button>
+    <button id="save" type="button" class="secondary">Save progress</button>
+    <span id="saveNote" class="save-note"></span>
+  </div>
+
+  <details id="reference" class="reference">
+    <summary>Reference tables &mdash; IR bands and mass spectrum losses</summary>
+    <div id="refbody"></div>
+  </details>
+</main>
+
+<div id="screen" class="screen" hidden></div>
+
+<script src="js/groups.js"></script>
+<script src="js/fragments.js"></script>
+<script src="js/compounds.js"></script>
+<script src="js/spectrum.js"></script>
+<script src="js/massspec.js"></script>
+<script src="js/structures.js"></script>
+<script src="js/evidence.js"></script>
+<script src="js/scorm.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
