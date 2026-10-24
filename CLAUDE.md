@@ -17,6 +17,8 @@ Everything is on `main`; older work branches were merged in October 2026.
 | `resonance-scorm/` | Resonance structures and the hybrid, same 5 rules and builder |
 | `lewis-drawing-tool/` | Teacher's drawing tool, same 5-rule engine, reports no score |
 | `acetone-kinetics-scorm/` | Virtual lab: iodination of acetone by initial rates |
+| `vsepr-polarity-scorm/` | VSEPR: build by the 5 rules beside a 3D window, molecular geometry for 2 to 6 domains, polarity by radial symmetry |
+| `intermolecular-forces-scorm/` | IMFs: heating stage with real mp/bp, LDF and polarizability, dipole-dipole, hydrogen bonds (follows VSEPR) |
 
 **Organic chemistry elective (Klein)**
 
@@ -119,3 +121,44 @@ not the full page.
   - `viewer3d.js`: 3D viewer (2D canvas, linked mirror image)
   - `app.js`: `STEPS`, `PREDICT`, renderers
   - `quiz.js`: question bank
+
+## vsepr-polarity-scorm (branch `vsepr-polarity`, zip v1, SCHEMA 1)
+
+- **Key objective:** domains spread apart, so the Lewis structure (flat) is not the shape; lone pairs repel more
+  strongly than shared pairs; polarity by radial symmetry.
+- 14 steps in 3 parts; 16 graded questions (4+6+6) from a pool of 50. The electronegativity table is open beside checkpoint 3.
+- **Teacher's choices:** builds use the 5 rules (lewis.js, builder.js, draw.js, snark.js copied from `lewis-structures-scorm/`;
+  builder.js adds an `onChange` hook for the 3D window). 2 to 6 electron domains; lone pairs on the central atom only with
+  4 domains (no see-saw, T-shaped, square planar, square pyramidal, no 7 domains). Angles taught as 109.5°, **<109.5°**
+  (one lone pair) and **<<109.5°** (two); no 107 or 104.5 is ever asked or shown. "Molecular geometry", shape only (no
+  electron-domain geometry name). No steric number, AXE, hybridization, formal charge or dipole arrows/moments.
+- **Polarity:** atoms get partial charges from Pauling electronegativity differences; the charge view marks the centre of
+  positive and of negative charge; together means nonpolar (radially symmetric), apart means polar. Ions get geometries
+  but never a polarity. The field test turns every polar molecule equally (no "how polar").
+- **Geometry (`vsepr.js`):** domain templates matched to the Lewis drawing's directions for the flat-to-3D spread.
+  NH₃ and H₂O are built at their measured angles (`MEASURED_ANGLE` in species.js); no other lone-pair molecule is drawn in
+  3D. Angle arcs only where all outer atoms are alike; mixed outer atoms read "about 109.5°".
+- **Files:** `species.js`, `vsepr.js` (model), `viewer3d.js` (canvas 3D, lone-pair lobes, arcs, charges), `field.js`
+  (field test), `quiz.js`, `app.js`, plus the copied Lewis files.
+
+## intermolecular-forces-scorm (branch `intermolecular-forces`, zip v1, SCHEMA 1)
+
+- **Key objective:** IMFs are between molecules; stronger IMFs, higher mp/bp; with similar electron counts LDF <
+  dipole-dipole < hydrogen bonding.
+- 22 steps in 5 parts; 18 graded questions (4+4+5+5) from a pool of 47. The atomic-number table is beside every
+  checkpoint, the electronegativity table beside checkpoint 3.
+- **Teacher's rules:** LDF compared by electron count, with the word polarizability. Hydrogen bonds: **donor** (H on N, O
+  or F) and **receiver** (lone pair on N, O or F; never "acceptor"); count per molecule = min(H on N/O/F, lone pairs on
+  N/O/F). Helium only by boiling point, only against neon (no mp at 1 atm). Excluded: "van der Waals", degrees of
+  polarity, isomers and contact area, H₂/He, organic class names (alcohol, carbonyl, ether ...).
+- **Data:** real mp/bp (CRC 97th ed.) in kelvin in `data.js`, shown in °C and K. Every comparison anywhere must be
+  decided by `Chem.compare` and agree with both bp and mp (`Chem.dataAgrees`); the validator also requires every °C
+  quoted in questions and steps to be a real data point. Kept out because the data disagree: ethanol vs methanol,
+  water vs ethylene glycol, NH₃ vs HF.
+- **Heating stage (`heat.js`):** 2D Lennard-Jones particles with gravity 0.25 and a thermostat; reduced temperature
+  from the real mp/bp: solid 0.03 to 0.2, liquid 0.36 to 0.42, gas 1.3 to 2.6 (measured: crystal, cohesive pool, box-filling
+  gas). Playback speed per box ∝ √(T/M) so speeds match real thermal speeds.
+- **Files:** `data.js`, `chem.js` (model), `mol2d.js` (Lewis SVG scenes, H-bond lines), `heat.js`, `cloud.js`
+  (polarizability), `quiz.js`, `app.js`.
+- **Walkthrough harness (both new packages):** the fake LMS reads and writes sessionStorage on every call and never stages
+  the next load's data; staging made the reload check fail at random (still the case in the older packages' walkthroughs).
