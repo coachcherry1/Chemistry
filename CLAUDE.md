@@ -94,14 +94,14 @@ not the full page.
   - `app.js`: `STEPS`, `PREDICT`, renderers
   - `quiz.js`: question bank
 
-## chirality-scorm (branch `claude/hopeful-feynman-fuhl6t`, zip v1, SCHEMA 1)
+## chirality-scorm (branch `claude/hopeful-feynman-fuhl6t`, zip v1, SCHEMA 2)
 
-- **Key objective:** name a chirality centre R or S by rotating the molecule until 4 is on the dash, never by swapping
-  groups; then tell enantiomers, diastereomers and meso compounds apart.
-- 17 steps in 4 parts; 16 graded questions (4+4+4+4) from a pool of 48. The atomic-number table is open beside checkpoints 2–4.
+- **Key objective:** name a chirality centre R or S by rotating the molecule until 4 is on the dash or looking down the
+  carbon-to-priority-4 bond so 4 points away; then tell enantiomers, diastereomers and meso compounds apart.
+- 18 steps in 4 parts; 16 graded questions (4+4+4+4) from a pool of 48. The atomic-number table is open beside checkpoints 2–4.
 - **Teacher's wording:** the rule on screen is "If 4 is not on the dash, rotate the molecule." R is "rockwise" and S
   "sountersockwise" (the teacher's joke, credited to them) in exactly three places: the steering-wheel step, Big ideas and
-  Vocabulary, never in `quiz.js`. Swap, switch, interchange and reverse never appear in student text. The validator checks all of it.
+  Vocabulary, never in `quiz.js`. Swap, switch, interchange and reverse never appear in student text. The C-to-4 steering-wheel view is available before 4 is on the dash; students trace 1, 2, 3 in that view. The validator checks the projected direction and preserved labels for every centre.
 - **Scope:** no calculations, no optical activity, no Fischer projections (the validator uses Fischer only for its textbook
   anchors). The mirror image is drawn both beside the molecule and behind the page. Rings: cis/trans 1,3- and
   1,4-dimethylcyclohexane from the chairs activity. Molecules A and B (2,3-dibromobutane) come from the Newman activity.
@@ -111,6 +111,7 @@ not the full page.
   - R/S is read from the model's handedness; CIP priorities come from a hierarchical digraph with duplicate atoms.
   - Relationships are found twice, from the R/S labels and by superposing the models, and must agree.
   - Turns snap to the 12 drawable orientations of each template; a mirror reflects beside (x) or behind (z) the page.
+- **Meso coaching:** a guided side-by-side mirror, rotation and overlap of A (meso) and B (chiral), before the existing mirror-plane exploration. Two chirality centres alone do not establish molecular chirality; R,S alone does not establish meso.
 - **Files:**
   - `geom.js`: vectors, rotations, superposition
   - `groups.js`: elements and substituents

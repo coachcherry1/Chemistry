@@ -10,7 +10,7 @@
  * never scored: a wrong one gets an explanation and another try, and a
  * prediction is just compared with what really happens.
  *
- * R and S are only ever read with 4 on the dash. Every drawing that has to
+ * R and S are read with 4 away: on the dash or down the C-to-4 bond. Every drawing that has to
  * be read is turned there first, by rotating the molecule; nothing in the
  * activity moves one group by itself, because that draws a different
  * molecule. tools/validate.js holds the activity to that.
@@ -23,7 +23,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a molecule changes: a save
      from an older build is then discarded and the student starts fresh. */
-  var SCHEMA = 1;
+  var SCHEMA = 2;
 
   var PARTS = [
     { n: 1, name: 'Chirality' },
@@ -68,7 +68,8 @@ var App = (function () {
     { id: 'rotate', part: 3, kind: 'rotate', mols: ['alanine_w', 'bcfe_plane'],
       title: 'If 4 is not on the dash, rotate',
       text: 'Here 4 is not on the dash, so rotate the molecule until it is: drag the 3D model, use the arrow keys, or ' +
-            'use the turn buttons. The drawing always shows the model as it now lies. Then read 1 → 2 → 3.' },
+            'use the turn buttons. Or choose Steering-wheel view: look from the chirality carbon down its bond toward priority 4. ' +
+            'Priority 4 goes away from your eye and hides behind the carbon. Read 1 → 2 → 3 in that view.' },
     { id: 'hidden', part: 3, kind: 'hidden', mol: 'butanol_hidden',
       title: 'The hidden H',
       text: 'Bond-line drawings leave out the H on a chirality centre. Find where it points, rotate the molecule until ' +
@@ -83,6 +84,8 @@ var App = (function () {
       title: 'Two centres, four stereoisomers',
       text: '2-Bromo-3-chlorobutane has two chirality centres, C2 and C3, and each can be R or S. Predict how many ' +
             'stereoisomers it has, then name both centres of one of them.' },
+    { id: 'mesocoach', part: 4, kind: 'mesocoach', title: 'Two centres: meso or chiral?',
+      text: 'Both compounds have two chirality centres. Follow the same mirror test on each: does the whole molecule fit its reflection?' },
     { id: 'meso', part: 4, kind: 'meso', mols: ['dbb_A', 'dbb_B'],
       title: 'Meso: Molecules A and B again',
       text: '2,3-Dibromobutane has two chirality centres too. You met two of its stereoisomers in the Newman activity: ' +
@@ -449,9 +452,10 @@ var App = (function () {
     var canvas = h('canvas', { class: 'c3d', tabindex: 0, role: 'img',
       'aria-label': '3D model of ' + m.name + '. Drag it, or use the arrow keys, to rotate it.' });
     var turnbar = h('div', { class: 'turnbar' });
-    var wheelBtn = h('button', { type: 'button', class: 'mini', text: 'Steering-wheel view', disabled: true });
+    var wheelBtn = h('button', { type: 'button', class: 'mini', text: 'Steering-wheel view: look down C–4', disabled: false });
+    var bondRead = h('div', { class: 'btnrow bond-read' });
     var p3 = panel(opts.title3 || '3D model', 'drag or arrow keys to rotate', [h('div', { class: 'c3d-wrap' }, [canvas]), turnbar,
-      h('div', { class: 'btnrow' }, [wheelBtn])]);
+      h('div', { class: 'btnrow' }, [wheelBtn]), bondRead]);
     var chipsHost = h('div');
     var drawHost = h('div', { class: 'mol-wrap big' });
     var rule = h('p', { class: 'rule' });
@@ -465,7 +469,7 @@ var App = (function () {
 
     function start() {
       viewer = new Viewer3D(canvas, { objects: [{ model: m, R: R, badges: badges() }], radius: radiusOf(m),
-        onRelease: settle, onTurn: function () { if (wheelOn) { wheelOn = false; wheelBtn.textContent = 'Steering-wheel view'; } } });
+        onRelease: settle, onTurn: function () { if (wheelOn) { wheelOn = false; wheelBtn.textContent = 'Steering-wheel view: look down C–4'; } } });
       paint();
     }
 
@@ -492,7 +496,7 @@ var App = (function () {
       var target = G.mmul(L, R);
       busy = true;
       wheelOn = false;
-      wheelBtn.textContent = 'Steering-wheel view';
+      wheelBtn.textContent = 'Steering-wheel view: look down C–4';
       viewer.set(0, { wheel: null });
       viewer.slide(0, [0, 0, 0], 300);
       viewer.animate(0, target, 650, function () { busy = false; land(target); });
@@ -532,7 +536,9 @@ var App = (function () {
       chipsHost.appendChild(chipRow('Read:', centres.map(function (c) { return 'C' + m.atoms[c].num; }),
         centres.indexOf(centre), function (k) { return !!answers[centres[k]]; }, function () { return true; },
         function (k) {
-          centre = centres[k]; clicks = []; chose = null;
+          centre = centres[k]; clicks = []; chose = null; wheelOn = false;
+          wheelBtn.textContent = 'Steering-wheel view: look down C–4';
+          if (viewer) { viewer.slide(0, [0, 0, 0], 300); viewer.animate(0, R, 300); }
           if (viewer) viewer.set(0, { badges: badges(), wheel: null });
           paint();
         }));
@@ -556,16 +562,26 @@ var App = (function () {
       var full = clicks.length === 3 || !!answers[centre];
       drawHost.appendChild(Draw.mol(c, Object.assign({ badges: [centre], targets: targets,
         arrow: full && dash ? centre : null }, opts.drawOpts || {})));
-      if (viewer) viewer.set(0, { badges: badges(), wheel: full && dash ? { c: centre, order: ord } : null });
-      wheelBtn.disabled = !dash;
+      if (viewer) viewer.set(0, { badges: badges(), wheel: full && (dash || wheelOn) ? { c: centre, order: ord } : null });
+      wheelBtn.disabled = false;
+      bondRead.innerHTML = '';
+      if (wheelOn && opts.read) {
+        ord.slice(0, 3).forEach(function (j, i) {
+          bondRead.appendChild(h('button', { type: 'button', class: 'mini',
+            text: 'Trace ' + (i + 1) + ': ' + groupName(m, centre, j), disabled: !!answers[centre] || clicks.indexOf(j) >= 0,
+            onclick: function () { click(String(j)); } }));
+        });
+      }
       /* the rule, always in view */
       rule.className = 'rule ' + (dash ? 'ok' : 'wait');
-      rule.textContent = dash
+      rule.textContent = wheelOn
+        ? 'Looking from the carbon toward priority 4: 4 is behind the carbon. Trace 1, 2, 3 here, then read R or S.'
+        : dash
         ? (answers[centre] ? centreName(m, centre).charAt(0).toUpperCase() + centreName(m, centre).slice(1) + ' is ' + answers[centre] + '.'
           : '4 is on the dash.' + (opts.read ? (clicks.length < 3 ? ' Click ' + (clicks.length + 1) + (clicks.length ? ' next.' : ' first.')
             : ' Which way does 1 → 2 → 3 run?') : ''))
         : '4 is not on the dash. Rotate the molecule.';
-      paintRS(dash);
+      paintRS(dash || wheelOn);
       paintTurns();
     }
 
@@ -591,7 +607,7 @@ var App = (function () {
         return;
       }
       var L = drawHost.querySelector('svg')._layout;
-      var cw = Draw.drawnClockwise(L, centre, order());
+      var cw = wheelOn ? CIP.label(m, centre) === 'R' : Draw.drawnClockwise(L, centre, order());
       paint();
       say('Not quite. Follow the arrow from 1 to 2 to 3: it turns ' + (cw ? 'clockwise, the way a clock’s hands move, so this ' +
         'centre is R.' : 'counterclockwise, against a clock’s hands, so this centre is S.'), 'bad');
@@ -600,7 +616,7 @@ var App = (function () {
     function click(key) {
       if (!opts.read || answers[centre]) return;
       var j = +key, ord = order();
-      if (!onDash()) { say('4 is not on the dash yet, so 1 → 2 → 3 tells you nothing. Rotate the molecule first.', 'bad'); return; }
+      if (!onDash() && !wheelOn) { say('4 is not on the dash yet, so 1 → 2 → 3 tells you nothing. Rotate the molecule first.', 'bad'); return; }
       if (clicks.indexOf(j) >= 0) return;
       var want = ord[clicks.length];
       if (j === want) {
@@ -619,9 +635,10 @@ var App = (function () {
       if (!viewer || busy) return;
       if (wheelOn) {
         wheelOn = false;
-        wheelBtn.textContent = 'Steering-wheel view';
+        wheelBtn.textContent = 'Steering-wheel view: look down C–4';
         viewer.slide(0, [0, 0, 0], 400);
         viewer.animate(0, R, 600);
+        paint();
         return;
       }
       wheelOn = true;
@@ -633,6 +650,7 @@ var App = (function () {
       viewer.slide(0, off, 600);
       viewer.animate(0, target, 600);
       viewer.set(0, { wheel: { c: centre, order: order() } });
+      paint();
     });
 
     var picker = Picker({ tray: h('div'), stage: drawHost, label: function () { return ''; }, drop: function () {},
@@ -1799,6 +1817,65 @@ var App = (function () {
     var y = G.unit(G.sub(v, G.mul(x, G.dot(v, x))));
     return [x, y, G.cross(x, y)];
   }
+
+  /* A guided, simultaneous mirror test: identical operations, different outcomes. */
+  RENDER.mesocoach = function (s) {
+    var pr = progress(s.id), phase = pr.phase || 0;
+    var host = h('div', { class: 'meso-coach' });
+    el.stage.appendChild(host);
+    var titles = ['Inspect both molecules', 'Turn both mirror images upside down', 'Lay each image on its original'];
+    function paint() {
+      host.innerHTML = '';
+      var grid = h('div', { class: 'work' });
+      host.appendChild(grid);
+      ['dbb_A', 'dbb_B'].forEach(function (id, i) {
+        var m = molecule(id), img = STEREO.mirror(m);
+        var R = phase >= 1 ? STEREO.UPSIDE : G.ident();
+        var fit = STEREO.matchCount(STEREO.apply(img, R), m);
+        var canvas = h('canvas', { class: 'c3d', tabindex: 0, role: 'img',
+          'aria-label': (i ? 'Chiral B' : 'Meso A') + ': original and mirror image. Use the guided buttons below.' });
+        var note = h('p', { class: 'coach-result', 'aria-live': 'polite', text: phase >= 2
+          ? fit.n + ' of ' + fit.total + ' atoms line up. ' + (fit.n === fit.total ? 'Every atom fits: the same molecule.' : 'They do not fit: different molecules.')
+          : 'Two chirality centres: ' + configText(m) + '. Its mirror image is ' + configText(img) + '.' });
+        grid.appendChild(panel(i ? 'B: two chirality centres' : 'A: two chirality centres', null,
+          [h('div', { class: 'c3d-wrap' }, [canvas]), note]));
+        var offset = radiusOf(m) + 0.4;
+        var v = new Viewer3D(canvas, { objects: [
+          { model: m, offset: phase >= 2 ? [0, 0, 0] : [-offset, 0, 0], draggable: false },
+          { model: img, R: phase === 1 ? G.ident() : R,
+            offset: [offset, 0, 0], draggable: false, alpha: phase >= 2 ? 0.65 : 1 }],
+          radius: radiusOf(m) * (phase >= 2 ? 0.8 : 1.3) });
+        v.pane = phase < 2;
+        if (phase === 1) v.animate(1, R, 650);
+        if (phase >= 2) v.slide(1, [0, 0, 0], 650);
+      });
+      var messages = [
+        'A and B each have two chirality centres. A centre describes one carbon; chirality describes the whole molecule. Compare each molecule with its own mirror image.',
+        'We made the same real rotation of each mirror image. Rotation preserves every centre’s configuration. Watch A’s (2S,3R) image line up with A numbered from the other end.',
+        'A fits its mirror image exactly, so it is achiral despite its two chirality centres: meso. No rotation can make every atom of B fit its mirror image; B is chiral.'
+      ];
+      host.appendChild(h('p', { class: 'rule', text: messages[Math.min(phase, 2)] }));
+      if (phase < 2) {
+        var next = h('button', { type: 'button', class: 'primary', text: titles[phase + 1],
+          onclick: function () { phase++; pr.phase = phase; persist(); paint(); } });
+        host.appendChild(next);
+        if (phase === 1) { next.disabled = true; setTimeout(function () { next.disabled = false; }, 700); }
+      } else {
+        host.appendChild(h('p', { text: 'Why is A meso while B is chiral?' }));
+        var row = h('div', { class: 'btnrow' });
+        [['Both have two centres, so both must be chiral', false],
+         ['A fits its own mirror image; B cannot', true]].forEach(function (choice) {
+          row.appendChild(h('button', { type: 'button', class: 'ghostbtn', text: choice[0], onclick: function () {
+            if (!choice[1]) { say('Two chirality centres do not guarantee a chiral molecule. Judge the whole molecule by its mirror image.', 'bad'); return; }
+            pr.phase = 3; persist();
+            complete('Yes. Meso means chirality centres in an achiral molecule. Next, find A’s internal mirror plane. R,S labels alone are not a meso test: the whole structure must have the required symmetry.');
+          } }));
+        });
+        host.appendChild(row);
+      }
+    }
+    paint();
+  };
 
   RENDER.meso = function (s) {
     var pr = progress('meso');

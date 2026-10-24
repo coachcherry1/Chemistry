@@ -684,3 +684,6 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .range-row { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
 .turn-range { flex: 1; accent-color: var(--accent); }
 .readout { margin: 6px 0 0; font-size: 0.86rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Keep the guided comparison and its next action together in an LMS frame. */
+.meso-coach .c3d-wrap { height: clamp(130px, 26vh, 190px); }

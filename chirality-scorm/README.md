@@ -2,18 +2,20 @@
 
 A SCORM 1.2 activity for Schoology. Students hold a molecule up to a mirror in 3D and try to make its reflection
 fit, find chirality centres in bond-line drawings, rank groups by the priority rules, rotate molecules until 4 is
-on the dash and read R or S, and sort pairs of stereoisomers into enantiomers and diastereomers, finishing with
+on the dash, or look down the carbon-to-priority-4 bond, and read R or S, and sort pairs of stereoisomers into enantiomers and diastereomers, finishing with
 meso compounds, including Molecules A and B from the Newman activity. **Every checkpoint question is
 qualitative** (identify, compare, rank, explain). Nothing is calculated: no specific rotation and no optical
 activity. The atomic numbers sit open beside checkpoints 2 to 4.
 
 Written for a high-school organic elective using Klein, *Organic Chemistry* (chapter 5), as the follow-on to the
-Newman projection and cyclohexane chair activities, with the same look, controls, saving and grading. About 30
+Newman projection and cyclohexane chair activities, with the same look, controls, saving and grading. About 30 to 35
 minutes.
 
 **The idea every R and S step is built on, in the teacher's words: if 4 is not on the dash, rotate the
 molecule.** The activity never swaps two groups and never reads a centre with 4 toward the reader and reverses the
-answer. Students rotate.
+answer. Students rotate the molecule or look from the chirality carbon toward priority 4, so 4 points away.
+The steering-wheel view is available even when 4 is on a wedge or in the page. Trace 1, 2 and 3
+in that view, then choose clockwise (R) or counterclockwise (S).
 
 ---
 
@@ -23,8 +25,8 @@ answer. Students rotate.
 | --- | --- | --- |
 | 1 Chirality | 4 | **Mirror, mirror:** CHBrClF stands beside a mirror in 3D. Turning it turns its reflection, as a real mirror would; then students pick up the reflection and try to make it fit. A meter counts the atoms that line up: never more than two of four. CH₂BrCl's reflection fits after one turn, and its mirror plane (the page itself) appears. **Draw the mirror image:** place the atoms of CHBrClF as a mirror beside the molecule shows them, then as a mirror lying behind the page shows them. **Find the chirality centres:** click every carbon with four different groups in four bond-line drawings; the 3D model colours the four groups on whichever carbon is clicked, the same colour for groups that are the same. **Checkpoint 1** (4 questions). |
 | 2 Priorities | 3 | **Highest atomic number first:** predict which atom of CHBrClF ranks 1 (most pick F, the most electronegative), then put the numbers 1 to 4 on the groups; then a molecule whose priority 4 is CH₃, not H. **Ties:** 2-butanol, CH₂OH against C(CH₃)₃ (the biggest group of the chairs activity loses to one O) and glyceraldehyde (the C=O counts twice). A **Look closer** button lists the atoms on each group's first carbon, written as Klein writes them: (C, H, H). **Checkpoint 2** (4). |
-| 3 R and S | 5 | **Read the steering wheel:** 4 already on the dash. Click 1, 2, 3; an arrow follows; choose clockwise (R) or counterclockwise (S). The first molecule is the Newman activity's drawing of 2-bromobutane, which is R. A **Steering-wheel view** button swings the 3D model round so 4 hides behind the carbon. **If 4 is not on the dash, rotate:** alanine with H on the wedge (Turn it over), then a molecule whose 4 is a CH₃ in the page (a turn over leaves it there; it takes a spin around a bond). Reading stays locked until 4 is on the dash. **The hidden H:** a bond-line 2-butanol with the OH on a dash; find the hidden H (on the wedge), rotate, redraw the molecule with 4 on the dash, and read it. **Mirror images have opposite labels:** the mirror image of (R)-2-butanol, read after rotating, is S; the original stays R however it is turned. **Checkpoint 3** (4). |
-| 4 Two centres | 4 | **Four stereoisomers:** name both centres of one 2-bromo-3-chlorobutane (one centre needs a rotation), then label all six pairs of the four stereoisomers enantiomers or diastereomers. **Meso:** 2,3-dibromobutane, Molecules A and B exactly as drawn in the Newman activity. A's mirror image fits on it turned upside down; B's never does. Turning A's C2–C3 bond until the Br atoms are eclipsed shows its mirror plane in 3D, in a Newman projection and as a dashed line on the drawing. A is meso (2R,3S), B is (2R,3R), and they are diastereomers, which is why their energy curves differed in the Newman activity. **Rings:** sort cis- and trans-1,3- and 1,4-dimethylcyclohexane (from the chairs activity) into meso, chiral, or no chirality centres, with each ring's chair in 3D and a button that looks for a mirror plane. **Checkpoint 4** (4). |
+| 3 R and S | 5 | **Read the steering wheel:** 4 already on the dash. Click 1, 2, 3; an arrow follows; choose clockwise (R) or counterclockwise (S). The first molecule is the Newman activity's drawing of 2-bromobutane, which is R. A **Steering-wheel view** button swings the 3D model round so 4 hides behind the carbon. **If 4 is not on the dash, rotate:** alanine with H on the wedge (Turn it over), then a molecule whose 4 is a CH₃ in the page (a turn over leaves it there; it takes a spin around a bond). Reading opens with 4 on the dash or while looking down C-to-4; the paper drawing stays in its original orientation during the bond view. **The hidden H:** a bond-line 2-butanol with the OH on a dash; find the hidden H (on the wedge), rotate, redraw the molecule with 4 on the dash, and read it. **Mirror images have opposite labels:** the mirror image of (R)-2-butanol, read after rotating, is S; the original stays R however it is turned. **Checkpoint 3** (4). |
+| 4 Two centres | 5 | **Four stereoisomers:** name both centres of one 2-bromo-3-chlorobutane (one centre needs a rotation), then label all six pairs of the four stereoisomers enantiomers or diastereomers. **Guided comparison:** click through the same reflection, upside-down rotation and overlay for Molecules A and B side by side. A fits its mirror image; B cannot. Explain why two chirality centres do not guarantee a chiral molecule. **Meso:** 2,3-dibromobutane, Molecules A and B exactly as drawn in the Newman activity. A's mirror image fits on it turned upside down; B's never does. Turning A's C2–C3 bond until the Br atoms are eclipsed shows its mirror plane in 3D, in a Newman projection and as a dashed line on the drawing. A is meso (2R,3S), B is (2R,3R), and they are diastereomers, which is why their energy curves differed in the Newman activity. **Rings:** sort cis- and trans-1,3- and 1,4-dimethylcyclohexane (from the chairs activity) into meso, chiral, or no chirality centres, with each ring's chair in 3D and a button that looks for a mirror plane. **Checkpoint 4** (4). |
 
 Every drawing, ranking, reading and prediction has to be finished to move on, but none of them is graded. A wrong
 answer gets specific feedback and another try, for example:
@@ -100,7 +102,7 @@ Progress is saved to `cmi.suspend_data` (about 2 KB of the 4 KB allowed). `local
 runs outside an LMS, so a newly posted copy in Schoology always starts fresh rather than picking up progress the
 browser kept from another copy.
 
-The save carries a schema version (`SCHEMA` in `src/js/app.js`). A save from any other version is ignored and the
+The save carries a schema version (`SCHEMA` in `src/js/app.js`). This update uses schema 2 because the guided comparison adds a step. A save from any other version is ignored and the
 student starts from step 1 with no answers and no score carried over. **Bump it whenever you change the step list,
 a quiz pool or a molecule.**
 
