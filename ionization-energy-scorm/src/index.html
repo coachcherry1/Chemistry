@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Successive Ionization Energies</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="titles">
+    <h1>Successive ionization energies</h1>
+    <p id="blurb" class="blurb"></p>
+  </div>
+  <span id="lms" class="lms off">&nbsp;</span>
+</header>
+
+<nav id="tabs" class="tabs" aria-label="Parts"></nav>
+
+<main>
+  <div class="statusline">
+    <h2 id="partName"></h2>
+    <span id="counter" class="counter"></span>
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="main-col">
+      <section id="card" class="card" aria-label="Current question"></section>
+      <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+      <div class="controls">
+        <button id="next" type="button" class="primary" hidden>Next &rarr;</button>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div id="flowRule" class="flow" hidden aria-label="The two-step rule">
+        <p class="flow-title">The two-step rule</p>
+        <div class="fnode" data-node="s1">
+          <strong>Step 1. Count the OCCUPIED energy levels.</strong>
+          <span class="fnote">Different? That settles it. Fewer occupied levels: the electron is closer and held more tightly.</span>
+        </div>
+        <div class="fnode" data-node="s2">
+          <strong>Step 2. Only if they are the same, compare the protons.</strong>
+          <span class="fnote">More protons: a stronger pull. Inside one element the protons never change, so this is always a tie.</span>
+        </div>
+        <p class="flow-title">The next electron comes from&hellip;</p>
+        <div class="fbranch">
+          <div class="fcol">
+            <span class="flabel">the SAME occupied level</span>
+            <div class="fnode" data-node="small">
+              <strong>A small step up</strong>
+              <span class="fnote">Both steps tie. The particle is more positive each time, so it costs a little more.</span>
+            </div>
+          </div>
+          <div class="fcol">
+            <span class="flabel">a LOWER occupied level</span>
+            <div class="fnode" data-node="jump">
+              <strong>A huge jump</strong>
+              <span class="fnote">The outer level is empty. The electron comes from the level underneath, closer to the nucleus.</span>
+            </div>
+          </div>
+        </div>
+        <div class="flow-law">
+          <p>The attraction is <strong>directly</strong> proportional to the nuclear charge.</p>
+          <p>The attraction is <strong>inversely</strong> proportional to the distance squared.</p>
+        </div>
+      </div>
+
+      <div id="flowData" class="flow" hidden aria-label="Reading the data">
+        <p class="flow-title">Reading the data</p>
+        <div class="fnode" data-node="jump">
+          <strong>1. Find the huge jump</strong>
+          <span class="fnote">One step far bigger than the rest. How many times bigger is it?</span>
+        </div>
+        <div class="fnode" data-node="count">
+          <strong>2. Count the ionization energies before it</strong>
+          <span class="fnote">That is how many electrons were in the outer level.</span>
+        </div>
+        <div class="fnode" data-node="group">
+          <strong>3. Outer electrons &rarr; group</strong>
+          <span class="fnote">1 &rarr; group 1, 2 &rarr; group 2, 3 &rarr; group 13, 4 &rarr; group 14, 5 &rarr; group 15</span>
+        </div>
+        <div class="fnode" data-node="elem">
+          <strong>4. Group and row &rarr; element</strong>
+        </div>
+        <div class="fnode" data-node="config">
+          <strong>5. Check the configuration</strong>
+          <span class="fnote">Its outermost occupied level should hold that many electrons.</span>
+        </div>
+      </div>
+
+      <div id="ptSide" class="pt-side" hidden></div>
+    </aside>
+  </div>
+</main>
+
+<div id="screen" class="screen" hidden></div>
+
+<script src="js/data.js"></script>
+<script src="js/atom.js"></script>
+<script src="js/checks.js"></script>
+<script src="js/plan.js"></script>
+<script src="js/items.js"></script>
+<script src="js/draw.js"></script>
+<script src="js/scorm.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
