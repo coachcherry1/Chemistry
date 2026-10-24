@@ -1,0 +1,572 @@
+/* styles.css — self-contained; no web fonts, no CDN, nothing that a locked-down
+   LMS iframe could fail to load.
+
+   --stick draws a peak worth reading; --quiet draws one below the 5% line.
+   Colour is never the only signal that a peak is negligible: the threshold
+   line is drawn and captioned, and every quiet peak says so when clicked. */
+
+:root {
+  --paper:   #ffffff;
+  --bg:      #f2f5f8;
+  --panel:   #ffffff;
+  --ink:     #12212e;
+  --muted:   #5d7283;
+  --line:    #dde5ec;
+  --grid:    #e2eaf1;
+  --stick:   #0f5d8f;
+  --quiet:   #a9bdcb;
+  --divider: #a879c4;
+  --accent:  #0f5d8f;
+  --good:    #0f7a52;
+  --good-bg: #e4f4ec;
+  --bad:     #b3261e;
+  --bad-bg:  #fdeceb;
+  --radius:  8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:   #101a23;
+    --bg:      #0b1218;
+    --panel:   #141f29;
+    --ink:     #e6edf3;
+    --muted:   #93a7b6;
+    --line:    #243444;
+    --grid:    #21303d;
+    --stick:   #5fb3e6;
+    --quiet:   #55707f;
+    --divider: #c79ae0;
+    --accent:  #5fb3e6;
+    --good:    #57c99a;
+    --good-bg: #123028;
+    --bad:     #f08a82;
+    --bad-bg:  #3a1a18;
+  }
+}
+
+* { box-sizing: border-box; }
+
+/* .screen sets display:flex, which would otherwise beat the UA rule for
+   [hidden]. Keep the attribute authoritative everywhere. */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  padding: 12px 16px 24px;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ------------------------------------------------------------------ header */
+
+.topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+h1 { font-size: 1.05rem; margin: 0; letter-spacing: -0.01em; }
+h2 { font-size: 0.95rem; margin: 0; }
+
+.blurb { margin: 3px 0 0; color: var(--muted); font-size: 0.85rem; max-width: 62ch; }
+
+.lms {
+  font-size: 0.72rem;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.lms.on { color: var(--good); border-color: var(--good); }
+
+/* ------------------------------------------------------------------- tabs */
+
+.tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+
+.tab {
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--muted);
+  cursor: pointer;
+}
+.tab.current { background: var(--accent); border-color: var(--accent); color: #fff; }
+.tab.locked { opacity: 0.45; cursor: not-allowed; }
+
+.statusline {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.counter { color: var(--muted); font-size: 0.8rem; }
+
+/* ------------------------------------------------------------------ stage */
+
+.stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 14px;
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .stage { grid-template-columns: minmax(0, 1fr); }
+}
+
+.plotwrap {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 4px;
+  min-height: 300px;
+  height: 54vh;
+  max-height: 500px;
+}
+
+#plot { width: 100%; height: 100%; display: block; touch-action: none; cursor: crosshair; }
+
+/* Level 3 hides the spectrum until the prediction is made. */
+.plotwrap.hidden-spectrum::after {
+  content: 'Predict first\00a0\2014\00a0the spectrum appears once you have answered.';
+  position: absolute;
+  inset: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 24px;
+  font-size: 0.86rem;
+  color: var(--muted);
+  background: repeating-linear-gradient(
+    45deg, transparent, transparent 9px,
+    color-mix(in srgb, var(--line) 55%, transparent) 9px,
+    color-mix(in srgb, var(--line) 55%, transparent) 18px);
+  border-radius: var(--radius);
+}
+
+.overlay {
+  position: absolute;
+  inset: 4px;
+  pointer-events: none;
+}
+.overlay > * { pointer-events: auto; }
+
+/* --------------------------------------------------------- peak drop slots */
+
+.slot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 2px dashed var(--accent);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--accent);
+  cursor: pointer;
+  white-space: nowrap;
+  z-index: 2;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+.slot:hover { background: var(--bg); }
+
+/* Once filled the target stops being something to aim at, so it shrinks back
+   into a chip that shows the answer. */
+.slot.ok {
+  width: auto;
+  height: auto;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: var(--good);
+  background: var(--good-bg);
+  color: var(--good);
+  cursor: default;
+  box-shadow: none;
+}
+.slot.hover {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  background: var(--bg);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translate(-50%, -50%); }
+  25%      { transform: translate(calc(-50% - 5px), -50%); }
+  75%      { transform: translate(calc(-50% + 5px), -50%); }
+}
+.slot.shake { animation: shake 0.28s ease; }
+
+/* -------------------------------------------------------------- side panel */
+
+.side { display: flex; flex-direction: column; gap: 12px; }
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px;
+  text-align: center;
+}
+.card-kicker {
+  margin: 0;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.card-name { margin: 2px 0 6px; font-size: 0.98rem; }
+.card-formula { margin: 4px 0 0; font-size: 0.8rem; color: var(--muted); }
+.card-mass {
+  margin: 3px 0 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.card-hidden { margin: 6px 0; font-size: 2.4rem; font-weight: 300; color: var(--muted); }
+.card-note { margin: 0; font-size: 0.78rem; color: var(--muted); }
+
+.structure { width: 100%; max-height: 108px; }
+.structure .bond { stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; }
+.structure .atom { fill: var(--ink); font: 600 13px system-ui, sans-serif; }
+
+/* The piece that walked off: faint and dashed, still legible, so a student
+   can see WHAT left as well as what stayed. Never colour alone — the dashes
+   and the + carry the meaning on their own. */
+.structure .bond.lost {
+  stroke: var(--muted);
+  stroke-width: 1.2;
+  stroke-dasharray: 3 3;
+  opacity: 0.45;
+}
+.structure .atom.lost { fill: var(--muted); opacity: 0.45; }
+.structure .charge {
+  fill: var(--bad);
+  font: 700 15px system-ui, sans-serif;
+}
+/* The heavier atom in an M+2 peak. Nothing broke, so there is no + and no
+   dashing — this is the only thing marking the cell out from the M⁺ one. */
+.structure .atom.heavy {
+  fill: var(--accent);
+  font: 700 14px system-ui, sans-serif;
+}
+
+/* -------------------------------------------------------------- label tray */
+
+.tray {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-content: flex-start;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px;
+  min-height: 90px;
+  touch-action: none;
+}
+.tray:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.tile {
+  font: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding: 6px 9px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--ink);
+  cursor: grab;
+  text-align: left;
+  touch-action: none;
+}
+.tile:hover { border-color: var(--accent); }
+.tile.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
+.tile.selected .tile-sub { color: rgba(255, 255, 255, 0.82); }
+.tile.dragging { opacity: 0.35; }
+
+.tile-label { font-size: 0.82rem; font-weight: 600; }
+.tile-sub { font-size: 0.68rem; color: var(--muted); }
+
+.tray-empty { margin: 0; font-size: 0.8rem; color: var(--muted); }
+
+.ghost {
+  position: fixed;
+  z-index: 99;
+  transform: translate(-50%, -140%);
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  pointer-events: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+}
+
+.picking .slot:not(.ok) {
+  border-color: var(--accent);
+  border-style: solid;
+  box-shadow: 0 0 0 5px rgba(15, 93, 143, 0.22);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* ---------------------------------------------------------------- feedback */
+
+.feedback {
+  margin: 12px 0 0;
+  min-height: 2.6em;
+  padding: 9px 12px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+.feedback.good { background: var(--good-bg); border-color: var(--good); color: var(--good); }
+.feedback.bad  { background: var(--bad-bg);  border-color: var(--bad);  color: var(--bad); }
+/* A peak that is simply not an answer is neither right nor wrong — poking at
+   the noise is encouraged, so it gets its own neutral tone. */
+.feedback.quiet { background: var(--bg); border-color: var(--line); color: var(--muted); }
+
+/* --------------------------------------------------------- compound choice */
+
+.choices {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.choices-q { margin: 0 0 10px; font-size: 0.88rem; font-weight: 600; }
+.choices-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.choice {
+  flex: 1 1 150px;
+  font: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--ink);
+  cursor: pointer;
+}
+.choice:hover { border-color: var(--accent); }
+.choice .structure { max-height: 72px; }
+.choice-name { font-size: 0.8rem; }
+.choice-formula { font-size: 0.72rem; color: var(--muted); }
+.choice.right { border-color: var(--good); background: var(--good-bg); }
+.choice.wrong { border-color: var(--bad); background: var(--bad-bg); opacity: 0.7; }
+
+/* ------------------------------------------ what is left after each loss */
+
+.fragments {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.frag-head { margin: 0 0 10px; font-size: 0.8rem; color: var(--muted); }
+.frag-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.frag-cell {
+  flex: 1 1 130px;
+  max-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+.frag-cell .structure { max-height: 78px; }
+.frag-mz {
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.frag-lost { font-size: 0.72rem; color: var(--muted); text-align: center; }
+
+.choices-row.routes .route .structure { max-height: 88px; margin: 4px 0; }
+
+/* ------------------------------------------------- Level 3: predict first */
+
+/* A cleavage option. Wider than a compound card because it carries a formula,
+   a name and the mechanism that produced it. */
+/* Candidates on the bench before they are the question: still legible and
+   still structures to study, just not yet the thing to click. */
+.choices-row.preview .choice { cursor: default; opacity: 0.88; }
+.choices-row.preview .choice:hover { border-color: var(--line); }
+
+.route-loss {
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.route.wrong .route-ion, .route.right .route-ion { opacity: 0.9; }
+
+.choices-row.routes .route {
+  flex: 1 1 210px;
+  align-items: flex-start;
+  text-align: left;
+  gap: 3px;
+  min-height: 84px;
+}
+.route-ion  { font-size: 0.95rem; font-weight: 700; }
+.route-name { font-size: 0.78rem; }
+.route-mech { font-size: 0.72rem; color: var(--muted); }
+.route.wrong .route-mech, .route.right .route-mech { color: inherit; opacity: 0.8; }
+
+.choices-row.mzrow .mz {
+  flex: 0 1 120px;
+  gap: 2px;
+  padding: 12px 10px;
+}
+.mz-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.mz-sub { font-size: 0.72rem; color: var(--muted); }
+.mz.wrong .mz-sub, .mz.right .mz-sub { color: inherit; opacity: 0.8; }
+
+/* The reveal: every route, tallest first, with the reason each one placed
+   where it did. This is the answer key for the prediction. */
+.route-summary {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.route-summary li { margin-bottom: 7px; }
+.route-summary li strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.route-summary li.won strong { color: var(--good); }
+
+/* ---------------------------------------------------------------- controls */
+
+.controls { margin-top: 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.secondary {
+  font: inherit;
+  font-weight: 600;
+  padding: 9px 16px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--ink);
+  cursor: pointer;
+}
+.secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+.save-note { font-size: 0.8rem; color: var(--muted); }
+.save-note.ok { color: var(--good); font-weight: 600; }
+.save-note.bad { color: var(--bad); font-weight: 600; }
+
+.screen-resume {
+  padding: 9px 12px;
+  border-radius: var(--radius);
+  background: var(--good-bg);
+  border: 1px solid var(--good);
+  color: var(--good);
+  font-size: 0.85rem;
+}
+
+.primary {
+  font: inherit;
+  font-weight: 600;
+  padding: 9px 18px;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+.primary:hover { filter: brightness(1.08); }
+
+/* --------------------------------------------------------- reference table */
+
+.reference {
+  margin-top: 16px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+.reference summary { cursor: pointer; font-size: 0.84rem; font-weight: 600; }
+.ref-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.78rem; }
+.ref-table th, .ref-table td {
+  text-align: left;
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.ref-table th { color: var(--muted); font-weight: 600; }
+.ref-table .num { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ref-table .note { color: var(--muted); }
+.ref-head { margin: 14px 0 0; font-size: 0.8rem; }
+.ref-head:first-child { margin-top: 6px; }
+.ref-foot { margin: 10px 0 0; font-size: 0.74rem; color: var(--muted); }
+
+/* ----------------------------------------------------------------- screens */
+
+.screen {
+  position: fixed;
+  inset: 0;
+  background: rgba(12, 20, 28, 0.62);
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 50;
+  overflow: auto;
+}
+.screen-box {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 560px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.18);
+}
+.screen-box h2 { font-size: 1.1rem; margin: 0 0 10px; }
+.screen-box p { margin: 0 0 12px; font-size: 0.88rem; }
+.screen-note { color: var(--muted); }
+.screen-list { margin: 0 0 14px; padding-left: 18px; font-size: 0.85rem; }
+.screen-list li { margin-bottom: 5px; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

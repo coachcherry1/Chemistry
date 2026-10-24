@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mass Spectrometry — Reading the Fragments</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="titles">
+    <h1>Mass spectrometry &mdash; reading the fragments</h1>
+    <p id="blurb" class="blurb"></p>
+  </div>
+  <span id="lms" class="lms off">&nbsp;</span>
+</header>
+
+<nav id="tabs" class="tabs" aria-label="Levels"></nav>
+
+<main>
+  <div class="statusline">
+    <h2 id="levelName"></h2>
+    <span id="counter" class="counter"></span>
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="plotwrap" class="plotwrap">
+      <canvas id="plot" aria-label="Mass spectrum"></canvas>
+      <div id="overlay" class="overlay"></div>
+    </div>
+
+    <aside class="side">
+      <div id="card" class="card"></div>
+      <div id="tray" class="tray" tabindex="-1" aria-label="Labels to place"></div>
+    </aside>
+  </div>
+
+  <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+
+  <div id="fragments" class="fragments" hidden></div>
+
+  <div id="choices" class="choices" hidden></div>
+
+  <div class="controls">
+    <button id="next" type="button" class="primary" hidden>Next spectrum &rarr;</button>
+    <button id="save" type="button" class="secondary">Save progress</button>
+    <span id="saveNote" class="save-note"></span>
+  </div>
+
+  <details id="reference" class="reference">
+    <summary>Common losses and diagnostic ions</summary>
+    <div id="refbody"></div>
+  </details>
+</main>
+
+<div id="screen" class="screen" hidden></div>
+
+<script src="js/fragments.js"></script>
+<script src="js/compounds.js"></script>
+<script src="js/massspec.js"></script>
+<script src="js/structures.js"></script>
+<script src="js/scorm.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
