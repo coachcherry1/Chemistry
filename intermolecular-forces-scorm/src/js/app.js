@@ -168,8 +168,6 @@ var App = (function () {
   }
 
   function sub(id) { return Chem.sub(id); }
-  function names(ids) { return ids.map(function (id) { return sub(id).text; }); }
-  function list(xs) { return xs.length < 2 ? xs.join('') : xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1]; }
 
   /* ------------------------------------------------------------------ state */
 
@@ -864,15 +862,16 @@ var App = (function () {
   }
 
   function periodicTable() {
-    var rows = [['H', '', '', '', '', '', '', 'He'], ['', '', '', 'C', 'N', 'O', 'F', 'Ne'], ['', '', '', '', '', '', 'Cl', 'Ar'],
-                ['', '', '', '', '', '', 'Br', 'Kr'], ['', '', '', '', '', '', 'I', 'Xe']];
+    /* only the columns this activity uses: groups 1, 14, 15, 16, 17 and 18 */
+    var rows = [['H', '', '', '', '', 'He'], ['', 'C', 'N', 'O', 'F', 'Ne'], ['', '', '', '', 'Cl', 'Ar'],
+                ['', '', '', '', 'Br', 'Kr'], ['', '', '', '', 'I', 'Xe']];
     var t = h('table', { class: 'ptable', 'aria-label': 'Atomic numbers of the elements in this activity' });
     rows.forEach(function (r) {
       t.appendChild(h('tr', null, r.map(function (sym) {
         return h('td', { class: 'pt-cell' + (sym ? '' : ' empty') }, sym ? [h('span', { class: 'pt-z', text: String(ELEMENTS[sym].z) }), sym] : []);
       })));
     });
-    return h('div', null, [t, h('p', { class: 'ref-foot', text: 'The atomic number is the number of electrons in a neutral atom. ' +
+    return h('div', { class: 'ptable-wrap' }, [t, h('p', { class: 'ref-foot', text: 'The atomic number is the number of electrons in a neutral atom. ' +
       'Add them up for a molecule.' })]);
   }
 

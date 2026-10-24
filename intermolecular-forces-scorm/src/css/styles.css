@@ -784,7 +784,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .mol .atom { color: var(--ink); }
 .mol .atom-ring { fill: transparent; }
 .mol .atom:not(.pick) { pointer-events: none; }
-.mol .atom.pick { cursor: pointer; }
+.mol .atom.pick { cursor: pointer; pointer-events: auto; }
 .mol .atom.pick .atom-ring { fill: var(--note-bg); stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 3 3; }
 .mol .atom.pick:hover .atom-ring, .mol .atom.pick:focus-visible .atom-ring { stroke-width: 2.4; stroke-dasharray: none; }
 .mol .atom.mark-sel .atom-ring { fill: var(--accent); stroke: var(--accent); }
@@ -843,5 +843,5 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .rank-num { font-weight: 800; color: var(--accent); }
 .rank-label { font-size: 0.82rem; }
 
-.ptable td.pt-cell { padding: 2px 6px; min-width: 34px; }
+.ptable td.pt-cell { padding: 2px 4px; min-width: 30px; }
 .pt-z { display: block; font-size: 0.62rem; color: var(--muted); font-weight: 500; }

@@ -49,12 +49,12 @@ function HeatStage(host, opts) {
   function reduced(id, T) {
     var x = Chem.sub(id);
     /* measured in this box: a crystal that only vibrates up to 0.2, a mobile
-       liquid that stays on the floor at 0.42 to 0.52, a gas filling the box
+       liquid that stays on the floor at 0.36 to 0.42, a gas filling the box
        from 1.3 */
     if (T >= x.bp) return 1.3 + 1.3 * Math.min(1, (T - x.bp) / (0.4 * x.bp + 20));
     if (x.mp == null || T >= x.mp) {
       var lo = x.mp == null ? 0.5 * x.bp : x.mp;
-      return 0.42 + 0.1 * Math.max(0, Math.min(1, (T - lo) / (x.bp - lo)));
+      return 0.36 + 0.06 * Math.max(0, Math.min(1, (T - lo) / (x.bp - lo)));
     }
     return 0.03 + 0.17 * Math.max(0, Math.min(1, T / x.mp));
   }
@@ -250,7 +250,7 @@ function HeatStage(host, opts) {
   function settle() {
     boxes.forEach(function (b) {
       seed(b);
-      for (var k = 0; k < 900; k++) step(b, 0.006);
+      for (var k = 0; k < 1600; k++) step(b, 0.006);
       draw(b);
     });
   }
