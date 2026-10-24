@@ -97,16 +97,18 @@ var LEVELS = [
     how: 'Drag a splitting pattern onto each set of hydrogens. Once every set has one, the ' +
          'spectrum appears so you can check your predictions.' },
 
-  { n: 5, key: 'solve', name: 'Solve it', items: 4,
-    refTitle: 'Shift table and splitting patterns', ref: ['shift', 'split'], needs: [],
+  { n: 5, key: 'solve', name: 'Solve it', items: 8,
+    refTitle: 'Shift table, integration and splitting', ref: ['shift', 'integ', 'split'], needs: [],
     includes: 'a free draw, preferring a compound family not yet used',
     blurb: 'Shift, integration and splitting together: identify the compound.',
     lesson: [
-      'Now read everything at once: how many signals there are, where they sit, how many H ' +
-      'each holds and how each is split.',
+      'Now read everything at once: how many signals there are, where they sit, their ' +
+      'integral ratios and how each is split.',
+      'The measured areas are not H counts. Divide by the smallest to find the ratio, ' +
+      'then compare it with the relative H counts in each structure.',
       'Every option offered fits part of the evidence. Look for the one signal that rules ' +
       'each wrong structure out.'
     ],
-    how: 'The number of hydrogens is printed under each signal. Pick the compound that ' +
-         'produced the spectrum.' }
+    how: 'Unnormalized integral areas are printed under each signal. Use their ratios, ' +
+         'shifts and splitting to pick the compound that produced the spectrum.' }
 ];

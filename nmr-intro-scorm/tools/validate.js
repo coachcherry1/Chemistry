@@ -213,6 +213,31 @@ for (const m of MOLECULES.filter(m => m.levels.includes(3))) {
   if (scales.size < 2) fail(m, 'integral scale does not vary between spectra');
 }
 
+/* Solve it reveals ratios, not absolute counts: a scaled equivalent
+   structure must never be offered as a distinguishable answer. */
+const scaledExample = JSON.parse(JSON.stringify(MOLECULES.find(m => m.id === 'ethylacetate')));
+scaledExample.atoms.forEach(a => { if (a.h) a.h *= 2; });
+const originalExample = MOLECULES.find(m => m.id === 'ethylacetate');
+if (!Chem.indistinguishable(originalExample, scaledExample)) {
+  problems.push('Solve it treats proportional integral areas as different H counts');
+}
+if (LEVELS.find(L => L.key === 'solve').items !== 8) {
+  problems.push('Solve it must draw eight compounds');
+}
+for (const m of MOLECULES.filter(m => m.levels.includes(5))) {
+  const counts = Chem.sets(m).map(s => s.nH);
+  const minH = Math.min(...counts);
+  for (let seed = 0; seed < 128; seed++) {
+    const signals = NMR.build(m, seed).signals;
+    const minArea = Math.min(...signals.map(s => s.rel));
+    for (const s of signals) {
+      if (s.rel <= 1 || Math.abs((s.rel / minArea) / (s.nH / minH) - 1) > 0.02) {
+        fail(m, 'Solve it measured areas do not preserve H ratios at seed ' + seed);
+      }
+    }
+  }
+}
+
 /* ---- every level's pool must be able to fill it, needs first */
 for (const L of LEVELS) {
   const pool = MOLECULES.filter(m => m.levels.indexOf(L.n) >= 0);

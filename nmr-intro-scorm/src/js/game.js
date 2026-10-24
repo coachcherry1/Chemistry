@@ -19,7 +19,7 @@ var Game = (function () {
   /* Bumped whenever the shape of a saved run changes - the level list, the
      draw, or the bank's ids. A save from an older build is discarded rather
      than resumed, otherwise a student carries an out-of-date lineup forward. */
-  var SCHEMA = 1;
+  var SCHEMA = 2;
 
   var LETTERS = ['a', 'b', 'c', 'd', 'e', 'f'];
 
@@ -332,7 +332,8 @@ var Game = (function () {
       } else {
         el.card.appendChild(make('p', 'card-hidden', '?'));
         el.card.appendChild(make('p', 'card-note',
-          'The number of H in each signal is printed under it.'));
+          'The integrals are measured areas in arbitrary units. Compare their ratios, ' +
+          'chemical shifts and splitting with each structure.'));
       }
       return;
     }
@@ -359,10 +360,10 @@ var Game = (function () {
     el.plotwrap.hidden = !show;
     if (!show) { el.overlay.innerHTML = ''; el.plotnote.hidden = true; return; }
     var opts = {};
-    if (key === 'integ') {
+    if (key === 'integ' || key === 'solve') {
       opts.integral = true;
       opts.under = function (sig) { return sig.rel.toFixed(2); };
-    } else if (key === 'solve' || key === 'split') {
+    } else if (key === 'split') {
       opts.under = function (sig) { return sig.nH + 'H'; };
     }
     /* about 60 px per ppm keeps the 0.12 ppm between multiplet lines at
