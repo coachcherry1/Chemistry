@@ -32,10 +32,11 @@ Everything is on `main`; older work branches were merged in October 2026.
 | `chirality-scorm/` | Chirality, R and S, enantiomers, diastereomers and meso compounds (qualitative) |
 
 **Older packages predate some house rules.** Everything except Newman, chairs and chirality contains em
-dashes (the Lewis, resonance and drawing-tool validators allow them). The mass spec, IR + mass spec, NMR,
-naming, acids and ionization energy packages still load a browser save inside an LMS when
-`cmi.suspend_data` is empty (fixed in IR, Newman, chairs, chirality, Lewis and resonance). Only Newman,
-chairs and chirality have `tools/layout.js`. Bring a package up to the rules when you next change it.
+dashes (the Lewis, resonance and drawing-tool validators allow them). Every package that saves now keeps
+progress only in `cmi.suspend_data` inside an LMS (the acetone kinetics lab saves nothing). Only Newman,
+chairs and chirality have `tools/layout.js`. IR, mass spec, IR + mass spec, NMR, ionic naming, ionic
+or covalent, acids, ionization energy and acetone kinetics have no `tools/walkthrough.js`. Bring a package up to
+the rules when you next change it.
 
 ## House rules
 

@@ -1119,6 +1119,10 @@ var Game = (function () {
   }
 
   function startDrag(ev) {
+    /* a new press starts fresh: if the last drag's trailing click never
+       arrived (the tile was re-rendered away, or it was a touch drag), the
+       flag must not swallow this click instead */
+    suppressClick = false;
     var idx = tileIndexOf(ev.target);
     if (idx < 0) return;
     var tileNode = ev.target.closest('.tile');

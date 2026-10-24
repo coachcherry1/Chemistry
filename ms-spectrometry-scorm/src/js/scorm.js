@@ -79,25 +79,30 @@ var SCORM = (function () {
   var KEY = 'ms-rf-state';
 
   /* suspend_data is capped at 4096 characters in SCORM 1.2.
-     Returns where the save landed: 'lms', 'local' or 'none'. */
+     Returns where the save landed: 'lms', 'local' or 'none'.
+
+     Inside the LMS, progress lives ONLY in cmi.suspend_data, which belongs to
+     one learner's one attempt. localStorage belongs to the browser, so using
+     it there would hand a reset attempt, or the next student on the same
+     Chromebook, somebody else's progress. It is used only when there is no
+     LMS (index.html opened straight from disk). */
   function saveState(obj) {
     var json;
     try { json = JSON.stringify(obj); } catch (e) { return 'none'; }
     if (json.length > 4000) return 'none';
 
-    var local = false;
-    try { localStorage.setItem(KEY, json); local = true; } catch (e) { /* private mode */ }
-
-    if (connected && set('cmi.suspend_data', json)) {
-      commit();
-      return 'lms';
+    if (!connected) {
+      try { localStorage.setItem(KEY, json); return 'local'; } catch (e) { return 'none'; }
     }
-    return local ? 'local' : 'none';
+    if (!set('cmi.suspend_data', json)) return 'none';
+    commit();
+    return 'lms';
   }
 
   function loadState() {
-    var json = get('cmi.suspend_data');
-    if (!json) {
+    var json = '';
+    if (connected) json = get('cmi.suspend_data');
+    else {
       try { json = localStorage.getItem(KEY) || ''; } catch (e) { json = ''; }
     }
     if (!json) return null;
