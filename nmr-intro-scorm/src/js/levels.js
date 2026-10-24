@@ -73,8 +73,9 @@ var LEVELS = [
       'hydrogens that produce it.',
       'Integrals give a ratio, not a count. Divide each by the smallest, then scale so the ' +
       'total matches the number of H in the molecular formula.',
-      'Example: integrals of 1.50 : 1.00 : 1.50 add up to 4. If the formula has 8 H, each 1.00 ' +
-      'is worth 2 H — so the signals are 3H, 2H and 3H.'
+      'Example: measured areas of 7.46 : 5.02 : 7.53 give about 1.5 : 1 : 1.5 after ' +
+      'dividing by 5.02 and rounding. The ratio adds up to 4. If the formula has 8 H, each ' +
+      '1.0 in the ratio is worth 2 H: the signals are 3H, 2H and 3H.'
     ],
     how: 'The compound is hidden. Drag the right number of hydrogens onto each signal.' },
 

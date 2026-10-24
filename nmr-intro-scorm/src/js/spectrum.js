@@ -65,15 +65,15 @@ var NMR = (function () {
     });
     signals.sort(function (a, b) { return b.d - a.d; });
 
-    /* Relative integrals, as an instrument would print them: the leftmost of
-       the smallest signals is 1.00 and the rest carry a couple of percent of
-       noise, so a student has to round, not just read. */
+    /* Unnormalized areas in arbitrary units. One shared scale preserves the
+       H ratio; small measurement variations require rounding after dividing
+       by the smallest area, rather than reading a supplied 1.00 reference. */
     var minH = Math.min.apply(null, signals.map(function (s) { return s.nH; }));
-    var ref = signals.filter(function (s) { return s.nH === minH; })[0];
+    var scale = 2.37 + r() * 7.46;
     signals.forEach(function (s, i) {
       s.i = i;
-      var noise = s === ref ? 0 : (r() - 0.5) * 0.04;
-      s.rel = Math.round(s.nH / minH * (1 + noise) * 100) / 100;
+      var noise = (r() - 0.5) * 0.01;
+      s.rel = Math.round(s.nH / minH * scale * (1 + noise) * 100) / 100;
     });
 
     var top = Math.max.apply(null, signals.map(function (s) { return s.hi + s.w * 2; }));

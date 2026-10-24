@@ -15,7 +15,7 @@ interaction, completion-only grading and packaging, with a level per concept.
 | --- | --- | --- |
 | 1 | Equivalent H | The compound is drawn with every hydrogen-bearing group as a capsule (CH₃, CH₂, OH …). The student picks a colour and clicks groups to colour each **set of equivalent hydrogens** alike, then checks. A correct grouping reveals the spectrum, its signals labelled in the student's colours: one set, one signal. Five compounds. |
 | 2 | Chemical shift | The compound is drawn with its sets lettered **a, b, c**. The student drags each letter onto the signal it produces, reasoning from the **shift table** (available below the spectrum). Five compounds. |
-| 3 | Integration | The compound is **hidden**; only its molecular formula is shown. Relative integrals are printed under the signals and the integral curve is drawn. The student works out how many H each signal holds and drags **3H, 2H …** onto it. The compound is revealed at the end. Four compounds. |
+| 3 | Integration | The compound is **hidden**; only its molecular formula is shown. Unnormalized integral areas in arbitrary units are printed under the signals and the integral curve is drawn. The student works out how many H each signal holds and drags **3H, 2H …** onto it. The compound is revealed at the end. Four compounds. |
 | 4 | Splitting | The compound is drawn and lettered. The student **predicts** each set's multiplicity with the n + 1 rule by dragging **singlet, doublet, triplet …** onto it. Once every set has one, the spectrum appears, labelled, so the prediction can be checked against the real multiplets. Five compounds. |
 | 5 | Solve it | The compound is hidden and the H count is printed under each signal. The student reads shift, integration and splitting together and picks the compound from three structures. Four compounds. |
 
@@ -109,9 +109,11 @@ can be counted on the full plot. Where the outer lines of a multiplet would be t
 see — a septet beside a 6H doublet, typically — the plot adds a vertical **expansion** above
 the signal, labelled ×4 or ×8, the way a printed spectrum does. TMS is drawn at 0 ppm.
 
-A seeded jitter moves each shift by up to ±0.015 ppm and adds a couple of percent of noise
-to the printed integrals, so a compound never draws identically twice and the integrals
-have to be rounded rather than read.
+A seeded jitter moves each shift by up to ±0.015 ppm. Printed integral areas use a shared,
+arbitrary scale that varies between spectra, with up to ±0.5% measurement variation per
+signal. No signal is preset to 1.00: students divide by the smallest measured area, round
+the resulting ratios, and use the formula to find the H counts. For example,
+7.46 : 5.02 : 7.53 gives about 1.5 : 1 : 1.5, or 3 : 2 : 3.
 
 Nothing is copied from a spectral database, so nothing restricts redistributing the
 package, and every peak position is known exactly. The plot redraws at the container's

@@ -327,7 +327,8 @@ var Game = (function () {
       if (key === 'integ') {
         el.card.appendChild(make('p', 'card-formula-big', mol.formula));
         el.card.appendChild(make('p', 'card-note',
-          'Count the H in the formula, then share them out using the integrals under the spectrum.'));
+          'The integrals below are measured areas in arbitrary units. Divide by the smallest, ' +
+          'then use the H count in the formula to scale the ratio.'));
       } else {
         el.card.appendChild(make('p', 'card-hidden', '?'));
         el.card.appendChild(make('p', 'card-note',
@@ -659,12 +660,13 @@ var Game = (function () {
 
     if (key === 'integ') {
       var sigs = item.spec.signals;
-      var ratios = sigs.map(function (g) { return Math.round(g.rel * 2) / 2; });
+      var smallest = Math.min.apply(null, sigs.map(function (g) { return g.rel; }));
+      var ratios = sigs.map(function (g) { return Math.round(g.rel / smallest * 2) / 2; });
       var sum = ratios.reduce(function (x, y) { return x + y; }, 0);
       var total = sigs.reduce(function (x, g) { return x + g.nH; }, 0);
       return 'Not ' + tile.label + '. Divided by the smallest, the integrals are about ' +
              ratios.map(half).join(' : ') + ', which add up to ' + half(sum) + '. ' +
-             item.mol.formula + ' has ' + total + ' H, so each 1.0 of integral is worth ' +
+             item.mol.formula + ' has ' + total + ' H, so each 1.0 in this ratio is worth ' +
              half(total / sum) + ' H.';
     }
 
@@ -1154,12 +1156,13 @@ var Game = (function () {
       'Divide every integral by the smallest one. That gives the ratio.',
       'Add the ratio up.',
       'Divide the number of H in the molecular formula by that total: that is how many H each ' +
-      '1.0 of integral is worth.',
+      '1.0 in the ratio is worth.',
       'Multiply each ratio by it. Each answer is the number of H in that signal.'
     ]));
     ig.appendChild(make('p', 'ref-foot',
-      'Example: 1.50 : 1.00 : 1.50 adds up to 4. C₄H₈O₂ has 8 H, so each 1.0 is ' +
-      'worth 2 H — the signals are 3H, 2H and 3H.'));
+      'Example: measured areas of 7.46 : 5.02 : 7.53 give about 1.5 : 1 : 1.5 after ' +
+      'dividing by 5.02 and rounding. The ratio adds up to 4. C₄H₈O₂ has 8 H, so each ' +
+      '1.0 in the ratio is worth 2 H: the signals are 3H, 2H and 3H.'));
 
     var sp = refSection('split', 'Splitting (the n + 1 rule)');
     var st = make('table', 'ref-table');

@@ -187,6 +187,32 @@ for (const m of MOLECULES) {
   }
 }
 
+/* Unnormalized measured areas must still recover the correct H counts,
+   including half ratios, across every integration compound and varied draws. */
+for (const m of MOLECULES.filter(m => m.levels.includes(3))) {
+  const scales = new Set();
+  for (let seed = 0; seed < 128; seed++) {
+    const signals = NMR.build(m, seed).signals;
+    const smallest = Math.min(...signals.map(s => s.rel));
+    scales.add(smallest);
+    if (signals.some(s => !Number.isFinite(s.rel) || s.rel <= 1)) {
+      fail(m, 'integrals must be positive, unnormalized areas without a 1.00 reference');
+    }
+    const ratios = signals.map(s => Math.round(s.rel / smallest * 2) / 2);
+    const sum = ratios.reduce((a, b) => a + b, 0);
+    const total = signals.reduce((a, s) => a + s.nH, 0);
+    signals.forEach((s, i) => {
+      if (Math.abs(ratios[i] * total / sum - s.nH) > 1e-9) {
+        fail(m, 'measured integral ratios give the wrong H count at seed ' + seed);
+      }
+    });
+    if (JSON.stringify(signals) !== JSON.stringify(NMR.build(m, seed).signals)) {
+      fail(m, 'integrals change when redrawing the same seed');
+    }
+  }
+  if (scales.size < 2) fail(m, 'integral scale does not vary between spectra');
+}
+
 /* ---- every level's pool must be able to fill it, needs first */
 for (const L of LEVELS) {
   const pool = MOLECULES.filter(m => m.levels.indexOf(L.n) >= 0);
