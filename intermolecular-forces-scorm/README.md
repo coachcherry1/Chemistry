@@ -24,12 +24,12 @@ melting and boiling points agree with it; `tools/validate.js` checks every compa
 | Part | Steps | What happens |
 | --- | --- | --- |
 | 1 Melting and boiling | 2 | **What does boiling pull apart?** Predict what is in the bubbles, then warm water past 100 °C: whole H₂O molecules leave. **Temperature and speed:** argon from −200 °C to −170 °C: a still crystal held by a network of dashed IMF lines, a liquid whose lines keep breaking and re-forming, a gas with none. |
-| 2 London dispersion forces | 5 | **Helium and neon** (2 and 10 electrons; name the IMFs of each, then predict): boiling points only, since helium never freezes at normal pressure. **Why more electrons attract more:** two atoms side by side, an electron cloud wobbles (a temporary δ−/δ+), the neighbour's cloud follows, they attract; He to Xe, with real cloud sizes and polarizabilities. **The noble gas race:** Ne, Ar, Kr and Xe on one thermometer. **The halogens at 25 °C:** name their IMFs, then predict F₂ gas, Cl₂ gas, Br₂ liquid, I₂ solid. **Checkpoint 1** (4 questions). |
+| 2 London dispersion forces | 5 | **Helium and neon** (2 and 10 electrons; name the IMFs of each, then predict): boiling points only, since helium never freezes at normal pressure. **Why more electrons attract more:** two atoms side by side; one atom's electron cloud sloshes to one side (a temporary δ−/δ+), the neighbour's cloud follows a beat later, and a dashed line labelled LDF pops up between the facing δ− and δ+; He to Xe, with real cloud sizes, and shifts in the real proportions of the polarizabilities (magnified to be seen). **The noble gas race:** Ne, Ar, Kr and Xe on one thermometer. **The halogens at 25 °C:** name their IMFs, then predict F₂ gas, Cl₂ gas, Br₂ liquid, I₂ solid. **Checkpoint 1** (4 questions). |
 | 3 Dipole-dipole forces | 5 | **Polar molecules have ends:** HCl lined up δ+ to δ−, F₂ with no ends. Races with the same (or nearly the same) number of electrons, each starting with the two Lewis structures and naming the IMFs of each: **HCl and F₂** (18 each), **ethane and fluoromethane** (18 each), **butane (34) and acetone (32)**. **Checkpoint 2** (4). |
 | 4 Hydrogen bonding | 7 | **Donor and receiver:** click the H on one water molecule, then a lone pair on another, and the hydrogen bond is drawn. **Which H can be donated?** Click every H on N, O or F in methanol, acetone, ammonia, fluoromethane and HF, with the electronegativity differences beside them (a C–H click explains that 0.35 leaves the H barely δ+). **Draw hydrogen bonds** between two ethanol molecules, water donating to ethanol, ethanol donating to water, and water to acetone (and predict: can acetone hydrogen bond with itself?). **Count the hydrogen bonds:** name the IMFs of ethanol and ethylene glycol from their structures, count (1 and 2), then race them; then methane, ammonia and water, all 10 electrons (0, 1, 2). **Checkpoint 3** (5), with the electronegativity table beside it. |
 | 5 All together | 2 | **Three forces, 18 electrons each:** name the IMFs of F₂, HCl and CH₃OH, put them in order, then race them. **Checkpoint 4** (5). |
 
-IMF names, predictions, races, clicks, drawings and counts must be finished to move on, but none is graded. Each race's
+The substances in every race, count, ranking and the halogens appear in a different order for each student (never lowest boiling point to highest when there are three or more). IMF names, predictions, races, clicks, drawings and counts must be finished to move on, but none is graded. Each race's
 thermometer stays locked until the student has predicted, and the step is done once every substance has boiled.
 
 ### The class's rules, and what is left out
@@ -97,12 +97,12 @@ it over (`localStorage` is used only without an LMS). A save from another releas
 ```bash
 node tools/validate.js                    # must pass
 node tools/answer-key.js > ANSWER_KEY.md
-./build.sh                                # dist/intermolecular-forces-v2.zip
+./build.sh                                # dist/intermolecular-forces-v3.zip
 node tools/walkthrough.js                 # optional, Playwright: plays the whole activity against a fake LMS
 node tools/layout.js                      # optional, Playwright: fits a Chromebook, 1366x650 and 1366x520
 ```
 
-Upload `dist/intermolecular-forces-v2.zip` in Schoology with **Add Materials → Add File/Link/External Tool → Add
+Upload `dist/intermolecular-forces-v3.zip` in Schoology with **Add Materials → Add File/Link/External Tool → Add
 File** (or **Package**), enable the gradebook column, and preview as a student: the badge in the top right should
 read **Connected to the LMS**. The SCORM identifiers and the storage key are this package's own.
 

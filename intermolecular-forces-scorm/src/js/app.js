@@ -21,7 +21,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a substance changes: a save
      from an older release is then discarded and the student starts fresh. */
-  var SCHEMA = 2;
+  var SCHEMA = 3;
 
   var h = UI.h;
   var C = function (c) { return c + 273.15; };
@@ -271,8 +271,22 @@ var App = (function () {
     nav('next', 'textContent', STEPS[i + 1] && STEPS[i + 1].kind === 'results' ? 'See results →' : 'Next →');
     nav('back', 'hidden', i === 0);
     paintParts();
-    ctl = RENDER[s.kind](s) || null;
+    ctl = RENDER[s.kind](mixed(s)) || null;
     window.scrollTo(0, 0);
+  }
+
+  /* The substances of a race, a count, a ranking or the halogens in a
+     different order for each student (the same one every visit), never
+     lowest boiling point to highest when there are three or more. */
+  function mixed(s) {
+    if (['race', 'count', 'rank', 'phases'].indexOf(s.kind) < 0 || !s.ids || s.ids.length < 2) return s;
+    var ids = UI.shuffle(s.ids.slice(), UI.rng(state.seed ^ UI.hash(s.id)));
+    var rising = ids.every(function (id, k) { return !k || sub(ids[k - 1]).bp < sub(id).bp; });
+    if (rising && ids.length > 2) ids.push(ids.shift());
+    var copy = {};
+    Object.keys(s).forEach(function (k) { copy[k] = s[k]; });
+    copy.ids = ids;
+    return copy;
   }
 
   function panel(title, hint, kids, cls) {
@@ -1197,7 +1211,7 @@ var App = (function () {
     showIntro();
   }
 
-  return { start: start, SCHEMA: SCHEMA, STEPS: STEPS, GRADED: GRADED, PREDICT: PREDICT, predictionFor: predictionFor,
+  return { start: start, SCHEMA: SCHEMA, STEPS: STEPS, GRADED: GRADED, PREDICT: PREDICT, predictionFor: predictionFor, mixed: mixed,
            raceStory: raceStory, ctl: function () { return ctl; } };
 })();
 

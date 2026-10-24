@@ -144,7 +144,7 @@ not the full page.
 - **Files:** `species.js`, `vsepr.js` (model), `viewer3d.js` (canvas 3D, lone-pair lobes, arcs, charges), `field.js`
   (field test), `quiz.js`, `app.js`, plus the copied Lewis files.
 
-## intermolecular-forces-scorm (branch `intermolecular-forces`, zip v2, SCHEMA 2)
+## intermolecular-forces-scorm (branch `intermolecular-forces`, zip v3, SCHEMA 3)
 
 - **Key objective:** IMFs are between molecules; stronger IMFs, higher mp/bp; with similar electron counts LDF <
   dipole-dipole < hydrogen bonding.
@@ -162,6 +162,9 @@ not the full page.
   decided by `Chem.compare` and agree with both bp and mp (`Chem.dataAgrees`); the validator also requires every °C
   quoted in questions and steps to be a real data point. Kept out because the data disagree: ethanol vs methanol,
   water vs ethylene glycol, NH₃ vs HF.
+- **Order:** `mixed()` in app.js shuffles each comparison step's substances per student (seeded), never rising bp for 3+.
+- **Clouds (`cloud.js`):** the cloud sloshes (target-seeking spring), ripples and carries electron specks; shifts keep the
+  real polarizability proportions, magnified; a dashed LDF line pops up while both clouds show δ+/δ−.
 - **Heating stage (`heat.js`):** 2D Lennard-Jones particles with gravity 0.25 and a thermostat; reduced temperature
   from the real mp/bp: solid 0.03 to 0.15, liquid 0.33 to 0.38, gas 1.8 to 2.8. Dashed IMF lines join close pairs
   (r < 1.27) in solids and liquids, none in a gas (drawn as ideal). Motion is illustrative (solid still, liquid slow);
