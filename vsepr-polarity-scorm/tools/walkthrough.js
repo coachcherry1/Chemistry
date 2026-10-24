@@ -32,21 +32,23 @@ const SHOTS = process.env.SHOTS;
 /* answered wrongly on purpose: one core question per checkpoint */
 const WRONG = new Set(['a-why-double', 'b-why-lp', 'c-co2']);
 
+/* The fake LMS keeps its data in sessionStorage and reads and writes it on
+   every call, never from a copy in the page. To give the next load different
+   LMS data, a test first switches off the current page's writes (so its
+   unload handler cannot put its own data back), then writes the data. */
 const fakeLMS = () => {
-  const staged = sessionStorage.getItem('lms-next');
-  if (staged != null) { sessionStorage.setItem('lms', staged); sessionStorage.removeItem('lms-next'); }
-  const data = JSON.parse(sessionStorage.getItem('lms') || '{}');
-  const save = () => sessionStorage.setItem('lms', JSON.stringify(data));
+  const read = () => JSON.parse(sessionStorage.getItem('lms') || '{}');
   window.API = {
     LMSInitialize: () => 'true',
     LMSFinish: () => 'true',
     LMSGetValue: (k) => {
+      const data = read();
       if (k === 'cmi.interactions._count') {
         return String(Object.keys(data).filter((x) => /^cmi\.interactions\.\d+\.id$/.test(x)).length);
       }
       return data[k] || '';
     },
-    LMSSetValue: (k, v) => { data[k] = v; save(); return 'true'; },
+    LMSSetValue: (k, v) => { const data = read(); data[k] = v; sessionStorage.setItem('lms', JSON.stringify(data)); return 'true'; },
     LMSCommit: () => 'true',
     LMSGetLastError: () => '0'
   };
@@ -101,7 +103,8 @@ const fakeLMS = () => {
                                           pr: {}, done: { flat: 1 }, fin: 0, best: 61, att: 1 });
       const lms = { 'cmi.core.score.raw': '61', 'cmi.core.lesson_status': 'incomplete' };
       if (a.lms != null) lms['cmi.suspend_data'] = old(a.lms);
-      sessionStorage.setItem('lms-next', JSON.stringify(lms));
+      window.API.LMSSetValue = () => 'true';
+      sessionStorage.setItem('lms', JSON.stringify(lms));
       localStorage.clear();
       if (a.browser != null) localStorage.setItem(a.key, old(a.browser));
     }, { lms: lmsVersion, browser: browserVersion, key: STORE });
