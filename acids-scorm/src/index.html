@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acids and Compounds</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="titles">
+    <h1>Acids, ionic &amp; covalent &mdash; names &amp; formulas</h1>
+    <p id="blurb" class="blurb"></p>
+  </div>
+  <span id="lms" class="lms off">&nbsp;</span>
+</header>
+
+<nav id="tabs" class="tabs" aria-label="Levels"></nav>
+
+<main>
+  <div class="statusline">
+    <h2 id="levelName"></h2>
+    <span class="status-right">
+      <span id="counter" class="counter"></span>
+      <button id="ptButton" type="button" class="secondary">Periodic table</button>
+    </span>
+  </div>
+
+  <div id="stage" class="stage">
+    <section id="card" class="card" aria-label="Current question"></section>
+
+    <aside class="side">
+      <div id="flowAcid" class="flow" hidden aria-label="Acid flowchart">
+        <p class="flow-title">Naming acids</p>
+        <div class="fgrid">
+          <div class="fnode f-q1" data-node="atype">
+            <strong>Is there oxygen in the negative ion?</strong>
+            <span class="fnote">the formula starts with H &mdash; look at what follows it</span>
+          </div>
+          <span class="flabel f-ano" data-col="bin">NO</span>
+          <span class="flabel f-ayes" data-col="oxy">YES &rarr; which ion?</span>
+          <div class="fnode f-abin" data-node="abin" data-col="bin">
+            <strong>hydro- + root + -ic acid</strong>
+            <span class="fnote fex">HCl &rarr; hydrochloric acid</span>
+          </div>
+          <div class="fnode f-aic" data-node="aic" data-col="ic">
+            <strong>-ate &rarr; -ic acid</strong>
+            <span class="fnote">no hydro-</span>
+            <span class="fnote fex">sulfate &rarr; sulfuric</span>
+          </div>
+          <div class="fnode f-aous" data-node="aous" data-col="ous">
+            <strong>-ite &rarr; -ous acid</strong>
+            <span class="fnote">no hydro-</span>
+            <span class="fnote fex">sulfite &rarr; sulfurous</span>
+          </div>
+          <div class="fnode f-aform" data-node="aform">
+            <strong>Acid formula</strong>
+            <span class="fnote">H + the ion; number of H = the ion&rsquo;s charge; never parentheses</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="flow" class="flow" hidden aria-label="Decision flowchart">
+        <p class="flow-title">Which rules?</p>
+        <div class="fgrid">
+          <div class="fnode f-q0" data-node="q0">
+            <strong>Does it start with H?</strong>
+          </div>
+          <div class="fnode f-acid" data-node="acid" data-col="acid">
+            <strong>YES &rarr; ACID</strong>
+            <span class="fnote">no oxygen &rarr; hydro-&hellip;-ic &middot; -ate &rarr; -ic &middot; -ite &rarr; -ous<br>H count = ion&rsquo;s charge</span>
+          </div>
+          <span class="flabel f-q0no" data-col="nonacid">NO &darr;</span>
+          <div class="fnode f-q1" data-node="q1" data-col="nonacid">
+            <strong>Does it start with a metal or NH&#8324;&#8314;?</strong>
+            <span class="fnote">metals are left of the staircase</span>
+          </div>
+          <span class="flabel f-yes" data-col="ionic">YES &rarr; IONIC</span>
+          <span class="flabel f-no" data-col="cov">NO &rarr; COVALENT</span>
+          <div class="fnode f-q2" data-node="q2" data-col="ionic">
+            <strong>Is the metal a transition metal?</strong>
+            <span class="fnote">d-block plus Sn, Pb &mdash; not Ag or Zn</span>
+          </div>
+          <div class="fnode f-cov" data-node="cov" data-col="cov">
+            <strong>prefixes count the atoms</strong>
+            <span class="fnote">first element: no mono-<br>second: always a prefix, then -ide<br>never a Roman numeral</span>
+            <span class="fnote fex">dinitrogen tetroxide</span>
+          </div>
+          <span class="flabel f-lno" data-col="ion">NO</span>
+          <span class="flabel f-lyes" data-col="tm">YES</span>
+          <div class="fnode f-ion" data-node="ion" data-col="ion">
+            <strong>positive ion + negative ion</strong>
+            <span class="fnote">no prefixes, no numeral</span>
+            <span class="fnote fex">calcium chloride</span>
+          </div>
+          <div class="fnode f-tm" data-node="tm" data-col="tm">
+            <strong>metal (Roman numeral) + negative ion</strong>
+            <span class="fnote fex">iron(III) oxide</span>
+          </div>
+          <div class="fnode f-charge" data-node="charge" data-col="tm">
+            <strong>numeral = metal&rsquo;s charge</strong>
+            <span class="fnote">total negative charge &divide; number of metal atoms</span>
+          </div>
+          <div class="fnode f-fion" data-node="fion" data-col="ionic">
+            <strong>Ionic formula</strong>
+            <span class="fnote">balance the charges, lowest ratio, ( ) around 2+ polyatomic ions</span>
+          </div>
+          <div class="fnode f-fcov" data-node="fcov" data-col="cov">
+            <strong>Covalent formula</strong>
+            <span class="fnote">prefixes are the subscripts &mdash; never reduce</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+
+  <div class="controls">
+    <button id="next" type="button" class="primary" hidden>Next &rarr;</button>
+  </div>
+</main>
+
+<div id="ptModal" class="screen" hidden>
+  <div class="screen-box pt-box" role="dialog" aria-modal="true" aria-labelledby="ptTitle">
+    <div class="pt-head">
+      <h2 id="ptTitle">Periodic Table of the Elements</h2>
+      <button id="ptClose" type="button" class="secondary">Close</button>
+    </div>
+    <div id="ptModalBody"></div>
+    <p class="pt-foot">
+      Laid out like the College Board AP Chemistry periodic table.
+      <a id="ptLink" target="_blank" rel="noopener">Open the official College Board table (PDF)</a>
+    </p>
+  </div>
+</div>
+
+<div id="screen" class="screen" hidden></div>
+
+<script src="js/data.js"></script>
+<script src="js/chem.js"></script>
+<script src="js/cfu.js"></script>
+<script src="js/plan.js"></script>
+<script src="js/ptable.js"></script>
+<script src="js/scorm.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>

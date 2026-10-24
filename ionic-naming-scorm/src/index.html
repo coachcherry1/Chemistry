@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Naming Ionic Compounds</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="titles">
+    <h1>Ionic compounds &mdash; names &amp; formulas</h1>
+    <p id="blurb" class="blurb"></p>
+  </div>
+  <span id="lms" class="lms off">&nbsp;</span>
+</header>
+
+<nav id="tabs" class="tabs" aria-label="Levels"></nav>
+
+<main>
+  <div class="statusline">
+    <h2 id="levelName"></h2>
+    <span class="status-right">
+      <span id="counter" class="counter"></span>
+      <button id="ptButton" type="button" class="secondary">Periodic table</button>
+    </span>
+  </div>
+
+  <div id="stage" class="stage">
+    <section id="card" class="card" aria-label="Current question"></section>
+
+    <aside class="side">
+      <div id="ptInline" class="pt-inline" hidden></div>
+
+      <div id="flowName" class="flow" hidden aria-label="Naming flowchart">
+        <p class="flow-title">Formula &rarr; name</p>
+        <div class="fnode" data-node="tm">
+          <strong>Is the positive ion a transition metal?</strong>
+          <span class="fnote">d-block metals plus Sn and Pb &mdash; but not Ag or Zn</span>
+        </div>
+        <div class="fbranch">
+          <div class="fcol" data-branch="yes">
+            <span class="flabel">YES</span>
+            <div class="fnode" data-node="charge">
+              <strong>Find the metal&rsquo;s charge</strong>
+              <span class="fnote">total negative charge &divide; number of metal atoms</span>
+            </div>
+            <div class="fnode" data-node="nameY">
+              <strong>metal (Roman numeral) + negative ion</strong>
+              <span class="fnote">iron(III) oxide</span>
+            </div>
+          </div>
+          <div class="fcol" data-branch="no">
+            <span class="flabel">NO</span>
+            <div class="fnode" data-node="nameN">
+              <strong>positive ion + negative ion</strong>
+              <span class="fnote">no Roman numeral &mdash; sodium chloride</span>
+            </div>
+          </div>
+        </div>
+        <div class="fnode" data-node="anion">
+          <strong>Naming the negative ion</strong>
+          <span class="fnote">one element &rarr; root + <em>-ide</em><br>polyatomic &rarr; its name from your list</span>
+        </div>
+      </div>
+
+      <div id="flowFormula" class="flow" hidden aria-label="Formula flowchart">
+        <p class="flow-title">Name &rarr; formula</p>
+        <div class="fnode" data-node="fcat">
+          <strong>1. Charge on the positive ion</strong>
+          <span class="fnote">Roman numeral? That is the charge.<br>No numeral? Use its only charge.</span>
+        </div>
+        <div class="fnode" data-node="fan">
+          <strong>2. Charge on the negative ion</strong>
+          <span class="fnote">from its group, or your polyatomic ion list</span>
+        </div>
+        <div class="fnode" data-node="fbal">
+          <strong>3. Balance the charges to zero</strong>
+          <span class="fnote">total + = total &minus;, in the lowest whole-number ratio</span>
+        </div>
+        <div class="fnode" data-node="fpar">
+          <strong>4. More than one of a polyatomic ion?</strong>
+          <span class="fnote">YES &rarr; wrap it in ( ) &nbsp;&middot;&nbsp; NO &rarr; no parentheses</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+
+  <div class="controls">
+    <button id="next" type="button" class="primary" hidden>Next &rarr;</button>
+  </div>
+</main>
+
+<div id="ptModal" class="screen" hidden>
+  <div class="screen-box pt-box" role="dialog" aria-modal="true" aria-labelledby="ptTitle">
+    <div class="pt-head">
+      <h2 id="ptTitle">Periodic Table of the Elements</h2>
+      <button id="ptClose" type="button" class="secondary">Close</button>
+    </div>
+    <div id="ptModalBody"></div>
+    <p class="pt-foot">
+      Laid out like the College Board AP Chemistry periodic table.
+      <a id="ptLink" target="_blank" rel="noopener">Open the official College Board table (PDF)</a>
+    </p>
+  </div>
+</div>
+
+<div id="screen" class="screen" hidden></div>
+
+<script src="js/data.js"></script>
+<script src="js/chem.js"></script>
+<script src="js/cfu.js"></script>
+<script src="js/plan.js"></script>
+<script src="js/ptable.js"></script>
+<script src="js/scorm.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
