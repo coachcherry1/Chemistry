@@ -1,0 +1,2913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinetics of the Iodination of Acetone</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f7f5f0 0%, #d9cfc0 100%);
+        min-height: 100vh;
+        padding: 6px;
+    }
+
+    .container {
+        max-width: 1340px;
+        margin: 0 auto;
+        background: rgba(255,255,255,0.95);
+        border-radius: 10px;
+        padding: 8px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
+        color: #fff;
+        padding: 6px 12px;
+        border-radius: 6px;
+        box-shadow: 0 3px 8px rgba(180,83,9,0.3);
+    }
+    .header h1 { font-size: 1.1rem; font-weight: 400; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .header p { font-size: 0.75rem; margin-top: 1px; }
+
+    .hidden { display: none !important; }
+
+    .btn {
+        background: linear-gradient(145deg, #4a90e2, #357abd);
+        color: #fff;
+        border: none;
+        padding: 9px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 13px;
+        font-family: inherit;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        min-height: 38px;
+    }
+    .btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); background: linear-gradient(145deg, #357abd, #2c5aa0); }
+    .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-compact { min-height: 27px; padding: 4px 8px; font-size: 11.5px; }
+    .btn-amber { background: linear-gradient(145deg, #f59e0b, #d97706); }
+    .btn-amber:hover:not(:disabled) { background: linear-gradient(145deg, #d97706, #b45309); }
+    .btn-green { background: linear-gradient(145deg, #34a853, #248a3d); }
+    .btn-green:hover:not(:disabled) { background: linear-gradient(145deg, #248a3d, #1b6e30); }
+    .btn-grey { background: linear-gradient(145deg, #8b949e, #6b737b); }
+    .btn-grey:hover:not(:disabled) { background: linear-gradient(145deg, #6b737b, #545a61); }
+    .btn-primary-intro { display: block; margin: 16px auto 0; padding: 14px 30px; font-size: 16px; }
+
+    .screen { padding: 6px 4px; }
+
+    .intro-box { background: #fffaf0; border-left: 4px solid #f59e0b; padding: 14px; border-radius: 6px; margin: 10px 0; font-size: 0.9rem; line-height: 1.55; }
+    .intro-box h3 { margin-bottom: 6px; color: #b45309; }
+    .intro-box ol, .intro-box ul { margin-left: 20px; margin-top: 6px; }
+    .intro-box li { margin-bottom: 3px; }
+
+    .eqn { font-family: 'Courier New', monospace; background: #fff; border: 1px solid #e6ddcc; border-radius: 5px;
+           padding: 8px 12px; margin: 8px 0; text-align: center; font-size: 0.95rem; color: #7c2d12; }
+
+    .sec-tab-nav { display: flex; gap: 5px; margin-bottom: 8px; flex-wrap: wrap; }
+    .sec-tab-btn {
+        flex: 1 1 120px; padding: 6px 8px; border: 2px solid #b45309; border-radius: 8px;
+        background: #fff; color: #b45309; cursor: pointer; font-weight: 700; font-size: 12.5px;
+        font-family: inherit; transition: all 0.2s; line-height: 1.2;
+    }
+    .sec-tab-btn small { display: block; font-weight: 500; font-size: 0.64rem; opacity: 0.85; }
+    .sec-tab-btn.active { background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%); color: #fff; }
+    .sec-tab-btn.done { border-color: #28a745; color: #28a745; }
+    .sec-tab-btn.done.active { background: linear-gradient(135deg, #28a745 0%, #6dd56d 100%); color: #fff; border-color: #28a745; }
+    .sec-tab-btn:disabled { opacity: 0.45; cursor: not-allowed; border-color: #bbb; color: #999; }
+
+    .trial-title-bar {
+        text-align: center; background: #fffaf0; border-left: 4px solid #f59e0b;
+        padding: 5px 8px; border-radius: 6px; margin-bottom: 6px;
+        font-weight: 600; font-size: 0.92rem; color: #2c3e50;
+    }
+
+    .step-tracker { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 7px; }
+    .step {
+        flex: 1 1 130px; padding: 4px 6px; border-radius: 4px; font-size: 0.7rem;
+        line-height: 1.15; background: #f0f0f0; color: #666; text-align: center; transition: all 0.3s;
+    }
+    .step.active { background: #fff3cd; color: #856404; font-weight: 600; }
+    .step.completed { background: #d4edda; color: #155724; }
+
+    .feedback-bar { padding: 9px 14px; border-radius: 6px; margin-bottom: 10px; font-size: 0.85rem; animation: slideDown 0.3s ease-out; line-height: 1.45; }
+    @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .feedback-bar.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .feedback-bar.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+    .lab-card { background: #f9f9f9; border: 1px solid #e9ecef; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; }
+    .lab-card h4 { font-size: 0.95rem; color: #b45309; margin-bottom: 8px; }
+
+    .plan-task { background: #fff3cd; border-left: 4px solid #ffc107; padding: 9px 12px; border-radius: 5px;
+                 font-size: 0.85rem; margin-bottom: 10px; line-height: 1.5; }
+
+    .plan-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; margin-bottom: 8px; max-width: 620px; }
+    .plan-table th, .plan-table td { border: 1px solid #ddd; padding: 5px 8px; text-align: left; }
+    .plan-table th { background: #f0ece4; color: #5c4326; font-weight: 600; }
+    .plan-table td.num { text-align: right; width: 130px; }
+    .plan-table input { width: 80px; padding: 4px 6px; border: 1px solid #bbb; border-radius: 4px; font-size: 13px; text-align: right; font-family: 'Courier New', monospace; }
+    .plan-table input:disabled { background: #eee; color: #666; }
+    .plan-table tr.total-row td { background: #f0ece4; font-weight: 700; }
+    .plan-total-ok { color: #155724; }
+    .plan-total-bad { color: #a12; }
+
+    .buret-row { display: flex; gap: 9px; flex-wrap: wrap; align-items: flex-start; }
+    .buret-unit { border: 1px solid #e2ddd2; background: #fff; border-radius: 7px; padding: 6px; width: 150px; text-align: center; }
+    .buret-unit.satisfied { border-color: #28a745; background: #f4fbf5; }
+    .buret-name { font-size: 0.72rem; font-weight: 700; color: #5c4326; line-height: 1.15; min-height: 2.3em; }
+    .buret-svg { width: 46px; height: 166px; display: block; margin: 2px auto; }
+    .buret-readout { font-family: 'Courier New', monospace; font-size: 0.95rem; font-weight: bold;
+                     background: #000; color: #00ff00; border-radius: 3px; padding: 2px 4px; margin: 3px 0 2px; }
+    .buret-plan { font-size: 0.68rem; color: #666; margin-bottom: 4px; }
+    .buret-plan b { color: #b45309; }
+    .buret-ctrl { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; }
+    .buret-ctrl .btn { flex: 0 0 auto; }
+    .buret-dest { font-size: 0.65rem; color: #777; margin-top: 4px; font-style: italic; }
+
+    .vessel-row { display: flex; gap: 24px; align-items: flex-end; justify-content: center; margin-top: 10px;
+                  background: #fff; border: 1px solid #eee; border-radius: 7px; padding: 8px; flex-wrap: wrap; }
+    .vessel-item { text-align: center; }
+    .vessel-label { font-size: 0.7rem; color: #555; margin-top: 2px; }
+
+    .react-grid { display: grid; grid-template-columns: 200px auto 1fr; gap: 16px; align-items: start; }
+    @media (max-width: 1000px) { .react-grid { grid-template-columns: 1fr; } }
+    .react-flask { text-align: center; align-self: center; }
+    .react-flask svg { max-width: 100%; height: auto; }
+    .stopwatch { font-family: 'Courier New', monospace; font-size: 1.85rem; font-weight: bold;
+                 background: #000; color: #00ff00; border-radius: 6px; padding: 6px 10px; text-align: center; letter-spacing: 1px; }
+    .stopwatch-sub { font-size: 0.66rem; color: #777; text-align: center; margin-top: 3px; line-height: 1.35; }
+    .speed-row { display: flex; align-items: center; gap: 6px; justify-content: center; margin: 8px 0 4px; font-size: 0.76rem; color: #555; }
+    .speed-row select { padding: 3px 6px; border: 1px solid #bbb; border-radius: 4px; font-size: 12px; font-family: inherit; }
+    .plot-wrap { text-align: center; }
+    .plot-canvas { border: 1px solid #ccc; background: #fff; border-radius: 4px; width: 340px; height: 200px; max-width: 100%; }
+    .plot-caption { font-size: 0.68rem; color: #777; margin-top: 3px; }
+    .colorimeter { font-family: 'Courier New', monospace; font-size: 1.15rem; font-weight: bold;
+                   background: #101820; color: #ffb347; border-radius: 5px; padding: 4px 10px;
+                   text-align: center; letter-spacing: 1px; margin-top: 8px; }
+
+    .int-plot-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .int-plot { width: 310px; max-width: 100%; text-align: center; }
+    .int-plot canvas { width: 100%; height: 207px; border: 1px solid #ccc; background: #fff; border-radius: 4px; }
+    .int-plot-title { font-size: 0.78rem; font-weight: 700; color: #5c4326; margin-bottom: 2px; }
+    .int-plot-eq { font-family: 'Courier New', monospace; font-size: 0.76rem; color: #7c2d12;
+                   background: #fffaf0; border: 1px solid #f0e2cc; border-radius: 4px;
+                   padding: 4px 6px; margin-top: 4px; line-height: 1.5; }
+    .int-plot-note { font-size: 0.7rem; color: #777; margin-top: 3px; }
+
+    /* --- mechanism cards --- */
+    .mech-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .mech-card { flex: 1 1 290px; border: 1px solid #e2ddd2; background: #fff; border-radius: 7px; padding: 9px 11px; }
+    .mech-card-title { font-size: 0.82rem; font-weight: 700; color: #b45309; margin-bottom: 5px; }
+    .mech-card .mech { margin: 0; font-size: 0.78rem; line-height: 1.9; }
+    .mech-tag { display: inline-block; min-width: 42px; text-align: center; font-size: 0.64rem;
+                font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+                background: #e9ecef; color: #666; border-radius: 3px; padding: 1px 5px; margin-right: 6px; }
+    .mech-tag.slow { background: #fff3cd; color: #856404; }
+
+    /* --- the worked calculation animation in Runs 3 and 4 --- */
+    .calc-stage { background: #fff; border: 1px solid #e2ddd2; border-radius: 7px; padding: 12px 14px; }
+    .calc-step { opacity: 0; transform: translateY(-6px); transition: opacity 0.35s ease, transform 0.35s ease;
+                 font-size: 0.87rem; line-height: 1.6; padding: 5px 0; border-bottom: 1px dashed #f0e2cc; }
+    .calc-step:last-child { border-bottom: none; }
+    .calc-step.shown { opacity: 1; transform: translateY(0); }
+    .calc-math { font-family: 'Courier New', monospace; color: #7c2d12; font-size: 0.9rem; }
+    .calc-note { color: #157347; font-weight: 600; }
+    .calc-intro { font-size: 0.8rem; color: #666; margin-bottom: 9px; line-height: 1.5; }
+    .calc-nav { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 12px; }
+    .calc-next { padding: 12px 28px; font-size: 0.95rem; min-height: 46px; }
+    .calc-progress { font-weight: 500; opacity: 0.8; font-size: 0.82em; margin-left: 4px; }
+    .calc-showall { opacity: 0.6; font-weight: 500; }
+    .calc-showall:hover:not(:disabled) { opacity: 1; }
+    .calc-check { margin-top: 14px; border-top: 2px solid #f0e2cc; padding-top: 12px; }
+    .calc-check-stem { font-size: 0.88rem; font-weight: 600; color: #5c4326; margin-bottom: 8px; }
+
+    /* Their own rate law and k, restated where they are needed. */
+    .carry-card { background: #eaf7ec; border: 2px solid #b7e0c0; border-radius: 7px;
+                  padding: 11px 13px; margin-bottom: 10px; }
+    .carry-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+                   color: #1b6e30; margin-bottom: 6px; }
+    .carry-line { font-family: 'Courier New', monospace; font-size: 0.95rem; color: #14532d;
+                  padding: 2px 0; }
+    .carry-hint { font-size: 0.76rem; color: #3f6f4b; margin-top: 6px; line-height: 1.5; }
+
+    /* The head-to-head the question is about. */
+    .calc-compare { margin-top: 14px; background: #fffaf0; border: 2px solid #f0d9b5; border-radius: 7px; padding: 11px 13px; }
+    .cc-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+                color: #b45309; margin-bottom: 7px; }
+    .cc-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .cc-table th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: #8a7355;
+                   font-weight: 700; text-align: right; padding: 0 8px 5px; border-bottom: 1px solid #f0d9b5; }
+    .cc-table th:first-child { text-align: left; }
+    .cc-table td { padding: 7px 8px; border-bottom: 1px solid #f7ecd9; }
+    .cc-table tr:last-child td { border-bottom: none; }
+    .cc-run { font-weight: 700; color: #5c4326; }
+    .cc-num { text-align: right; font-family: 'Courier New', monospace; font-weight: bold; color: #333; white-space: nowrap; }
+    .cc-rate { color: #7c2d12; font-size: 1.02em; }
+    .cc-this td { background: #fff3cd; }
+    .cc-hint { font-size: 0.72rem; color: #8a7355; margin-top: 6px; font-style: italic; }
+
+    /* Forward is loud, redo is quiet. */
+    .run-nav { display: flex; flex-direction: column; align-items: center; gap: 7px; margin-top: 16px; }
+    .btn-next-run { padding: 16px 40px; font-size: 1.05rem; min-height: 58px; letter-spacing: 0.01em;
+                    box-shadow: 0 4px 10px rgba(36,138,61,0.28); }
+    .btn-next-run:hover:not(:disabled) { box-shadow: 0 6px 16px rgba(36,138,61,0.36); }
+    .btn-redo-run { opacity: 0.55; font-weight: 500; }
+    .btn-redo-run:hover:not(:disabled) { opacity: 1; }
+    .run-nav-note { font-size: 0.68rem; color: #999; text-align: center; }
+    .react-actions { display: flex; gap: 8px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
+
+    .comp-card { background: #fff; border: 1px solid #e2ddd2; border-radius: 6px; padding: 8px 12px; font-size: 0.83rem; max-width: 420px; }
+    .comp-card table { border-collapse: collapse; width: 100%; }
+    .comp-card td { padding: 3px 8px; border-bottom: 1px solid #f0f0f0; }
+    .comp-card td:last-child { text-align: right; font-family: 'Courier New', monospace; }
+
+    .dt-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    .dt-table th { background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%); color: #fff; padding: 6px 9px; text-align: left; }
+    .dt-table td { border: 1px solid #ddd; padding: 6px 9px; vertical-align: top; }
+    .dt-label { width: 52%; }
+    .dt-hint { display: block; font-size: 0.71rem; color: #777; margin-top: 2px; font-style: italic; }
+    .dt-input { width: 118px; padding: 5px 7px; border: 1px solid #bbb; border-radius: 4px; font-size: 13px; font-family: 'Courier New', monospace; }
+    .dt-input:disabled { background: #eef7ee; color: #155724; font-weight: bold; }
+    .dt-unit { font-size: 0.78rem; color: #666; margin-left: 5px; }
+    .dt-check { min-height: 27px; padding: 4px 9px; font-size: 12px; margin-left: 6px; }
+    .dt-auto { font-family: 'Courier New', monospace; font-weight: bold; color: #155724; }
+    .dt-msg { display: block; font-size: 0.75rem; margin-top: 4px; line-height: 1.4; }
+    .dt-msg.err { color: #721c24; }
+    .dt-msg.ok { color: #155724; }
+    tr.dt-locked { opacity: 0.42; }
+    tr.dt-active td { background: #fffbe6; }
+    tr.dt-done td { background: #f4fbf5; }
+    .dt-gate { background: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; border-radius: 5px;
+               font-size: 0.82rem; margin-bottom: 8px; line-height: 1.45; }
+    .dt-select { padding: 5px 7px; border: 1px solid #bbb; border-radius: 4px; font-size: 13px; font-family: inherit; }
+
+    .info-box { background: #f0f8ff; border-left: 4px solid #28a745; padding: 10px 14px; border-radius: 6px; margin: 10px 0; font-size: 0.85rem; line-height: 1.5; }
+    .result-box { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 11px 14px; border-radius: 6px; margin-top: 10px; font-size: 0.87rem; line-height: 1.55; }
+    .warn-box { background: #fff3cd; color: #856404; border: 1px solid #ffe08a; padding: 11px 14px; border-radius: 6px; margin-top: 10px; font-size: 0.87rem; line-height: 1.55; }
+
+    /* Wide content scrolls inside its own box rather than pushing the page sideways. */
+    #summary-runs, #summary-result, #an-data-table { overflow-x: auto; }
+    .eqn, .mech { overflow-x: auto; }
+
+    .summary-table { width: 100%; min-width: 460px; border-collapse: collapse; margin: 10px 0; font-size: 0.79rem; }
+    .summary-table th, .summary-table td { border: 1px solid #ddd; padding: 6px 8px; text-align: center; }
+    .summary-table th { background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%); color: #fff; }
+    .summary-table td:first-child { text-align: left; font-weight: 600; background: #f9f9f9; }
+
+    .explainer { font-size: 0.89rem; line-height: 1.65; background: #f9f9f9; border-radius: 6px; padding: 14px; margin-top: 10px; }
+    .explainer p { margin-bottom: 8px; }
+    .mech { font-family: 'Courier New', monospace; font-size: 0.82rem; background: #fff; border: 1px solid #e6ddcc;
+            border-radius: 5px; padding: 9px 12px; margin: 8px 0; line-height: 1.75; }
+
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+    .modal.open { display: flex; }
+    .modal-content { background: #fff; border-radius: 10px; padding: 20px; max-width: 540px; width: 92%;
+                     max-height: 92vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+    .modal-content h3 { color: #b45309; margin-bottom: 8px; }
+    .modal-hint { font-size: 0.82rem; color: #555; margin-bottom: 12px; line-height: 1.5; }
+    .choice-list { display: flex; flex-direction: column; gap: 7px; }
+    .choice-btn { text-align: left; padding: 10px 13px; border: 2px solid #ddd; background: #fff; border-radius: 6px;
+                  cursor: pointer; font-size: 0.85rem; font-family: inherit; line-height: 1.45; transition: all 0.15s; }
+    .choice-btn:hover:not(:disabled) { border-color: #f59e0b; background: #fffaf0; }
+    .choice-btn.right { border-color: #28a745; background: #eaf7ec; }
+    .choice-btn.wrong { border-color: #dc3545; background: #fdeced; }
+    .choice-btn:disabled { cursor: default; }
+    .choice-fb { font-size: 0.83rem; margin-top: 11px; line-height: 1.55; padding: 9px 12px; border-radius: 5px; }
+    .choice-fb.ok { background: #d4edda; color: #155724; }
+    .choice-fb.no { background: #f8d7da; color: #721c24; }
+    .qprog { font-size: 0.72rem; color: #888; margin-bottom: 6px; }
+
+    /* ---- multi-slide intro ---- */
+    .intro-slide { display: none; }
+    .intro-slide.active { display: block; animation: slideDown 0.25s ease-out; }
+    .intro-slide .intro-box { margin: 0; min-height: 300px; }
+    .intro-kicker { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+                    color: #b45309; opacity: 0.75; margin-bottom: 2px; }
+    .intro-nav { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
+    .intro-dots { display: flex; gap: 7px; flex: 1 1 auto; justify-content: center; }
+    .intro-dot { width: 9px; height: 9px; border-radius: 50%; background: #d9cfc0; transition: all 0.2s; }
+    .intro-dot.on { background: #b45309; transform: scale(1.25); }
+    .intro-nav .btn { flex: 0 0 auto; min-width: 132px; }
+    .intro-nav .btn.hidden { visibility: hidden; display: inline-block !important; }
+
+    .intro-q { margin-top: 14px; border-top: 1px dashed #e6ddcc; padding-top: 12px; animation: slideDown 0.25s ease-out; }
+    .intro-q-stem { font-size: 0.85rem; font-weight: 600; color: #5c4326; margin-bottom: 8px; line-height: 1.5; }
+    .intro-q-tag { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+                   color: #b45309; opacity: 0.7; margin-bottom: 4px; }
+    .intro-ready-list { margin: 8px 0 8px 20px; line-height: 1.6; font-size: 0.84rem; }
+    .intro-ready-list li { margin-bottom: 5px; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Kinetics of the Iodination of Acetone</h1>
+        <p>Method of initial rates &mdash; vary [acetone], [H<sup>+</sup>] and [I<sub>2</sub>] to find the experimental rate law</p>
+    </div>
+
+    <!-- ============ INTRO SCREEN ============ -->
+    <div id="intro-screen" class="screen">
+
+        <div class="intro-slide active" data-intro="1">
+            <div class="intro-box">
+                <div class="intro-kicker">Briefing &mdash; 1 of 6</div>
+                <h3>The reaction</h3>
+                <p>In acid solution, iodine reacts with acetone to give iodoacetone:</p>
+                <div class="eqn">CH<sub>3</sub>COCH<sub>3</sub> &nbsp;+&nbsp; I<sub>2</sub> &nbsp;&mdash;H<sup>+</sup>&rarr;&nbsp; CH<sub>3</sub>COCH<sub>2</sub>I &nbsp;+&nbsp; HI</div>
+                <p>H<sup>+</sup> is a <strong>catalyst</strong> &mdash; it is not consumed. Whether it still shows up in the rate law is one of the things you are going to find out.</p>
+                <div class="intro-q" id="intro-q-1"></div>
+            </div>
+        </div>
+
+        <div class="intro-slide" data-intro="2">
+            <div class="intro-box">
+                <div class="intro-kicker">Briefing &mdash; 2 of 6</div>
+                <h3>Why this reaction is so convenient to time</h3>
+                <p>I<sub>2</sub> is amber; everything else in the flask is colourless. So you can follow the reaction with nothing but your eyes and a stopwatch: <strong>start the clock when the iodine goes in, stop it the instant the last of the colour disappears.</strong></p>
+                <p style="margin-top:8px;">A <strong>colorimeter</strong> sits on the bench alongside you, logging the <strong>absorbance at 460 nm</strong> as each run proceeds. Absorbance is <strong>proportional to concentration</strong>, so that trace is a direct picture of the iodine disappearing &mdash; and it should hit zero at the same moment your eyes say the colour has gone. You will not need to calculate anything from it; just watch its shape. You will be asked about it later.</p>
+                <div class="intro-q" id="intro-q-2"></div>
+            </div>
+        </div>
+
+        <div class="intro-slide" data-intro="3">
+            <div class="intro-box">
+                <div class="intro-kicker">Briefing &mdash; 3 of 6</div>
+                <h3>The method of initial rates</h3>
+                <p>The rate law has the form</p>
+                <div class="eqn">rate = k [CH<sub>3</sub>COCH<sub>3</sub>]<sup>m</sup> [H<sup>+</sup>]<sup>p</sup> [I<sub>2</sub>]<sup>n</sup></div>
+                <p>You cannot reason out <em>m</em>, <em>p</em> and <em>n</em> from the balanced equation &mdash; orders are experimental. So you run the reaction several times, <strong>changing exactly one concentration at a time</strong> and holding the other two fixed. If a concentration doubles and the rate doubles, that order is 1. If the rate quadruples, it is 2. If the rate does not budge, it is 0.</p>
+                <div class="intro-q" id="intro-q-3"></div>
+            </div>
+        </div>
+
+        <div class="intro-slide" data-intro="4">
+            <div class="intro-box">
+                <div class="intro-kicker">Briefing &mdash; 4 of 6</div>
+                <h3>What you will do</h3>
+                <ol>
+                    <li><strong>Run 1</strong> &mdash; a baseline mixture, volumes given to you.</li>
+                    <li><strong>Runs 2, 3 and 4</strong> &mdash; <em>you</em> design each one to change a single reagent. The bench will not let you run a mixture that changes two things at once.</li>
+                    <li><strong>Analysis</strong> &mdash; read each order off the data, check the iodine order a second way against the three integrated rate law plots, write the rate law, and calculate <em>k</em>.</li>
+                    <li><strong>Mechanism</strong> &mdash; three mechanisms are proposed for the reaction. Only one of them predicts the rate law you measured. Work out which.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="intro-slide" data-intro="5">
+            <div class="intro-box">
+                <div class="intro-kicker">Briefing &mdash; 5 of 6</div>
+                <h3>Reagents on the bench</h3>
+                <ul>
+                    <li>4.0 M acetone &nbsp;&bull;&nbsp; 1.0 M HCl &nbsp;&bull;&nbsp; 0.0050 M I<sub>2</sub> &nbsp;&bull;&nbsp; distilled water</li>
+                    <li style="margin-top:6px;">Every run is made up to <strong>exactly 20.00 mL total</strong> &mdash; water makes up the difference. That fixed total is what lets you compare runs.</li>
+                    <li style="margin-top:6px;">To get a concentration in the flask, work in two steps. <strong>First find the moles</strong> of that reagent you actually delivered &mdash; volume in litres times the molarity on the bottle, so the mL and the mol/L cancel down to moles. <strong>Then divide those moles by the total volume</strong>, 0.02000 L, because that is the volume they are now spread through. Adding water changes the volume, never the moles.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="intro-slide" data-intro="6">
+            <div class="intro-box">
+                <div class="intro-kicker">Briefing &mdash; 6 of 6</div>
+                <h3>Keeping a data table</h3>
+                <p>Each run has a <strong>data table underneath the bench</strong>. Every reading and every quantity you calculate from it has to be entered before you can move on. Volumes are accepted within <strong>&plusmn;0.05 mL</strong>, stopwatch times must be copied exactly as displayed, and calculated concentrations, rates and <em>k</em> values within <strong>5%</strong>.</p>
+                <h3 style="margin-top:12px;">Completion &amp; grading</h3>
+                <ul>
+                    <li>Your rate constant is <strong>randomly assigned to you</strong>, so your data will not match anyone else's. The orders will &mdash; that is the chemistry.</li>
+                    <li>Finish all four runs and the analysis and a completion grade is submitted to Schoology automatically. There is no progress to save, so work straight through in one sitting.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="intro-nav">
+            <button type="button" class="btn btn-grey hidden" id="intro-back" onclick="introNav(-1)">&larr; Back</button>
+            <div class="intro-dots" id="intro-dots"></div>
+            <button type="button" class="btn" id="intro-next" onclick="introNav(1)">Next &rarr;</button>
+        </div>
+    </div>
+
+    <!-- ============ LAB CONTAINER ============ -->
+    <div id="lab-container" class="screen hidden">
+        <div class="sec-tab-nav" id="sec-tab-nav"></div>
+        <div id="sec-run1" class="sec-panel"></div>
+        <div id="sec-run2" class="sec-panel hidden"></div>
+        <div id="sec-run3" class="sec-panel hidden"></div>
+        <div id="sec-run4" class="sec-panel hidden"></div>
+
+        <div id="sec-analysis" class="sec-panel hidden">
+            <div class="trial-title-bar">Analysis &mdash; orders, rate law and the rate constant</div>
+            <div id="an-feedback" class="feedback-bar hidden"></div>
+            <div class="lab-card">
+                <h4>Your four runs</h4>
+                <div id="an-data-table"></div>
+                <p style="font-size:0.78rem; color:#777; margin-top:6px;">These are the numbers you recorded. Every check below is made against <em>your own</em> data, not against a textbook answer.</p>
+            </div>
+            <div class="lab-card">
+                <h4>The colorimeter trace from Run 1, plotted three ways</h4>
+                <p style="font-size:0.82rem;color:#555;margin-bottom:9px;line-height:1.5;">
+                    Each <strong>integrated rate law</strong> predicts that a different function of concentration
+                    comes out as a straight line against time: zero order is straight for
+                    <b>A</b>, first order for <b>ln A</b>, second order for <b>1/A</b>.
+                    (Absorbance stands in for concentration throughout &mdash; they are proportional, so whichever
+                    one is straight is straight either way.) The dashed line on each plot is the best straight fit,
+                    and its equation and R<sup>2</sup> are printed underneath.
+                    <strong>Only one of these three is genuinely a line</strong> &mdash; and the slope of that one
+                    turns out to be worth having.
+                </p>
+                <div class="int-plot-row" id="int-plot-row"></div>
+            </div>
+            <div class="lab-card">
+                <h4>Work out the rate law</h4>
+                <div class="dt-gate" id="dt-gate-analysis"></div>
+                <table class="dt-table"><tbody id="dt-body-analysis"></tbody></table>
+            </div>
+        </div>
+
+        <div id="sec-mechanism" class="sec-panel hidden">
+            <div class="trial-title-bar">Mechanism &mdash; why the rate law came out the way it did</div>
+            <div class="lab-card">
+                <h4>What you measured</h4>
+                <div id="mech-ratelaw" class="eqn" style="font-size:1.05rem;"></div>
+                <p style="font-size:0.85rem;color:#555;line-height:1.55;">
+                    A balanced equation cannot tell you that. A <strong>mechanism</strong> can &mdash; it is the actual
+                    sequence of steps the reaction goes through, and the <strong>slow step</strong> sets the overall rate.
+                    Below are three mechanisms a chemist might propose for this reaction. All three add up to the same
+                    overall equation. Only one of them predicts the rate law you actually measured.
+                </p>
+            </div>
+
+            <div class="lab-card">
+                <h4>Three proposed mechanisms</h4>
+                <div class="mech-row">
+                    <div class="mech-card">
+                        <div class="mech-card-title">Mechanism A</div>
+                        <div class="mech">
+                            <span class="mech-tag">fast</span> acetone + H<sup>+</sup> &rarr; protonated acetone<br>
+                            <span class="mech-tag slow">slow</span> protonated acetone &rarr; enol + H<sup>+</sup><br>
+                            <span class="mech-tag">fast</span> enol + I<sub>2</sub> &rarr; iodoacetone + HI
+                        </div>
+                    </div>
+                    <div class="mech-card">
+                        <div class="mech-card-title">Mechanism B</div>
+                        <div class="mech">
+                            <span class="mech-tag slow">slow</span> acetone + I<sub>2</sub> &rarr; iodoacetone + HI<br>
+                            <span style="color:#999;">(a single step &mdash; that is the whole mechanism)</span>
+                        </div>
+                    </div>
+                    <div class="mech-card">
+                        <div class="mech-card-title">Mechanism C</div>
+                        <div class="mech">
+                            <span class="mech-tag">fast</span> acetone + H<sup>+</sup> &rarr; protonated acetone<br>
+                            <span class="mech-tag slow">slow</span> protonated acetone + I<sub>2</sub> &rarr; iodoacetone + HI + H<sup>+</sup>
+                        </div>
+                    </div>
+                </div>
+                <p style="font-size:0.78rem;color:#777;margin-top:8px;">
+                    Reminder: the rate law comes from the <b>slow step</b>. If that step contains an
+                    <b>intermediate</b> &mdash; something made earlier in the mechanism rather than poured into the
+                    flask &mdash; it cannot stay in the rate law.
+                </p>
+            </div>
+
+            <div class="lab-card">
+                <h4>Match the mechanism to your data</h4>
+                <div class="dt-gate" id="dt-gate-mechanism"></div>
+                <table class="dt-table"><tbody id="dt-body-mechanism"></tbody></table>
+                <div id="mech-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ SUMMARY SCREEN ============ -->
+    <div id="summary-screen" class="screen hidden">
+        <div class="result-box" style="text-align:center; font-weight:600;">Lab complete &mdash; your completion grade has been submitted to Schoology.</div>
+        <div class="intro-box">
+            <h3>Your data</h3>
+            <div id="summary-runs"></div>
+        </div>
+        <div class="intro-box">
+            <h3>Your result</h3>
+            <div id="summary-result"></div>
+        </div>
+        <div class="explainer" id="summary-explainer"></div>
+        <button class="btn btn-primary-intro" onclick="resetAll()">Try Again</button>
+    </div>
+</div>
+
+<!-- ============ CONCEPT QUESTION MODAL ============ -->
+<div id="concept-modal" class="modal">
+    <div class="modal-content">
+        <h3>Before you analyse: what did you just see?</h3>
+        <div class="qprog" id="concept-progress"></div>
+        <div class="modal-hint" id="concept-stem"></div>
+        <div class="choice-list" id="concept-choices"></div>
+        <div id="concept-fb" class="choice-fb hidden"></div>
+        <button class="btn hidden" id="concept-next-btn" onclick="conceptNext()" style="margin-top:12px;">Next</button>
+    </div>
+</div>
+
+<!-- ============ READY-TO-BEGIN MODAL ============ -->
+<div id="intro-ready-modal" class="modal">
+    <div class="modal-content">
+        <h3>Before you start</h3>
+        <div class="modal-hint">
+            <p>A quick reminder of how the lab runs:</p>
+            <ul class="intro-ready-list">
+                <li>Run 1 is given to you. For Runs 2, 3 and 4 <b>you</b> design the mixture &mdash; change <b>one reagent at a time</b> and let water bring the total to 20.00 mL.</li>
+                <li>Under every run is a <b>data table</b>. Each reading you take and each value you calculate must be typed in and checked. You cannot move to the next step until the current table is complete.</li>
+                <li>There is <b>no way to save</b> and return later. Give yourself enough time to work straight through all four runs and the analysis in one sitting.</li>
+            </ul>
+            <p>Filling the data table out carefully as you go is what makes the analysis work &mdash; every order and every <em>k</em> value at the end is calculated from the numbers you entered.</p>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;">
+            <button type="button" class="btn btn-grey" onclick="introReadyBack()">Go back and read the instructions</button>
+            <button type="button" class="btn btn-green" onclick="introReadyBegin()">I understand the directions and am ready to begin the experiment</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/* =========================================================
+   SECTION A: Constants, state and the run definitions
+   ========================================================= */
+
+const TOTAL_VOLUME_ML = 20.00;        // every run is diluted to exactly this
+const BASE_VOL = 5.00;                // baseline volume of each reagent
+const PIN_TOL = 0.005;                // a pinned reagent must be planned at exactly 5.00
+const DELIVER_TOL = 0.05;             // mL, how close the buret must land to the plan
+const BURET_CAPACITY_ML = 15;         // visual capacity of each buret
+
+const K_MIN = 2.8e-5, K_MAX = 4.2e-5; // the rate constant handed to this student
+const TIME_NOISE = 0.005;             // +/- 0.5% run-to-run scatter, just enough to look like data
+const STOP_SLOP = 0.10;               // within 10% either side of the endpoint the timing passes without comment;
+                                      // outside it the true time is still given, with a reminder to watch closer
+
+const VAR_LOW = [2.00, 3.00];         // allowed "decrease" window for the varied reagent
+const VAR_HIGH = [8.00, 10.00];       // allowed "increase" window
+
+const DT_TOL_VOL = 0.05;              // mL, on volumes
+const DT_TOL_PCT = 0.05;              // 5% on calculated concentrations, rates and k
+
+/* The colorimeter. Absorbance stands in for [I2] throughout: A = (epsilon)(b)(c). */
+const EPSILON_I2 = 600;               // M^-1 cm^-1 for I2/I3- at 460 nm
+const PATH_LENGTH_CM = 1.00;
+function absorbanceOf(c) { return EPSILON_I2 * PATH_LENGTH_CM * c; }
+
+const ERLENMEYER_LIQUID_PATH = 'M50 175 L110 175 Q122 195 122 210 Q122 224 110 227 L50 227 Q38 224 38 210 Q38 195 50 175 Z';
+
+const REAGENTS = [
+    { id: 'acetone', label: '4.0 M acetone',        plain: 'acetone',      stock: 4.0,    dest: 'flask'  },
+    { id: 'hcl',     label: '1.0 M HCl',            plain: 'HCl',          stock: 1.0,    dest: 'flask'  },
+    { id: 'i2',      label: '0.0050 M I<sub>2</sub>', plain: 'I2',         stock: 0.0050, dest: 'beaker' },
+    { id: 'water',   label: 'distilled water',      plain: 'water',        stock: 0,      dest: 'flask'  }
+];
+const REAGENT_IDS = ['acetone', 'hcl', 'i2', 'water'];
+const SOLUTE_NAME = { acetone: 'acetone', hcl: 'HCl', i2: 'I<sub>2</sub>' };
+const CONC_NAME  = { acetone: '[acetone]', hcl: '[H<sup>+</sup>]', i2: '[I<sub>2</sub>]' };
+
+const RUN_SPECS = {
+    1: {
+        title: 'Run 1 &mdash; Baseline mixture',
+        vary: null,
+        fixed: { acetone: 5.00, hcl: 5.00, i2: 5.00, water: 5.00 },
+        task: 'This first run is your reference point. The volumes are given to you: <b>5.00 mL of each reagent plus 5.00 mL of water</b>. Every later run gets compared back to this one, so measure it carefully.'
+    },
+    2: {
+        title: 'Run 2 &mdash; Change [acetone] only',
+        vary: 'acetone',
+        task: 'Design a run that <b>changes the acetone concentration and nothing else</b>. HCl and I<sub>2</sub> must stay at 5.00 mL, and the water has to bring the total back to 20.00 mL. Make the change a substantial one &mdash; anywhere from 2.00 to 3.00 mL, or 8.00 to 10.00 mL, of acetone.'
+    },
+    3: {
+        title: 'Run 3 &mdash; Change [H<sup>+</sup>] only',
+        vary: 'hcl',
+        animated: true,
+        fixed: { acetone: 5.00, hcl: 10.00, i2: 5.00, water: 0.00 },
+        task: 'You designed Run 2 yourself, so this one is set up for you: <b>double the acid</b> to 10.00 mL and leave out the water altogether. Acetone and I<sub>2</sub> stay at 5.00 mL, and the total is still 20.00 mL. You still run it and time it &mdash; but the arithmetic afterwards is the same two steps you have now done twice, so the bench will work it through for you.'
+    },
+    4: {
+        title: 'Run 4 &mdash; Change [I<sub>2</sub>] only',
+        vary: 'i2',
+        animated: true,
+        fixed: { acetone: 5.00, hcl: 5.00, i2: 10.00, water: 0.00 },
+        task: 'Same again, this time with the iodine: <b>double the I<sub>2</sub></b> to 10.00 mL, no water, acetone and HCl unchanged at 5.00 mL. Watch this one closely &mdash; it is the run that surprises people.'
+    }
+};
+
+const SECTIONS = ['run1', 'run2', 'run3', 'run4', 'analysis', 'mechanism'];
+const SECTION_TABS = {
+    run1:      { label: 'Run 1',     sub: 'baseline' },
+    run2:      { label: 'Run 2',     sub: 'vary acetone' },
+    run3:      { label: 'Run 3',     sub: 'vary H<sup>+</sup>' },
+    run4:      { label: 'Run 4',     sub: 'vary I<sub>2</sub>' },
+    analysis:  { label: 'Analysis',  sub: 'orders, rate law, k' },
+    mechanism: { label: 'Mechanism', sub: 'why the rate law looks like that' }
+};
+
+function makeRun(n) {
+    return {
+        n: n,
+        planned: null,
+        delivered: { acetone: 0, hcl: 0, i2: 0, water: 0 },
+        planApproved: false,
+        dispensed: false,
+        conc: null,
+        trueTime: null,
+        measuredTime: null,
+        trace: null,
+        step: 1,
+        recorded: false
+    };
+}
+
+let simState = {
+    k: null,
+    currentSection: 'run1',
+    unlocked: { run1: true, run2: true, run3: true, run4: true, analysis: false, mechanism: false },
+    runs: {},
+    conceptDone: false,
+    analysisDone: false,
+    finished: false
+};
+
+function R(n) { return simState.runs[n]; }
+function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+/* ---- number formatting helpers ---- */
+function sci(x, dp) {
+    if (x === 0) return '0';
+    const exp = Math.floor(Math.log10(Math.abs(x)));
+    const mant = x / Math.pow(10, exp);
+    return mant.toFixed(dp === undefined ? 2 : dp) + ' &times; 10<sup>' + exp + '</sup>';
+}
+/* Keeps trailing zeros - 0.500 M is three significant figures and should look
+   like it, which Number().toString() would quietly strip back to 0.5. */
+function sigFig(x, n) {
+    if (x === 0) return '0';
+    return x.toPrecision(n);
+}
+
+/* =========================================================
+   SECTION B: Sections, tabs and per-run step tracking
+   ========================================================= */
+
+function renderTabs() {
+    const nav = document.getElementById('sec-tab-nav');
+    let html = '';
+    SECTIONS.forEach(function (id) {
+        const t = SECTION_TABS[id];
+        const unlocked = simState.unlocked[id];
+        const done = sectionDone(id);
+        html += '<button type="button" class="sec-tab-btn' +
+                (simState.currentSection === id ? ' active' : '') +
+                (done ? ' done' : '') + '" id="sec-tab-' + id + '"' +
+                (unlocked ? '' : ' disabled') +
+                ' onclick="switchSection(\'' + id + '\')">' + t.label +
+                '<small>' + t.sub + '</small></button>';
+    });
+    nav.innerHTML = html;
+}
+
+function sectionDone(id) {
+    if (id === 'analysis') return simState.analysisDone;
+    if (id === 'mechanism') return simState.mechanismDone;
+    const n = parseInt(id.replace('run', ''), 10);
+    return !!(R(n) && R(n).recorded);
+}
+
+function switchSection(id) {
+    if (!simState.unlocked[id]) return;
+    simState.currentSection = id;
+    SECTIONS.forEach(function (s) {
+        document.getElementById('sec-' + s).classList.toggle('hidden', s !== id);
+    });
+    renderTabs();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function unlockSection(id) {
+    simState.unlocked[id] = true;
+    renderTabs();
+}
+
+/* ---- per-run step tracker ---- */
+const RUN_STEPS = ['1. Plan the run', '2. Dispense reagents', '3. Mix &amp; time', '4. Record data'];
+const ANIM_RUN_STEPS = ['1. Your mixture (given)', '2. Dispense reagents', '3. Mix &amp; time', '4. The calculation'];
+
+function runSteps(n) {
+    return RUN_SPECS[n].animated ? ANIM_RUN_STEPS : RUN_STEPS;
+}
+function isAnimated(n) { return !!RUN_SPECS[n].animated; }
+
+function updateRunSteps(n) {
+    const run = R(n);
+    for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById('rs-' + n + '-' + i);
+        if (!el) continue;
+        el.classList.remove('active', 'completed');
+        if (i < run.step) el.classList.add('completed');
+        else if (i === run.step) el.classList.add('active');
+    }
+}
+
+function advanceRunStep(n) {
+    const run = R(n);
+    run.step++;
+    updateRunSteps(n);
+    const cards = { 2: 'disp-card-', 3: 'react-card-', 4: 'rec-card-' };
+    if (cards[run.step]) {
+        const el = document.getElementById(cards[run.step] + n);
+        if (el) {
+            el.classList.remove('hidden');
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+}
+
+function runFeedback(n, kind, message) {
+    const el = document.getElementById('rfb-' + n);
+    if (!el) return;
+    el.className = 'feedback-bar ' + kind;
+    el.innerHTML = message;
+    el.classList.remove('hidden');
+    if (kind === 'success') {
+        setTimeout(function () { el.classList.add('hidden'); }, 4500);
+    }
+}
+
+function anFeedback(kind, message) {
+    const el = document.getElementById('an-feedback');
+    el.className = 'feedback-bar ' + kind;
+    el.innerHTML = message;
+    el.classList.remove('hidden');
+    if (kind === 'success') setTimeout(function () { el.classList.add('hidden'); }, 4500);
+}
+
+/* =========================================================
+   SECTION C: Building a run panel, planning, and the burets
+   ========================================================= */
+
+const BURET_FILL = { acetone: '#c3d9f7', hcl: '#d3e7f9', i2: '#c8811a', water: '#dcf0f9' };
+
+function buretSVG(n, id) {
+    let ticks = '';
+    for (let mL = 0; mL <= BURET_CAPACITY_ML; mL++) {
+        const y = 140 - (132 * mL / BURET_CAPACITY_ML);
+        const major = (mL % 5 === 0);
+        ticks += '<line x1="' + (major ? 24 : 27) + '" y1="' + y.toFixed(1) + '" x2="31" y2="' + y.toFixed(1) +
+                 '" stroke="' + (major ? '#666' : '#bbb') + '" stroke-width="' + (major ? 0.9 : 0.6) + '"/>';
+        if (major && mL > 0) {
+            ticks += '<text x="22" y="' + (y + 2.6).toFixed(1) + '" font-size="6" fill="#666" text-anchor="end">' + mL + '</text>';
+        }
+    }
+    return '<svg class="buret-svg" viewBox="0 0 46 166">' +
+        '<rect x="15" y="8" width="16" height="132" fill="#fbfbfb" stroke="#333" stroke-width="1.4"/>' +
+        '<rect id="bl-' + n + '-' + id + '" x="16" y="139" width="14" height="0" fill="' + BURET_FILL[id] + '"/>' +
+        ticks +
+        '<path d="M19 140 L23 154 L27 140 Z" fill="none" stroke="#333" stroke-width="1.2"/>' +
+        '<rect x="21.2" y="153" width="3.6" height="7" fill="#333" rx="1"/>' +
+        '</svg>';
+}
+
+function buretUnitHTML(n, r) {
+    const dest = (r.dest === 'flask') ? 'Erlenmeyer flask' : 'I<sub>2</sub> beaker';
+    return '<div class="buret-unit" id="bu-' + n + '-' + r.id + '">' +
+        '<div class="buret-name">' + r.label + '</div>' +
+        buretSVG(n, r.id) +
+        '<div class="buret-readout" id="br-' + n + '-' + r.id + '">0.00 mL</div>' +
+        '<div class="buret-plan" id="bp-' + n + '-' + r.id + '">plan <b>&mdash;</b></div>' +
+        '<div class="buret-ctrl">' +
+            '<button type="button" class="btn btn-compact btn-amber" onclick="fillBuret(' + n + ',\'' + r.id + '\')">Fill</button>' +
+            '<button type="button" class="btn btn-compact btn-grey" onclick="drainBuret(' + n + ',\'' + r.id + '\')">empty</button>' +
+        '</div>' +
+        '<div class="buret-dest">&rarr; ' + dest + '</div>' +
+    '</div>';
+}
+
+function vesselRowHTML(n) {
+    return '<div class="vessel-row">' +
+        '<div class="vessel-item">' +
+            '<svg viewBox="0 0 160 240" width="112" height="168">' +
+                '<path d="M65 30 L95 30 L95 100 Q95 108 100 118 L128 200 Q136 216 128 228 Q122 236 108 236 L52 236 Q38 236 32 228 Q24 216 32 200 L60 118 Q65 108 65 100 Z" fill="#fff" stroke="#333" stroke-width="2.5"/>' +
+                '<path id="flask-liquid-' + n + '" d="' + ERLENMEYER_LIQUID_PATH + '" fill="rgba(150,190,235,0.45)" style="opacity:0;"/>' +
+                '<text x="80" y="60" text-anchor="middle" font-size="11" fill="#999">125 mL</text>' +
+            '</svg>' +
+            '<div class="vessel-label">Erlenmeyer flask<br><span id="flask-vol-' + n + '">0.00 mL</span></div>' +
+        '</div>' +
+        '<div class="vessel-item">' +
+            '<svg viewBox="0 0 90 110" width="70" height="86">' +
+                '<path d="M18 14 L18 92 Q18 100 26 100 L64 100 Q72 100 72 92 L72 14" fill="#fff" stroke="#333" stroke-width="2.2"/>' +
+                '<path d="M72 20 L82 12" fill="none" stroke="#333" stroke-width="2.2" stroke-linecap="round"/>' +
+                '<rect id="beaker-liquid-' + n + '" x="20" y="98" width="50" height="0" fill="#c8811a" opacity="0.75"/>' +
+                '<line x1="60" y1="40" x2="70" y2="40" stroke="#bbb" stroke-width="1"/>' +
+                '<line x1="60" y1="64" x2="70" y2="64" stroke="#bbb" stroke-width="1"/>' +
+            '</svg>' +
+            '<div class="vessel-label">I<sub>2</sub> beaker<br><span id="beaker-vol-' + n + '">0.00 mL</span></div>' +
+        '</div>' +
+    '</div>';
+}
+
+function planCardHTML(n) {
+    const spec = RUN_SPECS[n];
+    let rows = '';
+    REAGENTS.forEach(function (r) {
+        const stockTxt = (r.id === 'water') ? '&mdash;' : r.stock + ' M';
+        rows += '<tr><td>' + r.label + '</td><td>' + stockTxt + '</td>' +
+                '<td class="num"><input type="text" id="pl-' + n + '-' + r.id + '" placeholder="0.00" oninput="planTotalLive(' + n + ')"> mL</td></tr>';
+    });
+    rows += '<tr class="total-row"><td colspan="2">Total volume</td>' +
+            '<td class="num"><span id="pl-total-' + n + '" class="plan-total-bad">0.00</span> / 20.00 mL</td></tr>';
+
+    return '<div class="lab-card" id="plan-card-' + n + '">' +
+        '<h4>Step 1 &mdash; Plan the run</h4>' +
+        '<div class="plan-task">' + spec.task + '</div>' +
+        '<table class="plan-table"><tr><th>Reagent</th><th>Stock</th><th>Volume to use</th></tr>' + rows + '</table>' +
+        '<button type="button" class="btn" id="plan-btn-' + n + '" onclick="planSubmit(' + n + ')">Check this plan</button>' +
+        '<span class="dt-msg" id="plan-msg-' + n + '"></span>' +
+    '</div>';
+}
+
+function runPanelHTML(n) {
+    const spec = RUN_SPECS[n];
+    const steps = runSteps(n);
+    let stepHTML = '';
+    steps.forEach(function (s, i) {
+        stepHTML += '<div class="step" id="rs-' + n + '-' + (i + 1) + '">' + s + '</div>';
+    });
+
+    let burets = '';
+    REAGENTS.forEach(function (r) { burets += buretUnitHTML(n, r); });
+
+    return '<div class="trial-title-bar">' + spec.title + '</div>' +
+        '<div class="step-tracker">' + stepHTML + '</div>' +
+        '<div id="rfb-' + n + '" class="feedback-bar hidden"></div>' +
+
+        planCardHTML(n) +
+
+        '<div class="lab-card hidden" id="disp-card-' + n + '">' +
+            '<h4>Step 2 &mdash; Measure out your reagents</h4>' +
+            '<p style="font-size:0.8rem;color:#666;margin-bottom:8px;"><b>Fill</b> runs each buret to exactly your planned volume &mdash; this bench is kinder than real glassware. Check the totals in the flask and the beaker before you combine them.</p>' +
+            '<div class="buret-row">' + burets + '</div>' +
+            '<div style="text-align:center;margin-top:8px;">' +
+                '<button type="button" class="btn btn-compact" onclick="fillAllBurets(' + n + ')">Fill all four</button>' +
+            '</div>' +
+            vesselRowHTML(n) +
+            '<div style="text-align:center;margin-top:10px;">' +
+                '<button type="button" class="btn btn-green" id="combine-btn-' + n + '" disabled onclick="combineAndStart(' + n + ')">Pour the I<sub>2</sub> in and start the clock</button>' +
+            '</div>' +
+        '</div>' +
+
+        '<div class="lab-card hidden" id="react-card-' + n + '">' +
+            '<h4>Step 3 &mdash; Watch the colour and time it</h4>' +
+            '<div class="react-grid">' +
+                '<div>' +
+                    '<div class="stopwatch" id="sw-' + n + '">0.0 s</div>' +
+                    '<div class="stopwatch-sub">simulated seconds</div>' +
+                    '<div class="colorimeter" id="abs-' + n + '">A = 0.000</div>' +
+                    '<div class="stopwatch-sub">colorimeter at 460 nm, 1.00 cm cell</div>' +
+                    '<div class="speed-row">clock speed' +
+                        '<select id="speed-' + n + '" onchange="setSpeed(this.value)">' +
+                            '<option value="1">1&times; (real time)</option>' +
+                            '<option value="5">5&times;</option>' +
+                            '<option value="15" selected>15&times;</option>' +
+                            '<option value="30">30&times;</option>' +
+                            '<option value="60">60&times;</option>' +
+                        '</select>' +
+                    '</div>' +
+                    '<div class="stopwatch-sub">A faster clock gets you through the lab quicker, but your own reaction time then costs you more seconds when you stop it.</div>' +
+                '</div>' +
+                '<div class="react-flask">' +
+                    '<svg viewBox="0 0 160 240" width="208" height="312" style="background:#fff;border:1px solid #ddd;border-radius:4px;">' +
+                        '<path d="M65 30 L95 30 L95 100 Q95 108 100 118 L128 200 Q136 216 128 228 Q122 236 108 236 L52 236 Q38 236 32 228 Q24 216 32 200 L60 118 Q65 108 65 100 Z" fill="#fff" stroke="#333" stroke-width="2.5"/>' +
+                        '<path id="react-liquid-' + n + '" d="' + ERLENMEYER_LIQUID_PATH + '" fill="#c8811a" style="opacity:0;"/>' +
+                    '</svg>' +
+                    '<div class="vessel-label">viewed against a white card</div>' +
+                '</div>' +
+                '<div class="plot-wrap">' +
+                    '<canvas class="plot-canvas" id="plot-' + n + '" width="680" height="400"></canvas>' +
+                    '<div class="plot-caption">Absorbance at 460 nm against time &mdash; the shape of this line matters.</div>' +
+                    '<div class="stopwatch-sub" style="margin:8px 0 4px;padding:6px 9px;background:#fffaf0;border:1px solid #f0e2cc;border-radius:5px;line-height:1.5;text-align:left;">' +
+                        '<b>About the stopwatch:</b> when you press &ldquo;The colour is gone!&rdquo; the simulation locks the clock to the exact instant the colour disappeared and shows you that time. That number is clean data &mdash; copy it straight into the table. Your thumb can never spoil a trial. But if you are more than 10% out it will say so, and you should watch the next one more closely.' +
+                    '</div>' +
+                    '<div class="react-actions">' +
+                        '<button type="button" class="btn btn-green" id="stop-btn-' + n + '" onclick="stopClock(' + n + ')">The colour is gone!</button>' +
+                        '<button type="button" class="btn btn-grey" onclick="redoRun(' + n + ')">Redo this run</button>' +
+                    '</div>' +
+                    '<span class="dt-msg" id="stop-msg-' + n + '"></span>' +
+                '</div>' +
+            '</div>' +
+        '</div>' +
+
+        (isAnimated(n)
+            ? '<div class="lab-card hidden" id="rec-card-' + n + '">' +
+                  '<h4>Step 4 &mdash; The calculation</h4>' +
+                  '<div id="calc-anim-' + n + '"></div>' +
+                  '<div id="run-result-' + n + '"></div>' +
+              '</div>'
+            : '<div class="lab-card hidden" id="rec-card-' + n + '">' +
+                  '<h4>Step 4 &mdash; Record your data</h4>' +
+                  '<div class="dt-gate" id="dt-gate-run' + n + '"></div>' +
+                  '<table class="dt-table"><tbody id="dt-body-run' + n + '"></tbody></table>' +
+                  '<div id="run-result-' + n + '"></div>' +
+              '</div>');
+}
+
+/* ---- plan validation ---- */
+function planTotalLive(n) {
+    let total = 0, ok = true;
+    REAGENT_IDS.forEach(function (id) {
+        const raw = document.getElementById('pl-' + n + '-' + id).value.trim();
+        const v = parseFloat(raw);
+        if (raw === '' || isNaN(v)) { ok = false; return; }
+        total += v;
+    });
+    const el = document.getElementById('pl-total-' + n);
+    el.textContent = total.toFixed(2);
+    el.className = (ok && Math.abs(total - TOTAL_VOLUME_ML) < 0.005) ? 'plan-total-ok' : 'plan-total-bad';
+}
+
+function planSubmit(n) {
+    const spec = RUN_SPECS[n];
+    const msg = document.getElementById('plan-msg-' + n);
+    const v = {};
+
+    for (let i = 0; i < REAGENT_IDS.length; i++) {
+        const id = REAGENT_IDS[i];
+        const raw = document.getElementById('pl-' + n + '-' + id).value.trim();
+        if (!/^\d{1,2}(\.\d{1,2})?$/.test(raw)) {
+            msg.className = 'dt-msg err';
+            msg.innerHTML = 'Write every volume as a number to two decimal places, the way you would read a buret &mdash; for example 5.00 or 8.50. (Check the ' + REAGENTS[i].plain + ' box.)';
+            return;
+        }
+        v[id] = parseFloat(raw);
+    }
+
+    const total = v.acetone + v.hcl + v.i2 + v.water;
+    if (Math.abs(total - TOTAL_VOLUME_ML) > 0.005) {
+        const needed = TOTAL_VOLUME_ML - v.acetone - v.hcl - v.i2;
+        msg.className = 'dt-msg err';
+        msg.innerHTML = 'Your volumes add up to <b>' + total.toFixed(2) + ' mL</b>. Every run has to be made up to exactly 20.00 mL, ' +
+            'or the concentrations are not comparable between runs. ' +
+            (needed < 0
+                ? 'Your three reagents alone already come to ' + (v.acetone + v.hcl + v.i2).toFixed(2) + ' mL, which is over the limit.'
+                : 'Adjust the water &mdash; you need ' + needed.toFixed(2) + ' mL of it.');
+        return;
+    }
+
+    if (spec.vary && spec.vary !== 'given') {
+        const varied = spec.vary;
+        const three = ['acetone', 'hcl', 'i2'];
+        for (let j = 0; j < three.length; j++) {
+            const id = three[j];
+            if (id === varied) continue;
+            if (Math.abs(v[id] - BASE_VOL) > PIN_TOL) {
+                msg.className = 'dt-msg err';
+                msg.innerHTML = 'You have ' + v[id].toFixed(2) + ' mL of ' + REAGENTS[REAGENT_IDS.indexOf(id)].plain +
+                    ' in there, but this run has to hold it at <b>5.00 mL</b>, the same as Run 1. ' +
+                    'If two concentrations change at once you cannot tell which one caused the rate to change &mdash; ' +
+                    'holding everything else constant is the whole point of the method of initial rates.';
+                return;
+            }
+        }
+        const x = v[varied];
+        const inLow = (x >= VAR_LOW[0] - 1e-9 && x <= VAR_LOW[1] + 1e-9);
+        const inHigh = (x >= VAR_HIGH[0] - 1e-9 && x <= VAR_HIGH[1] + 1e-9);
+        if (!inLow && !inHigh) {
+            const name = REAGENTS[REAGENT_IDS.indexOf(varied)].plain;
+            msg.className = 'dt-msg err';
+            if (Math.abs(x - BASE_VOL) < 1.99) {
+                msg.innerHTML = x.toFixed(2) + ' mL of ' + name + ' is too close to the 5.00 mL you used in Run 1. ' +
+                    'A small change makes a small change in rate, and your stopwatch error would swamp it. ' +
+                    'Use <b>2.00&ndash;3.00 mL</b> or <b>8.00&ndash;10.00 mL</b>.';
+            } else {
+                msg.innerHTML = x.toFixed(2) + ' mL of ' + name + ' is outside what this bench will let you use. ' +
+                    'Stay within <b>2.00&ndash;3.00 mL</b> or <b>8.00&ndash;10.00 mL</b> &mdash; outside that range the run either ' +
+                    'finishes before you can time it or takes the rest of the afternoon.';
+            }
+            return;
+        }
+    }
+
+    const run = R(n);
+    run.planned = v;
+    run.planApproved = true;
+    REAGENT_IDS.forEach(function (id) {
+        document.getElementById('pl-' + n + '-' + id).disabled = true;
+        document.getElementById('bp-' + n + '-' + id).innerHTML = 'plan <b>' + v[id].toFixed(2) + ' mL</b>';
+        renderBuret(n, id);
+    });
+    document.getElementById('plan-btn-' + n).disabled = true;
+    msg.className = 'dt-msg ok';
+    msg.innerHTML = 'Plan accepted.';
+    runFeedback(n, 'success', 'Good plan. Measure the acetone, acid and water into the Erlenmeyer, and the iodine into the small beaker on its own &mdash; that way you can add it last and start the clock at the same moment.');
+    advanceRunStep(n);
+}
+
+/* ---- dispensing ---- */
+/* One click runs the buret to exactly the planned volume. Real glassware would
+   scatter around the target, but scattered volumes buy nothing here except ugly
+   arithmetic - the point of the lab is the rate law, not significant figures. */
+function fillBuret(n, id) {
+    const run = R(n);
+    if (!run.planApproved || run.dispensed) return;
+    run.delivered[id] = run.planned[id];
+    renderBuret(n, id);
+    checkDispenseComplete(n);
+}
+
+function fillAllBurets(n) {
+    REAGENT_IDS.forEach(function (id) { fillBuret(n, id); });
+}
+
+function drainBuret(n, id) {
+    const run = R(n);
+    if (!run.planApproved || run.dispensed) return;
+    run.delivered[id] = 0;
+    renderBuret(n, id);
+    checkDispenseComplete(n);
+}
+
+function renderBuret(n, id) {
+    const run = R(n);
+    const vol = run.delivered[id];
+    document.getElementById('br-' + n + '-' + id).textContent = vol.toFixed(2) + ' mL';
+    const h = 132 * vol / BURET_CAPACITY_ML;
+    const rect = document.getElementById('bl-' + n + '-' + id);
+    rect.setAttribute('y', (139 - h).toFixed(2));
+    rect.setAttribute('height', h.toFixed(2));
+
+    const unit = document.getElementById('bu-' + n + '-' + id);
+    const ok = run.planned && Math.abs(vol - run.planned[id]) <= DELIVER_TOL + 1e-9;
+    unit.classList.toggle('satisfied', !!ok);
+
+    const flaskVol = run.delivered.acetone + run.delivered.hcl + run.delivered.water;
+    const beakerVol = run.delivered.i2;
+    document.getElementById('flask-vol-' + n).textContent = flaskVol.toFixed(2) + ' mL';
+    document.getElementById('beaker-vol-' + n).textContent = beakerVol.toFixed(2) + ' mL';
+    document.getElementById('flask-liquid-' + n).style.opacity = flaskVol > 0 ? Math.min(1, 0.30 + flaskVol / 25) : 0;
+    const bh = Math.min(46, 46 * beakerVol / 12);
+    const bl = document.getElementById('beaker-liquid-' + n);
+    bl.setAttribute('y', (98 - bh).toFixed(2));
+    bl.setAttribute('height', bh.toFixed(2));
+}
+
+function checkDispenseComplete(n) {
+    const run = R(n);
+    if (!run.planned) return false;
+    let all = true;
+    REAGENT_IDS.forEach(function (id) {
+        if (Math.abs(run.delivered[id] - run.planned[id]) > DELIVER_TOL + 1e-9) all = false;
+    });
+    const btn = document.getElementById('combine-btn-' + n);
+    if (btn) btn.disabled = !all;
+    return all;
+}
+
+/* =========================================================
+   SECTION D: The reaction itself - clock, colour and the plot
+   ========================================================= */
+
+let clock = { n: null, simT: 0, last: 0, rafId: null, running: false, speed: 15, xMax: 60 };
+
+function stockOf(id) { return REAGENTS[REAGENT_IDS.indexOf(id)].stock; }
+
+function setSpeed(v) {
+    clock.speed = parseFloat(v);
+    [1, 2, 3, 4, 5].forEach(function (n) {
+        const s = document.getElementById('speed-' + n);
+        if (s) s.value = v;
+    });
+}
+
+function combineAndStart(n) {
+    const run = R(n);
+    if (!checkDispenseComplete(n)) return;
+
+    run.dispensed = true;
+    run.conc = {
+        acetone: stockOf('acetone') * run.delivered.acetone / TOTAL_VOLUME_ML,
+        h:       stockOf('hcl')     * run.delivered.hcl     / TOTAL_VOLUME_ML,
+        i2:      stockOf('i2')      * run.delivered.i2      / TOTAL_VOLUME_ML
+    };
+    // The real chemistry: rate = k[acetone][H+], zero order in I2.
+    const trueRate = simState.k * run.conc.acetone * run.conc.h;
+    run.trueTime = (run.conc.i2 / trueRate) * (1 + randomInRange(-TIME_NOISE, TIME_NOISE));
+    run.measuredTime = null;
+
+    clock.n = n;
+    clock.simT = 0;
+    clock.last = 0;
+    clock.xMax = 60;
+    clock.running = true;
+
+    document.getElementById('stop-msg-' + n).innerHTML = '';
+    document.getElementById('stop-btn-' + n).disabled = false;
+    document.getElementById('combine-btn-' + n).disabled = true;
+
+    advanceRunStep(n);
+    renderReaction(n);
+    clock.rafId = requestAnimationFrame(clockTick);
+}
+
+function clockTick(ts) {
+    if (!clock.running) return;
+    if (!clock.last) clock.last = ts;
+    const dt = (ts - clock.last) / 1000;
+    clock.last = ts;
+    clock.simT += dt * clock.speed;
+    renderReaction(clock.n);
+    clock.rafId = requestAnimationFrame(clockTick);
+}
+
+function renderReaction(n) {
+    const run = R(n);
+    if (!run || !run.conc) return;
+    const frac = Math.min(1, clock.simT / run.trueTime);
+    document.getElementById('sw-' + n).textContent = clock.simT.toFixed(1) + ' s';
+    document.getElementById('abs-' + n).textContent =
+        'A = ' + absorbanceOf(run.conc.i2 * (1 - frac)).toFixed(3);
+    document.getElementById('react-liquid-' + n).style.opacity = (0.92 * (1 - frac)).toFixed(3);
+    drawPlot(n);
+}
+
+function drawPlot(n) {
+    const cv = document.getElementById('plot-' + n);
+    const run = R(n);
+    if (!cv || !run || !run.conc) return;
+    const ctx = cv.getContext('2d');
+    const W = cv.width, H = cv.height;
+    const L = 108, RP = 24, T = 24, B = 64;
+    const c0 = run.conc.i2;
+
+    while (clock.simT > clock.xMax * 0.92) clock.xMax *= 2;
+    const xMax = clock.xMax;
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, W, H);
+
+    function X(t) { return L + (W - L - RP) * (t / xMax); }
+    function Y(c) { return T + (H - T - B) * (1 - c / c0); }
+
+    // grid
+    ctx.strokeStyle = '#eee';
+    ctx.lineWidth = 2;
+    for (let i = 1; i <= 4; i++) {
+        const gx = L + (W - L - RP) * i / 4;
+        ctx.beginPath(); ctx.moveTo(gx, T); ctx.lineTo(gx, H - B); ctx.stroke();
+        const gy = T + (H - T - B) * i / 4;
+        ctx.beginPath(); ctx.moveTo(L, gy); ctx.lineTo(W - RP, gy); ctx.stroke();
+    }
+
+    // axes
+    ctx.strokeStyle = '#555';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(L, T); ctx.lineTo(L, H - B); ctx.lineTo(W - RP, H - B);
+    ctx.stroke();
+
+    // labels
+    ctx.fillStyle = '#555';
+    ctx.font = '19px Segoe UI, sans-serif';
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= 4; i++) {
+        const a = absorbanceOf(c0) * (4 - i) / 4;
+        const gy = T + (H - T - B) * i / 4;
+        ctx.fillText(a.toFixed(3), L - 10, gy + 7);
+    }
+    ctx.textAlign = 'center';
+    for (let i = 0; i <= 4; i++) {
+        const t = xMax * i / 4;
+        ctx.fillText(t.toFixed(0), X(t), H - B + 26);
+    }
+    ctx.fillText('time (s)', (L + W - RP) / 2, H - 14);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#b45309';
+    ctx.font = 'bold 19px Segoe UI, sans-serif';
+    ctx.fillText('absorbance (460 nm)', 10, 16);
+
+    // the decay line
+    const tEnd = run.trueTime;
+    const tNow = clock.simT;
+    ctx.strokeStyle = '#c8811a';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(X(0), Y(c0));
+    const tLine = Math.min(tNow, tEnd);
+    ctx.lineTo(X(tLine), Y(c0 * (1 - tLine / tEnd)));
+    if (tNow > tEnd) ctx.lineTo(X(tNow), Y(0));
+    ctx.stroke();
+
+    // marker at the current point
+    ctx.fillStyle = '#7c2d12';
+    ctx.beginPath();
+    ctx.arc(X(tNow), Y(c0 * Math.max(0, 1 - tNow / tEnd)), 7, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+/* ---- the logged colorimeter trace, and the three integrated-rate-law plots ----
+   The colorimeter takes a reading every few seconds. We stop sampling before the
+   iodine is fully spent, both because that is what you would really do and because
+   ln A and 1/A blow up as A approaches zero. */
+const TRACE_POINTS = 13;
+const TRACE_FRACTION = 0.85;          // sample out to 85% of the way through the run
+
+function buildTrace(n) {
+    const run = R(n);
+    const A0 = absorbanceOf(run.conc.i2);
+    const pts = [];
+    for (let i = 0; i < TRACE_POINTS; i++) {
+        const t = run.trueTime * TRACE_FRACTION * i / (TRACE_POINTS - 1);
+        // Just enough scatter that R^2 reads like real instrument data rather than a flat 1.0000.
+        const A = A0 * (1 - t / run.trueTime) * (1 + randomInRange(-0.010, 0.010));
+        pts.push({ t: t, A: Math.max(A, A0 * 0.02) });
+    }
+    return pts;
+}
+
+/* Least-squares fit, returned with the R^2 that makes the comparison quantitative. */
+function linearFit(xs, ys) {
+    const N = xs.length;
+    let sx = 0, sy = 0, sxx = 0, sxy = 0;
+    for (let i = 0; i < N; i++) { sx += xs[i]; sy += ys[i]; sxx += xs[i] * xs[i]; sxy += xs[i] * ys[i]; }
+    const slope = (N * sxy - sx * sy) / (N * sxx - sx * sx);
+    const intercept = (sy - slope * sx) / N;
+    const mean = sy / N;
+    let ssTot = 0, ssRes = 0;
+    for (let i = 0; i < N; i++) {
+        const fit = slope * xs[i] + intercept;
+        ssTot += (ys[i] - mean) * (ys[i] - mean);
+        ssRes += (ys[i] - fit) * (ys[i] - fit);
+    }
+    return { slope: slope, intercept: intercept, r2: ssTot === 0 ? 1 : 1 - ssRes / ssTot };
+}
+
+function drawXYPlot(canvasId, xs, ys, yLabel) {
+    const cv = document.getElementById(canvasId);
+    if (!cv) return null;
+    const ctx = cv.getContext('2d');
+    const W = cv.width, H = cv.height;
+    const L = 112, RP = 24, T = 40, B = 62;
+
+    const fit = linearFit(xs, ys);
+    let yMin = Math.min.apply(null, ys), yMax = Math.max.apply(null, ys);
+    const padY = (yMax - yMin) * 0.14 || 1;
+    yMin -= padY; yMax += padY;
+    const xMax = Math.max.apply(null, xs) * 1.04;
+
+    function X(x) { return L + (W - L - RP) * (x / xMax); }
+    function Y(y) { return T + (H - T - B) * (1 - (y - yMin) / (yMax - yMin)); }
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
+
+    ctx.strokeStyle = '#eee'; ctx.lineWidth = 2;
+    for (let i = 1; i <= 3; i++) {
+        const gy = T + (H - T - B) * i / 4;
+        ctx.beginPath(); ctx.moveTo(L, gy); ctx.lineTo(W - RP, gy); ctx.stroke();
+    }
+
+    ctx.strokeStyle = '#555'; ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(L, T); ctx.lineTo(L, H - B); ctx.lineTo(W - RP, H - B);
+    ctx.stroke();
+
+    ctx.fillStyle = '#555';
+    ctx.font = '20px Segoe UI, sans-serif';
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= 4; i++) {
+        const yv = yMax - (yMax - yMin) * i / 4;
+        ctx.fillText(Math.abs(yv) >= 100 ? yv.toFixed(0) : yv.toFixed(2), L - 10, T + (H - T - B) * i / 4 + 7);
+    }
+    ctx.textAlign = 'center';
+    for (let i = 0; i <= 2; i++) {
+        const xv = xMax * i / 2;
+        ctx.fillText(xv.toFixed(0), X(xv), H - B + 26);
+    }
+    ctx.fillText('time (s)', (L + W - RP) / 2, H - 14);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#b45309';
+    ctx.font = 'bold 21px Segoe UI, sans-serif';
+    ctx.fillText(yLabel, 10, 22);
+
+    // the best straight fit, so any curvature shows as points peeling off it
+    ctx.strokeStyle = '#888';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([9, 7]);
+    ctx.beginPath();
+    ctx.moveTo(X(0), Y(fit.intercept));
+    ctx.lineTo(X(xMax), Y(fit.slope * xMax + fit.intercept));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = '#7c2d12';
+    for (let i = 0; i < xs.length; i++) {
+        ctx.beginPath();
+        ctx.arc(X(xs[i]), Y(ys[i]), 7, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 20px Segoe UI, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('R² = ' + fit.r2.toFixed(4), W - RP, 22);
+
+    return fit;
+}
+
+const INTEGRATED_PLOTS = [
+    { id: 'A',    title: 'A vs. time',       axis: 'A',      order: 'zero order',   fn: function (A) { return A; } },
+    { id: 'lnA',  title: 'ln A vs. time',    axis: 'ln A',   order: 'first order',  fn: function (A) { return Math.log(A); } },
+    { id: 'invA', title: '1 / A vs. time',   axis: '1 / A',  order: 'second order', fn: function (A) { return 1 / A; } }
+];
+
+let integratedFits = {};
+
+/* Enough figures to be worth copying into a calculator, without pretending to
+   a precision the fit does not have. */
+function fmtCoef(x) {
+    const a = Math.abs(x);
+    if (a !== 0 && (a < 0.0001 || a >= 100000)) return x.toExponential(3);
+    return Number(x.toPrecision(4)).toString();
+}
+
+function equationHTML(axis, fit) {
+    const sign = fit.intercept < 0 ? ' &minus; ' : ' + ';
+    return '<b>' + axis + ' = ' + fmtCoef(fit.slope) + ' t' + sign + fmtCoef(Math.abs(fit.intercept)) + '</b>' +
+           '<br>R<sup>2</sup> = ' + fit.r2.toFixed(4);
+}
+
+function drawIntegratedPlots() {
+    const row = document.getElementById('int-plot-row');
+    const trace = R(1).trace;
+    if (!row || !trace) return;
+
+    row.innerHTML = INTEGRATED_PLOTS.map(function (p) {
+        return '<div class="int-plot">' +
+            '<div class="int-plot-title">' + p.title + '</div>' +
+            '<canvas id="int-canvas-' + p.id + '" width="620" height="414"></canvas>' +
+            '<div class="int-plot-eq" id="int-eq-' + p.id + '"></div>' +
+            '<div class="int-plot-note">straight &rArr; ' + p.order + ' in I<sub>2</sub></div>' +
+        '</div>';
+    }).join('');
+
+    const xs = trace.map(function (pt) { return pt.t; });
+    integratedFits = {};
+    INTEGRATED_PLOTS.forEach(function (p) {
+        const ys = trace.map(function (pt) { return p.fn(pt.A); });
+        const fit = drawXYPlot('int-canvas-' + p.id, xs, ys, p.axis);
+        integratedFits[p.id] = fit;
+        document.getElementById('int-eq-' + p.id).innerHTML = equationHTML(p.axis, fit);
+    });
+}
+
+function stopClock(n) {
+    const run = R(n);
+    const msg = document.getElementById('stop-msg-' + n);
+    if (!clock.running || clock.n !== n) return;
+
+    /* You cannot see an endpoint before it happens, so a badly early click is a
+       misfire rather than sloppiness: the clock simply keeps running. Nothing is
+       lost and no run has to be restarted. */
+    if (clock.simT / run.trueTime < 0.75) {
+        msg.className = 'dt-msg err';
+        msg.innerHTML = 'There is still plenty of amber in the flask. Hold it against the white card and keep watching &mdash; the clock is still running, so nothing is lost.';
+        return;
+    }
+
+    clock.running = false;
+    cancelAnimationFrame(clock.rafId);
+
+    /* The stopwatch always locks to the instant the colour actually went, so a
+       slow thumb never poisons the data. Being well off just earns a reminder
+       to watch the next one more closely. */
+    const offBy = (clock.simT - run.trueTime) / run.trueTime;
+    const onTime = Math.abs(offBy) <= STOP_SLOP;
+    run.measuredTime = Math.round(run.trueTime * 10) / 10;
+    run.trace = buildTrace(n);
+
+    document.getElementById('stop-btn-' + n).disabled = true;
+    msg.className = onTime ? 'dt-msg ok' : 'dt-msg err';
+    if (onTime) {
+        msg.innerHTML = 'Stopped at <b>' + run.measuredTime.toFixed(1) + ' s</b>. That is the number to copy into the table below.';
+    } else {
+        const secondsOff = Math.abs(clock.simT - run.trueTime);
+        msg.innerHTML = 'You hit the button about <b>' + secondsOff.toFixed(0) + ' s</b> ' +
+            (offBy > 0 ? 'after' : 'before') + ' the colour actually went &mdash; more than 10% out. ' +
+            'The true time was <b>' + run.measuredTime.toFixed(1) + ' s</b>, and that is what has been recorded, ' +
+            'so this trial is not spoiled. Watch the flask more closely on the next one: out in the real lab ' +
+            'nobody hands you the right answer.';
+    }
+    renderReaction(n);
+    // renderReaction() rewrites the stopwatch from the raw sim clock, so set the
+    // final locked reading last — the display must match what the table expects.
+    document.getElementById('sw-' + n).textContent = run.measuredTime.toFixed(1) + ' s';
+
+    advanceRunStep(n);
+    if (isAnimated(n)) {
+        startCalcAnimation(n);
+    } else {
+        tblRender('run' + n);
+        tblBeginRun(n);
+    }
+}
+
+/* =========================================================
+   SECTION D2: The worked calculation for Runs 3 and 4
+   By the third run the arithmetic is the same two steps the student has
+   already done twice, so the bench works it through instead - showing the
+   method rather than replacing it - and asks one question about what the
+   numbers mean.
+   ========================================================= */
+
+let calcState = { n: null, idx: 0, steps: [], compare: null };
+
+const CALC_CHECK = {
+    3: {
+        stem: 'Compare the two <b>initial rate</b> values in the table just above. You doubled [H<sup>+</sup>] and changed nothing else &mdash; what did that do to the rate?',
+        options: ['Nothing &mdash; the rate stayed the same', 'It doubled the rate', 'It quadrupled the rate'],
+        correct: 1,
+        right: 'Yes. Double the acid, double the rate &mdash; a proportional response. Hold on to that; it is exactly what you will need in the analysis.',
+        wrong: [
+            'Compare the two rate values above. Run 1 was slower than this one, so something certainly changed.',
+            '',
+            'Quadrupling would mean the rate went as the <em>square</em> of the concentration. Look at the two rates &mdash; the jump is smaller than that.'
+        ]
+    },
+    4: {
+        stem: 'Compare the two <b>initial rate</b> values in the table just above &mdash; the rates, not the times. You doubled [I<sub>2</sub>] and changed nothing else. What did that do to the rate?',
+        options: ['It doubled the rate', 'It halved the rate', 'Essentially nothing &mdash; the rate is unchanged'],
+        correct: 2,
+        right: 'That is the surprise of this experiment. The run took about twice as long, but only because there was twice as much iodine to get through &mdash; the <em>speed</em> at which it was consumed never changed. Iodine is a reactant that does not appear in the rate law at all.',
+        wrong: [
+            'The <em>time</em> doubled, and it is easy to read that as the rate doubling. Look at the two rate values themselves &mdash; not the times.',
+            'Halving would mean adding iodine actively slowed the reaction down. Compare the two rates; that is not what happened.',
+            ''
+        ]
+    }
+};
+
+function calcStepsFor(n) {
+    const run = R(n);
+    const d = run.delivered;
+    const varied = RUN_SPECS[n].vary;
+    const stockM = stockOf(varied);
+    const litres = d[varied] / 1000;
+    const moles = litres * stockM;
+    const conc = moles / (TOTAL_VOLUME_ML / 1000);
+
+    const label = { hcl: '[H<sup>+</sup>]', i2: '[I<sub>2</sub>]<sub>0</sub>', acetone: '[acetone]' }[varied];
+    const reagent = { hcl: 'HCl', i2: 'I<sub>2</sub>', acetone: 'acetone' }[varied];
+    // The molarity as it is printed on the bottle, trailing zeros and all.
+    const stockText = { hcl: '1.0', i2: '0.0050', acetone: '4.0' }[varied];
+
+    const cA = stockOf('acetone') * d.acetone / TOTAL_VOLUME_ML;
+    const cH = stockOf('hcl') * d.hcl / TOTAL_VOLUME_ML;
+    const cI = stockOf('i2') * d.i2 / TOTAL_VOLUME_ML;
+    const t = run.measuredTime;
+    const rate = cI / t;
+
+    const run1Conc = tv('run1', varied === 'hcl' ? 'cH' : (varied === 'i2' ? 'cI2' : 'cAcetone'));
+    const run1Rate = tv('run1', 'rate');
+
+    const steps = [
+        'Your mixture: <span class="calc-math">' + d[varied].toFixed(2) + ' mL ' + reagent +
+            '</span> &middot; the other two still at 5.00 mL &middot; <span class="calc-math">0.00 mL water</span> ' +
+            '&mdash; 20.00 mL in total.',
+
+        '<b>Step 1 &mdash; moles of ' + reagent + ' delivered.</b><br>' +
+            '<span class="calc-math">' + litres.toFixed(5) + ' L &times; ' + stockText + ' mol/L = ' +
+            moles.toFixed(5) + ' mol</span>',
+
+        '<b>Step 2 &mdash; spread through the whole 20.00 mL.</b><br>' +
+            '<span class="calc-math">' + moles.toFixed(5) + ' mol &divide; 0.02000 L = ' +
+            sigFig(conc, 4) + ' M</span><br>' +
+            '<span class="calc-note">' + label + ' = ' + sigFig(conc, 3) + ' M &mdash; exactly double Run 1&rsquo;s ' +
+            sigFig(run1Conc, 3) + ' M.</span>',
+
+        'The other two are untouched, so they carry straight over from Run 1:<br>' +
+            '<span class="calc-math">[acetone] = ' + sigFig(cA, 3) + ' M' +
+            (varied === 'hcl' ? '' : ' &nbsp; [H<sup>+</sup>] = ' + sigFig(cH, 3) + ' M') +
+            (varied === 'i2' ? '' : ' &nbsp; [I<sub>2</sub>]<sub>0</sub> = ' + sci(cI, 2) + ' M') +
+            '</span>',
+
+        'Your stopwatch: <span class="calc-math">t = ' + t.toFixed(1) + ' s</span>',
+
+        '<b>The initial rate.</b> The iodine went at a steady rate, so it is just the starting ' +
+            '[I<sub>2</sub>] divided by the time:<br>' +
+            '<span class="calc-math">rate = ' + sci(cI, 2) + ' M &divide; ' + t.toFixed(1) + ' s = ' +
+            sci(rate, 2) + ' M/s</span>',
+
+        '<span class="calc-note">Run 1&rsquo;s rate was ' + sci(run1Rate, 2) + ' M/s. ' +
+            'That comparison is the whole point of this run &mdash; it is set out below.</span>'
+    ];
+
+    const compare = {
+        label: label,
+        changed: { hcl: 'acid doubled', i2: 'iodine doubled', acetone: 'acetone doubled' }[varied],
+        baseConc: (varied === 'i2' ? sci(run1Conc, 2) : sigFig(run1Conc, 3)) + ' M',
+        thisConc: (varied === 'i2' ? sci(conc, 2) : sigFig(conc, 3)) + ' M',
+        baseRate: sci(run1Rate, 2) + ' M/s',
+        thisRate: sci(rate, 2) + ' M/s'
+    };
+
+    return {
+        steps: steps,
+        compare: compare,
+        values: { cAcetone: cA, cH: cH, cI2: cI, time: t, rate: rate }
+    };
+}
+
+function startCalcAnimation(n) {
+    const host = document.getElementById('calc-anim-' + n);
+    const built = calcStepsFor(n);
+    const run = R(n);
+
+    /* The later stages read these straight out of tblState, exactly as if the
+       student had typed them, so nothing downstream has to know the difference. */
+    const d = run.delivered;
+    tblState['run' + n] = {
+        values: {
+            vAcetone: d.acetone, vHCl: d.hcl, vI2: d.i2, vWater: d.water,
+            cAcetone: built.values.cAcetone, cH: built.values.cH, cI2: built.values.cI2,
+            time: built.values.time, rate: built.values.rate
+        },
+        done: {}
+    };
+    Object.keys(tblState['run' + n].values).forEach(function (k) {
+        tblState['run' + n].done[k] = true;
+    });
+
+    calcState = { n: n, idx: 0, steps: built.steps, compare: built.compare };
+
+    host.innerHTML =
+        '<p class="calc-intro">The arithmetic is the same two steps you did in Runs 1 and 2. ' +
+            'Work through it at your own pace &mdash; nothing here is timed.</p>' +
+        '<div class="calc-stage">' +
+            built.steps.map(function (s, i) {
+                return '<div class="calc-step" id="calc-step-' + n + '-' + i + '">' + s + '</div>';
+            }).join('') +
+        '</div>' +
+        '<div class="calc-nav">' +
+            '<button type="button" class="btn calc-next" id="calc-next-' + n + '" ' +
+                'onclick="calcNextStep(' + n + ')">Show the first step &rarr;</button>' +
+            '<button type="button" class="btn btn-compact btn-grey calc-showall" ' +
+                'id="calc-skip-' + n + '" onclick="skipCalcAnimation(' + n + ')">Show all of it at once</button>' +
+        '</div>' +
+        '<div id="calc-compare-' + n + '"></div>' +
+        '<div id="calc-check-' + n + '"></div>';
+}
+
+/* Self-paced: the student reveals one line at a time. Nothing moves until they
+   ask it to, which is the whole point for anyone who is not yet confident. */
+function calcNextStep(n) {
+    if (calcState.n !== n) return;
+    const el = document.getElementById('calc-step-' + n + '-' + calcState.idx);
+    if (el) el.classList.add('shown');
+    calcState.idx++;
+
+    const btn = document.getElementById('calc-next-' + n);
+    if (calcState.idx >= calcState.steps.length) {
+        if (btn) btn.classList.add('hidden');
+        finishCalcAnimation(n);
+    } else if (btn) {
+        btn.innerHTML = 'Next step &rarr; <span class="calc-progress">' +
+            (calcState.idx + 1) + ' of ' + calcState.steps.length + '</span>';
+        btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+
+function resetCalcAnimation() {
+    calcState = { n: null, idx: 0, steps: [], compare: null };
+}
+
+function skipCalcAnimation(n) {
+    if (calcState.n !== n) return;
+    document.querySelectorAll('#calc-anim-' + n + ' .calc-step').forEach(function (el) {
+        el.classList.add('shown');
+    });
+    calcState.idx = calcState.steps.length;
+    const btn = document.getElementById('calc-next-' + n);
+    if (btn) btn.classList.add('hidden');
+    finishCalcAnimation(n);
+}
+
+/* The two numbers the question is actually about, side by side and labelled,
+   so nobody has to hunt back up the page to work out which is which. */
+function finishCalcAnimation(n) {
+    const host = document.getElementById('calc-compare-' + n);
+    const c = calcState.compare;
+    const skip = document.getElementById('calc-skip-' + n);
+    if (skip) skip.classList.add('hidden');
+    if (host && host.innerHTML.trim() === '' && c) {
+        host.innerHTML =
+            '<div class="calc-compare">' +
+                '<div class="cc-title">The two runs you are comparing</div>' +
+                '<table class="cc-table">' +
+                    '<tr><th></th><th>' + c.label + '</th><th>initial rate</th></tr>' +
+                    '<tr><td class="cc-run">Run 1 &mdash; baseline</td>' +
+                        '<td class="cc-num">' + c.baseConc + '</td>' +
+                        '<td class="cc-num cc-rate">' + c.baseRate + '</td></tr>' +
+                    '<tr class="cc-this"><td class="cc-run">Run ' + n + ' &mdash; ' + c.changed + '</td>' +
+                        '<td class="cc-num">' + c.thisConc + '</td>' +
+                        '<td class="cc-num cc-rate">' + c.thisRate + '</td></tr>' +
+                '</table>' +
+                '<div class="cc-hint">Everything else was identical in both runs.</div>' +
+            '</div>';
+    }
+    renderCalcCheck(n);
+}
+
+function renderCalcCheck(n) {
+    const host = document.getElementById('calc-check-' + n);
+    if (!host || host.innerHTML.trim() !== '') return;
+    const q = CALC_CHECK[n];
+
+    host.innerHTML =
+        '<div class="calc-check">' +
+            '<div class="calc-check-stem">' + q.stem + '</div>' +
+            '<div class="choice-list" id="calc-choices-' + n + '"></div>' +
+            '<div class="choice-fb hidden" id="calc-fb-' + n + '"></div>' +
+        '</div>';
+
+    const list = document.getElementById('calc-choices-' + n);
+    q.options.forEach(function (o, i) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'choice-btn';
+        b.innerHTML = o;
+        b.addEventListener('click', function () { answerCalcCheck(n, i, b); });
+        list.appendChild(b);
+    });
+    host.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function answerCalcCheck(n, i, btn) {
+    const q = CALC_CHECK[n];
+    const fb = document.getElementById('calc-fb-' + n);
+    if (i === q.correct) {
+        btn.classList.add('right');
+        document.querySelectorAll('#calc-choices-' + n + ' .choice-btn').forEach(function (b) { b.disabled = true; });
+        fb.className = 'choice-fb ok';
+        fb.innerHTML = q.right;
+        fb.classList.remove('hidden');
+        tblComplete('run' + n);
+    } else {
+        btn.classList.add('wrong');
+        btn.disabled = true;
+        fb.className = 'choice-fb no';
+        fb.innerHTML = q.wrong[i] || 'Not quite &mdash; look at the two rate values again.';
+        fb.classList.remove('hidden');
+    }
+}
+
+function redoRun(n) {
+    const run = R(n);
+    if (clock.n === n && clock.running) {
+        clock.running = false;
+        cancelAnimationFrame(clock.rafId);
+    }
+    resetCalcAnimation();
+    const anim = document.getElementById('calc-anim-' + n);
+    if (anim) anim.innerHTML = '';
+    run.delivered = { acetone: 0, hcl: 0, i2: 0, water: 0 };
+    run.dispensed = false;
+    run.conc = null;
+    run.trueTime = null;
+    run.measuredTime = null;
+    run.trace = null;
+    run.recorded = false;
+    run.step = 2;
+
+    document.getElementById('react-card-' + n).classList.add('hidden');
+    document.getElementById('rec-card-' + n).classList.add('hidden');
+    document.getElementById('disp-card-' + n).classList.remove('hidden');
+    document.getElementById('run-result-' + n).innerHTML = '';
+    document.getElementById('stop-msg-' + n).innerHTML = '';
+    document.getElementById('stop-btn-' + n).disabled = false;
+    document.getElementById('react-liquid-' + n).style.opacity = 0;
+    document.getElementById('sw-' + n).textContent = '0.0 s';
+    document.getElementById('abs-' + n).textContent = 'A = 0.000';
+
+    REAGENT_IDS.forEach(function (id) { renderBuret(n, id); });
+    checkDispenseComplete(n);
+    updateRunSteps(n);
+    tblReset('run' + n);
+    invalidateAnalysis(n);
+    renderTabs();
+    runFeedback(n, 'success', 'Fresh start on Run ' + n + '. Measure out the same planned volumes again.');
+    document.getElementById('disp-card-' + n).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* Redoing a run after the analysis has been opened makes the analysis stale,
+   so it gets locked and cleared rather than left holding numbers that no
+   longer match the data table. */
+function invalidateAnalysis(n) {
+    if (!simState.unlocked.analysis) return;
+    simState.unlocked.analysis = false;
+    simState.unlocked.mechanism = false;
+    simState.analysisDone = false;
+    simState.analysisStarted = false;   // so the analysis table gets rebuilt, not left blank
+    simState.mechanismStarted = false;
+    simState.mechanismDone = false;
+    simState.conceptDone = false;
+    tblReset('analysis');
+    tblReset('mechanism');
+
+    const mechResult = document.getElementById('mech-result');
+    if (mechResult) mechResult.innerHTML = '';
+    const mechLaw = document.getElementById('mech-ratelaw');
+    if (mechLaw) mechLaw.innerHTML = '';
+
+    const anData = document.getElementById('an-data-table');
+    if (anData) anData.innerHTML = '';
+    const intRow = document.getElementById('int-plot-row');
+    if (intRow) intRow.innerHTML = '';
+    const anResult = document.getElementById('an-result');
+    if (anResult) anResult.remove();
+
+    if (['analysis', 'mechanism'].indexOf(simState.currentSection) >= 0) {
+        switchSection('run' + n);
+    }
+}
+
+/* =========================================================
+   SECTION E: The student data tables
+   One generic engine drives every gated table in the lab - the four
+   run tables, the analysis and the mechanism.
+   ========================================================= */
+
+const TABLES = {};
+let tblState = {};
+
+function tv(id, key) { return (tblState[id] && tblState[id].values[key]); }
+
+const VKEY = { acetone: 'vAcetone', hcl: 'vHCl', i2: 'vI2', water: 'vWater' };
+const CKEY = { acetone: 'cAcetone', hcl: 'cH', i2: 'cI2' };
+const VLABEL = {
+    acetone: 'Volume of 4.0 M acetone delivered',
+    hcl:     'Volume of 1.0 M HCl delivered',
+    i2:      'Volume of 0.0050 M I<sub>2</sub> delivered',
+    water:   'Volume of distilled water added'
+};
+const CLABEL = {
+    acetone: '[acetone] in the 20.00 mL reaction mixture',
+    hcl:     '[H<sup>+</sup>] in the 20.00 mL reaction mixture',
+    i2:      '[I<sub>2</sub>] at the moment of mixing'
+};
+const CHINT = {
+    acetone: 'Find the <b>moles of acetone</b> you pipetted in: your volume in litres &times; 4.0 mol/L. ' +
+             'Those moles are now spread through the whole 20.00 mL, so divide them by 0.02000 L to get the concentration in the flask.',
+    hcl:     'Same two steps: moles of HCl delivered (litres &times; 1.0 mol/L), then divide by the total 0.02000 L. ' +
+             'HCl is a strong acid, so every mole of it gives a mole of H<sup>+</sup>.',
+    i2:      'Same two steps again &mdash; moles of I<sub>2</sub> delivered, then divide by the total 0.02000 L. ' +
+             'This is the [I<sub>2</sub>] that had to disappear before the colour went.'
+};
+
+function timeRow(n) {
+    return {
+        key: 'time', label: 'Time for the colour to disappear', unit: 's', fmt: 't1', tol: 'read',
+        hint: 'Copy the stopwatch exactly, to one decimal place.',
+        expected: function () { return R(n).measuredTime; },
+        gate: 'Now the stopwatch reading.'
+    };
+}
+function rateRow() {
+    return {
+        key: 'rate', label: '<b>Initial rate of reaction</b>', unit: 'M/s', tol: 'pct',
+        hint: 'The iodine disappeared at a steady rate, so the average rate over the whole run <em>is</em> the initial rate: divide the starting [I<sub>2</sub>] by the time it took. Scientific notation like 8.75e-6 is fine.',
+        expected: function (v) { return v.cI2 / v.time; },
+        gate: 'Finally, the initial rate for this run.'
+    };
+}
+
+function buildRunRows(n) {
+    const spec = RUN_SPECS[n];
+    const rows = [];
+
+    const varied = spec.vary;
+    REAGENT_IDS.forEach(function (id) {
+        const entered = (n === 1) || (id === varied) || (id === 'water');
+        const get = (function (rid) { return function () { return R(n).delivered[rid]; }; })(id);
+        if (entered) {
+            rows.push({
+                key: VKEY[id], label: VLABEL[id], unit: 'mL', fmt: 'v2', tol: 'vol',
+                hint: 'Copy the buret readout exactly.',
+                expected: get,
+                gate: 'Work down the table. Start with the volumes you measured out.'
+            });
+        } else {
+            rows.push({
+                key: VKEY[id], label: VLABEL[id] + ' <em>(held at 5.00 mL, the same as Run 1)</em>',
+                unit: 'mL', kind: 'auto', dp: 2, value: get
+            });
+        }
+    });
+
+    ['acetone', 'hcl', 'i2'].forEach(function (id) {
+        const entered = (n === 1) || (id === varied);
+        const calc = (function (rid) {
+            return function (v) { return stockOf(rid) * v[VKEY[rid]] / TOTAL_VOLUME_ML; };
+        })(id);
+        if (entered) {
+            rows.push({
+                key: CKEY[id], label: CLABEL[id], unit: 'M', tol: 'pct', hint: CHINT[id],
+                expected: calc,
+                gate: 'Now turn your volumes into concentrations in the flask.'
+            });
+        } else {
+            rows.push({
+                key: CKEY[id], label: CLABEL[id] + ' <em>(unchanged from Run 1 &mdash; worked out for you)</em>',
+                unit: 'M', kind: 'auto', dp: 5, value: calc
+            });
+        }
+    });
+
+    rows.push(timeRow(n));
+    rows.push(rateRow());
+    return rows;
+}
+
+function rateLawHTML(mA, mH, mI) {
+    function term(sym, e) {
+        if (e === 0) return '';
+        return '[' + sym + ']' + (e === 1 ? '' : '<sup>' + e + '</sup>');
+    }
+    let s = 'rate = k' + term('CH<sub>3</sub>COCH<sub>3</sub>', mA) + term('H<sup>+</sup>', mH) + term('I<sub>2</sub>', mI);
+    if (mI === 0) {
+        s += ' &nbsp;<span style="color:#777;font-weight:normal;font-size:0.9em;">([I<sub>2</sub>]<sup>0</sup> = 1, so the iodine term drops out entirely)</span>';
+    }
+    return s;
+}
+
+/* The order is read straight off the data by comparing a pair of runs. A wrong
+   guess gets told what the student's own two factors actually were, and what the
+   order they picked would have predicted - which is the reasoning, without making
+   anyone grind through logs of ratios. */
+const ORDER_OPTIONS = ['0 &mdash; zero order', '1 &mdash; first order', '2 &mdash; second order', '3 &mdash; third order'];
+
+function orderRow(cfg) {
+    return {
+        key: 'm' + cfg.tag,
+        kind: 'choice',
+        label: '<b>Order with respect to ' + cfg.name + '</b>',
+        hint: 'Compare Run ' + cfg.runN + ' with Run 1 in the table above. ' + cfg.conc +
+              ' is the only thing that changed between them, so the rate can only have responded to it.',
+        options: ORDER_OPTIONS,
+        correct: cfg.trueOrder,
+        wrong: function (chosen) {
+            const cr = tv('run' + cfg.runN, cfg.ckey) / tv('run1', cfg.ckey);
+            const rr = tv('run' + cfg.runN, 'rate') / tv('run1', 'rate');
+            return 'Between Run 1 and Run ' + cfg.runN + ', ' + cfg.conc + ' changed by a factor of <b>' +
+                cr.toFixed(2) + '</b> and the initial rate changed by a factor of <b>' + rr.toFixed(2) + '</b>. ' +
+                'Order ' + chosen + ' would mean the rate went as ' + cr.toFixed(2) + '<sup>' + chosen + '</sup> = <b>' +
+                Math.pow(cr, chosen).toFixed(2) + '</b>. Which whole-number power of ' + cr.toFixed(2) +
+                ' actually lands on ' + rr.toFixed(2) + '?';
+        },
+        gate: cfg.gate
+    };
+}
+
+function kRow(key, n) {
+    return {
+        key: key,
+        label: '<b>Rate constant k</b>, from Run ' + n + '&rsquo;s data',
+        unit: 'M<sup>&minus;1</sup> s<sup>&minus;1</sup>', tol: 'pct',
+        hint: 'Rearrange your rate law to solve for k, then put Run ' + n + '&rsquo;s numbers into it. ' +
+              'Every run was at the same temperature, so any one of them would hand you the same k.',
+        expected: function (v) {
+            return tv('run' + n, 'rate') /
+                (Math.pow(tv('run' + n, 'cAcetone'), v.mA) *
+                 Math.pow(tv('run' + n, 'cH'), v.mH) *
+                 Math.pow(tv('run' + n, 'cI2'), v.mI));
+        },
+        gate: 'Now pin down k, using Run ' + n + '&rsquo;s numbers.'
+    };
+}
+
+function buildAnalysisRows() {
+    return [
+        {
+            key: 'linPlot', kind: 'choice',
+            label: 'Which of the three plots above is genuinely a straight line?',
+            hint: 'Compare the R<sup>2</sup> values, and look at whether the points sit on the dashed fit or bend away from it.',
+            options: ['A vs. time', 'ln A vs. time', '1 / A vs. time'],
+            correct: 0,
+            wrong: function (chosen) {
+                const names = ['A', 'ln A', '1 / A'];
+                const ids = ['A', 'lnA', 'invA'];
+                const chosenR2 = integratedFits[ids[chosen]] ? integratedFits[ids[chosen]].r2.toFixed(4) : '?';
+                const bestR2 = integratedFits.A ? integratedFits.A.r2.toFixed(4) : '?';
+                return 'The ' + names[chosen] + ' plot fits a line with R<sup>2</sup> = ' + chosenR2 +
+                    ', and its points curve away from the dashed fit at one end. Another of the three manages R<sup>2</sup> = ' +
+                    bestR2 + ' with the points sitting right on the line. Look again at which one that is.';
+            },
+            gate: 'Start with the three plots above. Each integrated rate law predicts a different straight line.'
+        },
+        {
+            key: 'mI', kind: 'choice',
+            label: '<b>Order with respect to I<sub>2</sub></b>',
+            hint: 'The plot that came out straight tells you this directly. Your Run 4 should agree with it.',
+            options: ORDER_OPTIONS,
+            correct: 0,
+            wrong: function (chosen) {
+                const cr = tv('run4', 'cI2') / tv('run1', 'cI2');
+                const rr = tv('run4', 'rate') / tv('run1', 'rate');
+                return 'A straight line on a plot of <em>A itself</em> against time is the signature of zero order &mdash; ' +
+                    'the concentration falls by equal amounts in equal times. Order ' + chosen +
+                    ' would have made ' + (chosen === 1 ? 'ln A' : '1 / A') + ' the straight one instead. ' +
+                    'Your Run 4 says the same thing: [I<sub>2</sub>] changed by a factor of <b>' + cr.toFixed(2) +
+                    '</b> and the rate by a factor of <b>' + rr.toFixed(2) + '</b>.';
+            },
+            gate: 'So what is the order with respect to iodine?'
+        },
+        orderRow({ tag: 'A', runN: 2, ckey: 'cAcetone', name: 'acetone', conc: '[acetone]', trueOrder: 1,
+                   gate: 'Now acetone. Compare Run 2 with Run 1 &mdash; no plots needed, just the two rates.' }),
+        orderRow({ tag: 'H', runN: 3, ckey: 'cH', name: 'H<sup>+</sup>', conc: '[H<sup>+</sup>]', trueOrder: 1,
+                   gate: 'And the acid. Compare Run 3 with Run 1.' })
+    ].concat(
+        [
+            {
+                key: 'lawShown', label: '<b>Your experimental rate law</b>', kind: 'auto',
+                text: function (v) { return rateLawHTML(v.mA, v.mH, v.mI); }
+            },
+            kRow('k1', 1),
+            {
+                key: 'whyOneK', kind: 'choice',
+                label: 'You worked k out once, from Run 1. Why is there no need to do it again for Runs 2, 3 and 4?',
+                hint: 'Think about what k actually depends on &mdash; and what it does not.',
+                options: [
+                    'The other runs used different concentrations, and k changes when the concentrations change',
+                    'k depends only on the reaction and its temperature, and every run was at the same temperature',
+                    'Run 1 is the baseline, so it is the only run whose k counts'
+                ],
+                correct: 1,
+                wrong: function (chosen) {
+                    if (chosen === 0) {
+                        return 'That is the misconception this experiment is built to kill. Changing a concentration changes the ' +
+                            '<em>rate</em> &mdash; you saw that four times over &mdash; but it does not change <b>k</b>. ' +
+                            'If k moved around with concentration it would not be a constant at all, and the rate law could not ' +
+                            'predict anything.';
+                    }
+                    return 'There is nothing privileged about Run 1 &mdash; you could have used any of the four and landed on the ' +
+                        'same number. The interesting question is <em>why</em> they would all give the same number.';
+                },
+                right: 'Exactly. k is a property of the reaction at a given temperature &mdash; concentrations change the ' +
+                       '<em>rate</em>, never k. All four of your runs were at the same temperature, so all four would hand you ' +
+                       'the same k, and one calculation is enough. Warm the flask up and k itself would change, and so would the ' +
+                       'rate at identical concentrations.',
+                gate: 'One last question, and it is the one that explains why a single calculation is enough.'
+            }
+        ]
+    );
+}
+
+/* ---- mechanism: from a proposed sequence of steps to a predicted rate law ---- */
+function buildMechanismRows() {
+    return [
+        {
+            key: 'whichMech', kind: 'choice',
+            label: '<b>Which mechanism is consistent with the rate law you measured?</b>',
+            hint: 'The rate law comes from the slow step. Work out what each mechanism predicts, then compare it with your own result above.',
+            options: ['Mechanism A', 'Mechanism B', 'Mechanism C'],
+            correct: 0,
+            wrong: function (chosen) {
+                const rrH = tv('run3', 'rate') / tv('run1', 'rate');
+                const rrI = tv('run4', 'rate') / tv('run1', 'rate');
+                if (chosen === 1) {
+                    return 'Mechanism B is a single slow step containing acetone and I<sub>2</sub>, so it predicts ' +
+                        '<b>rate = k[acetone][I<sub>2</sub>]</b>. That fails your data twice over. It has no H<sup>+</sup> ' +
+                        'in it at all, yet doubling the acid in Run 3 multiplied your rate by <b>' + rrH.toFixed(2) + '</b>. ' +
+                        'And it puts I<sub>2</sub> in the rate law, when doubling the iodine in Run 4 changed your rate by a ' +
+                        'factor of just <b>' + rrI.toFixed(2) + '</b>.';
+                }
+                return 'Close &mdash; Mechanism C gets two of the three right. Its slow step contains the protonated acetone ' +
+                    '(which traces back to acetone and H<sup>+</sup>) <em>and</em> I<sub>2</sub>, so it predicts ' +
+                    '<b>rate = k[acetone][H<sup>+</sup>][I<sub>2</sub>]</b> &mdash; first order in iodine. ' +
+                    'Run 4 is the one experiment that separates C from the right answer, and it says doubling [I<sub>2</sub>] ' +
+                    'changed the rate by a factor of <b>' + rrI.toFixed(2) + '</b>. Which mechanism keeps I<sub>2</sub> out of ' +
+                    'the slow step entirely?';
+            },
+            gate: 'Three mechanisms, one rate law. Which one fits?'
+        },
+        {
+            key: 'whyNoI2', kind: 'choice',
+            label: 'In that mechanism, why does I<sub>2</sub> not appear in the rate law?',
+            hint: 'Look at <em>where</em> the iodine gets used up relative to the slow step.',
+            options: [
+                'Because I2 is a catalyst and is regenerated',
+                'Because I2 is only used after the slow step, so how much is present cannot change the overall speed',
+                'Because I2 is in large excess, so its concentration barely changes'
+            ],
+            correct: 1,
+            wrong: function (chosen) {
+                if (chosen === 0) {
+                    return 'I<sub>2</sub> is genuinely consumed &mdash; it ends up in the iodoacetone, and the flask goes ' +
+                        'colourless because the iodine is gone. H<sup>+</sup> is the catalyst here, not iodine.';
+                }
+                return 'That is a tempting argument, but it is not what is happening &mdash; and your own data rules it out. ' +
+                    'You did not keep [I<sub>2</sub>] roughly constant; you deliberately <em>doubled</em> it in Run 4, and ' +
+                    'the rate still did not move. The reason has to do with where in the mechanism the iodine is used.';
+            },
+            gate: 'Now say why the iodine drops out.'
+        },
+        {
+            key: 'intermediate', kind: 'choice',
+            label: 'The slow step gives rate = k[protonated acetone]. That is an <b>intermediate</b> &mdash; ' +
+                   'it is made during the reaction, not something you poured into the flask, so it cannot stand in a rate law. What do you do with it?',
+            hint: 'Something had to make it. Look at the step just above the slow one.',
+            options: [
+                'Leave it in the rate law; intermediates are allowed there',
+                'Replace it with the reactants of the step that produced it',
+                'Drop it and read the rate law off the overall balanced equation instead'
+            ],
+            correct: 1,
+            wrong: function (chosen) {
+                if (chosen === 0) {
+                    return 'A rate law has to be written in terms of things you can actually measure out and vary &mdash; ' +
+                        'which is what you did in this lab. You never had a bottle of protonated acetone to pipette, ' +
+                        'so it cannot appear in the answer.';
+                }
+                return 'The overall balanced equation is where you started, and it would have told you the wrong thing: ' +
+                    'it contains I<sub>2</sub> and no H<sup>+</sup>, which is the opposite of what you measured. ' +
+                    'The mechanism is what gives you the rate law &mdash; you just need to deal with the intermediate.';
+            },
+            gate: 'Last one &mdash; deal with the intermediate.'
+        },
+        {
+            key: 'mechSummary', kind: 'auto',
+            label: '<b>Putting it together</b>',
+            text: function () {
+                return 'protonated acetone came from <b>acetone + H<sup>+</sup></b>, so those replace it:<br>' +
+                       '<span style="color:#7c2d12;">rate = k[acetone][H<sup>+</sup>]</span> &mdash; which is exactly what you measured.';
+            }
+        }
+    ];
+}
+
+function rowsFor(id) {
+    if (!TABLES[id]) {
+        if (id === 'analysis') TABLES[id] = buildAnalysisRows();
+        else if (id === 'mechanism') TABLES[id] = buildMechanismRows();
+        else TABLES[id] = buildRunRows(parseInt(id.replace('run', ''), 10));
+    }
+    return TABLES[id];
+}
+function rowByKey(id, key) {
+    return rowsFor(id).filter(function (r) { return r.key === key; })[0];
+}
+
+/* ---- rendering ---- */
+function tblRender(id) {
+    const body = document.getElementById('dt-body-' + id);
+    if (!body) return;
+    const rows = rowsFor(id);
+    let html = '<tr><th>Quantity</th><th>Your entry</th></tr>';
+    rows.forEach(function (r) {
+        const eid = 'dt-' + id + '-' + r.key;
+        html += '<tr class="dt-locked" id="' + eid + '-row"><td class="dt-label">' + r.label;
+        if (r.hint) html += '<span class="dt-hint">' + r.hint + '</span>';
+        html += '</td><td>';
+        if (r.kind === 'auto') {
+            html += '<span class="dt-auto" id="' + eid + '-auto">&mdash;</span>';
+            if (r.unit) html += '<span class="dt-unit">' + r.unit + '</span>';
+        } else if (r.kind === 'choice') {
+            let opts = '<option value="">choose&hellip;</option>';
+            r.options.forEach(function (o, i) { opts += '<option value="' + i + '">' + o + '</option>'; });
+            html += '<select class="dt-select" id="' + eid + '-in" disabled>' + opts + '</select>' +
+                    '<button class="btn dt-check" id="' + eid + '-btn" disabled>Record</button>';
+        } else {
+            html += '<input class="dt-input" type="text" id="' + eid + '-in" disabled>';
+            if (r.unit) html += '<span class="dt-unit">' + r.unit + '</span>';
+            html += '<button class="btn dt-check" id="' + eid + '-btn" disabled>Record</button>';
+        }
+        html += '<span class="dt-msg" id="' + eid + '-msg"></span></td></tr>';
+    });
+    body.innerHTML = html;
+
+    rows.forEach(function (r) {
+        const eid = 'dt-' + id + '-' + r.key;
+        const btn = document.getElementById(eid + '-btn');
+        const inp = document.getElementById(eid + '-in');
+        if (btn) btn.addEventListener('click', function () { tblCheck(id, r.key); });
+        if (inp && inp.tagName === 'INPUT') {
+            inp.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') { e.preventDefault(); tblCheck(id, r.key); }
+            });
+        }
+    });
+    tblState[id] = { values: {}, done: {} };
+    tblGate(id, '');
+}
+
+function tblReset(id) {
+    tblState[id] = { values: {}, done: {} };
+    const body = document.getElementById('dt-body-' + id);
+    if (body) body.innerHTML = '';
+    tblGate(id, '');
+}
+
+function tblGate(id, msg) {
+    const g = document.getElementById('dt-gate-' + id);
+    if (!g) return;
+    if (msg) { g.innerHTML = msg; g.classList.remove('hidden'); }
+    else { g.innerHTML = ''; g.classList.add('hidden'); }
+}
+
+function tblUnlock(id, key, gateMsg) {
+    const eid = 'dt-' + id + '-' + key;
+    const row = document.getElementById(eid + '-row');
+    if (!row) return;
+    row.classList.remove('dt-locked');
+    row.classList.add('dt-active');
+    const inp = document.getElementById(eid + '-in');
+    const btn = document.getElementById(eid + '-btn');
+    if (inp) inp.disabled = false;
+    if (btn) btn.disabled = false;
+    if (gateMsg) tblGate(id, gateMsg);
+    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (inp) inp.focus();
+}
+
+function tblFillAuto(id, key, value, text) {
+    const eid = 'dt-' + id + '-' + key;
+    const el = document.getElementById(eid + '-auto');
+    if (el) el.innerHTML = text;
+    const row = document.getElementById(eid + '-row');
+    if (row) { row.classList.remove('dt-locked', 'dt-active'); row.classList.add('dt-done'); }
+    tblState[id].values[key] = value;
+    tblState[id].done[key] = true;
+}
+
+/* ---- validation ---- */
+function tblFormatOK(fmt, raw) {
+    if (fmt === 'v2') return /^\d{1,2}\.\d{2}$/.test(raw);
+    if (fmt === 't1') return /^\d{1,4}\.\d$/.test(raw);
+    if (fmt === 'int') return /^-?\d{1,2}$/.test(raw);
+    return /^-?\d*\.?\d+([eE][+-]?\d+)?$/.test(raw);
+}
+function tblFormatMsg(fmt) {
+    if (fmt === 'v2') return 'A buret is read to two decimal places &mdash; for example 5.00 or 8.34.';
+    if (fmt === 't1') return 'Copy the stopwatch to one decimal place &mdash; for example 142.9.';
+    if (fmt === 'int') return 'A whole number, please.';
+    return 'Enter a number. Scientific notation such as 8.75e-6 is fine for small values.';
+}
+
+function tblCheck(id, key) {
+    const r = rowByKey(id, key);
+    const eid = 'dt-' + id + '-' + key;
+    const inp = document.getElementById(eid + '-in');
+    const msg = document.getElementById(eid + '-msg');
+    if (!r || !inp || inp.disabled) return;
+
+    let value;
+    if (r.kind === 'choice') {
+        if (inp.value === '') {
+            msg.className = 'dt-msg err';
+            msg.textContent = 'Pick one of the options.';
+            return;
+        }
+        value = parseInt(inp.value, 10);
+        if (value !== r.correct) {
+            msg.className = 'dt-msg err';
+            msg.innerHTML = (typeof r.wrong === 'function')
+                ? r.wrong(value, tblState[id].values)
+                : (r.wrong || 'Not quite &mdash; try again.');
+            return;
+        }
+    } else {
+        const raw = inp.value.trim();
+        if (!tblFormatOK(r.fmt, raw)) {
+            msg.className = 'dt-msg err';
+            msg.innerHTML = tblFormatMsg(r.fmt);
+            return;
+        }
+        value = parseFloat(raw);
+        if (isNaN(value)) {
+            msg.className = 'dt-msg err';
+            msg.textContent = 'Enter a number.';
+            return;
+        }
+
+        const expected = r.expected(tblState[id].values);
+        let ok, fail;
+        if (r.tol === 'vol') {
+            ok = Math.abs(value - expected) <= DT_TOL_VOL + 1e-9;
+            fail = 'That is more than 0.05 mL away from what that buret actually delivered. Read the display again.';
+        } else if (r.tol === 'read') {
+            ok = Math.abs(value - expected) < 0.05;
+            fail = 'That is not what the stopwatch shows. Copy the number exactly as it reads.';
+        } else if (r.tol === 'ord') {
+            ok = Math.abs(value - expected) <= DT_TOL_ORD;
+            fail = 'That does not follow from your own two ratios.';
+        } else if (r.tol === 'exact') {
+            ok = (value === expected);
+            fail = 'Not the whole number your calculation points to.';
+        } else {
+            ok = Math.abs(value - expected) <= Math.abs(expected) * DT_TOL_PCT;
+            fail = 'That is more than 5% away from what your own recorded data give. Check the arithmetic &mdash; and check your units, especially anywhere millilitres meet litres.';
+        }
+        if (!ok) {
+            msg.className = 'dt-msg err';
+            msg.innerHTML = r.fail || fail;
+            return;
+        }
+    }
+
+    msg.className = 'dt-msg ok';
+    // A row can supply its own confirmation when the right answer deserves a word.
+    if (r.right) msg.innerHTML = r.right;
+    else msg.textContent = 'Recorded.';
+    tblState[id].values[key] = value;
+    tblState[id].done[key] = true;
+    inp.disabled = true;
+    const btn = document.getElementById(eid + '-btn');
+    if (btn) btn.disabled = true;
+    const row = document.getElementById(eid + '-row');
+    row.classList.remove('dt-active');
+    row.classList.add('dt-done');
+    tblGate(id, '');
+    tblAdvance(id);
+}
+
+/* Walk down the table: fill in anything automatic, unlock the next thing the
+   student has to work out, and report when the table is finished. */
+function tblAdvance(id) {
+    const rows = rowsFor(id);
+    for (let i = 0; i < rows.length; i++) {
+        const r = rows[i];
+        if (tblState[id].done[r.key]) continue;
+        if (r.kind === 'auto') {
+            const v = r.value ? r.value(tblState[id].values) : null;
+            const text = r.text
+                ? r.text(tblState[id].values, v)
+                : v.toFixed(r.dp === undefined ? 4 : r.dp);
+            tblFillAuto(id, r.key, v, text);
+            continue;
+        }
+        tblUnlock(id, r.key, r.gate);
+        return false;
+    }
+    tblComplete(id);
+    return true;
+}
+
+function tblBeginRun(n) { tblAdvance('run' + n); }
+/* =========================================================
+   SECTION F: What happens when a table is finished
+   ========================================================= */
+
+function tblComplete(id) {
+    if (id === 'analysis') {
+        simState.analysisDone = true;
+        showAnalysisResult();
+        unlockSection('mechanism');
+        setupMechanism();
+        renderTabs();
+        return;
+    }
+
+    if (id === 'mechanism') {
+        simState.mechanismDone = true;
+        showMechanismResult();
+        renderTabs();
+        return;
+    }
+
+    const n = parseInt(id.replace('run', ''), 10);
+    const run = R(n);
+    run.recorded = true;
+    run.step = 5;
+    updateRunSteps(n);
+    showRunResult(n);
+    renderTabs();
+
+    const allFour = [1, 2, 3, 4].every(function (m) { return R(m).recorded; });
+    if (allFour) {
+        if (!simState.conceptDone) openConceptModal();
+        else openAnalysis();
+    }
+}
+
+const RUN_NUDGE = {
+    1: 'This is your reference point. Every other run gets compared back to these numbers.',
+    2: 'Compare that initial rate with Run 1&rsquo;s. Did it move the way you expected it to?',
+    3: 'Again, compare the rate with Run 1&rsquo;s &mdash; and notice that H<sup>+</sup> is not consumed by this reaction at all.',
+    4: 'Now compare carefully with Run 1. The <em>time</em> certainly changed. Did the <em>rate</em>?'
+};
+
+function showRunResult(n) {
+    const el = document.getElementById('run-result-' + n);
+    if (!el) return;
+
+    const v = tblState['run' + n].values;
+    const next = (n === 4)
+        ? { label: 'Continue to the analysis', action: 'goToAnalysis()' }
+        : { label: 'Move on to Run ' + (n + 1) + ' &rarr;', action: 'goToRun(' + (n + 1) + ')' };
+
+    el.innerHTML = '<div class="result-box"><b>Run ' + n + ' recorded.</b><br>' +
+        '[acetone] = ' + v.cAcetone.toPrecision(3) + ' M &nbsp;&bull;&nbsp; ' +
+        '[H<sup>+</sup>] = ' + v.cH.toPrecision(3) + ' M &nbsp;&bull;&nbsp; ' +
+        '[I<sub>2</sub>]<sub>0</sub> = ' + sci(v.cI2, 2) + ' M<br>' +
+        'time = ' + v.time.toFixed(1) + ' s &nbsp;&bull;&nbsp; initial rate = ' + sci(v.rate, 2) + ' M/s<br>' +
+        '<span style="font-style:italic;">' + RUN_NUDGE[n] + '</span></div>' +
+        runNavHTML(n, next.label, next.action);
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/* The way forward is the big obvious button; redoing the trial is the quiet one
+   underneath it. Nobody should have to scroll back to the tabs to carry on. */
+function runNavHTML(n, nextLabel, nextAction) {
+    return '<div class="run-nav">' +
+        '<button type="button" class="btn btn-green btn-next-run" onclick="' + nextAction + '">' + nextLabel + '</button>' +
+        '<button type="button" class="btn btn-grey btn-compact btn-redo-run" onclick="redoRun(' + n + ')">' +
+            'Redo Run ' + n + '</button>' +
+        '<div class="run-nav-note">Redoing wipes this run&rsquo;s data and sends you back to the burets.</div>' +
+    '</div>';
+}
+
+function goToRun(n) {
+    switchSection('run' + n);
+    const card = document.getElementById('plan-card-' + n);
+    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function goToAnalysis() {
+    if (simState.unlocked.analysis) switchSection('analysis');
+}
+
+function goToMechanism() {
+    if (simState.unlocked.mechanism) switchSection('mechanism');
+}
+
+function setupMechanism() {
+    if (simState.mechanismStarted) return;
+    simState.mechanismStarted = true;
+    const a = tblState.analysis.values;
+    document.getElementById('mech-ratelaw').innerHTML = rateLawHTML(a.mA, a.mH, a.mI);
+    tblRender('mechanism');
+    tblAdvance('mechanism');
+}
+
+function showMechanismResult() {
+    const el = document.getElementById('mech-result');
+    if (!el) return;
+    el.innerHTML = '<div class="result-box">' +
+        '<b>That is the connection.</b> A mechanism is a claim about what actually happens, and the way you test ' +
+        'that claim is to work out the rate law it predicts and hold it against the one you measured. ' +
+        'Mechanisms B and C are perfectly sensible-looking chemistry &mdash; they just disagree with your Run 4.' +
+        '</div>' +
+        '<div class="run-nav">' +
+            '<button type="button" class="btn btn-green btn-next-run" onclick="finishLab()">Finish the lab and submit</button>' +
+        '</div>';
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/* ---- the concept questions that gate the analysis ---- */
+const CONCEPT_Q = [
+    {
+        stem: 'In Run 4 you changed [I<sub>2</sub>] and nothing else. The time taken to lose the colour changed a great deal &mdash; but look at what happened to the initial <em>rate</em>. What does your own data say?',
+        options: [
+            'The rate roughly doubled when [I<sub>2</sub>] roughly doubled, so the reaction is first order in I<sub>2</sub>.',
+            'The rate came out essentially unchanged, so the reaction is zero order in I<sub>2</sub>.',
+            'The rate roughly halved when [I<sub>2</sub>] roughly doubled, so the order is negative.'
+        ],
+        correct: 1,
+        right: 'Exactly. More iodine simply means there is more of it to get through, so the run takes longer &mdash; but the speed at which it is consumed never changes. That is what zero order means.',
+        wrong: [
+            'Look again at your two <em>rate</em> values rather than your two times. A longer run is not the same thing as a slower one.',
+            '',
+            'Check your two rate values. A negative order would mean that adding iodine actively slows the reaction down, and your numbers do not show that.'
+        ]
+    },
+    {
+        stem: 'The colorimeter trace &mdash; <b>absorbance against time</b> &mdash; came out as a straight line in every run. Absorbance is proportional to concentration, so that is a straight line for [I<sub>2</sub>] too. Why does that matter for the way you calculated the rate?',
+        options: [
+            'A straight line means the rate is constant, so the average rate over the whole run equals the initial rate.',
+            'A straight line means the reaction is first order in I<sub>2</sub>.',
+            'It does not matter &mdash; the initial rate is always the total change divided by the total time.'
+        ],
+        correct: 0,
+        right: 'That is the point. Normally you would have to draw a tangent at t = 0 to get an initial rate. Here the slope never changes, so [I<sub>2</sub>]<sub>0</sub> divided by the total time <em>is</em> the initial rate. You will use those traces again in a moment.',
+        wrong: [
+            '',
+            'A straight line on a plot of concentration (or absorbance) against time is the signature of zero order. First order gives a curve that flattens out &mdash; it is <em>ln</em> A that comes out straight for first order.',
+            'Not in general. For most reactions the rate falls away as reactants are used up, and the average over a whole run is well below the initial rate. This reaction is a special case &mdash; and the straight line is exactly what tells you so.'
+        ]
+    },
+    {
+        stem: 'H<sup>+</sup> is a catalyst: it is handed back at the end and does not appear in the balanced equation. Yet your data put it in the rate law. How can both be true?',
+        options: [
+            'The rate law comes from the balanced equation, so one of the two results must be wrong.',
+            'The rate law reflects the mechanism up to and including the slow step, and H<sup>+</sup> takes part in that step.',
+            'Catalysts always appear in the rate law with an order of 1.'
+        ],
+        correct: 1,
+        right: 'Right. The slow step here is the acid-catalysed formation of the enol. H<sup>+</sup> is used on the way into that step and returned afterwards &mdash; so it never shows up in the overall equation, but the rate still depends on how much of it is around.',
+        wrong: [
+            'The balanced equation gives you stoichiometry, not mechanism. Orders have to be measured &mdash; which is precisely what you just did.',
+            '',
+            'Not always. A catalyst appears in the rate law only if it takes part at or before the rate-determining step, and the order it appears with is whatever the experiment says it is.'
+        ]
+    }
+];
+
+let conceptIdx = 0;
+
+function openConceptModal() {
+    conceptIdx = 0;
+    document.getElementById('concept-modal').classList.add('open');
+    renderConcept();
+}
+
+function renderConcept() {
+    const q = CONCEPT_Q[conceptIdx];
+    document.getElementById('concept-progress').textContent =
+        'Question ' + (conceptIdx + 1) + ' of ' + CONCEPT_Q.length;
+    document.getElementById('concept-stem').innerHTML = q.stem;
+    const cl = document.getElementById('concept-choices');
+    cl.innerHTML = '';
+    q.options.forEach(function (o, i) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'choice-btn';
+        b.innerHTML = o;
+        b.addEventListener('click', function () { answerConcept(i, b); });
+        cl.appendChild(b);
+    });
+    document.getElementById('concept-fb').classList.add('hidden');
+    document.getElementById('concept-next-btn').classList.add('hidden');
+}
+
+function answerConcept(i, btn) {
+    const q = CONCEPT_Q[conceptIdx];
+    const fb = document.getElementById('concept-fb');
+    if (i === q.correct) {
+        btn.classList.add('right');
+        Array.prototype.forEach.call(document.getElementById('concept-choices').children,
+            function (b) { b.disabled = true; });
+        fb.className = 'choice-fb ok';
+        fb.innerHTML = q.right;
+        fb.classList.remove('hidden');
+        const nb = document.getElementById('concept-next-btn');
+        nb.classList.remove('hidden');
+        nb.textContent = (conceptIdx === CONCEPT_Q.length - 1) ? 'Start the analysis' : 'Next question';
+    } else {
+        btn.classList.add('wrong');
+        btn.disabled = true;
+        fb.className = 'choice-fb no';
+        fb.innerHTML = q.wrong[i] || 'Not quite &mdash; try another.';
+        fb.classList.remove('hidden');
+    }
+}
+
+function conceptNext() {
+    conceptIdx++;
+    if (conceptIdx >= CONCEPT_Q.length) {
+        document.getElementById('concept-modal').classList.remove('open');
+        simState.conceptDone = true;
+        openAnalysis();
+        return;
+    }
+    renderConcept();
+}
+
+/* ---- the analysis section ---- */
+function openAnalysis() {
+    unlockSection('analysis');
+    renderAnalysisData();
+    drawIntegratedPlots();
+    if (!simState.analysisStarted) {
+        simState.analysisStarted = true;
+        tblRender('analysis');
+        tblAdvance('analysis');
+    }
+    switchSection('analysis');
+}
+
+function renderAnalysisData() {
+    const cols = [1, 2, 3, 4];
+    function row(label, get, fmt) {
+        let h = '<tr><td>' + label + '</td>';
+        cols.forEach(function (n) { h += '<td>' + fmt(get(n)) + '</td>'; });
+        return h + '</tr>';
+    }
+    const p3 = function (x) { return x.toPrecision(3); };
+    const s2 = function (x) { return sci(x, 2); };
+    const t1 = function (x) { return x.toFixed(1); };
+
+    let html = '<table class="summary-table"><tr><th>Quantity</th>' +
+        cols.map(function (n) { return '<th>Run ' + n + '</th>'; }).join('') + '</tr>';
+    html += row('[acetone] (M)', function (n) { return tv('run' + n, 'cAcetone'); }, p3);
+    html += row('[H<sup>+</sup>] (M)', function (n) { return tv('run' + n, 'cH'); }, p3);
+    html += row('[I<sub>2</sub>]<sub>0</sub> (M)', function (n) { return tv('run' + n, 'cI2'); }, s2);
+    html += row('time to colourless (s)', function (n) { return tv('run' + n, 'time'); }, t1);
+    html += row('initial rate (M/s)', function (n) { return tv('run' + n, 'rate'); }, s2);
+    html += '</table>';
+    document.getElementById('an-data-table').innerHTML = html;
+}
+
+function showAnalysisResult() {
+    const v = tblState.analysis.values;
+    let el = document.getElementById('an-result');
+    if (!el) {
+        el = document.createElement('div');
+        el.id = 'an-result';
+        document.getElementById('dt-body-analysis').parentNode.parentNode.appendChild(el);
+    }
+    el.innerHTML = '<div class="result-box">' +
+        '<b>Analysis complete.</b> Everything you need from here on is these two lines:' +
+        '<div class="eqn" style="margin:9px 0 6px;">' + rateLawHTML(v.mA, v.mH, v.mI) + '<br>' +
+            'k = ' + sci(v.k1, 3) + ' M<sup>&minus;1</sup> s<sup>&minus;1</sup></div>' +
+        'One thing left: your rate law works, but you have not yet said <em>why</em> the reaction behaves that way.' +
+        '</div>' +
+        '<div class="run-nav">' +
+            '<button type="button" class="btn btn-green btn-next-run" onclick="goToMechanism()">On to the mechanism &rarr;</button>' +
+        '</div>';
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/* =========================================================
+   SECTION G: Summary, SCORM reporting and start-up
+   ========================================================= */
+
+function runVals(n) {
+    const v = tblState['run' + n].values;
+    return { cAcetone: v.cAcetone, cH: v.cH, cI2: v.cI2, time: v.time, rate: v.rate };
+}
+
+function buildSummary() {
+    const cols = [1, 2, 3, 4];
+    const vals = {};
+    cols.forEach(function (n) { vals[n] = runVals(n); });
+
+    function row(label, key, fmt) {
+        let h = '<tr><td>' + label + '</td>';
+        cols.forEach(function (n) { h += '<td>' + fmt(vals[n][key]) + '</td>'; });
+        return h + '</tr>';
+    }
+    const p3 = function (x) { return x.toPrecision(3); };
+    const s2 = function (x) { return sci(x, 2); };
+    const t1 = function (x) { return x.toFixed(1); };
+
+    let html = '<table class="summary-table"><tr><th>Quantity</th>' +
+        cols.map(function (n) { return '<th>Run ' + n + '</th>'; }).join('') + '</tr>';
+    html += row('[acetone] (M)', 'cAcetone', p3);
+    html += row('[H<sup>+</sup>] (M)', 'cH', p3);
+    html += row('[I<sub>2</sub>]<sub>0</sub> (M)', 'cI2', s2);
+    html += row('time to colourless (s)', 'time', t1);
+    html += row('initial rate (M/s)', 'rate', s2);
+    html += '</table>';
+    document.getElementById('summary-runs').innerHTML = html;
+
+    const a = tblState.analysis.values;
+    const kTrue = simState.k;
+    const kErr = Math.abs(a.k1 - kTrue) / kTrue * 100;
+
+    document.getElementById('summary-result').innerHTML =
+        '<div class="eqn" style="font-size:1.05rem;">' + rateLawHTML(a.mA, a.mH, a.mI) + '</div>' +
+        '<table class="summary-table" style="max-width:640px;">' +
+        '<tr><th>Result</th><th>Value</th></tr>' +
+        '<tr><td>Order in acetone</td><td>' + a.mA + '</td></tr>' +
+        '<tr><td>Order in H<sup>+</sup></td><td>' + a.mH + '</td></tr>' +
+        '<tr><td>Order in I<sub>2</sub></td><td>' + a.mI + '</td></tr>' +
+        '<tr><td>Overall order</td><td>' + (a.mA + a.mH + a.mI) + '</td></tr>' +
+        '<tr><td>Your rate constant k</td><td>' + sci(a.k1, 3) + ' M<sup>&minus;1</sup> s<sup>&minus;1</sup></td></tr>' +
+        '<tr><td>The k this bench was set up with</td><td>' + sci(kTrue, 3) + ' M<sup>&minus;1</sup> s<sup>&minus;1</sup></td></tr>' +
+        '<tr><td>Your error in k</td><td>' + kErr.toFixed(1) + '%</td></tr>' +
+        '</table>';
+
+    document.getElementById('summary-explainer').innerHTML =
+        '<p>You found that the rate depends on the acetone and on the acid, but <strong>not at all</strong> on the iodine &mdash; ' +
+        'even though iodine is a reactant in the balanced equation, and even though the acid is not. ' +
+        'Neither of those facts could have been predicted from the equation. That is the whole reason orders have to be measured.</p>' +
+        '<p>Mechanism A is what explains both, and you picked it out yourself. Its slow step is the acid-catalysed ' +
+        'formation of the enol, and iodine is nowhere in that step &mdash; it is consumed afterwards, as fast as the enol ' +
+        'can be supplied. So adding more iodine cannot speed anything up: it only gives you more to get through, which is ' +
+        'exactly why Run 4 took longer without going any faster. Mechanisms B and C were not silly; they were ordinary ' +
+        'chemistry that happened to disagree with your data, which is the only thing that ever settles the question.</p>' +
+        '<p>You confirmed that iodine order a second, independent way. Of the three integrated rate laws, only the zero-order one ' +
+        'predicts a straight line for absorbance itself against time &mdash; and that is the plot that fitted. ' +
+        'ln A and 1/A both curved away from their best-fit lines. Two different methods, the initial-rates comparison of ' +
+        'Run 4 with Run 1 and the shape of a single run\'s trace, agreeing on the same answer. That is also why the average rate ' +
+        'over a whole run was safe to use as the initial rate here.</p>' +
+        '<p>H<sup>+</sup> works the other way round. It is consumed entering the slow step and handed back in the fast one, ' +
+        'so it is a genuine catalyst and cancels out of the overall equation &mdash; but the slow step still cannot happen without it. ' +
+        'A catalyst that acts at or before the rate-determining step shows up in the rate law even though it is never used up.</p>' +
+        '<p>The last thing worth noticing is what you did <em>not</em> have to do. You calculated k once, from Run 1, and ' +
+        'never had to work it out again. That is because k is a constant of the reaction at a given temperature: ' +
+        'concentrations set the rate, but they leave k alone. Every one of your runs would have handed you the same ' +
+        'value, and with it you could predict the time for any mixture of these three reagents you care to make. ' +
+        'Change the temperature instead and k itself moves &mdash; which is a different experiment, and the next ' +
+        'thing this one leads to.</p>';
+}
+
+function finishLab() {
+    simState.finished = true;
+    buildSummary();
+    document.getElementById('lab-container').classList.add('hidden');
+    document.getElementById('summary-screen').classList.remove('hidden');
+    scormReportCompletion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ---- SCORM 1.2 -------------------------------------------------------
+   Schoology exposes a SCORM 1.2 API object on a parent or opener window.
+   We mark the lesson incomplete on load, and once the student finishes
+   the lab we post "completed" with a raw score of 100 so Schoology records
+   the completion grade. Runs harmlessly as a plain web page with no LMS.
+   -------------------------------------------------------------------- */
+let scormAPI = null;
+let scormFinished = false;
+
+function findAPI(win) {
+    let attempts = 0;
+    let w = win;
+    while (w && attempts < 10) {
+        if (w.API) return w.API;
+        if (w.parent && w.parent !== w) w = w.parent;
+        else if (w.opener) w = w.opener;
+        else break;
+        attempts++;
+    }
+    return null;
+}
+
+function scormInit() {
+    try {
+        scormAPI = findAPI(window);
+        if (!scormAPI) return;
+        scormAPI.LMSInitialize("");
+        const status = scormAPI.LMSGetValue("cmi.core.lesson_status");
+        if (!status || status === "not attempted" || status === "unknown") {
+            scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+        }
+        scormAPI.LMSSetValue("cmi.core.exit", "");
+        scormAPI.LMSCommit("");
+    } catch (e) { /* No LMS present - run standalone */ }
+}
+
+function scormReportCompletion() {
+    if (!scormAPI || scormFinished) return;
+    try {
+        scormAPI.LMSSetValue("cmi.core.score.min", "0");
+        scormAPI.LMSSetValue("cmi.core.score.max", "100");
+        scormAPI.LMSSetValue("cmi.core.score.raw", "100");
+        scormAPI.LMSSetValue("cmi.core.lesson_status", "completed");
+        scormAPI.LMSSetValue("cmi.core.exit", "");
+        scormAPI.LMSCommit("");
+        scormFinished = true;
+    } catch (e) { /* ignore */ }
+}
+
+function scormTerminate() {
+    if (!scormAPI) return;
+    try {
+        if (!scormFinished) {
+            scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+            scormAPI.LMSCommit("");
+        }
+        scormAPI.LMSFinish("");
+    } catch (e) { /* ignore */ }
+}
+
+window.addEventListener('beforeunload', scormTerminate);
+window.addEventListener('pagehide', function () {
+    try { if (scormAPI && !scormFinished) scormAPI.LMSCommit(""); } catch (e) { /* ignore */ }
+});
+
+/* ---- start-up ---- */
+function initState() {
+    simState = {
+        k: randomInRange(K_MIN, K_MAX),
+        currentSection: 'run1',
+        unlocked: { run1: true, run2: true, run3: true, run4: true, analysis: false, mechanism: false },
+        runs: {},
+        conceptDone: false,
+        analysisStarted: false,
+        analysisDone: false,
+        mechanismStarted: false,
+        mechanismDone: false,
+        finished: false
+    };
+    for (let n = 1; n <= 4; n++) simState.runs[n] = makeRun(n);
+    tblState = {};
+    Object.keys(TABLES).forEach(function (key) { delete TABLES[key]; });
+}
+
+/* ---- multi-slide intro briefing ---- */
+let introSlideIdx = 1;
+const INTRO_COUNT = 6;
+let introQDone = {};
+
+/* One concept check on each of the first three briefing slides. The Next
+   button is locked until the slide's question is answered correctly. */
+const INTRO_Q = {
+    1: {
+        stem: 'H<sup>+</sup> is called a catalyst here. What does a catalyst actually do?',
+        options: [
+            'It speeds the reaction up by opening a lower-activation-energy pathway, and it is regenerated by the end, so it is not consumed overall.',
+            'It shifts the position of equilibrium so that more product forms.',
+            'It is gradually used up as the reaction proceeds, which is why adding more of it makes the reaction go faster.'
+        ],
+        correct: 0,
+        right: 'Right. A catalyst provides a faster route (lower E<sub>a</sub>) and comes back out unchanged &mdash; which is why it never appears in the overall balanced equation, even though the reaction needs it to go.',
+        wrong: [
+            '',
+            'A catalyst changes how <em>fast</em> equilibrium is reached, not where it lies. The amount of product at equilibrium is the same with or without it.',
+            'A catalyst is regenerated, not consumed. Whether the amount present changes the rate is a separate question &mdash; and one this lab is designed to answer.'
+        ]
+    },
+    2: {
+        stem: 'The colorimeter is fixed at 460 nm for every run. Why that wavelength in particular?',
+        options: [
+            'It is the wavelength of maximum absorbance for acetone, the reactant being followed.',
+            'I<sub>2</sub> absorbs strongly near 460 nm while everything else in the flask is colourless, so the reading tracks [I<sub>2</sub>] specifically.',
+            'Any wavelength would work equally well; 460 nm is just a common default.'
+        ],
+        correct: 1,
+        right: 'Exactly. Iodine is the only coloured species present and it absorbs in the blue, around 460 nm. Reading there gives a clean measure of how much I<sub>2</sub> is left, and that absorbance is proportional to [I<sub>2</sub>].',
+        wrong: [
+            'Acetone, iodoacetone, H<sup>+</sup> and water are all colourless &mdash; none of them absorb visible light. It is the iodine you are following.',
+            '',
+            'Wavelength matters a great deal: you want one the analyte absorbs strongly and interfering species do not. At, say, 650 nm iodine barely absorbs and the trace would be almost useless.'
+        ]
+    },
+    3: {
+        stem: 'The balanced equation has a 1 in front of I<sub>2</sub>. Why can&rsquo;t you just take the order in I<sub>2</sub> to be 1 from that coefficient?',
+        options: [
+            'Coefficients give reaction orders only for an <em>elementary</em> step &mdash; one that happens exactly as written in a single event. An overall balanced equation is the net result of a hidden multi-step mechanism, so its coefficients tell you nothing about the orders.',
+            'Coefficients give the orders for gas-phase reactions but not for species dissolved in solution.',
+            'You can use the coefficients; the experiment is really just to pin down the value of k.'
+        ],
+        correct: 0,
+        right: 'Right. Orders equal coefficients only for an elementary reaction. A balanced overall equation is just a mass balance for a mechanism you cannot see, so m, p and n have to be measured &mdash; which is the whole reason for running the initial-rates experiment.',
+        wrong: [
+            '',
+            'Phase has nothing to do with it. The rule is elementary vs. overall: coefficients give orders only for a single elementary step, in any phase.',
+            'The orders are not known going in. Assuming them from the coefficients would give order 1 in I<sub>2</sub> &mdash; but this reaction turns out to be zero order in I<sub>2</sub>, as your data will show.'
+        ]
+    }
+};
+
+function renderIntro() {
+    document.querySelectorAll('#intro-screen .intro-slide').forEach(function (s) {
+        s.classList.toggle('active', parseInt(s.dataset.intro, 10) === introSlideIdx);
+    });
+    const dots = document.getElementById('intro-dots');
+    dots.innerHTML = '';
+    for (let i = 1; i <= INTRO_COUNT; i++) {
+        const d = document.createElement('span');
+        d.className = 'intro-dot' + (i === introSlideIdx ? ' on' : '');
+        dots.appendChild(d);
+    }
+    document.getElementById('intro-back').classList.toggle('hidden', introSlideIdx === 1);
+    const next = document.getElementById('intro-next');
+    next.innerHTML = (introSlideIdx === INTRO_COUNT) ? 'Begin Lab' : 'Next &rarr;';
+    next.classList.toggle('btn-green', introSlideIdx === INTRO_COUNT);
+
+    if (INTRO_Q[introSlideIdx] && !introQDone[introSlideIdx]) renderIntroQuestion(introSlideIdx);
+    updateIntroNextGate();
+}
+
+function renderIntroQuestion(idx) {
+    const host = document.getElementById('intro-q-' + idx);
+    const q = INTRO_Q[idx];
+    if (!host || !q || introQDone[idx]) return;
+    host.innerHTML =
+        '<div class="intro-q-tag">Check your understanding</div>' +
+        '<div class="intro-q-stem">' + q.stem + '</div>' +
+        '<div class="choice-list"></div>' +
+        '<div class="choice-fb hidden"></div>';
+    const list = host.querySelector('.choice-list');
+    q.options.forEach(function (o, i) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'choice-btn';
+        b.innerHTML = o;
+        b.addEventListener('click', function () { answerIntroQ(idx, i, b); });
+        list.appendChild(b);
+    });
+}
+
+function answerIntroQ(idx, i, btn) {
+    const q = INTRO_Q[idx];
+    const host = document.getElementById('intro-q-' + idx);
+    const fb = host.querySelector('.choice-fb');
+    if (i === q.correct) {
+        btn.classList.add('right');
+        host.querySelectorAll('.choice-btn').forEach(function (b) { b.disabled = true; });
+        fb.className = 'choice-fb ok';
+        fb.innerHTML = q.right;
+        fb.classList.remove('hidden');
+        introQDone[idx] = true;
+        updateIntroNextGate();
+    } else {
+        btn.classList.add('wrong');
+        btn.disabled = true;
+        fb.className = 'choice-fb no';
+        fb.innerHTML = q.wrong[i] || 'Not quite &mdash; try another.';
+        fb.classList.remove('hidden');
+    }
+}
+
+function updateIntroNextGate() {
+    const next = document.getElementById('intro-next');
+    const q = INTRO_Q[introSlideIdx];
+    next.disabled = !!(q && !introQDone[introSlideIdx]);
+}
+
+function introNav(dir) {
+    if (dir === 1 && introSlideIdx === INTRO_COUNT) {
+        document.getElementById('intro-ready-modal').classList.add('open');
+        return;
+    }
+    introSlideIdx = Math.min(INTRO_COUNT, Math.max(1, introSlideIdx + dir));
+    renderIntro();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function introReadyBack() {
+    document.getElementById('intro-ready-modal').classList.remove('open');
+    introSlideIdx = 1;
+    renderIntro();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function introReadyBegin() {
+    document.getElementById('intro-ready-modal').classList.remove('open');
+    startSimulation();
+}
+
+function startSimulation() {
+    document.getElementById('intro-screen').classList.add('hidden');
+    document.getElementById('lab-container').classList.remove('hidden');
+
+    [1, 2, 3, 4].forEach(function (n) {
+        document.getElementById('sec-run' + n).innerHTML = runPanelHTML(n);
+        REAGENT_IDS.forEach(function (id) { renderBuret(n, id); });
+        updateRunSteps(n);
+    });
+
+    // Runs 1, 3 and 4 are handed over rather than designed; only Run 2 is the
+    // student's own. Their plan inputs are filled in and locked.
+    [1, 3, 4].forEach(function (n) {
+        const fixed = RUN_SPECS[n].fixed;
+        if (!fixed) return;
+        REAGENT_IDS.forEach(function (id) {
+            const el = document.getElementById('pl-' + n + '-' + id);
+            el.value = fixed[id].toFixed(2);
+            el.disabled = true;
+        });
+        planTotalLive(n);
+    });
+
+    renderTabs();
+    switchSection('run1');
+}
+
+function resetAll() {
+    initState();
+    introQDone = {};
+    [1, 2, 3].forEach(function (i) {
+        const h = document.getElementById('intro-q-' + i);
+        if (h) h.innerHTML = '';
+    });
+    document.getElementById('intro-ready-modal').classList.remove('open');
+    resetCalcAnimation();
+    ['run1', 'run2', 'run3', 'run4', 'analysis', 'mechanism'].forEach(tblReset);
+    const anData = document.getElementById('an-data-table');
+    if (anData) anData.innerHTML = '';
+    const intRow = document.getElementById('int-plot-row');
+    if (intRow) intRow.innerHTML = '';
+    const anResult = document.getElementById('an-result');
+    if (anResult) anResult.remove();
+    ['mech-result', 'mech-ratelaw'].forEach(function (id) {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '';
+    });
+    document.getElementById('an-feedback').classList.add('hidden');
+    document.getElementById('summary-screen').classList.add('hidden');
+    document.getElementById('lab-container').classList.add('hidden');
+    document.getElementById('intro-screen').classList.remove('hidden');
+    introSlideIdx = 1;
+    renderIntro();
+    window.scrollTo({ top: 0 });
+}
+
+function init() {
+    scormInit();
+    initState();
+    renderIntro();
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
