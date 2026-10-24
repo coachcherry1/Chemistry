@@ -1,22 +1,48 @@
 # Chemistry SCORM activities
 
-SCORM 1.2 packages for a high-school organic chemistry elective, posted to Schoology. Textbook: Klein,
-*Organic Chemistry*. Each package is a self-contained folder; fixes to shared code (saving, scoring,
-picker, 3D viewer) usually belong in every folder that has a copy.
+SCORM 1.2 packages posted to Schoology for two high-school courses: **honors chemistry** and an **organic
+chemistry elective** (textbook: Klein, *Organic Chemistry*). Each package is a self-contained folder; fixes to
+shared code (saving, scoring, picker, 3D viewer, Lewis builder) usually belong in every folder that has a copy.
+Everything is on `main`; older work branches were merged in October 2026.
+
+**Honors chemistry**
+
+| Folder | Activity |
+| --- | --- |
+| `ionization-energy-scorm/` | Successive ionization energies, the two-step rule (about 10 min) |
+| `ionic-naming-scorm/` | Naming ionic compounds and writing formulas |
+| `ionic-covalent-scorm/` | Ionic or covalent? Choosing the naming rules |
+| `acids-scorm/` | Binary acids and oxyacids, mixed with ionic and covalent |
+| `lewis-structures-scorm/` | Lewis structures by the teacher's 5 rules (builder, B/Be exceptions, expanded octets, AI-answer warnings in `snark.js`) |
+| `resonance-scorm/` | Resonance structures and the hybrid, same 5 rules and builder |
+| `lewis-drawing-tool/` | Teacher's drawing tool, same 5-rule engine, reports no score |
+| `acetone-kinetics-scorm/` | Virtual lab: iodination of acetone by initial rates |
+
+**Organic chemistry elective (Klein)**
 
 | Folder | Activity |
 | --- | --- |
 | `ir-spectroscopy-scorm/` | IR diagnostic-region drag and drop |
+| `ms-spectrometry-scorm/` | Mass spectrometry: reading the fragments |
+| `ir-ms-combined-scorm/` | IR and mass spec together: two spectra, one compound |
+| `nmr-intro-scorm/` | Intro 1H NMR: equivalence, shift, integration, splitting |
 | `newman-projections-scorm/` | Newman projections, with calculations |
 | `newman-projections-qualitative-scorm/` | Same, qualitative (no calculations) |
 | `cyclohexane-chairs-scorm/` | Chairs, ring flips, 1,3-diaxial crowding (qualitative) |
 | `chirality-scorm/` | Chirality, R and S, enantiomers, diastereomers and meso compounds (qualitative) |
 
+**Older packages predate some house rules.** Everything except Newman, chairs and chirality contains em
+dashes (the Lewis, resonance and drawing-tool validators allow them). The mass spec, IR + mass spec, NMR,
+naming, acids and ionization energy packages still load a browser save inside an LMS when
+`cmi.suspend_data` is empty (fixed in IR, Newman, chairs, chirality, Lewis and resonance). Only Newman,
+chairs and chirality have `tools/layout.js`. Bring a package up to the rules when you next change it.
+
 ## House rules
 
 - Plan first and get approval before building a new activity.
 - No em dashes anywhere (each validator fails on one). Spelling as in the existing files: colour, centre, neighbour.
-- kJ/mol, Klein's values. Qualitative packages never ask for a calculation; a reference table sits beside the checkpoints instead.
+- Organic packages: kJ/mol, Klein's values. Honors packages: the teacher's 5 Lewis rules and Pauling
+  electronegativities, as in `lewis-structures-scorm/`. Qualitative packages never ask for a calculation; a reference table sits beside the checkpoints instead.
 - Same shell in every package: ungraded builds and predictions with specific feedback, graded checkpoints
   (first answer counts, core + random pool), score 0–100 to `cmi.core.score.raw`, `completed` at results,
   no masteryscore, retakes keep the best score, saves only in `cmi.suspend_data` (localStorage only when

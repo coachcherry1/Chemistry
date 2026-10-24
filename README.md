@@ -1,7 +1,5 @@
 # Chemistry
 
-Chemistry teaching tools (SCORM activities for Schoology). Each project has its own folder at the top level:
-
-- `ir-spectroscopy-scorm/` — IR diagnostic-region drag-and-drop activity
-
-Other activities (mass spec, ionization energy, ionic/covalent naming) live on their own branches until merged.
+SCORM 1.2 activities for Schoology, one folder per activity at the top level. `CLAUDE.md` lists every
+package by course, with the house rules and the commands to run before each commit; each folder's
+`README.md` describes its activity and its built zip in `dist/`.
