@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="VSEPR_POLARITY_MANIFEST" version="1.0"
+          xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+          xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                              http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd
+                              http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+
+  <organizations default="VSEPR_ORG">
+    <organization identifier="VSEPR_ORG">
+      <title>VSEPR: Molecular Geometry and Polarity</title>
+      <item identifier="VSEPR_ITEM" identifierref="VSEPR_RES" isvisible="true">
+        <!-- No masteryscore: the SCO reports a 0-100 score and sets "completed"
+             itself, so the LMS should not overwrite the status with passed/failed.
+             Identifiers differ from every other package, so all can sit in one
+             course. -->
+        <title>VSEPR: Molecular Geometry and Polarity</title>
+      </item>
+    </organization>
+  </organizations>
+
+  <resources>
+    <resource identifier="VSEPR_RES" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="index.html"/>
+      <file href="css/styles.css"/>
+      <file href="js/util.js"/>
+      <file href="js/elements.js"/>
+      <file href="js/species.js"/>
+      <file href="js/lewis.js"/>
+      <file href="js/vsepr.js"/>
+      <file href="js/draw.js"/>
+      <file href="js/viewer3d.js"/>
+      <file href="js/field.js"/>
+      <file href="js/picker.js"/>
+      <file href="js/snark.js"/>
+      <file href="js/builder.js"/>
+      <file href="js/quiz.js"/>
+      <file href="js/scorm.js"/>
+      <file href="js/app.js"/>
+    </resource>
+  </resources>
+
+</manifest>

@@ -219,6 +219,8 @@ function Builder(o) {
     paintDrawing();
     paintShow();
     if (undoBtn) undoBtn.disabled = finished || phase !== '5b' || !shared.length;
+    /* the 3D window beside the drawing follows every change */
+    if (o.onChange) o.onChange({ s: s, phase: phase, rule: rule, finished: finished });
   }
 
   /* ------------------------------------------------------------- Rule 2 */
