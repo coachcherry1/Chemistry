@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lewis Drawing Tool</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/styles.css?v=dev">
+</head>
+<body>
+
+<header class="topbar">
+  <h1>Lewis structure drawing tool</h1>
+  <div class="top-right">
+    <span id="lms" class="lms off">&nbsp;</span>
+    <span class="ver" title="Which upload this is. build.sh fills in the number.">version dev</span>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="side">
+    <section class="panel">
+      <h2>Start from a formula</h2>
+      <div class="formula-row">
+        <input id="formula" class="text-in" type="text" placeholder="SO4 2-" autocomplete="off" spellcheck="false"
+               aria-describedby="readAs" aria-label="Formula">
+        <button id="btnDraw" type="button" class="primary" title="A new drawing (Undo brings the old one back)">Draw</button>
+        <button id="btnAdd" type="button" class="ghostbtn" title="Draw it beside what is already there">+ Add</button>
+      </div>
+      <p id="readAs" class="hint" aria-live="polite"></p>
+      <div class="formula-row">
+        <select id="templates" class="select grow" aria-label="Common molecules"></select>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Draw by hand</h2>
+      <div class="seg tools" role="group" aria-label="Tool">
+        <button type="button" class="mini" data-tool="atom">Atom</button>
+        <button type="button" class="mini" data-tool="bond">Bond</button>
+        <button type="button" class="mini" data-tool="lp">Lone pair</button>
+        <button type="button" class="mini" data-tool="arrow">Arrow</button>
+        <button type="button" class="mini" data-tool="erase">Erase</button>
+      </div>
+      <div id="palette" class="palette" role="group" aria-label="Element"></div>
+      <select id="moreEl" class="select small-sel" aria-label="Other elements"></select>
+    </section>
+
+    <section class="panel" aria-label="Selected item">
+      <h2>Selected</h2>
+      <div id="inspector" class="inspector"></div>
+    </section>
+  </aside>
+
+  <section class="work">
+    <div class="toolbar" role="toolbar" aria-label="Drawing">
+      <button id="undo" type="button" class="ghostbtn" title="Ctrl+Z">↶ Undo</button>
+      <button id="redo" type="button" class="ghostbtn" title="Ctrl+Y">↷ Redo</button>
+      <button id="fill" type="button" class="ghostbtn" title="Give every bonded atom its octet (H its duet)">Fill electrons</button>
+      <button id="center" type="button" class="ghostbtn">Center</button>
+      <button id="clear" type="button" class="ghostbtn">Clear</button>
+      <span class="spacer"></span>
+      <button id="snipBtn" type="button" class="primary" title="The drawing alone, big — for your snipping tool">Snip view</button>
+      <button id="copyBtn" type="button" class="ghostbtn">Copy image</button>
+      <button id="pngBtn" type="button" class="ghostbtn">PNG</button>
+      <button id="svgBtn" type="button" class="ghostbtn">SVG</button>
+    </div>
+    <p id="msg" class="msg" role="status" aria-live="polite"></p>
+    <div id="canvas" class="canvas"></div>
+    <p id="status" class="status" aria-live="polite"></p>
+
+    <div class="options panel" role="group" aria-label="How the drawing looks">
+      <label class="check"><input id="optLP" type="checkbox"> Lone pairs</label>
+      <label class="check"><input id="optFC" type="checkbox"> Formal charges</label>
+      <label class="check"><input id="optBr" type="checkbox"> Brackets on ions</label>
+      <label class="check"><input id="optColor" type="checkbox"> Color atoms</label>
+      <label class="check">Background
+        <select id="optBg" class="select">
+          <option value="white">White</option>
+          <option value="clear">Transparent</option>
+          <option value="dark">Dark slide</option>
+        </select>
+      </label>
+      <label class="check" title="For Copy image and PNG">Image size
+        <select id="optSize" class="select">
+          <option value="1">Small</option>
+          <option value="2">Medium</option>
+          <option value="3">Large</option>
+          <option value="4">Extra large</option>
+        </select>
+      </label>
+    </div>
+
+    <details class="panel more">
+      <summary>My drawings</summary>
+      <div class="formula-row">
+        <input id="libName" class="text-in" type="text" placeholder="Name (optional)" aria-label="Name for this drawing">
+        <button id="libSave" type="button" class="ghostbtn">Save this drawing</button>
+      </div>
+      <ul id="libList" class="lib"></ul>
+      <p class="hint">Saved in this browser only. Your current drawing is also kept automatically.</p>
+    </details>
+
+    <details class="panel more">
+      <summary>How to use</summary>
+      <ul class="howto">
+        <li><b>Fastest:</b> type a formula and press Draw — <i>SO4 2-</i>, <i>H2SO4</i>, <i>NH4+</i>, <i>CO2</i>, <i>NaCl</i>,
+          <i>NO2</i>. Single-central-atom species follow the 5 rules; molecules like ethanol and acetic acid are in
+          Common molecules.</li>
+        <li><b>Atom:</b> tap the grid to place an atom. Tap an atom to select it — every atom you place next is bonded to
+          it. <b>Bond:</b> tap two atoms; tap a bond to make it double, then triple. <b>Lone pair:</b> tap an atom.
+          <b>Fill electrons</b> completes every octet at once.</li>
+        <li>Drag an atom to move it; hold <b>Shift</b> while dragging to move the whole molecule.</li>
+        <li><b>Resonance:</b> select an atom and press <i>Duplicate →</i>: a copy appears with ↔ between. Move a double
+          bond in the copy. A <i>Partial</i> bond (solid + dashed) draws a hybrid.</li>
+        <li><b>Getting the picture out:</b> <i>Snip view</i> shows only the structure, big — then use your snipping
+          tool (Windows: Win+Shift+S; Chromebook: Ctrl+Shift+Show windows; Mac: Cmd+Shift+4). <i>Copy image</i> and
+          <i>PNG</i>/<i>SVG</i> work too when the page allows it (some LMS frames block them).</li>
+        <li>Keys: Ctrl+Z / Ctrl+Y undo and redo; Delete removes what is selected; 1, 2, 3 set a selected bond; Esc
+          clears the selection; with the drawing focused, arrow keys nudge (Shift: the whole molecule).</li>
+      </ul>
+    </details>
+  </section>
+</main>
+
+<div id="snip" class="snip" hidden></div>
+
+<script src="js/util.js?v=dev"></script>
+<script src="js/elements.js?v=dev"></script>
+<script src="js/lewis.js?v=dev"></script>
+<script src="js/model.js?v=dev"></script>
+<script src="js/generate.js?v=dev"></script>
+<script src="js/render.js?v=dev"></script>
+<script src="js/editor.js?v=dev"></script>
+<script src="js/export.js?v=dev"></script>
+<script src="js/scorm.js?v=dev"></script>
+<script src="js/app.js?v=dev"></script>
+</body>
+</html>
