@@ -131,10 +131,15 @@ var VSEPR = (function () {
 
   function finished(sp) { return Lewis.canonical(typeof sp === 'string' ? Lewis.species(sp) : sp); }
 
+  /* With different outer atoms the angles are only close to the ideal ones
+     (CH2O, CH3Cl): "about 120°". A straight line is always 180°. */
   function info(id) {
     var sp = Lewis.species(id), s = finished(sp), d = domains(s), g = geometryOf(d.total, d.lp);
+    var outer = d.bonded.map(function (k) { return s.at[k]; });
+    var mixed = outer.some(function (e) { return e !== outer[0]; });
+    var angle = g ? (mixed && d.total > 2 ? 'about ' + g.angle : g.angle) : null;
     return { sp: sp, s: s, domains: d.total, lp: d.lp, bonds: d.bonds, geometry: g ? g.name : null,
-             angle: g ? g.angle : null, inScope: !!g };
+             angle: angle, inScope: !!g, mixed: mixed };
   }
 
   /* ------------------------------------------------------- 3D models */
