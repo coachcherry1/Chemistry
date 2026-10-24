@@ -18,8 +18,8 @@
  * - a question names a substance of more than one atom without drawing its
  *   Lewis structure (`figs`);
  * - a step that compares substances does not have students name the IMFs of
- *   each one first, a step offers fewer forces than one of its substances
- *   has, or the force checker accepts a wrong set of forces;
+ *   each one first, or the force checker accepts a wrong set of forces or
+ *   refuses the right one;
  * - a temperature quoted in a question or a step is not a real melting or
  *   boiling point in the data (or 25 °C, room temperature);
  * - student text uses a word outside the class's scope (van der Waals, the
@@ -125,10 +125,8 @@ App.STEPS.forEach((s) => {
   const names = s.kind === 'phases' || s.kind === 'count' || s.kind === 'rank' || (s.kind === 'race' && s.assign);
   if (s.kind === 'race' && s.ids.length > 1 && !s.assign) bad(`${s.id}: compares substances without naming their IMFs first`);
   if (!names) return;
-  const offer = App.offered(s).map((f) => f[0]);
   s.ids.forEach((id) => {
     const f = Chem.forces(id);
-    KEYS.forEach((k) => { if (f[k] && offer.indexOf(k) < 0) bad(`${s.id}: ${id} has ${k}, which the step does not offer`); });
     for (let m = 0; m < 8; m++) {
       const picks = { ldf: !!(m & 1), dipole: !!(m & 2), hbond: !!(m & 4) };
       const right = KEYS.every((k) => picks[k] === f[k]);

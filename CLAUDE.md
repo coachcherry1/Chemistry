@@ -151,7 +151,7 @@ not the full page.
 - 22 steps in 5 parts; 18 graded questions (4+4+5+5) from a pool of 58. The atomic-number table is beside every
   checkpoint, the electronegativity table beside checkpoint 3.
 - **The habit: name the IMFs, then predict.** Every comparison step opens with a card per substance (Lewis structure,
-  electrons, toggles for the forces taught so far: LDF in part 2, + dipole-dipole in part 3, + H-bonding from part 4);
+  electrons, toggles for all three forces from the first card, so students rule forces out too);
   the prediction, ranking or counting opens only when all are right. One IMF-naming question is core in each checkpoint;
   every question naming a molecule draws it (`figs`). The validator checks both.
 - **Teacher's rules:** LDF compared by electron count, with the word polarizability. Hydrogen bonds: **donor** (H on N, O

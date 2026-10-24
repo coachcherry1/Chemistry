@@ -330,11 +330,6 @@ var App = (function () {
 
   var FORCES = [['ldf', 'London dispersion'], ['dipole', 'Dipole-dipole'], ['hbond', 'Hydrogen bonding']];
 
-  /* only the forces taught so far are offered: LDF in part 2, dipole-dipole
-     from part 3, hydrogen bonding from part 4 (the validator checks that no
-     substance needs a force its step does not offer) */
-  function offered(s) { return FORCES.slice(0, s.part <= 2 ? 1 : s.part === 3 ? 2 : 3); }
-
   function assignBlock(s, opts) {
     opts = opts || {};
     var got = state.as[s.id] || (state.as[s.id] = {});
@@ -358,7 +353,7 @@ var App = (function () {
       } else {
         var p = picks[id] || (picks[id] = { ldf: false, dipole: false, hbond: false });
         kids.push(h('p', { class: 'assign-q', text: 'Which IMFs does ' + x.text + ' have?' }));
-        kids.push(h('div', { class: 'imf-toggles' }, offered(s).map(function (k) {
+        kids.push(h('div', { class: 'imf-toggles' }, FORCES.map(function (k) {
           return h('button', { type: 'button', class: 'mini toggle' + (p[k[0]] ? ' on' : ''), 'aria-pressed': p[k[0]] ? 'true' : 'false',
             'data-force': k[0], text: k[1], onclick: function () { p[k[0]] = !p[k[0]]; paint(id); } });
         })));
@@ -400,9 +395,8 @@ var App = (function () {
     return { node: wrap, done: done, repaint: function () { paint(); } };
   }
 
-  function assignPanel(a, s) {
-    return panel('Name the IMFs of each', s.part <= 2 ? 'the only force so far; dipole-dipole and hydrogen bonding come later' :
-      s.part === 3 ? 'from its Lewis structure; hydrogen bonding comes later' : 'from its Lewis structure', [a.node], 'passign');
+  function assignPanel(a) {
+    return panel('Name the IMFs of each', 'from its Lewis structure: pick every force it has, rule out the rest', [a.node], 'passign');
   }
 
   /* ---- a race on the heating stage (one box is a race too) */
@@ -412,7 +406,7 @@ var App = (function () {
     var host = h('div', { class: 'heat-host' });
     var side = h('div', { class: 'predict-host' });
     var a = s.assign ? assignBlock(s, { onDone: function () { draw(); return 'Now predict.'; } }) : null;
-    if (a) el.stage.appendChild(assignPanel(a, s));
+    if (a) el.stage.appendChild(assignPanel(a));
     el.stage.appendChild(row('race n' + s.ids.length, [panel('The heating stage', 'drag the thermometer', [host], 'pheat'),
       panel('Predict, then watch', null, [side], 'pside')]));
     var top = Math.max.apply(null, s.ids.map(function (id) { return sub(id).bp; }));
@@ -535,7 +529,7 @@ var App = (function () {
     var host = h('div', { class: 'heat-host' });
     var side = h('div', { class: 'predict-host' });
     var a = assignBlock(s, { onDone: function () { draw(); return 'All four have only LDF. Now predict each phase.'; } });
-    el.stage.appendChild(assignPanel(a, s));
+    el.stage.appendChild(assignPanel(a));
     el.stage.appendChild(row('phases', [panel('Your predictions', null, [side], 'pside'), panel('At 25 °C', null, [host], 'pheat')]));
     var stage = null;
     function draw() {
@@ -898,7 +892,7 @@ var App = (function () {
     var heatHost = h('div', { class: 'heat-host' });
     var side = h('div', { class: 'predict-host' });
     var a = assignBlock(s, { onDone: function () { paint(); return 'Now put them in order of boiling point, lowest first.'; } });
-    el.stage.appendChild(assignPanel(a, s));
+    el.stage.appendChild(assignPanel(a));
     el.stage.appendChild(h('div', { class: 'col' }, [panel('Lowest boiling point first', 'click them in order', [cards], 'prank'),
       row('race n' + s.ids.length, [panel('The heating stage', 'drag the thermometer', [heatHost], 'pheat'), panel('Why', null, [side], 'pside')])]));
     var stage = null;
@@ -1203,7 +1197,7 @@ var App = (function () {
     showIntro();
   }
 
-  return { start: start, SCHEMA: SCHEMA, STEPS: STEPS, GRADED: GRADED, PREDICT: PREDICT, predictionFor: predictionFor, offered: offered,
+  return { start: start, SCHEMA: SCHEMA, STEPS: STEPS, GRADED: GRADED, PREDICT: PREDICT, predictionFor: predictionFor,
            raceStory: raceStory, ctl: function () { return ctl; } };
 })();
 

@@ -107,11 +107,12 @@ const fakeLMS = () => {
       const f = await page.evaluate((i) => Chem.forces(i), id);
       const card = `.assign-card[data-id="${id}"]`;
       if (first) {
-        /* LDF alone where more is needed; nothing at all where LDF is enough */
-        if (f.dipole || f.hbond) await page.click(card + ' .toggle[data-force="ldf"]');
+        /* LDF alone where more is needed; LDF and hydrogen bonding where LDF is enough */
+        const wrong = f.dipole || f.hbond ? ['ldf'] : ['ldf', 'hbond'];
+        for (const k of wrong) await page.click(card + ` .toggle[data-force="${k}"]`);
         await page.click(card + ' button:text-is("Check")');
         expect((await fbClass()).includes('bad'), `${s.id}: a wrong set of IMFs for ${id} was accepted`);
-        if (f.dipole || f.hbond) await page.click(card + ' .toggle[data-force="ldf"]');
+        for (const k of wrong) await page.click(card + ` .toggle[data-force="${k}"]`);
         first = false;
       }
       for (const k of ['ldf', 'dipole', 'hbond']) if (f[k]) await page.click(card + ` .toggle[data-force="${k}"]`);

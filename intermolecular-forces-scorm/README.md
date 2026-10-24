@@ -7,8 +7,8 @@ molecules with the same number of electrons, and draw and count hydrogen bonds. 
 
 **Name the IMFs first, then predict.** Before every comparison students name the forces of each substance from its
 Lewis structure: a card per substance with its structure and electron count, and buttons for London dispersion,
-dipole-dipole and hydrogen bonding (only the forces taught so far: LDF in part 2, dipole-dipole from part 3,
-hydrogen bonding from part 4). A wrong set gets the specific reason (no LDF; "CH₄ has only C–H bonds"; "its H is
+dipole-dipole and hydrogen bonding. All three are offered from the first card, so students rule forces out as well
+as in, even before dipole-dipole forces and hydrogen bonds are taught; the feedback explains each one. A wrong set gets the specific reason (no LDF; "CH₄ has only C–H bonds"; "its H is
 on Cl, not N, O or F"). Only when every card is right does the prediction (or the ranking, or the counting) open.
 Each checkpoint has a core question that asks students to name a substance's IMFs, and every question that names a
 molecule shows its Lewis structure.
