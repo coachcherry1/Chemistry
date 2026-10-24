@@ -171,5 +171,5 @@ not the full page.
   no speeds and no boiling-point ticks are shown.
 - **Files:** `data.js`, `chem.js` (model), `mol2d.js` (Lewis SVG scenes, H-bond lines), `heat.js`, `cloud.js`
   (polarizability), `quiz.js`, `app.js`.
-- **Walkthrough harness (both new packages):** the fake LMS reads and writes sessionStorage on every call and never stages
-  the next load's data; staging made the reload check fail at random (still the case in the older packages' walkthroughs).
+- **Walkthrough harness (these two, Newman, chairs and chirality):** the fake LMS reads and writes sessionStorage on every call and never stages
+  the next load's data; staging made the reload check fail at random.
