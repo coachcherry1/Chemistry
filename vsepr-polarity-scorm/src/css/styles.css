@@ -725,3 +725,17 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .best-line { font-weight: 600; margin: 10px 0 0; }
 .confirm { margin-top: 10px; padding: 10px 12px; border-radius: var(--radius); border: 1px solid var(--accent); background: var(--note-bg); }
 .confirm p { margin: 0 0 4px; font-size: 0.88rem; }
+
+/* the radial symmetry test */
+.symbox { margin: 8px 0 0; padding: 8px 10px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--bg); }
+.symbox.sym { border-color: var(--good); }
+.symbox.asym { border-color: var(--dneg); }
+.symbox-head { margin: 0 0 4px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.symlist { list-style: none; margin: 0; padding: 0; font-size: 0.86rem; }
+.symlist li { display: flex; gap: 6px; padding: 1px 0; }
+.symlist .mark { font-weight: 800; width: 1.1em; }
+.symlist .ok .mark { color: var(--good); }
+.symlist .no .mark { color: var(--dneg); }
+.symbox-foot { margin: 4px 0 0; font-size: 0.86rem; font-weight: 600; }
+.symbox.sym .symbox-foot { color: var(--good); }
+.symbox.asym .symbox-foot { color: var(--dneg); }
