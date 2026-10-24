@@ -21,7 +21,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a substance changes: a save
      from an older release is then discarded and the student starts fresh. */
-  var SCHEMA = 1;
+  var SCHEMA = 2;
 
   var h = UI.h;
   var C = function (c) { return c + 273.15; };
@@ -44,29 +44,31 @@ var App = (function () {
       text: 'Argon atoms attract each other. Drag the thermometer from −200 °C up to −170 °C and watch the atoms.' },
 
     { id: 'he-ne', part: 2, kind: 'race', title: 'Helium and neon', ids: ['He', 'Ne'], predict: 'heNe',
-      minK: 2, maxK: 32, startK: 2,
-      text: 'The two smallest noble gases: helium has 2 electrons, neon 10. Predict, then warm them both.' },
+      minK: 2, maxK: 32, startK: 2, assign: true,
+      text: 'The two smallest noble gases: helium has 2 electrons, neon 10. Name the IMFs of each, predict, then warm them both.' },
     { id: 'clouds', part: 2, kind: 'cloud', title: 'Why more electrons attract more', ids: ['He', 'Ne', 'Ar', 'Kr', 'Xe'],
       predict: 'polar',
       text: 'Each atom is a nucleus in a cloud of moving electrons. Watch two atoms side by side, then try every noble gas.' },
     { id: 'noble', part: 2, kind: 'race', title: 'The noble gas race', ids: ['Ne', 'Ar', 'Kr', 'Xe'], predict: 'noble',
-      minK: C(-252), maxK: C(-100), startK: C(-252),
-      text: 'Four noble gases, one thermometer. Predict, then warm them all from −252 °C.' },
+      minK: C(-252), maxK: C(-100), startK: C(-252), assign: true,
+      text: 'Four noble gases, one thermometer. Name the IMFs of each, predict, then warm them all from −252 °C.' },
     { id: 'halogens', part: 2, kind: 'phases', title: 'The halogens at room temperature', ids: ['F2', 'Cl2', 'Br2', 'I2'],
-      K: C(25), text: 'All four are nonpolar, so they have only London dispersion forces. Predict each one’s phase at 25 °C.' },
+      K: C(25), text: 'Name the IMFs of each from its Lewis structure, then predict each one’s phase at 25 °C.' },
     { id: 'quiz-A', part: 2, kind: 'quiz', quiz: 'A', title: 'Checkpoint 1' },
 
     { id: 'ends', part: 3, kind: 'ends', title: 'Polar molecules have ends', predict: 'ends',
       text: 'A polar molecule has a δ+ end and a δ− end that never go away. Predict how two HCl molecules hold on to each other.' },
     { id: 'hcl-f2', part: 3, kind: 'race', title: 'HCl and F₂: 18 electrons each', ids: ['F2', 'HCl'], predict: 'hclF2',
-      minK: C(-200), maxK: C(-70), startK: C(-200),
-      text: 'With the same number of electrons, their London dispersion forces are about the same. Predict, then warm them.' },
+      minK: C(-200), maxK: C(-70), startK: C(-200), assign: true,
+      text: 'Same number of electrons, so about the same London dispersion forces. Name the IMFs of each from its Lewis ' +
+            'structure, then predict, then warm them.' },
     { id: 'ethane', part: 3, kind: 'race', title: 'Ethane and fluoromethane: 18 electrons each', ids: ['C2H6', 'CH3F'],
-      predict: 'ethane', minK: C(-130), maxK: C(-60), startK: C(-130),
-      text: 'Another pair with 18 electrons each. One is polar. Predict, then warm them.' },
+      predict: 'ethane', minK: C(-130), maxK: C(-60), startK: C(-130), assign: true,
+      text: 'Another pair with 18 electrons each. Name the IMFs of each from its Lewis structure, then predict, then warm them.' },
     { id: 'acetone', part: 3, kind: 'race', title: 'Butane and acetone', ids: ['C4H10', 'acetone'], predict: 'acetone',
-      minK: C(-30), maxK: C(70), startK: C(-30),
-      text: 'Butane has 34 electrons; acetone (nail polish remover) has 32, and it is polar. Predict, then warm them.' },
+      minK: C(-30), maxK: C(70), startK: C(-30), assign: true,
+      text: 'Butane has 34 electrons; acetone (nail polish remover) has 32. Name the IMFs of each from its Lewis structure, ' +
+            'then predict, then warm them.' },
     { id: 'quiz-B', part: 3, kind: 'quiz', quiz: 'B', title: 'Checkpoint 2' },
 
     { id: 'donor', part: 4, kind: 'draw', title: 'Donor and receiver',
@@ -92,16 +94,17 @@ var App = (function () {
       text: 'Acetone mixes with water. Find the hydrogen bond that holds them together.' },
     { id: 'count', part: 4, kind: 'count', title: 'Count the hydrogen bonds', ids: ['ethanol', 'glycol'], full: true,
       predict: 'glycol', minK: C(60), maxK: C(210), startK: C(60),
-      text: 'Each hydrogen bond needs one H to donate and one lone pair to receive. Count both, and the smaller number ' +
-            'is how many hydrogen bonds one molecule can make with its neighbours.' },
+      text: 'Name the IMFs of each first. Each hydrogen bond needs one H to donate and one lone pair to receive: count both, ' +
+            'and the smaller number is how many hydrogen bonds one molecule can make with its neighbours.' },
     { id: 'ten', part: 4, kind: 'count', title: 'Ten electrons each', ids: ['CH4', 'NH3', 'H2O'], predict: 'ten',
       minK: C(-170), maxK: C(110), startK: C(-170),
-      text: 'Methane, ammonia and water all have 10 electrons. Count each one’s hydrogen bonds, predict, then warm them.' },
+      text: 'Methane, ammonia and water all have 10 electrons. Name the IMFs of each, count its hydrogen bonds, predict, then warm them.' },
     { id: 'quiz-C', part: 4, kind: 'quiz', quiz: 'C', title: 'Checkpoint 3' },
 
     { id: 'ladder', part: 5, kind: 'rank', title: 'Three forces, 18 electrons each', ids: ['F2', 'HCl', 'CH3OH'],
       minK: C(-200), maxK: C(75), startK: C(-200),
-      text: 'Same electrons, so about the same LDF. Put them in order of boiling point, lowest first, then warm them.' },
+      text: 'Same electrons, so about the same LDF. Name the IMFs of each, put them in order of boiling point, lowest first, ' +
+            'then warm them.' },
     { id: 'quiz-D', part: 5, kind: 'quiz', quiz: 'D', title: 'Checkpoint 4' },
 
     { id: 'results', part: 6, kind: 'results', title: 'Results', text: '' }
@@ -182,7 +185,7 @@ var App = (function () {
       var ids = core.concat(rest.slice(0, Q.draw - core.length));
       draws[k] = Q.pool.map(function (q) { return q.id; }).filter(function (id) { return ids.indexOf(id) >= 0; });
     });
-    return { v: SCHEMA, seed: seed, step: 0, max: 0, draws: draws, ans: {}, pick: {}, pr: {}, done: {}, fin: 0,
+    return { v: SCHEMA, seed: seed, step: 0, max: 0, draws: draws, ans: {}, pick: {}, pr: {}, done: {}, as: {}, fin: 0,
              best: 0, att: 1 };
   }
 
@@ -193,6 +196,7 @@ var App = (function () {
         return QUIZZES[k].pool.some(function (q) { return q.id === id; });
       });
     });
+    if (ok && !saved.as) saved.as = {};
     return ok ? saved : null;
   }
 
@@ -315,12 +319,100 @@ var App = (function () {
 
   var RENDER = {};
 
+  /* ---- name the IMFs of each substance, from its Lewis structure
+
+     The habit the class builds before every comparison: for each substance,
+     switch on every force it has (LDF, dipole-dipole, hydrogen bonding) and
+     check. A wrong choice gets the specific reason (Chem.forcesFeedback).
+     opts.onDone runs once every substance is right and returns what to do
+     next; opts.extra(id) adds more to a card once its forces are right (the
+     hydrogen-bond count). */
+
+  var FORCES = [['ldf', 'London dispersion'], ['dipole', 'Dipole-dipole'], ['hbond', 'Hydrogen bonding']];
+
+  /* only the forces taught so far are offered: LDF in part 2, dipole-dipole
+     from part 3, hydrogen bonding from part 4 (the validator checks that no
+     substance needs a force its step does not offer) */
+  function offered(s) { return FORCES.slice(0, s.part <= 2 ? 1 : s.part === 3 ? 2 : 3); }
+
+  function assignBlock(s, opts) {
+    opts = opts || {};
+    var got = state.as[s.id] || (state.as[s.id] = {});
+    if (state.done[s.id]) s.ids.forEach(function (id) { got[id] = 1; });
+    var picks = {};
+    var wrap = h('div', { class: 'assign n' + s.ids.length });
+    function done() { return s.ids.every(function (id) { return got[id]; }); }
+
+    function card(id) {
+      var x = sub(id), right = !!got[id];
+      var kids = [
+        h('div', { class: 'card-head' }, [h('b', { text: x.text }), h('span', { class: 'muted', text: x.name + (x.everyday ? ' (' + x.everyday + ')' : '') })]),
+        h('div', { class: 'assign-fig' }, [Mol2D.figure(id, { cls: 'fig' })]),
+        h('p', { class: 'assign-e', text: x.electrons + ' electrons' })
+      ];
+      if (right) {
+        var f = Chem.forces(id);
+        kids.push(h('div', { class: 'imf-chips', 'aria-label': x.name + ' has ' + Chem.forcesText(id) },
+          FORCES.filter(function (k) { return f[k[0]]; }).map(function (k) { return h('span', { class: 'imf-chip ' + k[0], text: k[1] }); })));
+        if (opts.extra) { var ex = opts.extra(id); if (ex) kids.push(ex); }
+      } else {
+        var p = picks[id] || (picks[id] = { ldf: false, dipole: false, hbond: false });
+        kids.push(h('p', { class: 'assign-q', text: 'Which IMFs does ' + x.text + ' have?' }));
+        kids.push(h('div', { class: 'imf-toggles' }, offered(s).map(function (k) {
+          return h('button', { type: 'button', class: 'mini toggle' + (p[k[0]] ? ' on' : ''), 'aria-pressed': p[k[0]] ? 'true' : 'false',
+            'data-force': k[0], text: k[1], onclick: function () { p[k[0]] = !p[k[0]]; paint(id); } });
+        })));
+        kids.push(h('div', { class: 'btnrow tight' }, [h('button', { type: 'button', class: 'primary small-btn', text: 'Check',
+          onclick: function () { check(id); } })]));
+      }
+      return h('div', { class: 'assign-card' + (opts.cardCls ? ' ' + opts.cardCls : '') + (right ? ' right' : ''), 'data-id': id }, kids);
+    }
+
+    function check(id) {
+      var x = sub(id), fb = Chem.forcesFeedback(id, picks[id] || {});
+      if (fb) { say(fb, 'bad'); return; }
+      got[id] = 1;
+      persist();
+      paint();
+      var next = done() && opts.onDone ? opts.onDone() : '';
+      say('Right: ' + x.text + ' has ' + Chem.forcesText(id) + '.' + (next ? ' ' + next : ''), 'good');
+    }
+
+    /* a whole repaint, or just one card (so focus stays on its toggles) */
+    function paint(only) {
+      if (only != null) {
+        var old = wrap.querySelector('.assign-card[data-id="' + only + '"]');
+        var focus = document.activeElement && old && old.contains(document.activeElement) ? document.activeElement.getAttribute('data-force') : null;
+        var fresh = card(only);
+        if (old) wrap.replaceChild(fresh, old);
+        if (focus) { var b = fresh.querySelector('[data-force="' + focus + '"]'); if (b) b.focus(); }
+        return;
+      }
+      var was = document.activeElement && wrap.contains(document.activeElement) ? document.activeElement.getAttribute('aria-label') : null;
+      wrap.innerHTML = '';
+      s.ids.forEach(function (id) { wrap.appendChild(card(id)); });
+      if (was) {
+        var back = [].filter.call(wrap.querySelectorAll('button'), function (b) { return b.getAttribute('aria-label') === was && !b.disabled; })[0];
+        if (back) back.focus();
+      }
+    }
+    paint();
+    return { node: wrap, done: done, repaint: function () { paint(); } };
+  }
+
+  function assignPanel(a, s) {
+    return panel('Name the IMFs of each', s.part <= 2 ? 'the only force so far; dipole-dipole and hydrogen bonding come later' :
+      s.part === 3 ? 'from its Lewis structure; hydrogen bonding comes later' : 'from its Lewis structure', [a.node], 'passign');
+  }
+
   /* ---- a race on the heating stage (one box is a race too) */
 
   RENDER.race = function (s) {
     var p = predictionFor(s.predict, s.ids);
     var host = h('div', { class: 'heat-host' });
     var side = h('div', { class: 'predict-host' });
+    var a = s.assign ? assignBlock(s, { onDone: function () { draw(); return 'Now predict.'; } }) : null;
+    if (a) el.stage.appendChild(assignPanel(a, s));
     el.stage.appendChild(row('race n' + s.ids.length, [panel('The heating stage', 'drag the thermometer', [host], 'pheat'),
       panel('Predict, then watch', null, [side], 'pside')]));
     var top = Math.max.apply(null, s.ids.map(function (id) { return sub(id).bp; }));
@@ -337,6 +429,10 @@ var App = (function () {
 
     function draw() {
       side.innerHTML = '';
+      if (a && !a.done()) {
+        side.appendChild(h('p', { class: 'muted', text: 'First name the IMFs of each substance (above). Then predict.' }));
+        return;
+      }
       side.appendChild(predictCard(p, state.pr[s.id], function (i) {
         state.pr[s.id] = i;
         persist();
@@ -348,9 +444,10 @@ var App = (function () {
       if (state.done[s.id]) {
         var lines = [verdict(p, state.pr[s.id])];
         if (s.id === 'argon') {
-          lines[0] += 'Temperature is how fast the particles move. Cold, the atoms only vibrate in place, held by ' +
-            'their attraction for each other: a solid. Warmer, they slide past each other: a liquid. Hot enough, they ' +
-            'move fast enough to break free: a gas. What holds them together is an intermolecular force.';
+          lines[0] += 'The dashed lines are the attractions between neighbouring atoms: intermolecular forces (IMFs). ' +
+            'Cold, the atoms are held still in a network of them: a solid. Warmer, they move a little, and the ' +
+            'attractions keep breaking and re-forming as the atoms slide past each other: a liquid. Hot enough, the ' +
+            'atoms move fast enough to break free of every attraction: a gas.';
           lines.push('Argon melts at ' + Chem.fmtT(sub('Ar').mp) + ' and boils at ' + Chem.fmtT(sub('Ar').bp) + '.');
         } else {
           lines.push(raceStory(s.ids));
@@ -437,10 +534,13 @@ var App = (function () {
     var guesses = state.pr.halogens || {};
     var host = h('div', { class: 'heat-host' });
     var side = h('div', { class: 'predict-host' });
+    var a = assignBlock(s, { onDone: function () { draw(); return 'All four have only LDF. Now predict each phase.'; } });
+    el.stage.appendChild(assignPanel(a, s));
     el.stage.appendChild(row('phases', [panel('Your predictions', null, [side], 'pside'), panel('At 25 °C', null, [host], 'pheat')]));
     var stage = null;
     function draw() {
       side.innerHTML = '';
+      if (!a.done()) { side.appendChild(h('p', { class: 'muted', text: 'First name the IMFs of each (above).' })); return; }
       side.appendChild(h('p', { class: 'predict-kicker', text: 'Predict (not graded)' }));
       s.ids.forEach(function (id) {
         var x = sub(id);
@@ -471,7 +571,7 @@ var App = (function () {
     function show() {
       if (stage) return;
       host.innerHTML = '';
-      stage = HeatStage(host, { ids: s.ids, minK: s.K, maxK: s.K, startK: s.K, fixed: true, speed: false });
+      stage = HeatStage(host, { ids: s.ids, minK: s.K, maxK: s.K, startK: s.K, fixed: true });
     }
     draw();
     if (state.done[s.id]) show();
@@ -708,40 +808,40 @@ var App = (function () {
 
   RENDER.count = function (s) {
     var answers = {};
-    var cards = h('div', { class: 'count-cards' });
     var heatHost = h('div', { class: 'heat-host' });
     var side = h('div', { class: 'predict-host' });
-    el.stage.appendChild(h('div', { class: 'col' }, [panel('Count', s.full ? 'H on N, O or F; lone pairs on N, O or F' : null, [cards], 'pcount'),
-      row('race n' + s.ids.length, [panel('The heating stage', 'drag the thermometer', [heatHost], 'pheat'),
-        panel('Predict, then watch', null, [side], 'pside')])]));
-    var p = predictionFor(s.predict, s.ids);
-    var stage = null;
-    var top = Math.max.apply(null, s.ids.map(function (id) { return sub(id).bp; }));
     var fields = s.full ? [['donors', 'H atoms on N, O or F'], ['receivers', 'Lone pairs on N, O or F'], ['pairs', 'Hydrogen bonds it can make']]
       : [['pairs', 'Hydrogen bonds it can make']];
     function truth(id, f) { var x = sub(id); return f === 'donors' ? x.donors.length : f === 'receivers' ? x.receivers.length : x.pairs; }
     if (state.done[s.id] || state.pr[s.id] != null) s.ids.forEach(function (id) { fields.forEach(function (f) { answers[id + f[0]] = truth(id, f[0]); }); });
 
-    function counted() { return s.ids.every(function (id) { return fields.every(function (f) { return answers[id + f[0]] === truth(id, f[0]); }); }); }
+    /* the counting lines join each card once its IMFs are named */
+    function countLines(id) {
+      var x = sub(id);
+      return h('div', { class: 'count-lines' }, fields.map(function (f) {
+        var right = answers[id + f[0]] === truth(id, f[0]);
+        return h('div', { class: 'count-line' }, [h('span', { class: 'count-q', text: f[1] }),
+          h('span', { class: 'count-btns' }, [0, 1, 2, 3, 4].map(function (n) {
+            return h('button', { type: 'button', class: 'mini' + (answers[id + f[0]] === n ? (right ? ' on good' : ' on') : ''),
+              text: String(n), 'aria-label': f[1] + ' in ' + x.name + ': ' + n, disabled: right,
+              onclick: function () { answer(id, f[0], n); } });
+          }))]);
+      }));
+    }
+    var a = assignBlock(s, { extra: countLines, cardCls: 'count-card', onDone: function () {
+      paintSide();
+      return 'Now count the hydrogen bonds each one can make.';
+    } });
+    el.stage.appendChild(h('div', { class: 'col' }, [panel('Name the IMFs, then count', s.full ? 'H on N, O or F; lone pairs on N, O or F' :
+      'from each Lewis structure', [a.node], 'pcount'),
+      row('race n' + s.ids.length, [panel('The heating stage', 'drag the thermometer', [heatHost], 'pheat'),
+        panel('Predict, then watch', null, [side], 'pside')])]));
+    var p = predictionFor(s.predict, s.ids);
+    var stage = null;
+    var top = Math.max.apply(null, s.ids.map(function (id) { return sub(id).bp; }));
 
-    function paintCards() {
-      cards.innerHTML = '';
-      s.ids.forEach(function (id) {
-        var x = sub(id);
-        var rows = fields.map(function (f) {
-          var right = answers[id + f[0]] === truth(id, f[0]);
-          return h('div', { class: 'count-line' }, [h('span', { class: 'count-q', text: f[1] }),
-            h('span', { class: 'count-btns' }, [0, 1, 2, 3, 4].map(function (n) {
-              return h('button', { type: 'button', class: 'mini' + (answers[id + f[0]] === n ? (right ? ' on good' : ' on') : ''),
-                text: String(n), 'aria-label': f[1] + ' in ' + x.name + ': ' + n, disabled: right,
-                onclick: function () { answer(id, f[0], n); } });
-            }))]);
-        });
-        cards.appendChild(h('div', { class: 'count-card' }, [
-          h('div', { class: 'card-head' }, [h('b', { text: x.text }), h('span', { class: 'muted', text: x.name + (x.everyday ? ' (' + x.everyday + ')' : '') })]),
-          h('div', { class: 'count-fig' }, [Mol2D.figure(id, { cls: 'fig' })])
-        ].concat(rows)));
-      });
+    function counted() {
+      return a.done() && s.ids.every(function (id) { return fields.every(function (f) { return answers[id + f[0]] === truth(id, f[0]); }); });
     }
 
     function answer(id, f, n) {
@@ -762,12 +862,13 @@ var App = (function () {
         say(x.pairs ? 'Count the H atoms on N, O or F and the lone pairs on N, O or F; the smaller number is the answer.'
           : x.text + ' has no H on N, O or F, so it cannot donate: 0 hydrogen bonds.', 'bad');
       }
-      paintCards();
+      a.repaint();
       paintSide();
     }
 
     function paintSide() {
       side.innerHTML = '';
+      if (!a.done()) { side.appendChild(h('p', { class: 'muted', text: 'First name the IMFs of each (above). Then count, then predict.' })); return; }
       if (!counted()) { side.appendChild(h('p', { class: 'muted', text: 'Count first; then predict.' })); return; }
       side.appendChild(predictCard(p, state.pr[s.id], function (i) {
         state.pr[s.id] = i; persist(); paintSide(); startStage(); say('Now drag the thermometer.');
@@ -783,20 +884,21 @@ var App = (function () {
       } });
       if (state.done[s.id]) stage.setK(top + 3);
     }
-    paintCards();
     paintSide();
     if (state.pr[s.id] != null || state.done[s.id]) startStage();
-    else heatHost.appendChild(h('p', { class: 'muted', text: 'The heating stage opens once you have counted and predicted.' }));
+    else heatHost.appendChild(h('p', { class: 'muted', text: 'The heating stage opens once you have named, counted and predicted.' }));
     return { destroy: function () { if (stage) stage.destroy(); } };
   };
 
-  /* ---- rank, then race */
+  /* ---- name the IMFs, rank, then race */
 
   RENDER.rank = function (s) {
     var order = state.done[s.id] ? correctOrder() : [];
     var cards = h('div', { class: 'rank-cards' });
     var heatHost = h('div', { class: 'heat-host' });
     var side = h('div', { class: 'predict-host' });
+    var a = assignBlock(s, { onDone: function () { paint(); return 'Now put them in order of boiling point, lowest first.'; } });
+    el.stage.appendChild(assignPanel(a, s));
     el.stage.appendChild(h('div', { class: 'col' }, [panel('Lowest boiling point first', 'click them in order', [cards], 'prank'),
       row('race n' + s.ids.length, [panel('The heating stage', 'drag the thermometer', [heatHost], 'pheat'), panel('Why', null, [side], 'pside')])]));
     var stage = null;
@@ -804,14 +906,14 @@ var App = (function () {
     function correctOrder() { return s.ids.slice().sort(function (a, b) { return sub(a).bp - sub(b).bp; }); }
     function paint() {
       cards.innerHTML = '';
+      if (!a.done()) { cards.appendChild(h('p', { class: 'muted', text: 'First name the IMFs of each (above). Then rank them.' })); return; }
       s.ids.forEach(function (id) {
         var x = sub(id), at = order.indexOf(id);
         cards.appendChild(h('button', { type: 'button', class: 'rank-card' + (at >= 0 ? ' placed' : ''), disabled: at >= 0,
-          'aria-label': x.name + ', ' + x.text + ', ' + x.electrons + ' electrons' + (at >= 0 ? ', placed ' + (at + 1) : ''),
+          'aria-label': x.name + ', ' + x.text + ', ' + x.electrons + ' electrons, ' + Chem.forcesText(id) + (at >= 0 ? ', placed ' + (at + 1) : ''),
           onclick: function () { place(id); } }, [
           h('span', { class: 'rank-num', text: at >= 0 ? String(at + 1) : '?' }),
-          Mol2D.figure(id, { cls: 'fig' }),
-          h('span', { class: 'rank-label' }, [h('b', { text: x.text }), ' ' + x.name])
+          h('span', { class: 'rank-label' }, [h('b', { text: x.text }), ' ' + x.name, h('br'), h('span', { class: 'muted', text: Chem.forcesText(id) })])
         ]));
       });
     }
@@ -824,7 +926,7 @@ var App = (function () {
         if (order.length === s.ids.length) startStage();
       } else {
         var x = sub(id);
-        say('Not yet: ' + x.text + ' has ' + Chem.IMF_SHORT[x.imf] + '. Start with the weakest forces: same electrons, so ' +
+        say('Not yet: ' + x.text + ' has ' + Chem.forcesText(id) + '. Start with the weakest forces: same electrons, so ' +
             'the strongest force each one has decides it.', 'bad');
       }
       paint();
@@ -833,7 +935,7 @@ var App = (function () {
     function paintSide() {
       side.innerHTML = '';
       if (order.length < s.ids.length) return;
-      side.appendChild(reveal([s.ids.map(function (id) { return sub(id).text + ': ' + Chem.IMF_NAME[sub(id).imf]; }).join('. ') + '.',
+      side.appendChild(reveal([s.ids.map(function (id) { return sub(id).text + ': ' + Chem.forcesText(id); }).join('. ') + '.',
         state.done[s.id] ? raceStory(s.ids) : '']));
     }
     function startStage() {
@@ -915,6 +1017,11 @@ var App = (function () {
       say('');
       box.appendChild(h('p', { class: 'q-count', text: 'Question ' + (n + 1) + ' of ' + ids.length }));
       box.appendChild(h('p', { class: 'q-text', text: q.q }));
+      if (q.figs) box.appendChild(h('div', { class: 'q-figs' }, q.figs.map(function (fid) {
+        var x = sub(fid);
+        return h('figure', { class: 'q-mol' }, [Mol2D.figure(fid, { cls: 'fig' }),
+          h('figcaption', { text: x.text + (x.name.toLowerCase() !== x.text.toLowerCase() ? ' ' + x.name : '') })]);
+      })));
       var rowN = h('div', { class: 'q-choices' });
       var why = h('p', { class: 'q-why', hidden: true });
       var next = h('button', { type: 'button', class: 'primary', hidden: true, text: n + 1 < ids.length ? 'Next question →' : 'Finish checkpoint' });
@@ -1096,7 +1203,7 @@ var App = (function () {
     showIntro();
   }
 
-  return { start: start, SCHEMA: SCHEMA, STEPS: STEPS, GRADED: GRADED, PREDICT: PREDICT, predictionFor: predictionFor,
+  return { start: start, SCHEMA: SCHEMA, STEPS: STEPS, GRADED: GRADED, PREDICT: PREDICT, predictionFor: predictionFor, offered: offered,
            raceStory: raceStory, ctl: function () { return ctl; } };
 })();
 

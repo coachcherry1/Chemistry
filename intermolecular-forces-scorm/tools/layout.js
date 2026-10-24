@@ -12,7 +12,9 @@
  *   - the thermometer, every box it warms, and the prediction beside them;
  *   - the drawing whose atoms and lone pairs are clicked, and the task list;
  *   - the electron clouds and the buttons that change the atom;
- *   - the counting buttons and the molecule they count.
+ *   - each card where a substance's IMFs are named (and its hydrogen bonds
+ *     counted), with its Lewis structure;
+ *   - the ranking cards and the thermometer.
  * Students should never have to zoom out or scroll while they work. No step
  * may scroll sideways.
  *
@@ -47,9 +49,11 @@ function groups() {
   if (scene) out.push({ name: 'drawing to click', els: [scene].concat(vis(tasks) ? [tasks] : []) });
   const cloud = document.querySelector('.cloud-canvas');
   if (vis(cloud)) out.push({ name: 'clouds and their buttons', els: [cloud, document.querySelector('.cloud .chips')] });
-  document.querySelectorAll('.count-card').forEach((c, i) => {
-    if (vis(c)) out.push({ name: 'count card ' + (i + 1), els: [c] });
+  document.querySelectorAll('.assign-card').forEach((c, i) => {
+    if (vis(c)) out.push({ name: (c.classList.contains('count-card') ? 'count card ' : 'IMF card ') + (i + 1), els: [c] });
   });
+  const ranks = [...document.querySelectorAll('.rank-card')].filter(vis);
+  if (ranks.length && range) out.push({ name: 'rank cards and the thermometer', els: ranks.concat([range]) });
   return out;
 }
 
@@ -68,6 +72,15 @@ function groups() {
     for (const st of steps) {
       await page.goto('file://' + dir + '/src/index.html?step=' + st.id);
       await page.waitForTimeout(150);
+      /* the IMFs of each named, so the rest of the step opens */
+      await page.evaluate(() => {
+        [...document.querySelectorAll('.assign-card')].map((c) => c.getAttribute('data-id')).forEach((id) => {
+          const f = Chem.forces(id);
+          const card = () => document.querySelector(`.assign-card[data-id="${id}"]`);
+          ['ldf', 'dipole', 'hbond'].forEach((k) => { if (f[k]) card().querySelector(`.toggle[data-force="${k}"]`).click(); });
+          [...card().querySelectorAll('button')].find((b) => b.textContent === 'Check').click();
+        });
+      });
       if (st.kind === 'count') {
         /* every count answered, so the prediction and the heating stage open */
         await page.evaluate((ids) => {

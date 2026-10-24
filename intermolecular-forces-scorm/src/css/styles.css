@@ -761,13 +761,10 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .thermo-c { font-size: 1.15rem; font-weight: 700; color: var(--accent); }
 .thermo-k { font-size: 0.85rem; color: var(--muted); }
 .thermo-icon { font-size: 1rem; }
-.thermo-track { position: relative; padding-bottom: 30px; }
+.thermo-track { position: relative; }
 .thermo-range { width: 100%; accent-color: var(--accent); margin: 0; }
-.thermo-ticks { position: absolute; left: 8px; right: 8px; top: 20px; height: 28px; }
-.tick { position: absolute; top: 0; width: 0; height: 8px; border-left: 2px solid var(--muted); }
-.tick.mp { border-left-style: dotted; }
-.tick-label { position: absolute; top: 8px; transform: translateX(-50%); font-size: 0.64rem; color: var(--muted); white-space: nowrap; }
-.tick.row1 .tick-label { top: 18px; }
+.heat-key { margin: 0; font-size: 0.74rem; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+.imf-line { display: inline-block; width: 26px; height: 0; border-top: 2px dashed var(--accent); }
 
 /* electron clouds */
 .cloud-canvas { width: 100%; height: clamp(170px, 34vh, 260px); display: block; border-radius: 6px; background: var(--bg); }
@@ -845,3 +842,27 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 
 .ptable td.pt-cell { padding: 2px 4px; min-width: 30px; }
 .pt-z { display: block; font-size: 0.62rem; color: var(--muted); font-weight: 500; }
+
+/* name the IMFs of each substance */
+.assign { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.assign-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 10px; background: var(--bg);
+  display: flex; flex-direction: column; gap: 4px; }
+.assign-card.right { border-color: var(--good); }
+.assign-fig { display: flex; justify-content: center; min-height: 0; }
+.assign-fig .mol.fig { max-height: 120px; width: auto; max-width: 100%; }
+.assign-e { margin: 0; font-size: 0.8rem; color: var(--muted); }
+.assign-q { margin: 2px 0 0; font-size: 0.84rem; font-weight: 600; }
+.imf-toggles { display: flex; flex-wrap: wrap; gap: 4px; }
+.imf-toggles .mini { padding: 3px 8px; font-size: 0.78rem; }
+.btnrow.tight { margin: 2px 0 0; }
+.small-btn { padding: 4px 12px; font-size: 0.82rem; }
+.imf-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.imf-chip { font-size: 0.76rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; }
+.imf-chip.ldf { color: var(--accent); }
+.imf-chip.dipole { color: var(--bad); }
+.imf-chip.hbond { color: var(--good); }
+.count-lines { display: flex; flex-direction: column; gap: 4px; border-top: 1px solid var(--line); padding-top: 4px; }
+.q-figs { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 0 0 8px; align-items: flex-end; }
+.q-mol { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.q-mol .mol.fig { max-height: 96px; width: auto; max-width: 220px; }
+.q-mol figcaption { font-size: 0.78rem; color: var(--muted); }

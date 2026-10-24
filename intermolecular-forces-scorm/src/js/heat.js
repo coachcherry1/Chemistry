@@ -12,16 +12,20 @@
  * they move fast enough to break free of the attraction and fill the box as
  * a gas.
  *
+ * Dashed lines join every pair of particles close enough to attract each
+ * other strongly: the intermolecular forces. A solid is a still network of
+ * them, a liquid a network that keeps breaking and re-forming as the
+ * particles slide, and in a gas they are gone: the gas is drawn as ideal,
+ * with no attractions.
+ *
  * What is real, and what is a model:
  *  - The phase each box shows is the substance's REAL phase at that
  *    temperature: every box is tuned from its real melting and boiling
  *    points (data.js), so it melts and boils where the substance does. The
  *    label under each box comes straight from those points.
- *  - Temperature is average kinetic energy, and that is what the boxes keep
- *    equal: at the same temperature the particles in every box move as
- *    fast as their real molecules do (average speed √(8RT/πM), shown under
- *    each box). Heavier molecules move a little slower; a solid's particles
- *    move just as energetically as a gas's but stay trapped.
+ *  - The motion is drawn to show the idea, not real speeds: a solid barely
+ *    vibrates, a liquid flows slowly, a gas flies, and each moves a little
+ *    faster as it warms.
  *  - Particles are drawn as their molecule's shape, but each one moves as a
  *    single ball. Sizes are not to scale.
  * With reduced motion the boxes stand still: each shows its phase as a
@@ -42,21 +46,22 @@ function HeatStage(host, opts) {
   var BW = 9, BH = 9;              /* box size, in particle diameters */
   var G = 0.25;                    /* gravity, reduced units */
   var RC = 2.5, RC2 = RC * RC;
+  var IMF_R2 = 1.27 * 1.27;       /* neighbours closer than this are drawn joined by an IMF */
   var ECUT = 4 * (Math.pow(1 / RC, 12) - Math.pow(1 / RC, 6));
 
   /* the box's reduced temperature: placed so the box is a crystal below the
      real melting point, a liquid between, a gas above the boiling point */
   function reduced(id, T) {
     var x = Chem.sub(id);
-    /* measured in this box: a crystal that only vibrates up to 0.2, a mobile
-       liquid that stays on the floor at 0.36 to 0.42, a gas filling the box
-       from 1.3 */
-    if (T >= x.bp) return 1.3 + 1.3 * Math.min(1, (T - x.bp) / (0.4 * x.bp + 20));
+    /* measured in this box: a crystal that only vibrates up to 0.15, a liquid
+       that holds together on the floor and flows slowly at 0.33 to 0.38, a
+       gas filling the box from 1.8 */
+    if (T >= x.bp) return 1.8 + 1.0 * Math.min(1, (T - x.bp) / (0.4 * x.bp + 20));
     if (x.mp == null || T >= x.mp) {
       var lo = x.mp == null ? 0.5 * x.bp : x.mp;
-      return 0.36 + 0.06 * Math.max(0, Math.min(1, (T - lo) / (x.bp - lo)));
+      return 0.33 + 0.05 * Math.max(0, Math.min(1, (T - lo) / (x.bp - lo)));
     }
-    return 0.03 + 0.17 * Math.max(0, Math.min(1, T / x.mp));
+    return 0.03 + 0.12 * Math.max(0, Math.min(1, T / x.mp));
   }
 
   /* element colours for the particles */
@@ -82,30 +87,14 @@ function HeatStage(host, opts) {
     step: '1', value: String(Math.round(K)), 'aria-label': 'Thermometer' });
   var readC = h('span', { class: 'thermo-c' });
   var readK = h('span', { class: 'thermo-k' });
-  var ticks = h('div', { class: 'thermo-ticks', 'aria-hidden': 'true' });
   var thermo = h('div', { class: 'thermo' + (opts.fixed ? ' fixed' : '') }, [
     h('div', { class: 'thermo-read' }, [h('span', { class: 'thermo-icon', 'aria-hidden': 'true', text: '🌡' }), readC, readK]),
-    opts.fixed ? null : h('div', { class: 'thermo-track' }, [range, ticks])
+    opts.fixed ? null : h('div', { class: 'thermo-track' }, [range]),
+    h('p', { class: 'heat-key' }, [h('span', { class: 'imf-line', 'aria-hidden': 'true' }),
+      ' dashed lines: the attractions (IMFs) between neighbouring particles'])
   ]);
   var node = h('div', { class: 'heat' }, [h('div', { class: 'heat-boxes n' + ids.length }, boxes.map(function (b) { return b.node; })), thermo]);
   host.appendChild(node);
-
-  /* tick marks on the thermometer for every melting and boiling point */
-  function paintTicks() {
-    ticks.innerHTML = '';
-    if (opts.fixed) return;
-    boxes.forEach(function (b, k) {
-      [['mp', b.x.mp], ['bp', b.x.bp]].forEach(function (t) {
-        if (t[1] == null || t[1] < minK || t[1] > maxK) return;
-        var f = (t[1] - minK) / (maxK - minK);
-        /* boiling points are labelled (in two rows, so neighbours do not
-           collide); melting points are dotted ticks without a label */
-        ticks.appendChild(h('span', { class: 'tick ' + t[0] + ' row' + (k % 2), style: 'left:' + (f * 100).toFixed(2) + '%',
-          title: b.x.text + (t[0] === 'mp' ? ' melts' : ' boils') + ' at ' + Chem.fmtT(t[1]) },
-          t[0] === 'bp' ? [h('span', { class: 'tick-label', text: b.x.text + ' boils' })] : []));
-      });
-    });
-  }
 
   /* ----------------------------------------------------------- particles */
 
@@ -122,7 +111,7 @@ function HeatStage(host, opts) {
       b.spin.push((Math.random() - 0.5) * 2);
     }
     /* a gas starts spread out, so a box above its boiling point is a gas at once */
-    if (b.Tst >= 1.3) b.p.forEach(function (p) { p[0] = 0.5 + Math.random() * (BW - 1); p[1] = 0.5 + Math.random() * (BH - 1); });
+    if (b.Tst >= 1) b.p.forEach(function (p) { p[0] = 0.5 + Math.random() * (BW - 1); p[1] = 0.5 + Math.random() * (BH - 1); });
     forces(b);
   }
 
@@ -171,11 +160,12 @@ function HeatStage(host, opts) {
     for (i = 0; i < n; i++) b.ang[i] += b.spin[i] * Math.sqrt(b.Tst) * dt * 3;
   }
 
-  /* reduced time per second of real time: chosen so the speed on screen
-     follows the real average speed √(8RT/πM), the same in every box */
+  /* reduced time per second of real time, by phase: a still solid, a slow
+     liquid, a fast gas that speeds up as it warms */
   function rate(b) {
-    var real = Math.sqrt(K / b.x.mass), red = Math.sqrt(b.Tst);
-    return Math.max(0.3, Math.min(9, 1.4 * real / red));
+    if (b.Tst < 0.3) return 0.9;
+    if (b.Tst < 1) return 1.2;
+    return 2.4 + 1.2 * Math.min(1, (b.Tst - 1.8) / 1.0);
   }
 
   /* ----------------------------------------------------------- drawing */
@@ -189,9 +179,9 @@ function HeatStage(host, opts) {
     cx /= s.atoms.length; cy /= s.atoms.length;
     var reach = 0;
     s.atoms.forEach(function (a) { reach = Math.max(reach, Math.hypot(a[1] - cx, a[2] - cy)); });
-    var k = reach > 0 ? 0.32 / reach : 0;
+    var k = reach > 0 ? 0.27 / reach : 0;
     return s.atoms.map(function (a) {
-      return { x: (a[1] - cx) * k, y: (a[2] - cy) * k, r: a[0] === 'H' ? 0.13 : s.atoms.length === 1 ? 0.46 : 0.2, c: COLOR[a[0]] || '#888' };
+      return { x: (a[1] - cx) * k, y: (a[2] - cy) * k, r: a[0] === 'H' ? 0.11 : s.atoms.length === 1 ? 0.3 : 0.17, c: COLOR[a[0]] || '#888' };
     });
   }
 
@@ -214,6 +204,26 @@ function HeatStage(host, opts) {
     ctx.lineWidth = 2 * dpr;
     ctx.strokeRect(ox, oy, BW * s, BH * s);
     var edge = cssVar('ink', '#12212e');
+    /* the intermolecular forces: a dashed line between every pair of
+       neighbours close enough to hold on to each other, in a solid or a
+       liquid. A gas is treated as ideal: no lines at all. */
+    var condensed = Chem.phaseAt(b.id, K) !== 'gas';
+    ctx.save();
+    ctx.strokeStyle = cssVar('accent', '#0f5d8f');
+    ctx.globalAlpha = 0.7;
+    ctx.lineWidth = Math.max(1.5 * dpr, 0.05 * s);
+    ctx.setLineDash([0.12 * s, 0.1 * s]);
+    ctx.beginPath();
+    for (var i = 0; condensed && i < b.p.length; i++) {
+      for (var j = i + 1; j < b.p.length; j++) {
+        var dx = b.p[i][0] - b.p[j][0], dy = b.p[i][1] - b.p[j][1];
+        if (dx * dx + dy * dy > IMF_R2) continue;
+        ctx.moveTo(ox + b.p[i][0] * s, oy + (BH - b.p[i][1]) * s);
+        ctx.lineTo(ox + b.p[j][0] * s, oy + (BH - b.p[j][1]) * s);
+      }
+    }
+    ctx.stroke();
+    ctx.restore();
     b.p.forEach(function (p, i) {
       var X = ox + p[0] * s, Y = oy + (BH - p[1]) * s;
       var ca = Math.cos(b.ang[i]), sa = Math.sin(b.ang[i]);
@@ -266,8 +276,7 @@ function HeatStage(host, opts) {
       var ph = Chem.phaseAt(b.id, K);
       b.phase.className = 'heat-phase ph-' + ph;
       b.phase.textContent = Chem.cap(ph) + (b.x.mp == null && ph === 'liquid' ? ' (never freezes at normal pressure)' : '');
-      b.facts.textContent = (b.x.mp != null ? 'melts ' + Chem.fmtT(b.x.mp) + ' · ' : '') + 'boils ' + Chem.fmtT(b.x.bp) +
-        (opts.speed === false ? '' : ' · average speed ' + Math.round(Chem.speed(b.id, K)) + ' m/s');
+      b.facts.textContent = (b.x.mp != null ? 'melts ' + Chem.fmtT(b.x.mp) + ' · ' : '') + 'boils ' + Chem.fmtT(b.x.bp);
       b.canvas.setAttribute('aria-label', b.x.name + ' at ' + Chem.fmtT(K) + ': ' + ph + '.');
     });
   }
@@ -281,7 +290,7 @@ function HeatStage(host, opts) {
       var was = b.Tst;
       b.Tst = reduced(b.id, K);
       /* crossing into the gas gives the particles a kick of speed at once */
-      if (was < 1.3 && b.Tst >= 1.3) b.v.forEach(function (v) { v[0] *= 1.6; v[1] = Math.abs(v[1]) * 1.6 + 0.6; });
+      if (was < 1 && b.Tst >= 1) b.v.forEach(function (v) { v[0] *= 1.6; v[1] = Math.abs(v[1]) * 1.6 + 0.6; });
     });
     if (reduceMotion) settle();
     label();
@@ -291,7 +300,6 @@ function HeatStage(host, opts) {
   range.addEventListener('input', function () { setK(+range.value); });
 
   boxes.forEach(seed);
-  paintTicks();
   label();
   var ro = window.ResizeObserver ? new ResizeObserver(function () { boxes.forEach(draw); }) : null;
   if (ro) boxes.forEach(function (b) { ro.observe(b.canvas); });

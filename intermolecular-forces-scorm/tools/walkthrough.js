@@ -29,7 +29,7 @@ catch (e) {
 const URL = 'file://' + path.join(__dirname, '..', 'src', 'index.html');
 const STORE = 'intermolecular-forces-state';
 const SHOTS = process.env.SHOTS;
-const WRONG = new Set(['a-escape', 'b-dd-what', 'c-donor', 'd-order']);
+const WRONG = new Set(['a-escape', 'b-ch3f-imf', 'c-donor', 'd-order']);
 
 /* The fake LMS keeps its data in sessionStorage and reads and writes it on
    every call, never from a copy in the page. To give the next load different
@@ -97,9 +97,33 @@ const fakeLMS = () => {
   async function thermo(K) {
     await page.$eval('.thermo-range', (el, v) => { el.value = v; el.dispatchEvent(new Event('input')); }, String(Math.round(K)));
   }
+  /* name the IMFs of each: the first card gets a wrong set first */
+  async function assign() {
+    const s = await step();
+    expect(!(await page.$('.pside .predict .choice')) && !(await page.$('.phase-row')) && !(await page.$('.rank-card')),
+      `${s.id}: the prediction opened before the IMFs were named`);
+    let first = true;
+    for (const id of s.ids) {
+      const f = await page.evaluate((i) => Chem.forces(i), id);
+      const card = `.assign-card[data-id="${id}"]`;
+      if (first) {
+        /* LDF alone where more is needed; nothing at all where LDF is enough */
+        if (f.dipole || f.hbond) await page.click(card + ' .toggle[data-force="ldf"]');
+        await page.click(card + ' button:text-is("Check")');
+        expect((await fbClass()).includes('bad'), `${s.id}: a wrong set of IMFs for ${id} was accepted`);
+        if (f.dipole || f.hbond) await page.click(card + ' .toggle[data-force="ldf"]');
+        first = false;
+      }
+      for (const k of ['ldf', 'dipole', 'hbond']) if (f[k]) await page.click(card + ` .toggle[data-force="${k}"]`);
+      await page.click(card + ' button:text-is("Check")');
+      expect((await fbClass()).includes('good'), `${s.id}: the right IMFs for ${id} were refused: ${await feedback()}`);
+    }
+    expect((await page.$$('.assign-card.right')).length === s.ids.length, `${s.id}: not every card shows its IMFs`);
+  }
   async function race(prefer) {
     const s = await step();
     const id = s.id;
+    if (s.assign) await assign();
     const t0 = await page.$('.thermo-range');
     expect(!t0 || await t0.isDisabled(), `${id}: thermometer works before the prediction`);
     expect(await page.isDisabled('#next'), `${id}: Next enabled before the race`);
@@ -156,7 +180,8 @@ const fakeLMS = () => {
   await next();
   await race(1);
   await next();
-  /* halogens: one wrong */
+  /* halogens: name the IMFs, then the phases, one wrong */
+  await assign();
   for (const [f, ph] of [['F₂', 'gas'], ['Cl₂', 'liquid'], ['Br₂', 'liquid'], ['I₂', 'solid']]) {
     await page.click(`.phase-row:has-text("${f}") .mini:text-is("${ph}")`);
   }
@@ -247,6 +272,7 @@ const fakeLMS = () => {
   /* count */
   async function count() {
     const s = await step();
+    await assign();
     for (const id of s.ids) {
       const x = await page.evaluate((i) => Chem.sub(i), id);
       const card = `.count-card:has(b:text-is("${x.text}"))`;
@@ -270,7 +296,8 @@ const fakeLMS = () => {
   await quiz();
   await next();
 
-  /* ---- Part 5: rank */
+  /* ---- Part 5: name the IMFs, then rank */
+  await assign();
   await page.click('.rank-card:has-text("methanol")');
   expect((await fbClass()).includes('bad'), 'ladder: methanol accepted as the lowest');
   for (const n of ['fluorine', 'hydrogen chloride', 'methanol']) await page.click(`.rank-card:has-text("${n}")`);

@@ -52,6 +52,9 @@ p('## Steps, races and predictions (not graded)');
 p();
 App.STEPS.forEach((s, k) => {
   p(`${k + 1}. **${s.title}** (\`${s.id}\`)`);
+  if (s.assign || ['phases', 'count', 'rank'].indexOf(s.kind) >= 0) {
+    p(`   - Name the IMFs first: ${s.ids.map((id) => sub(id).text + ' ' + Chem.forcesText(id)).join('; ')}.`);
+  }
   if (s.predict && App.PREDICT[s.predict]) {
     const pr = App.predictionFor(s.predict, s.ids || []);
     p(`   - Predict: ${pr.q} **${pr.choices[pr.answer]}**`);

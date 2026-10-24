@@ -122,11 +122,14 @@ not the full page.
   - `app.js`: `STEPS`, `PREDICT`, renderers
   - `quiz.js`: question bank
 
-## vsepr-polarity-scorm (branch `vsepr-polarity`, zip v1, SCHEMA 1)
+## vsepr-polarity-scorm (branch `vsepr-polarity`, zip v2, SCHEMA 2)
 
 - **Key objective:** domains spread apart, so the Lewis structure (flat) is not the shape; lone pairs repel more
   strongly than shared pairs; polarity by radial symmetry.
-- 14 steps in 3 parts; 16 graded questions (4+6+6) from a pool of 50. The electronegativity table is open beside checkpoint 3.
+- 14 steps in 3 parts; 16 graded questions (4+6+6) from a pool of 51. The electronegativity table is open beside checkpoint 3.
+- **Polarity is radial symmetry, never the shape name.** Every polarity step asks "Is X radially symmetric?" before
+  "polar or nonpolar?"; explanations and all of checkpoint 3 are worded in symmetry (`Vsepr.symmetry`). "Lopsided" is
+  banned. Molecule orders are shuffled per student (CO₂ stays first where it is predicted).
 - **Teacher's choices:** builds use the 5 rules (lewis.js, builder.js, draw.js, snark.js copied from `lewis-structures-scorm/`;
   builder.js adds an `onChange` hook for the 3D window). 2 to 6 electron domains; lone pairs on the central atom only with
   4 domains (no see-saw, T-shaped, square planar, square pyramidal, no 7 domains). Angles taught as 109.5°, **<109.5°**
@@ -141,12 +144,16 @@ not the full page.
 - **Files:** `species.js`, `vsepr.js` (model), `viewer3d.js` (canvas 3D, lone-pair lobes, arcs, charges), `field.js`
   (field test), `quiz.js`, `app.js`, plus the copied Lewis files.
 
-## intermolecular-forces-scorm (branch `intermolecular-forces`, zip v1, SCHEMA 1)
+## intermolecular-forces-scorm (branch `intermolecular-forces`, zip v2, SCHEMA 2)
 
 - **Key objective:** IMFs are between molecules; stronger IMFs, higher mp/bp; with similar electron counts LDF <
   dipole-dipole < hydrogen bonding.
-- 22 steps in 5 parts; 18 graded questions (4+4+5+5) from a pool of 47. The atomic-number table is beside every
+- 22 steps in 5 parts; 18 graded questions (4+4+5+5) from a pool of 58. The atomic-number table is beside every
   checkpoint, the electronegativity table beside checkpoint 3.
+- **The habit: name the IMFs, then predict.** Every comparison step opens with a card per substance (Lewis structure,
+  electrons, toggles for the forces taught so far: LDF in part 2, + dipole-dipole in part 3, + H-bonding from part 4);
+  the prediction, ranking or counting opens only when all are right. One IMF-naming question is core in each checkpoint;
+  every question naming a molecule draws it (`figs`). The validator checks both.
 - **Teacher's rules:** LDF compared by electron count, with the word polarizability. Hydrogen bonds: **donor** (H on N, O
   or F) and **receiver** (lone pair on N, O or F; never "acceptor"); count per molecule = min(H on N/O/F, lone pairs on
   N/O/F). Helium only by boiling point, only against neon (no mp at 1 atm). Excluded: "van der Waals", degrees of
@@ -156,8 +163,9 @@ not the full page.
   quoted in questions and steps to be a real data point. Kept out because the data disagree: ethanol vs methanol,
   water vs ethylene glycol, NH₃ vs HF.
 - **Heating stage (`heat.js`):** 2D Lennard-Jones particles with gravity 0.25 and a thermostat; reduced temperature
-  from the real mp/bp: solid 0.03 to 0.2, liquid 0.36 to 0.42, gas 1.3 to 2.6 (measured: crystal, cohesive pool, box-filling
-  gas). Playback speed per box ∝ √(T/M) so speeds match real thermal speeds.
+  from the real mp/bp: solid 0.03 to 0.15, liquid 0.33 to 0.38, gas 1.8 to 2.8. Dashed IMF lines join close pairs
+  (r < 1.27) in solids and liquids, none in a gas (drawn as ideal). Motion is illustrative (solid still, liquid slow);
+  no speeds and no boiling-point ticks are shown.
 - **Files:** `data.js`, `chem.js` (model), `mol2d.js` (Lewis SVG scenes, H-bond lines), `heat.js`, `cloud.js`
   (polarizability), `quiz.js`, `app.js`.
 - **Walkthrough harness (both new packages):** the fake LMS reads and writes sessionStorage on every call and never stages

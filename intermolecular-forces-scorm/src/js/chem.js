@@ -106,7 +106,7 @@ var Chem = (function () {
       return Math.abs(x - y);
     });
     var polarBond = dEN.some(function (d) { return d >= POLAR_BOND; });
-    var polar = false;
+    var polar = false, why = s.atoms.length === 1 ? 'atom' : !polarBond ? 'bonds' : 'asym';
     if (polarBond) {
       if (s.atoms.length === 2) polar = true;
       else {
@@ -116,6 +116,7 @@ var Chem = (function () {
           var outer = neighbours(s, centre).map(function (j) { return s.atoms[j][0]; });
           var same = outer.every(function (e) { return e === outer[0]; });
           polar = !(lp[centre] === 0 && same);
+          if (!polar) why = 'sym';
         } else polar = true;
       }
     }
@@ -132,7 +133,7 @@ var Chem = (function () {
 
     var out = {
       id: id, name: s.name, text: pretty(s.formula), electrons: electrons, mass: mass,
-      mp: s.mp, bp: s.bp, lp: lp, polar: polar, polarBond: polarBond, imf: imf,
+      mp: s.mp, bp: s.bp, lp: lp, polar: polar, polarBond: polarBond, imf: imf, polarWhy: why,
       donors: donors, receivers: receivers, pairs: pairs, noble: s.atoms.length === 1,
       everyday: (typeof EVERYDAY !== 'undefined' && EVERYDAY[id]) || ''
     };
@@ -184,6 +185,60 @@ var Chem = (function () {
 
   function cap(t) { return t.charAt(0).toUpperCase() + t.slice(1); }
 
+  /* the IMFs a substance has, as the class names them */
+  function forces(id) {
+    var x = sub(id);
+    return { ldf: true, dipole: x.polar, hbond: x.imf === 'hbond' };
+  }
+
+  /* why a substance is polar or not, in the class's words */
+  function polarText(id) {
+    var x = sub(id);
+    if (x.polar) return x.text + ' is polar: it has polar bonds and is not radially symmetric, so it has a δ+ end and a δ− end.';
+    if (x.polarWhy === 'atom') return x.text + ' is a single atom: no bonds, so no permanent δ+ or δ− end.';
+    if (x.polarWhy === 'sym') return x.text + ' has polar bonds, but it is radially symmetric, so it is nonpolar.';
+    var s = SUBSTANCES[id];
+    var same = s.atoms.every(function (a) { return a[0] === s.atoms[0][0]; });
+    if (same) return x.text + ' is two identical atoms sharing the bond equally: nonpolar.';
+    var kinds = [];
+    s.bonds.forEach(function (b) {
+      var k = [s.atoms[b[0]][0], s.atoms[b[1]][0]].sort().join('–');
+      if (kinds.indexOf(k) < 0) kinds.push(k);
+    });
+    return x.text + ' has only ' + kinds.join(' and ') + ' bonds, which are barely polar (a difference of 0.35 or less): nonpolar.';
+  }
+
+  /* What is wrong with a student's choice of IMFs for a substance, or ''
+     when it is right. picks: { ldf, dipole, hbond } */
+  function forcesFeedback(id, picks) {
+    var x = sub(id), want = forces(id), s = SUBSTANCES[id];
+    if (!picks.ldf) return 'Every substance has London dispersion forces: they come from its electrons (' + x.text + ' has ' +
+      x.electrons + ').';
+    if (picks.dipole !== want.dipole) return polarText(id) + (want.dipole ? ' So it has dipole-dipole forces.' :
+      ' So no dipole-dipole forces.');
+    if (picks.hbond && !want.hbond) {
+      var hs = s.atoms.map(function (a, i) { return a[0] === 'H' ? s.atoms[neighbours(s, i)[0]][0] : null; }).filter(Boolean);
+      var on = hs.filter(function (e, i) { return hs.indexOf(e) === i; });
+      return hs.length
+        ? x.text + ' has no H bonded to N, O or F (its H ' + (hs.length > 1 ? 'atoms are' : 'is') + ' on ' + on.join(' and ') +
+          '), so it cannot donate a hydrogen bond. No hydrogen bonding.'
+        : x.text + ' has no H at all, so it cannot hydrogen bond.';
+    }
+    if (!picks.hbond && want.hbond) {
+      var on2 = x.donors.map(function (i) { return s.atoms[neighbours(s, i)[0]][0]; })[0];
+      return x.text + ' has an H bonded to ' + on2 + ', so it hydrogen bonds (and, being polar, it has dipole-dipole forces too).';
+    }
+    return '';
+  }
+
+  /* "LDF, dipole-dipole and hydrogen bonding", for a summary */
+  function forcesText(id) {
+    var f = forces(id), out = ['LDF'];
+    if (f.dipole) out.push('dipole-dipole');
+    if (f.hbond) out.push('hydrogen bonding');
+    return out.length < 2 ? 'LDF only' : out.slice(0, -1).join(', ') + ' and ' + out[out.length - 1];
+  }
+
   function toC(K) { return K - 273.15; }
   /* whole degrees, except just below zero (butane boils at −0.5 °C) */
   function fmtC(K) {
@@ -207,7 +262,8 @@ var Chem = (function () {
 
   return {
     sub: sub, compare: compare, dataAgrees: dataAgrees, reason: reason, phaseAt: phaseAt, speed: speed,
-    lpAngles: lpAngles, neighbours: neighbours, pretty: pretty, cap: cap,
+    lpAngles: lpAngles, neighbours: neighbours, pretty: pretty, cap: cap, forces: forces, forcesFeedback: forcesFeedback,
+    forcesText: forcesText, polarText: polarText,
     toC: toC, fmtC: fmtC, fmtK: fmtK, fmtT: fmtT, IMF_NAME: IMF_NAME, IMF_SHORT: IMF_SHORT, RANK: RANK, NOF: NOF
   };
 })();

@@ -15,6 +15,11 @@
  *   but neon;
  * - a checkpoint answer no longer matches the model, a pool is smaller than
  *   its draw, or a question id cannot be a SCORM interaction id;
+ * - a question names a substance of more than one atom without drawing its
+ *   Lewis structure (`figs`);
+ * - a step that compares substances does not have students name the IMFs of
+ *   each one first, a step offers fewer forces than one of its substances
+ *   has, or the force checker accepts a wrong set of forces;
  * - a temperature quoted in a question or a step is not a real melting or
  *   boiling point in the data (or 25 °C, room temperature);
  * - student text uses a word outside the class's scope (van der Waals, the
@@ -114,6 +119,27 @@ App.STEPS.forEach((s) => {
 });
 if (sub('He').mp !== null) bad('helium was given a melting point');
 
+/* naming the IMFs of each substance comes before every comparison */
+const KEYS = ['ldf', 'dipole', 'hbond'];
+App.STEPS.forEach((s) => {
+  const names = s.kind === 'phases' || s.kind === 'count' || s.kind === 'rank' || (s.kind === 'race' && s.assign);
+  if (s.kind === 'race' && s.ids.length > 1 && !s.assign) bad(`${s.id}: compares substances without naming their IMFs first`);
+  if (!names) return;
+  const offer = App.offered(s).map((f) => f[0]);
+  s.ids.forEach((id) => {
+    const f = Chem.forces(id);
+    KEYS.forEach((k) => { if (f[k] && offer.indexOf(k) < 0) bad(`${s.id}: ${id} has ${k}, which the step does not offer`); });
+    for (let m = 0; m < 8; m++) {
+      const picks = { ldf: !!(m & 1), dipole: !!(m & 2), hbond: !!(m & 4) };
+      const right = KEYS.every((k) => picks[k] === f[k]);
+      const fb = Chem.forcesFeedback(id, picks);
+      if (right && fb) bad(`${s.id}: the right forces for ${id} are refused: ${fb}`);
+      if (!right && !fb) bad(`${s.id}: a wrong set of forces for ${id} is accepted (${JSON.stringify(picks)})`);
+    }
+  });
+});
+const forcesPhrase = { ldf: 'only LDF', dipole: 'dipole-dipole forces and LDF', hbond: 'hydrogen bonding, dipole-dipole forces and LDF' };
+
 /* ---------------------------------------------------------- questions */
 
 const allIds = new Set();
@@ -131,9 +157,20 @@ Object.keys(QUIZZES).forEach((k) => {
     if (new Set(q.choices).size !== q.choices.length) bad(`${q.id}: duplicate choices`);
     if (q.choices.length < 3) bad(`${q.id}: fewer than 3 choices`);
     const first = q.choices[0];
+    /* the Lewis structure of every substance of more than one atom it names */
+    (q.figs || []).forEach((id) => { if (!SUBSTANCES[id]) bad(`${q.id}: figure of unknown ${id}`); });
+    const named = new Set();
+    (q.fact || []).slice(1).forEach((v) => [].concat(v).forEach((id) => { if (SUBSTANCES[id]) named.add(id); }));
+    Object.keys(SUBSTANCES).forEach((id) => {
+      const x = sub(id);
+      if (q.q.indexOf(x.text) >= 0 || new RegExp('\\b' + x.name + '\\b', 'i').test(q.q)) named.add(id);
+    });
+    named.forEach((id) => {
+      if (SUBSTANCES[id].atoms.length > 1 && (q.figs || []).indexOf(id) < 0) bad(`${q.id}: names ${id} but does not draw it`);
+    });
     if (!q.fact) {
       if (/\b(boils?|boiling point) (higher|lower)|higher boiling point|stronger (London|intermolecular|forces)/i.test(q.q) &&
-          !/order of strength|evaporates|what lets/i.test(q.q)) bad(`${q.id}: compares substances but has no fact`);
+          !/order of strength|evaporates|what lets|do before you predict/i.test(q.q)) bad(`${q.id}: compares substances but has no fact`);
       return;
     }
     const [kind, a, b] = q.fact;
@@ -141,6 +178,10 @@ Object.keys(QUIZZES).forEach((k) => {
     else if (kind === 'weaker') { checkPair(b, a, q.id); if (!starts(first, a)) bad(`${q.id}: answer does not start with ${a}`); }
     else if (kind === 'rank') { checkOrder(a, q.id); if (first !== a.map(disp).join(' < ')) bad(`${q.id}: answer is not ${a.map(disp).join(' < ')}`); }
     else if (kind === 'imf') { if (first !== IMF_LIST[sub(a).imf]) bad(`${q.id}: ${a} has ${sub(a).imf}, answer "${first}"`); }
+    else if (kind === 'imfPair') {
+      const want = disp(a) + ': ' + forcesPhrase[sub(a).imf] + '. ' + disp(b) + ': ' + forcesPhrase[sub(b).imf];
+      if (first !== want) bad(`${q.id}: answer should be "${want}"`);
+    }
     else if (kind === 'pairs') { if (first !== String(sub(a).pairs)) bad(`${q.id}: ${a} makes ${sub(a).pairs}, answer ${first}`); }
     else if (kind === 'electrons') { if (first !== String(sub(a).electrons)) bad(`${q.id}: ${a} has ${sub(a).electrons} electrons`); }
     else if (kind === 'phase') { if (first.toLowerCase() !== Chem.phaseAt(a, b)) bad(`${q.id}: ${a} is ${Chem.phaseAt(a, b)} at ${b} K`); }
