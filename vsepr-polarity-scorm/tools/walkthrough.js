@@ -259,30 +259,47 @@ const fakeLMS = () => {
   await quiz();
   await next();
 
-  /* ---- radial symmetry */
-  expect(!/δ/.test(await label3D()) || /hidden/.test(await label3D()) || !(await page.$('.q-choices.two')),
-    'symmetry: charges shown before the prediction');
-  await page.click('.predict .choice >> nth=1');
-  await page.click('.q-choices.two .choice:text-is("Polar")');
-  expect((await fbClass()).includes('bad'), 'symmetry: CO2 accepted as polar');
-  for (;;) {
-    const cur = await page.evaluate(() => document.querySelector('.chips .chip.on').textContent.replace(' ✓', ''));
-    const polar = await page.evaluate((t) => VSEPR.polar(Object.keys(SPECIES).find((k) => Lewis.species(k).text === t)), cur);
-    await page.click(`.q-choices.two .choice:text-is("${polar ? 'Polar' : 'Nonpolar'}")`);
-    const more = await page.$('button:has-text("Next molecule")');
-    if (!more) break;
-    await more.click();
+  /* ---- radial symmetry: for each molecule, symmetric? then polar? */
+  async function symmetrySteps(id, wrongFirst) {
+    const seen = [];
+    let n = 0;
+    for (;;) {
+      const cur = await page.evaluate(() => document.querySelector('.chips .chip.on').textContent.replace(' ✓', ''));
+      const y = await page.evaluate((t) => { const k = Object.keys(SPECIES).find((x) => Lewis.species(x).text === t);
+        return { sym: VSEPR.symmetry(k).symmetric, polar: VSEPR.polar(k) }; }, cur);
+      seen.push([cur, y.sym]);
+      if (wrongFirst && n === 0) {
+        await page.click(`.q-choices.two .choice:text-is("${y.sym ? 'No, not radially symmetric' : 'Yes, radially symmetric'}")`);
+        expect((await fbClass()).includes('bad'), `${id}: a wrong symmetry answer for ${cur} was accepted`);
+        expect(!(await page.$('.symbox')), `${id}: the symmetry checklist showed before a right answer`);
+      }
+      await page.click(`.q-choices.two .choice:text-is("${y.sym ? 'Yes, radially symmetric' : 'No, not radially symmetric'}")`);
+      expect(!!(await page.$('.symbox')), `${id}: no symmetry checklist for ${cur}`);
+      expect(/δ/.test(await page.textContent('.key-row')) && /Charges shown/.test(await label3D()), `${id}: charges not shown for ${cur}`);
+      if (wrongFirst && n === 0) {
+        await page.click(`.q-choices.two .choice:text-is("${y.polar ? 'Nonpolar' : 'Polar'}")`);
+        expect((await fbClass()).includes('bad'), `${id}: a wrong polarity for ${cur} was accepted`);
+      }
+      await page.click(`.q-choices.two .choice:text-is("${y.polar ? 'Polar' : 'Nonpolar'}")`);
+      expect(/radially symmetric/.test(await page.textContent('.predict-host')), `${id}: the reveal does not talk about radial symmetry`);
+      n++;
+      const more = await page.$('button:has-text("Next molecule")');
+      if (!more) break;
+      await more.click();
+    }
+    return seen;
   }
+  expect(/hidden/.test(await label3D()), 'symmetry: charges shown before the prediction');
+  await page.click('.predict .choice >> nth=1');
+  const order1 = await symmetrySteps('symmetry', true);
+  expect(order1[0][0] === 'CO₂', 'symmetry: CO2 is not first');
+  expect(order1.length === 6, 'symmetry: not every molecule was asked');
+  const firstFour = order1.slice(1, 5).map((x) => x[1]);
+  expect(!(firstFour.every(Boolean) && !order1[5][1]), 'symmetry: all the symmetric molecules came first');
   await next();
 
-  /* ---- different outer atoms: predictions, some wrong */
-  for (let n = 0; ; n++) {
-    await page.click(`.q-choices.two .choice >> nth=${n % 2}`);
-    expect(/δ/.test(await label3D()) || /polar/.test(await label3D()), 'outer: charges not shown after predicting');
-    const more = await page.$('button:has-text("Next molecule")');
-    if (!more) break;
-    await more.click();
-  }
+  expect(/hidden/.test(await label3D()), 'outer: charges shown before the symmetry question');
+  await symmetrySteps('outer', true);
   await next();
 
   /* ---- the field test */

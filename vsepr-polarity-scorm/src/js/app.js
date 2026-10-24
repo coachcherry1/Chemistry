@@ -18,7 +18,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a molecule changes: a save
      from an older release is then discarded and the student starts fresh. */
-  var SCHEMA = 1;
+  var SCHEMA = 2;
 
   var h = UI.h;
 
@@ -62,15 +62,15 @@ var App = (function () {
             'only where the atoms are. Hide the lone pairs to see it, then sort the Lewis structures.' },
     { id: 'quiz-B', part: 2, kind: 'quiz', quiz: 'B', title: 'Checkpoint 2' },
 
-    { id: 'symmetry', part: 3, kind: 'charges', title: 'Radial symmetry', predict: 'co2',
+    { id: 'symmetry', part: 3, kind: 'charges', title: 'Radial symmetry', predict: 'co2', first: 'CO2',
       set: ['CO2', 'BF3', 'CH4', 'SF6', 'H2O', 'NH3'],
-      text: 'In every bond, the more electronegative atom is δ− and the other is δ+. The two markers show the centre ' +
-            'of positive charge (+) and the centre of negative charge (−). Look at each molecule and decide: polar ' +
-            'or nonpolar?' },
-    { id: 'outer', part: 3, kind: 'charges', title: 'Same shape, different outer atoms', hidden: true,
+      text: 'A molecule is radially symmetric when it looks the same in every direction from its central atom: no ' +
+            'lone pair on the central atom, and every outer atom the same. Then its charge is spread evenly all the ' +
+            'way round. For each molecule: is it radially symmetric? Then: polar or nonpolar?' },
+    { id: 'outer', part: 3, kind: 'charges', title: 'Same shape: is it radially symmetric?', hidden: true,
       set: ['CH4', 'CH3Cl', 'CH2Cl2', 'CHCl3', 'CCl4'],
-      text: 'All five are tetrahedral with no lone pairs on C. Predict polar or nonpolar for each, then see its ' +
-            'charges.' },
+      text: 'All five are tetrahedral with no lone pair on C. The shape is the same, so what decides polarity? Radial ' +
+            'symmetry. Decide for each one, then see its charges.' },
     { id: 'field', part: 3, kind: 'field', title: 'The electric field test', predict: 'field',
       set: ['H2O', 'CO2', 'NH3', 'CCl4', 'CH2Cl2', 'BF3'],
       text: 'Molecules tumble between two charged plates. Predict, then switch the field on.' },
@@ -93,7 +93,7 @@ var App = (function () {
       choices: ['Smaller still', 'The same as in NH₃', 'Bigger, back to 109.5°'], answer: 0,
       fact: ['angle', 'H2O', '<<109.5°'] },
     co2: { q: 'CO₂ has two polar C=O bonds (O is more electronegative than C). Is the CO₂ molecule polar?',
-      choices: ['No: the charge is spread evenly', 'Yes: its bonds are polar', 'You can’t tell'], answer: 0,
+      choices: ['No: it is radially symmetric, so its charge is spread evenly', 'Yes: its bonds are polar', 'You can’t tell'], answer: 0,
       fact: ['polar', 'CO2', false] },
     field: { q: 'When the field is switched on, which molecules will turn to line up with it?',
       choices: null, answer: 0 }
@@ -502,9 +502,11 @@ var App = (function () {
   /* ---- 2 to 6 domains: look, then name */
 
   RENDER.gallery = function (s) {
-    var cur = s.set[0];
+    /* shuffled for each student: not 2, then 3, then 4 domains */
+    var set = mixed(s);
+    var cur = set[0];
     var named = {};
-    if (state.done[s.id]) s.set.forEach(function (id) { named[id] = VSEPR.info(id).geometry; });
+    if (state.done[s.id]) set.forEach(function (id) { named[id] = VSEPR.info(id).geometry; });
     var lp = lewisPanel(cur);
     var m3 = m3Panel('3D', { model: VSEPR.model3D(cur) });
     var title = h('p', { class: 'readout' });
@@ -524,7 +526,7 @@ var App = (function () {
       paint();
     }
 
-    var names = s.set.map(function (id) { return VSEPR.info(id).geometry; });
+    var names = UI.shuffle(set.map(function (id) { return VSEPR.info(id).geometry; }), UI.rng(state.seed ^ UI.hash('names')));
     function paint() {
       tray.innerHTML = '';
       names.forEach(function (n, k) {
@@ -533,7 +535,7 @@ var App = (function () {
       });
       if (!tray.children.length) tray.appendChild(h('p', { class: 'tray-empty', text: 'Every molecule is named.' }));
       cards.innerHTML = '';
-      s.set.forEach(function (id) {
+      set.forEach(function (id) {
         var i = VSEPR.info(id);
         var look = h('button', { type: 'button', class: 'mini' + (id === cur ? ' on' : ''), 'aria-pressed': id === cur ? 'true' : 'false',
           text: 'Show ' + i.sp.text, onclick: function () { show(id); } });
@@ -559,13 +561,13 @@ var App = (function () {
           named[id] = n;
           say('Yes: ' + i.sp.text + ' is ' + n + ', ' + i.angle + '.', 'good');
           show(id);
-          if (Object.keys(named).length === s.set.length && !state.done[s.id]) {
+          if (Object.keys(named).length === set.length && !state.done[s.id]) {
             complete('All five named. Every one is radially even: no lone pairs, so the outer atoms spread out ' +
                      'as far as they can.');
           }
           return;
         }
-        var other = s.set.filter(function (x) { return VSEPR.info(x).geometry === n; })[0];
+        var other = set.filter(function (x) { return VSEPR.info(x).geometry === n; })[0];
         say('Not ' + n + ': ' + i.sp.text + ' has ' + i.domains + ' domains, and ' + n + ' is the geometry for ' +
             VSEPR.info(other).domains + '. Look at it in 3D and count the atoms around ' + i.sp.center + '.', 'bad');
         show(id);
@@ -733,14 +735,41 @@ var App = (function () {
     return seen.sort(function (a, b) { return ELEMENTS[a].en - ELEMENTS[b].en; });
   }
 
+  /* the step's molecules in a fixed random order for this student, so the
+     nonpolar ones do not all come first; a step's `first` stays first */
+  function mixed(s) {
+    var rest = s.set.filter(function (id) { return id !== s.first; });
+    rest = UI.shuffle(rest, UI.rng(state.seed ^ UI.hash(s.id)));
+    return s.first ? [s.first].concat(rest) : rest;
+  }
+
+  /* the radial symmetry test for one molecule, as two checks */
+  function symmetryBox(id) {
+    var y = VSEPR.symmetry(id);
+    function line(ok, text) {
+      return h('li', { class: ok ? 'ok' : 'no' }, [h('span', { class: 'mark', 'aria-hidden': 'true', text: ok ? '✓' : '✗' }),
+        h('span', { class: 'sr', text: ok ? 'Yes: ' : 'No: ' }), text]);
+    }
+    return h('div', { class: 'symbox' + (y.symmetric ? ' sym' : ' asym') }, [
+      h('p', { class: 'symbox-head', text: 'Radial symmetry test for ' + y.text }),
+      h('ul', { class: 'symlist' }, [
+        line(y.lpFree, y.lpFree ? 'No lone pair on ' + y.centre : Lewis.pairs(y.lp) + ' on ' + y.centre),
+        line(y.sameOuter, y.sameOuter ? 'Every outer atom the same (' + VSEPR.outerList(y.outer) + ')'
+          : 'Outer atoms not all the same (' + VSEPR.outerList(y.outer) + ')')
+      ]),
+      h('p', { class: 'symbox-foot', text: y.symmetric ? 'Radially symmetric: the charge is spread evenly all the way round.'
+        : 'Not radially symmetric: the charge is not spread evenly around ' + y.centre + '.' })
+    ]);
+  }
+
   RENDER.charges = function (s) {
-    var key = s.id;
-    var marks = {};      /* id → 'polar' | 'nonpolar', what the student said (right, or a prediction) */
-    var tried = {};
-    if (state.done[s.id]) s.set.forEach(function (id) { marks[id] = VSEPR.polar(id) ? 'polar' : 'nonpolar'; });
-    var cur = s.set[0];
+    var order = mixed(s);
+    var symOk = {};      /* id → 1 once "radially symmetric?" is answered right */
+    var marks = {};      /* id → 'polar' | 'nonpolar' once "polar?" is answered right */
+    if (state.done[s.id]) order.forEach(function (id) { symOk[id] = 1; marks[id] = VSEPR.polar(id) ? 'polar' : 'nonpolar'; });
+    var cur = order[0];
     var lp = lewisPanel(cur);
-    var m3 = m3Panel('Charges', { model: VSEPR.model3D(cur), charges: !s.hidden, centres: !s.hidden, arcs: false });
+    var m3 = m3Panel('Charges', { model: VSEPR.model3D(cur), charges: false, centres: false, arcs: false });
     var legend = h('p', { class: 'key-row' }, [
       h('span', null, [h('span', { class: 'sw neg' }), 'δ−']), h('span', null, [h('span', { class: 'sw pos' }), 'δ+']),
       h('span', null, [h('span', { class: 'mk pos', text: '+' }), 'centre of positive charge']),
@@ -751,25 +780,31 @@ var App = (function () {
     var side = h('div', { class: 'predict-host' });
     var tableBox = h('details', { class: 'reference en-ref', open: true }, [h('summary', { text: 'Electronegativity' }),
       enTable(elementsOf(s.set))]);
-    el.stage.appendChild(row('charges', [h('div', { class: 'col' }, [lp.node, tableBox]), m3.node, panel('Polar or nonpolar?', null, [chips, side])]));
+    el.stage.appendChild(row('charges', [h('div', { class: 'col' }, [lp.node, tableBox]), m3.node,
+      panel('Radially symmetric?', null, [chips, side])]));
+
+    /* step 10 shows the charges as soon as its prediction is made; step 11
+       (hidden) waits until the symmetry question is answered */
+    function open(id) {
+      if (s.predict && state.pr[s.predict] == null) return false;
+      return !s.hidden || !!symOk[id];
+    }
 
     function show(id) {
       cur = id;
       lp.set(id);
       m3.viewer.setModel(VSEPR.model3D(id));
-      /* charges stay hidden until the step's prediction is made, and in a
-         predict-first step until this molecule is predicted */
-      var open = (!s.predict || state.pr[s.predict] != null) && (!s.hidden || !!marks[id]);
-      m3.viewer.setCharges(open);
-      m3.viewer.setCentres(open);
-      m3.canvas.setAttribute('aria-label', describe3D(id).replace(/ Bond angle.*$/, '') +
-        (open ? ' ' + VSEPR.polarReason(id) : ' Charges hidden until you predict.'));
+      var o = open(id);
+      m3.viewer.setCharges(o);
+      m3.viewer.setCentres(o);
+      m3.canvas.setAttribute('aria-label', describe3D(id).replace(/ Bond angle.*$/, '').replace(/: [a-z ]+\./, '.') +
+        (o ? ' Charges shown.' : ' Charges hidden until you answer.') + (marks[id] ? ' ' + VSEPR.polarReason(id) : ''));
       paint();
     }
 
     function paint() {
       chips.innerHTML = '';
-      s.set.forEach(function (id) {
+      order.forEach(function (id) {
         chips.appendChild(h('button', { type: 'button', class: 'chip' + (id === cur ? ' on' : '') + (marks[id] ? ' done' : ''),
           'aria-pressed': id === cur ? 'true' : 'false', text: sp(id).text + (marks[id] ? ' ✓' : ''), onclick: function () { show(id); } }));
       });
@@ -781,20 +816,32 @@ var App = (function () {
         return;
       }
       if (s.predict) side.appendChild(reveal([verdict(PREDICT[s.predict], state.pr[s.predict]) +
-        'Polar bonds are not enough. Look at where the two centres are.']));
-      var id = cur, i = VSEPR.info(id);
-      if (marks[id]) {
-        side.appendChild(reveal([VSEPR.polarReason(id)]));
-      } else {
-        side.appendChild(h('p', { class: 'q-text', text: (s.hidden ? 'Predict: is ' : 'Is ') + i.sp.text + ' polar or nonpolar?' }));
-        side.appendChild(h('div', { class: 'q-choices two' }, ['polar', 'nonpolar'].map(function (w) {
-          return h('button', { type: 'button', class: 'choice', text: cap(w), onclick: function () { decide(id, w); } });
+        'Polar bonds are not enough. What decides it is radial symmetry: is the charge spread evenly all the way ' +
+        'around the central atom?']));
+      var id = cur, y = VSEPR.symmetry(id);
+      if (!symOk[id]) {
+        side.appendChild(h('p', { class: 'q-text', text: 'Is ' + y.text + ' radially symmetric?' }));
+        side.appendChild(h('p', { class: 'muted small', text: 'Check the Lewis structure: is there a lone pair on ' + y.centre +
+          '? Are all the outer atoms the same?' }));
+        side.appendChild(h('div', { class: 'q-choices two' }, [['yes', 'Yes, radially symmetric'], ['no', 'No, not radially symmetric']].map(function (c) {
+          return h('button', { type: 'button', class: 'choice', text: c[1], onclick: function () { decideSym(id, c[0] === 'yes'); } });
         })));
+      } else {
+        side.appendChild(symmetryBox(id));
+        if (!marks[id]) {
+          side.appendChild(h('p', { class: 'q-text', text: 'So is ' + y.text + ' polar or nonpolar?' }));
+          side.appendChild(h('div', { class: 'q-choices two' }, ['polar', 'nonpolar'].map(function (w) {
+            return h('button', { type: 'button', class: 'choice', text: cap(w), onclick: function () { decidePolar(id, w); } });
+          })));
+        } else {
+          side.appendChild(reveal([VSEPR.polarReason(id)]));
+        }
       }
-      var left = s.set.filter(function (x) { return !marks[x]; });
+      var left = order.filter(function (x) { return !marks[x]; });
       if (!left.length) {
-        if (!state.done[s.id]) complete(s.hidden ? 'Same shape, but different outer atoms make the charge lopsided.'
-          : 'Radially symmetric: nonpolar. Lopsided: polar.');
+        if (!state.done[s.id]) complete(s.hidden
+          ? 'All five are tetrahedral, yet only the radially symmetric ones (CH₄ and CCl₄) are nonpolar. The shape alone does not decide it: radial symmetry does.'
+          : 'Radially symmetric: the charge is spread evenly, nonpolar. Not radially symmetric: polar.');
       } else if (marks[id]) {
         var nxt = left[0];
         side.appendChild(h('div', { class: 'btnrow' }, [h('button', { type: 'button', class: 'primary', text: 'Next molecule: ' + sp(nxt).text,
@@ -802,23 +849,39 @@ var App = (function () {
       }
     }
 
-    function decide(id, w) {
-      var truth = VSEPR.polar(id) ? 'polar' : 'nonpolar';
-      if (s.hidden) {
-        marks[id] = truth;
-        tried[id] = w;
-        say(w === truth ? 'Your prediction was right: ' + truth + '.' : 'You predicted ' + w + '. Look at the charges.', w === truth ? 'good' : '');
+    function decideSym(id, said) {
+      var y = VSEPR.symmetry(id);
+      if (said === y.symmetric) {
+        symOk[id] = 1;
+        say(y.symmetric ? 'Yes: radially symmetric. No lone pair on ' + y.centre + ' and every outer atom is ' + y.outer[0] + '.'
+          : 'Yes: not radially symmetric. ' + (!y.lpFree ? 'The lone pair' + (y.lp > 1 ? 's' : '') + ' on ' + y.centre +
+            ' break' + (y.lp > 1 ? '' : 's') + ' the symmetry.' : 'The outer atoms are not all the same.'), 'good');
         show(id);
         return;
       }
+      if (y.symmetric) {
+        say('Look again: ' + y.centre + ' has no lone pair, and every outer atom is ' + y.outer[0] + ', spread evenly around ' +
+            y.centre + '. Whichever way you look from ' + y.centre + ', it is the same: radially symmetric.', 'bad');
+      } else if (!y.lpFree) {
+        say('Look at the central atom: ' + y.centre + ' has ' + Lewis.pairs(y.lp) + '. A lone pair takes up a side of ' + y.centre +
+            ' where there is no atom, so it does not look the same in every direction: not radially symmetric.', 'bad');
+      } else {
+        say('Look at the outer atoms: ' + VSEPR.outerList(y.outer) + '. They are not all the same, so the pull is not the ' +
+            'same in every direction around ' + y.centre + ': not radially symmetric.', 'bad');
+      }
+    }
+
+    function decidePolar(id, w) {
+      var y = VSEPR.symmetry(id), truth = VSEPR.polar(id) ? 'polar' : 'nonpolar';
       if (w === truth) {
         marks[id] = truth;
-        say('Right: ' + truth + '.', 'good');
+        say('Right: ' + (y.symmetric ? 'radially symmetric, so nonpolar.' : 'not radially symmetric, so polar.'), 'good');
         show(id);
       } else {
-        say('Look again at the two centres. ' + (truth === 'polar'
-          ? 'They are apart: one end of ' + sp(id).text + ' is δ+ and the other δ−.'
-          : 'They sit on the same point, at ' + sp(id).center + ': the charge is spread evenly, so there are no ends.'), 'bad');
+        say(y.symmetric ? 'Radially symmetric means the δ− charge is spread evenly all the way round: the two centres ' +
+              'meet, there are no ends, nonpolar.'
+            : 'Not radially symmetric means the charge is not spread evenly: the two centres are apart, one end is δ+ ' +
+              'and the other δ−. That is polar.', 'bad');
       }
     }
 
@@ -851,8 +914,9 @@ var App = (function () {
       side.appendChild(reveal([
         verdict(p, state.pr.field, choices) + names(yes) + ' turned to line up, δ− end toward the + plate. ' + names(no) +
           ' kept tumbling.',
-        'Every one of these molecules has polar bonds, but only the polar molecules have ends for the plates to ' +
-          'pull. That is what polar means.'
+        'Every one of these molecules has polar bonds. Only the ones that are not radially symmetric have a δ+ end ' +
+          'and a δ− end for the plates to pull: they are polar. The radially symmetric ones spread their charge ' +
+          'evenly, have no ends, and keep tumbling: nonpolar.'
       ]));
     }
     btn.addEventListener('click', function () {
@@ -1011,7 +1075,8 @@ var App = (function () {
       'The molecular geometry names only where the atoms are. With 4 domains: no lone pairs, tetrahedral; one lone pair, trigonal pyramidal; two lone pairs, bent.',
       'Lone pairs repel more strongly than shared pairs, so they squeeze the bond angle: 109.5°, then <109.5°, then <<109.5°.',
       'A radially symmetric molecule (no lone pairs on the central atom, all outer atoms the same) spreads its charge evenly: no ends, nonpolar, even if its bonds are polar.',
-      'A lopsided molecule (lone pairs on the central atom, or different outer atoms) has a δ+ end and a δ− end: polar. Polar molecules line up in an electric field.'
+      'A molecule that is not radially symmetric (a lone pair on the central atom, or outer atoms that differ) has a δ+ end and a δ− end: polar. Polar molecules line up in an electric field.',
+      'The shape name alone does not decide polarity: CH₄ and CH₃Cl are both tetrahedral. Radial symmetry decides it.'
     ].map(function (t) { return h('li', { text: t }); }))]);
     el.stage.appendChild(h('div', { class: 'grid2' }, [box, ideas]));
     var again = h('button', { type: 'button', class: 'primary', text: 'Start a new attempt' });
@@ -1108,7 +1173,7 @@ var App = (function () {
       h('ul', { class: 'screen-list' }, [
         h('li', { text: 'Part 1, Lewis to 3D: electron domains spread out.' }),
         h('li', { text: 'Part 2, Molecular geometry: 2 to 6 domains, and what lone pairs do.' }),
-        h('li', { text: 'Part 3, Polarity: symmetric or lopsided?' })
+        h('li', { text: 'Part 3, Polarity: is it radially symmetric?' })
       ]),
       h('p', { text: 'Predictions and builds are never graded, so try things. The three checkpoints are graded: your ' +
                      'first answer to each question counts. About 25 minutes. Your progress is saved if you leave.' }),

@@ -31,7 +31,7 @@
  * molecule is radially symmetric, the δ− charge is spread evenly around the
  * centre: the centre of negative charge and the centre of positive charge
  * fall on the same point, the molecule has no ends, and it is nonpolar.
- * Where it is lopsided (a lone pair on the central atom, or different outer
+ * Where it is not radially symmetric (a lone pair on the central atom, or different outer
  * atoms), the two centres pull apart: one end is δ−, the other δ+, and it is
  * polar. The partial charges are the Pauling electronegativity differences
  * (elements.js), a simple model whose only job is to place the two centres.
@@ -330,30 +330,48 @@ var VSEPR = (function () {
     return centres(m).gap > POLAR_GAP;
   }
 
-  /* Why, in the words of the class: symmetric or lopsided. */
-  function polarReason(id) {
+  /* The radial symmetry test, in the class's two checks: no lone pair on
+     the central atom, and every outer atom the same. Both pass: radially
+     symmetric, nonpolar. tools/validate.js checks that this agrees with the
+     charge model (polar()) for every molecule. */
+  function symmetry(id) {
     var i = info(id), s = i.s;
     var outer = Lewis.DIRS.filter(function (d) { return Lewis.has(s, d); }).map(function (d) { return s.at[d]; });
     var same = outer.every(function (e) { return e === outer[0]; });
-    var name = i.sp.text;
-    if (polar(id)) {
-      if (i.lp) {
-        return name + ' is polar. The lone pair' + (i.lp > 1 ? 's' : '') + ' on ' + i.sp.center + ' make' +
-          (i.lp > 1 ? '' : 's') + ' it ' + i.geometry + ', so it is lopsided: the outer atoms are all on one side. ' +
-          'It has a δ+ end and a δ− end.';
-      }
-      return name + ' is polar. Its outer atoms are not all the same, so the charge is not spread evenly: one ' +
-        'side is more δ− than the other, and the molecule has a δ+ end and a δ− end.';
+    return { lpFree: i.lp === 0, sameOuter: same, symmetric: i.lp === 0 && same, outer: outer, lp: i.lp,
+             centre: i.sp.center, text: i.sp.text };
+  }
+
+  function outerList(outer) {
+    var counts = {};
+    outer.forEach(function (e) { counts[e] = (counts[e] || 0) + 1; });
+    var parts = Object.keys(counts).map(function (e) { return counts[e] + ' ' + e; });
+    return parts.length < 2 ? parts[0] : parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1];
+  }
+
+  /* Why, in the words of the class: radially symmetric or not. */
+  function polarReason(id) {
+    var y = symmetry(id), X = y.centre, name = y.text;
+    if (!y.symmetric) {
+      var why = !y.lpFree
+        ? 'The ' + (y.lp > 1 ? y.lp + ' lone pairs' : 'lone pair') + ' on ' + X + ' take' + (y.lp > 1 ? '' : 's') +
+          ' up room on one side of ' + X + ' where there is no atom'
+        : 'Its outer atoms are not all the same (' + outerList(y.outer) + ')';
+      return name + ' is not radially symmetric. ' + why + ', so the charge is not spread evenly around ' + X +
+        '. The centre of negative charge and the centre of positive charge are in different places: ' + name +
+        ' has a δ+ end and a δ− end. Not radially symmetric: polar.';
     }
-    return name + ' is nonpolar. It is ' + i.geometry + ' with no lone pairs on ' + i.sp.center +
-      (same ? ' and identical outer atoms' : '') + ', so it is radially symmetric: the charge is spread evenly ' +
-      'around the centre and the molecule has no ends.';
+    return name + ' is radially symmetric: ' + y.outer.length + ' identical ' + y.outer[0] + ' atoms spread evenly ' +
+      'around ' + X + ', and no lone pair on ' + X + '. Whichever way you look from ' + X + ', it is the same, so the ' +
+      'charge is spread evenly all the way around. The two centres are in the same place: no ends. Radially ' +
+      'symmetric: nonpolar.';
   }
 
   return {
     V: V, slerp: slerp, GEOM: GEOM, NAMES: NAMES, TEMPLATE: TEMPLATE,
     domains: domains, geometryOf: geometryOf, info: info, finished: finished,
     model: model, model3D: model3D, modelFlat: modelFlat, morph: morph,
-    charges: charges, centres: centres, polar: polar, polarReason: polarReason, POLAR_GAP: POLAR_GAP
+    charges: charges, centres: centres, polar: polar, polarReason: polarReason, POLAR_GAP: POLAR_GAP,
+    symmetry: symmetry, outerList: outerList
   };
 })();

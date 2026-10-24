@@ -117,6 +117,13 @@ Object.keys(SPECIES).forEach((id) => {
   if (!!p !== !!POLAR[id]) bad(`${id}: the model says ${p ? 'polar' : 'nonpolar'}, the textbook ${POLAR[id] ? 'polar' : 'nonpolar'}`);
 });
 
+/* the radial symmetry test the class uses must agree with the charge model */
+Object.keys(SPECIES).forEach((id) => {
+  if (SPECIES[id].charge) return;
+  const sym = VSEPR.symmetry(id).symmetric;
+  if (sym === !!VSEPR.polar(id)) bad(`${id}: the symmetry test says ${sym ? 'symmetric' : 'not symmetric'} but the model says ${VSEPR.polar(id) ? 'polar' : 'nonpolar'}`);
+});
+
 /* ---------------------------------------------------------- steps */
 
 const STEP = (id) => App.STEPS.find((s) => s.id === id);
@@ -214,7 +221,7 @@ walk(root, []).forEach((f) => {
 /* student text: the steps, the questions, the species notes */
 const student = ['app.js', 'quiz.js', 'species.js'].map((f) => fs.readFileSync(path.join(src, 'js', f), 'utf8')).join('\n');
 [/see-?saw/i, /T-shaped/, /square planar/i, /square pyramidal/i, /pentagonal/i, /steric number/i, /hybridi[sz]/i,
- /\bAXE\b/, /formal charge/i, /dipole/i, /van der waals/i].forEach((re) => {
+ /\bAXE\b/, /formal charge/i, /dipole/i, /van der waals/i, /lopsided/i].forEach((re) => {
   if (re.test(student)) bad(`student text uses ${re}`);
 });
 const quizText = fs.readFileSync(path.join(src, 'js', 'quiz.js'), 'utf8');

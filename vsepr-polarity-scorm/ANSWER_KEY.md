@@ -51,7 +51,7 @@ Angles are taught as students learn them: one lone pair <109.5°, two lone pairs
 8. **Name the geometry by its atoms** (`sort`)
 9. **Checkpoint 2** (`quiz-B`)
 10. **Radial symmetry** (`symmetry`)
-11. **Same shape, different outer atoms** (`outer`)
+11. **Same shape: is it radially symmetric?** (`outer`)
 12. **The electric field test** (`field`)
 13. **Checkpoint 3** (`quiz-C`)
 14. **Results** (`results`)
@@ -61,7 +61,7 @@ Angles are taught as students learn them: one lone pair <109.5°, two lone pairs
 - In the Lewis structure, the H–C–H angle looks like 90°. In a real CH₄ molecule, how big is it? **109.5°: the four bonds spread out in 3D**
 - NH₃ also has 4 electron domains, but one of them is a lone pair. Compared with CH₄’s 109.5°, the H–N–H angle will be: **Smaller than 109.5°**
 - H₂O has two lone pairs. Compared with NH₃, the H–O–H angle will be: **Smaller still**
-- CO₂ has two polar C=O bonds (O is more electronegative than C). Is the CO₂ molecule polar? **No: the charge is spread evenly**
+- CO₂ has two polar C=O bonds (O is more electronegative than C). Is the CO₂ molecule polar? **No: it is radially symmetric, so its charge is spread evenly**
 - When the field is switched on, which molecules will turn to line up with it? **Only H₂O, NH₃, CH₂Cl₂**
 
 ## Checkpoint 1: electron domains
@@ -210,71 +210,75 @@ Angles are taught as students learn them: one lone pair <109.5°, two lone pairs
    - Others: BeCl₂ (drawing); CO₂ (drawing); HCN (drawing)
    - Why: H₂S: 4 domains, two of them lone pairs, so bent. BeCl₂, CO₂ and HCN have 2 domains and no lone pairs on the central atom: linear.
 
-## Checkpoint 3: polarity
+## Checkpoint 3: polarity and radial symmetry
 
-6 questions per attempt from a pool of 16.
+6 questions per attempt from a pool of 17.
 
 1. ★ `c-co2`: CO₂ has two polar C=O bonds. Is the CO₂ molecule polar? (shows the Lewis structure of CO₂)
-   - **Answer:** Nonpolar: it is linear and symmetric, so the δ− charge on the two O atoms is spread evenly around C
+   - **Answer:** Nonpolar: it is radially symmetric (no lone pair on C, two identical O atoms), so the charge is spread evenly
    - Others: Polar: it has polar bonds; Polar: O is more electronegative than C; Nonpolar: C and O have the same electronegativity
-   - Why: Both O atoms are δ−, pulling equally from opposite sides. The centre of negative charge lands on C, right where the centre of positive charge is: no ends, nonpolar.
+   - Why: The two δ− O atoms sit evenly on opposite sides of C. Radially symmetric: the centre of negative charge falls on C, right where the centre of positive charge is. No ends, nonpolar. Polar bonds are not enough.
 2. `c-h2o`: Is H₂O polar or nonpolar? (shows the Lewis structure of H₂O)
-   - **Answer:** Polar: its lone pairs make it bent, so the δ+ H atoms are on one side and the δ− O on the other
-   - Others: Nonpolar: its two O–H bonds are the same; Nonpolar: it has 4 electron domains, like CH₄; Polar: it is linear
-   - Why: Bent, not symmetric: the δ+ end is between the two H atoms and the δ− end is at O. It has ends, so it is polar.
+   - **Answer:** Polar: the two lone pairs on O mean it is not radially symmetric, so the charge is not spread evenly
+   - Others: Nonpolar: its two O–H bonds are the same; Nonpolar: it has 4 electron domains, like CH₄; Polar: H is more electronegative than O
+   - Why: The lone pairs take up one side of O, where there is no atom. Not radially symmetric: the two centres of charge are apart, with a δ− end at O and a δ+ end at the H atoms.
 3. `c-ccl4`: Is CCl₄ polar or nonpolar? (shows the Lewis structure of CCl₄)
-   - **Answer:** Nonpolar: four identical Cl atoms surround C evenly, so the charge is radially symmetric
-   - Others: Polar: C–Cl bonds are polar; Polar: Cl is more electronegative than C; Nonpolar: it has no lone pairs on the Cl atoms
-   - Why: Every Cl is δ−, and they sit evenly round C in a tetrahedron. The centres of positive and negative charge are both at C: no ends.
-4. ★ `c-ch2cl2`: CH₂Cl₂ is tetrahedral, like CCl₄. Is it polar or nonpolar? (shows the Lewis structure of CH₂Cl₂)
-   - **Answer:** Polar: its outer atoms are not all the same, so one side is more δ− than the other
-   - Others: Nonpolar: every tetrahedral molecule is nonpolar; Nonpolar: it has no lone pairs on C; Polar: it has a lone pair on C
-   - Why: The shape is symmetric, but the outer atoms are not: the two Cl side is δ− and the two H side is δ+. A molecule is radially symmetric only if its outer atoms are all the same.
+   - **Answer:** Nonpolar: it is radially symmetric (no lone pair on C, four identical Cl atoms), so the charge is spread evenly
+   - Others: Polar: C–Cl bonds are polar; Polar: Cl is more electronegative than C; Nonpolar: the Cl atoms have no lone pairs
+   - Why: Each Cl is δ−, but the four of them surround C evenly. Radially symmetric: both centres of charge are at C, so there are no ends.
+4. ★ `c-ch2cl2`: CH₂Cl₂ has the same tetrahedral shape as CCl₄. Is it polar or nonpolar? (shows the Lewis structure of CH₂Cl₂)
+   - **Answer:** Polar: its outer atoms are not all the same (2 H, 2 Cl), so it is not radially symmetric
+   - Others: Nonpolar: every tetrahedral molecule is nonpolar; Nonpolar: it has no lone pair on C; Polar: it has a lone pair on C
+   - Why: The shape alone does not decide it. With two Cl and two H around C, the charge is not the same in every direction: not radially symmetric, so the two centres are apart. Polar.
 5. `c-chcl3`: Is CHCl₃ polar or nonpolar? (shows the Lewis structure of CHCl₃)
-   - **Answer:** Polar: one H and three Cl, so the charge is not spread evenly
-   - Others: Nonpolar: it is tetrahedral; Nonpolar: C has no lone pairs; Polar: it is trigonal pyramidal
-   - Why: Tetrahedral, but the outer atoms differ: the three Cl make one side δ− and the H end δ+.
+   - **Answer:** Polar: one H and three Cl means it is not radially symmetric
+   - Others: Nonpolar: it is tetrahedral; Nonpolar: C has no lone pair; Nonpolar: it has more Cl than H
+   - Why: One outer atom differs from the others, so the charge is not spread evenly around C. Not radially symmetric: polar.
 6. `c-ch4`: Is CH₄ polar or nonpolar? (shows the Lewis structure of CH₄)
-   - **Answer:** Nonpolar: four identical H atoms surround C evenly, and C–H bonds are barely polar anyway
-   - Others: Polar: it has four bonds; Polar: H is less electronegative than C; Nonpolar: it is flat
-   - Why: Radially symmetric: the same atom at every corner of a tetrahedron, and no lone pairs on C.
+   - **Answer:** Nonpolar: it is radially symmetric (no lone pair on C, four identical H atoms)
+   - Others: Polar: it has four bonds; Polar: H is less electronegative than C; Polar: it has 4 electron domains
+   - Why: Four identical H atoms evenly around C and no lone pair: radially symmetric, so nonpolar. (Its C–H bonds are barely polar anyway.)
 7. `c-bf3`: Is BF₃ polar or nonpolar? (shows the Lewis structure of BF₃)
-   - **Answer:** Nonpolar: three identical F atoms are spread evenly around B in a flat triangle
-   - Others: Polar: B–F bonds are very polar; Polar: B has only 6 electrons; Nonpolar: B and F have the same electronegativity
-   - Why: Each B–F bond is polar, but the three δ− F atoms pull equally in three directions, 120° apart. The charge centres meet at B.
+   - **Answer:** Nonpolar: it is radially symmetric (no lone pair on B, three identical F atoms)
+   - Others: Polar: B–F bonds are very polar; Polar: B has only 6 electrons; Polar: F is the most electronegative element
+   - Why: Each B–F bond is very polar, but the three δ− F atoms are spread evenly around B. Radially symmetric: the two centres of charge meet at B. Nonpolar.
 8. `c-sf6`: Is SF₆ polar or nonpolar? (shows the Lewis structure of SF₆)
-   - **Answer:** Nonpolar: six identical F atoms sit evenly on every side of S
-   - Others: Polar: S–F bonds are polar; Polar: S has more than 8 electrons; Nonpolar: it has no bonds
-   - Why: Octahedral, with no lone pairs and the same atom on all six sides: radially symmetric.
-9. `c-pcl3`: Is PCl₃ polar or nonpolar? (shows the Lewis structure of PCl₃)
-   - **Answer:** Polar: the lone pair on P makes it trigonal pyramidal, so the Cl atoms are all on one side
-   - Others: Nonpolar: its three Cl atoms are identical; Nonpolar: it is trigonal planar; Polar: P is more electronegative than Cl
-   - Why: The outer atoms are the same, but the lone pair on P makes the molecule lopsided: the δ− Cl atoms are on one side and δ+ P on the other.
+   - **Answer:** Nonpolar: it is radially symmetric (no lone pair on S, six identical F atoms)
+   - Others: Polar: S–F bonds are polar; Polar: S has more than 8 electrons; Polar: it has 6 electron domains
+   - Why: The same atom on every side and no lone pair: radially symmetric, so the charge is spread evenly.
+9. `c-pcl3`: PCl₃ has three identical Cl atoms. Is it polar or nonpolar? (shows the Lewis structure of PCl₃)
+   - **Answer:** Polar: the lone pair on P means it is not radially symmetric
+   - Others: Nonpolar: its three Cl atoms are identical; Nonpolar: it has no double bonds; Polar: P is more electronegative than Cl
+   - Why: Identical outer atoms are not enough: the lone pair takes up one side of P, where there is no atom. Not radially symmetric, so the centres of charge are apart. Polar.
 10. `c-hcn`: HCN is linear, like CO₂. Is HCN polar or nonpolar? (shows the Lewis structure of HCN)
-   - **Answer:** Polar: the two ends are different atoms, H at one end and N at the other
-   - Others: Nonpolar: every linear molecule is nonpolar; Nonpolar: C has no lone pairs; Polar: it is bent
-   - Why: Linear, but not symmetric: the N end is δ− and the H end is δ+.
-11. ★ `c-nh3-bf3`: Why is NH₃ polar while BF₃ is not?
-   - **Answer:** NH₃’s lone pair makes it trigonal pyramidal, with its H atoms all on one side; BF₃ is radially symmetric
+   - **Answer:** Polar: its two outer atoms are different (H and N), so it is not radially symmetric
+   - Others: Nonpolar: every linear molecule is nonpolar; Nonpolar: C has no lone pair; Nonpolar: it has a triple bond
+   - Why: Same shape as CO₂, but not the same on both sides of C: the N end is δ− and the H end δ+. Not radially symmetric: polar.
+11. ★ `c-nh3-bf3`: NH₃ and BF₃ both have three identical outer atoms. Why is NH₃ polar while BF₃ is not?
+   - **Answer:** NH₃ has a lone pair on N, so it is not radially symmetric; BF₃ has none and is radially symmetric
    - Others: N–H bonds are polar and B–F bonds are not; NH₃ has more atoms than BF₃; BF₃ has a lone pair on B
-   - Why: Both have three identical outer atoms. The difference is the lone pair on N: it makes NH₃ lopsided, so it has a δ+ end (the H atoms) and a δ− end (N). BF₃ has no lone pair on B and is flat and even.
-12. `c-rule`: Which molecules are nonpolar?
-   - **Answer:** Radially symmetric ones: no lone pairs on the central atom and all the outer atoms the same
-   - Others: Any molecule with no lone pairs on its outer atoms; Any molecule whose bonds are polar; Any molecule with 4 electron domains
-   - Why: Radial symmetry spreads the δ− charge evenly around the centre, so the centres of positive and negative charge are in the same place and the molecule has no ends.
-13. `c-centres`: In a nonpolar molecule, where are the centre of positive charge and the centre of negative charge?
-   - **Answer:** In the same place, so the molecule has no δ+ end and no δ− end
-   - Others: At opposite ends of the molecule; There is no charge anywhere in the molecule; Both on the most electronegative atom
-   - Why: The atoms still carry partial charges, but they are spread so evenly that their centres meet. In a polar molecule the two centres pull apart and make ends.
-14. `c-field`: Molecules are placed between a + plate and a − plate. Which ones turn to line up?
-   - **Answer:** Polar molecules: their δ− end turns toward the + plate
-   - Others: Nonpolar molecules: they have no charges to stop them; Every molecule with polar bonds; None of them: molecules have no charge
-   - Why: A polar molecule has a δ− end and a δ+ end, and the plates pull the ends opposite ways. A nonpolar molecule has no ends, so it keeps tumbling.
-15. `c-pick-polar`: Which molecule is polar?
+   - Why: The radial symmetry test has two checks: no lone pair on the central atom, and every outer atom the same. BF₃ passes both. NH₃ fails the first: its lone pair takes up one side of N.
+12. `c-rule`: What makes a molecule radially symmetric?
+   - **Answer:** No lone pair on the central atom, and every outer atom the same
+   - Others: Every bond is polar; It has 4 electron domains; Its outer atoms have no lone pairs
+   - Why: Then it looks the same in every direction from the central atom, and its charge is spread evenly all the way around: nonpolar.
+13. `c-why-sym`: Why is a radially symmetric molecule nonpolar, even when its bonds are polar?
+   - **Answer:** Its δ− charge is spread evenly all the way around, so the centres of positive and negative charge are in the same place
+   - Others: Its bonds stop being polar; It has no electrons on its outer atoms; Its atoms all have the same electronegativity
+   - Why: The partial charges are still there, but evenly spread. With the two centres together, the molecule has no δ+ end and no δ− end.
+14. `c-centres`: In a molecule that is NOT radially symmetric, where are the centre of positive charge and the centre of negative charge?
+   - **Answer:** In different places, so the molecule has a δ+ end and a δ− end: polar
+   - Others: In the same place; There is no charge anywhere in the molecule; Both on the central atom
+   - Why: Without radial symmetry the charge is not spread evenly, so the two centres pull apart and make ends.
+15. `c-field`: Molecules are placed between a + plate and a − plate. Which ones turn to line up?
+   - **Answer:** The ones that are not radially symmetric (polar): their δ− end turns toward the + plate
+   - Others: The radially symmetric ones; Every molecule with polar bonds; None of them: molecules have no charge
+   - Why: Only a molecule that is not radially symmetric has a δ− end and a δ+ end for the plates to pull. A radially symmetric molecule has no ends and keeps tumbling.
+16. `c-pick-polar`: Which molecule is NOT radially symmetric, and so polar?
    - **Answer:** NH₃ (drawing)
    - Others: CO₂ (drawing); BF₃ (drawing); CCl₄ (drawing)
-   - Why: NH₃: its lone pair makes it trigonal pyramidal and lopsided. CO₂, BF₃ and CCl₄ are radially symmetric.
-16. `c-pick-nonpolar`: Which molecule is nonpolar?
+   - Why: NH₃: its lone pair on N breaks the radial symmetry. CO₂, BF₃ and CCl₄ have no lone pair on the central atom and identical outer atoms: radially symmetric.
+17. `c-pick-nonpolar`: Which molecule is radially symmetric, and so nonpolar?
    - **Answer:** PCl₅ (drawing)
    - Others: H₂O (drawing); CHCl₃ (drawing); NF₃ (drawing)
-   - Why: PCl₅: five identical Cl atoms and no lone pair on P, so it is radially symmetric. H₂O and NF₃ have lone pairs on the central atom, and CHCl₃ has different outer atoms.
+   - Why: PCl₅: five identical Cl atoms and no lone pair on P. H₂O and NF₃ have lone pairs on the central atom, and CHCl₃ has different outer atoms: none of them is radially symmetric.

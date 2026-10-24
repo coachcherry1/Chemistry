@@ -85,7 +85,9 @@ function FieldSim(host, ids) {
   function modelFor(id) { return VSEPR.model(VSEPR.finished(id), { id: id, ideal: true }); }
 
   var E = [1, 0, 0];         /* the field points from the + plate to the − plate */
-  var TORQUE = 60, DAMP = 4, KICK = 7;
+  /* strong on purpose: a polar molecule snaps into line (about 0.99 of the
+     way) so the difference from a nonpolar one cannot be missed */
+  var TORQUE = 500, DAMP = 8, KICK = 8;
 
   function step(dt) {
     subs.forEach(function (sb) {
@@ -159,19 +161,24 @@ function FieldSim(host, ids) {
     subs.forEach(function (sb, k) {
       var c = k % cols, r = Math.floor(k / cols);
       var bx = x0 + c * cw, by = r * ch;
-      ctx.strokeStyle = line;
-      ctx.lineWidth = dpr;
+      var a = alignment(sb), lined = on && a > 0.6;
+      /* a box whose molecules have lined up is outlined and shaded */
+      if (lined) {
+        ctx.fillStyle = cssVar('good-bg', '#e4f4ec');
+        ctx.fillRect(bx + 2 * dpr, by + 2 * dpr, cw - 4 * dpr, ch - 4 * dpr);
+      }
+      ctx.strokeStyle = lined ? cssVar('good', '#0f7a52') : line;
+      ctx.lineWidth = lined ? 3 * dpr : dpr;
       ctx.strokeRect(bx + 2 * dpr, by + 2 * dpr, cw - 4 * dpr, ch - 4 * dpr);
       ctx.fillStyle = ink;
       ctx.font = '700 ' + fs + 'px system-ui, sans-serif';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
       ctx.fillText(sb.sp.text, bx + 8 * dpr, by + 6 * dpr);
-      var a = alignment(sb), lined = on && a > 0.6;
-      ctx.font = '600 ' + Math.round(12 * dpr) + 'px system-ui, sans-serif';
+      ctx.font = (lined ? '800 ' + Math.round(13 * dpr) : '600 ' + Math.round(12 * dpr)) + 'px system-ui, sans-serif';
       ctx.textAlign = 'right';
       ctx.fillStyle = lined ? cssVar('good', '#0f7a52') : muted;
-      ctx.fillText(on ? (lined ? 'lined up' : 'still tumbling') : 'tumbling', bx + cw - 8 * dpr, by + 6 * dpr);
+      ctx.fillText(on ? (lined ? 'LINED UP: polar' : 'still tumbling') : 'tumbling', bx + cw - 8 * dpr, by + 6 * dpr);
       /* every molecule fills the same room, whatever its size */
       var size = Math.min(cw / 3.6, (ch - 26 * dpr) / 2.3);
       var scale = size / (2 * (sb.reach + 0.45));
