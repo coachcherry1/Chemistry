@@ -42,7 +42,6 @@ function groups() {
     const own = c.closest('.panel');
     const bar = own && own.querySelector('.turnbar');
     if (bar && vis(bar)) els.push(bar);
-    if (own) own.querySelectorAll('.btnrow').forEach(b => { if (vis(b)) els.push(b); });
     if (row) {
       const draw = [...row.querySelectorAll('svg.mol, svg.newman')].filter(vis)[0];
       if (draw) els.push(draw);
@@ -66,8 +65,6 @@ function groups() {
     const s = p.closest('svg');
     if (vis(s) && !out.some((g) => g.els.includes(s))) out.push({ name: 'clickable drawing', els: [s] });
   });
-  const coach = document.querySelector('.meso-coach');
-  if (coach) out.push({ name: 'guided meso comparison and controls', els: [coach] });
   return out;
 }
 

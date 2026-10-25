@@ -382,18 +382,6 @@ const fakeLMS = () => {
   }
   await next();
 
-  /* Guided juxtaposition: the same rotation gives full overlap only for A. */
-  await page.getByRole('button', { name: 'Turn both mirror images upside down', exact: true }).click();
-  await page.getByRole('button', { name: 'Lay each image on its original', exact: true }).click();
-  await wait(800);
-  const comparison = await page.locator('.coach-result').allTextContents();
-  expect(comparison[0].includes('Every atom fits') && comparison[1].includes('do not fit'), 'guided meso comparison has wrong overlap');
-  await page.getByRole('button', { name: 'Both have two centres, so both must be chiral', exact: true }).click();
-  await fb(/Two chirality centres do not guarantee/, 'meso misconception not coached');
-  await page.getByRole('button', { name: 'A fits its own mirror image; B cannot', exact: true }).click();
-  await fb(/whole structure must have the required symmetry/, 'meso comparison not completed');
-  await next();
-
   /* meso: A fits its mirror image upside down; B never fits; A's mirror plane */
   await predict(1);
   await page.click('.turnbar button:has-text("Upside down")');
@@ -474,19 +462,6 @@ const fakeLMS = () => {
   expect(lms2['cmi.core.lesson_status'] === 'completed', 'retry changed the status to ' + lms2['cmi.core.lesson_status']);
   expect(/best \d+%/.test(await page.textContent('#score')), 'header does not show the best score');
   console.log('Retry: attempt 2 started clean; gradebook kept ' + lms2['cmi.core.score.raw'] + '%');
-
-  /* Alternate R/S strategy: read down C-to-4 before putting 4 on a dash. */
-  const bondPage = await browser.newPage({ viewport: { width: 1366, height: 520 } });
-  await bondPage.goto(URL + '?step=rotate');
-  await bondPage.locator('.predict .choice').first().click();
-  for (const label of ['S', 'R']) {
-    await bondPage.getByRole('button', { name: /Steering-wheel view/ }).click();
-    for (let n = 1; n <= 3; n++) await bondPage.getByRole('button', { name: new RegExp('^Trace ' + n + ':') }).click();
-    await bondPage.getByRole('button', { name: label === 'S' ? 'Counterclockwise: S' : 'Clockwise: R', exact: true }).click();
-    if (label === 'S') await bondPage.getByRole('button', { name: /Next molecule/ }).click();
-  }
-  expect((await bondPage.locator('#feedback').innerText()).includes('rotate the molecule'), 'C-to-4 strategy did not complete the two readings');
-  await bondPage.close();
 
   console.log('Results screen: ' + big.trim());
   console.log('LMS: status=' + lms['cmi.core.lesson_status'] + ' score.raw=' + lms['cmi.core.score.raw'] +

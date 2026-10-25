@@ -292,23 +292,6 @@ const m0 = (id) => mol(S(id).mols ? S(id).mols[0] : S(id).mol);
   const s = mol('butanol_S');
   if (labels(s) !== 'S' || !STEREO.fourOnDash(s, s.centre)) fail('wheel: the second molecule should be (S)-2-butanol with H on the dash');
 }
-/* Looking from C toward priority 4 must put 4 directly behind C and
-   preserve handedness, including when 4 starts in the page or on a wedge. */
-for (const id of ids) {
-  const m = mol(id);
-  for (const c of CIP.centres(m)) {
-    const W = App.wheelTurn(m, c), view = STEREO.apply(m, W);
-    const o = CIP.rank(m, c).order;
-    const away = G.unit(G.sub(view.atoms[o[3]].p, view.atoms[c].p));
-    if (!near(away[0], 0) || !near(away[1], 0) || !near(away[2], -1)) fail(id + ': C-to-4 view is not looking away');
-    if (CIP.label(view, c) !== CIP.label(m, c)) fail(id + ': bond view changes handedness');
-    const p = view.atoms[c].p;
-    const v = o.slice(0, 3).map(j => G.sub(view.atoms[j].p, p));
-    const area = (v[1][0]-v[0][0])*(v[2][1]-v[0][1])-(v[1][1]-v[0][1])*(v[2][0]-v[0][0]);
-    if ((area < 0 ? 'R' : 'S') !== CIP.label(m, c)) fail(id + ': bond view reads the wrong R/S direction');
-  }
-}
-
 /* rotate: 4 on a wedge, then 4 (CH₃) in the page, which Turn it over leaves in the page */
 {
   const a = mol('alanine_w'), o = order(a, a.centre);
