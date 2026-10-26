@@ -146,7 +146,7 @@ not the full page.
 - **Files:** `species.js`, `vsepr.js` (model), `viewer3d.js` (canvas 3D, lone-pair lobes, arcs, charges), `field.js`
   (field test), `quiz.js`, `app.js`, plus the copied Lewis files.
 
-## intermolecular-forces-scorm (branch `intermolecular-forces`, zip v3, SCHEMA 3)
+## intermolecular-forces-scorm (branch `intermolecular-forces`, zip v4, SCHEMA 3)
 
 - **Key objective:** IMFs are between molecules; stronger IMFs, higher mp/bp; with similar electron counts LDF <
   dipole-dipole < hydrogen bonding.
@@ -156,6 +156,7 @@ not the full page.
   electrons, toggles for all three forces from the first card, so students rule forces out too);
   the prediction, ranking or counting opens only when all are right. One IMF-naming question is core in each checkpoint;
   every question naming a molecule draws it (`figs`). The validator checks both.
+- **Checkpoint choices:** the right answer is never the longest sentence choice; the validator checks it.
 - **Teacher's rules:** LDF compared by electron count, with the word polarizability. Hydrogen bonds: **donor** (H on N, O
   or F) and **receiver** (lone pair on N, O or F; never "acceptor"); count per molecule = min(H on N/O/F, lone pairs on
   N/O/F). Helium only by boiling point, only against neon (no mp at 1 atm). Excluded: "van der Waals", degrees of

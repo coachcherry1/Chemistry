@@ -102,27 +102,27 @@ Melting and boiling points at 1 atm, CRC Handbook of Chemistry and Physics (97th
 
 1. ★ `a-ne-xe`: Which has the stronger London dispersion forces between its atoms: neon or xenon?
    - **Answer:** Xenon: 54 electrons to neon’s 10, so it is far more polarizable
-   - Others: Neon: its atoms are smaller and pack closer; They are the same: both are noble gases; Neither: noble gases have no attractions at all
+   - Others: Neon: its atoms are smaller, so they can pack in closer to each other; They are the same: both are noble gases with full outer shells; Neither: noble gas atoms have no attractions between them at all
    - Why: More electrons make a bigger electron cloud, held farther from the nucleus. It is easier to push out of shape (more polarizable), so its temporary dipoles are bigger and the LDF are stronger. Xenon boils at −108 °C; neon at −246 °C.
 2. ★ `a-escape`: A liquid is heated to its boiling point. What lets its particles escape into the gas?
    - **Answer:** They move fast enough to break free of the attractions between them
-   - Others: The bonds inside each molecule break; The particles themselves get bigger; The attractions between them get stronger
+   - Others: The bonds inside each molecule break, so the molecule falls apart; The particles themselves get bigger, so they no longer fit in the liquid; The attractions between them get stronger and push the particles apart
    - Why: Temperature is how fast the particles move. At the boiling point they move fast enough to pull away from each other. The molecules themselves stay whole.
 3. `a-bubbles`: What is inside the bubbles in boiling water?
    - **Answer:** Water molecules, H₂O, that have broken away from each other
-   - Others: Hydrogen gas and oxygen gas; Air that was dissolved in the water; Heat
+   - Others: Hydrogen gas and oxygen gas, made when the water molecules break apart; Air that was dissolved in the water and is now coming back out of it; Heat from the stove, trapped in pockets inside the hot liquid water
    - Why: Boiling separates water molecules from each other; it does not break the O–H bonds inside them. The bubbles are water vapour.
 4. `a-polarizability`: What does polarizability mean?
    - **Answer:** How easily an electron cloud can be pushed out of shape
-   - Others: How much charge an atom has; How polar a bond is; How many bonds an atom can make
+   - Others: How much positive charge the nucleus of an atom has; How polar the bonds between two different atoms are; How many bonds an atom can make with the atoms around it
    - Why: A polarizable cloud shifts easily to one side, making a temporary δ− side and δ+ side. More polarizable means stronger London dispersion forces.
 5. `a-why-xe`: Why is a xenon atom more polarizable than a neon atom?
-   - **Answer:** It has more electrons, in a bigger cloud farther from the nucleus, so they are easier to push around
-   - Others: Xenon is polar and neon is not; Xenon has fewer electrons to hold on to; Xenon forms hydrogen bonds
+   - **Answer:** It has more electrons, in a bigger cloud farther from the nucleus, so they shift easily
+   - Others: Xenon atoms are polar and neon atoms are not, so xenon has permanent δ+ and δ− ends; Xenon has fewer electrons for its nucleus to hold on to, so the ones it has move freely; Xenon atoms form hydrogen bonds with each other, which makes their clouds much softer
    - Why: The outer electrons of a big atom are far from its nucleus and shielded by the electrons beneath them, so the cloud is easy to distort.
 6. `a-cl2-br2`: Which has the higher boiling point: Cl₂ or Br₂? Name the IMFs of each first.
    - **Answer:** Br₂: 70 electrons to 34, so stronger London dispersion forces
-   - Others: Cl₂: chlorine is more electronegative; They are the same: both are halogens; Cl₂: its molecules are smaller
+   - Others: Cl₂: chlorine is more electronegative, so its molecules pull harder; They are the same: both are halogens, so they boil together; Cl₂: its molecules are smaller, so they can pack in much closer
    - Why: Both are nonpolar and have only LDF. Br₂ has more electrons, so it is more polarizable. Br₂ boils at 59 °C, Cl₂ at −34 °C.
 7. `a-br2-phase`: At room temperature (25 °C), bromine, Br₂, is a…
    - **Answer:** Liquid
@@ -146,11 +146,11 @@ Melting and boiling points at 1 atm, CRC Handbook of Chemistry and Physics (97th
    - Why: An argon atom is not polar and has no H, so it has only LDF. Without them argon could never become a liquid, and it does, at −186 °C.
 12. `a-all-ldf`: Which substances have London dispersion forces?
    - **Answer:** All of them: every atom and molecule has electrons that can shift
-   - Others: Only nonpolar substances; Only the noble gases; Only substances that hydrogen bond
+   - Others: Only nonpolar substances, because polar ones have dipole-dipole forces instead; Only the noble gases, because their atoms have no bonds to hold electrons; Only substances that hydrogen bond, because they have lone pairs to shift
    - Why: Every particle has an electron cloud, so every substance has LDF. Polar molecules have dipole-dipole forces as well.
 13. `a-he-ne`: Helium or neon: which boils at the lower temperature?
    - **Answer:** Helium: 2 electrons to neon’s 10, so weaker London dispersion forces
-   - Others: Neon: it has more electrons to lose; They boil at the same temperature; Neither ever boils
+   - Others: Neon: it has more electrons to lose, so its atoms let go of each other easily; They boil at the same temperature, because both are noble gases with full shells; Neither ever boils, because noble gas atoms do not attract each other at all
    - Why: Helium’s tiny 2-electron cloud is the least polarizable of all, so it boils at −269 °C, just 4 K. Neon boils at −246 °C.
 14. ★ `a-br2-imf`: Which intermolecular forces act between Br₂ molecules?
    - **Answer:** Only London dispersion forces
@@ -171,7 +171,7 @@ Melting and boiling points at 1 atm, CRC Handbook of Chemistry and Physics (97th
    - Why: The same number of electrons means about the same LDF. HCl adds dipole-dipole forces on top. HCl boils at −85 °C, F₂ at −188 °C.
 2. `b-dd-what`: What are dipole-dipole forces?
    - **Answer:** The attraction between the δ+ end of one polar molecule and the δ− end of another
-   - Others: The attraction between temporary dipoles in nonpolar molecules; The bonds inside a molecule; The attraction between an H and a lone pair on N, O or F
+   - Others: The attraction between temporary δ+ and δ− ends that flicker in nonpolar molecules; The bonds inside a polar molecule that hold its δ+ atom and its δ− atom together; The attraction between an H on N, O or F and a lone pair on N, O or F of another molecule
    - Why: A polar molecule has permanent ends. Neighbours line up δ+ to δ− and hold on to each other.
 3. `b-hcl-imf`: Which intermolecular forces act between HCl molecules?
    - **Answer:** Dipole-dipole forces and London dispersion forces
@@ -183,19 +183,19 @@ Melting and boiling points at 1 atm, CRC Handbook of Chemistry and Physics (97th
    - Why: Two identical atoms share the bond equally: F₂ is nonpolar, so it has only LDF.
 5. `b-ethane`: Ethane, C₂H₆, and fluoromethane, CH₃F, both have 18 electrons. Which has the higher boiling point?
    - **Answer:** CH₃F: it is polar, so it adds dipole-dipole forces to its LDF
-   - Others: C₂H₆: it has more atoms; They boil at the same temperature: same electrons; C₂H₆: it has more H atoms
+   - Others: C₂H₆: it has more atoms, so there are more places for its molecules to attract; They boil at the same temperature: same electrons, so the same forces; C₂H₆: it has more H atoms, and H atoms attract each other strongly
    - Why: Same electrons, about the same LDF. CH₃F’s C–F bond makes it polar. CH₃F boils at −78 °C, ethane at −89 °C.
 6. `b-acetone`: Butane, C₄H₁₀, has 34 electrons and acetone, C₃H₆O, has 32. Which has the higher boiling point?
-   - **Answer:** Acetone: it is polar, and dipole-dipole forces beat LDF even with 2 fewer electrons
-   - Others: Butane: it has more electrons; Butane: it has more atoms; They boil at the same temperature
+   - **Answer:** Acetone: it is polar, so dipole-dipole forces beat 2 fewer electrons
+   - Others: Butane: it has 2 more electrons, so its London dispersion forces are stronger; Butane: it has more atoms, so there are more places for molecules to attract; They boil at the same temperature, because their electrons are almost the same
    - Why: Acetone’s C=O makes it polar. Acetone boils at 56 °C, butane at −0.5 °C.
 7. `b-also-ldf`: Do polar molecules like HCl also have London dispersion forces?
    - **Answer:** Yes: every molecule has LDF; polar ones have dipole-dipole forces too
-   - Others: No: polar molecules have only dipole-dipole forces; Only when they are solid; Only if they have more than 20 electrons
+   - Others: No: polar molecules have only dipole-dipole forces, which take the place of LDF; Only when they are solid, because LDF need the molecules packed close together; Only if they have more than 20 electrons, because small clouds cannot shift at all
    - Why: LDF come from electrons, and every molecule has them.
 8. `b-iso-why`: Why compare HCl with F₂, and not with Cl₂, to see what dipole-dipole forces add?
-   - **Answer:** HCl and F₂ have the same number of electrons, so their LDF are about the same and only the dipole-dipole forces differ
-   - Others: Cl₂ is a liquid; F₂ is polar and Cl₂ is not; Cl₂ has no LDF
+   - **Answer:** Same electrons, so about the same LDF: only the dipole-dipole forces differ
+   - Others: Cl₂ is a liquid at room temperature, so it cannot be compared with a gas like HCl; F₂ is polar and Cl₂ is not, so F₂ already shows what dipole-dipole forces add; Cl₂ has no LDF at all, so it would show nothing about the forces between molecules
    - Why: With equal electron counts, LDF cancel out of the comparison. That is why the class compares molecules with the same number of electrons.
 9. `b-acetone-imf`: Which intermolecular forces act between acetone molecules?
    - **Answer:** Dipole-dipole forces and London dispersion forces
@@ -203,7 +203,7 @@ Melting and boiling points at 1 atm, CRC Handbook of Chemistry and Physics (97th
    - Why: Acetone is polar (its C=O), so it has dipole-dipole forces and LDF. Its H atoms are all bonded to C, so it has nothing to donate: no hydrogen bonding between acetone molecules.
 10. `b-ar-hcl`: Argon and HCl both have 18 electrons. Which has the higher boiling point?
    - **Answer:** HCl: it has dipole-dipole forces as well as LDF
-   - Others: Ar: it is a noble gas; They boil at the same temperature; Ar: it has no bonds to break
+   - Others: Ar: it is a noble gas, so its atoms attract each other the most; They boil at the same temperature: same electrons, same forces; Ar: it has no bonds to break, so it must be harder to boil
    - Why: The same electrons, so about the same LDF; HCl is polar as well. HCl boils at −85 °C, argon at −186 °C.
 11. ★ `b-ch3f-imf`: Which intermolecular forces act between fluoromethane, CH₃F, molecules?
    - **Answer:** Dipole-dipole forces and London dispersion forces
@@ -228,7 +228,7 @@ Melting and boiling points at 1 atm, CRC Handbook of Chemistry and Physics (97th
    - Why: The donor is the H. Bonded to a very electronegative N, O or F, it is left strongly δ+.
 2. `c-receiver`: In a hydrogen bond, what is the H-bond receiver?
    - **Answer:** A lone pair on an N, O or F atom of another molecule
-   - Others: An H bonded to C; Any atom with a δ+ charge; The H on the same molecule
+   - Others: An H bonded to C on a neighbouring molecule, which is slightly δ+; Any atom with a δ+ charge, wherever it is in the other molecule; The H on the same molecule, which holds on to its own lone pair
    - Why: The δ+ H of one molecule is pulled to a lone pair on N, O or F of another.
 3. `c-den-oh`: What is the electronegativity difference in an O–H bond?
    - **Answer:** 1.24
@@ -243,8 +243,8 @@ Melting and boiling points at 1 atm, CRC Handbook of Chemistry and Physics (97th
    - Others: The H in an H–O bond; The H in an H–N bond; The H in an H–C bond
    - Why: The bigger the electronegativity difference, the more the bond’s electrons are pulled away from the H: H–F 1.78, H–O 1.24, H–N 0.84, H–C 0.35.
 6. `c-ch4-why`: Why can’t the H atoms in CH₄ be donated in a hydrogen bond?
-   - **Answer:** C and H have nearly the same electronegativity (a difference of 0.35), so each H is barely δ+
-   - Others: CH₄ has too few H atoms; The C atom has lone pairs in the way; CH₄ is a gas
+   - **Answer:** C and H have nearly the same electronegativity (0.35 apart), so each H is barely δ+
+   - Others: CH₄ has too few H atoms: a molecule needs at least six H atoms to donate one of them; The C atom has lone pairs in the way, and they block every H from reaching a neighbour; CH₄ is a gas at room temperature, and molecules in a gas can never form hydrogen bonds
    - Why: Only an H bonded to N, O or F is δ+ enough to be donated.
 7. `c-glycol-pairs`: Ethylene glycol has 2 H atoms on O and 4 lone pairs on O. How many hydrogen bonds can one molecule make with its neighbours?
    - **Answer:** 2
@@ -259,24 +259,24 @@ Melting and boiling points at 1 atm, CRC Handbook of Chemistry and Physics (97th
    - Others: 3; 4; 0
    - Why: Every hydrogen bond needs an H AND a lone pair. With only 1 lone pair among them, the molecules can make 1 each.
 10. ★ `c-ethanol-glycol`: Which has the higher boiling point: ethanol or ethylene glycol?
-   - **Answer:** Ethylene glycol: it can make 2 hydrogen bonds per molecule, ethanol only 1
-   - Others: Ethanol: its molecules are smaller and move faster; They boil at the same temperature: both hydrogen bond; Ethanol: it has more H atoms
+   - **Answer:** Ethylene glycol: 2 hydrogen bonds per molecule to ethanol’s 1
+   - Others: Ethanol: its molecules are smaller, so they pack closer and attract more; They boil at the same temperature: both hydrogen bond, so the forces match; Ethanol: it has more H atoms, so it has more places to make hydrogen bonds
    - Why: Both hydrogen bond, so count them: glycol 2, ethanol 1. Glycol boils at 197 °C, ethanol at 78 °C.
 11. `c-water-nh3`: Water and ammonia both have 10 electrons and both hydrogen bond. Which boils higher?
    - **Answer:** Water: 2 hydrogen bonds per molecule to ammonia’s 1
-   - Others: Ammonia: it has more H atoms; They boil at the same temperature; Ammonia: N is less electronegative
+   - Others: Ammonia: it has more H atoms, so it can donate more of them; They boil at the same temperature: both have 10 electrons; Ammonia: N is less electronegative, so its lone pair holds on tighter
    - Why: Water boils at 100 °C, ammonia at −33 °C.
 12. `c-acetone-self`: Can acetone molecules hydrogen bond with each other?
-   - **Answer:** No: acetone has no H bonded to N, O or F to donate, even though its O has lone pairs
-   - Others: Yes: it has an O atom; Yes: it has six H atoms; No: acetone is nonpolar
+   - **Answer:** No: acetone has no H on N, O or F to donate, though its O has lone pairs
+   - Others: Yes: it has an O atom with lone pairs, and that is all a hydrogen bond needs; Yes: it has six H atoms, so it has plenty of H atoms to donate to its neighbours; No: acetone is a nonpolar molecule, so it has no δ+ or δ− ends to attract at all
    - Why: A hydrogen bond needs a donor AND a receiver. Acetone has receivers (the lone pairs on O) but no donor.
 13. `c-water-acetone`: Acetone mixes with water. How do they hydrogen bond?
    - **Answer:** An H on a water molecule bonds to a lone pair on acetone’s O
-   - Others: An H on acetone bonds to a lone pair on water’s O; Acetone’s C bonds to water’s O; They can’t hydrogen bond at all
+   - Others: An H on an acetone molecule bonds to a lone pair on water’s O; Acetone’s C atom bonds to the O of a water molecule beside it; They can’t hydrogen bond at all, because acetone has no N or F
    - Why: Water donates; acetone’s O receives. Acetone’s H atoms are on C, so they cannot be donated.
 14. `c-methanol-imf`: Which intermolecular forces act between methanol, CH₃OH, molecules?
    - **Answer:** Hydrogen bonding, dipole-dipole forces and London dispersion forces
-   - Others: Dipole-dipole forces and London dispersion forces; Only London dispersion forces; Only hydrogen bonding
+   - Others: Dipole-dipole forces and London dispersion forces, but no hydrogen bonding; Only London dispersion forces, because every molecule has electrons; Hydrogen bonding and London dispersion forces, but no dipole-dipole forces
    - Why: Its O–H gives hydrogen bonding; it is polar, so dipole-dipole forces; and every molecule has LDF.
 15. `c-pick-donor`: Which of these molecules can be an H-bond donor?
    - **Answer:** CH₃OH
@@ -284,11 +284,11 @@ Melting and boiling points at 1 atm, CRC Handbook of Chemistry and Physics (97th
    - Why: Only CH₃OH has an H bonded to N, O or F. In CH₃F the F has lone pairs but the H atoms are all on C.
 16. ★ `c-ethanol-imf`: Which intermolecular forces act between ethanol molecules?
    - **Answer:** Hydrogen bonding, dipole-dipole forces and London dispersion forces
-   - Others: Dipole-dipole forces and London dispersion forces; Only London dispersion forces; Only hydrogen bonding
+   - Others: Dipole-dipole forces and London dispersion forces, but no hydrogen bonding; Only London dispersion forces, because every molecule has electrons; Hydrogen bonding and London dispersion forces, but no dipole-dipole forces
    - Why: Ethanol has an H on O, so hydrogen bonding; it is polar, so dipole-dipole forces; and every molecule has LDF.
 17. `c-nh3-imf`: Which intermolecular forces act between ammonia, NH₃, molecules?
    - **Answer:** Hydrogen bonding, dipole-dipole forces and London dispersion forces
-   - Others: Dipole-dipole forces and London dispersion forces; Only London dispersion forces; Only hydrogen bonding
+   - Others: Dipole-dipole forces and London dispersion forces, but no hydrogen bonding; Only London dispersion forces, because every molecule has electrons; Hydrogen bonding and London dispersion forces, but no dipole-dipole forces
    - Why: NH₃ has H atoms on N and a lone pair on N, so hydrogen bonding. It is polar too, so dipole-dipole forces, and it has LDF like every molecule.
 18. ★ `c-ch3f-ch3oh`: Name the IMFs of CH₃F and of CH₃OH.
    - **Answer:** CH₃F: dipole-dipole forces and LDF. CH₃OH: hydrogen bonding, dipole-dipole forces and LDF
@@ -321,11 +321,11 @@ Melting and boiling points at 1 atm, CRC Handbook of Chemistry and Physics (97th
    - Why: CH₃OH has an H on O to donate and lone pairs on O to receive. HCl’s H is on Cl, so it cannot hydrogen bond. 65 °C against −85 °C.
 6. `d-propanol-glycol`: 1-Propanol and ethylene glycol both have 34 electrons and both hydrogen bond. Which boils higher?
    - **Answer:** Ethylene glycol: 2 hydrogen bonds per molecule to 1-propanol’s 1
-   - Others: 1-Propanol: it has more C atoms; They boil at the same temperature: same electrons; 1-Propanol: it has more H atoms
+   - Others: 1-Propanol: it has more C atoms, so its molecules are bigger and attract more; They boil at the same temperature: same electrons and both hydrogen bond; 1-Propanol: it has more H atoms, so it has more H to donate to its neighbours
    - Why: Same electrons, so the LDF match; count the hydrogen bonds. Glycol 197 °C, 1-propanol 97 °C.
 7. `d-water-ethanol`: Which has the higher boiling point: water or ethanol?
    - **Answer:** Water: 2 hydrogen bonds per molecule to ethanol’s 1
-   - Others: Ethanol: it has more electrons; They boil at the same temperature; Ethanol: it is bigger
+   - Others: Ethanol: it has more electrons, so its LDF are stronger; They boil at the same temperature: both hydrogen bond; Ethanol: it is a bigger molecule, so it is harder to boil
    - Why: Both hydrogen bond, so count: water 2, ethanol 1. 100 °C against 78 °C.
 8. `d-ne-hf`: Neon and HF both have 10 electrons. Which has the higher boiling point?
    - **Answer:** HF: it hydrogen bonds
@@ -333,15 +333,15 @@ Melting and boiling points at 1 atm, CRC Handbook of Chemistry and Physics (97th
    - Why: The same electrons; HF adds hydrogen bonding (its H is on F). 20 °C against −246 °C.
 9. `d-temp`: Two liquids are at the same temperature. Which one evaporates more easily?
    - **Answer:** The one with the weaker intermolecular forces: its molecules break free more easily
-   - Others: The one with the stronger intermolecular forces; The one with more electrons; They evaporate equally
+   - Others: The one with the stronger intermolecular forces: its molecules push each other out faster; The one with more electrons: its bigger electron clouds make the molecules move faster; They evaporate equally, because at the same temperature their molecules move the same
    - Why: At the same temperature the molecules move about equally hard; weaker attractions let more of them escape.
 10. ★ `d-assign-first`: Two substances are to be compared. What should you do before you predict which one boils at the higher temperature?
    - **Answer:** Name the IMFs of each one from its Lewis structure
-   - Others: Find which one has the bigger molar mass; Count the bonds inside each molecule; Check which one is a gas at room temperature
+   - Others: Find which one has the bigger molar mass, and pick that one; Count the bonds inside each molecule and compare the totals; Check which one is a gas at room temperature and rule it out
    - Why: The IMFs decide it. Name the forces each one has (LDF, dipole-dipole, hydrogen bonding); if the electrons are about the same, the stronger force wins.
 11. `d-hf-imf`: Which intermolecular forces act between HF molecules?
    - **Answer:** Hydrogen bonding, dipole-dipole forces and London dispersion forces
-   - Others: Dipole-dipole forces and London dispersion forces; Only London dispersion forces; Only hydrogen bonding
+   - Others: Dipole-dipole forces and London dispersion forces, but no hydrogen bonding; Only London dispersion forces, because every molecule has electrons; Hydrogen bonding and London dispersion forces, but no dipole-dipole forces
    - Why: HF has an H on F and lone pairs on F, so hydrogen bonding; it is polar, so dipole-dipole forces; and LDF.
 12. `d-ch4-imf`: Which intermolecular forces act between methane, CH₄, molecules?
    - **Answer:** Only London dispersion forces

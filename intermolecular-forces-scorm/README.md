@@ -97,12 +97,12 @@ it over (`localStorage` is used only without an LMS). A save from another releas
 ```bash
 node tools/validate.js                    # must pass
 node tools/answer-key.js > ANSWER_KEY.md
-./build.sh                                # dist/intermolecular-forces-v3.zip
+./build.sh                                # dist/intermolecular-forces-v4.zip
 node tools/walkthrough.js                 # optional, Playwright: plays the whole activity against a fake LMS
 node tools/layout.js                      # optional, Playwright: fits a Chromebook, 1366x650 and 1366x520
 ```
 
-Upload `dist/intermolecular-forces-v3.zip` in Schoology with **Add Materials → Add File/Link/External Tool → Add
+Upload `dist/intermolecular-forces-v4.zip` in Schoology with **Add Materials → Add File/Link/External Tool → Add
 File** (or **Package**), enable the gradebook column, and preview as a student: the badge in the top right should
 read **Connected to the LMS**. The SCORM identifiers and the storage key are this package's own.
 
@@ -123,7 +123,7 @@ comparison (race, prediction, ranking, question) is not decided by the class's r
 boiling points disagree with it; helium is compared with anything but neon, or given a melting point; a race's
 thermometer does not cross every boiling point; a step compares substances without having students name their
 IMFs first, offers fewer forces than one of its substances has, or the force checker accepts a wrong set; a
-question names a molecule without drawing its Lewis structure; a drawing task's donor cannot donate or its receiver has no lone
+question names a molecule without drawing its Lewis structure; a sentence answer is longer than every wrong choice; a drawing task's donor cannot donate or its receiver has no lone
 pair on N, O or F; a checkpoint answer no longer matches the model; a temperature quoted in a question or step is
 not a real melting or boiling point in the data; student text uses "van der Waals", an organic class name or
 "acceptor"; or any file contains an em dash.

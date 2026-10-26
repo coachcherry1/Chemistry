@@ -15,6 +15,7 @@
  *   but neon;
  * - a checkpoint answer no longer matches the model, a pool is smaller than
  *   its draw, or a question id cannot be a SCORM interaction id;
+ * - a sentence answer is longer than every wrong choice;
  * - a question names a substance of more than one atom without drawing its
  *   Lewis structure (`figs`);
  * - a step that compares substances does not have students name the IMFs of
@@ -155,6 +156,10 @@ Object.keys(QUIZZES).forEach((k) => {
     if (new Set(q.choices).size !== q.choices.length) bad(`${q.id}: duplicate choices`);
     if (q.choices.length < 3) bad(`${q.id}: fewer than 3 choices`);
     const first = q.choices[0];
+    /* a sentence answer must not give itself away by being the longest choice */
+    if (Math.max(...q.choices.map((c) => c.length)) > 25 && q.choices.slice(1).every((c) => c.length < first.length)) {
+      bad(`${q.id}: the correct choice is the longest (${q.choices.map((c) => c.length).join(', ')})`);
+    }
     /* the Lewis structure of every substance of more than one atom it names */
     (q.figs || []).forEach((id) => { if (!SUBSTANCES[id]) bad(`${q.id}: figure of unknown ${id}`); });
     const named = new Set();
