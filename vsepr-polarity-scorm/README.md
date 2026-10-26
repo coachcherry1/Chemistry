@@ -16,7 +16,7 @@ are the Lewis structures activity's own (`lewis.js`, `builder.js`, `draw.js`, `s
 | Part | Steps | What happens |
 | --- | --- | --- |
 | 1 Lewis to 3D | 5 | **A Lewis structure is flat; a molecule is not.** CH₄'s Lewis structure beside a 3D CH₄ drawn just as flat. **Predict** the real H–C–H angle, then press *Let the domains spread out*: the bonds swing apart into a tetrahedron, 109.5°. **Build H₂O, CO₂ and BF₃** with the 5 rules. The 3D window beside the drawing follows every rule, still flat; when the structure is done, the student **counts the electron domains** (a wrong count gets specific help: lone pairs count; a double bond is ONE domain), and only then does the molecule spread out into 3D with its geometry and angle. **Checkpoint 1** (4 questions). |
-| 2 Molecular geometry | 4 | **From 2 to 6 domains:** BeF₂, BF₃, CH₄, PCl₅ and SF₆ (shuffled for each student) in 3D with their angles marked; drag each name onto its molecule. **Lone pairs push harder:** CH₄ → NH₃ → H₂O, predicting each time; the lone pairs are drawn as fat lobes and the angle reads 109.5°, then **<109.5°**, then **<<109.5°**. **Name the geometry by its atoms:** hide the lone pairs to see that the domains still point to the corners of a tetrahedron while the atoms make a pyramid or a bent shape; then sort nine Lewis structures (including ions from the Lewis activity) into tetrahedral, trigonal pyramidal and bent. **Checkpoint 2** (6). |
+| 2 Molecular geometry | 4 | **From 2 to 6 domains:** BeF₂, BF₃, CH₄, PCl₅ and SF₆ (shuffled for each student) in 3D with their angles marked; drag each name onto its molecule. **Lone pairs push harder:** CH₄ → NH₃ → H₂O, predicting each time; the lone pairs are drawn as fat lobes and the angle reads 109.5°, then **<109.5°**, then **<<109.5°**. **Name the geometry by its atoms:** hide the lone pairs to see that the domains still point to the corners of a tetrahedron while the atoms make a pyramid or a bent shape; then sort nine Lewis structures (including ions from the Lewis activity, in a different order for each student) into tetrahedral, trigonal pyramidal and bent. **Checkpoint 2** (6). |
 | 3 Polarity | 4 | **Radial symmetry:** every atom tinted by its partial charge (δ− red, δ+ blue) and two markers for the centre of positive charge and the centre of negative charge. **Predict** whether CO₂ is polar; then, for CO₂ and (in a random order) BF₃, CH₄, SF₆, H₂O and NH₃, answer two questions: **is it radially symmetric?** (with specific help: a lone pair on the central atom, or outer atoms that differ, breaks the symmetry) and **so, polar or nonpolar?** A two-line symmetry checklist and an explanation in the same words follow each one. **Same shape: is it radially symmetric?** CH₄, CH₃Cl, CH₂Cl₂, CHCl₃ and CCl₄ in a random order, charges hidden until the symmetry question is answered: all tetrahedral, so the shape alone cannot decide. **The electric field test:** molecules tumble between a + plate and a − plate; switch the field on and the polar ones snap into line (their box turns green, "LINED UP: polar") while the nonpolar ones keep tumbling. **Checkpoint 3** (6), every answer worded in terms of radial symmetry, with the electronegativity table open beside it. |
 
 Builds, counts, namings, sorts and predictions have to be finished to move on, but none of them is graded.
@@ -34,7 +34,9 @@ Builds, counts, namings, sorts and predictions have to be finished to move on, b
   (106.7° and 104.5°) so the picture is true, but no question asks for or quotes them. Angles are only ever
   compared within CH₄, NH₃ and H₂O, where the lone-pair rule always holds.
 - **Polarity by radial symmetry**: no lone pairs on the central atom and all outer atoms the same, nonpolar;
-  otherwise polar. Every explanation names radial symmetry as the cause, never the shape name. The model behind the charge view gives every atom a partial charge from the Pauling
+  otherwise polar. Every explanation names radial symmetry as the cause, never the shape name, and says why in the
+  class's words: in a radially symmetric molecule the pulls of the polar bonds cancel each other out; otherwise
+  they do not, and the molecule has a δ+ end and a δ− end. The model behind the charge view gives every atom a partial charge from the Pauling
   electronegativity difference of its bonds and places the centre of each sign. No dipole arrows, no dipole
   moments and no "how polar" comparisons: the field test turns every polar molecule equally.
 - **Ions** (NH₄⁺, H₃O⁺, SO₄²⁻, ClO₃⁻, ClO₂⁻, PO₄³⁻, SO₃²⁻) get geometries but are never asked about polarity.
@@ -79,13 +81,13 @@ answers, the answer key and the validator cannot disagree:
 ```bash
 node tools/validate.js                    # must pass
 node tools/answer-key.js > ANSWER_KEY.md
-./build.sh                                # dist/vsepr-polarity-v2.zip
+./build.sh                                # dist/vsepr-polarity-v3.zip
 node tools/walkthrough.js                 # optional, Playwright: plays the whole activity against a fake LMS
 node tools/layout.js                      # optional, Playwright: fits a Chromebook, 1366x650 and 1366x520
 ```
 
 `imsmanifest.xml` has to sit at the root of the zip, which is why `build.sh` zips from inside `src/`. Upload
-`dist/vsepr-polarity-v2.zip` in Schoology with **Add Materials → Add File/Link/External Tool → Add File** (or
+`dist/vsepr-polarity-v3.zip` in Schoology with **Add Materials → Add File/Link/External Tool → Add File** (or
 **Package**), enable the gradebook column, and preview as a student: the badge in the top right should read
 **Connected to the LMS**. The SCORM identifiers and the storage key are this package's own, so it can sit in the
 same course as every other activity.
@@ -106,7 +108,8 @@ None of these save progress or report anything.
 of scope; a 3D angle is not the ideal (or measured) one, an arc label disagrees with the angle it marks, or a
 molecule with lone pairs and no measured angle would be drawn in 3D; the model's polarity disagrees with the
 textbook; a checkpoint answer, a prediction or a sorting bin no longer matches the model; a pool is smaller than
-its draw or a question id is not a safe SCORM id; a question quotes a measured angle; an out-of-scope shape name
+its draw or a question id is not a safe SCORM id; a sentence answer is longer than every wrong choice (so the
+longest choice never gives the answer away); a question quotes a measured angle; an out-of-scope shape name
 or a word outside the class's scope (steric number, hybridization, formal charge, dipole, van der Waals) appears in
 student text; or any file contains an em dash.
 

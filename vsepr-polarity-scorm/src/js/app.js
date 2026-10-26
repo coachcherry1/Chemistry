@@ -18,7 +18,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a molecule changes: a save
      from an older release is then discarded and the student starts fresh. */
-  var SCHEMA = 2;
+  var SCHEMA = 3;
 
   var h = UI.h;
 
@@ -40,8 +40,8 @@ var App = (function () {
              'bent shape. Part 2 looks at what lone pairs do to the angle.' },
     { id: 'b-CO2', part: 1, kind: 'build', sp: 'CO2',
       text: 'Build carbon dioxide. Watch what Rule 5 does, then count the domains around C.',
-      after: 'Each double bond is ONE domain: both of its pairs sit between C and the same O, and point the same ' +
-             'way. Two domains get as far apart as they can: a straight line.' },
+      after: 'Each double bond is ONE domain: it fills the same space between C and its O that a single bond or a ' +
+             'lone pair would. Two domains get as far apart as they can: a straight line.' },
     { id: 'b-BF3', part: 1, kind: 'build', sp: 'BF3',
       text: 'Build boron trifluoride, one of the exceptions. Then count the domains around B.',
       after: 'Three domains spread out in a flat triangle, 120° apart. BF₃ really is flat: the Lewis structure ' +
@@ -65,8 +65,8 @@ var App = (function () {
     { id: 'symmetry', part: 3, kind: 'charges', title: 'Radial symmetry', predict: 'co2', first: 'CO2',
       set: ['CO2', 'BF3', 'CH4', 'SF6', 'H2O', 'NH3'],
       text: 'A molecule is radially symmetric when it looks the same in every direction from its central atom: no ' +
-            'lone pair on the central atom, and every outer atom the same. Then its charge is spread evenly all the ' +
-            'way round. For each molecule: is it radially symmetric? Then: polar or nonpolar?' },
+            'lone pair on the central atom, and every outer atom the same. Then the pulls of its polar bonds cancel ' +
+            'each other out. For each molecule: is it radially symmetric? Then: polar or nonpolar?' },
     { id: 'outer', part: 3, kind: 'charges', title: 'Same shape: is it radially symmetric?', hidden: true,
       set: ['CH4', 'CH3Cl', 'CH2Cl2', 'CHCl3', 'CCl4'],
       text: 'All five are tetrahedral with no lone pair on C. The shape is the same, so what decides polarity? Radial ' +
@@ -93,7 +93,7 @@ var App = (function () {
       choices: ['Smaller still', 'The same as in NH₃', 'Bigger, back to 109.5°'], answer: 0,
       fact: ['angle', 'H2O', '<<109.5°'] },
     co2: { q: 'CO₂ has two polar C=O bonds (O is more electronegative than C). Is the CO₂ molecule polar?',
-      choices: ['No: it is radially symmetric, so its charge is spread evenly', 'Yes: its bonds are polar', 'You can’t tell'], answer: 0,
+      choices: ['No: it is radially symmetric, so its polar bonds cancel each other out', 'Yes: its bonds are polar', 'You can’t tell'], answer: 0,
       fact: ['polar', 'CO2', false] },
     field: { q: 'When the field is switched on, which molecules will turn to line up with it?',
       choices: null, answer: 0 }
@@ -454,8 +454,8 @@ var App = (function () {
           .reduce(function (a, k) { return a + (finalS.bo[k] || 1); }, 0);
         var msg;
         if (d.lp && n === d.bonds) msg = 'Count the lone pairs on ' + X + ' too: each lone pair is one domain.';
-        else if (orders > d.bonds && n === orders + d.lp) msg = 'A double or triple bond is ONE domain: all its pairs ' +
-          'sit between the same two atoms. Count each atom bonded to ' + X + ' once.';
+        else if (orders > d.bonds && n === orders + d.lp) msg = 'A double or triple bond is ONE domain: it fills the ' +
+          'same space a single bond or a lone pair would. Count each atom bonded to ' + X + ' once.';
         else msg = 'Count each atom bonded to ' + X + ' once, whatever kind of bond it is, then add the lone pairs on ' + X + '.';
         if (misses >= 2) msg += ' Here: ' + d.bonds + ' bonded atom' + (d.bonds > 1 ? 's' : '') + (d.lp ? ' + ' + Lewis.pairs(d.lp) : '') +
           ' = ' + d.total + '.';
@@ -636,6 +636,11 @@ var App = (function () {
   /* ---- name the geometry by its atoms: hide the lone pairs, then sort */
 
   RENDER.sort = function (s) {
+    /* the structures in a different order for each student */
+    var mix = {};
+    Object.keys(s).forEach(function (k) { mix[k] = s[k]; });
+    mix.cards = UI.shuffle(s.cards, UI.rng(state.seed ^ UI.hash(s.id)));
+    s = mix;
     var cur = s.look[1];
     var m3 = m3Panel('Domains or atoms?', { model: VSEPR.model3D(cur), small: true });
     var chips = h('div', { class: 'chips' });
@@ -757,8 +762,8 @@ var App = (function () {
         line(y.sameOuter, y.sameOuter ? 'Every outer atom the same (' + VSEPR.outerList(y.outer) + ')'
           : 'Outer atoms not all the same (' + VSEPR.outerList(y.outer) + ')')
       ]),
-      h('p', { class: 'symbox-foot', text: y.symmetric ? 'Radially symmetric: the charge is spread evenly all the way round.'
-        : 'Not radially symmetric: the charge is not spread evenly around ' + y.centre + '.' })
+      h('p', { class: 'symbox-foot', text: y.symmetric ? 'Radially symmetric: the pulls of its polar bonds cancel each other out.'
+        : 'Not radially symmetric: the pulls of its polar bonds do not cancel.' })
     ]);
   }
 
@@ -816,8 +821,8 @@ var App = (function () {
         return;
       }
       if (s.predict) side.appendChild(reveal([verdict(PREDICT[s.predict], state.pr[s.predict]) +
-        'Polar bonds are not enough. What decides it is radial symmetry: is the charge spread evenly all the way ' +
-        'around the central atom?']));
+        'Polar bonds are not enough. What decides it is radial symmetry: in a radially symmetric molecule the ' +
+        'pulls of the polar bonds cancel each other out.']));
       var id = cur, y = VSEPR.symmetry(id);
       if (!symOk[id]) {
         side.appendChild(h('p', { class: 'q-text', text: 'Is ' + y.text + ' radially symmetric?' }));
@@ -841,7 +846,7 @@ var App = (function () {
       if (!left.length) {
         if (!state.done[s.id]) complete(s.hidden
           ? 'All five are tetrahedral, yet only the radially symmetric ones (CH₄ and CCl₄) are nonpolar. The shape alone does not decide it: radial symmetry does.'
-          : 'Radially symmetric: the charge is spread evenly, nonpolar. Not radially symmetric: polar.');
+          : 'Radially symmetric: the bond pulls cancel, nonpolar. Not radially symmetric: they do not cancel, polar.');
       } else if (marks[id]) {
         var nxt = left[0];
         side.appendChild(h('div', { class: 'btnrow' }, [h('button', { type: 'button', class: 'primary', text: 'Next molecule: ' + sp(nxt).text,
@@ -875,13 +880,13 @@ var App = (function () {
       var y = VSEPR.symmetry(id), truth = VSEPR.polar(id) ? 'polar' : 'nonpolar';
       if (w === truth) {
         marks[id] = truth;
-        say('Right: ' + (y.symmetric ? 'radially symmetric, so nonpolar.' : 'not radially symmetric, so polar.'), 'good');
+        say('Right: ' + (y.symmetric ? 'radially symmetric, so the bond pulls cancel: nonpolar.' : 'not radially symmetric, so the bond pulls do not cancel: polar.'), 'good');
         show(id);
       } else {
-        say(y.symmetric ? 'Radially symmetric means the δ− charge is spread evenly all the way round: the two centres ' +
-              'meet, there are no ends, nonpolar.'
-            : 'Not radially symmetric means the charge is not spread evenly: the two centres are apart, one end is δ+ ' +
-              'and the other δ−. That is polar.', 'bad');
+        say(y.symmetric ? 'Radially symmetric means its polar bonds pull equally in every direction, so they cancel each ' +
+              'other out: no ends, nonpolar.'
+            : 'Not radially symmetric means the pulls of its polar bonds do not cancel: one end is δ+ and the other δ−. ' +
+              'That is polar.', 'bad');
       }
     }
 

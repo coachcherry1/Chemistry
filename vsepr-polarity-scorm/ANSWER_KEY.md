@@ -61,7 +61,7 @@ Angles are taught as students learn them: one lone pair <109.5°, two lone pairs
 - In the Lewis structure, the H–C–H angle looks like 90°. In a real CH₄ molecule, how big is it? **109.5°: the four bonds spread out in 3D**
 - NH₃ also has 4 electron domains, but one of them is a lone pair. Compared with CH₄’s 109.5°, the H–N–H angle will be: **Smaller than 109.5°**
 - H₂O has two lone pairs. Compared with NH₃, the H–O–H angle will be: **Smaller still**
-- CO₂ has two polar C=O bonds (O is more electronegative than C). Is the CO₂ molecule polar? **No: it is radially symmetric, so its charge is spread evenly**
+- CO₂ has two polar C=O bonds (O is more electronegative than C). Is the CO₂ molecule polar? **No: it is radially symmetric, so its polar bonds cancel each other out**
 - When the field is switched on, which molecules will turn to line up with it? **Only H₂O, NH₃, CH₂Cl₂**
 
 ## Checkpoint 1: electron domains
@@ -105,16 +105,16 @@ Angles are taught as students learn them: one lone pair <109.5°, two lone pairs
    - Others: 6; 8; 5
    - Why: Four single bonds to O and no lone pairs on S: 4 domains. An ion is counted the same way.
 10. ★ `a-why-double`: Why does a double bond count as only ONE electron domain?
-   - **Answer:** Both of its pairs sit between the same two atoms, so they point the same way
-   - Others: A double bond has half as many electrons as a single bond; Double bonds do not repel other electrons; Only lone pairs count as domains
-   - Why: A domain is a region where electrons sit around the central atom. A double bond (or a triple bond) puts all its pairs in the same region, between the same two atoms.
+   - **Answer:** It fills one region of space, the same as a single bond or a lone pair would
+   - Others: A double bond has half as many electrons as a single bond, so it counts for less; Double bonds are too strong to push on the other electrons around the central atom; Only lone pairs count as domains, so a bond of any kind is counted just one time
+   - Why: A domain is one region of space around the central atom. A double bond (or a triple bond) occupies the same space a single bond or a lone pair would: one region, so one domain.
 11. `a-what-counts`: Which of these counts as one electron domain on the central atom?
-   - **Answer:** Each one: a lone pair, a single bond, a double bond and a triple bond
-   - Others: Only single bonds; Only bonds; lone pairs do not count; Only lone pairs
+   - **Answer:** Each of them: a lone pair, a single bond, a double bond or a triple bond
+   - Others: Only single bonds; a double or a triple bond counts as two or three domains; Only the bonds; lone pairs on the central atom are never counted as domains; Only the lone pairs; bonds are shared, so they are not counted as domains
    - Why: Every bonded atom is one domain, however many pairs it shares, and every lone pair on the central atom is one domain.
 12. `a-spread`: Why do electron domains spread out around the central atom?
-   - **Answer:** They are all negative, so they repel each other and get as far apart as they can
-   - Others: The outer atoms attract each other; The Lewis structure is drawn that way on paper; Lone pairs pull the bonds toward them
+   - **Answer:** They are all negative, so they repel and get as far apart as they can
+   - Others: The outer atoms attract each other, so they pull the bonds into a 3D shape; The Lewis structure is drawn that way, and the molecule copies the drawing; The lone pairs pull the bonds toward them, and that bends the molecule into 3D
    - Why: Electrons repel electrons. The domains push each other as far apart as they can in 3D, which is why the molecule is not flat like its Lewis structure.
 
 ## Checkpoint 2: molecular geometry and angles
@@ -190,16 +190,16 @@ Angles are taught as students learn them: one lone pair <109.5°, two lone pairs
    - Others: <109.5°; 109.5°; 180°
    - Why: Two lone pairs, and each repels more strongly than a bonding pair. Together they squeeze the two bonds even closer than in NH₃: well below 109.5°, <<109.5°.
 18. ★ `b-why-lp`: Why is the H–O–H angle in H₂O smaller than the H–C–H angle in CH₄?
-   - **Answer:** Lone pairs repel more strongly than bonding pairs, and H₂O’s two lone pairs push its bonds closer together
-   - Others: H₂O has fewer electron domains than CH₄; O atoms are bigger than C atoms; The H atoms in H₂O attract each other
+   - **Answer:** Lone pairs repel more strongly than bonds, so H₂O’s two lone pairs squeeze its bonds closer
+   - Others: H₂O has only 2 electron domains, not 4 like CH₄, so its two bonds are pulled in much closer; O atoms are bigger than C atoms, so the H atoms around an O have to sit much closer together; The two H atoms in H₂O attract each other strongly, and that pulls the two O–H bonds together
    - Why: Both have 4 domains. A lone pair is held by only one nucleus, so it spreads out wider and pushes harder than a bond, squeezing the bond angle below 109.5°.
 19. `b-rank`: Rank the bond angles from largest to smallest: CH₄, NH₃, H₂O.
    - **Answer:** CH₄ > NH₃ > H₂O
    - Others: H₂O > NH₃ > CH₄; NH₃ > CH₄ > H₂O; All three are 109.5°
    - Why: All three have 4 domains. No lone pairs: 109.5°. One lone pair: <109.5°. Two lone pairs: <<109.5°. Each lone pair squeezes the bonds a little more.
 20. `b-same-domains`: CH₄ and NH₃ both have 4 electron domains. Why are their molecular geometries different?
-   - **Answer:** The molecular geometry names only where the atoms are, and one of NH₃’s domains is a lone pair
-   - Others: NH₃ has fewer electron domains; N makes double bonds and C does not; They are not different: both are tetrahedral
+   - **Answer:** Molecular geometry names only where the atoms are, and one of NH₃’s domains is a lone pair
+   - Others: NH₃ has fewer electron domains than CH₄, because N makes only three bonds instead of four; N makes a double bond to one of its H atoms, while C makes only single bonds to its H atoms; They are not different at all: both molecules are tetrahedral, with every angle exactly 109.5°
    - Why: In both, the 4 domains point to the corners of a tetrahedron. In NH₃ one corner holds a lone pair, not an atom, so the atoms make a trigonal pyramid.
 21. `b-pick-tp`: Which molecule is trigonal pyramidal?
    - **Answer:** PCl₃ (drawing)
@@ -215,65 +215,65 @@ Angles are taught as students learn them: one lone pair <109.5°, two lone pairs
 6 questions per attempt from a pool of 17.
 
 1. ★ `c-co2`: CO₂ has two polar C=O bonds. Is the CO₂ molecule polar? (shows the Lewis structure of CO₂)
-   - **Answer:** Nonpolar: it is radially symmetric (no lone pair on C, two identical O atoms), so the charge is spread evenly
-   - Others: Polar: it has polar bonds; Polar: O is more electronegative than C; Nonpolar: C and O have the same electronegativity
-   - Why: The two δ− O atoms sit evenly on opposite sides of C. Radially symmetric: the centre of negative charge falls on C, right where the centre of positive charge is. No ends, nonpolar. Polar bonds are not enough.
+   - **Answer:** Nonpolar: it is radially symmetric, so its two polar bonds cancel each other out
+   - Others: Polar: each C=O bond is polar, so the whole molecule must be polar as well; Polar: O is more electronegative than C, so electrons are pulled toward both O atoms; Nonpolar: C and O have the same electronegativity, so its bonds are not polar at all
+   - Why: Each C=O bond is polar, pulling electrons toward its O. The two O atoms sit on opposite sides of C, so the two pulls are equal and opposite: they cancel. Radially symmetric: nonpolar. Polar bonds are not enough.
 2. `c-h2o`: Is H₂O polar or nonpolar? (shows the Lewis structure of H₂O)
-   - **Answer:** Polar: the two lone pairs on O mean it is not radially symmetric, so the charge is not spread evenly
-   - Others: Nonpolar: its two O–H bonds are the same; Nonpolar: it has 4 electron domains, like CH₄; Polar: H is more electronegative than O
-   - Why: The lone pairs take up one side of O, where there is no atom. Not radially symmetric: the two centres of charge are apart, with a δ− end at O and a δ+ end at the H atoms.
+   - **Answer:** Polar: the two lone pairs on O break the symmetry, so its polar bonds do not cancel
+   - Others: Nonpolar: its two O–H bonds are identical, so their pulls cancel each other out; Nonpolar: it has 4 electron domains like CH₄, and CH₄ is a nonpolar molecule; Polar: H is more electronegative than O, so the electrons are pulled toward the H atoms
+   - Why: The lone pairs take up one side of O, so both O–H bonds lean the same way. Their pulls add up instead of cancelling: a δ− end at O and a δ+ end at the H atoms. Not radially symmetric: polar.
 3. `c-ccl4`: Is CCl₄ polar or nonpolar? (shows the Lewis structure of CCl₄)
-   - **Answer:** Nonpolar: it is radially symmetric (no lone pair on C, four identical Cl atoms), so the charge is spread evenly
-   - Others: Polar: C–Cl bonds are polar; Polar: Cl is more electronegative than C; Nonpolar: the Cl atoms have no lone pairs
-   - Why: Each Cl is δ−, but the four of them surround C evenly. Radially symmetric: both centres of charge are at C, so there are no ends.
+   - **Answer:** Nonpolar: it is radially symmetric, so its four polar C–Cl bonds cancel out
+   - Others: Polar: each C–Cl bond is polar, so the whole molecule must be polar as well; Polar: Cl is more electronegative than C, so electrons are pulled toward the Cl; Nonpolar: the Cl atoms have no lone pairs, so none of its bonds can be polar
+   - Why: Each C–Cl bond is polar, but the four Cl atoms surround C evenly. The four pulls are equal and point evenly all the way around, so they cancel. Radially symmetric: nonpolar.
 4. ★ `c-ch2cl2`: CH₂Cl₂ has the same tetrahedral shape as CCl₄. Is it polar or nonpolar? (shows the Lewis structure of CH₂Cl₂)
-   - **Answer:** Polar: its outer atoms are not all the same (2 H, 2 Cl), so it is not radially symmetric
-   - Others: Nonpolar: every tetrahedral molecule is nonpolar; Nonpolar: it has no lone pair on C; Polar: it has a lone pair on C
-   - Why: The shape alone does not decide it. With two Cl and two H around C, the charge is not the same in every direction: not radially symmetric, so the two centres are apart. Polar.
+   - **Answer:** Polar: 2 H and 2 Cl are not all the same, so the bond pulls do not cancel
+   - Others: Nonpolar: every tetrahedral molecule is nonpolar, whatever its outer atoms are; Nonpolar: C has no lone pair, so the pulls of its four bonds always cancel; Polar: C has a lone pair, and it takes up one side of the tetrahedron
+   - Why: The shape alone does not decide it. The C–Cl bonds pull much harder than the C–H bonds, so the four pulls are not equal and cannot cancel. Not radially symmetric: polar.
 5. `c-chcl3`: Is CHCl₃ polar or nonpolar? (shows the Lewis structure of CHCl₃)
-   - **Answer:** Polar: one H and three Cl means it is not radially symmetric
-   - Others: Nonpolar: it is tetrahedral; Nonpolar: C has no lone pair; Nonpolar: it has more Cl than H
-   - Why: One outer atom differs from the others, so the charge is not spread evenly around C. Not radially symmetric: polar.
+   - **Answer:** Polar: one H and three Cl are not all the same, so the pulls do not cancel
+   - Others: Nonpolar: it is tetrahedral, and a tetrahedral molecule is always nonpolar; Nonpolar: C has no lone pair, so the pulls of all four bonds cancel out; Nonpolar: it has more Cl than H, so the three Cl atoms balance the one H atom
+   - Why: One outer atom differs from the others, so the bond pulls are not equal all the way around C and cannot cancel. Not radially symmetric: polar.
 6. `c-ch4`: Is CH₄ polar or nonpolar? (shows the Lewis structure of CH₄)
-   - **Answer:** Nonpolar: it is radially symmetric (no lone pair on C, four identical H atoms)
-   - Others: Polar: it has four bonds; Polar: H is less electronegative than C; Polar: it has 4 electron domains
-   - Why: Four identical H atoms evenly around C and no lone pair: radially symmetric, so nonpolar. (Its C–H bonds are barely polar anyway.)
+   - **Answer:** Nonpolar: it is radially symmetric, so the pulls of its four bonds cancel
+   - Others: Polar: it has four bonds, and every bond between two different elements is polar; Polar: H is less electronegative than C, so each H is δ+ and the C is δ−; Polar: it has 4 electron domains, and that always makes a molecule polar
+   - Why: Four identical H atoms evenly around C and no lone pair: radially symmetric, so the bond pulls cancel. (Its C–H bonds are barely polar anyway.) Nonpolar.
 7. `c-bf3`: Is BF₃ polar or nonpolar? (shows the Lewis structure of BF₃)
-   - **Answer:** Nonpolar: it is radially symmetric (no lone pair on B, three identical F atoms)
-   - Others: Polar: B–F bonds are very polar; Polar: B has only 6 electrons; Polar: F is the most electronegative element
-   - Why: Each B–F bond is very polar, but the three δ− F atoms are spread evenly around B. Radially symmetric: the two centres of charge meet at B. Nonpolar.
+   - **Answer:** Nonpolar: it is radially symmetric, so its three polar B–F bonds cancel
+   - Others: Polar: the B–F bonds are very polar, so the molecule must be polar too; Polar: B has only 6 electrons, so the charge cannot be spread out evenly; Polar: F is the most electronegative element, so it makes any molecule polar
+   - Why: Each B–F bond is very polar, but the three F atoms are spread evenly around B, 120° apart. The three equal pulls cancel. Radially symmetric: nonpolar.
 8. `c-sf6`: Is SF₆ polar or nonpolar? (shows the Lewis structure of SF₆)
-   - **Answer:** Nonpolar: it is radially symmetric (no lone pair on S, six identical F atoms)
-   - Others: Polar: S–F bonds are polar; Polar: S has more than 8 electrons; Polar: it has 6 electron domains
-   - Why: The same atom on every side and no lone pair: radially symmetric, so the charge is spread evenly.
+   - **Answer:** Nonpolar: it is radially symmetric, so its six polar S–F bonds cancel
+   - Others: Polar: the S–F bonds are polar, so the whole molecule must be polar too; Polar: S has more than 8 electrons, and that pushes the charge to one side; Polar: it has 6 electron domains, and that many domains makes it polar
+   - Why: The same atom on every side and no lone pair: radially symmetric. Each S–F bond has a partner pulling the opposite way, so the pulls cancel. Nonpolar.
 9. `c-pcl3`: PCl₃ has three identical Cl atoms. Is it polar or nonpolar? (shows the Lewis structure of PCl₃)
-   - **Answer:** Polar: the lone pair on P means it is not radially symmetric
-   - Others: Nonpolar: its three Cl atoms are identical; Nonpolar: it has no double bonds; Polar: P is more electronegative than Cl
-   - Why: Identical outer atoms are not enough: the lone pair takes up one side of P, where there is no atom. Not radially symmetric, so the centres of charge are apart. Polar.
+   - **Answer:** Polar: the lone pair on P breaks the symmetry, so the bond pulls do not cancel
+   - Others: Nonpolar: its three Cl atoms are identical, so their pulls cancel each other out; Nonpolar: it has no double bonds, so none of its bonds is polar enough to count; Polar: P is more electronegative than Cl, so the electrons are pulled toward P
+   - Why: Identical outer atoms are not enough: the lone pair takes up one side of P, so the three P–Cl bonds all lean the same way. Their pulls add up instead of cancelling. Not radially symmetric: polar.
 10. `c-hcn`: HCN is linear, like CO₂. Is HCN polar or nonpolar? (shows the Lewis structure of HCN)
-   - **Answer:** Polar: its two outer atoms are different (H and N), so it is not radially symmetric
-   - Others: Nonpolar: every linear molecule is nonpolar; Nonpolar: C has no lone pair; Nonpolar: it has a triple bond
-   - Why: Same shape as CO₂, but not the same on both sides of C: the N end is δ− and the H end δ+. Not radially symmetric: polar.
+   - **Answer:** Polar: H and N are different, so the pulls on the two sides of C do not cancel
+   - Others: Nonpolar: every linear molecule is symmetric, so its bond pulls always cancel out; Nonpolar: C has no lone pair, so the pulls of its two bonds cancel each other; Nonpolar: its triple bond holds the electrons in the middle, between the C and the N
+   - Why: Same shape as CO₂, but not the same on both sides of C: the C≡N bond pulls much harder than the C–H bond, so they cannot cancel. The N end is δ− and the H end δ+. Not radially symmetric: polar.
 11. ★ `c-nh3-bf3`: NH₃ and BF₃ both have three identical outer atoms. Why is NH₃ polar while BF₃ is not?
-   - **Answer:** NH₃ has a lone pair on N, so it is not radially symmetric; BF₃ has none and is radially symmetric
-   - Others: N–H bonds are polar and B–F bonds are not; NH₃ has more atoms than BF₃; BF₃ has a lone pair on B
-   - Why: The radial symmetry test has two checks: no lone pair on the central atom, and every outer atom the same. BF₃ passes both. NH₃ fails the first: its lone pair takes up one side of N.
+   - **Answer:** NH₃ has a lone pair on N, so it is not symmetric and its bond pulls do not cancel
+   - Others: N–H bonds are polar but B–F bonds are not, so only NH₃ has polar bonds to add up; NH₃ has more atoms than BF₃, and the extra atoms give it a δ+ end and a δ− end; BF₃ has a lone pair on B, which balances its three bonds so that their pulls all cancel
+   - Why: The radial symmetry test has two checks: no lone pair on the central atom, and every outer atom the same. BF₃ passes both, so its three bond pulls cancel. NH₃ fails the first: its lone pair takes up one side of N, so its three N–H bonds lean the same way and do not cancel.
 12. `c-rule`: What makes a molecule radially symmetric?
    - **Answer:** No lone pair on the central atom, and every outer atom the same
-   - Others: Every bond is polar; It has 4 electron domains; Its outer atoms have no lone pairs
-   - Why: Then it looks the same in every direction from the central atom, and its charge is spread evenly all the way around: nonpolar.
+   - Others: Every bond in the molecule is polar, so the charge spreads out evenly; It has exactly 4 electron domains, at the corners of a tetrahedron; Its outer atoms have no lone pairs, so nothing pushes the bonds aside
+   - Why: Then it looks the same in every direction from the central atom, so the pulls of its bonds are equal all the way around and cancel: nonpolar.
 13. `c-why-sym`: Why is a radially symmetric molecule nonpolar, even when its bonds are polar?
-   - **Answer:** Its δ− charge is spread evenly all the way around, so the centres of positive and negative charge are in the same place
-   - Others: Its bonds stop being polar; It has no electrons on its outer atoms; Its atoms all have the same electronegativity
-   - Why: The partial charges are still there, but evenly spread. With the two centres together, the molecule has no δ+ end and no δ− end.
-14. `c-centres`: In a molecule that is NOT radially symmetric, where are the centre of positive charge and the centre of negative charge?
-   - **Answer:** In different places, so the molecule has a δ+ end and a δ− end: polar
-   - Others: In the same place; There is no charge anywhere in the molecule; Both on the central atom
-   - Why: Without radial symmetry the charge is not spread evenly, so the two centres pull apart and make ends.
+   - **Answer:** Its polar bonds pull equally in every direction, so they cancel each other out
+   - Others: Its bonds stop being polar once the molecule is radially symmetric in 3D; Its outer atoms have no electrons left over, so there is no charge to move around; All of its atoms have the same electronegativity, so no bond pulls on the electrons
+   - Why: Each polar bond still pulls electrons toward its outer atom. In a radially symmetric molecule those pulls are equal and spread evenly all the way around, so they cancel, like a tug-of-war with equal teams on every side. No δ+ end and no δ− end.
+14. `c-centres`: In a molecule that is NOT radially symmetric, what happens to the pulls of its polar bonds?
+   - **Answer:** They do not cancel, so the molecule has a δ+ end and a δ− end: polar
+   - Others: They always cancel, because every bond pulls with exactly the same strength; They disappear, because only symmetric molecules can have polar bonds; They all point at the central atom, which becomes δ− while the rest stays neutral
+   - Why: Without radial symmetry the pulls are uneven or all lean one way, so they add up instead of cancelling: one end δ−, the other δ+.
 15. `c-field`: Molecules are placed between a + plate and a − plate. Which ones turn to line up?
-   - **Answer:** The ones that are not radially symmetric (polar): their δ− end turns toward the + plate
-   - Others: The radially symmetric ones; Every molecule with polar bonds; None of them: molecules have no charge
-   - Why: Only a molecule that is not radially symmetric has a δ− end and a δ+ end for the plates to pull. A radially symmetric molecule has no ends and keeps tumbling.
+   - **Answer:** The polar ones, whose bond pulls do not cancel: their δ− end turns to the + plate
+   - Others: The radially symmetric ones, because their charge is spread evenly all around them; Every molecule with a polar bond, even when the pulls of its bonds cancel out; None of them, because a molecule has no overall charge for the plates to pull on
+   - Why: Only a molecule whose bond pulls do not cancel has a δ− end and a δ+ end for the plates to pull. A radially symmetric molecule has no ends and keeps tumbling.
 16. `c-pick-polar`: Which molecule is NOT radially symmetric, and so polar?
    - **Answer:** NH₃ (drawing)
    - Others: CO₂ (drawing); BF₃ (drawing); CCl₄ (drawing)

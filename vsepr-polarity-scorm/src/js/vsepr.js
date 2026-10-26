@@ -357,13 +357,13 @@ var VSEPR = (function () {
         ? 'The ' + (y.lp > 1 ? y.lp + ' lone pairs' : 'lone pair') + ' on ' + X + ' take' + (y.lp > 1 ? '' : 's') +
           ' up room on one side of ' + X + ' where there is no atom'
         : 'Its outer atoms are not all the same (' + outerList(y.outer) + ')';
-      return name + ' is not radially symmetric. ' + why + ', so the charge is not spread evenly around ' + X +
-        '. The centre of negative charge and the centre of positive charge are in different places: ' + name +
-        ' has a δ+ end and a δ− end. Not radially symmetric: polar.';
+      return name + ' is not radially symmetric. ' + why + ', so the pulls of its polar bonds do not cancel each ' +
+        'other out. The electrons are pulled more toward one side: ' + name + ' has a δ+ end and a δ− end. Not ' +
+        'radially symmetric: polar.';
     }
     return name + ' is radially symmetric: ' + y.outer.length + ' identical ' + y.outer[0] + ' atoms spread evenly ' +
-      'around ' + X + ', and no lone pair on ' + X + '. Whichever way you look from ' + X + ', it is the same, so the ' +
-      'charge is spread evenly all the way around. The two centres are in the same place: no ends. Radially ' +
+      'around ' + X + ', and no lone pair on ' + X + '. Each bond pulls on the electrons, but the pulls are equal and ' +
+      'point evenly all the way around, so they cancel each other out. No δ+ end and no δ− end. Radially ' +
       'symmetric: nonpolar.';
   }
 

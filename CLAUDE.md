@@ -122,14 +122,16 @@ not the full page.
   - `app.js`: `STEPS`, `PREDICT`, renderers
   - `quiz.js`: question bank
 
-## vsepr-polarity-scorm (branch `vsepr-polarity`, zip v2, SCHEMA 2)
+## vsepr-polarity-scorm (branch `vsepr-polarity`, zip v3, SCHEMA 3)
 
 - **Key objective:** domains spread apart, so the Lewis structure (flat) is not the shape; lone pairs repel more
   strongly than shared pairs; polarity by radial symmetry.
 - 14 steps in 3 parts; 16 graded questions (4+6+6) from a pool of 51. The electronegativity table is open beside checkpoint 3.
 - **Polarity is radial symmetry, never the shape name.** Every polarity step asks "Is X radially symmetric?" before
   "polar or nonpolar?"; explanations and all of checkpoint 3 are worded in symmetry (`Vsepr.symmetry`). "Lopsided" is
-  banned. Molecule orders are shuffled per student (CO₂ stays first where it is predicted).
+  banned. The reason is always given as "the pulls of its polar bonds cancel each other out" (or do not). Molecule
+  orders and the step-8 sort cards are shuffled per student (CO₂ stays first where it is predicted).
+- **Checkpoint choices:** the right answer is never the longest sentence choice; the validator checks it.
 - **Teacher's choices:** builds use the 5 rules (lewis.js, builder.js, draw.js, snark.js copied from `lewis-structures-scorm/`;
   builder.js adds an `onChange` hook for the 3D window). 2 to 6 electron domains; lone pairs on the central atom only with
   4 domains (no see-saw, T-shaped, square planar, square pyramidal, no 7 domains). Angles taught as 109.5°, **<109.5°**

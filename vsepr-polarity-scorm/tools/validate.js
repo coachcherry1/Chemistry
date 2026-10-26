@@ -181,6 +181,11 @@ Object.keys(QUIZZES).forEach((k) => {
     const geomChoice = q.choices.some((c) => typeof c === 'string' && VSEPR.NAMES.indexOf(c.toLowerCase()) >= 0);
     const angleChoice = q.choices.some((c) => typeof c === 'string' && /^<{0,2}\d/.test(c));
     if ((geomChoice || angleChoice) && !q.fact) bad(`${q.id}: names a geometry or angle but has no fact`);
+    /* a sentence answer must not give itself away by being the longest choice */
+    if (q.choices.every((c) => typeof c === 'string') && Math.max(...q.choices.map((c) => c.length)) > 25) {
+      const L = q.choices.map((c) => c.length);
+      if (L.slice(1).every((n) => n < L[0])) bad(`${q.id}: the correct choice is the longest (${L.join(', ')})`);
+    }
     if (!q.fact) return;
     const [kind, a, b] = q.fact;
     const first = q.choices[0];
