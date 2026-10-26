@@ -15,9 +15,9 @@ interaction, completion-only grading and packaging, with a level per concept.
 | --- | --- | --- |
 | 1 | Equivalent H | The compound is drawn with every hydrogen-bearing group as a capsule (CH₃, CH₂, OH …). The student picks a colour and clicks groups to colour each **set of equivalent hydrogens** alike, then checks. A correct grouping reveals the spectrum, its signals labelled in the student's colours: one set, one signal. Five compounds. |
 | 2 | Chemical shift | The compound is drawn with its sets lettered **a, b, c**. The student drags each letter onto the signal it produces, reasoning from the **shift table** (available below the spectrum). Five compounds. |
-| 3 | Integration | The compound is **hidden**; only its molecular formula is shown. Relative integrals are printed under the signals and the integral curve is drawn. The student works out how many H each signal holds and drags **3H, 2H …** onto it. The compound is revealed at the end. Four compounds. |
+| 3 | Integration | The compound is **hidden**; only its molecular formula is shown. Unnormalized integral areas in arbitrary units are printed under the signals and the integral curve is drawn. The student works out how many H each signal holds and drags **3H, 2H …** onto it. The compound is revealed at the end. Four compounds. |
 | 4 | Splitting | The compound is drawn and lettered. The student **predicts** each set's multiplicity with the n + 1 rule by dragging **singlet, doublet, triplet …** onto it. Once every set has one, the spectrum appears, labelled, so the prediction can be checked against the real multiplets. Five compounds. |
-| 5 | Solve it | The compound is hidden and the H count is printed under each signal. The student reads shift, integration and splitting together and picks the compound from three structures. Four compounds. |
+| 5 | Solve it | The compound is hidden; unnormalized integral areas and the integral curve are shown. The student compares integral ratios, shift and splitting and picks the compound from three structures. Eight compounds. |
 
 Each level opens with a short lesson screen — the key idea, a worked example where it
 helps, and how to play — and the reference panel under the plot keeps that level's table
@@ -36,7 +36,7 @@ n + 1 — returns
 
 > Not a triplet — 3 is the number of neighbouring H. The rule is n + 1.
 
-Twenty-three compounds is a class period. To shorten it, lower `items` in
+Twenty-seven compounds make up a full run. To shorten it, lower `items` in
 `src/js/levels.js`; `tools/validate.js` checks the level can still be filled.
 
 ### What every run includes
@@ -52,21 +52,23 @@ fills them first, then draws the rest preferring a compound family not yet used:
 | 4 | a sextet or septet, an O–H, a singlet from a group with no neighbouring H, and a quartet |
 | 5 | a free draw across the bank |
 
-Which compound fills each place varies, so a retry is a different set, and the run avoids
-reusing a compound across levels. Over 3,000 simulated runs every need was met every time,
-no level ever repeated a compound, and every compound in each level's pool was drawn.
+Which compound fills each place varies, so a retry is a different set. The draw prefers
+compounds not used in earlier levels and never repeats a compound within one level.
+Level 5 draws eight distinct compounds; compounds from earlier levels may recur when
+needed to fill the expanded final level.
 
 ### The compound question (Level 5)
 
 The two decoys are chosen to need reasoning, not recognition. They are ranked by how alike
 their spectra would look — same number of signals first, then the same splitting pattern
-and integration shape, then the same H counts and shift regions — so:
+and integration shape, then the shift regions — so:
 
 - **ethyl acetate** comes up against **methyl propanoate** and **2-butanone**. All three
   give a 3H singlet, a 2H quartet and a 3H triplet; only the shifts decide it (the quartet
   at 4.1 is a CH₂ on the ester O).
 - **bromoethane** comes up against **diethyl ether**: two signals, a quartet and a
-  triplet, both 2 : 3. Only the printed H counts — 2H and 3H against 4H and 6H — decide it.
+  triplet, both 2 : 3. Absolute H counts cannot distinguish them from unnormalized areas;
+  students must use their different shift regions.
 - **2-propanol** comes up against **2-methylpropanoic acid** and **isopropyl acetate**,
   all three with a 6H doublet and a 1H septet.
 
@@ -74,11 +76,11 @@ A wrong pick is explained by the first piece of evidence that rules it out, chec
 order a student should check: number of signals, then integration, then splitting, then
 shift —
 
-> Not Methyl propanoate. The 2H quartet at δ 4.12 sits in the range for H on a carbon
+> Not Methyl propanoate. The quartet with relative area 1 at δ 4.12 sits in the range for H on a carbon
 > bonded to O (3.2–5.2 ppm). In Methyl propanoate, the 2H quartet comes from the CH₂
 > bonded to the C=O, which would sit at 2.0–2.7 ppm.
 
-Two compounds that agree on every signal's H count, multiplicity and shift region could
+Two compounds that agree on every signal's relative integral, multiplicity and shift region could
 not be told apart at this level, so one is never offered against the other.
 `tools/validate.js` lists any such pair, and fails if a likely decoy has no single
 signal that rules it out. `ANSWER_KEY.md` tables the usual decoys for every compound with
@@ -109,9 +111,13 @@ can be counted on the full plot. Where the outer lines of a multiplet would be t
 see — a septet beside a 6H doublet, typically — the plot adds a vertical **expansion** above
 the signal, labelled ×4 or ×8, the way a printed spectrum does. TMS is drawn at 0 ppm.
 
-A seeded jitter moves each shift by up to ±0.015 ppm and adds a couple of percent of noise
-to the printed integrals, so a compound never draws identically twice and the integrals
-have to be rounded rather than read.
+In Levels 3 and 5, integral labels show measured areas rather than H counts.
+
+A seeded jitter moves each shift by up to ±0.015 ppm. Printed integral areas use a shared,
+arbitrary scale that varies between spectra, with up to ±0.5% measurement variation per
+signal. No signal is preset to 1.00: students divide by the smallest measured area, round
+the resulting ratios, and use the formula to find the H counts. For example,
+7.46 : 5.02 : 7.53 gives about 1.5 : 1 : 1.5, or 3 : 2 : 3.
 
 Nothing is copied from a spectral database, so nothing restricts redistributing the
 package, and every peak position is known exactly. The plot redraws at the container's
@@ -133,6 +139,9 @@ it just isn't reported.
 To report a percent instead, set `cmi.core.score.raw` alongside the status in
 `markComplete()` in `src/js/scorm.js` and add an `<adlcp:masteryscore>` to
 `src/imsmanifest.xml`.
+
+The eight-question final level uses save schema 2; older saved runs restart so they receive
+the expanded question plan.
 
 Progress is saved to `cmi.suspend_data` when the activity opens and after every answer, so
 a student who closes the window mid-activity resumes where they left off (at the start of

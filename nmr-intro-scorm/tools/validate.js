@@ -187,6 +187,57 @@ for (const m of MOLECULES) {
   }
 }
 
+/* Unnormalized measured areas must still recover the correct H counts,
+   including half ratios, across every integration compound and varied draws. */
+for (const m of MOLECULES.filter(m => m.levels.includes(3))) {
+  const scales = new Set();
+  for (let seed = 0; seed < 128; seed++) {
+    const signals = NMR.build(m, seed).signals;
+    const smallest = Math.min(...signals.map(s => s.rel));
+    scales.add(smallest);
+    if (signals.some(s => !Number.isFinite(s.rel) || s.rel <= 1)) {
+      fail(m, 'integrals must be positive, unnormalized areas without a 1.00 reference');
+    }
+    const ratios = signals.map(s => Math.round(s.rel / smallest * 2) / 2);
+    const sum = ratios.reduce((a, b) => a + b, 0);
+    const total = signals.reduce((a, s) => a + s.nH, 0);
+    signals.forEach((s, i) => {
+      if (Math.abs(ratios[i] * total / sum - s.nH) > 1e-9) {
+        fail(m, 'measured integral ratios give the wrong H count at seed ' + seed);
+      }
+    });
+    if (JSON.stringify(signals) !== JSON.stringify(NMR.build(m, seed).signals)) {
+      fail(m, 'integrals change when redrawing the same seed');
+    }
+  }
+  if (scales.size < 2) fail(m, 'integral scale does not vary between spectra');
+}
+
+/* Solve it reveals ratios, not absolute counts: a scaled equivalent
+   structure must never be offered as a distinguishable answer. */
+const scaledExample = JSON.parse(JSON.stringify(MOLECULES.find(m => m.id === 'ethylacetate')));
+scaledExample.atoms.forEach(a => { if (a.h) a.h *= 2; });
+const originalExample = MOLECULES.find(m => m.id === 'ethylacetate');
+if (!Chem.indistinguishable(originalExample, scaledExample)) {
+  problems.push('Solve it treats proportional integral areas as different H counts');
+}
+if (LEVELS.find(L => L.key === 'solve').items !== 8) {
+  problems.push('Solve it must draw eight compounds');
+}
+for (const m of MOLECULES.filter(m => m.levels.includes(5))) {
+  const counts = Chem.sets(m).map(s => s.nH);
+  const minH = Math.min(...counts);
+  for (let seed = 0; seed < 128; seed++) {
+    const signals = NMR.build(m, seed).signals;
+    const minArea = Math.min(...signals.map(s => s.rel));
+    for (const s of signals) {
+      if (s.rel <= 1 || Math.abs((s.rel / minArea) / (s.nH / minH) - 1) > 0.02) {
+        fail(m, 'Solve it measured areas do not preserve H ratios at seed ' + seed);
+      }
+    }
+  }
+}
+
 /* ---- every level's pool must be able to fill it, needs first */
 for (const L of LEVELS) {
   const pool = MOLECULES.filter(m => m.levels.indexOf(L.n) >= 0);

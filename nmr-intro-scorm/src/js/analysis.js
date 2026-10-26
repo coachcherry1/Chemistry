@@ -127,16 +127,18 @@ var Chem = (function () {
     return n + ' ' + word + (n === 1 ? '' : 's');
   }
 
-  /* ------------------------------------------------ telling compounds apart
-   *
-   * The Solve level shows a spectrum with the integration printed under each
-   * signal. What a student can read off it, signal by signal, is the H count,
-   * the multiplicity and the shift region. Two compounds that agree on all
-   * three for every signal cannot be told apart at this level, so one is
-   * never offered as a decoy for the other.
-   */
+  /* Only relative areas are supplied in Solve it. Spectra with the same
+     ratios, multiplicities and shift regions cannot be distinguished. */
+  function ratioSets(mol) {
+    var list = sets(mol);
+    var min = Math.min.apply(null, list.map(function (s) { return s.nH; }));
+    return list.map(function (s) {
+      return Object.assign({}, s, { ratio: s.nH / min });
+    });
+  }
+
   function signatureKey(mol) {
-    return sets(mol).map(function (s) { return s.nH + '|' + s.n + '|' + s.r; }).sort().join(',');
+    return ratioSets(mol).map(function (s) { return s.ratio + '|' + s.n + '|' + s.r; }).sort().join(',');
   }
 
   function indistinguishable(a, b) {
@@ -155,13 +157,8 @@ var Chem = (function () {
     return n;
   }
 
-  /* How hard `b` is to tell from `a` - higher means a better decoy. It
-     compares what a student sees: the number of signals first, then the
-     splitting pattern and the shape of the integration (2 : 3 looks the same
-     whether it is 2H : 3H or 4H : 6H), then the H counts and the shift
-     regions. Bromoethane therefore draws diethyl ether - two signals, a
-     quartet and a triplet in a 2 : 3 ratio - where only the printed H counts
-     decide it. */
+  /* Prefer decoys with similar signal counts, ratios and splitting, so
+     students must compare the shift regions as well as the areas. */
   function similarity(a, b) {
     var A = sets(a), B = sets(b);
     function feature(f) { return overlap(tally(A, f), tally(B, f)); }
@@ -172,7 +169,6 @@ var Chem = (function () {
     score += feature(function (s) { return s.n; });
     score += overlap(tally(A, function (s) { return s.nH / minA; }),
                      tally(B, function (s) { return s.nH / minB; }));
-    score += feature(function (s) { return s.nH; }) * 0.5;
     score += feature(function (s) { return s.r; }) * 0.75;
     score += feature(function (s) { return s.n + '|' + s.r; });
     if (a.family === b.family) score += 1;
@@ -187,8 +183,8 @@ var Chem = (function () {
   function contrast(ans, dec, dOf) {
     dOf = dOf || function (s) { return s.d; };
     function at(s) { return 'δ ' + dOf(s).toFixed(2); }
-    var A = sets(ans).slice().sort(function (x, y) { return dOf(y) - dOf(x); });
-    var D = sets(dec);
+    var A = ratioSets(ans).slice().sort(function (x, y) { return dOf(y) - dOf(x); });
+    var D = ratioSets(dec);
     var name = dec.name;
 
     if (A.length !== D.length) {
@@ -196,51 +192,42 @@ var Chem = (function () {
              plural(D.length, 'signal') + '. This spectrum has ' + A.length + '.';
     }
 
-    var need = tally(A, function (s) { return s.nH; });
-    var have = tally(D, function (s) { return s.nH; });
-    for (var i = 0; i < A.length; i++) {
-      var a = A[i];
-      if ((have[a.nH] || 0) >= need[a.nH]) continue;
-      if (!have[a.nH]) {
-        return 'The signal at ' + at(a) + ' integrates to ' + a.nH + 'H. ' + name +
-               (a.nH === 1 ? ' has no hydrogen that sits in a set on its own.'
-                           : ' has no set of ' + a.nH + ' equivalent hydrogens.');
-      }
-      var k = have[a.nH];
-      return 'This spectrum has ' + COUNT_WORDS[need[a.nH]] + ' ' + a.nH + 'H signals, but ' + name +
-             ' has only ' + COUNT_WORDS[k] + (a.nH === 1
-               ? (k === 1 ? ' hydrogen that sits' : ' hydrogens that sit') + ' in a set on its own.'
-               : ' set' + (k === 1 ? '' : 's') + ' of ' + a.nH + ' equivalent hydrogens.');
+    var observed = A.map(function (s) { return s.ratio; }).sort(function (a, b) { return a - b; });
+    var expected = D.map(function (s) { return s.ratio; }).sort(function (a, b) { return a - b; });
+    if (observed.some(function (v, i) { return v !== expected[i]; })) {
+      return 'Dividing the measured integrals by the smallest gives approximately ' +
+             observed.join(' : ') + ' (smallest to largest). ' + name +
+             ' would give ' + expected.join(' : ') + ', from its equivalent H sets.';
     }
 
-    /* pair signals by H count and multiplicity */
+    /* pair signals by integral ratio and multiplicity */
     var pool = D.slice(), unmatched = [];
     A.forEach(function (s) {
       for (var k = 0; k < pool.length; k++) {
-        if (pool[k].nH === s.nH && pool[k].n === s.n) { pool.splice(k, 1); return; }
+        if (pool[k].ratio === s.ratio && pool[k].n === s.n) { pool.splice(k, 1); return; }
       }
       unmatched.push(s);
     });
     if (unmatched.length) {
       var u = unmatched[0];
-      var other = pool.filter(function (s) { return s.nH === u.nH; })[0];
+      var other = pool.filter(function (s) { return s.ratio === u.ratio; })[0];
       if (other) {
-        return 'The ' + u.nH + 'H signal at ' + at(u) + ' is a ' + u.mult + '. In ' + name + ', ' +
+        return 'The signal with relative area ' + u.ratio + ' at ' + at(u) + ' is a ' + u.mult + '. In ' + name + ', ' +
                other.all + ' would give a ' + other.mult + ' — ' + neighbourPhrase(other.n) + '.';
       }
     }
 
-    /* same counts, same splitting: the shift has to decide it */
+    /* same ratios, same splitting: the shift has to decide it */
     var left = D.slice();
     for (var m = 0; m < A.length; m++) {
       var s = A[m];
-      var same = left.filter(function (x) { return x.nH === s.nH && x.n === s.n; });
+      var same = left.filter(function (x) { return x.ratio === s.ratio && x.n === s.n; });
       var hit = same.filter(function (x) { return x.r === s.r; })[0];
       if (hit) { left.splice(left.indexOf(hit), 1); continue; }
       var twin = same[0];
       if (!twin) continue;
       var rs = REGIONS[s.r], rt = REGIONS[twin.r];
-      return 'The ' + s.nH + 'H ' + s.mult + ' at ' + at(s) + ' sits in the range for ' + rs.where +
+      return 'The ' + s.mult + ' with relative area ' + s.ratio + ' at ' + at(s) + ' sits in the range for ' + rs.where +
              ' (' + rangeText(rs) + ' ppm). In ' + name + ', the ' + twin.nH + 'H ' + twin.mult +
              ' comes from ' + twin.all + ', which would sit at ' + rangeText(rt) + ' ppm.';
     }

@@ -23,7 +23,7 @@ is ignored. Spectra are simulated at 60 MHz with J = 7 Hz throughout.
 | 2 — Chemical shift | 5 | a C–H on a carbon bonded to O, a C–H next to C=O, a far-downfield signal (aromatic, alkene, aldehyde or acid), and a C–H on a carbon bonded to Br |
 | 3 — Integration | 4 | a ratio with halves to scale up, a set of 6 H or more, and three or more signals |
 | 4 — Splitting | 5 | a sextet or septet, an O–H, a singlet from a group with no neighbouring H, and a quartet |
-| 5 — Solve it | 4 | a free draw, preferring a compound family not yet used |
+| 5 — Solve it | 8 | a free draw, preferring a compound family not yet used |
 
 ## Contents
 
@@ -88,9 +88,9 @@ Equivalence (Level 1): **a** — every CH₂ has the same neighbours, and turnin
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **Propanoic acid** — The 2H quartet at δ 3.69 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In Propanoic acid, the 2H quartet comes from the CH₂ bonded to the C=O, which would sit at 2.0–2.7 ppm.
-- **Ethyl acetate** — The signal at δ 2.61 integrates to 1H. Ethyl acetate has no hydrogen that sits in a set on its own.
-- **1-Propanol** — 1-Propanol has 4 sets of equivalent hydrogens, so it would give 4 signals. This spectrum has 3.
+- **Propanoic acid** — The quartet with relative area 2 at δ 3.69 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In Propanoic acid, the 2H quartet comes from the CH₂ bonded to the C=O, which would sit at 2.0–2.7 ppm.
+- **Ethyl acetate** — Dividing the measured integrals by the smallest gives approximately 1 : 2 : 3 (smallest to largest). Ethyl acetate would give 1 : 1.5 : 1.5, from its equivalent H sets.
+- **Methyl propanoate** — Dividing the measured integrals by the smallest gives approximately 1 : 2 : 3 (smallest to largest). Methyl propanoate would give 1 : 1.5 : 1.5, from its equivalent H sets.
 
 ## 1-Propanol
 
@@ -107,9 +107,9 @@ Usual Level 5 decoys, and the evidence that rules each out:
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **Butanoic acid** — The 2H triplet at δ 3.58 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In Butanoic acid, the 2H triplet comes from the CH₂ bonded to the C=O, which would sit at 2.0–2.7 ppm.
+- **Butanoic acid** — The triplet with relative area 2 at δ 3.58 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In Butanoic acid, the 2H triplet comes from the CH₂ bonded to the C=O, which would sit at 2.0–2.7 ppm.
 - **Ethanol** — Ethanol has 3 sets of equivalent hydrogens, so it would give 3 signals. This spectrum has 4.
-- **1-Bromopropane** — 1-Bromopropane has 3 sets of equivalent hydrogens, so it would give 3 signals. This spectrum has 4.
+- **2-Propanol** — 2-Propanol has 3 sets of equivalent hydrogens, so it would give 3 signals. This spectrum has 4.
 
 ## 2-Propanol
 
@@ -127,9 +127,9 @@ Equivalence (Level 1): **a** — both CH₃ groups hang off the same CH, so they
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **Isopropyl acetate** — This spectrum has two 1H signals, but Isopropyl acetate has only one hydrogen that sits in a set on its own.
-- **2-Methylpropanoic acid** — The 1H septet at δ 4.02 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In 2-Methylpropanoic acid, the 1H septet comes from the CH bonded to the C=O, which would sit at 2.0–2.7 ppm.
-- **Ethanol** — This spectrum has two 1H signals, but Ethanol has only one hydrogen that sits in a set on its own.
+- **Isopropyl acetate** — Dividing the measured integrals by the smallest gives approximately 1 : 1 : 6 (smallest to largest). Isopropyl acetate would give 1 : 3 : 6, from its equivalent H sets.
+- **2-Methylpropanoic acid** — The septet with relative area 1 at δ 4.02 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In 2-Methylpropanoic acid, the 1H septet comes from the CH bonded to the C=O, which would sit at 2.0–2.7 ppm.
+- **Ethanol** — Dividing the measured integrals by the smallest gives approximately 1 : 1 : 6 (smallest to largest). Ethanol would give 1 : 2 : 3, from its equivalent H sets.
 
 ## tert-Butyl alcohol
 
@@ -146,9 +146,9 @@ Equivalence (Level 1): **a** — all three CH₃ groups hang off the same carbon
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **2,2-Dimethylpropanal** — The 1H singlet at δ 1.95 sits in the range for an alcohol O–H (1.0–5.5 ppm). In 2,2-Dimethylpropanal, the 1H singlet comes from the aldehyde H, on the C=O carbon, which would sit at 9.0–10.5 ppm.
-- **tert-Butyl methyl ether** — The signal at δ 1.95 integrates to 1H. tert-Butyl methyl ether has no hydrogen that sits in a set on its own.
-- **Diethyl ether** — The signal at δ 1.95 integrates to 1H. Diethyl ether has no hydrogen that sits in a set on its own.
+- **2,2-Dimethylpropanal** — The singlet with relative area 1 at δ 1.95 sits in the range for an alcohol O–H (1.0–5.5 ppm). In 2,2-Dimethylpropanal, the 1H singlet comes from the aldehyde H, on the C=O carbon, which would sit at 9.0–10.5 ppm.
+- **tert-Butyl methyl ether** — Dividing the measured integrals by the smallest gives approximately 1 : 9 (smallest to largest). tert-Butyl methyl ether would give 1 : 3, from its equivalent H sets.
+- **Diethyl ether** — Dividing the measured integrals by the smallest gives approximately 1 : 9 (smallest to largest). Diethyl ether would give 1 : 1.5, from its equivalent H sets.
 
 ## Diethyl ether
 
@@ -165,9 +165,9 @@ Equivalence (Level 1): **a** — the O sits in the middle, so the two ethyl grou
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **3-Pentanone** — The 4H quartet at δ 3.48 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In 3-Pentanone, the 4H quartet comes from the two CH₂ groups bonded to the C=O, which would sit at 2.0–2.7 ppm.
-- **Bromoethane** — The signal at δ 3.48 integrates to 4H. Bromoethane has no set of 4 equivalent hydrogens.
-- **tert-Butyl alcohol** — The signal at δ 3.48 integrates to 4H. tert-Butyl alcohol has no set of 4 equivalent hydrogens.
+- **3-Pentanone** — The quartet with relative area 1 at δ 3.48 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In 3-Pentanone, the 4H quartet comes from the two CH₂ groups bonded to the C=O, which would sit at 2.0–2.7 ppm.
+- **Bromoethane** — The quartet with relative area 1 at δ 3.48 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In Bromoethane, the 2H quartet comes from the CH₂ bonded to the Br, which would sit at 2.7–4.5 ppm.
+- **tert-Butyl alcohol** — Dividing the measured integrals by the smallest gives approximately 1 : 1.5 (smallest to largest). tert-Butyl alcohol would give 1 : 9, from its equivalent H sets.
 
 ## tert-Butyl methyl ether
 
@@ -184,9 +184,9 @@ Equivalence (Level 1): **b** — all three hang off the same carbon, and turning
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **tert-Butyl alcohol** — The signal at δ 3.22 integrates to 3H. tert-Butyl alcohol has no set of 3 equivalent hydrogens.
-- **Methyl acetate** — The signal at δ 1.20 integrates to 9H. Methyl acetate has no set of 9 equivalent hydrogens.
-- **2,2-Dimethylpropanal** — The signal at δ 3.22 integrates to 3H. 2,2-Dimethylpropanal has no set of 3 equivalent hydrogens.
+- **tert-Butyl alcohol** — Dividing the measured integrals by the smallest gives approximately 1 : 3 (smallest to largest). tert-Butyl alcohol would give 1 : 9, from its equivalent H sets.
+- **Methyl acetate** — Dividing the measured integrals by the smallest gives approximately 1 : 3 (smallest to largest). Methyl acetate would give 1 : 1, from its equivalent H sets.
+- **2,2-Dimethylpropanal** — Dividing the measured integrals by the smallest gives approximately 1 : 3 (smallest to largest). 2,2-Dimethylpropanal would give 1 : 9, from its equivalent H sets.
 
 ## Ethyl acetate
 
@@ -202,9 +202,9 @@ Usual Level 5 decoys, and the evidence that rules each out:
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **Methyl propanoate** — The 2H quartet at δ 4.12 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In Methyl propanoate, the 2H quartet comes from the CH₂ bonded to the C=O, which would sit at 2.0–2.7 ppm.
-- **2-Butanone** — The 2H quartet at δ 4.12 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In 2-Butanone, the 2H quartet comes from the CH₂ bonded to the C=O, which would sit at 2.0–2.7 ppm.
-- **Ethanol** — This spectrum has two 3H signals, but Ethanol has only one set of 3 equivalent hydrogens.
+- **Methyl propanoate** — The quartet with relative area 1 at δ 4.12 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In Methyl propanoate, the 2H quartet comes from the CH₂ bonded to the C=O, which would sit at 2.0–2.7 ppm.
+- **2-Butanone** — The quartet with relative area 1 at δ 4.12 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In 2-Butanone, the 2H quartet comes from the CH₂ bonded to the C=O, which would sit at 2.0–2.7 ppm.
+- **Ethanol** — Dividing the measured integrals by the smallest gives approximately 1 : 1.5 : 1.5 (smallest to largest). Ethanol would give 1 : 2 : 3, from its equivalent H sets.
 
 ## Methyl acetate
 
@@ -219,9 +219,9 @@ Usual Level 5 decoys, and the evidence that rules each out:
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **tert-Butyl methyl ether** — This spectrum has two 3H signals, but tert-Butyl methyl ether has only one set of 3 equivalent hydrogens.
-- **Acetic acid** — This spectrum has two 3H signals, but Acetic acid has only one set of 3 equivalent hydrogens.
-- **1,3,5-Trimethylbenzene** — This spectrum has two 3H signals, but 1,3,5-Trimethylbenzene has only one set of 3 equivalent hydrogens.
+- **tert-Butyl methyl ether** — Dividing the measured integrals by the smallest gives approximately 1 : 1 (smallest to largest). tert-Butyl methyl ether would give 1 : 3, from its equivalent H sets.
+- **Acetic acid** — Dividing the measured integrals by the smallest gives approximately 1 : 1 (smallest to largest). Acetic acid would give 1 : 3, from its equivalent H sets.
+- **tert-Butyl alcohol** — Dividing the measured integrals by the smallest gives approximately 1 : 1 (smallest to largest). tert-Butyl alcohol would give 1 : 9, from its equivalent H sets.
 
 ## Methyl propanoate
 
@@ -237,9 +237,9 @@ Usual Level 5 decoys, and the evidence that rules each out:
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **Ethyl acetate** — The 3H singlet at δ 3.67 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In Ethyl acetate, the 3H singlet comes from the CH₃ bonded to the C=O, which would sit at 2.0–2.7 ppm.
-- **2-Butanone** — The 3H singlet at δ 3.67 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In 2-Butanone, the 3H singlet comes from the CH₃ bonded to the C=O, which would sit at 2.0–2.7 ppm.
-- **Propanoic acid** — This spectrum has two 3H signals, but Propanoic acid has only one set of 3 equivalent hydrogens.
+- **Ethyl acetate** — The singlet with relative area 1.5 at δ 3.67 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In Ethyl acetate, the 3H singlet comes from the CH₃ bonded to the C=O, which would sit at 2.0–2.7 ppm.
+- **2-Butanone** — The singlet with relative area 1.5 at δ 3.67 sits in the range for H on a carbon bonded to O (3.2–5.2 ppm). In 2-Butanone, the 3H singlet comes from the CH₃ bonded to the C=O, which would sit at 2.0–2.7 ppm.
+- **Propanoic acid** — Dividing the measured integrals by the smallest gives approximately 1 : 1.5 : 1.5 (smallest to largest). Propanoic acid would give 1 : 2 : 3, from its equivalent H sets.
 
 ## Isopropyl acetate
 
@@ -257,9 +257,9 @@ Equivalence (Level 1): **c** — both hang off the same CH, so they are mirror i
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **2-Propanol** — The signal at δ 2.02 integrates to 3H. 2-Propanol has no set of 3 equivalent hydrogens.
-- **2-Methylpropanoic acid** — The signal at δ 2.02 integrates to 3H. 2-Methylpropanoic acid has no set of 3 equivalent hydrogens.
-- **Ethyl acetate** — The signal at δ 4.99 integrates to 1H. Ethyl acetate has no hydrogen that sits in a set on its own.
+- **2-Propanol** — Dividing the measured integrals by the smallest gives approximately 1 : 3 : 6 (smallest to largest). 2-Propanol would give 1 : 1 : 6, from its equivalent H sets.
+- **2-Methylpropanoic acid** — Dividing the measured integrals by the smallest gives approximately 1 : 3 : 6 (smallest to largest). 2-Methylpropanoic acid would give 1 : 1 : 6, from its equivalent H sets.
+- **Ethyl acetate** — Dividing the measured integrals by the smallest gives approximately 1 : 3 : 6 (smallest to largest). Ethyl acetate would give 1 : 1.5 : 1.5, from its equivalent H sets.
 
 ## 2-Butanone
 
@@ -275,9 +275,9 @@ Usual Level 5 decoys, and the evidence that rules each out:
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **Ethyl acetate** — The 2H quartet at δ 2.44 sits in the range for H on a carbon next to a C=O (2.0–2.7 ppm). In Ethyl acetate, the 2H quartet comes from the CH₂ bonded to the ester O, which would sit at 3.2–5.2 ppm.
-- **Methyl propanoate** — The 3H singlet at δ 2.14 sits in the range for H on a carbon next to a C=O (2.0–2.7 ppm). In Methyl propanoate, the 3H singlet comes from the CH₃ bonded to the ester O, which would sit at 3.2–5.2 ppm.
-- **Propanoic acid** — This spectrum has two 3H signals, but Propanoic acid has only one set of 3 equivalent hydrogens.
+- **Ethyl acetate** — The quartet with relative area 1 at δ 2.44 sits in the range for H on a carbon next to a C=O (2.0–2.7 ppm). In Ethyl acetate, the 2H quartet comes from the CH₂ bonded to the ester O, which would sit at 3.2–5.2 ppm.
+- **Methyl propanoate** — The singlet with relative area 1.5 at δ 2.14 sits in the range for H on a carbon next to a C=O (2.0–2.7 ppm). In Methyl propanoate, the 3H singlet comes from the CH₃ bonded to the ester O, which would sit at 3.2–5.2 ppm.
+- **Propanoic acid** — Dividing the measured integrals by the smallest gives approximately 1 : 1.5 : 1.5 (smallest to largest). Propanoic acid would give 1 : 2 : 3, from its equivalent H sets.
 
 ## 3-Pentanone
 
@@ -294,8 +294,8 @@ Equivalence (Level 1): **a** — the C=O sits in the middle, so the two ethyl gr
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **Diethyl ether** — The 4H quartet at δ 2.44 sits in the range for H on a carbon next to a C=O (2.0–2.7 ppm). In Diethyl ether, the 4H quartet comes from the two CH₂ groups bonded to the O, which would sit at 3.2–5.2 ppm.
-- **Bromoethane** — The signal at δ 2.44 integrates to 4H. Bromoethane has no set of 4 equivalent hydrogens.
+- **Diethyl ether** — The quartet with relative area 1 at δ 2.44 sits in the range for H on a carbon next to a C=O (2.0–2.7 ppm). In Diethyl ether, the 4H quartet comes from the two CH₂ groups bonded to the O, which would sit at 3.2–5.2 ppm.
+- **Bromoethane** — The quartet with relative area 1 at δ 2.44 sits in the range for H on a carbon next to a C=O (2.0–2.7 ppm). In Bromoethane, the 2H quartet comes from the CH₂ bonded to the Br, which would sit at 2.7–4.5 ppm.
 - **2-Butanone** — 2-Butanone has 3 sets of equivalent hydrogens, so it would give 3 signals. This spectrum has 2.
 
 ## 2,2-Dimethylpropanal
@@ -313,9 +313,9 @@ Equivalence (Level 1): **a** — all three hang off the same carbon, and turning
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **tert-Butyl alcohol** — The 1H singlet at δ 9.47 sits in the range for an aldehyde H (9.0–10.5 ppm). In tert-Butyl alcohol, the 1H singlet comes from the O–H, which would sit at 1.0–5.5 ppm.
-- **tert-Butyl methyl ether** — The signal at δ 9.47 integrates to 1H. tert-Butyl methyl ether has no hydrogen that sits in a set on its own.
-- **3-Pentanone** — The signal at δ 9.47 integrates to 1H. 3-Pentanone has no hydrogen that sits in a set on its own.
+- **tert-Butyl alcohol** — The singlet with relative area 1 at δ 9.47 sits in the range for an aldehyde H (9.0–10.5 ppm). In tert-Butyl alcohol, the 1H singlet comes from the O–H, which would sit at 1.0–5.5 ppm.
+- **tert-Butyl methyl ether** — Dividing the measured integrals by the smallest gives approximately 1 : 9 (smallest to largest). tert-Butyl methyl ether would give 1 : 3, from its equivalent H sets.
+- **3-Pentanone** — Dividing the measured integrals by the smallest gives approximately 1 : 9 (smallest to largest). 3-Pentanone would give 1 : 1.5, from its equivalent H sets.
 
 ## 2-Methylpropene
 
@@ -332,9 +332,9 @@ Equivalence (Level 1): **a** — both sit on the same carbon of the C=C, so they
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **tert-Butyl methyl ether** — The signal at δ 4.66 integrates to 2H. tert-Butyl methyl ether has no set of 2 equivalent hydrogens.
-- **Acetic acid** — The signal at δ 4.66 integrates to 2H. Acetic acid has no set of 2 equivalent hydrogens.
-- **1,3,5-Trimethylbenzene** — The signal at δ 4.66 integrates to 2H. 1,3,5-Trimethylbenzene has no set of 2 equivalent hydrogens.
+- **tert-Butyl methyl ether** — The singlet with relative area 1 at δ 4.66 sits in the range for H on a C=C (4.5–6.5 ppm). In tert-Butyl methyl ether, the 3H singlet comes from the CH₃ bonded to the O, which would sit at 3.2–5.2 ppm.
+- **Acetic acid** — The singlet with relative area 1 at δ 4.66 sits in the range for H on a C=C (4.5–6.5 ppm). In Acetic acid, the 1H singlet comes from the carboxylic acid O–H, which would sit at 10.0–13.0 ppm.
+- **1,3,5-Trimethylbenzene** — The singlet with relative area 1 at δ 4.66 sits in the range for H on a C=C (4.5–6.5 ppm). In 1,3,5-Trimethylbenzene, the 3H singlet comes from the three ring H, which would sit at 6.5–8.5 ppm.
 
 ## Bromoethane
 
@@ -349,9 +349,9 @@ Usual Level 5 decoys, and the evidence that rules each out:
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **Diethyl ether** — The signal at δ 3.43 integrates to 2H. Diethyl ether has no set of 2 equivalent hydrogens.
-- **3-Pentanone** — The signal at δ 3.43 integrates to 2H. 3-Pentanone has no set of 2 equivalent hydrogens.
-- **1-Bromopropane** — 1-Bromopropane has 3 sets of equivalent hydrogens, so it would give 3 signals. This spectrum has 2.
+- **Diethyl ether** — The quartet with relative area 1 at δ 3.43 sits in the range for H on a carbon bonded to Br or Cl (2.7–4.5 ppm). In Diethyl ether, the 4H quartet comes from the two CH₂ groups bonded to the O, which would sit at 3.2–5.2 ppm.
+- **3-Pentanone** — The quartet with relative area 1 at δ 3.43 sits in the range for H on a carbon bonded to Br or Cl (2.7–4.5 ppm). In 3-Pentanone, the 4H quartet comes from the two CH₂ groups bonded to the C=O, which would sit at 2.0–2.7 ppm.
+- **2-Bromopropane** — Dividing the measured integrals by the smallest gives approximately 1 : 1.5 (smallest to largest). 2-Bromopropane would give 1 : 6, from its equivalent H sets.
 
 ## 1-Bromopropane
 
@@ -367,9 +367,9 @@ Usual Level 5 decoys, and the evidence that rules each out:
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **Ethyl acetate** — This spectrum has two 2H signals, but Ethyl acetate has only one set of 2 equivalent hydrogens.
-- **Methyl propanoate** — This spectrum has two 2H signals, but Methyl propanoate has only one set of 2 equivalent hydrogens.
-- **2-Butanone** — This spectrum has two 2H signals, but 2-Butanone has only one set of 2 equivalent hydrogens.
+- **Ethyl acetate** — Dividing the measured integrals by the smallest gives approximately 1 : 1 : 1.5 (smallest to largest). Ethyl acetate would give 1 : 1.5 : 1.5, from its equivalent H sets.
+- **Methyl propanoate** — Dividing the measured integrals by the smallest gives approximately 1 : 1 : 1.5 (smallest to largest). Methyl propanoate would give 1 : 1.5 : 1.5, from its equivalent H sets.
+- **2-Butanone** — Dividing the measured integrals by the smallest gives approximately 1 : 1 : 1.5 (smallest to largest). 2-Butanone would give 1 : 1.5 : 1.5, from its equivalent H sets.
 
 ## 2-Bromopropane
 
@@ -386,9 +386,9 @@ Equivalence (Level 1): **a** — both hang off the same CH, so they are mirror i
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **Bromoethane** — The signal at δ 4.21 integrates to 1H. Bromoethane has no hydrogen that sits in a set on its own.
+- **Bromoethane** — Dividing the measured integrals by the smallest gives approximately 1 : 6 (smallest to largest). Bromoethane would give 1 : 1.5, from its equivalent H sets.
 - **2-Propanol** — 2-Propanol has 3 sets of equivalent hydrogens, so it would give 3 signals. This spectrum has 2.
-- **Isopropyl acetate** — Isopropyl acetate has 3 sets of equivalent hydrogens, so it would give 3 signals. This spectrum has 2.
+- **tert-Butyl alcohol** — Dividing the measured integrals by the smallest gives approximately 1 : 6 (smallest to largest). tert-Butyl alcohol would give 1 : 9, from its equivalent H sets.
 
 ## Acetic acid
 
@@ -403,9 +403,9 @@ Usual Level 5 decoys, and the evidence that rules each out:
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **Methyl acetate** — The signal at δ 11.40 integrates to 1H. Methyl acetate has no hydrogen that sits in a set on its own.
-- **tert-Butyl methyl ether** — The signal at δ 11.40 integrates to 1H. tert-Butyl methyl ether has no hydrogen that sits in a set on its own.
-- **1,3,5-Trimethylbenzene** — The signal at δ 11.40 integrates to 1H. 1,3,5-Trimethylbenzene has no hydrogen that sits in a set on its own.
+- **Methyl acetate** — Dividing the measured integrals by the smallest gives approximately 1 : 3 (smallest to largest). Methyl acetate would give 1 : 1, from its equivalent H sets.
+- **tert-Butyl methyl ether** — The singlet with relative area 1 at δ 11.40 sits in the range for a carboxylic acid O–H (10.0–13.0 ppm). In tert-Butyl methyl ether, the 3H singlet comes from the CH₃ bonded to the O, which would sit at 3.2–5.2 ppm.
+- **2-Methylpropene** — The singlet with relative area 1 at δ 11.40 sits in the range for a carboxylic acid O–H (10.0–13.0 ppm). In 2-Methylpropene, the 2H singlet comes from the =CH₂ at the end of the C=C, which would sit at 4.5–6.5 ppm.
 
 ## Propanoic acid
 
@@ -421,9 +421,9 @@ Usual Level 5 decoys, and the evidence that rules each out:
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **Ethanol** — The 1H singlet at δ 11.70 sits in the range for a carboxylic acid O–H (10.0–13.0 ppm). In Ethanol, the 1H singlet comes from the O–H, which would sit at 1.0–5.5 ppm.
-- **Methyl propanoate** — The signal at δ 11.70 integrates to 1H. Methyl propanoate has no hydrogen that sits in a set on its own.
-- **2-Butanone** — The signal at δ 11.70 integrates to 1H. 2-Butanone has no hydrogen that sits in a set on its own.
+- **Ethanol** — The singlet with relative area 1 at δ 11.70 sits in the range for a carboxylic acid O–H (10.0–13.0 ppm). In Ethanol, the 1H singlet comes from the O–H, which would sit at 1.0–5.5 ppm.
+- **Methyl propanoate** — Dividing the measured integrals by the smallest gives approximately 1 : 2 : 3 (smallest to largest). Methyl propanoate would give 1 : 1.5 : 1.5, from its equivalent H sets.
+- **2-Butanone** — Dividing the measured integrals by the smallest gives approximately 1 : 2 : 3 (smallest to largest). 2-Butanone would give 1 : 1.5 : 1.5, from its equivalent H sets.
 
 ## Butanoic acid
 
@@ -440,9 +440,9 @@ Usual Level 5 decoys, and the evidence that rules each out:
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **1-Propanol** — The 1H singlet at δ 11.80 sits in the range for a carboxylic acid O–H (10.0–13.0 ppm). In 1-Propanol, the 1H singlet comes from the O–H, which would sit at 1.0–5.5 ppm.
+- **1-Propanol** — The singlet with relative area 1 at δ 11.80 sits in the range for a carboxylic acid O–H (10.0–13.0 ppm). In 1-Propanol, the 1H singlet comes from the O–H, which would sit at 1.0–5.5 ppm.
 - **Propanoic acid** — Propanoic acid has 3 sets of equivalent hydrogens, so it would give 3 signals. This spectrum has 4.
-- **1-Bromopropane** — 1-Bromopropane has 3 sets of equivalent hydrogens, so it would give 3 signals. This spectrum has 4.
+- **2-Methylpropanoic acid** — 2-Methylpropanoic acid has 3 sets of equivalent hydrogens, so it would give 3 signals. This spectrum has 4.
 
 ## 2-Methylpropanoic acid
 
@@ -460,9 +460,9 @@ Equivalence (Level 1): **a** — both hang off the same CH, so they are mirror i
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **2-Propanol** — The 1H singlet at δ 11.90 sits in the range for a carboxylic acid O–H (10.0–13.0 ppm). In 2-Propanol, the 1H singlet comes from the O–H, which would sit at 1.0–5.5 ppm.
-- **Isopropyl acetate** — This spectrum has two 1H signals, but Isopropyl acetate has only one hydrogen that sits in a set on its own.
-- **Propanoic acid** — This spectrum has two 1H signals, but Propanoic acid has only one hydrogen that sits in a set on its own.
+- **2-Propanol** — The singlet with relative area 1 at δ 11.90 sits in the range for a carboxylic acid O–H (10.0–13.0 ppm). In 2-Propanol, the 1H singlet comes from the O–H, which would sit at 1.0–5.5 ppm.
+- **Isopropyl acetate** — Dividing the measured integrals by the smallest gives approximately 1 : 1 : 6 (smallest to largest). Isopropyl acetate would give 1 : 3 : 6, from its equivalent H sets.
+- **Propanoic acid** — Dividing the measured integrals by the smallest gives approximately 1 : 1 : 6 (smallest to largest). Propanoic acid would give 1 : 2 : 3, from its equivalent H sets.
 
 ## 1,4-Dimethylbenzene
 
@@ -479,9 +479,9 @@ Equivalence (Level 1): **a** — they sit at opposite corners of the ring, so th
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **1,3,5-Trimethylbenzene** — The signal at δ 7.05 integrates to 4H. 1,3,5-Trimethylbenzene has no set of 4 equivalent hydrogens.
-- **2-Methylpropene** — The signal at δ 7.05 integrates to 4H. 2-Methylpropene has no set of 4 equivalent hydrogens.
-- **tert-Butyl alcohol** — The signal at δ 7.05 integrates to 4H. tert-Butyl alcohol has no set of 4 equivalent hydrogens.
+- **1,3,5-Trimethylbenzene** — Dividing the measured integrals by the smallest gives approximately 1 : 1.5 (smallest to largest). 1,3,5-Trimethylbenzene would give 1 : 3, from its equivalent H sets.
+- **tert-Butyl alcohol** — Dividing the measured integrals by the smallest gives approximately 1 : 1.5 (smallest to largest). tert-Butyl alcohol would give 1 : 9, from its equivalent H sets.
+- **tert-Butyl methyl ether** — Dividing the measured integrals by the smallest gives approximately 1 : 1.5 (smallest to largest). tert-Butyl methyl ether would give 1 : 3, from its equivalent H sets.
 
 ## 1,3,5-Trimethylbenzene
 
@@ -498,7 +498,7 @@ Equivalence (Level 1): **a** — they are spaced evenly around the ring, so turn
 
 Usual Level 5 decoys, and the evidence that rules each out:
 
-- **1,4-Dimethylbenzene** — The signal at δ 6.78 integrates to 3H. 1,4-Dimethylbenzene has no set of 3 equivalent hydrogens.
-- **tert-Butyl methyl ether** — The 3H singlet at δ 6.78 sits in the range for H on a benzene ring (6.5–8.5 ppm). In tert-Butyl methyl ether, the 3H singlet comes from the CH₃ bonded to the O, which would sit at 3.2–5.2 ppm.
-- **Acetic acid** — The signal at δ 2.26 integrates to 9H. Acetic acid has no set of 9 equivalent hydrogens.
+- **1,4-Dimethylbenzene** — Dividing the measured integrals by the smallest gives approximately 1 : 3 (smallest to largest). 1,4-Dimethylbenzene would give 1 : 1.5, from its equivalent H sets.
+- **tert-Butyl methyl ether** — The singlet with relative area 1 at δ 6.78 sits in the range for H on a benzene ring (6.5–8.5 ppm). In tert-Butyl methyl ether, the 3H singlet comes from the CH₃ bonded to the O, which would sit at 3.2–5.2 ppm.
+- **2-Methylpropene** — The singlet with relative area 1 at δ 6.78 sits in the range for H on a benzene ring (6.5–8.5 ppm). In 2-Methylpropene, the 2H singlet comes from the =CH₂ at the end of the C=C, which would sit at 4.5–6.5 ppm.
 
