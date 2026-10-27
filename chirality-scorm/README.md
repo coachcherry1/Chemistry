@@ -7,6 +7,9 @@ meso compounds, including Molecules A and B from the Newman activity. **Every ch
 qualitative** (identify, compare, rank, explain). Nothing is calculated: no specific rotation and no optical
 activity. The atomic numbers sit open beside checkpoints 2 to 4.
 
+A version without meso compounds, for weaker years, is in `chirality-no-meso-scorm/` (same Parts 1–3; Part 4
+without the meso steps and questions).
+
 Written for a high-school organic elective using Klein, *Organic Chemistry* (chapter 5), as the follow-on to the
 Newman projection and cyclohexane chair activities, with the same look, controls, saving and grading. About 30
 minutes.
