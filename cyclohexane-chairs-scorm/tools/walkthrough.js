@@ -298,6 +298,28 @@ const fakeLMS = () => {
   await fb(/Locked in both/, 'best step did not complete');
   await next();
 
+  /* two groups in Newman projections: both CH₃ on C1, then C4's on the wrong side, then right */
+  expect((await page.$$('.klein')).length === 2, 'two-group Newman build should show two Newman drawings');
+  await place('CH₃', '1t'); await place('CH₃', '1b'); await place('H', '4t'); await place('H', '4b');
+  await page.click('button:has-text("Check")');
+  await fb(/C1 should carry one CH₃ and one H.*stays on its own carbon/, 'two-group build: a group on the wrong carbon not explained');
+  await page.click('button:has-text("Clear")');
+  await place('CH₃', '1t'); await place('H', '1b'); await place('CH₃', '4t'); await place('H', '4b');
+  await page.click('button:has-text("Check")');
+  await fb(/CH₃ on C4 is on the wrong side.*o’clock/, 'two-group build: C4 on the wrong side not explained');
+  await page.click('button:has-text("Clear")');
+  await place('CH₃', '1t'); await place('H', '1b'); await place('H', '4t'); await place('CH₃', '4b');
+  await page.click('button:has-text("Check")');
+  await fb(/Correct.*CH₃ on C1 from 12 o’clock to 2 o’clock.*CH₃ on C4/, 'two-group build not accepted');
+  await next();
+
+  /* cis-1,3 diaxial in Newman projections */
+  expect((await page.$$('.kn-box')).length >= 2, 'klein13 should box both axial CH₃ groups');
+  await page.click('.predict .choice >> nth=1');
+  await fb(/point straight at each other/, 'klein13 step did not complete');
+  expect((await page.$$('.klein')).length === 2 && (await page.$$('.kn-move')).length === 1, 'klein13 should show the flipped chair with one arrow');
+  await next();
+
   await quiz(true); await next();
   await snap('results');
 

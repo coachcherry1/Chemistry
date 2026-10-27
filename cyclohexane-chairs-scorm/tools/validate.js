@@ -262,6 +262,24 @@ for (const s of App.STEPS.filter((x) => x.kind === 'build')) {
   if (ax('1t', s.k) || !ax('1b', s.k)) fail('build-flip: in chair 2 the CH₃ should be equatorial and the H axial');
   const f = S('build-flat');
   if (!ax('1t', f.k) || !ax('4b', f.k)) fail('build-flat: in the template chair both CH₃ groups of trans-1,4 should be axial');
+  /* build-newman2: trans-1,4 starts diaxial, C1 the front carbon on the right and C4 the back carbon on the left */
+  const n2 = S('build-newman2'), L0 = Draw.kleinLayout(molecule(n2.mol), 0);
+  if (!ax('1t', 0) || !ax('4b', 0) || ax('1t', n2.k) || ax('4b', n2.k)) fail('build-newman2: trans-1,4 should go from diaxial to diequatorial');
+  if (!(L0.cR[0] > L0.cL[0])) fail('build-newman2: C1 should be drawn on the right');
+}
+/* klein13: cis-1,3 diaxial; the CH₃/CH₃ clash is the worst; C3 swaps ends of the drawing in the flip */
+{
+  const m = molecule(S('newman13').mol), b = AVAL.better(m), w = 1 - b;
+  const both = MOLECULES.groups(m);
+  if (both.length !== 2 || !both.every((g) => g.f === 't' && ax(g.pos, w)) || !both.every((g) => !ax(g.pos, b))) fail('klein13: one chair should have both CH₃ axial on top, the other both equatorial');
+  if (w !== 0) fail('klein13: the text calls the diaxial chair chair 1 of the drawing');
+  const syn = CHAIR.synAxial('1t');
+  if (!syn.includes('3t') || !syn.includes('5t') || !ax('5t', w)) fail('klein13: the axial CH₃ on C1 should be 1,3-diaxial to C3 and C5 (top face)');
+  const cc = AVAL.PAIRS.find((p) => p[0] === 'CH3' && p[1] === 'CH3');
+  if (!cc || !(cc[2] > A('CH3') / 2) || !/^The CH₃ on C1 against the CH₃ on C3/.test(key(P.worst13))) fail('klein13: CH₃/CH₃ should be the worst crowding');
+  const L = [0, 1].map((k) => Draw.kleinLayout(m, k));
+  if (!(L[0].p3[1] < 0 && L[1].p3[1] > 0)) fail('klein13: C3 should be at the top of chair 1 and the bottom of chair 2');
+  if (AVAL.energy(m, b) !== 0) fail('klein13: the diequatorial chair should have no 1,3-diaxial interactions');
 }
 
 /* prediction keys */

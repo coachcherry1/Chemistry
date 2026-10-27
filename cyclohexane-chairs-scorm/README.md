@@ -25,7 +25,7 @@ equatorial wins, and the bigger the group, the stronger the preference.
 | 1 The chair | 5 | **Predict** what strain a flat ring would have, then turn a 3D cyclohexane and look from the side, from the top and down two ring bonds at once (the chair as two staggered Newman projections, drawn as in Klein). **Chair or boat?** Predict, then compare: the boat's flagpole H atoms glow red and its C2–C3 bond is eclipsed. Label all twelve H atoms **axial or equatorial** on a chair drawing (the 3D model lights up each one). Predict the **up/down** pattern, then click every H that points up. **Checkpoint 1** (4 questions). |
 | 2 The ring flip | 4 | **Predict** where a red axial-up H goes, then drag the flip slider: the 3D model, the chair drawing and an energy hump move together. Every axial H becomes equatorial and **up stays up**; a button colours all six axial H atoms so students watch them change at once. Below, the same flip in **Newman projections of the chair**: chair 1 and chair 2 side by side, with arrows showing the red H turn from 12 o'clock to 2 o'clock and the blue H from 4 to 6. **Draw the other chair**: put the CH₃ and H of methylcyclohexane in their places on chair 2. **The flip in Newman projections**: the same build on chair 2 drawn as Newman projections. **Checkpoint 2** (4). |
 | 3 Axial crowding | 5 | **Who does the axial CH₃ bump into?** Click the two H atoms it crowds (the axial H atoms on C3 and C5, which glow red in 3D); every wrong click explains itself. **Flip it equatorial**: predict, flip, count what the equatorial CH₃ crowds (nothing), and see the energy gap (the A-value) and a bar showing about 19 in 20 molecules equatorial. **Axial crowding in Newman projections**: gauche butane beside axial methylcyclohexane drawn as Newman projections, highlighted as in Klein's Figure 4.28 (the CH₃ gauche to C3, the axial H on C3 boxed); then the equatorial chair, with an arrow showing the CH₃ turning to anti. **Bigger groups push harder**: Cl, Br, CH(CH₃)₂ and C(CH₃)₃, predicting each against CH₃. **Checkpoint 3** (5). |
-| 4 Two groups | 4 | **From flat ring to chair**: trans-1,4-dimethylcyclohexane drawn flat with a wedge and a dash; place both CH₃ groups on the chair. **Which chair wins?** Predict and flip trans- and cis-1,4-dimethylcyclohexane: trans goes diaxial to diequatorial, cis has one axial group either way; can a flip turn cis into trans? **Lock in the better chair**: cis-1-tert-butyl-4-methyl (the bigger group takes equatorial) and cis-1,3-dimethyl (two axial CH₃ groups on one face collide). **Checkpoint 4** (5). |
+| 4 Two groups | 6 | **From flat ring to chair**: trans-1,4-dimethylcyclohexane drawn flat with a wedge and a dash; place both CH₃ groups on the chair. **Which chair wins?** Predict and flip trans- and cis-1,4-dimethylcyclohexane: trans goes diaxial to diequatorial, cis has one axial group either way; can a flip turn cis into trans? **Lock in the better chair**: cis-1-tert-butyl-4-methyl (the bigger group takes equatorial) and cis-1,3-dimethyl (two axial CH₃ groups on one face collide). **Two groups in Newman projections**: the Part 2 build again, now with trans-1,4-dimethylcyclohexane, so there are groups to place on C1 (front carbon, right) and C4 (back carbon, left); a group put on the wrong carbon or side is explained with its clock position. **Two axial CH₃ groups, face to face**: cis-1,3-dimethylcyclohexane's diaxial chair as Newman projections, the two axial CH₃ groups boxed and joined by a red path; predict which crowding is worst (CH₃ against CH₃), then see the flipped chair with both groups equatorial. **Checkpoint 4** (5). |
 
 Every build, label, flip and prediction has to be finished to move on, but none of them is graded. A wrong
 build gets specific feedback ("The CH₃ on C1 is on the wrong face. It is on a wedge in the flat drawing, so
@@ -54,7 +54,8 @@ The C1–C2 and C5–C4 bonds of a chair are parallel, so looking down both at o
 Newman projections side by side: C1 in front of C2 on the right, C5 in front of C4 on the left, joined
 through C3 and C6. This is how Klein draws the 1,3-diaxial interaction (Figures 4.28 and 4.29), and the
 activity uses it in the first step, the ring-flip step, a build in Part 2, the Part 3 comparison with
-gauche butane, the teacher's explore mode, and five checkpoint questions (a sixth asks what a flip does
+gauche butane, a two-group build and the cis-1,3 diaxial chair in Part 4, the teacher's explore mode, and five
+checkpoint questions (a sixth asks what a flip does
 in this view).
 
 The drawing is an exact projection of the 3D model, and the 3D model has a matching "Newman view" (no
@@ -210,7 +211,7 @@ reported. The *Start a new attempt* button on the results screen works here too.
 ```
 src/index.html?explore              flip any molecule, with its Newman projections and energy diagram, for the board
 src/index.html?explore=cisTM        start on one molecule (ids are listed in ANSWER_KEY.md)
-src/index.html?step=crowd           jump to any step (ids or numbers 1–19) to preview it
+src/index.html?step=crowd           jump to any step (ids or numbers 1–21) to preview it
 ```
 
 Neither mode saves progress or reports anything.
