@@ -322,6 +322,9 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 
 .plane-line { stroke: var(--plane); stroke-width: 2.5; stroke-dasharray: 7 5; }
 .plane-text { font: 600 11px system-ui, sans-serif; fill: var(--plane); }
+.plane-line.test { stroke: var(--muted); stroke-width: 2; }
+.plane-line.cut { stroke: var(--ink); stroke-width: 2.2; stroke-dasharray: 5 4; opacity: 0.75; }
+.plane-text.test { fill: var(--muted); }
 
 .ctag-bg { fill: var(--accent); }
 .ctag-text { font: 700 12px system-ui, sans-serif; fill: var(--on-accent); }
@@ -587,6 +590,11 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 
 .keylist { margin: 8px 0 0; padding-left: 18px; font-size: 0.88rem; }
 .keylist li { margin-bottom: 6px; }
+/* the meso tutorial: what faces what across the middle, and the checks */
+.facing { margin: 4px 0; padding-left: 18px; font-size: 0.88rem; font-weight: 600; }
+.meso-checks { margin: 4px 0 6px; padding-left: 22px; font-size: 0.9rem; list-style: decimal; }
+.meso-checks li { margin-bottom: 6px; }
+.sub-head { margin: 0 0 4px; }
 .big-score { font-size: 1.8rem; font-weight: 700; margin: 4px 0 10px; color: var(--accent); }
 .select { font: inherit; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
 

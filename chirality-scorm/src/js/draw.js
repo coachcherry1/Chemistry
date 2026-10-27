@@ -336,6 +336,9 @@ var Draw = (function () {
      opts.carbons    { num: { key, cls, aria } }: zigzag carbons as targets
      opts.numbers    carbon numbers on a zigzag
      opts.plane      a meso zigzag's mirror plane, as stereo.mesoPlane gives it
+     opts.planeText  its label ('mirror plane'; '' for none)
+     opts.planeCls   'test' (a plane being tried) or 'cut' (where the halves meet)
+     opts.planeLen   half its length (80)
      opts.hot        atom indices whose bonds are highlighted
      opts.style      'skeletal' or 'labels'
      opts.showH      'all', 'none' or a list of carbon numbers
@@ -360,9 +363,14 @@ var Draw = (function () {
       var o = proj(opts.plane.o), n = [opts.plane.n[0], -opts.plane.n[1]];
       var t = [-n[1], n[0]], l = Math.sqrt(t[0] * t[0] + t[1] * t[1]) || 1;
       t = [t[0] / l, t[1] / l];
-      el('line', { x1: o[0] - t[0] * 80, y1: o[1] - t[1] * 80, x2: o[0] + t[0] * 80, y2: o[1] + t[1] * 80, class: 'plane-line' }, g);
-      el('text', { x: o[0] + t[0] * 84, y: o[1] + t[1] * 84 + (t[1] > 0 ? 12 : -6), 'text-anchor': 'middle', class: 'plane-text' }, g, 'mirror plane');
-      pts.push([o[0] - t[0] * 80, o[1] - t[1] * 80], [o[0] + t[0] * 96, o[1] + t[1] * 96]);
+      var pl = opts.planeLen || 80, ptext = opts.planeText == null ? 'mirror plane' : opts.planeText;
+      el('line', { x1: o[0] - t[0] * pl, y1: o[1] - t[1] * pl, x2: o[0] + t[0] * pl, y2: o[1] + t[1] * pl,
+                   class: 'plane-line' + (opts.planeCls ? ' ' + opts.planeCls : '') }, g);
+      if (ptext) {
+        el('text', { x: o[0] + t[0] * (pl + 4), y: o[1] + t[1] * (pl + 4) + (t[1] > 0 ? 12 : -6), 'text-anchor': 'middle',
+                     class: 'plane-text' + (opts.planeCls ? ' ' + opts.planeCls : '') }, g, ptext);
+      }
+      pts.push([o[0] - t[0] * pl, o[1] - t[1] * pl], [o[0] + t[0] * (pl + (ptext ? 16 : 0)), o[1] + t[1] * (pl + (ptext ? 16 : 0))]);
     }
     /* labels */
     Object.keys(L.groups).forEach(function (j) {

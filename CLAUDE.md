@@ -94,17 +94,21 @@ not the full page.
   - `app.js`: `STEPS`, `PREDICT`, renderers
   - `quiz.js`: question bank
 
-## chirality-scorm (branch `claude/hopeful-feynman-fuhl6t`, zip v1, SCHEMA 1)
+## chirality-scorm (branch `claude/hopeful-feynman-fuhl6t`, zip v1, SCHEMA 2)
 
 - **Key objective:** name a chirality centre R or S by rotating the molecule until 4 is on the dash, never by swapping
   groups; then tell enantiomers, diastereomers and meso compounds apart.
-- 17 steps in 4 parts; 16 graded questions (4+4+4+4) from a pool of 48. The atomic-number table is open beside checkpoints 2–4.
+- 18 steps in 4 parts; 16 graded questions (4+4+4+4) from a pool of 51. The atomic-number table is open beside checkpoints 2–4.
 - **Teacher's wording:** the rule on screen is "If 4 is not on the dash, rotate the molecule." R is "rockwise" and S
   "sountersockwise" (the teacher's joke, credited to them) in exactly three places: the steering-wheel step, Big ideas and
   Vocabulary, never in `quiz.js`. Swap, switch, interchange and reverse never appear in student text. The validator checks all of it.
 - **Scope:** no calculations, no optical activity, no Fischer projections (the validator uses Fischer only for its textbook
   anchors). The mirror image is drawn both beside the molecule and behind the page. Rings: cis/trans 1,3- and
   1,4-dimethylcyclohexane from the chairs activity. Molecules A and B (2,3-dibromobutane) come from the Newman activity.
+- **Meso is recognised by an internal mirror plane**, taught in the `mesotut` step before Molecules A and B: two centres
+  give at most 2ⁿ; cut between the centres and the halves must match (`STEREO.halves`); turn to eclipsed and every group
+  must face its twin (`STEREO.facing`). R,S only confirms it. Not by laying the molecule on its mirror image (a guided
+  version of that was tried and reverted). The three checks are `MESO_CHECKS` in `app.js`, also in Vocabulary.
 - **Geometry:** one 3D model per molecule drives everything.
   - Drawings are projections of it (x right, y up, z toward the reader). A bond whose unit vector has z above 0.3 is a
     wedge, below −0.3 a dash.

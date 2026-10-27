@@ -162,6 +162,34 @@ P();
   for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) P(`- ${L[i]} and ${L[j]}: **${STEREO.relation(ms[i], ms[j])}**`);
   P();
 }
+P('### Two centres: chiral or meso?');
+P();
+{
+  const T = S('mesotut');
+  P(`Prediction (must two centres make it chiral?): **${pk('twoC')}**.`);
+  P();
+  P('Do the halves match? ' + T.halves.map((id) => `${mol(id).name}: **${App.halfAnswer(mol(id))}**`).join('; ') + '.');
+  P();
+  const fl = (m) => {
+    for (let d = 0; d < 360; d += 5) {
+      const t = STEREO.eclipsedNear(m, d, 6);
+      if (t == null) continue;
+      const f = STEREO.facing(STEREO.twisted(m, t));
+      if (f.some((x) => x.same && x.from === 'OH')) return f.map((x) => `${x.from} faces ${x.to}`).join(', ');
+    }
+    return '';
+  };
+  const [M1, M2] = T.mols.map(mol);
+  P(`Mirror plane, turned so OH eclipses OH: Butanediol 1 ${cfg(M1)}: ${fl(M1)}, a mirror plane, **meso**. ` +
+    `Butanediol 2 ${cfg(M2)}: ${fl(M2)}, no mirror plane in any position, **chiral**.`);
+  P();
+  P(`R and S: Butanediol 1's mirror image is ${cfg(STEREO.mirror(M1))}, the same molecule. Prediction: **${pk('rsMeso')}**.`);
+  P();
+  P('The checklist shown at the end:');
+  P();
+  App.MESO_CHECKS.forEach((t, i) => P(`${i + 1}. ${t}`));
+  P();
+}
 P('### Meso: Molecules A and B again');
 P();
 P(`Prediction: **${pk('count3')}** stereoisomers. Molecule A is ${cfg(mol('dbb_A'))}, meso: its mirror image fits after ` +
