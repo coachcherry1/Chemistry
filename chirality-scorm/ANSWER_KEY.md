@@ -56,6 +56,8 @@ Nothing is calculated. The atomic numbers are open beside checkpoints 2 to 4.
 | 2,3-Butanediol (`diol_ww`) | C2: OH (wedge), H (dash); C3: OH (wedge), H (dash) | C2: OH > CH(OH)CH₃ > CH₃ > H (4 on the dash)<br>C3: OH > CH(OH)CH₃ > CH₃ > H (4 on the dash) | (2R,3R) |
 | 2,3-Butanediol (`diol_dd`) | C2: H (wedge), OH (dash); C3: H (wedge), OH (dash) | C2: OH > CH(OH)CH₃ > CH₃ > H (4 on a wedge)<br>C3: OH > CH(OH)CH₃ > CH₃ > H (4 on a wedge) | (2S,3S) |
 | 2,3-Butanediol (`diol_dw`) | C2: H (wedge), OH (dash); C3: OH (wedge), H (dash) | C2: OH > CH(OH)CH₃ > CH₃ > H (4 on a wedge)<br>C3: OH > CH(OH)CH₃ > CH₃ > H (4 on the dash) | (2S,3R) (meso) |
+| 2,3-Dibromopentane (`dbp_wd`) | C2: Br (wedge), H (dash); C3: H (wedge), Br (dash) | C2: Br > CHBrCH₂CH₃ > CH₃ > H (4 on the dash)<br>C3: Br > CHBrCH₃ > CH₂CH₃ > H (4 on a wedge) | (2R,3S) |
+| 2,3-Dibromopentane (`dbp_ww`) | C2: Br (wedge), H (dash); C3: Br (wedge), H (dash) | C2: Br > CHBrCH₂CH₃ > CH₃ > H (4 on the dash)<br>C3: Br > CHBrCH₃ > CH₂CH₃ > H (4 on the dash) | (2R,3R) |
 | Tartaric acid (`tart_wd`) | C2: OH (wedge), H (dash); C3: H (wedge), OH (dash) | C2: OH > COOH > CH(OH)COOH > H (4 on the dash)<br>C3: OH > COOH > CH(OH)COOH > H (4 on a wedge) | (2S,3R) (meso) |
 | Tartaric acid (`tart_ww`) | C2: OH (wedge), H (dash); C3: OH (wedge), H (dash) | C2: OH > COOH > CH(OH)COOH > H (4 on the dash)<br>C3: OH > COOH > CH(OH)COOH > H (4 on the dash) | (2S,3S) |
 | cis-1,3-Dimethylcyclohexane (`cis13`) | CH₃ on C1 (wedge), CH₃ on C3 (wedge) | C1: ring carbon C2 > ring carbon C6 > CH₃ > H (4 on the dash)<br>C3: ring carbon C2 > ring carbon C4 > CH₃ > H (4 on the dash) | (1S,3R) (meso) |
@@ -143,6 +145,22 @@ Prediction: **4** stereoisomers. A (2R,3S), B (2S,3R), C (2R,3R), D (2S,3S).
 - B and C: **diastereomers**
 - B and D: **diastereomers**
 - C and D: **enantiomers**
+
+### Two centres: chiral or meso?
+
+Prediction (must two centres make it chiral?): **No, not always**.
+
+Do the halves match? 2-Bromo-3-chlorobutane: **halves differ**; 2,3-Butanediol: **halves match**; 2,3-Dibromopentane: **halves differ**; 2,3-Dibromobutane: **halves match**.
+
+Mirror plane, turned so OH eclipses OH: Butanediol 1 (2R,3S): CH₃ faces CH₃, OH faces OH, H faces H, a mirror plane, **meso**. Butanediol 2 (2R,3R): CH₃ faces H, OH faces OH, H faces CH₃, no mirror plane in any position, **chiral**.
+
+R and S: Butanediol 1's mirror image is (2S,3R), the same molecule. Prediction: **No: they are the same molecule**.
+
+The checklist shown at the end:
+
+1. Find the chirality centres. With fewer than two, it cannot be meso.
+2. Cut the molecule between its two centres. Do the two halves carry the same groups? If not, it can never be meso.
+3. Turn the middle bond until matching groups are eclipsed. If every group on one centre faces its twin on the other, that is a mirror plane: the molecule is meso, and achiral. If no turn pairs them all, it is chiral.
 
 ### Meso: Molecules A and B again
 
@@ -507,7 +525,7 @@ Figure: 2-Bromobutane: C2: H (wedge), Br (dash); C3: H (wedge), H (dash) = (2S).
 
 > With 4 pointing away, read it as it is: counterclockwise is S.
 
-### Checkpoint 4: two centres, meso and rings (4 of 14)
+### Checkpoint 4: two centres, meso and rings (4 of 17)
 
 **`d-count`** How many stereoisomers does 2-bromo-3-chlorobutane have?
 
@@ -516,7 +534,7 @@ Figure: 2-Bromobutane: C2: H (wedge), Br (dash); C3: H (wedge), H (dash) = (2S).
 - 3
 - 8
 
-> Two centres, each R or S: (2R,3R), (2S,3S), (2R,3S) and (2S,3R). None of them is meso, because C2 and C3 carry different groups, so no mirror plane is possible.
+> Two centres, each R or S: (2R,3R), (2S,3S), (2R,3S) and (2S,3R). Could one be meso? Cut between C2 and C3: one half carries Br and the other Cl, so the halves differ and no mirror plane is possible. All four are chiral.
 
 **★ `d-count-meso`** How many stereoisomers does 2,3-dibromobutane have?
 
@@ -525,7 +543,7 @@ Figure: 2-Bromobutane: C2: H (wedge), Br (dash); C3: H (wedge), H (dash) = (2S).
 - 2
 - 8
 
-> (2R,3R) and (2S,3S) are a pair of enantiomers, but (2R,3S) and (2S,3R) are one and the same meso compound: three in all.
+> Two centres allow at most four, so check for meso. Cut between C2 and C3: both halves carry Br, H and CH₃, so they match. Turned so Br eclipses Br, (2R,3S) has every group facing its twin across a mirror plane: it is meso, and (2S,3R) is the same molecule. (2R,3R) and (2S,3S) never pair up: a pair of enantiomers. Three in all.
 
 **`d-rel-enant`** (2R,3R)-2-Bromo-3-chlorobutane and (2S,3S)-2-bromo-3-chlorobutane are…
 
@@ -552,7 +570,7 @@ Figure: 2-Bromobutane: C2: H (wedge), Br (dash); C3: H (wedge), H (dash) = (2S).
 - Any molecule with two chirality centres
 - A molecule whose mirror image cannot be laid on it
 
-> A meso compound has chirality centres, yet its mirror image is the same molecule, thanks to a mirror plane that cuts it into two mirror-image halves.
+> A meso compound has chirality centres, yet its mirror image is the same molecule, thanks to a mirror plane that cuts it into two mirror-image halves. To spot one: at least two chirality centres, halves that carry the same groups, and a mirror plane once matching groups are turned to eclipsed. Two centres alone are not enough.
 
 **`d-meso-which`** Which drawing shows a meso compound?
 
@@ -561,7 +579,7 @@ Figure: 2-Bromobutane: C2: H (wedge), Br (dash); C3: H (wedge), H (dash) = (2S).
 - 2,3-Butanediol: C2: H (wedge), OH (dash); C3: H (wedge), OH (dash) = (2S,3S)
 - 2-Bromo-3-chlorobutane: C2: Br (wedge), H (dash); C3: H (wedge), Cl (dash) = (2R,3S)
 
-> The 2,3-butanediol with one OH on a wedge and one on a dash is (2R,3S): its two halves are mirror images. The other two butanediols are a pair of enantiomers, and 2-bromo-3-chlorobutane can never be meso, because its two halves are different.
+> Check the halves first: 2-bromo-3-chlorobutane carries Br on one half and Cl on the other, so it can never be meso. The butanediols’ halves match. Turn the one with one OH on a wedge and one on a dash until OH eclipses OH: every group faces its twin, so it has a mirror plane and is meso, (2R,3S). The other two never pair up: they are a pair of enantiomers.
 
 **★ `d-A-B`** Molecule A from the Newman activity is meso-2,3-dibromobutane and Molecule B is (2R,3R)-2,3-dibromobutane. A and B are…
 
@@ -581,7 +599,36 @@ Figure: 2,3-Dibromobutane: C2: Br (wedge), H (dash); C3: H (wedge), Br (dash) = 
 - With the two Br atoms gauche
 - In none: it has no mirror plane
 
-> With Br eclipsing Br, CH₃ eclipsing CH₃ and H eclipsing H, the plane between C2 and C3 cuts the molecule into mirror-image halves. In other conformations the plane does not show, but it is the same meso molecule.
+> With Br eclipsing Br, CH₃ eclipsing CH₃ and H eclipsing H, every group faces its twin, and the plane between C2 and C3 cuts the molecule into mirror-image halves. In other conformations the plane does not show, but it is the same meso molecule: finding the plane in any one conformation is enough.
+
+**`d-halves`** 2,3-Dibromopentane has two chirality centres. Can any of its stereoisomers be meso?
+
+Figure: 2,3-Dibromopentane: C2: Br (wedge), H (dash); C3: H (wedge), Br (dash) = (2R,3S).
+
+- ✓ No: one half ends in CH₃ and the other in CH₂CH₃, so the halves differ
+- Yes: the stereoisomer with one Br on a wedge and the other Br on a dash
+- Yes: every molecule with two chirality centres has one meso stereoisomer
+- No: a meso compound always needs three or more chirality centres
+
+> Cut between C2 and C3. Both centres carry Br and H, but the C2 half ends in CH₃ and the C3 half in CH₂CH₃. Halves that differ can never reflect onto each other, so no stereoisomer has a mirror plane: all four are chiral.
+
+**`d-facing`** Meso-2,3-dibromobutane is turned so that its two Br atoms are eclipsed. Across its mirror plane, which groups face each other?
+
+- ✓ Br faces Br, CH₃ faces CH₃ and H faces H
+- Br faces Br, CH₃ faces H and H faces CH₃
+- Br faces CH₃, CH₃ faces Br and H faces H
+- None: no group faces its twin
+
+> In the meso form, once Br eclipses Br, every group on C2 faces its twin on C3. That is what makes the plane between them a mirror plane. In the chiral (2R,3R) form, Br can face Br, but then CH₃ faces H.
+
+**`d-rs-shortcut`** A molecule has two chirality centres, C2 and C3, and its two halves match. Which stereoisomer is meso?
+
+- ✓ (2R,3S)
+- (2R,3R)
+- (2S,3S)
+- None of them
+
+> With matching halves, (2R,3S) is meso: it has a mirror plane, and its mirror image, (2S,3R), is the same molecule read from the other end. (2R,3R) and (2S,3S) have no mirror plane: they are a pair of enantiomers.
 
 **`d-energy`** How does the energy of Molecule B, (2R,3R)-2,3-dibromobutane, compare with that of its enantiomer, (2S,3S)?
 
@@ -612,7 +659,7 @@ Figure: flat drawing of cis-1,3-Dimethylcyclohexane.
 - Achiral, with no chirality centres
 - A pair of enantiomers
 
-> C1 and C3 are chirality centres, but a mirror plane through C2 and C5 puts one CH₃ on each side. Its mirror image is itself: meso.
+> Two chirality centres, C1 and C3. A plane through C2 and C5 cuts the ring into halves that match: each carries one CH₃, and in the cis isomer both CH₃ groups are on the same face, so each reflects onto the other. That is a mirror plane, so it is meso: its mirror image is itself.
 
 **`d-ring-14`** Why does 1,4-dimethylcyclohexane have no chirality centres?
 
@@ -633,7 +680,7 @@ Figure: flat drawing of trans-1,3-Dimethylcyclohexane.
 - Meso
 - Achiral, with no chirality centres
 
-> It has two chirality centres and no mirror plane: one CH₃ points up and the other down. Its mirror image does not fit on it.
+> Two chirality centres, and the halves either side of C2 and C5 carry the same groups, but one CH₃ points up and the other down, so the plane cannot reflect one onto the other. No mirror plane: chiral. Its mirror image does not fit on it.
 
 **`d-cistrans`** cis-1,4-Dimethylcyclohexane and trans-1,4-dimethylcyclohexane are…
 

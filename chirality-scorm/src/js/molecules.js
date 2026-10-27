@@ -104,6 +104,12 @@ var MOLECULES = (function () {
   pair('diol_ww', '2,3-Butanediol', 'OH', 'OH', 'w', 'w');
   pair('diol_dd', '2,3-Butanediol', 'OH', 'OH', 'd', 'd');
   pair('diol_dw', '2,3-Butanediol', 'OH', 'OH', 'd', 'w');
+  /* halves that look alike at the centres but differ further out: CH₃ at
+     one end, CH₂CH₃ at the other */
+  def('dbp_wd', { name: '2,3-Dibromopentane', chain: { first: 2, n: 2, ends: ['CH3', 'Et'],
+    subs: { 2: { w: 'Br', d: 'H' }, 3: { w: 'H', d: 'Br' } } } });
+  def('dbp_ww', { name: '2,3-Dibromopentane', chain: { first: 2, n: 2, ends: ['CH3', 'Et'],
+    subs: { 2: { w: 'Br', d: 'H' }, 3: { w: 'Br', d: 'H' } } } });
   /* tartaric acid: only for checking the priority rules against the
      textbook's natural and meso forms (tools/validate.js) */
   pair('tart_wd', 'Tartaric acid', 'OH', 'OH', 'w', 'd', 'COOH');

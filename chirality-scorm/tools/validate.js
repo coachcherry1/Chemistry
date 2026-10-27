@@ -339,6 +339,51 @@ const m0 = (id) => mol(S(id).mols ? S(id).mols[0] : S(id).mol);
   const A = mol(ms[0]), cs = CIP.centres(A);
   if (cs.every((c) => STEREO.fourOnDash(A, c))) fail('four: one of molecule A\'s centres should need a rotation');
 }
+/* mesotut: two centres, chiral or meso? */
+{
+  const T = S('mesotut');
+  const ans = T.halves.map((id) => App.halfAnswer(mol(id)));
+  if (!ans.includes('halves match') || !ans.includes('halves differ')) fail('mesotut: the sort needs both words');
+  const want = { bcb_wd: 'halves differ', dbp_wd: 'halves differ', diol_ww: 'halves match', dbb_B: 'halves match' };
+  for (const id of T.halves) if (want[id] && App.halfAnswer(mol(id)) !== want[id]) fail(`mesotut: ${id} should have ${want[id]}`);
+  if (!/CH₃ on one half and CH₂CH₃ on the other/.test(App.halfWhy(mol('dbp_wd')))) fail('mesotut: 2,3-dibromopentane\'s halves should differ by CH₃ and CH₂CH₃');
+  if (key(P.twoC) !== 'No, not always' || CIP.centres(mol('dbb_A')).length !== 2 || STEREO.chiral(mol('dbb_A'))) fail('mesotut: the twoC key is wrong');
+  if (distinct(['bcb_ww', 'bcb_wd', 'bcb_dw', 'bcb_dd']) !== 4) fail('mesotut: 2-bromo-3-chlorobutane should have all four');
+  /* halves that differ: no stereoisomer is meso, and no conformation shows a plane */
+  for (const id of ['bcb_wd', 'bcb_ww', 'dbp_wd', 'dbp_ww']) {
+    if (STEREO.meso(mol(id)) || STEREO.meso(STEREO.mirror(mol(id)))) fail(`mesotut: ${id} should never be meso`);
+    for (let d = 0; d < 360; d += 2) if (STEREO.mesoPlane(STEREO.twisted(mol(id), d))) { fail(`mesotut: ${id} shows a mirror plane at ${d}°`); break; }
+  }
+  /* the meso diol: one eclipsed position pairs every group, with a real plane; the chiral one never */
+  const ecl = (m) => {
+    const out = [];
+    for (let d = 0; d < 360; d += 5) { const t = STEREO.eclipsedNear(m, d, 6); if (t != null && !out.some((x) => Math.abs(x - t) < 1)) out.push(t); }
+    return out;
+  };
+  const [M1, M2] = T.mols.map(mol);
+  const e1 = ecl(M1), e2 = ecl(M2);
+  if (e1.length !== 3 || e2.length !== 3) fail('mesotut: each butanediol should have three eclipsed positions');
+  const all = (m, t) => STEREO.facing(STEREO.twisted(m, t)).every((x) => x.same);
+  const good = e1.filter((t) => all(M1, t));
+  if (good.length !== 1 || !STEREO.mesoPlane(STEREO.twisted(M1, good[0]))) fail('mesotut: butanediol 1 should pair every group in one eclipsed position, with a mirror plane');
+  if (!STEREO.facing(STEREO.twisted(M1, good[0])).some((x) => x.from === 'OH' && x.to === 'OH')) fail('mesotut: the meso pairing should put OH across from OH');
+  if (e2.some((t) => all(M2, t))) fail('mesotut: butanediol 2 should never pair every group');
+  const oo = e2.map((t) => STEREO.facing(STEREO.twisted(M2, t))).find((f) => f.some((x) => x.from === 'OH' && x.to === 'OH'));
+  if (!oo || !oo.some((x) => x.from === 'CH₃' && x.to === 'H')) fail('mesotut: with OH facing OH, butanediol 2 should have CH₃ facing H');
+  for (let d = 0; d < 360; d++) if (STEREO.mesoPlane(STEREO.twisted(M2, d))) { fail(`mesotut: butanediol 2 has a mirror plane at ${d}°`); break; }
+  if (!STEREO.meso(M1) || !STEREO.chiral(M2)) fail('mesotut: butanediol 1 should be meso and butanediol 2 chiral');
+  /* R and S */
+  const img = STEREO.mirror(M1);
+  if (App.configText(M1) !== '(2R,3S)' || App.configText(img) !== '(2S,3R)' || STEREO.relation(M1, img) !== 'identical' || !/^No/.test(key(P.rsMeso))) fail('mesotut: the meso butanediol and its mirror image');
+  if (App.configText(M2) !== '(2R,3R)' || App.configText(STEREO.mirror(M2)) !== '(2S,3S)' || STEREO.relation(M2, STEREO.mirror(M2)) !== 'enantiomers') fail('mesotut: the chiral butanediol and its enantiomer');
+  if (distinct(['diol_wd', 'diol_ww', 'diol_dd', 'diol_dw']) !== 3) fail('mesotut: 2,3-butanediol should have three stereoisomers');
+  /* on paper: in the zigzag, one wedge and one dash is the meso form */
+  const WD = { dbb_A: 'wd', dbb_B: 'ww', dbb_C: 'dd', dbb_D: 'dw', diol_wd: 'wd', diol_ww: 'ww', diol_dd: 'dd', diol_dw: 'dw' };
+  for (const id of Object.keys(WD)) {
+    if (STEREO.meso(mol(id)) !== (WD[id] === 'wd' || WD[id] === 'dw')) fail(`mesotut: ${id} breaks the wedge-and-dash rule`);
+  }
+}
+
 /* meso: A is meso and fits its mirror image turned upside down; B never fits */
 {
   const A = mol('dbb_A'), B = mol('dbb_B');
@@ -474,6 +519,19 @@ const checks = {
   'd-A-B': () => STEREO.meso(mol('dbb_A')) && App.configText(mol('dbb_B')) === '(2R,3R)' && STEREO.relation(mol('dbb_A'), mol('dbb_B')) === 'diastereomers',
   'd-plane-conf': () => !!STEREO.mesoPlane(STEREO.twisted(mol('dbb_A'), 180)) && !STEREO.mesoPlane(mol('dbb_A')),
   'd-energy': () => STEREO.relation(mol('dbb_B'), mol('dbb_C')) === 'enantiomers',
+  'd-halves': () => !STEREO.halves(mol('dbp_wd')).match && ['dbp_wd', 'dbp_ww'].every((id) => STEREO.chiral(mol(id)) && CIP.centres(mol(id)).length === 2) &&
+    /CH₃ on one half and CH₂CH₃/.test(App.halfWhy(mol('dbp_wd'))),
+  'd-facing': () => {
+    const A = mol('dbb_A'), B = mol('dbb_B');
+    const at = (m) => { for (let d = 0; d < 360; d += 5) { const t = STEREO.eclipsedNear(m, d, 6); if (t == null) continue; const f = STEREO.facing(STEREO.twisted(m, t)); if (f.some((x) => x.from === 'Br' && x.to === 'Br')) return f; } return null; };
+    const fa = at(A), fb = at(B);
+    const has = (f, a, b) => f.some((x) => x.from === a && x.to === b);
+    return fa && fa.every((x) => x.same) && has(fa, 'CH₃', 'CH₃') && has(fa, 'H', 'H') && fb && has(fb, 'CH₃', 'H') && has(fb, 'H', 'CH₃');
+  },
+  'd-rs-shortcut': () => ['dbb_A', 'dbb_B', 'dbb_C', 'diol_wd', 'diol_ww', 'diol_dd'].every((id) => {
+    const m = mol(id);
+    return STEREO.meso(m) === (App.configText(m) === '(2R,3S)' || App.configText(m) === '(2S,3R)');
+  }) && App.configText(mol('dbb_A')) === '(2R,3S)',
   'd-label-both': () => App.configText(mol('bcb_ww')) === '(2R,3R)' && CIP.centres(mol('bcb_ww')).every((c) => STEREO.fourOnDash(mol('bcb_ww'), c)),
   'd-ring-cis13': () => App.ringAnswer(mol('cis13')) === 'meso',
   'd-ring-14': () => App.ringAnswer(mol('cis14')) === 'no chirality centres',

@@ -382,6 +382,38 @@ const fakeLMS = () => {
   }
   await next();
 
+  /* mesotut: everything "halves match" first (wrong), then right; turn each
+     butanediol to eclipsed; R and S; the checklist */
+  expect((await stepId()) === 'mesotut', 'expected the meso tutorial, got ' + (await stepId()));
+  await predict(1);
+  {
+    const ans = await page.evaluate(() => App.STEPS.find((s) => s.id === 'mesotut').halves.map((id) => [id, App.halfAnswer(molecule(id))]));
+    await page.click('.tray .tile[data-tile="halves match"]');
+    for (const [id] of ans) await page.click(`.drop-word[data-drop="${id}"]`);
+    await page.click('button:has-text("Check")');
+    await fb(/the halves differ, so it can never be meso/, 'mesotut: a wrong sort not explained');
+    await page.click('.tray .tile[data-tile="halves differ"]');
+    for (const [id, a] of ans) if (a === 'halves differ') await page.click(`.drop-word[data-drop="${id}"]`);
+    await page.click('button:has-text("Check")');
+    await fb(/two match, two differ/, 'mesotut: the right sort not accepted');
+  }
+  expect(await page.isDisabled('#next'), 'mesotut: Next opened before the step was done');
+  await page.$eval('.turn-range', (el) => { el.value = 60; el.dispatchEvent(new Event('input')); });
+  expect(/no mirror plane in this position/.test(await page.textContent('.readout')), 'mesotut: butanediol 1 at 60° should not pair every group');
+  await page.$eval('.turn-range', (el) => { el.value = 177; el.dispatchEvent(new Event('input')); });
+  expect(/Every group faces its twin/.test(await page.textContent('.readout')), 'mesotut: butanediol 1 should pair every group near 180°');
+  await page.click('.chips button:has-text("Butanediol 2")');
+  for (const v of [60, 180, 300]) {
+    await page.$eval('.turn-range', (el, val) => { el.value = val; el.dispatchEvent(new Event('input')); }, v);
+    expect(!/Every group faces its twin/.test(await page.textContent('.readout')), `mesotut: butanediol 2 paired every group at ${v}°`);
+  }
+  expect(/OH faces OH/.test(await page.textContent('.readout')), 'mesotut: butanediol 2 at 300° should have OH facing OH');
+  await wait(300);
+  await page.click('.predict .choice:not([disabled]) >> nth=0');
+  await fb(/internal mirror plane make it meso/, 'mesotut step did not complete');
+  expect((await page.$$('.meso-checks li')).length === 3, 'mesotut: the checklist should have three checks');
+  await next();
+
   /* meso: A fits its mirror image upside down; B never fits; A's mirror plane */
   await predict(1);
   await page.click('.turnbar button:has-text("Upside down")');

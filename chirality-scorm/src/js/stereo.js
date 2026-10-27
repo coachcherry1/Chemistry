@@ -412,7 +412,70 @@ var STEREO = (function () {
   function mesoPlane(m) {
     var p2 = m.atoms[m.carbonAt[2]].p, p3 = m.atoms[m.carbonAt[3]].p;
     var o = G.mul(G.add(p2, p3), 0.5), n = G.unit(G.sub(p3, p2));
-    return symmetricIn(m, o, n) ? { o: o, n: n } : null;
+    /* the symmetry test skips atoms inside groups, so first the halves must match */
+    return halves(m).match && symmetricIn(m, o, n) ? { o: o, n: n } : null;
+  }
+
+  /* The groups on C2 and on C3 of a 2,3-disubstituted chain, each written
+     out (Br, H, CH₃, CH₂CH₃...), not counting the C2–C3 bond itself. The two
+     halves match when both carbons carry the same set: only then can one of
+     the stereoisomers be meso. */
+  function halves(m) {
+    var c2 = m.carbonAt[2], c3 = m.carbonAt[3], nb = MOLECULES.neighbours(m);
+    function half(c, other) {
+      return nb[c].filter(function (x) { return x.j !== other; }).map(function (x) {
+        return { j: x.j, text: MOLECULES.condensed(m, c, x.j) };
+      });
+    }
+    var a = half(c2, c3), b = half(c3, c2);
+    var key = function (h) { return h.map(function (x) { return x.text; }).sort().join('|'); };
+    return { a: a, b: b, match: key(a) === key(b) };
+  }
+
+  /* Across the plane that cuts C2–C3 in half at right angles: for each group
+     on C2, the group on C3 that its reflection lands on, if one is there
+     (the groups are eclipsed). null when nothing lines up. */
+  function facing(m) {
+    var p2 = m.atoms[m.carbonAt[2]].p, p3 = m.atoms[m.carbonAt[3]].p;
+    var o = G.mul(G.add(p2, p3), 0.5), n = G.unit(G.sub(p3, p2));
+    var hv = halves(m), out = [];
+    for (var i = 0; i < hv.a.length; i++) {
+      var p = m.atoms[hv.a[i].j].p;
+      var q = G.sub(p, G.mul(n, 2 * G.dot(G.sub(p, o), n)));
+      /* compare directions from the carbon, so a long C–Br bond lines up with a short C–H */
+      var dq = G.unit(G.sub(q, p3));
+      var best = null, bestCos = 0.995;
+      hv.b.forEach(function (y) {
+        var cos = G.dot(dq, G.unit(G.sub(m.atoms[y.j].p, p3)));
+        if (cos > bestCos) { bestCos = cos; best = y; }
+      });
+      if (!best) return null;
+      out.push({ from: hv.a[i].text, to: best.text, same: hv.a[i].text === best.text });
+    }
+    return out;
+  }
+
+  /* The twist nearest `deg` (within `win` degrees) at which C2's and C3's
+     groups are exactly eclipsed, or null. */
+  function eclipsedNear(m, deg, win) {
+    var hv = halves(m);
+    function dih(t) {
+      var mt = twisted(m, t);
+      return G.torsion(mt.atoms[hv.a[0].j].p, mt.atoms[mt.carbonAt[2]].p, mt.atoms[mt.carbonAt[3]].p, mt.atoms[hv.b[0].j].p);
+    }
+    /* the first group on C2 against each group on C3: eclipsed every 120° */
+    var d = dih(deg);
+    var off = ((d % 120) + 120) % 120;     /* to the nearest multiple of 120° */
+    if (off > 60) off -= 120;
+    if (Math.abs(off) > win) return null;
+    /* twisting C3 by +t changes this dihedral by +t or -t: try both */
+    var cands = [deg - off, deg + off];
+    for (var k = 0; k < 2; k++) {
+      var e = dih(cands[k]), r = ((e % 120) + 120) % 120;
+      if (r > 60) r -= 120;
+      if (Math.abs(r) < 0.01) return cands[k];
+    }
+    return null;
   }
 
   /* A mirror plane through a centre drawing's centre, if it has one: the
@@ -444,6 +507,7 @@ var STEREO = (function () {
     descriptors: descriptors, isomorphisms: isomorphisms, relation: relation, chiral: chiral, meso: meso,
     superimposable: superimposable, geometric: geometric, matchCount: matchCount, mismatched: mismatched,
     twisted: twisted, subDihedral: subDihedral, symmetricIn: symmetricIn, mesoPlane: mesoPlane,
-    centrePlane: centrePlane, ringPlane: ringPlane, permutations: permutations, side: side
+    centrePlane: centrePlane, ringPlane: ringPlane, permutations: permutations, side: side,
+    halves: halves, facing: facing, eclipsedNear: eclipsedNear
   };
 })();

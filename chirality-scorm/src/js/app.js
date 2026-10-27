@@ -23,7 +23,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a molecule changes: a save
      from an older build is then discarded and the student starts fresh. */
-  var SCHEMA = 1;
+  var SCHEMA = 2;
 
   var PARTS = [
     { n: 1, name: 'Chirality' },
@@ -83,10 +83,14 @@ var App = (function () {
       title: 'Two centres, four stereoisomers',
       text: '2-Bromo-3-chlorobutane has two chirality centres, C2 and C3, and each can be R or S. Predict how many ' +
             'stereoisomers it has, then name both centres of one of them.' },
+    { id: 'mesotut', part: 4, kind: 'mesotut', halves: ['bcb_wd', 'diol_ww', 'dbp_wd', 'dbb_B'], mols: ['diol_wd', 'diol_ww'],
+      title: 'Two centres: chiral or meso?',
+      text: 'Two chirality centres give at most four stereoisomers. Some molecules with two centres are not chiral at all. ' +
+            'Learn to spot them: check the halves, then look for a mirror plane inside the molecule. Predict first.' },
     { id: 'meso', part: 4, kind: 'meso', mols: ['dbb_A', 'dbb_B'],
       title: 'Meso: Molecules A and B again',
-      text: '2,3-Dibromobutane has two chirality centres too. You met two of its stereoisomers in the Newman activity: ' +
-            'Molecule A and Molecule B. Predict first.' },
+      text: '2,3-Dibromobutane has two chirality centres too, and its halves match. You met two of its stereoisomers in the ' +
+            'Newman activity: Molecule A and Molecule B. Predict first.' },
     { id: 'rings', part: 4, kind: 'rings', mols: ['cis13', 'trans13', 'cis14', 'trans14'],
       title: 'Rings',
       text: 'Rings follow the same rules. Sort these dimethylcyclohexanes from the chairs activity: meso, chiral, or ' +
@@ -117,6 +121,10 @@ var App = (function () {
       choices: ['S', 'R', 'It depends on how you turn it'], answer: 0, compact: true },
     count4: { q: 'How many stereoisomers does 2-bromo-3-chlorobutane have?',
       choices: ['4', '2', '3', '8'], answer: 0, compact: true },
+    twoC: { q: 'A molecule has two chirality centres. Must it be chiral?',
+      choices: ['No, not always', 'Yes, always'], answer: 0, compact: true },
+    rsMeso: { q: 'Butanediol 1 is (2R,3S). Its mirror image is (2S,3R). Are they two different molecules?',
+      choices: ['No: they are the same molecule', 'Yes: they are a pair of enantiomers'], answer: 0 },
     count3: { q: 'How many stereoisomers does 2,3-dibromobutane have?',
       choices: ['3', '4', '2', '6'], answer: 0, compact: true },
     cis13: { q: 'cis-1,3-Dimethylcyclohexane has two chirality centres, C1 and C3. Is it chiral?',
@@ -1944,6 +1952,262 @@ var App = (function () {
     if (state.done[s.id]) say('Done. Move on when you are ready.', 'good');
   };
 
+  /* ---- mesotut: two centres, chiral or meso? How to spot a meso compound */
+
+  var HALF_WORDS = ['halves match', 'halves differ'];
+
+  /* The checks the tutorial builds up to; also in Vocabulary. */
+  var MESO_CHECKS = [
+    'Find the chirality centres. With fewer than two, it cannot be meso.',
+    'Cut the molecule between its two centres. Do the two halves carry the same groups? If not, it can never be meso.',
+    'Turn the middle bond until matching groups are eclipsed. If every group on one centre faces its twin on the other, ' +
+      'that is a mirror plane: the molecule is meso, and achiral. If no turn pairs them all, it is chiral.'
+  ];
+  var MESO_SHORTCUT = 'Shortcut when the halves match: (R,S) is the meso form, and (R,R) and (S,S) are a pair of enantiomers.';
+
+  /* "Br, H and CH₃": the substituent first, then H, then the chain */
+  function halfList(half) {
+    var rank = function (t) { return t === 'H' ? 1 : /^CH/.test(t) ? 2 : 0; };
+    var a = half.map(function (x) { return x.text; }).sort(function (x, y) { return rank(x) - rank(y); });
+    return a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+  }
+
+  function halfAnswer(m) { return STEREO.halves(m).match ? 'halves match' : 'halves differ'; }
+
+  function halfWhy(m) {
+    var hv = STEREO.halves(m);
+    if (hv.match) {
+      return m.name + ': cut between C2 and C3, and each half carries ' + halfList(hv.a) + '. The halves match, so one of its ' +
+        'stereoisomers may be meso.';
+    }
+    var A = hv.a.map(function (x) { return x.text; }), B = hv.b.map(function (x) { return x.text; });
+    var onlyA = A.filter(function (t) { return B.indexOf(t) < 0; }), onlyB = B.filter(function (t) { return A.indexOf(t) < 0; });
+    return m.name + ': the C2 half carries ' + halfList(hv.a) + ', the C3 half ' + halfList(hv.b) + '. ' + onlyA.join(', ') +
+      ' on one half and ' + onlyB.join(', ') + ' on the other: the halves differ, so it can never be meso.';
+  }
+
+  /* "OH faces OH ✓" for each group on C2, or null when nothing lines up */
+  function facingLines(mt) {
+    var f = STEREO.facing(mt);
+    if (!f) return null;
+    var rank = function (t) { return t === 'H' ? 1 : /^CH/.test(t) ? 2 : 0; };
+    f.sort(function (x, y) { return rank(x.from) - rank(y.from); });
+    return { all: f.every(function (x) { return x.same; }), lines: f.map(function (x) {
+      return x.from + ' faces ' + x.to + (x.same ? '  ✓' : '  ✗');
+    }), pairs: f };
+  }
+
+  RENDER.mesotut = function (s) {
+    var pr = progress('mesotut');
+    pr.ans = pr.ans || {};
+    pr.seen = pr.seen || {};
+    var hmols = s.halves.map(molecule), pmols = s.mols.map(molecule);
+    var NAMES = ['Butanediol 1', 'Butanediol 2'];
+    var k = pr.k || 0, twist = 0;
+    var top = h('div'), sortArea = h('div'), planeArea = h('div'), rsArea = h('div');
+    [top, sortArea, planeArea, rsArea].forEach(function (n) { el.stage.appendChild(n); });
+    var picker = null;
+    function save() { pr.k = k; state.pr.mesotut = pr; persist(); }
+
+    function paintTop() {
+      top.innerHTML = '';
+      top.appendChild(panel('Your prediction', null, [predictCard(PREDICT.twoC, pr.p, function (i) {
+        pr.p = i; save(); paintTop(); paintSort(); showArea(sortArea);
+      })]));
+      if (pr.p == null) return;
+      top.appendChild(reveal([verdict(PREDICT.twoC, pr.p) + 'Not always. A molecule with n chirality centres has at most 2ⁿ ' +
+        'stereoisomers: two centres, at most four. 2-Bromo-3-chlorobutane has all four, and all four are chiral.',
+        'But when the two halves of a molecule are built alike, one of its stereoisomers can have a mirror plane inside it. ' +
+        'That one is achiral even though it has two chirality centres: a meso compound. So there are fewer than four.']));
+    }
+
+    /* do the halves match? */
+    function paintSort() {
+      if (picker) { picker.destroy(); picker = null; }
+      sortArea.innerHTML = '';
+      if (pr.p == null) return;
+      var done = !!pr.sorted, marks = {};
+      var cards = h('div', { class: 'cards' });
+      var tray = h('div', { class: 'tray', 'aria-label': 'Words' }, HALF_WORDS.map(function (w) {
+        return h('button', { type: 'button', class: 'tile term', 'data-tile': w, 'aria-label': w }, [w]);
+      }));
+      var check = h('button', { type: 'button', class: 'primary', text: 'Check' });
+      var after = h('div');
+      sortArea.appendChild(panel('Do the halves match?', 'cut between C2 and C3', [
+        h('p', { class: 'muted', text: 'Each dotted line cuts a molecule between its two chirality centres. Compare everything ' +
+          'on the C2 half with everything on the C3 half, all the way to the end of the chain.' }),
+        cards, tray, h('div', { class: 'btnrow' }, [check]), after]));
+
+      function paintCards() {
+        cards.innerHTML = '';
+        hmols.forEach(function (m) {
+          var w = pr.ans[m.id];
+          var p2 = m.atoms[m.carbonAt[2]].p, p3 = m.atoms[m.carbonAt[3]].p;
+          var cut = { o: G.mul(G.add(p2, p3), 0.5), n: G.unit(G.sub(p3, p2)) };
+          cards.appendChild(h('figure', { class: 'card' }, [
+            molWrap(Draw.mol(m, { numbers: true, plane: cut, planeCls: 'cut', planeText: '', planeLen: 60 })),
+            h('figcaption', { text: m.name }),
+            h('div', { class: 'drop-word drop' + (w ? ' filled' : ''), 'data-drop': m.id, tabindex: 0, role: 'button',
+              'aria-label': 'Word for ' + m.name + ': ' + (w || 'empty') }, [w || 'drop a word']),
+            h('div', { class: 'verdict ' + (marks[m.id] || ''), text: marks[m.id] === 'good' ? '✓ right' : marks[m.id] === 'bad' ? '✗ not quite' : '' })]));
+        });
+      }
+
+      picker = Picker({
+        tray: tray, stage: cards, sticky: true,
+        label: function (w) { return w; },
+        prompt: function (w) { return 'Now click each molecule whose ' + w + '.'; },
+        say: function (t) { say(t); },
+        drop: function (key, w) { if (done) return; pr.ans[key] = w; marks = {}; save(); paintCards(); },
+        empty: function () { say('Choose a word first, then a molecule.'); }
+      });
+
+      function paintAfter() {
+        after.innerHTML = '';
+        after.appendChild(reveal(['Halves that differ can never be mirror images of each other. 2-Bromo-3-chlorobutane and ' +
+          '2,3-dibromopentane can never be meso: all four of their stereoisomers are chiral. Look all the way along each half: ' +
+          'in 2,3-dibromopentane both centres carry Br and H, but one half ends in CH₃ and the other in CH₂CH₃.',
+          'Halves that match make meso possible, but only one stereoisomer is meso. Next, find which one.']));
+      }
+
+      check.addEventListener('click', function () {
+        if (done) return;
+        if (hmols.some(function (m) { return !pr.ans[m.id]; })) { say('Put a word on every molecule first.', 'bad'); return; }
+        var first = null;
+        hmols.forEach(function (m) {
+          var ok = pr.ans[m.id] === halfAnswer(m);
+          marks[m.id] = ok ? 'good' : 'bad';
+          if (!ok && !first) first = m;
+        });
+        paintCards();
+        if (first) { say(halfWhy(first), 'bad'); return; }
+        done = true; pr.sorted = 1; save();
+        tray.classList.add('locked'); check.disabled = true;
+        say('Right: two match, two differ.', 'good');
+        paintAfter();
+        paintPlane();
+        showArea(planeArea);
+      });
+      paintCards();
+      if (done) {
+        hmols.forEach(function (m) { marks[m.id] = 'good'; });
+        paintCards();
+        tray.classList.add('locked'); check.disabled = true;
+        paintAfter();
+      }
+      paintPlane();
+    }
+
+    function okPlane() { return !!pr.seen.plane; }
+    function okNone() { return !!pr.seen.none; }
+
+    /* turn to eclipsed and see whether every group faces its twin */
+    function paintPlane() {
+      planeArea.innerHTML = '';
+      if (!pr.sorted) return;
+      var m = pmols[k];
+      var S = sideTurn(m);
+      var canvas = h('canvas', { class: 'c3d', tabindex: 0, role: 'img', 'aria-label': '3D model of ' + NAMES[k] + '. Drag to rotate it.' });
+      var range = h('input', { type: 'range', min: 0, max: 360, step: 1, value: twist, class: 'turn-range',
+        'aria-label': 'Turn C3 about the C2–C3 bond, in degrees' });
+      var sideHost = h('div', { class: 'mol-wrap' });
+      var read = h('div', { class: 'readout' });
+      var mark = {};
+      CIP.centres(m).forEach(function (c) { mark[c] = '*'; });
+      planeArea.appendChild(panel('Look for a mirror plane inside the molecule', 'turn the C2–C3 bond', [
+        h('p', { class: 'muted', text: 'Both butanediols have matching halves. Turn the C2–C3 bond until the groups line up ' +
+          '(eclipsed). The grey line marks where a mirror plane would have to be. It is a real mirror plane only if every group ' +
+          'on C2 faces its twin on C3.' }),
+        chipRow('Molecule:', NAMES, k, function (i) { return i ? okNone() : okPlane(); }, function () { return true; },
+          function (i) { k = i; twist = 0; save(); paintPlane(); }),
+        h('div', { class: 'work work-3' }, [
+          h('div', null, [h('h3', { class: 'sub-head', text: NAMES[k] + ', as drawn' }), molWrap(Draw.mol(m, { numbers: true, mark: mark })),
+            h('p', { class: 'muted', text: 'Chirality centres marked *.' })]),
+          h('div', null, [h('div', { class: 'c3d-wrap' }, [canvas])]),
+          h('div', null, [sideHost, h('div', { class: 'range-row' }, [h('span', { text: 'Turn C3' }), range]), read])])]));
+      var viewer = new Viewer3D(canvas, { objects: [{ model: m, R: S }], radius: radiusOf(pmols) });
+
+      function update() {
+        var t = twist, near = STEREO.eclipsedNear(m, t, 5);
+        if (near != null) t = near;              /* settle exactly on eclipsed */
+        var mt = STEREO.twisted(m, t);
+        var pl = STEREO.mesoPlane(mt);
+        viewer.set(0, { model: mt, plane: pl ? { o: pl.o, n: pl.n, size: 4.2 } : null });
+        var sd = STEREO.apply(mt, S);
+        var q2 = sd.atoms[sd.carbonAt[2]].p, q3 = sd.atoms[sd.carbonAt[3]].p;
+        sideHost.innerHTML = '';
+        sideHost.appendChild(Draw.mol(sd, { wedgeOut: true, plane: { o: G.mul(G.add(q2, q3), 0.5), n: G.unit(G.sub(q3, q2)) },
+          planeCls: pl ? '' : 'test', planeText: pl ? 'mirror plane' : 'mirror plane?' }));
+        var fl = facingLines(mt);
+        read.innerHTML = '';
+        if (!fl) {
+          read.appendChild(h('p', { text: 'Nothing lines up across the grey line yet. Keep turning: the groups line up every 120°.' }));
+          return;
+        }
+        read.appendChild(h('ul', { class: 'facing' }, fl.lines.map(function (t) { return h('li', { text: t }); })));
+        read.appendChild(h('p', { text: fl.all ? 'Every group faces its twin: a mirror plane.' :
+          'Not every group faces its twin: no mirror plane in this position.' }));
+        if (k === 0 && fl.all && !okPlane()) { pr.seen.plane = 1; save(); paintChips(); paintRS(); }
+        if (k === 1 && !okNone() && fl.pairs.some(function (x) { return x.same && x.from !== 'H' && !/^CH/.test(x.from); })) {
+          pr.seen.none = 1; save(); paintChips(); paintRS();
+        }
+      }
+      function paintChips() {
+        var old = planeArea.querySelector('.chips');
+        if (old) old.replaceWith(chipRow('Molecule:', NAMES, k, function (i) { return i ? okNone() : okPlane(); },
+          function () { return true; }, function (i) { k = i; twist = 0; save(); paintPlane(); }));
+      }
+      range.addEventListener('input', function () { twist = +range.value; update(); });
+      update();
+      paintRS();
+    }
+
+    /* what the R and S labels say, then the checklist */
+    function paintRS() {
+      rsArea.innerHTML = '';
+      if (!(okPlane() && okNone())) return;
+      var meso = pmols[0], img = STEREO.mirror(meso), chiral = pmols[1];
+      var X = STEREO.halves(meso).a.filter(function (x) { return x.text !== 'H' && !/^CH/.test(x.text); })[0].text;
+      function marked(m) {
+        var mk = {};
+        CIP.centres(m).forEach(function (c) { mk[c] = CIP.label(m, c); });
+        return molWrap(Draw.mol(m, { numbers: true, mark: mk }));
+      }
+      rsArea.appendChild(reveal([
+        NAMES[0] + ': turned so ' + X + ' eclipses ' + X + ', every group faces its twin. That is an internal mirror plane, so ' +
+          NAMES[0] + ' is achiral even with two chirality centres: it is meso.',
+        NAMES[1] + ': when ' + X + ' faces ' + X + ', CH₃ faces H. No turn pairs all three groups, so it has no mirror plane: ' +
+          'it is chiral.',
+        'On paper, with the chain drawn as a zigzag: matching groups on one wedge and one dash give the meso form. Both on ' +
+          'wedges, or both on dashes, give the chiral pair.']));
+      rsArea.appendChild(panel('Check what R and S say', NAMES[0] + ' and its mirror image', [
+        h('div', { class: 'grid2' }, [
+          h('figure', { class: 'card' }, [marked(meso), h('figcaption', { text: NAMES[0] + ' ' + configText(meso) })]),
+          h('figure', { class: 'card' }, [marked(img), h('figcaption', { text: 'Its mirror image ' + configText(img) })])]),
+        predictCard(PREDICT.rsMeso, pr.rs, function (i) { pr.rs = i; save(); paintRS(); finish(); })]));
+      if (pr.rs == null) return;
+      rsArea.appendChild(reveal([verdict(PREDICT.rsMeso, pr.rs) + 'The same molecule. Read the mirror image from the other ' +
+        'end and (2S,3R) becomes (2R,3S): it is ' + NAMES[0] + ' again. A meso compound is its own mirror image.',
+        NAMES[1] + ' is ' + configText(chiral) + ', and its mirror image ' + configText(STEREO.mirror(chiral)) + ' is a different ' +
+          'molecule: its enantiomer. So 2,3-butanediol has three stereoisomers, not four: one meso compound and one pair of ' +
+          'enantiomers.']));
+      rsArea.appendChild(panel('Spotting meso', 'use these checks on any molecule', [
+        h('ol', { class: 'meso-checks' }, MESO_CHECKS.map(function (t) { return h('li', { text: t }); })),
+        h('p', { class: 'muted', text: MESO_SHORTCUT + ' The labels confirm it, but the mirror plane is what makes it meso.' })]));
+    }
+
+    function finish() {
+      if (state.done[s.id] || pr.rs == null) return;
+      complete('Two chirality centres do not make a molecule chiral. Matching halves and an internal mirror plane make it meso.');
+      showArea(rsArea.lastChild);
+    }
+
+    paintTop();
+    paintSort();
+    if (state.done[s.id]) say('Done. Move on when you are ready.', 'good');
+    return { destroy: function () { if (picker) picker.destroy(); } };
+  };
+
   /* ---- rings: meso, chiral, or no chirality centres */
 
   var RING_WORDS = ['meso', 'chiral', 'no chirality centres'];
@@ -2246,7 +2510,9 @@ var App = (function () {
       'and sountersockwise.',
     'Rotating a molecule never changes R or S. A mirror changes every centre: enantiomers are opposite at every centre.',
     'Stereoisomers that are not mirror images are diastereomers. A molecule with chirality centres and a mirror plane is ' +
-      'meso, and it is achiral.'
+      'meso, and it is achiral.',
+    'n chirality centres give at most 2ⁿ stereoisomers. Only a molecule whose halves match can have a meso form, and then ' +
+      'there are fewer.'
   ];
 
   RENDER.results = function () {
@@ -2352,7 +2618,9 @@ var App = (function () {
     ['Stereoisomers', 'Molecules with the same atoms bonded in the same order, arranged differently in space.'],
     ['Enantiomers', 'Stereoisomers that are mirror images of each other. Every chirality centre is opposite: R in one, S in the other.'],
     ['Diastereomers', 'Stereoisomers that are not mirror images: some centres the same, some opposite. Cis and trans rings are diastereomers too.'],
-    ['Meso compound', 'A molecule that has chirality centres but is achiral, because it has a mirror plane.'],
+    ['Meso compound', 'A molecule that has chirality centres but is achiral, because it has a mirror plane. To spot one: ' +
+      'at least two chirality centres; cut between them, and the two halves carry the same groups; then turn the middle bond ' +
+      'until matching groups are eclipsed, and every group faces its twin across a mirror plane.'],
     ['Constitutional isomers', 'The same formula, with the atoms bonded in a different order.']
   ];
 
@@ -2434,7 +2702,7 @@ var App = (function () {
   return { start: start, SCHEMA: SCHEMA, STEPS: STEPS, GRADED: GRADED, QZ: QZ, PREDICT: PREDICT, figure: figure, figModel: figModel,
            judgeMirror: judgeMirror, judgeRedraw: judgeRedraw, HIDDEN_AS_DRAWN: HIDDEN_AS_DRAWN, ringAnswer: ringAnswer,
            whyNotCentre: whyNotCentre, groupsOn: groupsOn, BIG_IDEAS: BIG_IDEAS, VOCAB: VOCAB, configText: configText,
-           sideTurn: sideTurn, wheelTurn: wheelTurn };
+           sideTurn: sideTurn, wheelTurn: wheelTurn, halfAnswer: halfAnswer, halfWhy: halfWhy, MESO_CHECKS: MESO_CHECKS };
 })();
 
 document.addEventListener('DOMContentLoaded', App.start);
