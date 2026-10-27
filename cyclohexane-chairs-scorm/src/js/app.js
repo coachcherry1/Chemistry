@@ -19,7 +19,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a molecule changes: a save
      from an older build is then discarded and the student starts fresh. */
-  var SCHEMA = 2;
+  var SCHEMA = 3;
 
   var PARTS = [
     { n: 1, name: 'The chair' },
@@ -96,6 +96,15 @@ var App = (function () {
       title: 'Lock in the better chair',
       text: 'Sometimes both groups cannot be equatorial at once. For each molecule, predict, flip to the more ' +
             'stable chair and lock it in.' },
+    { id: 'build-newman2', part: 4, kind: 'build', mol: 'trans14', source: 'newman', k: 1, slots: ['1t', '1b', '4t', '4b'],
+      title: 'Two groups in Newman projections',
+      text: 'Here is trans-1,4-dimethylcyclohexane in chair 1, seen down C1–C2 and C5–C4 again. Now there is a group ' +
+            'to follow on each side: C1 is the front carbon on the right and C4 the back carbon on the left. Put the ' +
+            'groups on C1 and C4 in their places on chair 2, then press Check.' },
+    { id: 'newman13', part: 4, kind: 'klein13', mol: 'cis13',
+      title: 'Two axial CH₃ groups, face to face',
+      text: 'You locked cis-1,3-dimethylcyclohexane into its better chair. Here is the other chair, with both CH₃ ' +
+            'groups axial, seen down C1–C2 and C5–C4. Predict first.' },
     { id: 'quiz-D', part: 4, kind: 'quiz', quiz: 'D', title: 'Checkpoint 4', text: '' },
 
     { id: 'results', part: 5, kind: 'results', title: 'Results', text: '' }
@@ -132,7 +141,10 @@ var App = (function () {
     cistrans: { q: 'Can a ring flip turn cis-1,4-dimethylcyclohexane into trans-1,4-dimethylcyclohexane?',
       choices: ['No: a flip never moves a group to the other face, so cis stays cis',
       'Yes: a flip moves every group to the other face',
-      'Yes, but only if the ring is heated'], answer: 0 }
+      'Yes, but only if the ring is heated'], answer: 0 },
+    worst13: { q: 'In this chair both CH₃ groups are axial, on the top face. Which crowding is the worst?',
+      choices: ['The CH₃ on C1 against the CH₃ on C3', 'The CH₃ on C1 against the axial H on C5',
+      'The CH₃ on C3 against the axial H on C5'], answer: 0 }
   };
 
   var QZ = QUIZZES;
@@ -1017,6 +1029,37 @@ var App = (function () {
   var TILE_ORDER = ['tBu', 'iPr', 'CH3', 'Cl', 'Br', 'H'];
 
   /* Judge a build: `got` and `want` map positions to group keys. */
+  /* "C1 and C4" for a build's positions */
+  function carbonList(slots) {
+    var cs = [];
+    slots.forEach(function (p) { var c = 'C' + CHAIR.carbonOf(p); if (cs.indexOf(c) < 0) cs.push(c); });
+    return cs.length > 1 ? cs.slice(0, -1).join(', ') + ' and ' + cs[cs.length - 1] : cs[0];
+  }
+
+  /* Where Klein's drawing of chair k puts each group: "The CH₃ on C1 (the
+     front carbon, right) is at 12 o'clock: axial, pointing up." */
+  var KLEIN_PLACE = { 1: 'the front carbon, right', 2: 'the back carbon, right', 4: 'the back carbon, left',
+                      5: 'the front carbon, left' };
+  function kleinWhere(mol, k, slots) {
+    var L = Draw.kleinLayout(mol, k).pos;
+    return slots.map(function (p) {
+      var c = CHAIR.carbonOf(p);
+      return 'The ' + GROUPS[groupAt(mol, p)].name + ' on C' + c + (KLEIN_PLACE[c] ? ' (' + KLEIN_PLACE[c] + ')' : '') +
+        ' is at ' + Draw.clock(L[p].a) + ': ' + CHAIR.describe(p, k) + '.';
+    }).join(' ');
+  }
+
+  /* How a flip turns each group in Klein's drawing: "the CH₃ on C1 from 12
+     o'clock to 2 o'clock (axial to equatorial, still up)" */
+  function kleinTurns(mol, slots) {
+    var K = [0, 1].map(function (k) { return Draw.kleinLayout(mol, k).pos; });
+    return slots.map(function (p) {
+      return 'the ' + GROUPS[groupAt(mol, p)].name + ' on C' + CHAIR.carbonOf(p) + ' from ' + Draw.clock(K[0][p].a) + ' to ' +
+        Draw.clock(K[1][p].a) + ' (' + (CHAIR.isAxial(p, 0) ? 'axial to equatorial' : 'equatorial to axial') + ', still ' +
+        (CHAIR.faceOf(p) === 't' ? 'up' : 'down') + ')';
+    }).join('; ');
+  }
+
   function judgeBuild(s, mol, got, want) {
     var wrong = s.slots.filter(function (p) { return got[p] !== want[p]; });
     if (!wrong.length) return { ok: true };
@@ -1030,7 +1073,9 @@ var App = (function () {
       if (names(c, got) !== names(c, want)) {
         var need = ['t', 'b'].map(function (f) { return GROUPS[want[c + f]].name; }).sort();
         return { kind: 'groups', msg: 'C' + c + ' should carry one ' + need[0] + ' and one ' + need[1] + '. ' +
-          (s.source === 'flat' ? 'Check which carbon each group is on in the flat drawing.' : 'Only the groups on C1 move.') };
+          (s.source === 'flat' ? 'Check which carbon each group is on in the flat drawing.'
+            : carbons.length > 1 ? 'A ring flip turns the bonds, but every group stays on its own carbon.'
+            : 'Only the groups on C1 move.') };
       }
     }
     for (var j = 0; j < carbons.length; j++) {
@@ -1070,11 +1115,11 @@ var App = (function () {
     var leftCard;
     var nmv = s.source === 'newman';
     if (nmv) {
-      var k0 = Draw.kleinLayout(mol, 0).pos;
+      var groupsAt = s.slots.filter(function (p) { return want[p] !== 'H'; });
       leftCard = panel('Chair 1 in Newman projections', 'down C1–C2 and C5–C4', [
-        h('div', { class: 'chair-wrap' }, [Draw.klein(mol, 0, { box: ['1t'], cls: 'build' })]),
-        h('p', { class: 'muted', text: 'C1 is the front carbon on the right. Its CH₃ is at ' + Draw.clock(k0['1t'].a) +
-          ': axial, pointing up. Its H is at ' + Draw.clock(k0['1b'].a) + ': equatorial, pointing slightly down.' })]);
+        h('div', { class: 'chair-wrap' }, [Draw.klein(mol, 0, { box: groupsAt, cls: 'build' })]),
+        h('p', { class: 'muted', text: kleinWhere(mol, 0, s.slots.length > 2 ? groupsAt : s.slots) +
+          (s.slots.length > 2 ? ' Each H is on the other bond of its carbon.' : '') })]);
     } else if (s.source === 'flat') {
       leftCard = panel('The flat drawing', 'seen from the top face', [
         h('div', { class: 'zz-wrap' }, [Draw.flat(mol, { scale: 1.8 })]),
@@ -1113,7 +1158,8 @@ var App = (function () {
       tplHost.innerHTML = '';
       if (nmv) {
         tplHost.appendChild(Draw.klein(mol, s.k, { targets: targets, text: text, cls: 'build',
-          label: 'Chair 2 drawn as Newman projections, with the two positions on the front carbon C1 empty.' }));
+          label: 'Chair 2 drawn as Newman projections, with the ' + s.slots.length + ' positions on ' +
+                 carbonList(s.slots) + ' empty.' }));
       } else tplHost.appendChild(Draw.chair(mol, s.k, { show: s.slots, targets: targets, text: text, cls: 'build',
         label: 'Chair template with empty positions on ' + (s.slots.length > 2 ? 'C1 and C4' : 'C1') + '.' }));
       tray.innerHTML = '';
@@ -1164,9 +1210,10 @@ var App = (function () {
       var note = h('p', { class: 'help3d-note', text: flat
         ? (after ? 'Here is your molecule in 3D, first seen from the top face like the flat drawing, then swung round to the side like the chair.'
                  : 'This is the molecule in 3D, seen from the top face like the flat drawing. Press “Side view” to see it as a chair.')
-        : nmv ? (after ? 'Watch the flip in 3D, seen down C1–C2 and C5–C4 like the drawings. The CH₃ swings 60° round C1 ' +
-                         'and stays on top.'
-                       : 'This is chair 1 in 3D, seen down C1–C2 and C5–C4 like the drawing. Watch it flip and follow the CH₃.')
+        : nmv ? (after ? 'Watch the flip in 3D, seen down C1–C2 and C5–C4 like the drawings. Every group swings 60° round ' +
+                         'its carbon and stays on its face.'
+                       : 'This is chair 1 in 3D, seen down C1–C2 and C5–C4 like the drawing. Watch it flip and follow ' +
+                         'each CH₃.')
         : (after ? 'Watch the ring flip from chair 1 to chair 2. The CH₃ stays on the top face.'
                  : 'This is chair 1 in 3D. Watch it flip to chair 2 and follow the CH₃.') });
       help3D.appendChild(h('div', { class: 'grid2' }, [helper.node, h('div', { class: 'help3d-side' }, [note])]));
@@ -1201,8 +1248,7 @@ var App = (function () {
           ? 'Correct! In this chair both CH₃ groups are axial: C1’s points up and C4’s points down. That is what ' +
             'trans means: opposite faces.'
           : nmv
-          ? 'Correct! Every bond on C1 turned 60°: the CH₃ went from 12 o’clock to 2 o’clock (axial to equatorial, still ' +
-            'up) and the H from 4 o’clock to 6 o’clock (equatorial to axial, still down).'
+          ? 'Correct! Every bond turned 60°: ' + kleinTurns(mol, s.slots) + '.'
           : 'Correct! The CH₃ is now equatorial, and it still points up. The H on C1 is now axial, pointing down.');
         show3D(true);
         return;
@@ -1215,8 +1261,9 @@ var App = (function () {
           'the position that points that way: on C1 of this chair the axial position points up, and on C4 the axial ' +
           'position points down.'
         : nmv
-        ? 'Tip: in a ring flip every bond on the front carbon turns 60°, two hours round the clock face. The CH₃ starts ' +
-          'at 12 o’clock. Which empty position is 60° away and still on the upper side?'
+        ? 'Tip: in a ring flip every bond on ' + carbonList(s.slots) + ' turns 60°, two hours round the clock face, and ' +
+          'every group stays on its face. ' + kleinWhere(mol, 0, s.slots.filter(function (p) { return want[p] !== 'H'; })) +
+          ' Which empty position is 60° away and on the same side?'
         : 'Tip: in chair 1 the CH₃ is axial and points up. A ring flip turns axial into equatorial, and up stays up.';
       if (wrong >= 2) hintBtn.hidden = false;
     });
@@ -1917,6 +1964,59 @@ var App = (function () {
       'measured value.' }));
     return wrap;
   }
+
+  /* ---- klein13: cis-1,3-dimethylcyclohexane's diaxial chair, seen as
+     Newman projections: the two axial CH₃ groups point at each other */
+
+  RENDER.klein13 = function (s) {
+    var mol = molecule(s.mol);
+    var pr = state.pr.k13 || {};
+    var P = PREDICT.worst13;
+    var K = [0, 1].map(function (k) { return Draw.kleinLayout(mol, k).pos; });
+    var b = AVAL.better(mol), worse = 1 - b;
+    var gs = MOLECULES.groups(mol).map(function (g) { return g.pos; });
+    var top = h('div'), area = h('div');
+    el.stage.appendChild(top);
+    el.stage.appendChild(area);
+    function save() { state.pr.k13 = pr; persist(); }
+
+    function paint() {
+      top.innerHTML = '';
+      area.innerHTML = '';
+      top.appendChild(h('div', { class: 'grid2' }, [
+        panel('Chair ' + (worse + 1) + ': both CH₃ groups axial', 'down C1–C2 and C5–C4', [
+          h('div', { class: 'chair-wrap' }, [Draw.klein(mol, worse, { box: gs, red: ['1t', 'C2C3', '3t'], cls: 'fig' })]),
+          h('p', { class: 'muted', text: 'C1 is the front carbon on the right; C3 joins the two back carbons at the top. The ' +
+            'red path runs from the CH₃ on C1 through C2 and C3 to the CH₃ on C3.' })]),
+        panel('Your prediction', null, [predictCard(P, pr.p, function (i) {
+          pr.p = i; save(); paint(); check(); showArea(area);
+        })])]));
+      if (pr.p == null) return;
+      area.appendChild(reveal([verdict(P, pr.p) + 'Down C1–C2, the CH₃ on C1 points straight up at ' + Draw.clock(K[worse]['1t'].a) +
+          ', gauche to C3, and the axial CH₃ on C3 points straight up too, right beside it. Two axial CH₃ groups on the ' +
+          'same face, three carbons apart, point at each other. Each crowds the other far more than an axial H can.',
+        'Chair ' + (worse + 1) + ': ' + AVAL.breakdown(mol, worse).replace(/\s+/g, ' ')]));
+      area.appendChild(panel('Chair ' + (b + 1) + ', after a ring flip', 'the arrow shows how the CH₃ on C1 turned', [
+        h('div', { class: 'chair-wrap' }, [Draw.klein(mol, b, { from: worse, track: ['1t'], cls: 'fig' })]),
+        h('p', { class: 'muted', text: 'The CH₃ on C1 turned from ' + Draw.clock(K[worse]['1t'].a) + ' to ' +
+          Draw.clock(K[b]['1t'].a) + ': ' + CHAIR.describe('1t', b) + '. C3 swung to the ' + (worse === 0 ? 'bottom' : 'top') +
+          ' of the drawing, and its CH₃ now points out from the ring: ' + CHAIR.describe('3t', b) + '. Both still sit on ' +
+          'the top face, so the molecule is still cis.' })]));
+      area.appendChild(reveal(['Chair ' + (b + 1) + ': ' + AVAL.breakdown(mol, b).replace(/\s+/g, ' ') + ' Nothing crowds ' +
+        'either CH₃, so ' + AVAL.shareText(AVAL.share(mol, b)) + ' molecules are in this chair at any moment: the chair you ' +
+        'locked in.']));
+    }
+
+    function check() {
+      if (!state.done[s.id] && pr.p != null) {
+        complete('Two axial groups on the same face, 1,3 to each other, point straight at each other. Equatorial, they ' +
+                 'point away.');
+      }
+    }
+
+    paint();
+    if (state.done[s.id]) say('Done. Move on when you are ready.', 'good');
+  };
 
   RENDER.quiz = function (s) {
     var Q = QZ[s.quiz];

@@ -72,10 +72,10 @@ Playwright lives at `/opt/node22/lib/node_modules/playwright` with Chromium prei
 step, open `src/index.html?step=<id or number>`. To keep context small, screenshot the panel you need,
 not the full page.
 
-## cyclohexane-chairs-scorm (branch `cyclohexane-chairs`, zip v2, SCHEMA 2)
+## cyclohexane-chairs-scorm (branch `cyclohexane-chairs`, zip v2, SCHEMA 3)
 
 - **Key objective:** steric strain from axial groups (1,3-diaxial interactions); equatorial avoids it.
-- 19 steps in 4 parts; 18 graded questions (4+4+5+5) from a pool of 51. The A-value table is open beside checkpoints 3–4.
+- 21 steps in 4 parts; 18 graded questions (4+4+5+5) from a pool of 51. The A-value table is open beside checkpoints 3–4.
 - **A-values (kJ/mol):** Cl 2.0, Br 2.0, CH₃ 7.6 (Klein: 2 × 3.8), CH(CH₃)₂ 9.2, C(CH₃)₃ 22.8. They match the Newman strain table.
   CH₃/CH₃ syn-diaxial 15.4 is starred as not in Klein.
 - **Scope:** cis/trans vocabulary; only 1,4 and 1,3 disubstituted rings (no 1,2). The boat gets one short step.
@@ -85,6 +85,8 @@ not the full page.
   - Klein-style Newman projections of the chair (`Draw.klein`) look down C1–C2 and C5–C4 at once.
     Chair 2 is drawn from the same direction as chair 1, not turned over as in Klein Fig. 4.29.
   - A flip turns the bonds on C1/C5 by ±60° and on C2/C4 the other way.
+  - Klein views appear in Parts 1–3 and in two Part 4 steps: a trans-1,4 build on C1 and C4 (`build-newman2`) and
+    cis-1,3's diaxial chair with the CH₃/CH₃ clash (`newman13`).
 - **Files:**
   - `chair.js`: geometry, flip, crowding, cameras
   - `molecules.js`: flat-ring molecules

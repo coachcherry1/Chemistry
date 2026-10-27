@@ -61,7 +61,7 @@ From chair 1 (CH₃ on C1, axial, pointing up) to chair 2:
 
 ### The flip in Newman projections: Methylcyclohexane
 
-In Newman projections down C1–C2 and C5–C4 (C1 the front carbon on the right). Every bond on C1 turns 60° in the flip: CH₃ from 12 o’clock to **2 o’clock** (equatorial, pointing slightly up); H from 4 o’clock to **6 o’clock** (axial, pointing down).
+In Newman projections down C1–C2 and C5–C4 (C1 the front carbon on the right, C4 the back carbon on the left). Every bond turns 60° in the flip: CH₃ on C1 from 12 o’clock to **2 o’clock** (equatorial, pointing slightly up); H on C1 from 4 o’clock to **6 o’clock** (axial, pointing down).
 
 ### From flat ring to chair: trans-1,4-Dimethylcyclohexane
 
@@ -71,6 +71,10 @@ From the flat drawing (CH₃ on C1 on a wedge, CH₃ on C4 on a dash) to chair 1
 - C1, equatorial, pointing slightly down: **H**
 - C4, equatorial, pointing slightly up: **H**
 - C4, axial, pointing down: **CH₃**
+
+### Two groups in Newman projections: trans-1,4-Dimethylcyclohexane
+
+In Newman projections down C1–C2 and C5–C4 (C1 the front carbon on the right, C4 the back carbon on the left). Every bond turns 60° in the flip: CH₃ on C1 from 12 o’clock to **2 o’clock** (equatorial, pointing slightly up); H on C1 from 4 o’clock to **6 o’clock** (axial, pointing down); H on C4 from 10 o’clock to **12 o’clock** (axial, pointing up); CH₃ on C4 from 6 o’clock to **8 o’clock** (equatorial, pointing slightly down).
 
 ## Predictions (never graded)
 
@@ -82,6 +86,7 @@ From the flat drawing (CH₃ on C1 on a wedge, CH₃ on C4 on a dash) to chair 1
 - **Down the C1–C2 bond**: Look down the C1–C2 bond of chair 1, where the CH₃ is axial. How are the CH₃ on C1 and the ring carbon C3 (attached to C2) arranged? *Gauche: 60° apart.* Now the ring flips and the CH₃ becomes equatorial (chair 2). In the same view, how are the CH₃ and C3 arranged? *Anti: 180° apart.*
 - **Bigger groups push harder**: compared with CH₃, how strongly does the group prefer equatorial? Cl: *less strongly* (A-value 2, about 7 in 10 equatorial); Br: *less strongly* (A-value 2, about 7 in 10 equatorial); CH(CH₃)₂: *a little more strongly* (A-value 9.2, about 39 in 40 equatorial); C(CH₃)₃: *far more strongly* (A-value 22.8, all but about 1 in 10,000 equatorial).
 - **Which chair wins?** Flipping chair 1 to chair 2, the energy of trans-1,4-dimethylcyclohexane *goes down* (diaxial to diequatorial); that of cis-1,4-dimethylcyclohexane *stays the same*. Can a ring flip turn cis-1,4-dimethylcyclohexane into trans-1,4-dimethylcyclohexane? *No: a flip never moves a group to the other face, so cis stays cis.*
+- **Two axial CH₃ groups, face to face** (cis-1,3-dimethylcyclohexane, diaxial chair): In this chair both CH₃ groups are axial, on the top face. Which crowding is the worst? *The CH₃ on C1 against the CH₃ on C3* (CH₃/CH₃ 1,3-diaxial 15.4 + CH₃/H 1,3-diaxial 2 × 3.8 = 23 kJ/mol).
 - **Lock in the better chair**: In the more stable chair of cis-1-tert-butyl-4-methylcyclohexane… *The C(CH₃)₃ is equatorial and the CH₃ is axial* (chair 2).
 - **Lock in the better chair**: In the more stable chair of cis-1,3-dimethylcyclohexane, the two CH₃ groups are… *Both equatorial* (chair 2).
 

@@ -115,8 +115,8 @@ for (const s of App.STEPS.filter((x) => x.kind === 'build')) {
   P();
   if (s.source === 'newman') {
     const K = [0, 1].map((k) => Draw.kleinLayout(m, k).pos);
-    P('In Newman projections down C1–C2 and C5–C4 (C1 the front carbon on the right). Every bond on C1 turns 60° ' +
-      'in the flip: ' + s.slots.map((p) => `${name(MOLECULES.groupAt(m, CHAIR.carbonOf(p), CHAIR.faceOf(p)))} from ` +
+    P('In Newman projections down C1–C2 and C5–C4 (C1 the front carbon on the right, C4 the back carbon on the left). ' +
+      'Every bond turns 60° in the flip: ' + s.slots.map((p) => `${name(MOLECULES.groupAt(m, CHAIR.carbonOf(p), CHAIR.faceOf(p)))} on C${CHAIR.carbonOf(p)} from ` +
       `${Draw.clock(K[0][p].a)} to **${Draw.clock(K[1][p].a)}** (${CHAIR.describe(p, 1)})`).join('; ') + '.');
     P();
     continue;
@@ -151,6 +151,8 @@ P('- **Bigger groups push harder**: compared with CH₃, how strongly does the g
 P('- **Which chair wins?** Flipping chair 1 to chair 2, the energy of trans-1,4-dimethylcyclohexane *goes down* ' +
   '(diaxial to diequatorial); that of cis-1,4-dimethylcyclohexane *stays the same*. ' +
   `${PR.cistrans.q} *${key(PR.cistrans)}.*`);
+P(`- **Two axial CH₃ groups, face to face** (cis-1,3-dimethylcyclohexane, diaxial chair): ${PR.worst13.q} ` +
+  `*${key(PR.worst13)}* (${AVAL.breakdown(molecule('cis13'), 0).replace(/\s+/g, ' ')}).`);
 for (const b of App.BEST) {
   P(`- **Lock in the better chair**: ${b.q} *${b.choices[App.bestAnswer(b)]}* (chair ${AVAL.better(molecule(b.id)) + 1}).`);
 }
