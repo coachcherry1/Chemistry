@@ -32,8 +32,9 @@ Everything is on `main`; older work branches were merged in October 2026.
 | `newman-projections-qualitative-scorm/` | Same, qualitative (no calculations) |
 | `cyclohexane-chairs-scorm/` | Chairs, ring flips, 1,3-diaxial crowding (qualitative) |
 | `chirality-scorm/` | Chirality, R and S, enantiomers, diastereomers and meso compounds (qualitative) |
+| `chirality-no-meso-scorm/` | Same, without meso compounds, for a weaker group |
 
-**Older packages predate some house rules.** Everything except Newman, chairs and chirality contains em
+**Older packages predate some house rules.** Everything except Newman, chairs and chirality (both versions) contains em
 dashes (the Lewis, resonance and drawing-tool validators allow them). The mass spec, IR + mass spec, NMR,
 naming, acids and ionization energy packages still load a browser save inside an LMS when
 `cmi.suspend_data` is empty (fixed in IR, Newman, chairs, chirality, Lewis and resonance). Only Newman,
@@ -127,6 +128,14 @@ not the full page.
   - `viewer3d.js`: 3D viewer (2D canvas, linked mirror image)
   - `app.js`: `STEPS`, `PREDICT`, renderers
   - `quiz.js`: question bank
+
+## chirality-no-meso-scorm (zip v1, SCHEMA 2)
+
+- A copy of `chirality-scorm/` for weaker years: Parts 1–3 identical; Part 4 keeps the four stereoisomers and Rings
+  (trans-1,3, cis- and trans-1,4 only: chiral or no chirality centres). No meso tutorial, no Molecules A and B, no cis-1,3.
+- 16 steps; 16 graded questions (4+4+4+4) from a pool of 46. Checkpoint 4 is enantiomers, diastereomers, counting and rings.
+- The validator fails if "meso" appears in student text. Its own SCORM ids (`CHIRALITY_NOMESO_*`), save key
+  (`chirality-no-meso-state`) and zip. A fix to shared code in `chirality-scorm/` usually belongs here too.
 
 ## vsepr-polarity-scorm (branch `vsepr-polarity`, zip v3, SCHEMA 3)
 
