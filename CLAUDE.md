@@ -1,39 +1,49 @@
 # Chemistry SCORM activities
 
-SCORM 1.2 packages posted to Schoology for two high-school courses: **honors chemistry** and an **organic
-chemistry elective** (textbook: Klein, *Organic Chemistry*). Each package is a self-contained folder; fixes to
-shared code (saving, scoring, picker, 3D viewer, Lewis builder) usually belong in every folder that has a copy.
-Everything is on `main`; older work branches were merged in October 2026.
+SCORM 1.2 packages posted to Schoology for three high-school courses: **chemistry** (honors), **AP chemistry**
+and an **organic chemistry elective** (textbook: Klein, *Organic Chemistry*). Each package is a self-contained
+folder; fixes to shared code (saving, scoring, picker, 3D viewer, Lewis builder) usually belong in every folder
+that has a copy. Everything is on `main`; older work branches were merged in October 2026.
 
-**Honors chemistry**
+**Folder layout:** `class/topic/package/`, for example `chemistry/bonding/lewis-structures-scorm/`. The classes are
+`chemistry/`, `ap-chemistry/` and `organic-chemistry/`. Packages elsewhere in this file are named by their folder
+alone; find one with `find . -name <folder> -type d`. All commands run inside the package folder, wherever it sits.
+A new package goes in the topic folder that fits it (make the folder if none does), one level below the class.
+
+**Chemistry (honors)**
 
 | Folder | Activity |
 | --- | --- |
-| `ionization-energy-scorm/` | Successive ionization energies, the two-step rule (about 10 min) |
-| `ionic-naming-scorm/` | Naming ionic compounds and writing formulas |
-| `ionic-covalent-scorm/` | Ionic or covalent? Choosing the naming rules |
-| `acids-scorm/` | Binary acids and oxyacids, mixed with ionic and covalent |
-| `lewis-structures-scorm/` | Lewis structures by the teacher's 5 rules (builder, B/Be exceptions, expanded octets, AI-answer warnings in `snark.js`) |
-| `resonance-scorm/` | Resonance structures and the hybrid, same 5 rules and builder |
-| `lewis-drawing-tool/` | Teacher's drawing tool, same 5-rule engine, reports no score |
-| `acetone-kinetics-scorm/` | Virtual lab: iodination of acetone by initial rates |
-| `vsepr-polarity-scorm/` | VSEPR: build by the 5 rules beside a 3D window, molecular geometry for 2 to 6 domains, polarity by radial symmetry |
-| `intermolecular-forces-scorm/` | IMFs: heating stage with real mp/bp, LDF and polarizability, dipole-dipole, hydrogen bonds (follows VSEPR) |
+| `chemistry/electrons/ionization-energy-scorm/` | Successive ionization energies, the two-step rule (about 10 min) |
+| `chemistry/nomenclature/ionic-naming-scorm/` | Naming ionic compounds and writing formulas |
+| `chemistry/nomenclature/ionic-covalent-scorm/` | Ionic or covalent? Choosing the naming rules |
+| `chemistry/nomenclature/acids-scorm/` | Binary acids and oxyacids, mixed with ionic and covalent |
+| `chemistry/bonding/lewis-structures-scorm/` | Lewis structures by the teacher's 5 rules (builder, B/Be exceptions, expanded octets, AI-answer warnings in `snark.js`) |
+| `chemistry/bonding/lewis-drawing-tool/` | Teacher's drawing tool, same 5-rule engine, reports no score |
+| `chemistry/bonding/vsepr-polarity-scorm/` | VSEPR: build by the 5 rules beside a 3D window, molecular geometry for 2 to 6 domains, polarity by radial symmetry |
+| `chemistry/imfs/intermolecular-forces-scorm/` | IMFs: heating stage with real mp/bp, LDF and polarizability, dipole-dipole, hydrogen bonds (follows VSEPR) |
+
+**AP chemistry**
+
+| Folder | Activity |
+| --- | --- |
+| `ap-chemistry/bonding/resonance-scorm/` | Resonance structures and the hybrid, same 5 rules and builder |
+| `ap-chemistry/kinetics/acetone-kinetics-scorm/` | Virtual lab: iodination of acetone by initial rates |
 
 **Organic chemistry elective (Klein)**
 
 | Folder | Activity |
 | --- | --- |
-| `ir-spectroscopy-scorm/` | IR diagnostic-region drag and drop |
-| `ms-spectrometry-scorm/` | Mass spectrometry: reading the fragments |
-| `ir-ms-combined-scorm/` | IR and mass spec together: two spectra, one compound |
-| `nmr-intro-scorm/` | Intro 1H NMR: equivalence, shift, integration, splitting |
-| `newman-projections-scorm/` | Newman projections, with calculations |
-| `newman-projections-qualitative-scorm/` | Same, qualitative (no calculations) |
-| `cyclohexane-chairs-scorm/` | Chairs, ring flips, 1,3-diaxial crowding (qualitative) |
-| `chirality-scorm/` | Chirality, R and S, enantiomers, diastereomers and meso compounds (qualitative) |
-| `chirality-no-meso-scorm/` | Same, without meso compounds, for a weaker group |
-| `substitution-elimination-scorm/` | SN1, SN2, E1 and E2: reagent function, mechanisms with curved arrows, regio- and stereochemistry, rings, predicting products (about 50 min) |
+| `organic-chemistry/spec-nmr/ir-spectroscopy-scorm/` | IR diagnostic-region drag and drop |
+| `organic-chemistry/spec-nmr/ms-spectrometry-scorm/` | Mass spectrometry: reading the fragments |
+| `organic-chemistry/spec-nmr/ir-ms-combined-scorm/` | IR and mass spec together: two spectra, one compound |
+| `organic-chemistry/spec-nmr/nmr-intro-scorm/` | Intro 1H NMR: equivalence, shift, integration, splitting |
+| `organic-chemistry/configurations-stereoisomerism/newman-projections-scorm/` | Newman projections, with calculations |
+| `organic-chemistry/configurations-stereoisomerism/newman-projections-qualitative-scorm/` | Same, qualitative (no calculations) |
+| `organic-chemistry/configurations-stereoisomerism/cyclohexane-chairs-scorm/` | Chairs, ring flips, 1,3-diaxial crowding (qualitative) |
+| `organic-chemistry/configurations-stereoisomerism/chirality-scorm/` | Chirality, R and S, enantiomers, diastereomers and meso compounds (qualitative) |
+| `organic-chemistry/configurations-stereoisomerism/chirality-no-meso-scorm/` | Same, without meso compounds, for a weaker group |
+| `organic-chemistry/substitution-elimination/substitution-elimination-scorm/` | SN1, SN2, E1 and E2: reagent function, mechanisms with curved arrows, regio- and stereochemistry, rings, predicting products (about 50 min) |
 
 **Older packages predate some house rules.** Everything except Newman, chairs and chirality (both versions) contains em
 dashes (the Lewis, resonance and drawing-tool validators allow them). The mass spec, IR + mass spec, NMR,
