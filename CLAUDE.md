@@ -33,6 +33,7 @@ Everything is on `main`; older work branches were merged in October 2026.
 | `cyclohexane-chairs-scorm/` | Chairs, ring flips, 1,3-diaxial crowding (qualitative) |
 | `chirality-scorm/` | Chirality, R and S, enantiomers, diastereomers and meso compounds (qualitative) |
 | `chirality-no-meso-scorm/` | Same, without meso compounds, for a weaker group |
+| `substitution-elimination-scorm/` | SN1, SN2, E1 and E2: reagent function, mechanisms with curved arrows, regio- and stereochemistry, rings, predicting products (about 50 min) |
 
 **Older packages predate some house rules.** Everything except Newman, chairs and chirality (both versions) contains em
 dashes (the Lewis, resonance and drawing-tool validators allow them). The mass spec, IR + mass spec, NMR,
@@ -191,3 +192,28 @@ not the full page.
   (polarizability), `quiz.js`, `app.js`.
 - **Walkthrough harness (both new packages):** the fake LMS reads and writes sessionStorage on every call and never stages
   the next load's data; staging made the reload check fail at random (still the case in the older packages' walkthroughs).
+
+## substitution-elimination-scorm (branch `claude/compassionate-allen-hwn3ov`, zip v1, SCHEMA 1)
+
+- **Key objective:** Klein's three steps (7.11): the function of the reagent, the substrate and Klein's table, then
+  regio- and stereochemistry; major and minor products.
+- 26 steps in 5 parts; 23 graded questions (4+5+5+4+5) from a pool of 73. Every checkpoint's core has a
+  reagent-function question. No reference table beside the checkpoints (the teacher's choice).
+- **Klein's wording:** SN2 is nucleophilic attack and loss of the leaving group, concerted, back-side attack,
+  inversion of configuration; E2 is proton transfer and loss of the leaving group, anti-coplanar (never
+  antiperiplanar); the four arrow patterns by Klein's names. The validator bans backside, Saytzeff and Walden.
+- **Teacher's choices:** four functions named "Nucleophile only", "Strong nucleophile and strong base", "Base only",
+  "Weak nucleophile, weak base" with Klein's headings beside; t-BuOK is strong/strong but hindered (E2 major at 1°,
+  Hofmann). NaCN and NaN₃ nucleophile only, NaH base only. Regiospecific = only one β H can be anti-coplanar.
+  SN2 stereospecific, SN1 not. E/Z for every stereogenic alkene, names as (E)-pent-2-ene; Klein's ring names
+  (1-methylcyclohexene). Carbocation rearrangements in, on 2° substrates in ethanol (the step explains Klein's ✗).
+  Left out: solvents, leaving-group ranking, rate-law equations, graded arrow drawing, A-values on screen.
+- **One model:** molecules are SMILES (or the chairs' flat-ring spec) in `molecules.js`, each with its textbook name
+  for the validator; names (`name.js`), drawings (`layout.js`), products (`react.js`), 3D (`build3d.js`) and
+  mechanisms (`mech.js`) are all computed. E2 stereochemistry is checked twice (parity math and a 3D anti
+  conformer). Ring E2 uses faces: an H is trans-diaxial if it is on the face opposite the leaving group.
+- **Arrows:** tap the electrons (lone pair or bond), then the target (atom, or bond for a new π bond), or drag, or
+  Tab/Enter; Klein's reasons for wrong arrows in `mech.js`; Show me after three misses.
+- **Files:** `mol.js`, `name.js`, `layout.js`, `draw.js`, `react.js`, `build3d.js`, `viewer3d.js`, `anim.js`, `mech.js`,
+  `arrows.js`, `chair.js` (from the chairs activity), `molecules.js`, `quiz.js`, `app.js`, `steps1.js` (Parts 1-2),
+  `steps2.js` (Parts 3-4), `steps3.js` (Part 5).

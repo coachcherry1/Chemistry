@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="SUBELIM_MANIFEST" version="1.0"
+          xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+          xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                              http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd
+                              http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+
+  <organizations default="SUBELIM_ORG">
+    <organization identifier="SUBELIM_ORG">
+      <title>Substitution and Elimination: SN1, SN2, E1 and E2</title>
+      <item identifier="SUBELIM_ITEM" identifierref="SUBELIM_RES" isvisible="true">
+        <!-- No masteryscore: the SCO reports a 0-100 score and sets "completed"
+             itself, so the LMS should not overwrite the status with passed/failed.
+             Identifiers differ from every other package in the course. -->
+        <title>Substitution and Elimination: SN1, SN2, E1 and E2</title>
+      </item>
+    </organization>
+  </organizations>
+
+  <resources>
+    <resource identifier="SUBELIM_RES" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="index.html"/>
+      <file href="css/styles.css"/>
+      <file href="js/geom.js"/>
+      <file href="js/mol.js"/>
+      <file href="js/name.js"/>
+      <file href="js/layout.js"/>
+      <file href="js/chair.js"/>
+      <file href="js/draw.js"/>
+      <file href="js/react.js"/>
+      <file href="js/build3d.js"/>
+      <file href="js/viewer3d.js"/>
+      <file href="js/anim.js"/>
+      <file href="js/mech.js"/>
+      <file href="js/arrows.js"/>
+      <file href="js/molecules.js"/>
+      <file href="js/picker.js"/>
+      <file href="js/quiz.js"/>
+      <file href="js/scorm.js"/>
+      <file href="js/app.js"/>
+      <file href="js/steps1.js"/>
+      <file href="js/steps2.js"/>
+      <file href="js/steps3.js"/>
+    </resource>
+  </resources>
+
+</manifest>
