@@ -29,6 +29,7 @@ A new package goes in the topic folder that fits it (make the folder if none doe
 | --- | --- |
 | `ap-chemistry/bonding/resonance-scorm/` | Resonance structures and the hybrid, same 5 rules and builder |
 | `ap-chemistry/kinetics/acetone-kinetics-scorm/` | Virtual lab: iodination of acetone by initial rates |
+| `ap-chemistry/acids-bases/titration-curves-scorm/` | Titration curves: a particle diagram at five points, strong acid (HCl) vs weak acid (HF), why the equivalence point differs, acetic acid review (conceptual) |
 
 **Organic chemistry elective (Klein)**
 
@@ -227,3 +228,23 @@ not the full page.
 - **Files:** `mol.js`, `name.js`, `layout.js`, `draw.js`, `react.js`, `build3d.js`, `viewer3d.js`, `anim.js`, `mech.js`,
   `arrows.js`, `chair.js` (from the chairs activity), `molecules.js`, `quiz.js`, `app.js`, `steps1.js` (Parts 1-2),
   `steps2.js` (Parts 3-4), `steps3.js` (Part 5).
+
+## titration-curves-scorm (zip v1, SCHEMA 1)
+
+- **Key objective:** the equivalence point is where moles of base equal moles of acid; its pH is set by the ions left.
+  Na⁺ and Cl⁻ do not react with water (pH 7); a weak acid's conjugate base does and makes OH⁻ (pH above 7).
+- 15 steps in 5 parts; 20 graded questions (4+4+4+4+4) from a pool of 54. A Ka and pKa table plus the particle key sit beside
+  every checkpoint (qualitative: nobody calculates a pH). Checkpoint 5 is the review with a different weak acid.
+- **Teacher's choices:** HF is the weak acid because its anion F⁻ is simple (acetic acid, drawn HAc and Ac⁻, only in the
+  review). "Half-equivalence point". Water is not drawn. 24 acid units per diagram; a weak acid is drawn with a true ratio
+  (2 of 24 HF ionized; none for acetic acid, and a note says why). Left out: pH, pKa and Ka calculations, ICE tables,
+  Henderson-Hasselbalch, buffer capacity, indicators, polyprotic acids, weak base titrations.
+- **Five points** (NaOH units of 25/24 mL): start 0, half-equivalence 12, before equivalence 18, equivalence 24, after 30. Each
+  walk asks what is in the flask (the diagram then changes) and what decides the pH (the pH and a numbered dot appear).
+- **One model** (`titration.js`): the exact pH from a charge balance, whole-particle counts (the validator checks the charge
+  balance at every slider position), what decides the pH, the pairs to sort. The diagram, curve, predictions and every
+  checkpoint answer come from it; `fact` entries in `quiz.js` tie answers to it.
+- **Files:** `titration.js`, `particles.js` (flask, fixed place for every particle), `curve.js` (pH curve, numbered points, marker
+  you click, drag or arrow-key), `picker.js` (shared), `quiz.js`, `app.js`.
+- Teacher links: `?step=<id or number>` and `?step=quiz-C&all` (every question of a pool). Walkthrough harness: the fake LMS
+  reads and writes sessionStorage on every call, as in the VSEPR and IMF packages.

@@ -2,11 +2,13 @@
  * flask (the pH, the curve, the particle diagram, what sets the pH) and every
  * checkpoint answer comes from here, so they cannot disagree.
  *
- * Two titrations, each 25.00 mL of 0.100 M acid in the flask and 0.100 M NaOH
- * in the buret:
+ * Three titrations, each 25.00 mL of 0.100 M acid in the flask and 0.100 M
+ * NaOH in the buret:
  *   SS  hydrochloric acid, a strong acid (all of it is H+ and Cl-)
  *   WS  hydrofluoric acid, a weak acid (Ka 6.8 x 10^-4); its anion F- is the
- *       simple conjugate base
+ *       simple conjugate base. Parts 1 to 4 use SS and WS.
+ *   AC  acetic acid, a weaker acid (Ka 1.8 x 10^-5), for the review in
+ *       Checkpoint 5 only
  *
  * The pH is solved exactly, from a charge balance:
  *   [Na+] + [H+] = [anion] + [OH-]      with [anion] = Ct Ka / (Ka + [H+])
@@ -32,13 +34,18 @@ var Titration = (function () {
   var ACID_M = 0.100;        /* mol/L of both the acid and the NaOH */
   var MAX_U = 36;            /* the end of the curve: 37.5 mL */
   var KA_HF = 6.8e-4;
+  var KA_AC = 1.8e-5;
 
   var SYSTEMS = {
-    SS: { id: 'SS', name: 'strong acid, strong base', acid: 'HCl', acidName: 'hydrochloric acid', anion: 'Cl⁻',
+    SS: { id: 'SS', name: 'strong acid, strong base', acid: 'HCl', acidName: 'hydrochloric acid', anion: 'Cl⁻', sym: 'HCl', asym: 'Cl⁻',
           weak: false, equation: 'HCl + NaOH → NaCl + H₂O' },
-    WS: { id: 'WS', name: 'weak acid, strong base', acid: 'HF', acidName: 'hydrofluoric acid', anion: 'F⁻',
-          weak: true, ka: KA_HF, equation: 'HF + NaOH → NaF + H₂O' }
+    WS: { id: 'WS', name: 'weak acid, strong base', acid: 'HF', acidName: 'hydrofluoric acid', anion: 'F⁻', sym: 'HF', asym: 'F⁻',
+          weak: true, ka: KA_HF, equation: 'HF + NaOH → NaF + H₂O' },
+    AC: { id: 'AC', name: 'weak acid, strong base', acid: 'CH₃COOH', acidName: 'acetic acid', anion: 'CH₃COO⁻', sym: 'HAc', asym: 'Ac⁻',
+          weak: true, ka: KA_AC, equation: 'CH₃COOH + NaOH → CH₃COONa + H₂O' }
   };
+
+  function pKa(sys) { return -Math.log10(SYSTEMS[sys].ka); }
 
   /* the five points every walk visits, in order (u = NaOH units added) */
   var POINTS = [
@@ -101,9 +108,8 @@ var Titration = (function () {
   /* what is in the flask, as a list of species for a tally */
   function species(sys) {
     var S = SYSTEMS[sys];
-    return S.weak
-      ? [{ id: 'HA', label: 'HF' }, { id: 'H', label: 'H⁺' }, { id: 'A', label: 'F⁻' }, { id: 'Na', label: 'Na⁺' }, { id: 'OH', label: 'OH⁻' }]
-      : [{ id: 'H', label: 'H⁺' }, { id: 'A', label: 'Cl⁻' }, { id: 'Na', label: 'Na⁺' }, { id: 'OH', label: 'OH⁻' }];
+    var list = [{ id: 'H', label: 'H⁺' }, { id: 'A', label: S.asym }, { id: 'Na', label: 'Na⁺' }, { id: 'OH', label: 'OH⁻' }];
+    return S.weak ? [{ id: 'HA', label: S.sym }].concat(list) : list;
   }
 
   function chargeBalanced(sys, u) {
@@ -134,20 +140,52 @@ var Titration = (function () {
   }
 
   var SETTER_TEXT = {
-    'strong-h': 'The H⁺ that is left. A strong acid is all H⁺ and Cl⁻, so the pH is set by how much H⁺ the NaOH has not yet used up.',
-    'weak-acid': 'The few H⁺ that came from HF molecules ionizing. Most HF stays whole, so the pH is higher than a strong acid of the same amount.',
-    'buffer': 'The mix of HF and F⁻. This is a buffer: the F⁻ takes up H⁺ and the HF gives it back, so the pH changes slowly.',
-    'conjugate-base': 'The F⁻. It is the conjugate base of a weak acid, so a tiny amount of it takes H⁺ from water and makes OH⁻: F⁻ + H₂O → HF + OH⁻.',
-    'neutral': 'Nothing. Na⁺ and Cl⁻ do not react with water, so only water’s own H⁺ and OH⁻ are left: pH 7.',
+    'strong-h': 'The H⁺ that is left. A strong acid is all H⁺ and {A}, so the pH is set by how much H⁺ the NaOH has not yet used up.',
+    'weak-acid': 'The few H⁺ that came from {HA} molecules ionizing. Most {HA} stays whole, so the pH is higher than a strong acid of the same amount.',
+    'buffer': 'The mix of {HA} and {A}. This is a buffer: the {A} takes up H⁺ and the {HA} gives it back, so the pH changes slowly.',
+    'conjugate-base': 'The {A}. It is the conjugate base of a weak acid, so a tiny amount of it takes H⁺ from water and makes OH⁻: {A} + H₂O → {HA} + OH⁻.',
+    'neutral': 'Nothing. Na⁺ and {A} do not react with water, so only water’s own H⁺ and OH⁻ are left: pH 7.',
     'excess-oh': 'The extra OH⁻ from the NaOH that has no acid left to react with.'
   };
+
+  /* the phrase every right answer about "what sets the pH" must contain
+     (tools/validate.js checks the checkpoint questions against it) */
+  var SETTER_KEY = {
+    'strong-h': 'has not used up',
+    'weak-acid': 'ionized',
+    'buffer': 'buffer',
+    'conjugate-base': 'to make OH',
+    'neutral': 'do not react with water',
+    'excess-oh': 'extra OH'
+  };
+
+  /* the same ideas as a short choice, for the predictions */
+  var SETTER_CHOICE = {
+    'strong-h': 'The H⁺ that the NaOH has not used up yet',
+    'weak-acid': 'The few H⁺ from {HA} molecules that ionized',
+    'buffer': 'The {HA} and {A} buffer: {A} takes up H⁺ and {HA} gives it back',
+    'conjugate-base': 'The {A} reacting with water to make OH⁻',
+    'neutral': 'Nothing: Na⁺ and {A} do not react with water',
+    'excess-oh': 'The extra OH⁻ from the NaOH'
+  };
+
+  function setterChoice(sys, kind) {
+    var S = SYSTEMS[sys];
+    return SETTER_CHOICE[kind].replace(/\{HA\}/g, S.acid).replace(/\{A\}/g, S.anion);
+  }
+
+  /* the sentence for a point, with the acid and its anion filled in */
+  function setterText(sys, u) {
+    var S = SYSTEMS[sys];
+    return SETTER_TEXT[setter(sys, u)].replace(/\{HA\}/g, S.acid).replace(/\{A\}/g, S.anion);
+  }
 
   /* the one particle that sets the pH at the equivalence point (null when none does) */
   function equivalenceSetter(sys) { return SYSTEMS[sys].weak ? 'A' : null; }
 
   /* about 1 F- in this many reacts with water at the equivalence point of the weak acid */
-  function reactingOneIn() {
-    var r = solve('WS', UNITS);
+  function reactingOneIn(sys) {
+    var r = solve(sys || 'WS', UNITS);
     return Math.round(r.ct / r.oh);
   }
 
@@ -156,7 +194,7 @@ var Titration = (function () {
     var c = counts(sys, u), S = SYSTEMS[sys];
     var out = [];
     function add(n, label) { if (n > 0) out.push(n + ' ' + label); }
-    if (S.weak) add(c.HA, 'HF');
+    if (S.weak) add(c.HA, S.acid);
     add(c.H, 'H⁺');
     add(c.A, S.anion);
     add(c.Na, 'Na⁺');
@@ -168,21 +206,21 @@ var Titration = (function () {
      A strong acid with a strong base ends at 7; a weak acid with a strong
      base ends above 7. */
   var PAIRS = [
-    { id: 'hcl-naoh', acid: 'HCl', base: 'NaOH', strong: true },
-    { id: 'hbr-koh', acid: 'HBr', base: 'KOH', strong: true },
-    { id: 'hno3-naoh', acid: 'HNO₃', base: 'NaOH', strong: true },
-    { id: 'hclo4-lioh', acid: 'HClO₄', base: 'LiOH', strong: true },
-    { id: 'hf-naoh', acid: 'HF', base: 'NaOH', strong: false },
-    { id: 'hf-koh', acid: 'HF', base: 'KOH', strong: false },
-    { id: 'hcn-naoh', acid: 'HCN', base: 'NaOH', strong: false },
-    { id: 'hno2-koh', acid: 'HNO₂', base: 'KOH', strong: false }
+    { id: 'hcl-naoh', acid: 'HCl', base: 'NaOH', cation: 'Na⁺', anion: 'Cl⁻', strong: true },
+    { id: 'hbr-koh', acid: 'HBr', base: 'KOH', cation: 'K⁺', anion: 'Br⁻', strong: true },
+    { id: 'hno3-naoh', acid: 'HNO₃', base: 'NaOH', cation: 'Na⁺', anion: 'NO₃⁻', strong: true },
+    { id: 'hclo4-lioh', acid: 'HClO₄', base: 'LiOH', cation: 'Li⁺', anion: 'ClO₄⁻', strong: true },
+    { id: 'hf-naoh', acid: 'HF', base: 'NaOH', cation: 'Na⁺', anion: 'F⁻', strong: false },
+    { id: 'hac-naoh', acid: 'CH₃COOH', base: 'NaOH', cation: 'Na⁺', anion: 'CH₃COO⁻', strong: false },
+    { id: 'hcn-naoh', acid: 'HCN', base: 'NaOH', cation: 'Na⁺', anion: 'CN⁻', strong: false },
+    { id: 'hno2-koh', acid: 'HNO₂', base: 'KOH', cation: 'K⁺', anion: 'NO₂⁻', strong: false }
   ];
   function pairSide(p) { return p.strong ? 'equal' : 'above'; }
 
   return {
-    UNITS: UNITS, MAX_U: MAX_U, ACID_ML: ACID_ML, ACID_M: ACID_M, KA_HF: KA_HF, PKA_HF: -Math.log10(KA_HF),
+    UNITS: UNITS, MAX_U: MAX_U, ACID_ML: ACID_ML, ACID_M: ACID_M, KA_HF: KA_HF, KA_AC: KA_AC, PKA_HF: -Math.log10(KA_HF), PKA_AC: -Math.log10(KA_AC), pKa: pKa,
     SYSTEMS: SYSTEMS, POINTS: POINTS, point: point, volume: volume, solve: solve, pH: pH, counts: counts, species: species,
-    chargeBalanced: chargeBalanced, curve: curve, side: side, setter: setter, SETTER_TEXT: SETTER_TEXT,
+    chargeBalanced: chargeBalanced, curve: curve, side: side, setter: setter, SETTER_TEXT: SETTER_TEXT, setterText: setterText, SETTER_KEY: SETTER_KEY, setterChoice: setterChoice,
     equivalenceSetter: equivalenceSetter, reactingOneIn: reactingOneIn, flask: flask, PAIRS: PAIRS, pairSide: pairSide
   };
 })();
