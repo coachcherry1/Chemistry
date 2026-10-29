@@ -9,6 +9,8 @@ that has a copy. Everything is on `main`; older work branches were merged in Oct
 `chemistry/`, `ap-chemistry/` and `organic-chemistry/`. Packages elsewhere in this file are named by their folder
 alone; find one with `find . -name <folder> -type d`. All commands run inside the package folder, wherever it sits.
 A new package goes in the topic folder that fits it (make the folder if none does), one level below the class.
+`reference/ap-chemistry-frq/` holds the released AP free-response questions and scoring guidelines (2023 to 2026, © College Board)
+for checking each AP activity against how the exam asks; it is not an activity and has its own README.
 
 **Chemistry (honors)**
 
