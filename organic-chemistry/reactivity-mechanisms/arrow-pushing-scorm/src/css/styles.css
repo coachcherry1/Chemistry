@@ -1016,3 +1016,11 @@ path.hole { fill: var(--bg); stroke: var(--muted); stroke-width: 2; }
 .panel.side .vocab { font-size: 0.8rem; }
 .grid2.tight { gap: 8px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* Klein's Figure 6.31 in a row */
+.fig-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 6px; }
+.fig-mol .mol { max-height: 120px; max-width: 220px; width: auto; height: auto; }
+.fig-step { display: flex; flex-direction: column; align-items: center; min-width: 74px; text-align: center; }
+.fig-name { font-size: 0.72rem; font-weight: 700; color: var(--muted); line-height: 1.2; max-width: 96px; }
+.fig-step.done .fig-name { color: var(--accent); }
+.fig-arrow { font-size: 1.6rem; line-height: 1; color: var(--muted); }

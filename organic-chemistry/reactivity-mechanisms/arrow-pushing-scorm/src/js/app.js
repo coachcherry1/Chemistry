@@ -8,7 +8,7 @@
  * Part 2  Nucleophiles and electrophiles
  * Part 3  The four patterns: nucleophilic attack, loss of a leaving group,
  *         proton transfer, carbocation rearrangement
- * Part 4  Combining the patterns: sequences, concerted steps, ⇌ or →
+ * Part 4  Combining the patterns: sequences and concerted steps
  *
  * Only the four checkpoints are graded (first answer counts; a graded
  * arrow drawing counts on its first Check). Arrows, sorts and predictions
@@ -21,7 +21,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a scene changes: a save
      from an older build is then discarded and the student starts fresh. */
-  var SCHEMA = 1;
+  var SCHEMA = 2;
 
   var PARTS = [
     { n: 1, name: 'Energy and bonds' },
@@ -74,11 +74,9 @@ var App = (function () {
     { id: 'quiz-C', part: 3, kind: 'quiz', quiz: 'C', title: 'Checkpoint 3', text: '' },
 
     { id: 'sequence', part: 4, kind: 'sequence', chain: 'f631', title: 'One mechanism, four patterns',
-      text: 'Klein Figure 6.31: four steps, one of each pattern. For each step, name the pattern, then draw its arrows.' },
+      text: 'Klein’s Figure 6.31, shown below: four steps, one of each pattern. For each step, name the pattern, then draw its arrows.' },
     { id: 'concerted', part: 4, kind: 'concerted', title: 'Two patterns at once',
       text: 'Sometimes one step does two patterns at the same time. Draw it, then read a three-step mechanism and name its sequence.' },
-    { id: 'reverse', part: 4, kind: 'reverse', title: '⇌ or →?',
-      text: 'Klein 6.12: some steps are drawn with an equilibrium arrow, some with a one-way arrow. Sort each step by Klein’s rules.' },
     { id: 'quiz-D', part: 4, kind: 'quiz', quiz: 'D', title: 'Checkpoint 4', text: '' },
 
     { id: 'results', part: 5, kind: 'results', title: 'Results', text: '' }
@@ -674,7 +672,7 @@ var App = (function () {
     'A curved arrow moves one pair of electrons: the tail on a lone pair or a bond, never on a positive charge; the head on a new bond or a new lone pair; never a fifth bond to C, N or O.',
     'Every ionic mechanism combines four patterns: nucleophilic attack, loss of a leaving group, proton transfer and carbocation rearrangement.',
     'A carbocation rearranges (hydride or methyl shift) only when that makes a more stable carbocation: 3° > 2° > 1° > methyl, by hyperconjugation.',
-    'Two patterns in one step make a concerted step. Klein draws ⇌ for most steps, and → when the reverse hardly happens.'
+    'Two patterns in one step make a concerted step. Every mechanism is a sequence of the four patterns.'
   ];
 
   RENDER.results = function () {

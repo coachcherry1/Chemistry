@@ -418,6 +418,10 @@ var SCENES = (function () {
     atoms: [['O', 'O', [0, 0]], ['Ho', 'H', ['O', 150]], ['Ca', 'C', ['O', 330]], ['Cb', 'C', ['Ca', 30]], ['Cc', 'C', ['Cb', 330]],
             ['Cd', 'C', ['Cc', 30]], ['Ce', 'C', ['Cd', 330], { c: 1 }], ['M1', 'C', ['Ce', 30]], ['M2', 'C', ['Ce', 270]]],
     arrows: [['lp:O', 'Ce']],
+    /* afterwards the chain is drawn as the ring it has become: O at the left, the C(CH3)2 at the top */
+    after: { O: [HEX[1][0] + 2.1, HEX[1][1]], Ca: [HEX[2][0] + 2.1, HEX[2][1]], Cb: [HEX[3][0] + 2.1, HEX[3][1]],
+             Cc: [HEX[4][0] + 2.1, HEX[4][1]], Cd: [HEX[5][0] + 2.1, HEX[5][1]], Ce: [HEX[0][0] + 2.1, HEX[0][1]],
+             Ho: ['O', 150], M1: ['Ce', 45], M2: ['Ce', 135] },
     product: 'CC1(C)CCCC[OH+]1', klein: ['nuc'], who: { O: 'the O of the OH', Ce: 'the carbocation' }
   });
   def('nTbuClLoss', {
@@ -430,9 +434,9 @@ var SCENES = (function () {
     title: 'A carbocation beside a benzene ring',
     atoms: [['Ca', 'C', [0, 0], { c: 1 }], ['P1', 'C', ['Ca', 180]], ['P2', 'C', ['P1', 120], { o: 2 }], ['P3', 'C', ['P2', 180]],
             ['P4', 'C', ['P3', 240], { o: 2 }], ['P5', 'C', ['P4', 300]], ['P6', 'C', ['P5', 0], { o: 2 }],
-            ['Cb', 'C', ['Ca', 0]], ['M1', 'C', ['Cb', 90], { label: 'CH₃' }], ['M2', 'C', ['Cb', 0]], ['M3', 'C', ['Cb', 270]]],
+            ['Cb', 'C', ['Ca', 60]], ['M1', 'C', ['Cb', 330], { label: 'CH₃' }], ['M2', 'C', ['Cb', 60]], ['M3', 'C', ['Cb', 150]]],
     bonds: [['P6', 'P1']],
-    arrows: [['b:Cb-M1', 'Ca']], after: { M1: ['Ca', 90] },
+    arrows: [['b:Cb-M1', 'Ca']], after: { M1: ['Ca', 300] },
     product: 'C[C+](C)C(C)C1=CC=CC=C1', klein: ['shift'], who: { M1: 'the CH₃', Ca: 'the carbocation', Cb: 'the carbon next to it' }
   });
   def('nWaterTbu', {
@@ -495,9 +499,9 @@ var SCENES = (function () {
       product: 'CC([OH2+])C(C)(C)C.[Br-]', klein: ['pt'] },
     { title: 'Loss of a leaving group', arrows: [['b:C2-O', 'O']], moves: [['O Ho Hb', -0.5, 1.1]],
       product: 'C[CH+]C(C)(C)C.O.[Br-]', klein: ['lg'] },
-    { title: 'Carbocation rearrangement', arrows: [['b:C3-C5', 'C2']], moves: [['Br', -0.6, -1.1]], after: { C5: ['C2', 110] },
+    { title: 'Carbocation rearrangement', arrows: [['b:C3-C5', 'C2']], moves: [['Br', -0.6, -1.1]], after: { C5: ['C2', 90], C4: ['C3', 330] },
       product: 'CC(C)[C+](C)C.O.[Br-]', klein: ['shift'] },
-    { title: 'Nucleophilic attack', arrows: [['lp:Br', 'C3']], after: { Br: ['C3', 60] },
+    { title: 'Nucleophilic attack', arrows: [['lp:Br', 'C3']], after: { Br: ['C3', 30] },
       product: 'CC(C)C(C)(C)Br.O', klein: ['nuc'] }
   ]);
 
@@ -526,39 +530,15 @@ var SCENES = (function () {
       product: 'CC(=O)[O-].CO', klein: ['pt'] }
   ]);
 
-  /* Klein 6.12: reversible or irreversible */
+  /* a methyl anion and a C=O (a graded drawing in Checkpoint 4) */
   def('cMeAttack', {
     title: 'Acetone and a methyl anion',
     atoms: [['C', 'C', [0, 0]], ['O', 'O', ['C', 90], { o: 2 }], ['M1', 'C', ['C', 210]], ['M2', 'C', ['C', 330]],
             ['Mn', 'C', [-2.2, 0.8], { c: -1, label: 'H₃C' }]],
     arrows: [['lp:Mn', 'C'], ['b:C-O', 'O']],
+    after: { Mn: ['C', 180], M1: ['C', 270], M2: ['C', 0] },
     product: 'CC(C)(C)[O-]', klein: ['nuc'], who: { Mn: 'the CH₃⁻', C: 'the C of the C=O', O: 'the O of the C=O' }
   });
-  def('cButylWater', {
-    title: 'A butyl anion and water',
-    atoms: [['C1', 'C', [0, 0], { c: -1 }], ['C2', 'C', ['C1', 210]], ['C3', 'C', ['C2', 150]], ['C4', 'C', ['C3', 210]],
-            ['H1', 'H', [1.2, 0.3]], ['O', 'O', ['H1', 0]], ['H2', 'H', ['O', 60]]],
-    arrows: [['lp:C1', 'H1'], ['b:H1-O', 'O']],
-    product: 'CCCC.[OH-]', klein: ['pt'], who: { C1: 'the carbanion', H1: 'the H of water', O: 'the O of water' }
-  });
-  def('cTbuoWater', {
-    title: 'tert-Butoxide and water',
-    atoms: [['C', 'C', [0, 0]], ['M1', 'C', ['C', 180]], ['M2', 'C', ['C', 270]], ['M3', 'C', ['C', 0]], ['Ot', 'O', ['C', 90], { c: -1 }],
-            ['H1', 'H', ['Ot', 0, 1.3], { nob: true }], ['O', 'O', ['H1', 0]], ['H2', 'H', ['O', 60]]],
-    arrows: [['lp:Ot', 'H1'], ['b:H1-O', 'O']],
-    product: 'CC(C)(C)O.[OH-]', klein: ['pt'], who: { Ot: 'the O of tert-butoxide', H1: 'the H of water', O: 'the O of water' }
-  });
-
-  /* card: scene, and the facts Klein's rules (6.12) need */
-  var REVERSE = [
-    { id: 'v1', scene: 'nWaterTbu', klein: 'eq', text: 'Water attacks a carbocation.' },
-    { id: 'v2', scene: 'cMeAttack', klein: 'one', poorLG: true, text: 'A methyl anion attacks a C=O.' },
-    { id: 'v3', scene: 'brLoss', klein: 'eq', text: 'Bromide leaves a carbon.' },
-    { id: 'v4', scene: 'shiftH', klein: 'one', text: 'A hydride shift gives a 3° carbocation.' },
-    { id: 'v5', scene: 'cButylWater', klein: 'one', bigGap: true, text: 'A butyl anion takes a proton from water.' },
-    { id: 'v6', scene: 'cTbuoWater', klein: 'eq', text: 'tert-Butoxide takes a proton from water.' }
-  ];
-
   /* ============================================== checkpoint drawings */
 
   def('dIsobuteneHBr', {
@@ -609,7 +589,7 @@ var SCENES = (function () {
     endo: [{ E: 0, t: 'Reactants' }, { E: 1, t: '', ts: true }, { E: 0.45, t: 'Products' }]
   };
 
-  return { S: S, RULES: RULES, REVERSE: REVERSE, SHIFT_KLEIN: SHIFT_KLEIN, PROFILES: PROFILES, shiftScene: shiftScene,
+  return { S: S, RULES: RULES, SHIFT_KLEIN: SHIFT_KLEIN, PROFILES: PROFILES, shiftScene: shiftScene,
            arrowsOf: arrowsOf, key: key };
 })();
 

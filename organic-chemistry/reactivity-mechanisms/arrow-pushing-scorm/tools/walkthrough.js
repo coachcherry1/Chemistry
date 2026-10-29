@@ -369,14 +369,6 @@ const fakeLMS = () => {
   const ES = await page.evaluate(() => SCENES.S.ester.map((x) => ['nuc', 'lg', 'pt', 'shift'].indexOf(x.patterns[0])));
   for (let i = 0; i < 3; i++) await page.locator('.seq-row').nth(i).locator('.ghostbtn').nth(ES[i]).click();
   await next();
-  /* reverse */
-  const RV = await page.evaluate(() => [...document.querySelectorAll('.cards .card')].map((c) => {
-    const t = c.querySelector('.muted').textContent;
-    const card = SCENES.REVERSE.find((x) => x.text === t);
-    return App.arrowFor(card) === 'eq' ? 0 : 1;
-  }));
-  await cards('.cards .card', RV, true);
-  await next();
   await quiz();
   await next();
 

@@ -169,7 +169,19 @@ ok(App.PREDICT.order3.answer === 0, 'stable: the key is not tertiary');
 
 /* ============================================================== Part 4 */
 
-SCENES.REVERSE.forEach((c) => ok(App.arrowFor(c) === c.klein, `reverse: ${c.id} gets ${App.arrowFor(c)}, Klein ${c.klein}`));
+/* every drawing, before and after each step, has bonds of a drawable length: a ring closed
+   by an arrow must be redrawn as a ring, not left as a chain with a long bond across it */
+for (const [id, sc] of Object.entries(S)) {
+  const list = Array.isArray(sc) ? sc : [sc];
+  list.forEach((x) => ['before', 'after'].forEach((w) => {
+    const st = x[w];
+    if (!st) return;
+    st.bonds.forEach((b) => {
+      const A = Chem.atom(st, b.a), B = Chem.atom(st, b.b), L = Math.hypot(A.x - B.x, A.y - B.y);
+      ok(L > 0.7 && L < 1.35, `${x.id || id} (${w}): the ${b.a}-${b.b} bond is drawn ${L.toFixed(2)} long`);
+    });
+  }));
+}
 
 /* ================================================================ steps */
 
@@ -244,10 +256,6 @@ for (const k of Object.keys(QUIZZES)) {
     }
     if (c.ints) ok(+q.choices[0] === kinds(c.ints).int, `${q.id}: intermediates in ${c.ints}`);
     if (c.steps) ok(/^One transition state, no intermediate/.test(q.choices[0]) === (S[c.steps].patterns.length === 2), `${q.id}: ${c.steps} is not one step`);
-    if (c.rev) {
-      const card = SCENES.REVERSE.find((x) => x.id === c.rev);
-      ok(q.choices[0].indexOf(App.arrowFor(card) === 'eq' ? '⇌' : '→') === 0, `${q.id}: reaction arrow for ${c.rev}`);
-    }
     if (c.rule) {
       q.choices.forEach((ch, i) => {
         const sc = S[ch.mech];
@@ -273,7 +281,7 @@ const files = [];
   }
 })(root);
 const DASH = new RegExp(String.fromCharCode(0x2014));
-const BANNED = [/spontane/i, /rate equation/i, /rate constant/i, /\b(first|second|third)[- ]order\b/i, /Hammond/i, /catalys/i, /\bacceptor\b/i];
+const BANNED = [/spontane/i, /reversible/i, /\u21cc/, /rate equation/i, /rate constant/i, /\b(first|second|third)[- ]order\b/i, /Hammond/i, /catalys/i, /\bacceptor\b/i];
 for (const f of files) {
   const text = fs.readFileSync(f, 'utf8');
   text.split('\n').forEach((line, i) => {

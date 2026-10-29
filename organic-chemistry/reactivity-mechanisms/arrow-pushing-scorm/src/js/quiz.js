@@ -20,7 +20,6 @@
  *   shift: id         the first choice is the carbocation's shift, or none
  *   ints: profile     the first choice is the number of intermediates
  *   rule: true        figure choices: only the first breaks one of Klein's rules
- *   rev: card         the first choice is the card's reaction arrow (Klein 6.12)
  *   steps: id         the first choice counts the scene's transition states
  * Figures (app.js): { mech: id, arrows }, { mol: id }, { energy: profile, dG },
  * { chain: id }.
@@ -174,14 +173,6 @@ var QUIZZES = (function () {
         { id: 'd-onestep', q: 'This step is concerted. What does its energy diagram have?', fig: { mech: 'sn2' }, check: { steps: 'sn2' },
           choices: ['One transition state, no intermediate', 'Two transition states, one intermediate', 'No transition state, one intermediate'],
           why: 'One step means one hill: one transition state, where the C–O bond is forming as the C–Cl bond breaks, and no intermediate.' },
-        { id: 'd-shiftarrow', q: 'Klein draws a carbocation rearrangement with which reaction arrow?', choices: ['→, irreversible', '⇌, reversible'], compact: true, check: { rev: 'v4' },
-          why: 'The more stable carbocation dominates so heavily that the reverse shift is negligible: an irreversible arrow.' },
-        { id: 'd-water', q: 'Reversible (⇌) or irreversible (→)?', fig: { mech: 'nWaterTbu' }, check: { rev: 'v1' },
-          choices: ['⇌: water can leave again', '→: water can never leave again'],
-          why: 'After water attacks, it can leave again just as easily, so the step runs both ways: ⇌.' },
-        { id: 'd-methyl', q: 'Reversible (⇌) or irreversible (→)?', fig: { mech: 'cMeAttack' }, check: { rev: 'v2' },
-          choices: ['→: CH₃⁻ is a poor leaving group', '⇌: CH₃⁻ is a good leaving group'],
-          why: 'A methyl anion is a very strong base and a very poor leaving group: once it has attacked, it does not leave again. →.' },
         { id: 'd-brattack', q: 'When Br⁻ attacks a carbocation, energy is:', choices: ['Released: a bond forms', 'Taken in: a bond breaks', 'Unchanged: no bond changes'],
           why: 'Nothing breaks in that step and a C–Br bond forms. Bond making is exothermic, so energy is released.' },
         { id: 'd-four', q: 'How many characteristic patterns of arrow pushing do all ionic mechanisms combine?', choices: ['Four', 'Two', 'Six', 'Ten'], compact: true,
