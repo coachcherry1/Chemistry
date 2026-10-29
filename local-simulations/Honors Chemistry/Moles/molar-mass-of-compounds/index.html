@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Molar Mass of Compounds</title>
+<style>
+  :root{
+    --bg:#dfe5ee; --card:#ffffff; --ink:#0d131c; --muted:#445061; --line:#b6c1d1;
+    --accent:#1250cc; --accent-soft:#dae8ff;
+    --good:#0a6b3b; --good-soft:#dcf3e6;
+    --bad:#a8291b; --bad-soft:#fbe4e1;
+    --warn:#7d5000; --warn-soft:#ffeec4;
+    --mark:#ffd94d; --mark-ink:#2b1f00; --mark-line:#c08f00;
+    --radius:9px;
+    --shadow:0 1px 2px rgba(13,22,38,.14), 0 4px 14px rgba(13,22,38,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--bg); color:var(--ink); font-size:16px; line-height:1.45;
+    -webkit-text-size-adjust:100%; touch-action:manipulation;
+  }
+  .wrap{max-width:940px;margin:0 auto;padding:9px}
+
+  header.bar{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:7px 12px;margin-bottom:8px;
+    display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+  }
+  .title{font-size:16px;font-weight:800;letter-spacing:-.01em;margin:0}
+  .title small{display:block;font-weight:500;font-size:12px;color:var(--muted);letter-spacing:0}
+  .stats{display:flex;gap:8px;flex-wrap:wrap}
+  .stat{background:var(--accent-soft);border:1px solid #a9c8f5;border-radius:7px;padding:4px 10px;text-align:center;min-width:64px}
+  .stat b{display:block;font-size:15px;line-height:1.15;color:var(--ink)}
+  .stat span{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:12px 14px;margin-bottom:8px}
+  .exact-note{margin:0 0 9px;font-size:12.5px;color:var(--muted)}
+
+  /* ---------- lesson ---------- */
+  .lesson-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .steplabel{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .dots{display:flex;gap:6px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--line)}
+  .dot.on{background:var(--accent)}
+  .slide{display:none}
+  .slide.on{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .slidetitle{font-size:17px;font-weight:800;margin:0 0 2px}
+  .slidebody{font-size:14px;margin:6px 0}
+  .slidebody.muted{color:var(--muted);font-size:13px}
+
+  .fig{display:flex;flex-wrap:wrap;align-items:center;gap:14px;justify-content:center;
+    margin:12px 0;padding:14px;background:var(--accent-soft);border:1px solid #a9c8f5;border-radius:12px}
+  .fig-col{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .cap{font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .callout{background:var(--mark);border:1px solid var(--mark-line);color:var(--mark-ink);
+    padding:4px 10px;border-radius:8px;font-size:12.5px;font-weight:700;max-width:230px;text-align:center}
+
+  .atom{width:38px;height:38px;border-radius:50%;border:2px solid rgba(0,0,0,.28);
+    display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;
+    color:#fff;box-shadow:0 2px 5px rgba(0,0,0,.22);flex:0 0 auto}
+  .atom.lt{color:#1a1a1a;border-color:rgba(0,0,0,.35)}
+  .mol{display:inline-flex;align-items:center}
+  .mol .atom + .atom{margin-left:-9px}
+
+  .bigformula{font-size:38px;font-weight:800;letter-spacing:.02em;text-align:center;position:relative}
+  .bigformula sub{font-size:22px}
+  .bigformula .hl{color:var(--accent)}
+
+  .ptile{width:76px;height:82px;border:2px solid var(--ink);border-radius:8px;background:var(--card);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+  .ptile .z{position:absolute;top:3px;left:6px;font-size:9px;color:var(--muted);font-weight:700}
+  .ptile .s{font-size:26px;font-weight:800;line-height:1}
+  .ptile .m{font-size:13px;font-weight:800}
+
+  .beaker{width:54px;height:62px;border:3px solid var(--muted);border-top:0;border-radius:0 0 12px 12px;
+    display:flex;align-items:flex-end;justify-content:center;font-size:11px;font-weight:800;
+    color:var(--ink);position:relative;overflow:hidden}
+  .beaker::before{content:"";position:absolute;left:0;right:0;bottom:0;height:58%;background:#bcd6ff}
+  .beaker span{position:relative;margin-bottom:9px}
+
+  /* arrows */
+  .arw{display:inline-flex;align-items:center;justify-content:center}
+  .arw.d{transform:rotate(90deg)}
+  .arw.u{transform:rotate(-90deg)}
+  .arw.l{transform:rotate(180deg)}
+  .arw.dgl{transform:rotate(146deg)}
+  .sub-arrow{position:absolute;left:calc(.78em - 4px);top:calc(1.4em + 20px);transform:rotate(-90deg)}
+  .sub-arrow .arrow{width:22px}
+  .arrow{position:relative;display:block;width:38px;height:9px;background:var(--accent);border-radius:2px}
+  .arrow::after{content:"";position:absolute;left:100%;top:50%;transform:translateY(-50%);
+    border:8px solid transparent;border-left-color:var(--accent)}
+  @keyframes nx{0%,100%{transform:translateX(0)}50%{transform:translateX(7px)}}
+  .arrow.anim{animation:nx 1s ease-in-out infinite}
+
+  /* calc tables */
+  .calc{border-collapse:collapse;margin:8px 0 4px;font-size:14px}
+  .calc td{padding:4px 9px;border-bottom:1px solid var(--line);white-space:nowrap}
+  .calc tr:last-child td{border-bottom:0}
+  .calc .tot td{font-weight:800;border-top:2px solid var(--ink);font-size:15px;padding-top:7px}
+  .calc .elc{display:flex;align-items:center;gap:7px}
+  .calc .sub b{font-weight:800}
+
+  .mass-in{width:78px;font:inherit;font-size:13px;font-weight:700;text-align:right;padding:3px 5px;
+    border:1px solid var(--accent);border-radius:5px;background:var(--mark);color:var(--mark-ink)}
+  .final-in{width:104px;font:inherit;font-size:14px;font-weight:800;text-align:right;padding:4px 6px;
+    border:1px solid var(--accent);border-radius:6px;background:var(--mark);color:var(--mark-ink)}
+  .mass-in:focus,.final-in:focus{outline:2px solid rgba(31,111,235,.4);outline-offset:1px}
+  .mass-in:disabled,.final-in:disabled{opacity:.85;border-style:dashed}
+
+  .prompt{font-size:20px;font-weight:700;margin:0 0 4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .prompt .q{background:var(--mark);color:var(--mark-ink);border:1px solid var(--mark-line);
+    padding:2px 10px;border-radius:6px;font-weight:800}
+  .prompt .q sub{font-size:.7em}
+  .badge{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+    background:#e7ecf4;color:#2f3b49;border:1px solid var(--line);border-radius:99px;padding:2px 9px}
+
+  .btnrow{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+  button.b{font:inherit;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:8px;
+    border:1px solid #93a2b8;background:#fff;color:var(--ink);cursor:pointer;min-height:40px}
+  button.b:hover:not(:disabled){background:#eef2f8}
+  button.b.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  button.b.primary:hover{background:#1a5fd0}
+  button.b:disabled{opacity:.45;cursor:not-allowed}
+
+  .fb{margin-top:10px;padding:9px 11px;border-radius:8px;font-size:13.5px;display:none;border:1px solid}
+  .fb.show{display:block}
+  .fb[hidden]{display:none!important}
+  .fb.ok{background:var(--good-soft);border-color:var(--good);color:#08351e}
+  .fb.no{background:var(--bad-soft);border-color:var(--bad);color:#7c1b10}
+  .fb.tip{background:var(--warn-soft);border-color:var(--warn);color:#5a3a00}
+  .fb .work{margin-top:8px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:12.5px;background:rgba(255,255,255,.65);border-radius:6px;padding:8px;white-space:pre;overflow-x:auto}
+
+  /* modal */
+  .scrim{position:fixed;inset:0;background:rgba(15,22,35,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}
+  .scrim.show{display:flex}
+  .modal{background:#fff;border-radius:14px;max-width:520px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:92vh;overflow:auto}
+  .modal h3{margin:0 0 4px;font-size:21px}
+  .lede{color:var(--muted);font-size:13.5px;margin:0 0 12px}
+  .big-score{font-size:42px;font-weight:800;text-align:center;margin:10px 0 0;letter-spacing:-.02em}
+  .reqs{list-style:none;padding:0;margin:0 0 14px}
+  .reqs li{display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--line);font-size:13.5px}
+  .reqs li:last-child{border-bottom:1px solid var(--line)}
+  .reqs .ic{flex:0 0 22px;height:22px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+    display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+  .reqs b{display:block;margin-bottom:1px}
+  .reqs span{color:var(--muted);font-size:12.5px}
+  .goal{background:var(--accent-soft);border:1px solid var(--accent);border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:14px}
+  .goal b{display:block;font-size:15px;margin-bottom:2px}
+
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0c1015; --card:#1b222c; --ink:#f0f4fa; --muted:#a9b6c7; --line:#3a4553;
+      --accent:#6aa6ff; --accent-soft:#1d3252;
+      --good:#6fdca6; --good-soft:#123526; --bad:#ff9a8c; --bad-soft:#3d1d19;
+      --warn:#f0c97e; --warn-soft:#3a2f14;
+      --mark:#6b5200; --mark-ink:#ffe9a3; --mark-line:#a37f00;
+    }
+    .beaker::before{background:#2c4a7a}
+    .modal{background:#1b222c}
+    button.b{background:#2a3542;color:var(--ink)}
+    button.b:hover:not(:disabled){background:#33404f}
+    .badge{background:#2a3542;color:var(--ink);border-color:var(--line)}
+    .fb.ok{color:#d7f3e4}
+    .fb.no{color:#ffd6cd}
+    .fb.tip{color:#f3ddb0}
+    .fb .work{background:rgba(0,0,0,.32)}
+  }
+  @media (max-width:560px){
+    .bigformula{font-size:30px}
+    .prompt{font-size:17px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="bar">
+    <h1 class="title">Molar Mass of Compounds <small id="subT">Learn it, then calculate it</small></h1>
+    <div class="stats" id="statsBox" hidden>
+      <div class="stat"><b id="stProg">1 / 5</b><span>Problem</span></div>
+      <div class="stat"><b id="stScore">100%</b><span>Score</span></div>
+    </div>
+  </header>
+
+  <!-- ================= LESSON ================= -->
+  <section class="card" id="lessonCard">
+    <div class="lesson-top">
+      <span class="steplabel">Lesson</span>
+      <div class="dots" id="dots"></div>
+    </div>
+
+    <div id="slides">
+
+      <!-- Slide 1 -->
+      <div class="slide on">
+        <p class="slidetitle">An atom vs. a molecule</p>
+        <p class="slidebody">An <b>atom</b> is a single particle of one element. When atoms bond together they make a <b>molecule</b>.</p>
+        <div class="fig">
+          <div class="fig-col"><span class="atom lt" style="background:#e9edf2">H</span><span class="cap">1 atom of H</span></div>
+          <div class="fig-col"><span class="atom lt" style="background:#e9edf2">H</span><span class="cap">1 atom of H</span></div>
+          <div class="fig-col"><span class="atom" style="background:#e23b30">O</span><span class="cap">1 atom of O</span></div>
+          <span class="arw"><span class="arrow anim"></span></span>
+          <div class="fig-col">
+            <span class="mol">
+              <span class="atom lt" style="background:#e9edf2">H</span>
+              <span class="atom" style="background:#e23b30">O</span>
+              <span class="atom lt" style="background:#e9edf2">H</span>
+            </span>
+            <span class="cap">1 molecule of water</span>
+          </div>
+          <span class="callout">This whole cluster = <b>1 molecule</b> (H&#8322;O). It has <b>3 atoms</b> stuck together.</span>
+        </div>
+        <p class="slidebody muted">Key idea: a molecule can hold several atoms, but it still counts as <b>one</b> molecule.</p>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="slide">
+        <p class="slidetitle">Subscripts count the atoms</p>
+        <p class="slidebody">The little number after an element &mdash; the <b>subscript</b> &mdash; tells you how many atoms of that element are in the formula.</p>
+        <div class="fig">
+          <div class="fig-col" style="padding-bottom:26px">
+            <span class="bigformula">H<sub class="hl">2</sub>O<span class="sub-arrow"><span class="arrow anim"></span></span></span>
+          </div>
+          <div class="fig-col">
+            <span class="mol">
+              <span class="atom lt" style="background:#e9edf2">H</span>
+              <span class="atom lt" style="background:#e9edf2">H</span>
+            </span>
+            <span class="cap">two H atoms</span>
+          </div>
+          <span class="callout">The <b>2</b> means <b>2 hydrogen</b> atoms. No number on the O means <b>1 oxygen</b> atom.</span>
+        </div>
+        <p class="slidebody muted">So H&#8322;O contains 2 + 1 = <b>3 atoms</b> in every molecule.</p>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="slide">
+        <p class="slidetitle">Atomic mass lives on the periodic table</p>
+        <p class="slidebody">Each element's atomic mass is the number listed under its symbol &mdash; the mass of <b>one mole</b> of those atoms, in <b>g/mol</b>.</p>
+        <div class="fig">
+          <div class="ptile"><span class="z">8</span><span class="s">O</span><span class="m">16.00</span></div>
+          <span class="arw l" style="position:relative;top:10px"><span class="arrow anim"></span></span>
+          <span class="callout">Atomic mass of oxygen: <b>16.00 g/mol</b>.</span>
+        </div>
+        <p class="slidebody muted">For these problems we'll round every molar mass to <b>2 places past the decimal</b> to keep the arithmetic simple. Examples: H = 1.01, C = 12.01, N = 14.01, O = 16.00, Na = 22.99, Cl = 35.45.</p>
+      </div>
+
+      <!-- Slide 4 -->
+      <div class="slide">
+        <p class="slidetitle">Molar mass = add up every atom</p>
+        <p class="slidebody">To find the molar mass of a compound: multiply each element's atomic mass by how many atoms there are, then add.</p>
+        <div class="fig" style="gap:18px">
+          <div class="fig-col">
+            <span class="bigformula">CO<sub>2</sub></span>
+            <span class="mol">
+              <span class="atom" style="background:#454545">C</span>
+              <span class="atom" style="background:#e23b30">O</span>
+              <span class="atom" style="background:#e23b30">O</span>
+            </span>
+          </div>
+          <table class="calc">
+            <tr><td>C</td><td>1 &times; 12.01</td><td class="sub">= <b>12.01</b></td></tr>
+            <tr><td>O</td><td>2 &times; 16.00</td><td class="sub">= <b>32.00</b></td></tr>
+            <tr class="tot"><td colspan="2">Molar mass =</td><td>44.01 g/mol</td></tr>
+          </table>
+          <span class="callout">Add straight down the <b>=</b> column to get <b>44.01 g/mol</b>.</span>
+        </div>
+      </div>
+
+      <!-- Slide 5 -->
+      <div class="slide">
+        <p class="slidetitle">What that number actually means</p>
+        <p class="slidebody"><b>44.01 g/mol</b> means: one <b>mole</b> of CO&#8322; molecules &mdash; that's 6.022 &times; 10&#178;&#179; molecules &mdash; weighs 44.01 grams.</p>
+        <div class="fig">
+          <div class="fig-col">
+            <span class="mol">
+              <span class="atom" style="background:#454545">C</span>
+              <span class="atom" style="background:#e23b30">O</span>
+              <span class="atom" style="background:#e23b30">O</span>
+            </span>
+            <span class="cap">1 molecule</span>
+          </div>
+          <span class="callout">&times; 6.022 &times; 10&#178;&#179; molecules<br>(one mole)</span>
+          <span class="arw"><span class="arrow anim"></span></span>
+          <div class="fig-col"><span class="beaker"><span>44.01 g</span></span><span class="cap">weighs this much</span></div>
+        </div>
+        <p class="slidebody muted">Molar mass is counted <b>per mole of molecules</b>, not per atom. One mole of CO&#8322; happens to contain 3 moles of atoms, but the molar mass still describes the whole molecule.</p>
+      </div>
+
+      <!-- Slide 6 -->
+      <div class="slide">
+        <p class="slidetitle">One more example &mdash; a bigger molecule</p>
+        <p class="slidebody">Glucose is <b>C<sub>6</sub>H<sub>12</sub>O<sub>6</sub></b>. There are more atoms to add up, but the three steps don't change.</p>
+        <div class="fig" style="gap:18px">
+          <div class="fig-col">
+            <span class="bigformula">C<sub>6</sub>H<sub>12</sub>O<sub>6</sub></span>
+          </div>
+          <table class="calc">
+            <tr><td>C</td><td>6 &times; 12.01</td><td class="sub">= <b>72.06</b></td></tr>
+            <tr><td>H</td><td>12 &times; 1.01</td><td class="sub">= <b>12.12</b></td></tr>
+            <tr><td>O</td><td>6 &times; 16.00</td><td class="sub">= <b>96.00</b></td></tr>
+            <tr class="tot"><td colspan="2">Molar mass =</td><td>180.18 g/mol</td></tr>
+          </table>
+          <span class="callout">Count &rarr; multiply &rarr; add. <b>180.18 g/mol</b>.</span>
+        </div>
+      </div>
+
+      <!-- Slide 7 -->
+      <div class="slide">
+        <p class="slidetitle">Your turn &mdash; the 3 steps</p>
+        <div class="fig" style="flex-direction:column;align-items:stretch;gap:12px">
+          <div><b>1. Count</b> the atoms of each element using the subscripts.</div>
+          <div><b>2. Look up</b> each atomic mass (2 decimals) and multiply by how many atoms.</div>
+          <div><b>3. Add</b> the subtotals. That sum is the molar mass, in <b>g/mol</b>.</div>
+        </div>
+        <p class="slidebody muted">You'll do this for 5 compounds, typing the atomic masses yourself.</p>
+      </div>
+
+    </div>
+
+    <div class="btnrow">
+      <button class="b" id="bBack" disabled>&larr; Back</button>
+      <button class="b primary" id="bNext">Next &rarr;</button>
+    </div>
+  </section>
+
+  <!-- ================= PRACTICE ================= -->
+  <section class="card" id="practiceCard" hidden>
+    <div class="prompt">
+      <span class="q" id="pFormula"></span>
+      <span class="badge" id="pName"></span>
+      <span class="mol" id="pMol"></span>
+    </div>
+    <p class="exact-note">Type each element's atomic mass from the periodic table (2 decimal places), then the total molar mass in g/mol.</p>
+    <table class="calc" id="calcTbl"></table>
+    <div class="btnrow">
+      <button class="b primary" id="bCheck">Check</button>
+      <button class="b" id="bReview">Review lesson</button>
+      <button class="b primary" id="bNextP" hidden>Next problem &rarr;</button>
+    </div>
+    <div class="fb" id="fb"></div>
+  </section>
+
+</div>
+
+<!-- start modal -->
+<div class="scrim show" id="startScrim">
+  <div class="modal">
+    <h3>Molar Mass of Compounds</h3>
+    <p class="lede">First a short lesson, then you calculate the molar mass of five simple compounds.</p>
+    <ul class="reqs">
+      <li><span class="ic">1</span><div><b>Walk through the 7-slide lesson</b><span>Atoms vs. molecules, what subscripts mean, and how to add up a molar mass.</span></div></li>
+      <li><span class="ic">2</span><div><b>Calculate 5 molar masses</b><span>Type each element's atomic mass from the periodic table (2 decimals) and the total.</span></div></li>
+      <li><span class="ic">3</span><div><b>Each one must be right to move on</b><span>No multiple choice &mdash; you work it the way you would on paper.</span></div></li>
+    </ul>
+    <div class="goal"><b>Goal</b>Finish the lesson and get all 5 molar masses correct.</div>
+    <p class="lede" id="startLms"></p>
+    <div class="btnrow"><button class="b primary" id="btnStart">Begin lesson</button></div>
+  </div>
+</div>
+
+<!-- summary modal -->
+<div class="scrim" id="scrim">
+  <div class="modal">
+    <h3>Practice complete</h3>
+    <p class="big-score" id="mScore"></p>
+    <p class="lede" id="mDetail"></p>
+    <div class="fb ok show" id="scormBox" hidden></div>
+    <div class="fb tip show" id="noLmsBox" hidden>This activity isn't connected to Schoology right now, so your score wasn't submitted. Open it from inside your Schoology assignment to have the grade recorded.</div>
+    <div class="btnrow">
+      <button class="b" id="bAgain">Do the 5 problems again</button>
+      <button class="b" id="bReview2">Review the lesson</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================================
+   Molar Mass of Compounds — teaching slideshow + 5-problem practice
+   Single file, no dependencies. SCORM 1.2 reporting when launched from an LMS.
+   ========================================================================== */
+const $ = id => document.getElementById(id);
+function esc(s){ return String(s).replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
+
+/* ---- teacher settings ---- */
+const SET_LENGTH = 5;
+const SCORE_PENALTY_PER_MISS = 3;
+const SCORE_FLOOR = 60;
+
+/* ---- atomic masses: College Board / AP periodic table, 2 decimal places ---- */
+const MASS = {
+  H:1.01, Li:6.94, C:12.01, N:14.01, O:16.00, F:19.00, Na:22.99, Mg:24.31,
+  Al:26.98, Si:28.09, P:30.97, S:32.06, Cl:35.45, K:39.10, Ca:40.08, Fe:55.85
+};
+/* CPK-ish ball colours; "lt" = dark text on a light ball */
+const COLOR = {
+  H:'#e9edf2', Li:'#c98cff', C:'#454545', N:'#2f6fe0', O:'#e23b30', F:'#5bbf5b',
+  Na:'#9b6cf0', Mg:'#4fb84f', Al:'#9fb0c0', Si:'#d7a373', P:'#f28c1b', S:'#e3b505',
+  Cl:'#3aa65a', K:'#8f40d4', Ca:'#3dbd57', Fe:'#d1662e'
+};
+const LIGHT_BALL = new Set(['H','S','Si','Al','F']);
+
+/* ---- compounds: simple binary ionic + covalent, no polyatomic ions ----
+   The set is drawn one-per-slot so retries vary but stay balanced. */
+const C = (parts, name) => ({ parts, name, key: parts.map(p=>p.s+(p.n>1?p.n:'')).join('') });
+const SLOTS = [
+  [ // small covalent
+    C([{s:'H',n:2},{s:'O',n:1}], 'water'),
+    C([{s:'C',n:1},{s:'O',n:2}], 'carbon dioxide'),
+    C([{s:'C',n:1},{s:'O',n:1}], 'carbon monoxide'),
+    C([{s:'H',n:1},{s:'Cl',n:1}], 'hydrogen chloride'),
+    C([{s:'N',n:1},{s:'O',n:1}], 'nitrogen monoxide')
+  ],
+  [ // ionic, metal subscript of 2
+    C([{s:'Na',n:2},{s:'O',n:1}], 'sodium oxide'),
+    C([{s:'Li',n:2},{s:'O',n:1}], 'lithium oxide'),
+    C([{s:'K',n:2},{s:'O',n:1}], 'potassium oxide'),
+    C([{s:'Na',n:2},{s:'S',n:1}], 'sodium sulfide')
+  ],
+  [ // ionic MX2 / MX3
+    C([{s:'Mg',n:1},{s:'Cl',n:2}], 'magnesium chloride'),
+    C([{s:'Ca',n:1},{s:'Cl',n:2}], 'calcium chloride'),
+    C([{s:'Al',n:1},{s:'Cl',n:3}], 'aluminum chloride'),
+    C([{s:'Fe',n:1},{s:'Cl',n:3}], 'iron(III) chloride')
+  ],
+  [ // covalent with 3+ atoms of one element
+    C([{s:'N',n:1},{s:'H',n:3}], 'ammonia'),
+    C([{s:'C',n:1},{s:'H',n:4}], 'methane'),
+    C([{s:'S',n:1},{s:'O',n:3}], 'sulfur trioxide'),
+    C([{s:'P',n:1},{s:'Cl',n:3}], 'phosphorus trichloride')
+  ],
+  [ // bigger covalent
+    C([{s:'C',n:1},{s:'Cl',n:4}], 'carbon tetrachloride'),
+    C([{s:'C',n:1},{s:'S',n:2}], 'carbon disulfide'),
+    C([{s:'Si',n:1},{s:'O',n:2}], 'silicon dioxide'),
+    C([{s:'P',n:2},{s:'O',n:5}], 'diphosphorus pentoxide')
+  ]
+];
+
+/* ---- helpers ---- */
+const round2 = v => Math.round(v*100)/100;
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+function parseNum(s){
+  if(s == null) return NaN;
+  const t = String(s).trim().replace(/,/g,'');
+  if(t === '') return NaN;
+  const v = Number(t);
+  return Number.isFinite(v) ? v : NaN;
+}
+function ballHtml(sym){
+  const c = COLOR[sym] || '#8a97a8';
+  const lt = LIGHT_BALL.has(sym) ? ' lt' : '';
+  return '<span class="atom'+lt+'" style="background:radial-gradient(circle at 34% 30%, rgba(255,255,255,.55), rgba(255,255,255,0) 55%), '+c+'">'+sym+'</span>';
+}
+function formulaHtml(parts){
+  return parts.map(p => p.s + (p.n>1 ? '<sub>'+p.n+'</sub>' : '')).join('');
+}
+function molHtml(parts, cap){
+  cap = cap || 12;
+  let out = '', count = 0;
+  for(const p of parts){
+    for(let i=0;i<p.n && count<cap;i++){ out += ballHtml(p.s); count++; }
+  }
+  return out;
+}
+function buildPlan(){
+  return SLOTS.map(slot => {
+    const c = pick(slot);
+    return { parts: c.parts, name: c.name, key: c.key };
+  });
+}
+function massAccepted(sym, got){
+  if(!Number.isFinite(got)) return false;
+  if(sym === 'H') return Math.abs(got - 1.01) <= 0.006;   // accepts 1.008 and 1.01
+  return Math.abs(got - MASS[sym]) < 0.005;
+}
+
+/* ---- state ---- */
+const session = { plan: [], index: 0, missCount: 0, correct: 0, phase: 'lesson', finished: false };
+let massEntry = {};   // sym -> string, current problem
+let solved = false;   // current problem answered correctly
+
+/* ==========================================================================
+   Lesson slideshow
+   ========================================================================== */
+const slideEls = Array.from(document.querySelectorAll('#slides .slide'));
+let slideIdx = 0;
+(function buildDots(){
+  const d = $('dots');
+  slideEls.forEach((_,i) => {
+    const s = document.createElement('span');
+    s.className = 'dot' + (i===0 ? ' on' : '');
+    d.appendChild(s);
+  });
+})();
+function showSlide(){
+  slideEls.forEach((el,i) => el.classList.toggle('on', i === slideIdx));
+  Array.from($('dots').children).forEach((el,i) => el.classList.toggle('on', i === slideIdx));
+  $('bBack').disabled = slideIdx === 0;
+  $('bNext').textContent = slideIdx === slideEls.length - 1 ? 'Start practice →' : 'Next →';
+}
+$('bBack').addEventListener('click', () => { if(slideIdx>0){ slideIdx--; showSlide(); } });
+$('bNext').addEventListener('click', () => {
+  if(slideIdx < slideEls.length - 1){ slideIdx++; showSlide(); }
+  else startPractice();
+});
+
+function openLesson(){
+  session.phase = 'lesson';
+  $('practiceCard').hidden = true;
+  $('lessonCard').hidden = false;
+  slideIdx = 0;
+  showSlide();
+}
+
+/* ==========================================================================
+   Practice
+   ========================================================================== */
+function startPractice(){
+  session.phase = 'practice';
+  $('lessonCard').hidden = true;
+  $('practiceCard').hidden = false;
+  $('statsBox').hidden = false;
+  $('subT').textContent = 'Add up the mass of every atom in the formula';
+  if(!session.plan.length) session.plan = buildPlan();
+  renderProblem();
+}
+
+function currentPct(){
+  return Math.max(SCORE_FLOOR, 100 - SCORE_PENALTY_PER_MISS * session.missCount);
+}
+function updateStats(){
+  $('stProg').textContent = (Math.min(session.index+1, SET_LENGTH)) + ' / ' + SET_LENGTH;
+  $('stScore').textContent = currentPct() + '%';
+}
+
+function renderProblem(){
+  const p = session.plan[session.index];
+  solved = false;
+  massEntry = {};
+  $('fb').className = 'fb';
+  $('fb').innerHTML = '';
+  $('bNextP').hidden = true;
+  $('bCheck').disabled = false;
+
+  $('pFormula').innerHTML = formulaHtml(p.parts);
+  $('pName').textContent = p.name;
+  $('pMol').innerHTML = molHtml(p.parts);
+
+  const tbl = $('calcTbl');
+  let rows = '';
+  p.parts.forEach(part => {
+    const s = part.s, n = part.n;
+    rows += '<tr>' +
+      '<td><span class="elc">' + ballHtml(s) + '<b>' + s + '</b></span></td>' +
+      '<td>' + n + (n===1 ? ' atom' : ' atoms') + ' &times;</td>' +
+      '<td><input class="mass-in" data-sym="' + s + '" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="atomic mass of ' + s + '"> g/mol</td>' +
+      '<td class="sub" id="sub_' + s + '">= <b>?</b></td>' +
+    '</tr>';
+  });
+  rows += '<tr class="tot"><td colspan="2">Molar mass =</td>' +
+    '<td><input class="final-in" id="finalIn" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="molar mass"> g/mol</td>' +
+    '<td></td></tr>';
+  tbl.innerHTML = rows;
+
+  tbl.querySelectorAll('.mass-in').forEach(inp => {
+    inp.addEventListener('input', () => {
+      massEntry[inp.dataset.sym] = inp.value;
+      refreshSubtotals();
+    });
+    inp.addEventListener('keydown', ev => { if(ev.key === 'Enter') checkAnswer(); });
+  });
+  $('finalIn').addEventListener('keydown', ev => { if(ev.key === 'Enter') checkAnswer(); });
+
+  updateStats();
+}
+
+function refreshSubtotals(){
+  const p = session.plan[session.index];
+  p.parts.forEach(part => {
+    const cell = $('sub_' + part.s);
+    if(!cell) return;
+    const m = parseNum(massEntry[part.s]);
+    cell.innerHTML = Number.isFinite(m) ? ('= <b>' + round2(part.n * m).toFixed(2) + '</b>') : '= <b>?</b>';
+  });
+}
+
+function say(kind, html){
+  const fb = $('fb');
+  fb.className = 'fb show ' + kind;
+  fb.innerHTML = html;
+}
+
+function checkAnswer(){
+  if(solved) return;
+  const p = session.plan[session.index];
+
+  // 1. atomic masses filled?
+  for(const part of p.parts){
+    if(!Number.isFinite(parseNum(massEntry[part.s]))){
+      say('tip', 'Enter the atomic mass of <b>' + part.s + '</b>.');
+      return;
+    }
+  }
+  // 2. atomic masses correct?
+  for(const part of p.parts){
+    if(!massAccepted(part.s, parseNum(massEntry[part.s]))){
+      session.missCount++; updateStats();
+      say('no', 'That isn’t the atomic mass of <b>' + part.s + '</b>.');
+      return;
+    }
+  }
+  // 3. total filled?
+  const finalVal = parseNum($('finalIn').value);
+  if(!Number.isFinite(finalVal)){
+    say('tip', 'Enter the molar mass.');
+    return;
+  }
+  // 4. total correct (using the masses the student entered)?
+  let total = 0;
+  p.parts.forEach(part => { total += part.n * parseNum(massEntry[part.s]); });
+  total = round2(total);
+  if(Math.abs(finalVal - total) > 0.02){
+    session.missCount++; updateStats();
+    say('no', 'Your total isn’t the right molar mass.');
+    return;
+  }
+
+  // correct
+  solved = true;
+  session.correct++;
+  $('bCheck').disabled = true;
+  document.querySelectorAll('.mass-in, .final-in').forEach(i => i.disabled = true);
+  $('bNextP').hidden = false;
+  $('bNextP').textContent = session.index >= SET_LENGTH - 1 ? 'Finish →' : 'Next problem →';
+
+  let work = '';
+  p.parts.forEach(part => {
+    const m = parseNum(massEntry[part.s]);
+    work += part.s + ':  ' + part.n + ' × ' + m.toFixed(2) + ' = ' + round2(part.n*m).toFixed(2) + '\n';
+  });
+  work += 'Molar mass = ' + total.toFixed(2) + ' g/mol';
+  say('ok', '<b>Correct.</b><div class="work">' + esc(work) + '</div>');
+
+  scormCheckpoint();
+}
+
+function nextProblem(){
+  session.index++;
+  if(session.index >= SET_LENGTH){ finishSet(); return; }
+  renderProblem();
+}
+
+function finishSet(){
+  session.finished = true;
+  const pct = currentPct();
+  $('mScore').textContent = SET_LENGTH + ' / ' + SET_LENGTH + ' correct';
+  $('mDetail').textContent = 'Score ' + pct + '%  ·  ' + session.missCount +
+    (session.missCount === 1 ? ' miss' : ' misses') + ' along the way.';
+  $('scrim').classList.add('show');
+
+  const sent = scormReport(pct);
+  $('scormBox').hidden = !sent;
+  $('noLmsBox').hidden = sent;
+  if(sent){
+    $('scormBox').innerHTML = '<b>Score sent to Schoology.</b> ' + pct + '% recorded for ' +
+      (scorm.student ? esc(scorm.student) : 'you') + '. Nothing else to submit.';
+  }
+}
+
+$('bCheck').addEventListener('click', checkAnswer);
+$('bNextP').addEventListener('click', nextProblem);
+$('bReview').addEventListener('click', openLesson);
+$('bReview2').addEventListener('click', () => { $('scrim').classList.remove('show'); openLesson(); });
+$('bAgain').addEventListener('click', () => {
+  $('scrim').classList.remove('show');
+  session.plan = buildPlan();
+  session.index = 0; session.missCount = 0; session.correct = 0; session.finished = false;
+  startPractice();
+});
+
+/* ==========================================================================
+   SCORM 1.2 — optional. No API => runs as a plain page, no score sent.
+   ========================================================================== */
+const scorm = { api:null, ready:false, student:'', resumeEntry:false };
+function findAPI(win){
+  let depth = 0;
+  while(win && depth++ < 12){
+    if(win.API) return win.API;
+    if(win.parent === win) break;
+    win = win.parent;
+  }
+  return null;
+}
+function scormInit(){
+  try{
+    scorm.api = findAPI(window) || (window.opener ? findAPI(window.opener) : null);
+    if(!scorm.api) return false;
+    if(scorm.api.LMSInitialize('') === 'false') return false;
+    scorm.ready = true;
+    scorm.student = String(scorm.api.LMSGetValue('cmi.core.student_name') || '').trim();
+    scorm.resumeEntry = scorm.api.LMSGetValue('cmi.core.entry') === 'resume';
+    const st = scorm.api.LMSGetValue('cmi.core.lesson_status');
+    if(st === 'not attempted' || st === ''){
+      scorm.api.LMSSetValue('cmi.core.lesson_status', 'incomplete');
+      scorm.api.LMSCommit('');
+    }
+    return true;
+  }catch(e){ return false; }
+}
+function scormReport(pct){
+  if(!scorm.ready) return false;
+  try{
+    scorm.api.LMSSetValue('cmi.core.score.min', '0');
+    scorm.api.LMSSetValue('cmi.core.score.max', '100');
+    scorm.api.LMSSetValue('cmi.core.score.raw', String(pct));
+    scorm.api.LMSSetValue('cmi.core.lesson_status', 'passed');
+    scorm.api.LMSSetValue('cmi.core.session_time', scormTime());
+    scorm.api.LMSSetValue('cmi.suspend_data',
+      'done:' + session.correct + '/' + SET_LENGTH + ' , ' + pct + '% , ' + session.missCount + ' misses');
+    scorm.api.LMSSetValue('cmi.core.exit', '');
+    return scorm.api.LMSCommit('') !== 'false';
+  }catch(e){ return false; }
+}
+function scormCheckpoint(){
+  if(!scorm.ready || session.finished) return;
+  try{
+    scorm.api.LMSSetValue('cmi.suspend_data', JSON.stringify({
+      phase: 'practice', index: session.index,
+      correct: session.correct, missCount: session.missCount
+    }));
+    scorm.api.LMSSetValue('cmi.core.lesson_location', String(session.index));
+    scorm.api.LMSSetValue('cmi.core.exit', 'suspend');
+    scorm.api.LMSCommit('');
+  }catch(e){}
+}
+function scormTryResume(){
+  if(!scorm.ready || !scorm.resumeEntry) return false;
+  try{
+    const raw = scorm.api.LMSGetValue('cmi.suspend_data');
+    if(!raw || raw[0] !== '{') return false;
+    const d = JSON.parse(raw);
+    if(!(Number.isInteger(d.index) && d.index >= 0 && d.index < SET_LENGTH)) return false;
+    session.plan = buildPlan();
+    session.index = d.index;
+    session.correct = Math.min(d.correct || 0, d.index);
+    session.missCount = (Number.isInteger(d.missCount) && d.missCount >= 0) ? d.missCount : 0;
+    return true;
+  }catch(e){ return false; }
+}
+const started = Date.now();
+function scormTime(){
+  let s = Math.floor((Date.now() - started) / 1000);
+  const h = Math.floor(s/3600); s -= h*3600;
+  const m = Math.floor(s/60);   s -= m*60;
+  return String(h).padStart(4,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+window.addEventListener('beforeunload', () => { if(scorm.ready && !session.finished && session.phase === 'practice') scormCheckpoint(); });
+window.addEventListener('unload', () => { if(scorm.ready){ try{ scorm.api.LMSFinish(''); }catch(e){} } });
+document.addEventListener('visibilitychange', () => {
+  if(document.hidden && scorm.ready && !session.finished && session.phase === 'practice') scormCheckpoint();
+});
+
+/* ==========================================================================
+   Boot
+   ========================================================================== */
+scormInit();
+$('startLms').textContent = scorm.ready
+  ? 'Your score is sent to Schoology automatically when you finish the 5 problems.'
+  : 'This device isn’t connected to Schoology right now, so a score won’t be submitted — open this from inside your Schoology assignment.';
+
+const resumed = scormTryResume();
+showSlide();
+if(resumed){
+  $('startScrim').classList.remove('show');
+  startPractice();
+}
+$('btnStart').addEventListener('click', () => { $('startScrim').classList.remove('show'); });
+</script>
+</body>
+</html>

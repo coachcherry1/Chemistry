@@ -1,0 +1,3341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Net Ionic Equations Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            position: relative;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        #problemSelect {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: 2px solid #007bff;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            min-width: 200px;
+        }
+
+        #problemSelect:focus {
+            outline: none;
+            border-color: #0056b3;
+        }
+
+        .problem-option-completed {
+            color: #28a745;
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .progress-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .progress-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .progress-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .section {
+            margin: 30px 0;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 15px;
+        }
+
+        .equation-box {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .compound {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid #adb5bd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            font-size: 16px;
+        }
+
+        .compound:hover {
+            border-color: #495057;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .compound.processed {
+            border-color: #28a745;
+        }
+
+        .compound.unprocessed {
+            border-color: #ffc107;
+        }
+
+        .compound.error {
+            border-color: #dc3545;
+            background: #ffe6e6;
+        }
+
+        .compound-status {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            background: white;
+        }
+
+        .status-check {
+            color: #28a745;
+        }
+
+        .status-warning {
+            color: #ffc107;
+        }
+
+        .operator {
+            font-size: 20px;
+            font-weight: bold;
+            color: #495057;
+            margin: 0 5px;
+        }
+
+        .ion {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            background: #e7f3ff;
+            border: 2px solid #90c8f5;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+
+        .ion:hover {
+            border-color: #5a9fd4;
+            transform: translateY(-2px);
+        }
+
+        .ion.spectator {
+            text-decoration: line-through;
+            text-decoration-color: #dc3545;
+            text-decoration-thickness: 2px;
+            opacity: 0.6;
+        }
+
+        .ion.error {
+            border-color: #dc3545;
+            background: #ffe6e6;
+        }
+
+        .ion.selected {
+            background: #fff3cd;
+            border-color: #ffc107;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 10px 5px;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #0056b3;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #1e7e34;
+        }
+
+        .btn-save {
+            background: #28a745;
+            color: white;
+            padding: 8px 18px;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .btn-save:hover {
+            background: #1e7e34;
+        }
+
+        .save-status {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #28a745;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            vertical-align: middle;
+        }
+
+        .save-status.visible {
+            opacity: 1;
+        }
+
+        .save-progress-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .save-progress-row #tutorialBtn {
+            margin-left: auto;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .feedback {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.error {
+            background: #ffe6e6;
+            border: 1px solid #dc3545;
+            color: #721c24;
+        }
+
+        .feedback.success {
+            background: #d4edda;
+            border: 1px solid #28a745;
+            color: #155724;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .feedback-list {
+            list-style-position: inside;
+            margin-left: 10px;
+        }
+
+        /* Modal/Dialog Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .summary-section {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .summary-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .summary-equation {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            padding: 10px;
+            background: white;
+            border-left: 3px solid #007bff;
+            margin: 8px 0;
+        }
+
+        .summary-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #495057;
+        }
+
+        .spectator-highlight {
+            text-decoration: line-through;
+            color: #dc3545;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            max-width: 1000px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .modal-equation-reference {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+
+        .modal-equation-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-right: 8px;
+            font-weight: 600;
+            display: inline;
+        }
+
+        .modal-equation-text {
+            font-size: 18px;
+            color: #2c3e50;
+            font-weight: 600;
+            display: inline;
+        }
+
+        .radio-group {
+            margin: 15px 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            flex: 1;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .radio-option:hover {
+            border-color: #007bff;
+            background: #e7f3ff;
+        }
+
+        .radio-option.selected {
+            border-color: #007bff;
+            background: #e7f3ff;
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .radio-option label {
+            cursor: pointer;
+            font-size: 16px;
+            flex: 1;
+        }
+
+        .ion-input-section {
+            display: none;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .ion-input-section.show {
+            display: flex;
+            gap: 30px;
+        }
+
+        .ion-column {
+            flex: 1;
+        }
+
+        .ion-type-header {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .ion-formula {
+            font-size: 17px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 12px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 15px;
+            margin: 10px 0;
+            align-items: center;
+        }
+
+        .input-group {
+            flex: 1;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 4px;
+        }
+
+        select {
+            width: 100%;
+            padding: 6px 10px;
+            font-size: 15px;
+            border: 2px solid #ced4da;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .preview {
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border: 2px solid #007bff;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .preview-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 4px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        sub {
+            font-size: 0.8em;
+            vertical-align: sub;
+        }
+
+        sup {
+            font-size: 0.8em;
+            vertical-align: super;
+        }
+
+        .help-text {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .empty-state {
+            color: #adb5bd;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spectator-panel {
+            width: 250px;
+            background: white;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .spectator-panel.show {
+            display: block;
+        }
+
+        .spectator-panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-align: center;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 8px;
+        }
+
+        .spectator-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .spectator-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .spectator-ion {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .spectator-side {
+            font-size: 11px;
+            color: #6c757d;
+            background: #e7f3ff;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .spectator-content-wrapper {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .spectator-main {
+            flex: 1;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .student-entry {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .student-entry h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .compound, .ion {
+                font-size: 14px;
+                padding: 6px 12px;
+            }
+
+            .modal-content {
+                padding: 20px;
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="studentEntry" class="student-entry">
+            <h2>Net Ionic Equations Practice</h2>
+            <p style="margin-bottom: 20px; color: #666;">Complete <strong>5</strong> net ionic equation problems to finish this activity. These are harder reactions &mdash; work carefully. If you get stuck on one, use its <strong>Show tutorial</strong> button for a full walkthrough; a problem you open the tutorial on will not count toward your 5, and you will be given a different one.</p>
+            <p style="margin-bottom: 20px; color: #666;"><strong>Before you close your Chromebook or exit Schoology,</strong> click the green "Save Progress" button so your work is saved and you can pick up where you left off next time.</p>
+            <button class="btn btn-primary" id="startPracticeBtn">Start Practice</button>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" class="hidden">
+            <!-- Header -->
+            <div class="header">
+                <h1>Net Ionic Equations Practice</h1>
+                <div class="progress-bar">
+                    <div class="progress-item">
+                        <div class="progress-label">Problem</div>
+                        <div class="progress-value"><span id="currentProblem">1</span> / <span id="totalProblems">5</span></div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">Correct</div>
+                        <div class="progress-value" id="correctCount">0</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">Attempts</div>
+                        <div class="progress-value" id="attemptCount">0</div>
+                    </div>
+                </div>
+                <div class="save-progress-row">
+                    <button class="btn btn-save" id="save-progress-btn" onclick="manualSaveProgress()">Save Progress</button>
+                    <span class="save-status" id="save-status">Saved ✓</span>
+                    <button class="btn" id="tutorialBtn" style="background:#6c5ce7;color:#fff;">Show tutorial for this problem</button>
+                    <select id="problemSelect" aria-label="Jump to problem">
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                </div>
+            </div>
+
+            <!-- Molecular Equation Section -->
+            <div class="section" id="molecularSection">
+                <div class="section-title" id="topSectionTitle">Original Molecular Equation:</div>
+                <div class="equation-box" id="topEquationBox">
+                    <!-- Molecular equation will be rendered here initially -->
+                </div>
+                <div class="help-text" id="topHelpText">Click each compound to decide whether to split it into ions or keep it together</div>
+            </div>
+
+            <!-- Tutorial Panel (auto-generated walkthrough) -->
+            <div class="section hidden" id="tutorialPanel" style="background:#f0f7ff;border:1px solid #b6d4fe;">
+                <div class="section-title">Tutorial &mdash; full walkthrough</div>
+                <div id="tutorialBody" style="line-height:1.55;"></div>
+            </div>
+
+            <!-- Complete Ionic Equation Section (hidden initially, shown when building) -->
+            <div class="section" id="completeIonicSection">
+                <div class="section-title">Your Complete Ionic Equation:</div>
+                <div class="equation-box" id="completeIonicEquation">
+                    <div class="empty-state">Process the compounds above to build your complete ionic equation</div>
+                </div>
+                <div class="button-container">
+                    <button class="btn btn-primary" id="checkCompleteBtn" disabled>Check Complete Ionic Equation</button>
+                </div>
+            </div>
+
+            <!-- Feedback Section -->
+            <div class="feedback" id="feedback">
+                <div class="feedback-title" id="feedbackTitle"></div>
+                <ul class="feedback-list" id="feedbackList"></ul>
+            </div>
+
+            <!-- Spectator Selection Section -->
+            <div class="section" id="spectatorSection" style="display: none;">
+                <div class="spectator-content-wrapper">
+                    <div class="spectator-main">
+                        <div class="section-title">Your Net Ionic Equation:</div>
+                        <div class="equation-box" id="netIonicEquation">
+                            <!-- Net ionic equation will be rendered here -->
+                        </div>
+                        <div class="button-container">
+                            <button class="btn btn-success" id="submitNetIonicBtn">Submit Net Ionic Equation</button>
+                        </div>
+                    </div>
+                    <div class="spectator-panel" id="spectatorPanel">
+                        <div class="spectator-panel-title">Canceled Spectators</div>
+                        <div class="spectator-list" id="spectatorList">
+                            <div class="empty-state" style="padding: 10px;">No spectators canceled</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Summary Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-header">✓ Correct! Problem Complete</div>
+
+            <div class="summary-section">
+                <div class="summary-title">1. Molecular Equation:</div>
+                <div class="summary-equation" id="summaryMolecular"></div>
+            </div>
+
+            <div class="summary-section">
+                <div class="summary-title">2. Complete Ionic Equation:</div>
+                <div class="summary-equation" id="summaryCompleteIonic"></div>
+            </div>
+
+            <div class="summary-section">
+                <div class="summary-title">3. Spectator Ions (Canceled):</div>
+                <div class="summary-text" id="summarySpectators"></div>
+            </div>
+
+            <div class="summary-section">
+                <div class="summary-title">4. Net Ionic Equation:</div>
+                <div class="summary-equation" id="summaryNetIonic"></div>
+            </div>
+
+            <div class="summary-section">
+                <div class="summary-text" id="summaryExplanation"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-success" id="nextProblemBtn" style="width: 100%;">Next Problem →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assignment Complete Modal (SCORM completion screen) -->
+    <!-- Tutorial Confirmation Modal -->
+    <div class="modal" id="tutorialConfirmModal">
+        <div class="modal-content" style="max-width: 460px; text-align: center;">
+            <div class="modal-header" style="border-bottom: none;">Show the tutorial for this problem?</div>
+            <p style="color: #495057; line-height: 1.6; margin-bottom: 18px;">This walks you through the full reasoning for this reaction. If you open it, <strong>this problem will not count toward your 5</strong> &mdash; you will be given a different problem to solve instead.</p>
+            <div class="modal-footer" style="justify-content: center; gap: 12px; border-top: none;">
+                <button class="btn" style="background: #6c757d; color: white;" id="tutorialConfirmCancel">Keep working</button>
+                <button class="btn" style="background: #6c5ce7; color: white;" id="tutorialConfirmOk">Show tutorial</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="scormCompleteModal">
+        <div class="modal-content" style="max-width: 480px; text-align: center;">
+            <div class="modal-header" style="border-bottom: none;">Assignment Complete!</div>
+            <p style="color: #495057; line-height: 1.6; margin-bottom: 10px;">You correctly completed 5 net ionic equation problems.</p>
+            <p style="color: #495057; line-height: 1.6;">Your completion grade has been submitted to Schoology.</p>
+            <div class="modal-footer" style="justify-content: center;">
+                <button class="btn btn-success" id="scormCompleteCloseBtn" style="width: 100%;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Split Compound Modal -->
+    <div class="modal" id="splitModal">
+        <div class="modal-content">
+            <div class="modal-header" id="modalHeader">How should this compound appear?</div>
+
+            <!-- Compound Reference -->
+            <div class="modal-equation-reference">
+                <span class="modal-equation-label">Splitting:</span>
+                <span class="modal-equation-text" id="modalCompoundText"></span>
+            </div>
+
+            <div class="radio-group">
+                <div class="radio-option" id="keepTogetherOption">
+                    <input type="radio" id="keepTogether" name="splitChoice" value="keep">
+                    <label for="keepTogether">Keep together as <span id="keepTogetherLabel"></span></label>
+                </div>
+                <div class="radio-option" id="splitIntoIonsOption">
+                    <input type="radio" id="splitIntoIons" name="splitChoice" value="split">
+                    <label for="splitIntoIons">Split into ions</label>
+                </div>
+            </div>
+
+            <!-- Ion Input Section (shown when "split" is selected) -->
+            <div class="ion-input-section" id="ionInputSection">
+                <!-- Cation Section -->
+                <div class="ion-column">
+                    <div class="ion-type-header">Cation</div>
+                    <div class="ion-formula" id="cationFormula"></div>
+                    <div class="input-group" style="margin-bottom: 15px;">
+                        <label class="input-label">Charge:</label>
+                        <select id="cationCharge">
+                            <option value="">Select...</option>
+                            <option value="1">+1</option>
+                            <option value="2">+2</option>
+                            <option value="3">+3</option>
+                            <option value="4">+4</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 15px;">
+                        <label class="input-label">Number of ions:</label>
+                        <select id="cationNumber">
+                            <option value="">Select...</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
+                    </div>
+                    <div class="preview">
+                        <div class="preview-label">Preview:</div>
+                        <span id="cationPreview">Select charge and number</span>
+                    </div>
+                </div>
+
+                <!-- Anion Section -->
+                <div class="ion-column">
+                    <div class="ion-type-header">Anion</div>
+                    <div class="ion-formula" id="anionFormula"></div>
+                    <div class="input-group" style="margin-bottom: 15px;">
+                        <label class="input-label">Charge:</label>
+                        <select id="anionCharge">
+                            <option value="">Select...</option>
+                            <option value="-1">-1</option>
+                            <option value="-2">-2</option>
+                            <option value="-3">-3</option>
+                            <option value="-4">-4</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 15px;">
+                        <label class="input-label">Number of ions:</label>
+                        <select id="anionNumber">
+                            <option value="">Select...</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
+                    </div>
+                    <div class="preview">
+                        <div class="preview-label">Preview:</div>
+                        <span id="anionPreview">Select charge and number</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview" style="margin-top: 15px;">
+                <div class="preview-label">Result:</div>
+                <span id="resultPreview">Make selections above</span>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn" style="background: #6c757d; color: white;" id="modalCancel">Cancel</button>
+                <button class="btn btn-primary" id="modalDone" disabled>Done</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Problem Database (9 problems across 3 difficulty buckets: weakAcid, covalent, hydroxidePoly)
+        const PROBLEMS = [
+            {
+                id: 1, bucket: 'weakAcid',
+                name: "2 HC₂H₃O₂ + Ca(OH)₂",
+                molecularEquation: {
+                    reactants: [
+                        { formula: 'HC₂H₃O₂', coefficient: 2, state: 'aq', type: 'weak-acid',
+                          cation: { formula: 'H', correctCharge: 1, correctNumber: 1 },
+                          anion: { formula: 'C₂H₃O₂', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: false },
+                        { formula: 'Ca(OH)₂', coefficient: 1, state: 'aq', type: 'strong-base',
+                          cation: { formula: 'Ca', correctCharge: 2, correctNumber: 1 },
+                          anion: { formula: 'OH', correctCharge: -1, correctNumber: 2 },
+                          shouldSplit: true }
+                    ],
+                    products: [
+                        { formula: 'Ca(C₂H₃O₂)₂', coefficient: 1, state: 'aq', type: 'ionic',
+                          cation: { formula: 'Ca', correctCharge: 2, correctNumber: 1 },
+                          anion: { formula: 'C₂H₃O₂', correctCharge: -1, correctNumber: 2 },
+                          shouldSplit: true },
+                        { formula: 'H₂O', coefficient: 2, state: 'l', type: 'molecular',
+                          cation: { formula: 'H', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'OH', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: false }
+                    ]
+                },
+                spectatorIons: [ { formula: 'Ca', charge: 2 } ]
+            },
+            {
+                id: 2, bucket: 'weakAcid',
+                name: "H₂S + 2 KOH",
+                molecularEquation: {
+                    reactants: [
+                        { formula: 'H₂S', coefficient: 1, state: 'aq', type: 'weak-acid',
+                          cation: { formula: 'H', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'S', correctCharge: -2, correctNumber: 1 },
+                          shouldSplit: false },
+                        { formula: 'KOH', coefficient: 2, state: 'aq', type: 'strong-base',
+                          cation: { formula: 'K', correctCharge: 1, correctNumber: 1 },
+                          anion: { formula: 'OH', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: true }
+                    ],
+                    products: [
+                        { formula: 'K₂S', coefficient: 1, state: 'aq', type: 'ionic',
+                          cation: { formula: 'K', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'S', correctCharge: -2, correctNumber: 1 },
+                          shouldSplit: true },
+                        { formula: 'H₂O', coefficient: 2, state: 'l', type: 'molecular',
+                          cation: { formula: 'H', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'OH', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: false }
+                    ]
+                },
+                spectatorIons: [ { formula: 'K', charge: 1 } ]
+            },
+            {
+                id: 3, bucket: 'weakAcid',
+                name: "H₂CO₃ + 2 NaOH",
+                molecularEquation: {
+                    reactants: [
+                        { formula: 'H₂CO₃', coefficient: 1, state: 'aq', type: 'weak-acid',
+                          cation: { formula: 'H', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'CO₃', correctCharge: -2, correctNumber: 1 },
+                          shouldSplit: false },
+                        { formula: 'NaOH', coefficient: 2, state: 'aq', type: 'strong-base',
+                          cation: { formula: 'Na', correctCharge: 1, correctNumber: 1 },
+                          anion: { formula: 'OH', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: true }
+                    ],
+                    products: [
+                        { formula: 'Na₂CO₃', coefficient: 1, state: 'aq', type: 'ionic',
+                          cation: { formula: 'Na', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'CO₃', correctCharge: -2, correctNumber: 1 },
+                          shouldSplit: true },
+                        { formula: 'H₂O', coefficient: 2, state: 'l', type: 'molecular',
+                          cation: { formula: 'H', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'OH', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: false }
+                    ]
+                },
+                spectatorIons: [ { formula: 'Na', charge: 1 } ]
+            },
+            {
+                id: 4, bucket: 'covalent',
+                name: "Na₂CO₃ + 2 HCl",
+                molecularEquation: {
+                    reactants: [
+                        { formula: 'Na₂CO₃', coefficient: 1, state: 'aq', type: 'ionic',
+                          cation: { formula: 'Na', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'CO₃', correctCharge: -2, correctNumber: 1 },
+                          shouldSplit: true },
+                        { formula: 'HCl', coefficient: 2, state: 'aq', type: 'strong-acid',
+                          cation: { formula: 'H', correctCharge: 1, correctNumber: 1 },
+                          anion: { formula: 'Cl', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: true }
+                    ],
+                    products: [
+                        { formula: 'NaCl', coefficient: 2, state: 'aq', type: 'ionic',
+                          cation: { formula: 'Na', correctCharge: 1, correctNumber: 1 },
+                          anion: { formula: 'Cl', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: true },
+                        { formula: 'H₂O', coefficient: 1, state: 'l', type: 'molecular',
+                          cation: { formula: 'H', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'OH', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: false },
+                        { formula: 'CO₂', coefficient: 1, state: 'g', type: 'molecular',
+                          cation: { formula: 'C', correctCharge: 4, correctNumber: 1 },
+                          anion: { formula: 'O', correctCharge: -2, correctNumber: 2 },
+                          shouldSplit: false }
+                    ]
+                },
+                spectatorIons: [ { formula: 'Na', charge: 1 }, { formula: 'Cl', charge: -1 } ]
+            },
+            {
+                id: 5, bucket: 'covalent',
+                name: "K₂SO₃ + 2 HNO₃",
+                molecularEquation: {
+                    reactants: [
+                        { formula: 'K₂SO₃', coefficient: 1, state: 'aq', type: 'ionic',
+                          cation: { formula: 'K', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'SO₃', correctCharge: -2, correctNumber: 1 },
+                          shouldSplit: true },
+                        { formula: 'HNO₃', coefficient: 2, state: 'aq', type: 'strong-acid',
+                          cation: { formula: 'H', correctCharge: 1, correctNumber: 1 },
+                          anion: { formula: 'NO₃', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: true }
+                    ],
+                    products: [
+                        { formula: 'KNO₃', coefficient: 2, state: 'aq', type: 'ionic',
+                          cation: { formula: 'K', correctCharge: 1, correctNumber: 1 },
+                          anion: { formula: 'NO₃', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: true },
+                        { formula: 'H₂O', coefficient: 1, state: 'l', type: 'molecular',
+                          cation: { formula: 'H', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'OH', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: false },
+                        { formula: 'SO₂', coefficient: 1, state: 'g', type: 'molecular',
+                          cation: { formula: 'S', correctCharge: 4, correctNumber: 1 },
+                          anion: { formula: 'O', correctCharge: -2, correctNumber: 2 },
+                          shouldSplit: false }
+                    ]
+                },
+                spectatorIons: [ { formula: 'K', charge: 1 }, { formula: 'NO₃', charge: -1 } ]
+            },
+            {
+                id: 6, bucket: 'covalent',
+                name: "(NH₄)₂SO₄ + 2 NaOH",
+                molecularEquation: {
+                    reactants: [
+                        { formula: '(NH₄)₂SO₄', coefficient: 1, state: 'aq', type: 'ionic',
+                          cation: { formula: 'NH₄', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'SO₄', correctCharge: -2, correctNumber: 1 },
+                          shouldSplit: true },
+                        { formula: 'NaOH', coefficient: 2, state: 'aq', type: 'strong-base',
+                          cation: { formula: 'Na', correctCharge: 1, correctNumber: 1 },
+                          anion: { formula: 'OH', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: true }
+                    ],
+                    products: [
+                        { formula: 'Na₂SO₄', coefficient: 1, state: 'aq', type: 'ionic',
+                          cation: { formula: 'Na', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'SO₄', correctCharge: -2, correctNumber: 1 },
+                          shouldSplit: true },
+                        { formula: 'NH₃', coefficient: 2, state: 'g', type: 'molecular',
+                          cation: { formula: 'N', correctCharge: 3, correctNumber: 1 },
+                          anion: { formula: 'H', correctCharge: -1, correctNumber: 3 },
+                          shouldSplit: false },
+                        { formula: 'H₂O', coefficient: 2, state: 'l', type: 'molecular',
+                          cation: { formula: 'H', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'OH', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: false }
+                    ]
+                },
+                spectatorIons: [ { formula: 'Na', charge: 1 }, { formula: 'SO₄', charge: -2 } ]
+            },
+            {
+                id: 7, bucket: 'hydroxidePoly',
+                name: "FeCl₃ + 3 NaOH",
+                molecularEquation: {
+                    reactants: [
+                        { formula: 'FeCl₃', coefficient: 1, state: 'aq', type: 'ionic',
+                          cation: { formula: 'Fe', correctCharge: 3, correctNumber: 1 },
+                          anion: { formula: 'Cl', correctCharge: -1, correctNumber: 3 },
+                          shouldSplit: true },
+                        { formula: 'NaOH', coefficient: 3, state: 'aq', type: 'strong-base',
+                          cation: { formula: 'Na', correctCharge: 1, correctNumber: 1 },
+                          anion: { formula: 'OH', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: true }
+                    ],
+                    products: [
+                        { formula: 'Fe(OH)₃', coefficient: 1, state: 's', type: 'solid',
+                          cation: { formula: 'Fe', correctCharge: 3, correctNumber: 1 },
+                          anion: { formula: 'OH', correctCharge: -1, correctNumber: 3 },
+                          shouldSplit: false },
+                        { formula: 'NaCl', coefficient: 3, state: 'aq', type: 'ionic',
+                          cation: { formula: 'Na', correctCharge: 1, correctNumber: 1 },
+                          anion: { formula: 'Cl', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: true }
+                    ]
+                },
+                spectatorIons: [ { formula: 'Na', charge: 1 }, { formula: 'Cl', charge: -1 } ]
+            },
+            {
+                id: 8, bucket: 'hydroxidePoly',
+                name: "MgSO₄ + 2 NaOH",
+                molecularEquation: {
+                    reactants: [
+                        { formula: 'MgSO₄', coefficient: 1, state: 'aq', type: 'ionic',
+                          cation: { formula: 'Mg', correctCharge: 2, correctNumber: 1 },
+                          anion: { formula: 'SO₄', correctCharge: -2, correctNumber: 1 },
+                          shouldSplit: true },
+                        { formula: 'NaOH', coefficient: 2, state: 'aq', type: 'strong-base',
+                          cation: { formula: 'Na', correctCharge: 1, correctNumber: 1 },
+                          anion: { formula: 'OH', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: true }
+                    ],
+                    products: [
+                        { formula: 'Mg(OH)₂', coefficient: 1, state: 's', type: 'solid',
+                          cation: { formula: 'Mg', correctCharge: 2, correctNumber: 1 },
+                          anion: { formula: 'OH', correctCharge: -1, correctNumber: 2 },
+                          shouldSplit: false },
+                        { formula: 'Na₂SO₄', coefficient: 1, state: 'aq', type: 'ionic',
+                          cation: { formula: 'Na', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'SO₄', correctCharge: -2, correctNumber: 1 },
+                          shouldSplit: true }
+                    ]
+                },
+                spectatorIons: [ { formula: 'Na', charge: 1 }, { formula: 'SO₄', charge: -2 } ]
+            },
+            {
+                id: 9, bucket: 'hydroxidePoly',
+                name: "Al₂(SO₄)₃ + 6 NaOH",
+                molecularEquation: {
+                    reactants: [
+                        { formula: 'Al₂(SO₄)₃', coefficient: 1, state: 'aq', type: 'ionic',
+                          cation: { formula: 'Al', correctCharge: 3, correctNumber: 2 },
+                          anion: { formula: 'SO₄', correctCharge: -2, correctNumber: 3 },
+                          shouldSplit: true },
+                        { formula: 'NaOH', coefficient: 6, state: 'aq', type: 'strong-base',
+                          cation: { formula: 'Na', correctCharge: 1, correctNumber: 1 },
+                          anion: { formula: 'OH', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: true }
+                    ],
+                    products: [
+                        { formula: 'Al(OH)₃', coefficient: 2, state: 's', type: 'solid',
+                          cation: { formula: 'Al', correctCharge: 3, correctNumber: 1 },
+                          anion: { formula: 'OH', correctCharge: -1, correctNumber: 3 },
+                          shouldSplit: false },
+                        { formula: 'Na₂SO₄', coefficient: 3, state: 'aq', type: 'ionic',
+                          cation: { formula: 'Na', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'SO₄', correctCharge: -2, correctNumber: 1 },
+                          shouldSplit: true }
+                    ]
+                },
+                spectatorIons: [ { formula: 'Na', charge: 1 }, { formula: 'SO₄', charge: -2 } ]
+            },
+            {
+                id: 10, bucket: 'challenge', required: true,
+                name: "Na₂S₂O₃ + Pb(NO₃)₂",
+                hint: "This reaction uses thiosulfate (S₂O₃), an uncommon polyatomic ion that is not on a standard ion sheet. Work out its charge from the fixed charge of the metal it is paired with (Na is +1, Pb is +2), then confirm it against the other side of the equation.",
+                molecularEquation: {
+                    reactants: [
+                        { formula: 'Na₂S₂O₃', coefficient: 1, state: 'aq', type: 'ionic',
+                          cation: { formula: 'Na', correctCharge: 1, correctNumber: 2 },
+                          anion: { formula: 'S₂O₃', correctCharge: -2, correctNumber: 1 },
+                          shouldSplit: true },
+                        { formula: 'Pb(NO₃)₂', coefficient: 1, state: 'aq', type: 'ionic',
+                          cation: { formula: 'Pb', correctCharge: 2, correctNumber: 1 },
+                          anion: { formula: 'NO₃', correctCharge: -1, correctNumber: 2 },
+                          shouldSplit: true }
+                    ],
+                    products: [
+                        { formula: 'PbS₂O₃', coefficient: 1, state: 's', type: 'solid',
+                          cation: { formula: 'Pb', correctCharge: 2, correctNumber: 1 },
+                          anion: { formula: 'S₂O₃', correctCharge: -2, correctNumber: 1 },
+                          shouldSplit: false },
+                        { formula: 'NaNO₃', coefficient: 2, state: 'aq', type: 'ionic',
+                          cation: { formula: 'Na', correctCharge: 1, correctNumber: 1 },
+                          anion: { formula: 'NO₃', correctCharge: -1, correctNumber: 1 },
+                          shouldSplit: true }
+                    ]
+                },
+                spectatorIons: [ { formula: 'Na', charge: 1 }, { formula: 'NO₃', charge: -1 } ]
+            }
+        ];
+
+        // Global State
+        let currentProblemIndex = 0;
+        let currentProblem = PROBLEMS[0];
+        let studentWork = {
+            processedCompounds: [],
+            markedSpectators: []
+        };
+        let correctProblems = 0;
+        let totalAttempts = 0;
+        let completedProblems = new Set(); // Track which problems have been completed
+        let savedWork = {}; // Save work for each problem: { problemIndex: { processedCompounds, markedSpectators, isComplete } }
+        const REQUIRED = 5;                 // clean (non-tutorial) solves needed to finish
+        let servedIndices = [];             // PROBLEMS indices currently in play (REQUIRED, plus any tutorial replacements)
+        let servedSet = new Set();
+        let tutoredProblems = new Set();    // problems the student opened the tutorial on — never count toward REQUIRED
+
+        // Modal state
+        let currentEditingCompound = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            scormInit();
+            if (resumeState) {
+                resumeFromSavedState();
+            }
+            // Otherwise wait on the start screen until startPracticeBtn is clicked
+        });
+
+        function startSimulation() {
+            document.getElementById('studentEntry').classList.add('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+            if (!servedIndices.length) buildServedIndices();
+            currentProblemIndex = servedIndices[0];
+            populateProblemSelector();
+            loadProblem(currentProblemIndex);
+        }
+
+        function populateProblemSelector() {
+            const select = document.getElementById('problemSelect');
+            select.innerHTML = '';
+            servedIndices.forEach((probIdx, pos) => {
+                const problem = PROBLEMS[probIdx];
+                const option = document.createElement('option');
+                option.value = probIdx;
+                let label = 'Problem ' + (pos + 1) + ': ' + problem.name;
+                if (completedProblems.has(probIdx)) {
+                    label = '✓ ' + label;
+                    option.style.color = '#28a745';
+                    option.style.fontWeight = 'bold';
+                    option.style.backgroundColor = '#d4edda';
+                }
+                if (tutoredProblems.has(probIdx)) {
+                    label += '  (tutorial — not counted)';
+                    option.style.color = '#8a5a00';
+                }
+                option.textContent = label;
+                select.appendChild(option);
+            });
+            select.value = currentProblemIndex;
+        }
+
+        function setupEventListeners() {
+            // Start screen
+            document.getElementById('startPracticeBtn').addEventListener('click', startSimulation);
+
+            // Tutorial
+            document.getElementById('tutorialBtn').addEventListener('click', onTutorialButton);
+            document.getElementById('tutorialConfirmCancel').addEventListener('click', () => {
+                document.getElementById('tutorialConfirmModal').classList.remove('show');
+            });
+            document.getElementById('tutorialConfirmOk').addEventListener('click', () => {
+                document.getElementById('tutorialConfirmModal').classList.remove('show');
+                revealTutorial();
+            });
+
+            // Modal controls
+            document.getElementById('modalCancel').addEventListener('click', closeModal);
+            document.getElementById('modalDone').addEventListener('click', handleModalDone);
+
+            // Split choice radio buttons
+            document.querySelectorAll('input[name="splitChoice"]').forEach(radio => {
+                radio.addEventListener('change', handleSplitChoiceChange);
+            });
+
+            // Make radio option divs clickable
+            document.getElementById('keepTogetherOption').addEventListener('click', () => {
+                document.getElementById('keepTogether').checked = true;
+                handleSplitChoiceChange({ target: document.getElementById('keepTogether') });
+                updateRadioOptionStyles();
+            });
+
+            document.getElementById('splitIntoIonsOption').addEventListener('click', () => {
+                document.getElementById('splitIntoIons').checked = true;
+                handleSplitChoiceChange({ target: document.getElementById('splitIntoIons') });
+                updateRadioOptionStyles();
+            });
+
+            // Ion input changes
+            ['cationCharge', 'cationNumber', 'anionCharge', 'anionNumber'].forEach(id => {
+                document.getElementById(id).addEventListener('change', updatePreviews);
+            });
+
+            // Check button
+            document.getElementById('checkCompleteBtn').addEventListener('click', checkCompleteIonic);
+
+            // Submit net ionic button
+            document.getElementById('submitNetIonicBtn').addEventListener('click', submitNetIonic);
+
+            // Next problem button
+            document.getElementById('nextProblemBtn').addEventListener('click', () => {
+                closeSuccessModal();
+
+                if (cleanSolves() >= REQUIRED) {
+                    document.getElementById('scormCompleteModal').classList.add('show');
+                    return;
+                }
+
+                let target = servedIndices.find(i => !completedProblems.has(i) && !tutoredProblems.has(i));
+                if (target === undefined) target = servedIndices.find(i => !completedProblems.has(i));
+                if (target === undefined) target = servedIndices[0];
+                currentProblemIndex = target;
+                loadProblem(currentProblemIndex);
+            });
+
+            document.getElementById('scormCompleteCloseBtn').addEventListener('click', () => {
+                document.getElementById('scormCompleteModal').classList.remove('show');
+            });
+
+            // Problem selector dropdown
+            document.getElementById('problemSelect').addEventListener('change', (e) => {
+                currentProblemIndex = parseInt(e.target.value);
+                loadProblem(currentProblemIndex);
+            });
+        }
+
+        function updateRadioOptionStyles() {
+            const keepOption = document.getElementById('keepTogetherOption');
+            const splitOption = document.getElementById('splitIntoIonsOption');
+            const keepRadio = document.getElementById('keepTogether');
+            const splitRadio = document.getElementById('splitIntoIons');
+
+            if (keepRadio.checked) {
+                keepOption.classList.add('selected');
+                splitOption.classList.remove('selected');
+            } else if (splitRadio.checked) {
+                splitOption.classList.add('selected');
+                keepOption.classList.remove('selected');
+            } else {
+                keepOption.classList.remove('selected');
+                splitOption.classList.remove('selected');
+            }
+        }
+
+        function loadProblem(index) {
+            currentProblem = PROBLEMS[index];
+
+            // Load saved work if it exists
+            if (savedWork[index]) {
+                studentWork = {
+                    processedCompounds: [...savedWork[index].processedCompounds],
+                    markedSpectators: [...savedWork[index].markedSpectators]
+                };
+
+                // If problem was completed, show the completed state
+                if (savedWork[index].isComplete) {
+                    // Render everything in completed state
+                    renderMolecularEquation();
+                    renderCompleteIonic(false); // Not clickable
+
+                    // Switch to spectator mode
+                    spectatorSelectionMode = true;
+                    document.getElementById('topSectionTitle').textContent = 'Complete Ionic Equation:';
+                    document.getElementById('topHelpText').textContent = 'Click on spectator ions to cancel them (must cancel on both sides)';
+                    renderCompleteIonicInTop();
+
+                    // Show spectator section
+                    document.getElementById('completeIonicSection').style.display = 'none';
+                    document.getElementById('spectatorSection').style.display = 'block';
+                    document.getElementById('spectatorPanel').style.display = 'block';
+
+                    // Render net ionic
+                    renderNetIonic();
+                    updateSpectatorPanel();
+
+                    // Disable submit button for completed problem
+                    document.getElementById('submitNetIonicBtn').disabled = true;
+                    document.getElementById('submitNetIonicBtn').textContent = '✓ Problem Completed';
+                    document.getElementById('submitNetIonicBtn').style.backgroundColor = '#28a745';
+                    document.getElementById('submitNetIonicBtn').style.cursor = 'not-allowed';
+
+                    document.getElementById('feedback').classList.remove('show');
+                } else {
+                    // Render partial work
+                    renderMolecularEquation();
+                    renderCompleteIonic(true);
+                    checkAllProcessed();
+
+                    document.getElementById('spectatorSection').style.display = 'none';
+                    document.getElementById('completeIonicSection').style.display = 'block';
+                    document.getElementById('spectatorPanel').style.display = 'none';
+                    document.getElementById('feedback').classList.remove('show');
+
+                    // Reset submit button for incomplete problem
+                    const submitBtn = document.getElementById('submitNetIonicBtn');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Net Ionic Equation';
+                    submitBtn.style.backgroundColor = '#28a745';
+                    submitBtn.style.cursor = 'pointer';
+                }
+            } else {
+                // No saved work - start fresh
+                studentWork = {
+                    processedCompounds: [],
+                    markedSpectators: []
+                };
+
+                renderMolecularEquation();
+                document.getElementById('completeIonicEquation').innerHTML = '<div class="empty-state">Process the compounds above to build your complete ionic equation</div>';
+                document.getElementById('feedback').classList.remove('show');
+                document.getElementById('spectatorSection').style.display = 'none';
+                document.getElementById('checkCompleteBtn').disabled = true;
+                document.getElementById('completeIonicSection').style.display = 'block';
+                document.getElementById('spectatorPanel').style.display = 'none';
+
+                // Reset submit button for new problem
+                const submitBtn = document.getElementById('submitNetIonicBtn');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Net Ionic Equation';
+                submitBtn.style.backgroundColor = '#28a745';
+                submitBtn.style.cursor = 'pointer';
+            }
+
+            // Update progress
+            updateProgressCounts(index);
+
+            // Tutorial panel/button state for this problem
+            document.getElementById('tutorialPanel').classList.add('hidden');
+            refreshTutorialButton(index);
+        }
+
+        function renderMolecularEquation() {
+            const container = document.getElementById('topEquationBox');
+            container.innerHTML = '';
+
+            // Render reactants
+            currentProblem.molecularEquation.reactants.forEach((compound, index) => {
+                const compoundEl = createCompoundElement(compound, 'reactant', index);
+                container.appendChild(compoundEl);
+
+                if (index < currentProblem.molecularEquation.reactants.length - 1) {
+                    const plus = document.createElement('span');
+                    plus.className = 'operator';
+                    plus.textContent = '+';
+                    container.appendChild(plus);
+                }
+            });
+
+            // Arrow
+            const arrow = document.createElement('span');
+            arrow.className = 'operator';
+            arrow.textContent = '→';
+            container.appendChild(arrow);
+
+            // Render products
+            currentProblem.molecularEquation.products.forEach((compound, index) => {
+                const compoundEl = createCompoundElement(compound, 'product', index);
+                container.appendChild(compoundEl);
+
+                if (index < currentProblem.molecularEquation.products.length - 1) {
+                    const plus = document.createElement('span');
+                    plus.className = 'operator';
+                    plus.textContent = '+';
+                    container.appendChild(plus);
+                }
+            });
+        }
+
+        function createCompoundElement(compound, side, index) {
+            const el = document.createElement('div');
+            el.className = 'compound unprocessed';
+
+            const coefficientText = compound.coefficient > 1 ? compound.coefficient : '';
+            el.innerHTML = `${coefficientText}${compound.formula}(${compound.state})`;
+
+            // Status indicator
+            const status = document.createElement('span');
+            status.className = 'compound-status status-warning';
+            status.textContent = '⚠';
+            el.appendChild(status);
+
+            el.dataset.side = side;
+            el.dataset.index = index;
+
+            el.addEventListener('click', () => openSplitModal(compound, side, index));
+
+            return el;
+        }
+
+        function openSplitModal(compound, side, index) {
+            currentEditingCompound = { compound, side, index };
+
+            // Set modal title
+            document.getElementById('modalHeader').textContent =
+                `How should ${compound.formula}(${compound.state}) appear in the ionic equation?`;
+
+            // Set keep together label
+            document.getElementById('keepTogetherLabel').textContent =
+                `${compound.formula}(${compound.state})`;
+
+            // Display just the compound being split with coefficient
+            const coef = compound.coefficient > 1 ? compound.coefficient : '';
+            document.getElementById('modalCompoundText').textContent =
+                `${coef}${compound.formula}(${compound.state})`;
+
+            // Reset form
+            document.querySelectorAll('input[name="splitChoice"]').forEach(r => r.checked = false);
+            document.getElementById('ionInputSection').classList.remove('show');
+            document.getElementById('modalDone').disabled = true;
+            updateRadioOptionStyles();
+
+            // If compound can be split, populate ion formulas
+            if (compound.cation && compound.anion) {
+                document.getElementById('cationFormula').textContent = compound.cation.formula;
+                document.getElementById('anionFormula').textContent = compound.anion.formula;
+            }
+
+            // Check if this compound was already processed
+            const existing = studentWork.processedCompounds.find(
+                pc => pc.side === side && pc.index === index
+            );
+
+            if (existing) {
+                // Pre-fill with existing choices
+                if (existing.decision === 'keep') {
+                    document.getElementById('keepTogether').checked = true;
+                    document.getElementById('modalDone').disabled = false;
+                } else {
+                    document.getElementById('splitIntoIons').checked = true;
+                    document.getElementById('ionInputSection').classList.add('show');
+
+                    document.getElementById('cationCharge').value = existing.cation.charge;
+                    document.getElementById('cationNumber').value = existing.cation.number;
+                    document.getElementById('anionCharge').value = existing.anion.charge;
+                    document.getElementById('anionNumber').value = existing.anion.number;
+
+                    updatePreviews();
+                }
+                updateRadioOptionStyles();
+            }
+
+            // Reset dropdowns if new
+            if (!existing) {
+                document.getElementById('cationCharge').value = '';
+                document.getElementById('cationNumber').value = '';
+                document.getElementById('anionCharge').value = '';
+                document.getElementById('anionNumber').value = '';
+                updatePreviews();
+            }
+
+            // Show modal
+            document.getElementById('splitModal').classList.add('show');
+        }
+
+        function handleSplitChoiceChange(e) {
+            const ionSection = document.getElementById('ionInputSection');
+            const doneBtn = document.getElementById('modalDone');
+
+            updateRadioOptionStyles();
+
+            if (e.target.value === 'split') {
+                ionSection.classList.add('show');
+                checkModalDoneEnabled();
+            } else {
+                ionSection.classList.remove('show');
+                doneBtn.disabled = false;
+            }
+        }
+
+        function updatePreviews() {
+            const cationCharge = document.getElementById('cationCharge').value;
+            const cationNumber = document.getElementById('cationNumber').value;
+            const anionCharge = document.getElementById('anionCharge').value;
+            const anionNumber = document.getElementById('anionNumber').value;
+
+            const cationFormula = document.getElementById('cationFormula').textContent;
+            const anionFormula = document.getElementById('anionFormula').textContent;
+
+            // Cation preview
+            if (cationCharge && cationNumber) {
+                const chargeStr = formatCharge(parseInt(cationCharge));
+                document.getElementById('cationPreview').textContent =
+                    `${cationNumber} ${cationFormula}${chargeStr}`;
+            } else {
+                document.getElementById('cationPreview').textContent = 'Select charge and number';
+            }
+
+            // Anion preview
+            if (anionCharge && anionNumber) {
+                const chargeStr = formatCharge(parseInt(anionCharge));
+                document.getElementById('anionPreview').textContent =
+                    `${anionNumber} ${anionFormula}${chargeStr}`;
+            } else {
+                document.getElementById('anionPreview').textContent = 'Select charge and number';
+            }
+
+            // Result preview
+            if (cationCharge && cationNumber && anionCharge && anionNumber) {
+                const cationStr = formatCharge(parseInt(cationCharge));
+                const anionStr = formatCharge(parseInt(anionCharge));
+                const cationDisplay = cationNumber > 1 ? `${cationNumber} ${cationFormula}${cationStr}` : `${cationFormula}${cationStr}`;
+                const anionDisplay = anionNumber > 1 ? `${anionNumber} ${anionFormula}${anionStr}` : `${anionFormula}${anionStr}`;
+                document.getElementById('resultPreview').textContent =
+                    `${currentEditingCompound.compound.formula} → ${cationDisplay} + ${anionDisplay}`;
+            } else {
+                document.getElementById('resultPreview').textContent = 'Make selections above';
+            }
+
+            checkModalDoneEnabled();
+        }
+
+        function checkModalDoneEnabled() {
+            const splitChoice = document.querySelector('input[name="splitChoice"]:checked');
+            const doneBtn = document.getElementById('modalDone');
+
+            if (!splitChoice) {
+                doneBtn.disabled = true;
+                return;
+            }
+
+            if (splitChoice.value === 'keep') {
+                doneBtn.disabled = false;
+                return;
+            }
+
+            // Check if all ion inputs are filled
+            const cationCharge = document.getElementById('cationCharge').value;
+            const cationNumber = document.getElementById('cationNumber').value;
+            const anionCharge = document.getElementById('anionCharge').value;
+            const anionNumber = document.getElementById('anionNumber').value;
+
+            doneBtn.disabled = !(cationCharge && cationNumber && anionCharge && anionNumber);
+        }
+
+        function handleModalDone() {
+            const splitChoice = document.querySelector('input[name="splitChoice"]:checked').value;
+            const { compound, side, index } = currentEditingCompound;
+
+            // Remove existing entry if re-editing
+            studentWork.processedCompounds = studentWork.processedCompounds.filter(
+                pc => !(pc.side === side && pc.index === index)
+            );
+
+            if (splitChoice === 'keep') {
+                studentWork.processedCompounds.push({
+                    side,
+                    index,
+                    compound: compound.formula,
+                    state: compound.state,
+                    decision: 'keep'
+                });
+            } else {
+                studentWork.processedCompounds.push({
+                    side,
+                    index,
+                    compound: compound.formula,
+                    state: compound.state,
+                    decision: 'split',
+                    cation: {
+                        formula: document.getElementById('cationFormula').textContent,
+                        charge: parseInt(document.getElementById('cationCharge').value),
+                        number: parseInt(document.getElementById('cationNumber').value)
+                    },
+                    anion: {
+                        formula: document.getElementById('anionFormula').textContent,
+                        charge: parseInt(document.getElementById('anionCharge').value),
+                        number: parseInt(document.getElementById('anionNumber').value)
+                    }
+                });
+            }
+
+            closeModal();
+            updateCompoundStatus(side, index);
+            renderCompleteIonic();
+            checkAllProcessed();
+        }
+
+        function closeModal() {
+            document.getElementById('splitModal').classList.remove('show');
+            currentEditingCompound = null;
+        }
+
+        function updateCompoundStatus(side, index) {
+            const compounds = document.querySelectorAll('.compound');
+            compounds.forEach(el => {
+                if (el.dataset.side === side && el.dataset.index == index) {
+                    el.classList.remove('unprocessed');
+                    el.classList.add('processed');
+                    const status = el.querySelector('.compound-status');
+                    status.className = 'compound-status status-check';
+                    status.textContent = '✓';
+                }
+            });
+        }
+
+        // Global state for spectator mode
+        let spectatorSelectionMode = false;
+
+        function renderCompleteIonic(clickable = true) {
+            const container = document.getElementById('completeIonicEquation');
+            container.innerHTML = '';
+
+            const reactantIons = [];
+            const productIons = [];
+
+            // Build reactant ions (with coefficient tracking)
+            currentProblem.molecularEquation.reactants.forEach((compound, index) => {
+                const processed = studentWork.processedCompounds.find(
+                    pc => pc.side === 'reactant' && pc.index === index
+                );
+
+                if (processed) {
+                    if (processed.decision === 'split') {
+                        // Add cation with coefficient
+                        reactantIons.push({
+                            formula: processed.cation.formula,
+                            charge: processed.cation.charge,
+                            state: processed.state,
+                            coefficient: processed.cation.number
+                        });
+                        // Add anion with coefficient
+                        reactantIons.push({
+                            formula: processed.anion.formula,
+                            charge: processed.anion.charge,
+                            state: processed.state,
+                            coefficient: processed.anion.number
+                        });
+                    } else {
+                        reactantIons.push({
+                            formula: processed.compound,
+                            charge: null,
+                            state: processed.state,
+                            coefficient: compound.coefficient
+                        });
+                    }
+                }
+            });
+
+            // Build product ions (with coefficient tracking)
+            currentProblem.molecularEquation.products.forEach((compound, index) => {
+                const processed = studentWork.processedCompounds.find(
+                    pc => pc.side === 'product' && pc.index === index
+                );
+
+                if (processed) {
+                    if (processed.decision === 'split') {
+                        // Add cation with coefficient
+                        productIons.push({
+                            formula: processed.cation.formula,
+                            charge: processed.cation.charge,
+                            state: processed.state,
+                            coefficient: processed.cation.number
+                        });
+                        // Add anion with coefficient
+                        productIons.push({
+                            formula: processed.anion.formula,
+                            charge: processed.anion.charge,
+                            state: processed.state,
+                            coefficient: processed.anion.number
+                        });
+                    } else {
+                        productIons.push({
+                            formula: processed.compound,
+                            charge: null,
+                            state: processed.state,
+                            coefficient: compound.coefficient
+                        });
+                    }
+                }
+            });
+
+            // Render reactants
+            reactantIons.forEach((ion, idx) => {
+                const ionEl = createIonElement(ion, 'reactant', idx, clickable);
+
+                // Add spectator selection handler if in spectator mode
+                if (spectatorSelectionMode) {
+                    ionEl.addEventListener('click', () => toggleSpectator(ion, 'reactant', idx));
+
+                    // Check if already marked as spectator
+                    const isSpectator = studentWork.markedSpectators.some(s =>
+                        s.formula === ion.formula &&
+                        s.charge === ion.charge &&
+                        s.side === 'reactant' &&
+                        s.index === idx
+                    );
+                    if (isSpectator) {
+                        ionEl.classList.add('spectator');
+                    }
+                }
+
+                container.appendChild(ionEl);
+
+                if (idx < reactantIons.length - 1) {
+                    const plus = document.createElement('span');
+                    plus.className = 'operator';
+                    plus.textContent = '+';
+                    container.appendChild(plus);
+                }
+            });
+
+            // Arrow
+            if (reactantIons.length > 0 && productIons.length > 0) {
+                const arrow = document.createElement('span');
+                arrow.className = 'operator';
+                arrow.textContent = '→';
+                container.appendChild(arrow);
+            }
+
+            // Render products
+            productIons.forEach((ion, idx) => {
+                const ionEl = createIonElement(ion, 'product', idx, clickable);
+
+                // Add spectator selection handler if in spectator mode
+                if (spectatorSelectionMode) {
+                    ionEl.addEventListener('click', () => toggleSpectator(ion, 'product', idx));
+
+                    // Check if already marked as spectator
+                    const isSpectator = studentWork.markedSpectators.some(s =>
+                        s.formula === ion.formula &&
+                        s.charge === ion.charge &&
+                        s.side === 'product' &&
+                        s.index === idx
+                    );
+                    if (isSpectator) {
+                        ionEl.classList.add('spectator');
+                    }
+                }
+
+                container.appendChild(ionEl);
+
+                if (idx < productIons.length - 1) {
+                    const plus = document.createElement('span');
+                    plus.className = 'operator';
+                    plus.textContent = '+';
+                    container.appendChild(plus);
+                }
+            });
+
+            if (reactantIons.length === 0 && productIons.length === 0) {
+                container.innerHTML = '<div class="empty-state">Process the compounds above to build your complete ionic equation</div>';
+            }
+        }
+
+        function createIonElement(ion, side, index, clickable = true) {
+            const el = document.createElement('div');
+            el.className = 'ion';
+
+            let displayText = '';
+
+            // Add coefficient if > 1
+            if (ion.coefficient && ion.coefficient > 1) {
+                displayText = ion.coefficient;
+            }
+
+            displayText += ion.formula;
+            if (ion.charge !== null) {
+                const chargeStr = formatCharge(ion.charge);
+                displayText += chargeStr;
+            }
+            displayText += `(${ion.state})`;
+
+            el.textContent = displayText;
+            el.dataset.side = side;
+            el.dataset.index = index;
+            el.dataset.formula = ion.formula;
+            el.dataset.charge = ion.charge;
+            el.dataset.state = ion.state;
+
+            // Add click handler to edit ion only if clickable
+            if (clickable) {
+                el.addEventListener('click', () => openIonEditDialog(ion, side, index));
+            }
+
+            return el;
+        }
+
+        function formatCharge(charge) {
+            const superscriptDigits = {
+                '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
+                '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'
+            };
+
+            if (charge === 1) return '⁺';
+            if (charge === -1) return '⁻';
+            if (charge > 1) {
+                const numStr = String(charge);
+                const superscript = numStr.split('').map(d => superscriptDigits[d]).join('');
+                return `${superscript}⁺`;
+            }
+            if (charge < -1) {
+                const numStr = String(Math.abs(charge));
+                const superscript = numStr.split('').map(d => superscriptDigits[d]).join('');
+                return `${superscript}⁻`;
+            }
+            return '';
+        }
+
+        function checkAllProcessed() {
+            const totalCompounds =
+                currentProblem.molecularEquation.reactants.length +
+                currentProblem.molecularEquation.products.length;
+
+            const processedCount = studentWork.processedCompounds.length;
+
+            document.getElementById('checkCompleteBtn').disabled = processedCount < totalCompounds;
+        }
+
+        function checkCompleteIonic() {
+            totalAttempts++;
+            document.getElementById('attemptCount').textContent = totalAttempts;
+
+            const errors = validateCompleteIonic();
+
+            if (errors.length === 0) {
+                // Success!
+                showFeedback(true, 'Complete ionic equation is correct! Now select spectator ions.', []);
+
+                // Clear any error highlights
+                document.querySelectorAll('.compound.error').forEach(el => el.classList.remove('error'));
+                document.querySelectorAll('.ion.error').forEach(el => el.classList.remove('error'));
+
+                // Enable spectator selection mode
+                spectatorSelectionMode = true;
+
+                // Move complete ionic equation to the top
+                const topBox = document.getElementById('topEquationBox');
+                topBox.innerHTML = '';
+
+                // Copy complete ionic equation to top
+                const completeIonicHTML = document.getElementById('completeIonicEquation').innerHTML;
+                topBox.innerHTML = completeIonicHTML;
+
+                // Update top section labels
+                document.getElementById('topSectionTitle').textContent = 'Complete Ionic Equation:';
+                document.getElementById('topHelpText').textContent = 'Click matching ions on BOTH sides to mark them as spectators';
+
+                // Hide the complete ionic section and molecular section
+                document.getElementById('completeIonicSection').style.display = 'none';
+
+                // Re-render complete ionic in top box with spectator handlers
+                renderCompleteIonicInTop();
+
+                // Show spectator section (which contains panel and net ionic)
+                document.getElementById('spectatorSection').style.display = 'block';
+                document.getElementById('spectatorPanel').style.display = 'block';
+
+            } else {
+                // Wrong: say so without revealing which species/charges are off.
+                showFeedback(false, 'Not quite. Re-check which species split (and their charges and counts), then try again.', []);
+            }
+        }
+
+        function renderCompleteIonicInTop() {
+            const container = document.getElementById('topEquationBox');
+            container.innerHTML = '';
+
+            const reactantIons = [];
+            const productIons = [];
+
+            // Build reactant ions (with coefficient tracking)
+            currentProblem.molecularEquation.reactants.forEach((compound, index) => {
+                const processed = studentWork.processedCompounds.find(
+                    pc => pc.side === 'reactant' && pc.index === index
+                );
+
+                if (processed) {
+                    if (processed.decision === 'split') {
+                        // Add cation with coefficient
+                        reactantIons.push({
+                            formula: processed.cation.formula,
+                            charge: processed.cation.charge,
+                            state: processed.state,
+                            coefficient: processed.cation.number
+                        });
+                        // Add anion with coefficient
+                        reactantIons.push({
+                            formula: processed.anion.formula,
+                            charge: processed.anion.charge,
+                            state: processed.state,
+                            coefficient: processed.anion.number
+                        });
+                    } else {
+                        reactantIons.push({
+                            formula: processed.compound,
+                            charge: null,
+                            state: processed.state,
+                            coefficient: compound.coefficient
+                        });
+                    }
+                }
+            });
+
+            // Build product ions (with coefficient tracking)
+            currentProblem.molecularEquation.products.forEach((compound, index) => {
+                const processed = studentWork.processedCompounds.find(
+                    pc => pc.side === 'product' && pc.index === index
+                );
+
+                if (processed) {
+                    if (processed.decision === 'split') {
+                        // Add cation with coefficient
+                        productIons.push({
+                            formula: processed.cation.formula,
+                            charge: processed.cation.charge,
+                            state: processed.state,
+                            coefficient: processed.cation.number
+                        });
+                        // Add anion with coefficient
+                        productIons.push({
+                            formula: processed.anion.formula,
+                            charge: processed.anion.charge,
+                            state: processed.state,
+                            coefficient: processed.anion.number
+                        });
+                    } else {
+                        productIons.push({
+                            formula: processed.compound,
+                            charge: null,
+                            state: processed.state,
+                            coefficient: compound.coefficient
+                        });
+                    }
+                }
+            });
+
+            // Render reactants
+            reactantIons.forEach((ion, idx) => {
+                const ionEl = createIonElement(ion, 'reactant', idx, false);
+                ionEl.addEventListener('click', () => toggleSpectator(ion, 'reactant', idx));
+
+                // Check if already marked as spectator
+                const isSpectator = studentWork.markedSpectators.some(s =>
+                    s.formula === ion.formula &&
+                    s.charge === ion.charge &&
+                    s.side === 'reactant' &&
+                    s.index === idx
+                );
+                if (isSpectator) {
+                    ionEl.classList.add('spectator');
+                }
+
+                container.appendChild(ionEl);
+
+                if (idx < reactantIons.length - 1) {
+                    const plus = document.createElement('span');
+                    plus.className = 'operator';
+                    plus.textContent = '+';
+                    container.appendChild(plus);
+                }
+            });
+
+            // Arrow
+            if (reactantIons.length > 0 && productIons.length > 0) {
+                const arrow = document.createElement('span');
+                arrow.className = 'operator';
+                arrow.textContent = '→';
+                container.appendChild(arrow);
+            }
+
+            // Render products
+            productIons.forEach((ion, idx) => {
+                const ionEl = createIonElement(ion, 'product', idx, false);
+                ionEl.addEventListener('click', () => toggleSpectator(ion, 'product', idx));
+
+                // Check if already marked as spectator
+                const isSpectator = studentWork.markedSpectators.some(s =>
+                    s.formula === ion.formula &&
+                    s.charge === ion.charge &&
+                    s.side === 'product' &&
+                    s.index === idx
+                );
+                if (isSpectator) {
+                    ionEl.classList.add('spectator');
+                }
+
+                container.appendChild(ionEl);
+
+                if (idx < productIons.length - 1) {
+                    const plus = document.createElement('span');
+                    plus.className = 'operator';
+                    plus.textContent = '+';
+                    container.appendChild(plus);
+                }
+            });
+        }
+
+        function getSplitReasonMessage(compound, shouldHaveSplit) {
+            const formulaState = `${compound.formula}(${compound.state})`;
+            if (shouldHaveSplit) {
+                switch (compound.type) {
+                    case 'strong-acid':
+                        return `${formulaState} is a strong acid - it ionizes completely in water, so it should be split into ions.`;
+                    case 'strong-base':
+                        return `${formulaState} is a strong base - it dissociates completely in water, so it should be split into ions.`;
+                    default:
+                        return `${formulaState} is a soluble ionic compound - it dissociates completely into ions.`;
+                }
+            } else {
+                switch (compound.type) {
+                    case 'weak-acid':
+                        return `${formulaState} is a weak acid - it only partially ionizes, so it should stay together as a molecule.`;
+                    case 'solid':
+                        return `${formulaState} is an insoluble solid - it does not dissociate.`;
+                    case 'molecular':
+                        return `${formulaState} is a molecular compound - it does not dissociate into ions.`;
+                    default:
+                        return `${formulaState} should NOT be split.`;
+                }
+            }
+        }
+
+        function validateCompleteIonic() {
+            const errors = [];
+
+            // Check each compound
+            currentProblem.molecularEquation.reactants.forEach((compound, index) => {
+                const processed = studentWork.processedCompounds.find(
+                    pc => pc.side === 'reactant' && pc.index === index
+                );
+
+                if (!processed) return; // Should not happen
+
+                // Check split decision
+                if (compound.shouldSplit && processed.decision === 'keep') {
+                    errors.push({
+                        type: 'SHOULD_SPLIT',
+                        side: 'reactant',
+                        index: index,
+                        message: getSplitReasonMessage(compound, true)
+                    });
+                } else if (!compound.shouldSplit && processed.decision === 'split') {
+                    errors.push({
+                        type: 'SHOULD_NOT_SPLIT',
+                        side: 'reactant',
+                        index: index,
+                        message: getSplitReasonMessage(compound, false)
+                    });
+                }
+
+                // If split, check charges and numbers
+                if (compound.shouldSplit && processed.decision === 'split') {
+                    // Calculate expected numbers (multiply by coefficient)
+                    const expectedCationNumber = compound.cation.correctNumber * compound.coefficient;
+                    const expectedAnionNumber = compound.anion.correctNumber * compound.coefficient;
+
+                    if (processed.cation.charge !== compound.cation.correctCharge) {
+                        errors.push({
+                            type: 'WRONG_CHARGE',
+                            side: 'reactant',
+                            index: index,
+                            ion: 'cation',
+                            message: `Check the charge on ${compound.cation.formula} (should be ${formatCharge(compound.cation.correctCharge)}).`
+                        });
+                    }
+
+                    if (processed.cation.number !== expectedCationNumber) {
+                        errors.push({
+                            type: 'WRONG_NUMBER',
+                            side: 'reactant',
+                            index: index,
+                            ion: 'cation',
+                            message: `Check the number of ${compound.cation.formula} ions (should be ${expectedCationNumber}).`
+                        });
+                    }
+
+                    if (processed.anion.charge !== compound.anion.correctCharge) {
+                        errors.push({
+                            type: 'WRONG_CHARGE',
+                            side: 'reactant',
+                            index: index,
+                            ion: 'anion',
+                            message: `Check the charge on ${compound.anion.formula} (should be ${formatCharge(compound.anion.correctCharge)}).`
+                        });
+                    }
+
+                    if (processed.anion.number !== expectedAnionNumber) {
+                        errors.push({
+                            type: 'WRONG_NUMBER',
+                            side: 'reactant',
+                            index: index,
+                            ion: 'anion',
+                            message: `Check the number of ${compound.anion.formula} ions (should be ${expectedAnionNumber}).`
+                        });
+                    }
+                }
+            });
+
+            // Check products
+            currentProblem.molecularEquation.products.forEach((compound, index) => {
+                const processed = studentWork.processedCompounds.find(
+                    pc => pc.side === 'product' && pc.index === index
+                );
+
+                if (!processed) return;
+
+                if (compound.shouldSplit && processed.decision === 'keep') {
+                    errors.push({
+                        type: 'SHOULD_SPLIT',
+                        side: 'product',
+                        index: index,
+                        message: getSplitReasonMessage(compound, true)
+                    });
+                } else if (!compound.shouldSplit && processed.decision === 'split') {
+                    errors.push({
+                        type: 'SHOULD_NOT_SPLIT',
+                        side: 'product',
+                        index: index,
+                        message: getSplitReasonMessage(compound, false)
+                    });
+                }
+
+                if (compound.shouldSplit && processed.decision === 'split') {
+                    // Calculate expected numbers (multiply by coefficient)
+                    const expectedCationNumber = compound.cation.correctNumber * compound.coefficient;
+                    const expectedAnionNumber = compound.anion.correctNumber * compound.coefficient;
+
+                    if (processed.cation.charge !== compound.cation.correctCharge) {
+                        errors.push({
+                            type: 'WRONG_CHARGE',
+                            side: 'product',
+                            index: index,
+                            ion: 'cation',
+                            message: `Check the charge on ${compound.cation.formula} (should be ${formatCharge(compound.cation.correctCharge)}).`
+                        });
+                    }
+
+                    if (processed.cation.number !== expectedCationNumber) {
+                        errors.push({
+                            type: 'WRONG_NUMBER',
+                            side: 'product',
+                            index: index,
+                            ion: 'cation',
+                            message: `Check the number of ${compound.cation.formula} ions (should be ${expectedCationNumber}).`
+                        });
+                    }
+
+                    if (processed.anion.charge !== compound.anion.correctCharge) {
+                        errors.push({
+                            type: 'WRONG_CHARGE',
+                            side: 'product',
+                            index: index,
+                            ion: 'anion',
+                            message: `Check the charge on ${compound.anion.formula} (should be ${formatCharge(compound.anion.correctCharge)}).`
+                        });
+                    }
+
+                    if (processed.anion.number !== expectedAnionNumber) {
+                        errors.push({
+                            type: 'WRONG_NUMBER',
+                            side: 'product',
+                            index: index,
+                            ion: 'anion',
+                            message: `Check the number of ${compound.anion.formula} ions (should be ${expectedAnionNumber}).`
+                        });
+                    }
+                }
+            });
+
+            return errors;
+        }
+
+        function showFeedback(isSuccess, title, messages) {
+            const feedbackEl = document.getElementById('feedback');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackList = document.getElementById('feedbackList');
+
+            feedbackEl.className = 'feedback show ' + (isSuccess ? 'success' : 'error');
+            feedbackTitle.textContent = isSuccess ? '✓ ' + title : '✗ ' + title;
+
+            feedbackList.innerHTML = '';
+            messages.forEach(msg => {
+                const li = document.createElement('li');
+                li.textContent = msg;
+                feedbackList.appendChild(li);
+            });
+        }
+
+        function highlightErrors(errors) {
+            // Clear previous errors
+            document.querySelectorAll('.compound.error').forEach(el => el.classList.remove('error'));
+            document.querySelectorAll('.ion.error').forEach(el => el.classList.remove('error'));
+
+            errors.forEach(error => {
+                if (error.type === 'SHOULD_SPLIT' || error.type === 'SHOULD_NOT_SPLIT') {
+                    // Highlight the compound in molecular equation
+                    const compounds = document.querySelectorAll('.compound');
+                    compounds.forEach(el => {
+                        if (el.dataset.side === error.side && el.dataset.index == error.index) {
+                            el.classList.add('error');
+                        }
+                    });
+                } else {
+                    // Highlight ions in complete ionic equation
+                    const ions = document.querySelectorAll('.ion');
+                    ions.forEach(el => {
+                        const processedCompound = findProcessedCompoundForIon(el.dataset.side, parseInt(el.dataset.index));
+                        if (processedCompound && processedCompound.side === error.side && processedCompound.index === error.index) {
+                            el.classList.add('error');
+                        }
+                    });
+                }
+            });
+        }
+
+        function toggleSpectator(ion, side, index) {
+            const ionKey = `${ion.formula}_${ion.charge}_${side}_${index}`;
+
+            // Check if this ion is already marked as spectator
+            const existingIndex = studentWork.markedSpectators.findIndex(s => {
+                return s.formula === ion.formula &&
+                       s.charge === ion.charge &&
+                       s.side === side &&
+                       s.index === index;
+            });
+
+            if (existingIndex >= 0) {
+                // Remove from spectators
+                studentWork.markedSpectators.splice(existingIndex, 1);
+            } else {
+                // Add to spectators
+                studentWork.markedSpectators.push({
+                    formula: ion.formula,
+                    charge: ion.charge,
+                    side: side,
+                    index: index
+                });
+            }
+
+            // Re-render to update visual state
+            renderCompleteIonicInTop();
+            renderNetIonic();
+            updateSpectatorPanel();
+        }
+
+        function updateSpectatorPanel() {
+            const listContainer = document.getElementById('spectatorList');
+            listContainer.innerHTML = '';
+
+            // Group spectators by formula and charge
+            const spectatorGroups = {};
+
+            studentWork.markedSpectators.forEach(spec => {
+                const key = `${spec.formula}_${spec.charge}`;
+                if (!spectatorGroups[key]) {
+                    spectatorGroups[key] = {
+                        formula: spec.formula,
+                        charge: spec.charge,
+                        sides: []
+                    };
+                }
+                spectatorGroups[key].sides.push(spec.side);
+            });
+
+            // Only show spectators that appear on BOTH sides
+            const canceledSpectators = Object.values(spectatorGroups).filter(group =>
+                group.sides.includes('reactant') && group.sides.includes('product')
+            );
+
+            if (canceledSpectators.length === 0) {
+                listContainer.innerHTML = '<div class="empty-state" style="padding: 10px;">No spectators canceled</div>';
+                return;
+            }
+
+            canceledSpectators.forEach(spec => {
+                const item = document.createElement('div');
+                item.className = 'spectator-item';
+
+                const ionSpan = document.createElement('span');
+                ionSpan.className = 'spectator-ion';
+                let displayText = spec.formula;
+                if (spec.charge !== null) {
+                    displayText += formatCharge(spec.charge);
+                }
+                ionSpan.textContent = displayText;
+
+                const checkSpan = document.createElement('span');
+                checkSpan.textContent = '✓';
+                checkSpan.style.color = '#28a745';
+                checkSpan.style.fontWeight = 'bold';
+
+                item.appendChild(ionSpan);
+                item.appendChild(checkSpan);
+
+                listContainer.appendChild(item);
+            });
+        }
+
+        function renderNetIonic() {
+            const container = document.getElementById('netIonicEquation');
+            container.innerHTML = '';
+
+            // Get all ions from complete ionic (with coefficients)
+            const allReactantIons = [];
+            const allProductIons = [];
+
+            currentProblem.molecularEquation.reactants.forEach((compound, index) => {
+                const processed = studentWork.processedCompounds.find(
+                    pc => pc.side === 'reactant' && pc.index === index
+                );
+
+                if (processed) {
+                    if (processed.decision === 'split') {
+                        // Add ions with coefficients
+                        allReactantIons.push({
+                            formula: processed.cation.formula,
+                            charge: processed.cation.charge,
+                            state: processed.state,
+                            coefficient: processed.cation.number,
+                            compoundIndex: index
+                        });
+                        allReactantIons.push({
+                            formula: processed.anion.formula,
+                            charge: processed.anion.charge,
+                            state: processed.state,
+                            coefficient: processed.anion.number,
+                            compoundIndex: index
+                        });
+                    } else {
+                        allReactantIons.push({
+                            formula: processed.compound,
+                            charge: null,
+                            state: processed.state,
+                            coefficient: compound.coefficient,
+                            compoundIndex: index
+                        });
+                    }
+                }
+            });
+
+            currentProblem.molecularEquation.products.forEach((compound, index) => {
+                const processed = studentWork.processedCompounds.find(
+                    pc => pc.side === 'product' && pc.index === index
+                );
+
+                if (processed) {
+                    if (processed.decision === 'split') {
+                        // Add ions with coefficients
+                        allProductIons.push({
+                            formula: processed.cation.formula,
+                            charge: processed.cation.charge,
+                            state: processed.state,
+                            coefficient: processed.cation.number,
+                            compoundIndex: index
+                        });
+                        allProductIons.push({
+                            formula: processed.anion.formula,
+                            charge: processed.anion.charge,
+                            state: processed.state,
+                            coefficient: processed.anion.number,
+                            compoundIndex: index
+                        });
+                    } else {
+                        allProductIons.push({
+                            formula: processed.compound,
+                            charge: null,
+                            state: processed.state,
+                            coefficient: compound.coefficient,
+                            compoundIndex: index
+                        });
+                    }
+                }
+            });
+
+            // Filter out spectators - check if any ion from this group was marked as spectator
+            const netReactants = allReactantIons.filter((ion, ionIndex) => {
+                // Check if this specific ion (by index in the rendered list) has ANY marked as spectator
+                const hasSpectatorMarked = studentWork.markedSpectators.some(s =>
+                    s.formula === ion.formula &&
+                    s.charge === ion.charge &&
+                    s.side === 'reactant' &&
+                    s.index === ionIndex
+                );
+                return !hasSpectatorMarked;
+            });
+
+            const netProducts = allProductIons.filter((ion, ionIndex) => {
+                const hasSpectatorMarked = studentWork.markedSpectators.some(s =>
+                    s.formula === ion.formula &&
+                    s.charge === ion.charge &&
+                    s.side === 'product' &&
+                    s.index === ionIndex
+                );
+                return !hasSpectatorMarked;
+            });
+
+            // Render net ionic equation with coefficients
+            netReactants.forEach((ion, idx) => {
+                const span = document.createElement('span');
+                let displayText = '';
+
+                // Add coefficient if > 1
+                if (ion.coefficient && ion.coefficient > 1) {
+                    displayText = ion.coefficient;
+                }
+
+                displayText += ion.formula;
+                if (ion.charge !== null) {
+                    displayText += formatCharge(ion.charge);
+                }
+                displayText += `(${ion.state})`;
+                span.textContent = displayText;
+                span.style.fontSize = '16px';
+                span.style.fontWeight = '500';
+                container.appendChild(span);
+
+                if (idx < netReactants.length - 1) {
+                    const plus = document.createElement('span');
+                    plus.textContent = ' + ';
+                    plus.style.margin = '0 5px';
+                    container.appendChild(plus);
+                }
+            });
+
+            if (netReactants.length > 0 && netProducts.length > 0) {
+                const arrow = document.createElement('span');
+                arrow.textContent = ' → ';
+                arrow.style.margin = '0 10px';
+                arrow.style.fontWeight = 'bold';
+                container.appendChild(arrow);
+            }
+
+            netProducts.forEach((ion, idx) => {
+                const span = document.createElement('span');
+                let displayText = '';
+
+                // Add coefficient if > 1
+                if (ion.coefficient && ion.coefficient > 1) {
+                    displayText = ion.coefficient;
+                }
+
+                displayText += ion.formula;
+                if (ion.charge !== null) {
+                    displayText += formatCharge(ion.charge);
+                }
+                displayText += `(${ion.state})`;
+                span.textContent = displayText;
+                span.style.fontSize = '16px';
+                span.style.fontWeight = '500';
+                container.appendChild(span);
+
+                if (idx < netProducts.length - 1) {
+                    const plus = document.createElement('span');
+                    plus.textContent = ' + ';
+                    plus.style.margin = '0 5px';
+                    container.appendChild(plus);
+                }
+            });
+
+            if (netReactants.length === 0 && netProducts.length === 0) {
+                container.innerHTML = '<div class="empty-state">Mark spectators above to see net ionic equation</div>';
+            }
+        }
+
+        function submitNetIonic() {
+            // Check if this problem was already completed
+            if (completedProblems.has(currentProblemIndex)) {
+                // Already completed - don't count again
+                showFeedback(true, 'You already completed this problem!', []);
+                return;
+            }
+
+            totalAttempts++;
+            document.getElementById('attemptCount').textContent = totalAttempts;
+
+            const errors = validateNetIonic();
+
+            if (errors.length === 0) {
+                // Success!
+                correctProblems++;
+                document.getElementById('correctCount').textContent = cleanSolves();
+
+                // Mark this problem as completed
+                completedProblems.add(currentProblemIndex);
+
+                // Save the completed work
+                savedWork[currentProblemIndex] = {
+                    processedCompounds: [...studentWork.processedCompounds],
+                    markedSpectators: [...studentWork.markedSpectators],
+                    isComplete: true
+                };
+
+                populateProblemSelector(); // Update dropdown to show checkmark and green highlight
+
+                // Disable the submit button
+                document.getElementById('submitNetIonicBtn').disabled = true;
+                document.getElementById('submitNetIonicBtn').textContent = '✓ Problem Completed';
+                document.getElementById('submitNetIonicBtn').style.backgroundColor = '#28a745';
+                document.getElementById('submitNetIonicBtn').style.cursor = 'not-allowed';
+
+                showFeedback(true, 'Correct! Net ionic equation is complete.', []);
+                refreshTutorialButton(currentProblemIndex);
+
+                // Show success summary modal
+                showSuccessSummary();
+
+                if (cleanSolves() >= REQUIRED) {
+                    state.challengeFinished = true;
+                    scormSaveProgress(); // persist final served/tutored/completed state before reporting
+                    const accuracy = totalAttempts > 0 ? Math.min(100, Math.round((cleanSolves() / totalAttempts) * 100)) : 100;
+                    scormReport(accuracy);
+                } else {
+                    scormSaveProgress();
+                }
+
+            } else {
+                // Wrong: say so without revealing which ions are spectators.
+                showFeedback(false, 'Not quite. Re-check your spectator ions, then try again.', []);
+            }
+        }
+
+        function showSuccessSummary() {
+            // Build molecular equation
+            const molecularReactants = currentProblem.molecularEquation.reactants.map(c => {
+                const coef = c.coefficient > 1 ? c.coefficient : '';
+                return `${coef}${c.formula}(${c.state})`;
+            }).join(' + ');
+
+            const molecularProducts = currentProblem.molecularEquation.products.map(c => {
+                const coef = c.coefficient > 1 ? c.coefficient : '';
+                return `${coef}${c.formula}(${c.state})`;
+            }).join(' + ');
+
+            document.getElementById('summaryMolecular').textContent =
+                `${molecularReactants} → ${molecularProducts}`;
+
+            // Build complete ionic equation with coefficients
+            let completeIonicReactants = [];
+            let completeIonicProducts = [];
+
+            currentProblem.molecularEquation.reactants.forEach((compound, index) => {
+                const processed = studentWork.processedCompounds.find(
+                    pc => pc.side === 'reactant' && pc.index === index
+                );
+
+                if (processed && processed.decision === 'split') {
+                    // Add cation with coefficient
+                    const cationCoef = processed.cation.number > 1 ? processed.cation.number : '';
+                    completeIonicReactants.push(
+                        `${cationCoef}${processed.cation.formula}${formatCharge(processed.cation.charge)}(${processed.state})`
+                    );
+                    // Add anion with coefficient
+                    const anionCoef = processed.anion.number > 1 ? processed.anion.number : '';
+                    completeIonicReactants.push(
+                        `${anionCoef}${processed.anion.formula}${formatCharge(processed.anion.charge)}(${processed.state})`
+                    );
+                } else if (processed) {
+                    const keepCoef = compound.coefficient > 1 ? compound.coefficient : '';
+                    completeIonicReactants.push(`${keepCoef}${processed.compound}(${processed.state})`);
+                }
+            });
+
+            currentProblem.molecularEquation.products.forEach((compound, index) => {
+                const processed = studentWork.processedCompounds.find(
+                    pc => pc.side === 'product' && pc.index === index
+                );
+
+                if (processed && processed.decision === 'split') {
+                    // Add cation with coefficient
+                    const cationCoef = processed.cation.number > 1 ? processed.cation.number : '';
+                    completeIonicProducts.push(
+                        `${cationCoef}${processed.cation.formula}${formatCharge(processed.cation.charge)}(${processed.state})`
+                    );
+                    // Add anion with coefficient
+                    const anionCoef = processed.anion.number > 1 ? processed.anion.number : '';
+                    completeIonicProducts.push(
+                        `${anionCoef}${processed.anion.formula}${formatCharge(processed.anion.charge)}(${processed.state})`
+                    );
+                } else if (processed) {
+                    const keepCoef = compound.coefficient > 1 ? compound.coefficient : '';
+                    completeIonicProducts.push(`${keepCoef}${processed.compound}(${processed.state})`);
+                }
+            });
+
+            document.getElementById('summaryCompleteIonic').textContent =
+                `${completeIonicReactants.join(' + ')} → ${completeIonicProducts.join(' + ')}`;
+
+            // List spectators
+            const spectatorsList = currentProblem.spectatorIons.map(s =>
+                `${s.formula}${formatCharge(s.charge)}`
+            ).join(', ');
+
+            document.getElementById('summarySpectators').innerHTML =
+                `The following ions appeared on both sides unchanged and were canceled: <strong>${spectatorsList}</strong>`;
+
+            // Build net ionic equation
+            const netIonicText = document.getElementById('netIonicEquation').textContent;
+            document.getElementById('summaryNetIonic').textContent = netIonicText;
+
+            // Explanation
+            document.getElementById('summaryExplanation').innerHTML =
+                `<strong>Summary:</strong> You correctly identified the spectator ions that appear unchanged on both sides of the equation. ` +
+                `After canceling these spectators, the net ionic equation shows only the species that actually participate in the chemical reaction.`;
+
+            // Show modal
+            const nextBtn = document.getElementById('nextProblemBtn');
+            nextBtn.textContent = cleanSolves() >= REQUIRED ? 'Finish →' : 'Next Problem →';
+            document.getElementById('successModal').classList.add('show');
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.remove('show');
+        }
+
+        function validateNetIonic() {
+            const errors = [];
+
+            // Get the correct spectator ions from the problem
+            const correctSpectators = currentProblem.spectatorIons;
+
+            // Group marked spectators by formula and charge
+            const markedGroups = {};
+            studentWork.markedSpectators.forEach(spec => {
+                const key = `${spec.formula}_${spec.charge}`;
+                if (!markedGroups[key]) {
+                    markedGroups[key] = {
+                        formula: spec.formula,
+                        charge: spec.charge,
+                        sides: []
+                    };
+                }
+                markedGroups[key].sides.push(spec.side);
+            });
+
+            // Check each correct spectator
+            correctSpectators.forEach(correctSpec => {
+                const key = `${correctSpec.formula}_${correctSpec.charge}`;
+                const markedGroup = markedGroups[key];
+
+                if (!markedGroup) {
+                    errors.push({
+                        type: 'MISSED_SPECTATOR',
+                        formula: correctSpec.formula,
+                        charge: correctSpec.charge,
+                        message: `${correctSpec.formula}${formatCharge(correctSpec.charge)} is a spectator ion - it should be canceled on both sides.`
+                    });
+                } else if (!markedGroup.sides.includes('reactant') || !markedGroup.sides.includes('product')) {
+                    errors.push({
+                        type: 'PARTIAL_SPECTATOR',
+                        formula: correctSpec.formula,
+                        charge: correctSpec.charge,
+                        message: `${correctSpec.formula}${formatCharge(correctSpec.charge)} must be marked on BOTH sides to cancel.`
+                    });
+                }
+            });
+
+            // Check for incorrectly marked spectators
+            Object.values(markedGroups).forEach(markedGroup => {
+                // Only check if marked on both sides
+                if (markedGroup.sides.includes('reactant') && markedGroup.sides.includes('product')) {
+                    const isCorrect = correctSpectators.some(cs =>
+                        cs.formula === markedGroup.formula && cs.charge === markedGroup.charge
+                    );
+
+                    if (!isCorrect) {
+                        errors.push({
+                            type: 'WRONG_SPECTATOR',
+                            formula: markedGroup.formula,
+                            charge: markedGroup.charge,
+                            message: `${markedGroup.formula}${formatCharge(markedGroup.charge)} is NOT a spectator ion - it participates in the reaction.`
+                        });
+                    }
+                }
+            });
+
+            return errors;
+        }
+
+        function highlightSpectatorErrors(errors) {
+            // Re-render the complete ionic equation with error highlights
+            renderCompleteIonicInTop();
+
+            // Add error class to incorrectly marked ions
+            const ions = document.querySelectorAll('#topEquationBox .ion');
+            ions.forEach(ionEl => {
+                const formula = ionEl.dataset.formula;
+                const charge = parseInt(ionEl.dataset.charge);
+
+                errors.forEach(error => {
+                    if (error.formula === formula && error.charge === charge) {
+                        if (error.type === 'MISSED_SPECTATOR') {
+                            // Highlight ions that should be marked but aren't
+                            if (!ionEl.classList.contains('spectator')) {
+                                ionEl.style.border = '2px solid #ffc107';
+                                ionEl.style.background = '#fff3cd';
+                            }
+                        } else if (error.type === 'WRONG_SPECTATOR') {
+                            // Highlight ions that shouldn't be marked but are
+                            if (ionEl.classList.contains('spectator')) {
+                                ionEl.style.border = '2px solid #dc3545';
+                                ionEl.style.background = '#ffe6e6';
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        function openIonEditDialog(ion, side, index) {
+            // Find which original compound this ion came from
+            const processedCompound = findProcessedCompoundForIon(side, index);
+
+            if (!processedCompound) return;
+
+            // If it's a kept-together compound, open the full split dialog
+            if (processedCompound.decision === 'keep') {
+                const originalCompound = getOriginalCompound(processedCompound.side, processedCompound.index);
+                openSplitModal(originalCompound, processedCompound.side, processedCompound.index);
+                return;
+            }
+
+            // For split ions, determine if it's cation or anion
+            const isCation = ion.charge > 0;
+
+            // handleModalDone reads compound.formula / compound.state, so currentEditingCompound.compound
+            // must be the original compound object — not the processed record, which stores the formula
+            // under .compound and has no .formula/.state (that mismatch showed "undefined" at the top).
+            const originalCompound = getOriginalCompound(processedCompound.side, processedCompound.index);
+
+            // Set up modal for editing individual ion
+            currentEditingCompound = {
+                compound: originalCompound,
+                side: processedCompound.side,
+                index: processedCompound.index,
+                editingIon: isCation ? 'cation' : 'anion',
+                ionData: ion
+            };
+
+            // Set modal title
+            document.getElementById('modalHeader').textContent =
+                `Edit ${ion.formula} from ${processedCompound.compound}`;
+
+            // Set keep together label
+            document.getElementById('keepTogetherLabel').textContent =
+                `${processedCompound.compound}(${processedCompound.state})`;
+
+            // Display just the compound being edited
+            const originalCompoundData = getOriginalCompound(processedCompound.side, processedCompound.index);
+            const coef = originalCompoundData.coefficient > 1 ? originalCompoundData.coefficient : '';
+            document.getElementById('modalCompoundText').textContent =
+                `${coef}${processedCompound.compound}(${processedCompound.state})`;
+
+            // Pre-select "split" and show ion inputs
+            document.getElementById('keepTogether').checked = false;
+            document.getElementById('splitIntoIons').checked = true;
+            document.getElementById('ionInputSection').classList.add('show');
+
+            // Set formulas
+            document.getElementById('cationFormula').textContent = originalCompound.cation.formula;
+            document.getElementById('anionFormula').textContent = originalCompound.anion.formula;
+
+            // Pre-fill with current values
+            document.getElementById('cationCharge').value = processedCompound.cation.charge;
+            document.getElementById('cationNumber').value = processedCompound.cation.number;
+            document.getElementById('anionCharge').value = processedCompound.anion.charge;
+            document.getElementById('anionNumber').value = processedCompound.anion.number;
+
+            updatePreviews();
+
+            // Show modal
+            document.getElementById('splitModal').classList.add('show');
+        }
+
+        function findProcessedCompoundForIon(side, ionIndex) {
+            // Need to map ion index back to processed compound
+            // This requires tracking which processed compound generated which ions
+            let currentIonIndex = 0;
+
+            const compounds = side === 'reactant'
+                ? currentProblem.molecularEquation.reactants
+                : currentProblem.molecularEquation.products;
+
+            for (let i = 0; i < compounds.length; i++) {
+                const processed = studentWork.processedCompounds.find(
+                    pc => pc.side === side && pc.index === i
+                );
+
+                if (!processed) continue;
+
+                if (processed.decision === 'split') {
+                    const totalIons = processed.cation.number + processed.anion.number;
+                    if (ionIndex < currentIonIndex + totalIons) {
+                        return processed;
+                    }
+                    currentIonIndex += totalIons;
+                } else {
+                    if (ionIndex === currentIonIndex) {
+                        return processed;
+                    }
+                    currentIonIndex++;
+                }
+            }
+
+            return null;
+        }
+
+        function getOriginalCompound(side, index) {
+            return side === 'reactant'
+                ? currentProblem.molecularEquation.reactants[index]
+                : currentProblem.molecularEquation.products[index];
+        }
+
+        // ---- 4-problem completion model + auto-generated tutorial ----
+        function cleanSolves() {
+            let n = 0;
+            completedProblems.forEach(i => { if (!tutoredProblems.has(i)) n++; });
+            return n;
+        }
+
+        function buildServedIndices() {
+            const byBucket = { weakAcid: [], covalent: [], hydroxidePoly: [] };
+            PROBLEMS.forEach((p, i) => { if (byBucket[p.bucket]) byBucket[p.bucket].push(i); });
+            const requiredIdx = PROBLEMS.findIndex(p => p.required);
+            const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+            const chosen = [];
+            ['weakAcid', 'covalent', 'hydroxidePoly'].forEach(b => { chosen.push(pick(byBucket[b])); });
+            // one more from any non-required problem not already chosen
+            const remaining = PROBLEMS.map((p, i) => i)
+                .filter(i => chosen.indexOf(i) === -1 && i !== requiredIdx && !PROBLEMS[i].required);
+            chosen.push(pick(remaining));
+            // the required "challenge" problem is always last
+            if (requiredIdx >= 0) chosen.push(requiredIdx);
+            servedIndices = chosen;
+            servedSet = new Set(chosen);
+        }
+
+        function addReplacementForBucket(bucket) {
+            let cand = PROBLEMS.map((p, i) => i).filter(i =>
+                !servedSet.has(i) && !tutoredProblems.has(i) && PROBLEMS[i].bucket === bucket);
+            if (!cand.length) cand = PROBLEMS.map((p, i) => i).filter(i => !servedSet.has(i) && !tutoredProblems.has(i));
+            if (!cand.length) return;
+            const pick = cand[Math.floor(Math.random() * cand.length)];
+            servedIndices.push(pick);
+            servedSet.add(pick);
+        }
+
+        function updateProgressCounts(index) {
+            const pos = servedIndices.indexOf(index);
+            document.getElementById('currentProblem').textContent = (pos >= 0 ? pos + 1 : servedIndices.length);
+            document.getElementById('totalProblems').textContent = REQUIRED;
+            document.getElementById('correctCount').textContent = cleanSolves();
+            document.getElementById('attemptCount').textContent = totalAttempts;
+            document.getElementById('problemSelect').value = index;
+        }
+
+        function refreshTutorialButton(idx) {
+            const btn = document.getElementById('tutorialBtn');
+            if (!btn) return;
+            if (completedProblems.has(idx) && !tutoredProblems.has(idx)) {
+                btn.disabled = true;
+                btn.textContent = 'Tutorial unavailable (problem already completed)';
+                return;
+            }
+            btn.disabled = false;
+            btn.textContent = tutoredProblems.has(idx)
+                ? 'Show tutorial again (practice only — not counted)'
+                : 'Show tutorial for this problem (won\u2019t count toward your ' + REQUIRED + ')';
+        }
+
+        function onTutorialButton() {
+            const idx = currentProblemIndex;
+            const needsConfirm = !completedProblems.has(idx) && !tutoredProblems.has(idx);
+            if (needsConfirm) {
+                document.getElementById('tutorialConfirmModal').classList.add('show');
+            } else {
+                revealTutorial();
+            }
+        }
+
+        function revealTutorial() {
+            const idx = currentProblemIndex;
+            const problem = PROBLEMS[idx];
+            const firstTime = !completedProblems.has(idx) && !tutoredProblems.has(idx);
+            if (firstTime) {
+                tutoredProblems.add(idx);
+                addReplacementForBucket(problem.bucket);
+                populateProblemSelector();
+                updateProgressCounts(idx);
+                scormSaveProgress();
+            }
+            renderTutorial(problem, idx);
+            document.getElementById('tutorialPanel').classList.remove('hidden');
+            refreshTutorialButton(idx);
+            document.getElementById('tutorialPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function eqStringMolecular(problem) {
+            const side = arr => arr.map(c => (c.coefficient > 1 ? c.coefficient + ' ' : '') + c.formula + '(' + c.state + ')').join(' + ');
+            return side(problem.molecularEquation.reactants) + '  \u2192  ' + side(problem.molecularEquation.products);
+        }
+
+        function buildCorrectEquationStrings(problem) {
+            function terms(compounds) {
+                const out = [];
+                compounds.forEach(c => {
+                    if (c.shouldSplit) {
+                        out.push({ f: c.cation.formula, ch: c.cation.correctCharge, n: c.cation.correctNumber * c.coefficient, st: c.state });
+                        out.push({ f: c.anion.formula, ch: c.anion.correctCharge, n: c.anion.correctNumber * c.coefficient, st: c.state });
+                    } else {
+                        out.push({ f: c.formula, ch: null, n: c.coefficient, st: c.state });
+                    }
+                });
+                return out;
+            }
+            const R = terms(problem.molecularEquation.reactants);
+            const P = terms(problem.molecularEquation.products);
+            const fmt = t => (t.n > 1 ? t.n + ' ' : '') + t.f + (t.ch != null ? formatCharge(t.ch) : '') + '(' + t.st + ')';
+            const isSpec = t => t.ch != null && problem.spectatorIons.some(sp => sp.formula === t.f && sp.charge === t.ch);
+            const complete = R.map(fmt).join(' + ') + '  \u2192  ' + P.map(fmt).join(' + ');
+            const netR = R.filter(t => !isSpec(t));
+            const netP = P.filter(t => !isSpec(t));
+            const net = (netR.map(fmt).join(' + ') || '(nothing)') + '  \u2192  ' + (netP.map(fmt).join(' + ') || '(nothing)');
+            return { complete, net };
+        }
+
+        function tutorialSpeciesRows(list) {
+            return list.map(c => {
+                const label = (c.coefficient > 1 ? c.coefficient + ' ' : '') + c.formula + '(' + c.state + ')';
+                let verdict, reason;
+                if (c.shouldSplit) {
+                    verdict = 'Breaks into ions';
+                    if (c.type === 'strong-acid') reason = 'Strong acid \u2014 ionizes essentially completely in water.';
+                    else if (c.type === 'strong-base') reason = 'Strong base \u2014 dissociates completely in water.';
+                    else reason = 'Soluble ionic compound (aqueous) \u2014 a strong electrolyte, so it exists as separated ions.';
+                    const cat = c.cation.correctNumber * c.coefficient, an = c.anion.correctNumber * c.coefficient;
+                    reason += ' \u2192 ' + (cat > 1 ? cat + ' ' : '') + c.cation.formula + formatCharge(c.cation.correctCharge)
+                        + ' + ' + (an > 1 ? an + ' ' : '') + c.anion.formula + formatCharge(c.anion.correctCharge);
+                } else {
+                    verdict = 'Stays whole';
+                    if (c.state === 's') reason = 'Insoluble solid (precipitate) \u2014 it never dissolved into ions, so write the full formula with (s).';
+                    else if (c.state === 'g') reason = 'Gas \u2014 it leaves the solution as neutral covalent molecules, so it is never split.';
+                    else if (c.state === 'l') reason = 'Water \u2014 a molecular liquid and non-electrolyte.';
+                    else if (c.type === 'weak-acid') reason = 'Weak acid \u2014 only a small fraction ionizes at any moment, so it is written as the intact molecule.';
+                    else reason = 'Molecular (covalent) compound and non-electrolyte \u2014 it does not separate into ions.';
+                }
+                const vColor = c.shouldSplit ? '#0a7d33' : '#8a5a00';
+                return '<tr><td style="padding:4px 10px;font-weight:600;white-space:nowrap;">' + label +
+                    '</td><td style="padding:4px 10px;color:' + vColor + ';font-weight:600;white-space:nowrap;">' + verdict +
+                    '</td><td style="padding:4px 10px;">' + reason + '</td></tr>';
+            }).join('');
+        }
+
+        function renderTutorial(problem, idx) {
+            const eq = problem.molecularEquation;
+            const strs = buildCorrectEquationStrings(problem);
+            const spectators = problem.spectatorIons.map(sp => sp.formula + formatCharge(sp.charge)).join(', ');
+            const note = tutoredProblems.has(idx)
+                ? '<p style="color:#8a5a00;font-weight:600;">You opened the tutorial on this problem, so it no longer counts toward your ' + REQUIRED +
+                  '. A replacement problem has been added to your list. You can still work through this one for practice.</p>'
+                : '';
+            const hint = problem.hint
+                ? '<p style="margin:6px 0;color:#4a3a80;"><strong>Hint:</strong> ' + problem.hint + '</p>'
+                : '';
+            document.getElementById('tutorialBody').innerHTML =
+                note + hint +
+                '<p style="margin:6px 0;"><strong>Molecular equation:</strong> ' + eqStringMolecular(problem) + '</p>' +
+                '<p style="margin:10px 0 4px;"><strong>Step 1 \u2014 Decide what each species does in water.</strong> ' +
+                'Only strong electrolytes that are actually dissolved (aqueous strong acids, strong bases, and soluble ionic compounds) ' +
+                'are written as separated ions. Solids, liquids, gases, weak acids/bases, and other molecular compounds are written as whole formulas.</p>' +
+                '<table style="border-collapse:collapse;margin:6px 0;font-size:0.9em;"><tbody>' +
+                tutorialSpeciesRows(eq.reactants) + tutorialSpeciesRows(eq.products) +
+                '</tbody></table>' +
+                '<p style="margin:10px 0 4px;"><strong>Step 2 \u2014 Complete ionic equation</strong> (every species rewritten by the rules above):</p>' +
+                '<p style="margin:4px 0;font-family:monospace;">' + strs.complete + '</p>' +
+                '<p style="margin:10px 0 4px;"><strong>Step 3 \u2014 Cancel spectator ions.</strong> ' +
+                (spectators
+                    ? 'These ions appear on both sides completely unchanged, so they cancel: <strong>' + spectators + '</strong>.'
+                    : 'There are no spectator ions in this reaction.') + '</p>' +
+                '<p style="margin:10px 0 4px;"><strong>Step 4 \u2014 Net ionic equation</strong> (what remains after canceling):</p>' +
+                '<p style="margin:4px 0;font-family:monospace;font-weight:700;">' + strs.net + '</p>';
+        }
+
+        // ---- SCORM 1.2 wrapper ----
+        const state = { challengeFinished: false };
+        let scormAPI = null;
+        let resumeState = null;
+
+        function findAPI(win) {
+            let attempts = 0;
+            let w = win;
+            while (w && attempts < 10) {
+                if (w.API) return w.API;
+                if (w.parent && w.parent !== w) {
+                    w = w.parent;
+                } else if (w.opener) {
+                    w = w.opener;
+                } else {
+                    break;
+                }
+                attempts++;
+            }
+            return null;
+        }
+
+        function isValidResumePayload(parsed) {
+            if (!parsed || typeof parsed !== 'object') return false;
+            const inRange = i => Number.isInteger(i) && i >= 0 && i < PROBLEMS.length;
+            if (!Array.isArray(parsed.servedIndices) || parsed.servedIndices.length < REQUIRED || !parsed.servedIndices.every(inRange)) return false;
+            if (!Array.isArray(parsed.tutoredIndices) || !parsed.tutoredIndices.every(inRange)) return false;
+            if (!Array.isArray(parsed.completedIndices) || !parsed.completedIndices.every(inRange)) return false;
+            if (typeof parsed.correctProblems !== 'number' || parsed.correctProblems < 0) return false;
+            if (typeof parsed.totalAttempts !== 'number' || parsed.totalAttempts < 0) return false;
+            return true;
+        }
+
+        function scormInit() {
+            try {
+                scormAPI = findAPI(window);
+                if (!scormAPI) return;
+                scormAPI.LMSInitialize("");
+                if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                    const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (isValidResumePayload(parsed)) {
+                            resumeState = parsed;
+                        }
+                    }
+                }
+            } catch (e) { /* No LMS present, or malformed bookmark — start fresh */ }
+        }
+
+        function scormSaveProgress() {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                    servedIndices: servedIndices,
+                    tutoredIndices: Array.from(tutoredProblems),
+                    completedIndices: Array.from(completedProblems),
+                    correctProblems: correctProblems,
+                    totalAttempts: totalAttempts
+                }));
+                if (!state.challengeFinished) {
+                    scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                    // Mark the exit reason as "suspend" on every save, not just on
+                    // beforeunload/pagehide. Students on Chromebooks/iPads very often
+                    // exit by closing the lid or leaving the Schoology tab, which does
+                    // not reliably fire beforeunload/pagehide before the device sleeps
+                    // and the network drops. Setting this on every commit means the LMS
+                    // already has the correct "resume me" state as of the last save,
+                    // instead of depending on a browser-close event to set it at the end.
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                }
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        // Manually triggered by the "Save Progress" button. This is the primary,
+        // reliable save path — students are instructed to click it before closing
+        // their Chromebook, since automatic browser-unload events can't be trusted
+        // to fire when a laptop lid is closed rather than the tab being navigated
+        // away from. Falls back gracefully (shows nothing) if no LMS is present.
+        function manualSaveProgress() {
+            if (!scormAPI) return;
+            scormSaveProgress();
+            const status = document.getElementById('save-status');
+            if (!status) return;
+            status.classList.add('visible');
+            clearTimeout(manualSaveProgress._hideTimer);
+            manualSaveProgress._hideTimer = setTimeout(() => {
+                status.classList.remove('visible');
+            }, 2500);
+        }
+
+        function scormReport(scorePercent) {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.core.score.min", "0");
+                scormAPI.LMSSetValue("cmi.core.score.max", "100");
+                scormAPI.LMSSetValue("cmi.core.score.raw", String(scorePercent));
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+                scormAPI.LMSSetValue("cmi.core.exit", "");
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function scormFinish() {
+            if (!scormAPI) return;
+            try {
+                if (!state.challengeFinished) {
+                    scormSaveProgress();
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                    scormAPI.LMSCommit("");
+                }
+                scormAPI.LMSFinish("");
+            } catch (e) { /* ignore */ }
+        }
+
+        // Deterministically rebuilds the fully-correct processed compounds for a problem,
+        // used only to reconstruct the completed-view render state on SCORM resume
+        // (each problem's correct answer is fixed data, not randomized, so nothing needs
+        // to be separately persisted beyond "which problems are done").
+        function buildCorrectProcessedCompounds(problem) {
+            const processedCompounds = [];
+
+            function processSide(compounds, side) {
+                compounds.forEach((compound, index) => {
+                    if (compound.shouldSplit) {
+                        processedCompounds.push({
+                            side, index,
+                            compound: compound.formula,
+                            state: compound.state,
+                            decision: 'split',
+                            cation: {
+                                formula: compound.cation.formula,
+                                charge: compound.cation.correctCharge,
+                                number: compound.cation.correctNumber * compound.coefficient
+                            },
+                            anion: {
+                                formula: compound.anion.formula,
+                                charge: compound.anion.correctCharge,
+                                number: compound.anion.correctNumber * compound.coefficient
+                            }
+                        });
+                    } else {
+                        processedCompounds.push({
+                            side, index,
+                            compound: compound.formula,
+                            state: compound.state,
+                            decision: 'keep'
+                        });
+                    }
+                });
+            }
+
+            processSide(problem.molecularEquation.reactants, 'reactant');
+            processSide(problem.molecularEquation.products, 'product');
+            return processedCompounds;
+        }
+
+        function buildCorrectMarkedSpectators(problem, processedCompounds) {
+            const markedSpectators = [];
+
+            function markSide(compounds, side) {
+                let ionIdx = 0;
+                compounds.forEach((compound, index) => {
+                    const pc = processedCompounds.find(p => p.side === side && p.index === index);
+                    if (pc.decision === 'split') {
+                        [
+                            { formula: pc.cation.formula, charge: pc.cation.charge },
+                            { formula: pc.anion.formula, charge: pc.anion.charge }
+                        ].forEach(ion => {
+                            const isSpec = problem.spectatorIons.some(s => s.formula === ion.formula && s.charge === ion.charge);
+                            if (isSpec) {
+                                markedSpectators.push({ formula: ion.formula, charge: ion.charge, side, index: ionIdx });
+                            }
+                            ionIdx++;
+                        });
+                    } else {
+                        ionIdx++;
+                    }
+                });
+            }
+
+            markSide(problem.molecularEquation.reactants, 'reactant');
+            markSide(problem.molecularEquation.products, 'product');
+            return markedSpectators;
+        }
+
+        function resumeFromSavedState() {
+            document.getElementById('studentEntry').classList.add('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+
+            correctProblems = resumeState.correctProblems;
+            totalAttempts = resumeState.totalAttempts;
+            completedProblems = new Set(resumeState.completedIndices);
+            tutoredProblems = new Set(resumeState.tutoredIndices);
+            servedIndices = resumeState.servedIndices.slice();
+            servedSet = new Set(servedIndices);
+
+            completedProblems.forEach(idx => {
+                const problem = PROBLEMS[idx];
+                const processedCompounds = buildCorrectProcessedCompounds(problem);
+                savedWork[idx] = {
+                    processedCompounds,
+                    markedSpectators: buildCorrectMarkedSpectators(problem, processedCompounds),
+                    isComplete: true
+                };
+            });
+
+            populateProblemSelector();
+            document.getElementById('attemptCount').textContent = totalAttempts;
+
+            if (cleanSolves() >= REQUIRED) {
+                state.challengeFinished = true;
+                currentProblemIndex = servedIndices[0];
+                loadProblem(currentProblemIndex);
+                document.getElementById('scormCompleteModal').classList.add('show');
+                return;
+            }
+
+            let target = servedIndices.find(i => !completedProblems.has(i) && !tutoredProblems.has(i));
+            if (target === undefined) target = servedIndices.find(i => !completedProblems.has(i));
+            if (target === undefined) target = servedIndices[0];
+            currentProblemIndex = target;
+            loadProblem(currentProblemIndex);
+        }
+
+        // Best-effort safety net for the case where the student closes the
+        // Chromebook lid or leaves the tab without clicking "Save Progress":
+        // these events fire more reliably than beforeunload on that path, but
+        // unlike beforeunload we deliberately do NOT call LMSFinish() here —
+        // visibilitychange in particular fires on every tab switch, not just a
+        // real exit, and terminating the SCORM session on a brief tab-switch
+        // would break the ability to keep saving for the rest of that visit.
+        // We just re-commit the current state so the LMS has it either way.
+        function safetyCommit() {
+            if (!scormAPI || state.challengeFinished) return;
+            scormSaveProgress();
+        }
+        window.addEventListener('pagehide', safetyCommit);
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) safetyCommit();
+        });
+        window.addEventListener('beforeunload', scormFinish);
+    </script>
+</body>
+</html>

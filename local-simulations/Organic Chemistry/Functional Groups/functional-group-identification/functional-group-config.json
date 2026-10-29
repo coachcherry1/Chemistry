@@ -1,0 +1,252 @@
+{
+  "version": "2.0",
+  "exported": "2026-09-16T01:07:31.521Z",
+  "functionalGroups": [
+    "Carboxylic Acid",
+    "Ester",
+    "Aldehyde",
+    "Ketone",
+    "Alcohol",
+    "Amine",
+    "Alkene",
+    "Alkyne"
+  ],
+  "molecules": [
+    {
+      "image": "1-Alkene-Alcohol.png",
+      "id": "Molecule 1",
+      "arrows": [
+        {
+          "id": "a1",
+          "tipXPct": 26.08257804632427,
+          "tipYPct": 45.77048953228628,
+          "boxXPct": 24.169184290030213,
+          "boxYPct": 63.28074945020693,
+          "answer": "Alcohol"
+        },
+        {
+          "id": "a2",
+          "tipXPct": 56.49546827794561,
+          "tipYPct": 46.213787251727304,
+          "boxXPct": 55.48841893252769,
+          "boxYPct": 67.93537550433774,
+          "answer": "Alkene"
+        }
+      ]
+    },
+    {
+      "image": "2-carbox-amine.png",
+      "id": "Molecule 2",
+      "arrows": [
+        {
+          "id": "a3",
+          "tipXPct": 24.06847935548842,
+          "tipYPct": 59.62354326481844,
+          "boxXPct": 20.946626384692852,
+          "boxYPct": 78.46369634106219,
+          "answer": "Amine"
+        },
+        {
+          "id": "a4",
+          "tipXPct": 72.80966767371602,
+          "tipYPct": 38.56690159136954,
+          "boxXPct": 83.22658610271903,
+          "boxYPct": 25.02568009835668,
+          "answer": "Carboxylic Acid"
+        }
+      ]
+    },
+    {
+      "image": "3-alkyne-ester.png",
+      "id": "Molecule 3",
+      "arrows": [
+        {
+          "id": "a5",
+          "tipXPct": 23.26283987915408,
+          "tipYPct": 33.579802247657966,
+          "boxXPct": 21.997985901309164,
+          "boxYPct": 14.940656981073264,
+          "answer": "Alkyne"
+        },
+        {
+          "id": "a6",
+          "tipXPct": 61.22860020140987,
+          "tipYPct": 55.523039359988914,
+          "boxXPct": 68.9828801611279,
+          "boxYPct": 71.03845954042495,
+          "answer": "Ester"
+        }
+      ]
+    },
+    {
+      "image": "4-Aldehyde.png",
+      "id": "Molecule 4",
+      "arrows": [
+        {
+          "id": "a7",
+          "tipXPct": 76.83786505538771,
+          "tipYPct": 63.059100590486416,
+          "boxXPct": 80.66465256797582,
+          "boxYPct": 85.00233770281737,
+          "answer": "Aldehyde"
+        }
+      ]
+    },
+    {
+      "image": "5-Alcohol.png",
+      "id": "Molecule 5",
+      "arrows": [
+        {
+          "id": "a8",
+          "tipXPct": 63.24269889224572,
+          "tipYPct": 47.10038269060936,
+          "boxXPct": 64.6525679758308,
+          "boxYPct": 67.71372664461722,
+          "answer": "Alcohol"
+        }
+      ]
+    },
+    {
+      "image": "6-Alkyne-Ketone.png",
+      "id": "Molecule 6",
+      "arrows": [
+        {
+          "id": "a9",
+          "tipXPct": 61.73212487411883,
+          "tipYPct": 33.24732895807719,
+          "boxXPct": 73.51460221550856,
+          "boxYPct": 18.61850421652323,
+          "answer": "Alkyne"
+        },
+        {
+          "id": "a10",
+          "tipXPct": 19.436052366565963,
+          "tipYPct": 50.75758887599785,
+          "boxXPct": 11.178247734138973,
+          "boxYPct": 62.72662730090565,
+          "answer": "Ketone"
+        }
+      ]
+    },
+    {
+      "image": "7-carbox-amine-alkene.png",
+      "id": "Molecule 7",
+      "arrows": [
+        {
+          "id": "a11",
+          "tipXPct": 23.96777442094663,
+          "tipYPct": 59.51271883495818,
+          "boxXPct": 17.623363544813696,
+          "boxYPct": 76.57968103343781,
+          "answer": "Carboxylic Acid"
+        },
+        {
+          "id": "a12",
+          "tipXPct": 47.3313192346425,
+          "tipYPct": 34.46639768654003,
+          "boxXPct": 49.14400805639476,
+          "boxYPct": 8.533481099239813,
+          "answer": "Alkene"
+        },
+        {
+          "id": "a13",
+          "tipXPct": 76.9385699899295,
+          "tipYPct": 54.19314620166583,
+          "boxXPct": 80.26183282980867,
+          "boxYPct": 75.69308559455575,
+          "answer": "Amine"
+        }
+      ]
+    },
+    {
+      "image": "8-Ester-Alcohol.png",
+      "id": "Molecule 8",
+      "arrows": [
+        {
+          "id": "a14",
+          "tipXPct": 35.146022155085596,
+          "tipYPct": 32.80403123863616,
+          "boxXPct": 40.98690835850957,
+          "boxYPct": 15.73706904015654,
+          "answer": "Alcohol"
+        },
+        {
+          "id": "a15",
+          "tipXPct": 70.1913393756294,
+          "tipYPct": 61.17508528286204,
+          "boxXPct": 75.12588116817724,
+          "boxYPct": 76.46885660357755,
+          "answer": "Ester"
+        }
+      ]
+    },
+    {
+      "image": "9-alkyne-ketones-alkene.png",
+      "id": "Molecule 9",
+      "arrows": [
+        {
+          "id": "a16",
+          "tipXPct": 20.84592145015106,
+          "tipYPct": 35.46381755528234,
+          "boxXPct": 20.946626384692852,
+          "boxYPct": 14.628824741553967,
+          "answer": "Alkyne"
+        },
+        {
+          "id": "a17",
+          "tipXPct": 35.64954682779456,
+          "tipYPct": 59.84519212453895,
+          "boxXPct": 31.319234642497484,
+          "boxYPct": 84.00491783407504,
+          "answer": "Ketone"
+        },
+        {
+          "id": "a18",
+          "tipXPct": 65.05538771399799,
+          "tipYPct": 54.96891721068763,
+          "boxXPct": 72.30614300100704,
+          "boxYPct": 73.36577256749035,
+          "answer": "Ketone"
+        },
+        {
+          "id": "a19",
+          "tipXPct": 81.87311178247734,
+          "tipYPct": 44.10812308438241,
+          "boxXPct": 90.83585095669687,
+          "boxYPct": 26.819512026182274,
+          "answer": "Alkene"
+        }
+      ]
+    },
+    {
+      "image": "10-carbox-ester-amine.png",
+      "id": "Molecule 10",
+      "arrows": [
+        {
+          "id": "a20",
+          "tipXPct": 29.003021148036257,
+          "tipYPct": 40.340092469133666,
+          "boxXPct": 35.750251762336354,
+          "boxYPct": 15.958717899877053,
+          "answer": "Carboxylic Acid"
+        },
+        {
+          "id": "a21",
+          "tipXPct": 53.37361530715005,
+          "tipYPct": 68.93279537308005,
+          "boxXPct": 62.134944612286006,
+          "boxYPct": 88.21624616876483,
+          "answer": "Ester"
+        },
+        {
+          "id": "a22",
+          "tipXPct": 83.88721047331319,
+          "tipYPct": 41.669985627456754,
+          "boxXPct": 89.92950654582074,
+          "boxYPct": 21.05664167344889,
+          "answer": "Amine"
+        }
+      ]
+    }
+  ]
+}

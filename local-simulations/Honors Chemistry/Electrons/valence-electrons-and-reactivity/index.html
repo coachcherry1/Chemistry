@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valence Electrons, Lewis Symbols &amp; Reactivity</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f7f5f0 0%, #d9cfc0 100%);
+        min-height: 100vh;
+        padding: 8px;
+        color: #2c2417;
+    }
+
+    .container {
+        max-width: 880px;
+        margin: 0 auto;
+        background: rgba(255,255,255,0.96);
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 8px 32px rgba(90,67,38,0.18);
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 6px;
+        box-shadow: 0 3px 8px rgba(180,83,9,0.3);
+        position: relative;
+    }
+    .header h1 { font-size: 1.2rem; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .header p { font-size: 0.8rem; margin-top: 2px; opacity: 0.95; }
+    .score-badge {
+        position: absolute; top: 7px; right: 11px;
+        background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.45);
+        border-radius: 20px; padding: 3px 11px; font-size: 0.78rem; font-weight: 700;
+        color: #fff; letter-spacing: 0.02em; white-space: nowrap;
+    }
+    .save-row { text-align: center; margin: -2px 0 8px; }
+    .save-btn { background: transparent; border: 1px solid #d9c3a3; color: #7c2d12;
+                border-radius: 6px; padding: 4px 12px; font-size: 0.74rem; font-weight: 600;
+                cursor: pointer; font-family: inherit; }
+    .save-btn:hover { background: #fff3e0; }
+    .save-note { font-size: 0.72rem; color: #35682a; font-weight: 700; margin-left: 7px;
+                 opacity: 0; transition: opacity 0.3s; }
+    .save-note.show { opacity: 1; }
+    @media (max-width: 520px) { .score-badge { position: static; display: inline-block; margin-top: 5px; } }
+
+    .hidden { display: none !important; }
+    .screen { padding: 4px; }
+
+    .btn {
+        background: linear-gradient(145deg, #f59e0b, #d97706);
+        color: #fff; border: none; padding: 9px 16px; border-radius: 6px;
+        cursor: pointer; font-weight: 600; font-size: 13px; font-family: inherit;
+        transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+        box-shadow: 0 2px 4px rgba(120,45,18,0.18); min-height: 38px;
+    }
+    .btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(120,45,18,0.28); filter: brightness(1.04); }
+    .btn:disabled { background: #cbb99f; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-green { background: linear-gradient(145deg, #4b8b3b, #35682a); }
+    .btn-grey  { background: linear-gradient(145deg, #9c8f7a, #7c7060); }
+    .btn-big { display: block; margin: 14px auto 0; padding: 13px 30px; font-size: 15px; }
+
+    .intro-box { background: #fffaf0; border-left: 4px solid #f59e0b; padding: 14px 16px;
+                 border-radius: 6px; margin: 8px 0; font-size: 0.9rem; line-height: 1.55; }
+    .intro-box h3 { color: #b45309; margin-bottom: 6px; font-size: 1rem; }
+    .intro-box h3:not(:first-child) { margin-top: 12px; }
+    .intro-box ol, .intro-box ul { margin: 6px 0 0 20px; }
+    .intro-box li { margin-bottom: 4px; }
+
+    .progress { font-size: 0.78rem; font-weight: 700; color: #7c2d12; text-align: center;
+                background: #fffaf0; border: 1px solid #f0e2cc; border-radius: 20px;
+                padding: 4px 12px; display: inline-block; margin-bottom: 8px; }
+
+    .element-card {
+        text-align: center; background: linear-gradient(135deg, #fff7ec 0%, #ffe9cc 100%);
+        border: 2px solid #d97706; border-radius: 10px; padding: 12px; margin-bottom: 10px;
+    }
+    .element-card .sym { font-size: 2.6rem; font-weight: 700; color: #7c2d12; line-height: 1; }
+    .element-card .name { font-size: 1rem; color: #5c4326; margin-top: 2px; }
+    .element-card .grp { font-size: 0.82rem; color: #8a6a3c; margin-top: 4px; }
+
+    .lab-card { background: #faf7f2; border: 1px solid #e7dcc9; border-radius: 8px;
+                padding: 12px 14px; margin-bottom: 12px; }
+    .lab-card h4 { font-size: 0.98rem; color: #b45309; margin-bottom: 8px; }
+    .card-hint { font-size: 0.82rem; color: #7c7060; margin-bottom: 10px; line-height: 1.45; }
+
+    .num-row { display: flex; flex-wrap: wrap; gap: 7px; }
+    .num-btn {
+        width: 46px; height: 46px; border-radius: 8px; border: 2px solid #d9c3a3;
+        background: #fff; color: #7c2d12; font-size: 1.05rem; font-weight: 700;
+        cursor: pointer; font-family: inherit; transition: all 0.12s;
+    }
+    .num-btn:hover:not(:disabled) { border-color: #d97706; background: #fff3e0; }
+    .num-btn:disabled { cursor: not-allowed; opacity: 0.5; }
+    .num-btn.chosen { background: #d97706; border-color: #b45309; color: #fff; }
+
+    /* Lewis dot builder */
+    .lewis-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .lewis-stage { position: relative; width: 190px; height: 190px; }
+    .lewis-sym {
+        position: absolute; top: 55px; left: 55px; width: 80px; height: 80px;
+        border: 2px solid #7c2d12; border-radius: 10px; background: #fffaf0;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.9rem; font-weight: 700; color: #7c2d12;
+    }
+    .lewis-side {
+        position: absolute; display: flex; align-items: center; justify-content: center;
+        gap: 6px; cursor: pointer; border: 2px dashed transparent; border-radius: 8px;
+        transition: background 0.12s, border-color 0.12s;
+    }
+    .lewis-side:hover { background: #fff3e0; border-color: #e7c9a3; }
+    .lewis-side.top    { top: 8px;  left: 55px; width: 80px; height: 40px; }
+    .lewis-side.bottom { bottom: 8px; left: 55px; width: 80px; height: 40px; }
+    .lewis-side.left   { left: 8px;  top: 55px; width: 40px; height: 80px; flex-direction: column; }
+    .lewis-side.right  { right: 8px; top: 55px; width: 40px; height: 80px; flex-direction: column; }
+    .lewis-dot { width: 13px; height: 13px; border-radius: 50%; background: #b45309; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+
+    .choice-list { display: flex; flex-direction: column; gap: 8px; }
+    .choice-btn {
+        text-align: left; padding: 11px 14px; border: 2px solid #e0d0b6; background: #fff;
+        border-radius: 7px; cursor: pointer; font-size: 0.9rem; font-family: inherit;
+        line-height: 1.4; transition: all 0.14s; color: #3a2f1e;
+    }
+    .choice-btn:hover:not(:disabled) { border-color: #f59e0b; background: #fffaf0; }
+    .choice-btn.right { border-color: #4b8b3b; background: #eaf6e6; }
+    .choice-btn.wrong { border-color: #c0392b; background: #fbeae8; }
+    .choice-btn:disabled { cursor: default; }
+    .choice-btn .cs { font-weight: 700; color: #7c2d12; }
+
+    .fb { margin-top: 10px; padding: 9px 12px; border-radius: 6px; font-size: 0.85rem;
+          line-height: 1.45; display: none; }
+    .fb.show { display: block; }
+    .fb.ok  { background: #e3f2dd; color: #2f5b23; border: 1px solid #b9dcac; }
+    .fb.no  { background: #fbeae8; color: #7c2418; border: 1px solid #eec3bc; }
+
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+
+    .result-box {
+        background: #e3f2dd; color: #2f5b23; border: 1px solid #b9dcac;
+        padding: 11px 14px; border-radius: 6px; margin-top: 10px; font-size: 0.88rem; line-height: 1.55;
+    }
+
+    .modal { display: none; position: fixed; inset: 0; background: rgba(60,44,25,0.55);
+             z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
+    .modal.open { display: flex; }
+    .modal-content { background: #fff; border-radius: 12px; padding: 20px 22px; max-width: 480px;
+                     width: 100%; max-height: 92vh; overflow-y: auto; box-shadow: 0 16px 44px rgba(60,44,25,0.4); }
+    .modal-content h3 { color: #b45309; margin-bottom: 8px; }
+    .recap-line { font-size: 0.88rem; margin: 5px 0; color: #3a2f1e; line-height: 1.5; }
+    .recap-line b { color: #7c2d12; }
+    .takeaway { background: #fffaf0; border-left: 4px solid #f59e0b; padding: 9px 12px;
+                border-radius: 5px; font-size: 0.86rem; margin-top: 10px; line-height: 1.5; color: #5c4326; }
+
+    .summary-final { background: #fffaf0; border: 2px solid #d97706; border-radius: 10px;
+                     padding: 16px; text-align: center; font-size: 0.95rem; line-height: 1.6; color: #5c4326; }
+    .summary-final .big { font-size: 1.15rem; font-weight: 700; color: #b45309; display: block; margin-bottom: 4px; }
+
+    @media (max-width: 520px) {
+        .header h1 { font-size: 1.05rem; }
+        .element-card .sym { font-size: 2.2rem; }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="score-badge" id="score-badge">Score 100%</div>
+        <h1>Valence Electrons, Lewis Symbols &amp; Reactivity</h1>
+        <p>Same number of valence electrons &rarr; same column &rarr; similar reactivity</p>
+    </div>
+
+    <!-- ============ TITLE SCREEN ============ -->
+    <div id="title-screen" class="screen">
+        <div class="intro-box">
+            <h3>What you&rsquo;ll do</h3>
+            <p>For each element you&rsquo;ll work through three steps, and the next step only opens once the one before it is right:</p>
+            <ol>
+                <li><b>Choose the number of valence electrons</b> from the element&rsquo;s place on the periodic table.</li>
+                <li><b>Build its Lewis dot symbol</b> &mdash; place the dots around the symbol, one on each side before you pair them up.</li>
+                <li><b>Pick its reactivity partner</b> &mdash; the other element that reacts most like it, because it has the same number of valence electrons.</li>
+            </ol>
+
+            <h3>Completion &amp; grading</h3>
+            <ul>
+                <li>Work through <b>10 elements</b>, with every main group represented.</li>
+                <li>Every step has to be correct before you move on.</li>
+                <li>Finish all ten and your grade is submitted to Schoology automatically. It takes about 10&ndash;15 minutes; use the <b>Save progress</b> button at the top if you need to stop and pick it up later.</li>
+            </ul>
+        </div>
+        <button class="btn btn-big" onclick="startSim()">Begin</button>
+    </div>
+
+    <!-- ============ MAIN ============ -->
+    <div id="main" class="screen hidden">
+        <div style="text-align:center;"><span class="progress" id="progress">Element 1 of 10</span></div>
+        <div class="save-row" id="save-row" style="display:none;">
+            <button type="button" class="save-btn" onclick="manualSave()">Save progress</button>
+            <span class="save-note" id="save-note">saved</span>
+        </div>
+
+        <div class="element-card" id="element-card"></div>
+
+        <!-- Step 1 -->
+        <div class="lab-card" id="p1-card">
+            <h4>Step 1 &mdash; How many valence electrons?</h4>
+            <p class="card-hint">Valence electrons are the outer-shell electrons. For a main-group element you can read the count straight off the group number.</p>
+            <div class="num-row" id="p1-nums"></div>
+            <div class="fb" id="fb1"></div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="lab-card hidden" id="p2-card">
+            <h4>Step 2 &mdash; Build the Lewis dot symbol</h4>
+            <p class="card-hint">Click a side of the symbol to add a dot (click again to pair it, once more to clear that side). Put <b>one dot on each of the four sides first</b>, then start pairing.</p>
+            <div class="lewis-wrap">
+                <div class="lewis-stage" id="lewis-stage">
+                    <div class="lewis-side top"    data-side="top"></div>
+                    <div class="lewis-side right"  data-side="right"></div>
+                    <div class="lewis-side bottom" data-side="bottom"></div>
+                    <div class="lewis-side left"   data-side="left"></div>
+                    <div class="lewis-sym" id="lewis-sym">X</div>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-green" onclick="checkLewis()">Check the symbol</button>
+                <button class="btn btn-grey" onclick="clearLewis()">Clear</button>
+            </div>
+            <div class="fb" id="fb2"></div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="lab-card hidden" id="p3-card">
+            <h4>Step 3 &mdash; Which element reacts most like this one?</h4>
+            <p class="card-hint">Elements in the same column have the same number of valence electrons, so they gain, lose, or share electrons in the same way &mdash; that is what makes their reactivity similar.</p>
+            <div class="choice-list" id="p3-choices"></div>
+            <div class="fb" id="fb3"></div>
+        </div>
+
+        <div id="solved-result"></div>
+    </div>
+
+    <!-- ============ SUMMARY SCREEN ============ -->
+    <div id="summary-screen" class="screen hidden">
+        <div class="summary-final">
+            <span class="big">All 10 elements complete</span>
+            Your grade has been submitted to Schoology.
+            <div id="summary-score" style="font-size:0.86rem; color:#8a6a3c; margin-top:6px; font-weight:700;"></div>
+            <div id="summary-recap" style="margin-top:12px; text-align:left;"></div>
+        </div>
+        <button class="btn btn-big" onclick="restartSim()">Start over</button>
+    </div>
+</div>
+
+<!-- ============ PER-PROBLEM RECAP MODAL ============ -->
+<div id="recap-modal" class="modal">
+    <div class="modal-content">
+        <h3 id="recap-title">Correct</h3>
+        <div id="recap-body"></div>
+        <div class="takeaway" id="recap-takeaway"></div>
+        <button class="btn btn-green" id="recap-next" style="margin-top:14px;" onclick="nextProblem()">Next element</button>
+    </div>
+</div>
+
+<script>
+/* =========================================================
+   Valence Electrons, Lewis Symbols & Reactivity
+   Single-file sim. Fall / warm palette. Progressive disclosure:
+   each step is hidden until the previous one is answered correctly,
+   and the newly shown card is scrolled into view.
+   SCORM 1.2 completion reporting when launched from an LMS.
+   ========================================================= */
+
+/* ---- data: one element per main group ---- */
+const GROUPS = {
+    1:  { valence: 1, family: 'the alkali metals',
+          tendency: 'lose its 1 valence electron to form a 1+ ion',
+          pool: [['Li','Lithium'], ['Na','Sodium'], ['K','Potassium']] },
+    2:  { valence: 2, family: 'the alkaline earth metals',
+          tendency: 'lose its 2 valence electrons to form a 2+ ion',
+          pool: [['Be','Beryllium'], ['Mg','Magnesium'], ['Ca','Calcium']] },
+    14: { valence: 4, family: 'the carbon group',
+          tendency: 'share electrons rather than gain or lose all 4',
+          pool: [['C','Carbon'], ['Si','Silicon']] },
+    15: { valence: 5, family: 'the nitrogen group',
+          tendency: 'gain 3 electrons (or share) to reach a full octet',
+          pool: [['N','Nitrogen'], ['P','Phosphorus']] },
+    16: { valence: 6, family: 'the oxygen group (chalcogens)',
+          tendency: 'gain 2 electrons to form a 2&minus; ion',
+          pool: [['O','Oxygen'], ['S','Sulfur']] },
+    17: { valence: 7, family: 'the halogens',
+          tendency: 'gain 1 electron to form a 1&minus; ion',
+          pool: [['F','Fluorine'], ['Cl','Chlorine'], ['Br','Bromine']] },
+    18: { valence: 8, family: 'the noble gases',
+          tendency: 'do almost nothing &mdash; it already has a full set of 8 valence electrons',
+          pool: [['Ne','Neon'], ['Ar','Argon']] }
+};
+const PLAN_GROUPS = [1, 2, 14, 15, 16, 17, 18];
+const SET_LENGTH = 10;   // 10 distinct-element problems, every main group represented
+const MISS_PENALTY = 3;   // % lost per wrong answer on any step
+const SCORE_FLOOR = 60;   // score never drops below this
+
+/* flat list of every element, tagged with its group */
+const ALL_ELEMENTS = [];
+Object.keys(GROUPS).forEach(function (g) {
+    GROUPS[g].pool.forEach(function (e) {
+        ALL_ELEMENTS.push({ sym: e[0], name: e[1], group: parseInt(g, 10), valence: GROUPS[g].valence });
+    });
+});
+
+/* ---- helpers ---- */
+function shuffle(a) {
+    a = a.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+}
+function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+function $(id) { return document.getElementById(id); }
+function revealAndScroll(el) {
+    el.classList.remove('hidden');
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/* ---- state ---- */
+let plan = [];
+let idx = 0;
+let solvedCount = 0;
+let missCount = 0;
+let recapLog = [];
+let current = null;          // { sym, name, group, valence, sides, correctPartner, choices }
+
+function currentPct() { return Math.max(SCORE_FLOOR, 100 - MISS_PENALTY * missCount); }
+function updateScore() {
+    const b = $('score-badge');
+    if (b) b.textContent = 'Score ' + currentPct() + '%';
+}
+function registerMiss() {
+    missCount++;
+    updateScore();
+    scormCheckpoint();
+}
+
+function buildPlan() {
+    // Pick one element from every main group first (guarantees coverage), then
+    // fill up to SET_LENGTH with more distinct elements. No element is ever repeated.
+    const used = {};
+    const chosen = [];
+    shuffle(PLAN_GROUPS).forEach(function (g) {
+        const el = pick(GROUPS[g].pool);
+        used[el[0]] = true;
+        chosen.push({ sym: el[0], name: el[1], group: g });
+    });
+    const spare = shuffle(ALL_ELEMENTS.filter(function (e) { return !used[e.sym]; }));
+    while (chosen.length < SET_LENGTH && spare.length) {
+        const e = spare.pop();
+        chosen.push({ sym: e.sym, name: e.name, group: e.group });
+    }
+
+    return shuffle(chosen).map(function (c) {
+        const g = c.group;
+        const grp = GROUPS[g];
+        const others = grp.pool.filter(function (e) { return e[0] !== c.sym; });
+        const partner = pick(others);                     // same group => same valence
+        // three distractors, each from a different group
+        const otherGroups = shuffle(Object.keys(GROUPS).filter(function (k) { return parseInt(k, 10) !== g; })).slice(0, 3);
+        const distractors = otherGroups.map(function (k) { return pick(GROUPS[k].pool).concat([parseInt(k, 10)]); });
+        return {
+            sym: c.sym, name: c.name, group: g, valence: grp.valence,
+            partner: { sym: partner[0], name: partner[1], group: g, valence: grp.valence },
+            distractors: distractors.map(function (d) {
+                return { sym: d[0], name: d[1], group: d[2], valence: GROUPS[d[2]].valence };
+            })
+        };
+    });
+}
+
+/* =========================================================
+   Start / problem flow
+   ========================================================= */
+function startSim() {
+    plan = buildPlan();
+    idx = 0; solvedCount = 0; missCount = 0; recapLog = [];
+    $('title-screen').classList.add('hidden');
+    $('summary-screen').classList.add('hidden');
+    $('main').classList.remove('hidden');
+    if (scormAPI) $('save-row').style.display = '';
+    renderProblem();
+    updateScore();
+    scormCheckpoint();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function restartSim() {
+    missCount = 0;
+    updateScore();
+    $('summary-screen').classList.add('hidden');
+    $('title-screen').classList.remove('hidden');
+    window.scrollTo({ top: 0 });
+}
+
+function renderProblem() {
+    const p = plan[idx];
+    current = {
+        sym: p.sym, name: p.name, group: p.group, valence: p.valence,
+        sides: { top: 0, right: 0, bottom: 0, left: 0 },
+        chosenValence: null,
+        partner: p.partner, distractors: p.distractors
+    };
+
+    $('progress').textContent = 'Element ' + (idx + 1) + ' of ' + SET_LENGTH;
+
+    $('element-card').innerHTML =
+        '<div class="sym">' + p.sym + '</div>' +
+        '<div class="name">' + p.name + '</div>' +
+        '<div class="grp">Group ' + p.group + ' &nbsp;&bull;&nbsp; ' + GROUPS[p.group].family + '</div>';
+
+    // Step 1
+    let nums = '';
+    for (let n = 1; n <= 8; n++) {
+        nums += '<button class="num-btn" data-n="' + n + '" onclick="chooseValence(' + n + ')">' + n + '</button>';
+    }
+    $('p1-nums').innerHTML = nums;
+    clearFb('fb1');
+
+    // Step 2 (reset + hide)
+    $('p2-card').classList.add('hidden');
+    $('lewis-sym').textContent = p.sym;
+    renderLewis();
+    clearFb('fb2');
+
+    // Step 3 (reset + hide)
+    $('p3-card').classList.add('hidden');
+    $('p3-choices').innerHTML = '';
+    clearFb('fb3');
+
+    $('solved-result').innerHTML = '';
+
+    $('element-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function clearFb(id) { const el = $(id); el.className = 'fb'; el.innerHTML = ''; }
+function showFb(id, kind, html) { const el = $(id); el.className = 'fb show ' + kind; el.innerHTML = html; }
+
+/* ---- Step 1: valence electrons ---- */
+function chooseValence(n) {
+    if (current.chosenValence !== null && current.step1Done) return;
+    document.querySelectorAll('#p1-nums .num-btn').forEach(function (b) {
+        b.classList.toggle('chosen', parseInt(b.dataset.n, 10) === n);
+    });
+    current.chosenValence = n;
+
+    if (n === current.valence) {
+        current.step1Done = true;
+        document.querySelectorAll('#p1-nums .num-btn').forEach(function (b) { b.disabled = true; });
+        const rule = (current.group <= 2)
+            ? 'For groups 1 and 2 the valence count is just the group number.'
+            : 'For groups 13&ndash;18 the valence count is the second digit of the group number (Group ' + current.group + ' &rarr; ' + current.valence + ').';
+        showFb('fb1', 'ok', '<b>Correct &mdash; ' + current.valence + ' valence electrons.</b> ' + rule);
+        revealAndScroll($('p2-card'));
+    } else {
+        showFb('fb1', 'no', 'Not quite &mdash; try again.');
+        registerMiss();
+    }
+}
+
+/* ---- Step 2: Lewis dot builder ---- */
+function renderLewis() {
+    ['top', 'right', 'bottom', 'left'].forEach(function (s) {
+        const zone = document.querySelector('.lewis-side.' + s);
+        let dots = '';
+        for (let i = 0; i < current.sides[s]; i++) dots += '<span class="lewis-dot"></span>';
+        zone.innerHTML = dots;
+    });
+}
+function totalDots() {
+    return current.sides.top + current.sides.right + current.sides.bottom + current.sides.left;
+}
+document.querySelectorAll('.lewis-side').forEach(function (zone) {
+    zone.addEventListener('click', function () {
+        if (current.step2Done) return;
+        const s = zone.dataset.side;
+        current.sides[s] = (current.sides[s] + 1) % 3;    // 0 -> 1 -> 2 -> 0
+        renderLewis();
+        clearFb('fb2');
+    });
+});
+function clearLewis() {
+    if (current.step2Done) return;
+    current.sides = { top: 0, right: 0, bottom: 0, left: 0 };
+    renderLewis();
+    clearFb('fb2');
+}
+function checkLewis() {
+    if (current.step2Done) return;
+    const v = current.valence;
+    const total = totalDots();
+    const sideVals = [current.sides.top, current.sides.right, current.sides.bottom, current.sides.left];
+    const pairs = sideVals.filter(function (x) { return x === 2; }).length;
+    const singles = sideVals.filter(function (x) { return x === 1; }).length;
+
+    const expectedPairs = Math.max(0, v - 4);
+    const ok = (total === v) && sideVals.every(function (x) { return x <= 2; }) && (pairs === expectedPairs);
+    if (!ok) {
+        showFb('fb2', 'no', 'Not quite &mdash; try again.');
+        registerMiss();
+        return;
+    }
+    // valid standard arrangement
+    current.step2Done = true;
+    const desc = (v <= 4)
+        ? v + ' single dot' + (v === 1 ? '' : 's') + ', no pairs yet'
+        : expectedPairs + ' lone pair' + (expectedPairs === 1 ? '' : 's') + ' and ' + singles + ' unpaired dot' + (singles === 1 ? '' : 's');
+    showFb('fb2', 'ok', '<b>That’s the Lewis symbol for ' + current.name + '.</b> ' +
+        v + ' valence electrons shown as ' + desc + '. Those outer electrons are the ones involved in bonding.');
+    buildStep3();
+    revealAndScroll($('p3-card'));
+}
+
+/* ---- Step 3: reactivity partner ---- */
+function buildStep3() {
+    const opts = shuffle([
+        { el: current.partner, correct: true }
+    ].concat(current.distractors.map(function (d) { return { el: d, correct: false }; })));
+    current.choices = opts;
+
+    $('p3-choices').innerHTML = opts.map(function (o, i) {
+        return '<button class="choice-btn" data-i="' + i + '" onclick="answerStep3(' + i + ')">' +
+            '<span class="cs">' + o.el.name + ' (' + o.el.sym + ')</span> &mdash; Group ' + o.el.group +
+            '</button>';
+    }).join('');
+    clearFb('fb3');
+}
+function answerStep3(i) {
+    if (current.step3Done) return;
+    const o = current.choices[i];
+    const btn = document.querySelector('#p3-choices .choice-btn[data-i="' + i + '"]');
+    if (o.correct) {
+        current.step3Done = true;
+        btn.classList.add('right');
+        document.querySelectorAll('#p3-choices .choice-btn').forEach(function (b) { b.disabled = true; });
+        const g = GROUPS[current.group];
+        showFb('fb3', 'ok', '<b>Yes.</b> ' + o.el.name + ' is also in Group ' + current.group +
+            ', so it also has <b>' + current.valence + ' valence electrons</b> and tends to ' + g.tendency + ' &mdash; just like ' + current.name + '.');
+        solveProblem();
+    } else {
+        btn.classList.add('wrong');
+        btn.disabled = true;
+        showFb('fb3', 'no', 'Not quite &mdash; try again.');
+        registerMiss();
+    }
+}
+
+/* ---- problem solved -> recap modal ---- */
+function solveProblem() {
+    solvedCount++;
+    const g = GROUPS[current.group];
+    const v = current.valence;
+    const sym = current.sym;
+    const pairs = Math.max(0, v - 4);
+    const lewisText = (v <= 4)
+        ? v + ' single dot' + (v === 1 ? '' : 's')
+        : pairs + ' lone pair' + (pairs === 1 ? '' : 's') + ' + ' + (v - 2 * pairs) + ' single dot' + (v - 2 * pairs === 1 ? '' : 's');
+
+    recapLog.push({ name: current.name, sym: sym, group: current.group, valence: v, partner: current.partner.sym });
+
+    $('recap-title').textContent = current.name + ' — done';
+    $('recap-body').innerHTML =
+        '<div class="recap-line"><b>' + current.name + ' (' + sym + ')</b>, Group ' + current.group + '</div>' +
+        '<div class="recap-line">Valence electrons: <b>' + v + '</b></div>' +
+        '<div class="recap-line">Lewis symbol: <b>' + lewisText + '</b> around ' + sym + '</div>' +
+        '<div class="recap-line">Reacts like: <b>' + current.partner.name + ' (' + current.partner.sym + ')</b> — same group, same ' + v + ' valence electrons</div>';
+    $('recap-takeaway').innerHTML =
+        '<b>' + current.name + '</b> and <b>' + current.partner.name + '</b> sit in the same column of the periodic table. ' +
+        'Same number of valence electrons means they both ' + g.tendency + ', which is why their chemistry looks so similar.';
+    $('recap-next').textContent = (idx + 1 >= SET_LENGTH) ? 'See your results' : 'Next element';
+    $('recap-modal').classList.add('open');
+}
+
+function nextProblem() {
+    $('recap-modal').classList.remove('open');
+    idx++;
+    if (idx >= SET_LENGTH) {
+        finishSim();
+        return;
+    }
+    renderProblem();
+    scormCheckpoint();
+}
+
+function finishSim() {
+    $('main').classList.add('hidden');
+    let rows = '<table style="width:100%; border-collapse:collapse; font-size:0.84rem;">' +
+        '<tr><th style="text-align:left; padding:4px 6px; border-bottom:2px solid #d9c3a3;">Element</th>' +
+        '<th style="padding:4px 6px; border-bottom:2px solid #d9c3a3;">Group</th>' +
+        '<th style="padding:4px 6px; border-bottom:2px solid #d9c3a3;">Valence e&minus;</th>' +
+        '<th style="padding:4px 6px; border-bottom:2px solid #d9c3a3;">Reacts like</th></tr>';
+    recapLog.forEach(function (r) {
+        rows += '<tr>' +
+            '<td style="text-align:left; padding:4px 6px; border-bottom:1px solid #eadfca;">' + r.name + ' (' + r.sym + ')</td>' +
+            '<td style="text-align:center; padding:4px 6px; border-bottom:1px solid #eadfca;">' + r.group + '</td>' +
+            '<td style="text-align:center; padding:4px 6px; border-bottom:1px solid #eadfca;">' + r.valence + '</td>' +
+            '<td style="text-align:center; padding:4px 6px; border-bottom:1px solid #eadfca;">' + r.partner + '</td>' +
+        '</tr>';
+    });
+    rows += '</table>';
+    $('summary-recap').innerHTML = rows;
+    $('summary-score').textContent = 'Score: ' + currentPct() + '%';
+    $('summary-screen').classList.remove('hidden');
+    updateScore();
+    scormReport();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* =========================================================
+   SCORM 1.2 -- full feature set for Schoology:
+   completion status, score (with the miss penalty), session time,
+   student name, and suspend/resume. Runs harmlessly as a plain
+   web page when there is no LMS API.
+   ========================================================= */
+let scormAPI = null;
+let scormDone = false;
+let scormResumeEntry = false;
+let scormStudent = '';
+const scormStart = Date.now();
+
+function findAPI(win) {
+    let n = 0, w = win;
+    while (w && n < 10) {
+        if (w.API) return w.API;
+        if (w.parent && w.parent !== w) w = w.parent;
+        else if (w.opener) w = w.opener;
+        else break;
+        n++;
+    }
+    return null;
+}
+function scormTime() {
+    let s = Math.floor((Date.now() - scormStart) / 1000);
+    const h = Math.floor(s / 3600); s -= h * 3600;
+    const m = Math.floor(s / 60);   s -= m * 60;
+    return String(h).padStart(4, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+}
+function scormInit() {
+    try {
+        scormAPI = findAPI(window);
+        if (!scormAPI) return;
+        if (scormAPI.LMSInitialize('') === 'false') { scormAPI = null; return; }
+        scormStudent = String(scormAPI.LMSGetValue('cmi.core.student_name') || '').trim();
+        scormResumeEntry = scormAPI.LMSGetValue('cmi.core.entry') === 'resume';
+        const st = scormAPI.LMSGetValue('cmi.core.lesson_status');
+        if (!st || st === 'not attempted' || st === 'unknown' || st === '') {
+            scormAPI.LMSSetValue('cmi.core.lesson_status', 'incomplete');
+            scormAPI.LMSCommit('');
+        }
+    } catch (e) { scormAPI = null; }
+}
+/* Save progress after every problem and every miss, so a closed tab or a
+   Chromebook lid can pick back up. Only counters are stored -- on resume the
+   in-progress element is generated fresh, completed progress carries over. */
+function scormCheckpoint() {
+    if (!scormAPI || scormDone) return;
+    try {
+        scormAPI.LMSSetValue('cmi.suspend_data', JSON.stringify({
+            idx: idx, solvedCount: solvedCount, missCount: missCount, recapLog: recapLog
+        }));
+        scormAPI.LMSSetValue('cmi.core.lesson_location', String(idx));
+        scormAPI.LMSSetValue('cmi.core.exit', 'suspend');
+        scormAPI.LMSCommit('');
+    } catch (e) { /* ignore */ }
+}
+function scormTryResume() {
+    if (!scormAPI || !scormResumeEntry) return false;
+    try {
+        const raw = scormAPI.LMSGetValue('cmi.suspend_data');
+        if (!raw || raw.charAt(0) !== '{') return false;
+        const d = JSON.parse(raw);
+        if (!Number.isInteger(d.idx) || d.idx < 0 || d.idx >= SET_LENGTH) return false;
+        plan = buildPlan();                       // fresh elements; only progress is restored
+        idx = d.idx;
+        solvedCount = Number.isInteger(d.solvedCount) ? Math.min(d.solvedCount, d.idx) : d.idx;
+        missCount = (Number.isInteger(d.missCount) && d.missCount >= 0) ? d.missCount : 0;
+        recapLog = Array.isArray(d.recapLog) ? d.recapLog : [];
+        $('title-screen').classList.add('hidden');
+        $('summary-screen').classList.add('hidden');
+        $('main').classList.remove('hidden');
+        $('save-row').style.display = '';
+        renderProblem();
+        updateScore();
+        return true;
+    } catch (e) { return false; }
+}
+function scormReport() {
+    if (!scormAPI || scormDone) return;
+    try {
+        const pct = currentPct();
+        scormAPI.LMSSetValue('cmi.core.score.min', '0');
+        scormAPI.LMSSetValue('cmi.core.score.max', '100');
+        scormAPI.LMSSetValue('cmi.core.score.raw', String(pct));
+        scormAPI.LMSSetValue('cmi.core.lesson_status', 'passed');
+        scormAPI.LMSSetValue('cmi.core.session_time', scormTime());
+        scormAPI.LMSSetValue('cmi.suspend_data',
+            'done ' + solvedCount + '/' + SET_LENGTH + ', ' + pct + '%, ' + missCount + ' misses');
+        scormAPI.LMSSetValue('cmi.core.exit', '');
+        scormAPI.LMSCommit('');
+        scormDone = true;
+    } catch (e) { /* ignore */ }
+}
+function manualSave() {
+    if (!scormAPI || scormDone) return;
+    scormCheckpoint();
+    const n = $('save-note');
+    if (!n) return;
+    n.classList.add('show');
+    clearTimeout(manualSave._t);
+    manualSave._t = setTimeout(function () { n.classList.remove('show'); }, 2200);
+}
+function scormTerminate() {
+    if (!scormAPI) return;
+    try {
+        if (!scormDone) scormCheckpoint();
+        scormAPI.LMSFinish('');
+    } catch (e) { /* ignore */ }
+}
+window.addEventListener('beforeunload', scormTerminate);
+window.addEventListener('pagehide', function () {
+    try { if (scormAPI && !scormDone) scormCheckpoint(); } catch (e) { /* ignore */ }
+});
+document.addEventListener('visibilitychange', function () {
+    if (document.hidden && scormAPI && !scormDone) scormCheckpoint();
+});
+
+scormInit();
+scormTryResume();
+</script>
+</body>
+</html>

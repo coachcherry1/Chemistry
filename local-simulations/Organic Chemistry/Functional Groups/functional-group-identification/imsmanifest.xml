@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="WCS-FUNCTIONAL-GROUP-IDENTIFICATION-V1" version="1.2"
+          xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+          xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                              http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd
+                              http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd">
+
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+
+  <organizations default="ORG-FUNCTIONAL-GROUP-IDENTIFICATION">
+    <organization identifier="ORG-FUNCTIONAL-GROUP-IDENTIFICATION">
+      <title>Functional Group Identification</title>
+      <item identifier="ITEM-FUNCTIONAL-GROUP-IDENTIFICATION" identifierref="RES-FUNCTIONAL-GROUP-IDENTIFICATION" isvisible="true">
+        <title>Functional Group Identification</title>
+        <adlcp:masteryscore>60</adlcp:masteryscore>
+      </item>
+    </organization>
+  </organizations>
+
+  <resources>
+    <resource identifier="RES-FUNCTIONAL-GROUP-IDENTIFICATION" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="index.html"/>
+      <file href="images/1-Alkene-Alcohol.png"/>
+      <file href="images/2-carbox-amine.png"/>
+      <file href="images/3-alkyne-ester.png"/>
+      <file href="images/4-Aldehyde.png"/>
+      <file href="images/5-Alcohol.png"/>
+      <file href="images/6-Alkyne-Ketone.png"/>
+      <file href="images/7-carbox-amine-alkene.png"/>
+      <file href="images/8-Ester-Alcohol.png"/>
+      <file href="images/9-alkyne-ketones-alkene.png"/>
+      <file href="images/10-carbox-ester-amine.png"/>
+    </resource>
+  </resources>
+
+</manifest>

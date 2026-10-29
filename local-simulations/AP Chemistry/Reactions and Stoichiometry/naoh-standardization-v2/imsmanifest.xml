@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="STANDARDIZATION_LABS_V2" version="1.0"
+  xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+  xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                      http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd
+                      http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+
+  <organizations default="STANDARDIZATION_LABS_V2_ORG">
+    <organization identifier="STANDARDIZATION_LABS_V2_ORG">
+      <title>NaOH and KMnO4 Standardization Virtual Lab</title>
+      <item identifier="ITEM_1" identifierref="RESOURCE_1">
+        <title>NaOH and KMnO4 Standardization Virtual Lab</title>
+      </item>
+    </organization>
+  </organizations>
+
+  <resources>
+    <resource identifier="RESOURCE_1" type="webcontent" adlcp:scormtype="sco"
+              href="naoh-standardization-v2.html">
+      <file href="naoh-standardization-v2.html"/>
+    </resource>
+  </resources>
+
+</manifest>

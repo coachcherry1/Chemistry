@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Significant Figures: Calculations Practice - Simple</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  h1 {
+    text-align: center;
+    margin: 0.5rem 0 1rem 0;
+    color: #2c3e50;
+    font-size: 2rem;
+    font-weight: 300;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .hidden { display: none !important; }
+
+  .start-screen {
+    max-width: 600px;
+    margin: 60px auto;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 32px;
+    text-align: center;
+  }
+  .start-screen h2 { color: #2c3e50; margin-top: 0; }
+  .start-screen p { color: #495057; line-height: 1.6; }
+  .start-screen button {
+    background: linear-gradient(145deg, #4a90e2, #357abd);
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+  }
+  .start-screen button:hover { background: linear-gradient(145deg, #357abd, #2c5aa0); }
+
+  .progress-board {
+    max-width: 260px;
+    margin: 0 auto 16px;
+    background: white;
+    border: 1px solid #d7e3ea;
+    border-radius: 8px;
+    padding: 10px 14px;
+    text-align: center;
+  }
+  .progress-board .label { font-size: 0.8rem; color: #34495e; }
+  .progress-board .value { font-size: 1.2rem; font-weight: 600; color: #1c6e85; }
+
+  .success-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+  }
+  .success-modal.active { display: flex; }
+  .success-container {
+    background: white;
+    border-radius: 14px;
+    padding: 32px;
+    max-width: 420px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    color: #2c3e50;
+  }
+  .success-container h2 { color: #28a745; margin-top: 0; }
+  .close-button {
+    background: linear-gradient(145deg, #4a90e2, #357abd);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 12px;
+    font-weight: 600;
+  }
+  .close-button:hover { background: linear-gradient(145deg, #357abd, #2c5aa0); }
+
+  .card {
+    max-width: 600px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    text-align: center;
+  }
+  .op-type {
+    display: inline-block;
+    background: #e9ecef;
+    color: #34495e;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.25rem 0.7rem;
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .expression {
+    background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+    color: white;
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    font-size: 1.6rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 6px 20px rgba(33, 147, 176, 0.4);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    margin: 0.5rem 0 1.5rem 0;
+  }
+  .prompt-label {
+    color: #34495e;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+  #answerRow {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+  #answerInput {
+    width: 140px;
+    font-size: 1.3rem;
+    text-align: center;
+    padding: 0.5rem;
+    border: 2px solid #d0d7de;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  #answerInput:focus {
+    outline: none;
+    border-color: #4a90e2;
+  }
+  button.action {
+    padding: 0.65rem 1.4rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  #checkBtn {
+    background: linear-gradient(145deg, #28a745, #218838);
+    color: white;
+  }
+  #checkBtn:hover { background: linear-gradient(145deg, #218838, #1e7e34); transform: translateY(-1px); }
+  #nextBtn {
+    background: linear-gradient(145deg, #4a90e2, #357abd);
+    color: white;
+    display: none;
+  }
+  #nextBtn:hover { background: linear-gradient(145deg, #357abd, #2c5aa0); transform: translateY(-1px); }
+  #feedback {
+    font-weight: 600;
+    min-height: 2.4rem;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    line-height: 1.4;
+  }
+  #feedback.correct { color: #1e7e34; }
+  #feedback.incorrect { color: #c0392b; }
+  #feedback.partial { color: #b8860b; }
+  #streak {
+    font-size: 0.9rem;
+    color: #34495e;
+    background: rgba(0,0,0,0.05);
+    display: inline-block;
+    padding: 0.3rem 0.7rem;
+    border-radius: 15px;
+  }
+  #hintBox {
+    margin-top: 1.2rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(145deg, #fff8e1, #ffecb3);
+    border: 1px solid #ffd54f;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #795548;
+    text-align: left;
+  }
+  .save-bar {
+    text-align: center;
+    margin: 0 0 14px;
+  }
+  .btn-save {
+    background: linear-gradient(145deg, #28a745, #218838);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .btn-save:hover { background: linear-gradient(145deg, #218838, #1e7e34); }
+  .save-status {
+    display: inline-block;
+    margin-left: 10px;
+    color: #1e7e34;
+    font-weight: 600;
+    font-size: 0.85rem;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .save-status.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="start-screen" id="startScreen">
+  <h2>Significant Figures: Calculations Practice - Simple</h2>
+  <p>You'll be given a calculation using measured values. Solve it and type your answer rounded to the
+  correct number of significant figures (or decimal places for addition/subtraction).</p>
+  <p>Correctly solve <strong><span id="introRequiredCount">10</span> problems</strong> to complete this activity.</p>
+  <p>Your progress is saved if you're interrupted, and a completion grade is submitted to your LMS automatically when you finish.</p>
+  <p>Before you close your Chromebook or exit Schoology, click the green "Save Progress" button so your work is saved and you can pick up where you left off next time.</p>
+  <button onclick="startActivity()">Begin Activity</button>
+</div>
+
+<div class="hidden" id="mainContent">
+  <h1>Significant Figures: Calculations Practice - Simple</h1>
+  <div class="progress-board">
+    <div class="label">Correct Answers</div>
+    <div class="value" id="progressText">0/10</div>
+  </div>
+
+  <div class="save-bar">
+    <button class="btn-save" id="saveProgressBtn">Save Progress</button>
+    <span class="save-status" id="saveStatus">Saved &#10003;</span>
+  </div>
+
+  <div class="card">
+    <div class="op-type" id="opType">Multiplication / Division</div>
+    <div class="prompt-label">Solve, then round your answer to the correct number of sig figs / decimal places:</div>
+    <div class="expression" id="expressionDisplay"></div>
+    <div id="answerRow">
+      <input type="text" id="answerInput" inputmode="decimal" placeholder="your answer" autocomplete="off"/>
+      <button class="action" id="checkBtn">Check</button>
+      <button class="action" id="nextBtn">Next</button>
+    </div>
+    <div id="feedback"></div>
+    <div id="streak">Streak: 0</div>
+    <div id="hintBox">
+      <strong>Rules reminder:</strong> For <strong>+ / −</strong>, round your answer to match the fewest decimal
+      places of any value used. For <strong>× / ÷</strong>, round your answer to match the fewest significant
+      figures of any value used. Include a decimal point and trailing zeros when they're needed to show the
+      correct precision (e.g. "5.00" not "5").
+    </div>
+  </div>
+</div>
+
+<div class="success-modal" id="successModal">
+  <div class="success-container">
+    <h2>Activity Complete!</h2>
+    <p id="successCountText">You correctly solved 10 sig fig calculation problems.</p>
+    <p>Your completion grade has been submitted to your LMS automatically.</p>
+    <button class="close-button" onclick="closeSuccessScreen()">Close</button>
+  </div>
+</div>
+
+<script>
+  // ---- Sig fig / decimal place helpers ----
+  function sigFigsOfNumericString(str) {
+    str = String(str).trim();
+    if (str.startsWith('-')) str = str.slice(1);
+    if (!/^\d*\.?\d*$/.test(str) || str === '' || str === '.') return null;
+    if (str.includes('.')) {
+      let digits = str.replace('.', '').replace(/^0+/, '');
+      return digits.length > 0 ? digits.length : 1;
+    }
+    let digits = str.replace(/^0+/, '') || '0';
+    let stripped = digits.replace(/0+$/, '');
+    return stripped.length > 0 ? stripped.length : 1;
+  }
+
+  function decimalPlacesOfNumericString(str) {
+    str = String(str).trim();
+    if (!/^-?\d*\.?\d*$/.test(str) || str === '' || str === '-') return null;
+    const dot = str.indexOf('.');
+    if (dot === -1) return 0;
+    return str.length - dot - 1;
+  }
+
+  function roundToSigFigs(num, sig) {
+    if (num === 0) return 0;
+    const d = Math.ceil(Math.log10(Math.abs(num)));
+    const power = sig - d;
+    const magnitude = Math.pow(10, power);
+    return Math.round((num * magnitude).toFixed(6)) / magnitude;
+  }
+
+  function formatSigFigs(num, sig) {
+    if (num === 0) return (0).toFixed(Math.max(sig - 1, 0));
+    const rounded = roundToSigFigs(num, sig);
+    const d = Math.floor(Math.log10(Math.abs(rounded)));
+    let decimals = sig - d - 1;
+    if (decimals < 0) decimals = 0;
+    return rounded.toFixed(decimals);
+  }
+
+  function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  // ---- Problem generation ----
+  // Addition/subtraction: decimal-place rule. Whole-number operands (decimals === 0)
+  // are deliberately rerolled if they'd end in a trailing zero — a whole number like
+  // "500" is ambiguous (its trailing zeros may or may not be significant), and this
+  // simple version sidesteps that caveat entirely so every whole-number operand here
+  // is unambiguously precise to the ones place. See the "advanced" version for the
+  // trailing-zero / last-known-place case.
+  function generateWholeNumberOperand() {
+    let val;
+    let attempts = 0;
+    do {
+      val = randInt(10, 50000);
+      attempts++;
+    } while (val % 10 === 0 && attempts < 50);
+    if (val % 10 === 0) val += 1; // defensive fallback, should never be needed
+    return val;
+  }
+
+  function generateAddSubProblem() {
+    const opCount = Math.random() < 0.6 ? 2 : 3;
+    const operands = [];
+    for (let i = 0; i < opCount; i++) {
+      const decimals = randInt(0, 3);
+      let val;
+      if (decimals === 0) {
+        val = generateWholeNumberOperand();
+      } else {
+        val = randInt(10, 50000) / Math.pow(10, decimals);
+      }
+      operands.push({ value: val, decimals: decimals, str: val.toFixed(decimals) });
+    }
+    // Build expression with + and occasionally - (kept simple: all addition to avoid
+    // negative intermediate results confusing students at this level).
+    const raw = operands.reduce((sum, o) => sum + o.value, 0);
+    const targetDecimals = Math.min(...operands.map(o => o.decimals));
+    const answer = raw.toFixed(targetDecimals);
+    const expression = operands.map(o => o.str).join(' + ') + ' = ?';
+    return {
+      type: 'addsub',
+      expression: expression,
+      answer: answer,
+      checkFormat: (userStr) => decimalPlacesOfNumericString(userStr),
+      targetFormat: targetDecimals,
+      formatLabel: 'decimal place(s)'
+    };
+  }
+
+  // Multiplication/division: sig fig rule. Self-validated with reroll to avoid
+  // ambiguous fixed-notation edge cases (e.g. needing to drop a digit before the decimal).
+  function generateMulDivProblem() {
+    for (let attempt = 0; attempt < 30; attempt++) {
+      const isDivide = Math.random() < 0.4;
+      const sig1 = randInt(2, 4);
+      const sig2 = randInt(2, 4);
+      const base1 = randInt(15, 9999) / Math.pow(10, randInt(0, 3));
+      const base2 = randInt(15, 9999) / Math.pow(10, randInt(0, 3));
+      const op1Str = formatSigFigs(base1, sig1);
+      const op2Str = formatSigFigs(base2, sig2);
+      const op1 = parseFloat(op1Str);
+      const op2 = parseFloat(op2Str);
+      if (op2 === 0) continue;
+      if (sigFigsOfNumericString(op1Str) !== sig1 || sigFigsOfNumericString(op2Str) !== sig2) continue;
+
+      const raw = isDivide ? (op1 / op2) : (op1 * op2);
+      const targetSig = Math.min(sig1, sig2);
+      const answerStr = formatSigFigs(raw, targetSig);
+      if (sigFigsOfNumericString(answerStr) !== targetSig) continue;
+      if (!isFinite(parseFloat(answerStr))) continue;
+
+      const expression = `${op1Str} ${isDivide ? '÷' : '×'} ${op2Str} = ?`;
+      return {
+        type: 'muldiv',
+        expression: expression,
+        answer: answerStr,
+        checkFormat: (userStr) => sigFigsOfNumericString(userStr),
+        targetFormat: targetSig,
+        formatLabel: 'significant figure(s)'
+      };
+    }
+    // Safe fallback if repeated rerolls fail (extremely unlikely).
+    return {
+      type: 'muldiv',
+      expression: '4.00 × 2.0 = ?',
+      answer: '8.0',
+      checkFormat: (userStr) => sigFigsOfNumericString(userStr),
+      targetFormat: 2,
+      formatLabel: 'significant figure(s)'
+    };
+  }
+
+  function generateProblem() {
+    return Math.random() < 0.5 ? generateAddSubProblem() : generateMulDivProblem();
+  }
+
+  const REQUIRED_PROBLEMS = /*__REQUIRED_PROBLEMS__*/10;
+  let challengeFinished = false;
+  let correctCount = 0;
+  let streak = 0;
+  let current = null;
+
+  function nextProblem() {
+    current = generateProblem();
+    document.getElementById('opType').textContent =
+      current.type === 'addsub' ? 'Addition / Subtraction' : 'Multiplication / Division';
+    document.getElementById('expressionDisplay').textContent = current.expression;
+    document.getElementById('answerInput').value = '';
+    document.getElementById('answerInput').disabled = false;
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('feedback').className = '';
+    document.getElementById('checkBtn').style.display = 'inline-block';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('answerInput').focus();
+  }
+
+  function numbersClose(a, b) {
+    return Math.abs(a - b) < Math.max(1e-9, Math.abs(b) * 1e-9);
+  }
+
+  function checkAnswer() {
+    const userStr = document.getElementById('answerInput').value.trim();
+    const fb = document.getElementById('feedback');
+    const userVal = parseFloat(userStr);
+
+    if (!userStr || !Number.isFinite(userVal)) {
+      fb.textContent = 'Enter a numeric answer.';
+      fb.className = 'incorrect';
+      return;
+    }
+
+    const expectedVal = parseFloat(current.answer);
+    const numericOk = numbersClose(userVal, expectedVal);
+    const userFormat = current.checkFormat(userStr);
+    const formatOk = userFormat === current.targetFormat;
+
+    if (numericOk && formatOk) {
+      streak++;
+      fb.textContent = `✅ Correct! ${current.expression.replace('?', current.answer)}`;
+      fb.className = 'correct';
+      correctCount++;
+      updateProgressDisplay();
+      scormSaveProgress();
+      checkForCompletion();
+      document.getElementById('checkBtn').style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'inline-block';
+      document.getElementById('answerInput').disabled = true;
+    } else {
+      streak = 0;
+      if (numericOk && !formatOk) {
+        fb.textContent = `❌ Your value is right, but check your rounding. This answer needs ${current.targetFormat} ${current.formatLabel}.`;
+      } else if (!numericOk && formatOk) {
+        fb.textContent = `❌ Formatting looks right, but the value is off. Recheck your math.`;
+      } else {
+        fb.textContent = '❌ Not quite. Recheck your math and rounding, then try again.';
+      }
+      fb.className = 'incorrect';
+    }
+    document.getElementById('streak').textContent = `Streak: ${streak}`;
+  }
+
+  document.getElementById('checkBtn').addEventListener('click', checkAnswer);
+  document.getElementById('nextBtn').addEventListener('click', nextProblem);
+  document.getElementById('answerInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      if (document.getElementById('checkBtn').style.display !== 'none') checkAnswer();
+      else nextProblem();
+    }
+  });
+
+  function updateProgressDisplay() {
+    document.getElementById('progressText').textContent = `${Math.min(correctCount, REQUIRED_PROBLEMS)}/${REQUIRED_PROBLEMS}`;
+  }
+
+  function checkForCompletion() {
+    if (correctCount >= REQUIRED_PROBLEMS && !challengeFinished) {
+      challengeFinished = true;
+      document.getElementById('successCountText').textContent =
+        `You correctly solved ${REQUIRED_PROBLEMS} sig fig calculation problems.`;
+      document.getElementById('successModal').classList.add('active');
+      scormReport(100);
+    }
+  }
+
+  function closeSuccessScreen() {
+    document.getElementById('successModal').classList.remove('active');
+  }
+
+  function startActivity() {
+    document.getElementById('startScreen').classList.add('hidden');
+    document.getElementById('mainContent').classList.remove('hidden');
+    document.getElementById('introRequiredCount').textContent = REQUIRED_PROBLEMS;
+    updateProgressDisplay();
+    scormSaveProgress();
+  }
+
+  // ---- SCORM 1.2 wrapper ----
+  let scormAPI = null;
+  let resumeState = null;
+
+  function findAPI(win) {
+    let attempts = 0;
+    let w = win;
+    while (w && attempts < 10) {
+      if (w.API) return w.API;
+      if (w.parent && w.parent !== w) { w = w.parent; }
+      else if (w.opener) { w = w.opener; }
+      else break;
+      attempts++;
+    }
+    return null;
+  }
+
+  function isValidResumePayload(parsed) {
+    if (!parsed || typeof parsed !== 'object') return false;
+    if (typeof parsed.correctCount !== 'number' || parsed.correctCount < 0) return false;
+    return true;
+  }
+
+  function scormInit() {
+    try {
+      scormAPI = findAPI(window);
+      if (!scormAPI) return;
+      scormAPI.LMSInitialize('');
+      if (scormAPI.LMSGetValue('cmi.core.entry') === 'resume') {
+        const raw = scormAPI.LMSGetValue('cmi.suspend_data');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (isValidResumePayload(parsed)) resumeState = parsed;
+        }
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  function resumeFromSavedState() {
+    correctCount = resumeState.correctCount;
+    startActivity();
+    checkForCompletion();
+  }
+
+  function scormSaveProgress() {
+    if (!scormAPI) return;
+    if (challengeFinished) return; // don't clobber a final passed/committed state
+    try {
+      scormAPI.LMSSetValue('cmi.suspend_data', JSON.stringify({ correctCount: correctCount }));
+      scormAPI.LMSSetValue('cmi.core.lesson_status', 'incomplete');
+      // Per SCORM's documented attempt-tracking behavior, cmi.core.exit must be set to
+      // "suspend" on every incremental commit (not only on unload) so an LMS never treats
+      // a lost-connection / lid-close / tab-teardown as a fresh attempt and wipes progress.
+      scormAPI.LMSSetValue('cmi.core.exit', 'suspend');
+      scormAPI.LMSCommit('');
+    } catch (e) { /* ignore */ }
+  }
+
+  function manualSaveProgress() {
+    scormSaveProgress();
+    const statusEl = document.getElementById('saveStatus');
+    if (statusEl) {
+      statusEl.classList.add('show');
+      clearTimeout(manualSaveProgress._timer);
+      manualSaveProgress._timer = setTimeout(() => statusEl.classList.remove('show'), 2500);
+    }
+  }
+
+  function scormReport(scorePercent) {
+    if (!scormAPI) return;
+    try {
+      scormAPI.LMSSetValue('cmi.core.score.min', '0');
+      scormAPI.LMSSetValue('cmi.core.score.max', '100');
+      scormAPI.LMSSetValue('cmi.core.score.raw', String(scorePercent));
+      scormAPI.LMSSetValue('cmi.core.lesson_status', 'passed');
+      scormAPI.LMSSetValue('cmi.core.exit', '');
+      scormAPI.LMSCommit('');
+    } catch (e) { /* ignore */ }
+  }
+
+  function scormFinish() {
+    if (!scormAPI) return;
+    try {
+      if (!challengeFinished) {
+        scormSaveProgress();
+      }
+      scormAPI.LMSFinish('');
+    } catch (e) { /* ignore */ }
+  }
+
+  document.getElementById('saveProgressBtn').addEventListener('click', manualSaveProgress);
+
+  // Backup incremental saves: these must NOT call scormFinish()/LMSFinish, only the
+  // lightweight incremental save, since pagehide/visibilitychange can fire in cases
+  // (lid close, tab teardown, backgrounding) where beforeunload never runs at all.
+  window.addEventListener('pagehide', scormSaveProgress);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) scormSaveProgress();
+  });
+
+  window.addEventListener('beforeunload', scormFinish);
+
+  nextProblem();
+  scormInit();
+  if (resumeState) resumeFromSavedState();
+</script>
+</body>
+</html>

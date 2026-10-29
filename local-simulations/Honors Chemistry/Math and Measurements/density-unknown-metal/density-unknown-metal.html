@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Density Lab: Identify the Unknown Metal</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    color: #2c3e50;
+  }
+  h1 {
+    text-align: center;
+    margin: 0.5rem 0 1rem 0;
+    color: #2c3e50;
+    font-size: 1.9rem;
+    font-weight: 300;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .hidden { display: none !important; }
+
+  .start-screen {
+    max-width: 640px;
+    margin: 50px auto;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 32px;
+    text-align: center;
+  }
+  .start-screen h2 { color: #2c3e50; margin-top: 0; }
+  .start-screen p { color: #495057; line-height: 1.6; text-align: left; }
+  .start-screen button {
+    background: linear-gradient(145deg, #4a90e2, #357abd);
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  .start-screen button:hover { background: linear-gradient(145deg, #357abd, #2c5aa0); }
+
+  .wrap { max-width: 1080px; margin: 0 auto; }
+
+  .progress-row {
+    display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 14px;
+  }
+  .progress-board {
+    background: white; border: 1px solid #d7e3ea; border-radius: 8px;
+    padding: 8px 16px; text-align: center; min-width: 120px;
+  }
+  .progress-board .label { font-size: 0.75rem; color: #34495e; }
+  .progress-board .value { font-size: 1.15rem; font-weight: 600; color: #1c6e85; }
+
+  .layout { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; justify-content: center; }
+
+  .card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem 1.75rem;
+    flex: 1 1 560px;
+    max-width: 620px;
+  }
+  .side-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 1.25rem 1.5rem;
+    flex: 0 0 300px;
+    max-width: 320px;
+  }
+  .side-card h3 { margin: 0 0 10px 0; font-size: 1rem; color: #1c6e85; }
+
+  .step-badge {
+    display: inline-block;
+    background: #e9ecef;
+    color: #34495e;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.25rem 0.7rem;
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .prompt {
+    color: #2c3e50;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+  .prompt b { color: #1c6e85; }
+
+  .balance-host { margin: 0.25rem 0; }
+  .balance-host svg { border: none; background: none; border-radius: 0; }
+
+  .instrument-row {
+    display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin: 0.5rem 0 1rem;
+  }
+  .instrument-view { display: flex; flex-direction: column; align-items: center; }
+  .view-label { font-size: 13px; font-weight: bold; color: #1c6e85; margin-bottom: 6px; }
+  svg { border: 1px solid #e0e6ed; border-radius: 10px; background: #f9f9f9; }
+  .zoom-note { color: #c0392b; font-weight: 600; font-size: 12.5px; margin-top: 6px; max-width: 260px; text-align: center; }
+
+  .bench {
+    display: flex; align-items: center; justify-content: center; gap: 46px;
+    margin: 0.5rem 0 1.25rem; flex-wrap: wrap;
+  }
+  .drop-zone {
+    border: 2px dashed #b0bec5; border-radius: 12px; padding: 8px;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .drop-zone.cyl-zone {
+    min-width: 130px; min-height: 70px; display: flex; align-items: center; justify-content: center;
+    color: #8aa1b3; font-size: 0.82rem; text-align: center; padding: 14px;
+  }
+  .drop-zone.drop-hover { border-color: #28a745; background: rgba(40,167,69,0.09); }
+  .drag-source {
+    cursor: grab; text-align: center; user-select: none; touch-action: none;
+    transition: opacity .15s ease; padding: 4px;
+  }
+  .drag-source:active { cursor: grabbing; }
+  .drag-source.placed { opacity: 0.25; pointer-events: none; }
+  .drag-source .cube {
+    width: 50px; height: 50px; border-radius: 6px;
+    background: linear-gradient(145deg, #b0bec5, #78909c);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    margin: 0 auto 6px;
+  }
+  .drag-source .cube-label { font-size: 0.72rem; color: #5a6b7d; font-weight: 600; }
+  .drag-ghost { position: fixed; z-index: 9999; pointer-events: none; opacity: 0.88; }
+
+  .field-row { display: flex; justify-content: center; align-items: center; gap: 0.6rem; margin: 0.5rem 0 1rem; flex-wrap: wrap; }
+  input[type="text"], select {
+    font-size: 1.1rem;
+    text-align: center;
+    padding: 0.5rem 0.7rem;
+    border: 2px solid #d0d7de;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #2c3e50;
+    font-family: inherit;
+  }
+  input[type="text"] { width: 160px; }
+  select { min-width: 220px; }
+  input:focus, select:focus { outline: none; border-color: #4a90e2; }
+
+  button.action {
+    padding: 0.65rem 1.4rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  #checkBtn { background: linear-gradient(145deg, #28a745, #218838); color: white; }
+  #checkBtn:hover { background: linear-gradient(145deg, #218838, #1e7e34); transform: translateY(-1px); }
+
+  #saveProgressBtn { background: linear-gradient(145deg, #20c997, #17a589); color: white; margin-left: 0.5rem; }
+  #saveProgressBtn:hover { background: linear-gradient(145deg, #17a589, #128f7a); transform: translateY(-1px); }
+  .save-status {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #28a745;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    vertical-align: middle;
+  }
+  .save-status.visible { opacity: 1; }
+
+  #feedback {
+    font-weight: 600;
+    min-height: 1.6rem;
+    margin-top: 0.75rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 6px;
+    text-align: center;
+  }
+  #feedback.correct { color: #1e7e34; background: #eafaf0; border: 1px solid #c3e6cb; }
+  #feedback.incorrect { color: #a52a2a; background: #fdecea; border: 1px solid #f5c6cb; }
+  #feedback.empty { display: none; }
+
+  table.ref-table, table.data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  table.ref-table th, table.ref-table td,
+  table.data-table th, table.data-table td {
+    border: 1px solid #dbe4ea; padding: 5px 8px; text-align: left;
+  }
+  table.ref-table th, table.data-table th { background: #eef3f7; color: #34495e; font-size: 0.75rem; text-transform: uppercase; }
+  table.data-table td.val { text-align: right; font-weight: 600; color: #1c6e85; }
+  table.data-table td.pending { color: #a9b6c2; font-style: italic; font-weight: normal; }
+  .data-table-wrap { margin-top: 18px; }
+  .data-table-wrap h3 { margin: 0 0 8px 0; font-size: 1rem; color: #1c6e85; }
+
+  .success-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6); z-index: 2000; align-items: center; justify-content: center;
+  }
+  .success-modal.active { display: flex; }
+  .success-container {
+    background: white; border-radius: 14px; padding: 32px; max-width: 440px;
+    text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4); color: #2c3e50;
+  }
+  .success-container h2 { color: #28a745; margin-top: 0; }
+  .close-button {
+    background: linear-gradient(145deg, #4a90e2, #357abd); color: white; border: none;
+    padding: 10px 24px; border-radius: 8px; cursor: pointer; margin-top: 12px; font-weight: 600;
+  }
+  .close-button:hover { background: linear-gradient(145deg, #357abd, #2c5aa0); }
+</style>
+</head>
+<body>
+
+<div class="start-screen" id="startScreen">
+  <h2>Density Lab: Identify the Unknown Metal</h2>
+  <p>You'll be given an unknown metal sample. Drag it onto the balance and record its mass, then
+  use water displacement in a graduated cylinder to find its volume: read the water level before
+  dragging the sample in, then read it again after the water rises. From your own recorded
+  numbers, calculate the metal's density and identify it using the reference table.</p>
+  <p>After each identification, you'll answer one follow-up question that uses the density you
+  just calculated as a conversion factor.</p>
+  <p>Correctly identify <strong>2 unknown metals</strong> (with every step done correctly) to complete
+  this activity. Your progress is saved if you're interrupted, and a completion grade is submitted
+  to your LMS automatically when you finish.</p>
+  <p><strong>Before you close your Chromebook or exit Schoology,</strong> click the green "Save Progress"
+  button so your work is saved and you can pick up where you left off next time.</p>
+  <button onclick="startActivity()">Begin Activity</button>
+</div>
+
+<div class="wrap hidden" id="mainContent">
+  <h1>Density Lab: Identify the Unknown Metal</h1>
+
+  <div class="progress-row">
+    <div class="progress-board"><div class="label">Metals Identified</div><div class="value" id="progMetals">0/2</div></div>
+    <div class="progress-board"><div class="label">Current Metal</div><div class="value" id="progMetalNum">1 of 2</div></div>
+  </div>
+
+  <div class="layout">
+    <div class="card">
+      <div class="step-badge" id="stepBadge">Step</div>
+      <div class="prompt" id="promptText"></div>
+
+      <div id="stepBody"></div>
+
+      <div class="field-row" id="fieldRow"></div>
+      <div style="text-align:center">
+        <button class="action" id="checkBtn" style="display:none">Check</button>
+        <button class="action" id="saveProgressBtn" onclick="manualSaveProgress()">Save Progress</button>
+        <span class="save-status" id="saveStatus">Saved &#10003;</span>
+      </div>
+      <div id="feedback" class="empty"></div>
+    </div>
+
+    <div class="side-card">
+      <h3>Reference Table &mdash; Density (g/mL)</h3>
+      <table class="ref-table" id="refTable"></table>
+
+      <div class="data-table-wrap">
+        <h3>Your Lab Data</h3>
+        <table class="data-table">
+          <tr><th>Quantity</th><th>Value</th></tr>
+          <tr><td>Mass</td><td class="val" id="dataMass">&mdash;</td></tr>
+          <tr><td>Volume before</td><td class="val" id="dataV1">&mdash;</td></tr>
+          <tr><td>Volume after</td><td class="val" id="dataV2">&mdash;</td></tr>
+          <tr><td>Volume displaced</td><td class="val" id="dataVDisp">&mdash;</td></tr>
+          <tr><td>Density</td><td class="val" id="dataDensity">&mdash;</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="success-modal" id="successModal">
+  <div class="success-container">
+    <h2>Activity Complete!</h2>
+    <p id="successCountText">You correctly identified 2 unknown metals by water displacement.</p>
+    <p>Your completion grade has been submitted to your LMS automatically.</p>
+    <button class="close-button" onclick="closeSuccessScreen()">Close</button>
+  </div>
+</div>
+
+<!-- Debug overlay: add ?debug=1 to the URL to show the true generated values
+     (mass, volumes) so the drawing can be checked against them. Never shown
+     otherwise -- not part of the graded student experience. -->
+<div id="debugPanel" class="hidden" style="position:fixed;bottom:12px;right:12px;background:rgba(15,15,15,0.88);color:#ffd23f;font-family:'Consolas','Courier New',monospace;font-size:12.5px;line-height:1.5;padding:10px 14px;border-radius:8px;z-index:5000;white-space:pre;pointer-events:none;"></div>
+
+<script>
+  // ---- Reference data ----
+  // Pool the "true" answers are drawn from -- deliberately spread far apart
+  // (smallest gap ~1.8 g/mL) so that realistic instrument-reading slop can
+  // never make the wrong metal look like the closest match.
+  const METAL_POOL = [
+    { name: 'Aluminum', density: 2.70 },
+    { name: 'Zinc',     density: 7.14 },
+    { name: 'Copper',   density: 8.96 },
+    { name: 'Lead',     density: 11.34 },
+    { name: 'Gold',     density: 19.30 }
+  ];
+  // Shown on the reference table as decoys but never the actual unknown --
+  // also kept well clear of every pool value.
+  const DECOY_METALS = [
+    { name: 'Titanium', density: 4.51 },
+    { name: 'Platinum', density: 21.45 }
+  ];
+  const REFERENCE_TABLE = METAL_POOL.concat(DECOY_METALS).slice().sort((a, b) => a.density - b.density);
+
+  const REQUIRED_METALS = 2;
+  const CYL_CAPACITY = 100;   // mL
+  const CYL_PRECISION = 1;    // gradation lines every 1 mL; read to the tenths place
+  const CYL_WIDTH = 60;
+  const CYL_HEIGHT = 250;
+  const VOL_TOLERANCE = 0.2;      // mL, matches measuring-liquids' precision-1 tolerance
+  const MASS_TOLERANCE = 0.005;   // g, effectively exact transcription
+  const CALC_TOLERANCE = 0.05;    // 5% relative, absorbs compounded reading tolerance
+
+  const STEP_ORDER = ['mass', 'vol1', 'drop', 'vol2', 'density', 'identify', 'extension'];
+
+  // ---- Debug overlay (?debug=1) ----
+  const DEBUG = new URLSearchParams(location.search).get('debug') === '1';
+  function updateDebugPanel() {
+    if (!DEBUG || !problem) return;
+    const panel = document.getElementById('debugPanel');
+    panel.classList.remove('hidden');
+    panel.textContent = [
+      'DEBUG MODE',
+      `metal: ${problem.metal.name} (${problem.metal.density.toFixed(2)} g/mL)`,
+      `step: ${currentStep()}`,
+      `true mass: ${problem.massTrue.toFixed(2)} g`,
+      `true V1 (before): ${problem.v1True.toFixed(1)} mL`,
+      `true V2 (after): ${problem.v2True.toFixed(1)} mL`,
+      `true displaced: ${(problem.v2True - problem.v1True).toFixed(1)} mL`,
+      `recorded: mass=${problem.recorded.mass ?? '—'} v1=${problem.recorded.v1 ?? '—'} v2=${problem.recorded.v2 ?? '—'}`
+    ].join('\n');
+  }
+
+  // ---- Session / problem state ----
+  let sessionMetals = [];      // the 2 metals used this session, in order
+  let problemIndex = 0;        // 0 or 1
+  let problem = null;          // current problem's generated truth + recorded values
+  let stepIdx = 0;             // index into STEP_ORDER
+  let completedMetals = 0;
+  let challengeFinished = false;
+
+  function currentStep() { return STEP_ORDER[stepIdx]; }
+
+  function round1(n) { return Math.round(n * 10) / 10; }
+  function round2(n) { return Math.round(n * 100) / 100; }
+
+  function pickSessionMetals() {
+    const shuffled = METAL_POOL.slice().sort(() => Math.random() - 0.5);
+    return [shuffled[0], shuffled[1]];
+  }
+
+  // Both volume readings must land comfortably above 10.0 mL so every reading
+  // is a genuine 3-sig-fig value (e.g. "23.4"); below 10 a reading like "8.4"
+  // would only carry 2 sig figs.
+  const V1_MIN = 20.0, V1_MAX = 40.0;
+  const DISPLACED_MIN = 10, DISPLACED_MAX = 16;
+
+  function generateProblem(metal) {
+    const v1 = round1(V1_MIN + Math.random() * (V1_MAX - V1_MIN));
+    const displacedRaw = DISPLACED_MIN + Math.random() * (DISPLACED_MAX - DISPLACED_MIN);
+    const v2 = round1(v1 + displacedRaw);
+    const massTrue = round2(metal.density * displacedRaw);
+
+    // The extension question's given value must itself carry 3 sig figs --
+    // otherwise requiring a 3-sig-fig answer from a less-precise input would
+    // be wrong. Always land in 10.0-95.0 (two digits before the decimal,
+    // one after) so it's unambiguously 3 sig figs no matter what the
+    // trailing digit turns out to be, with no awkward forced-trailing-dot
+    // case to explain to the student.
+    const direction = Math.random() < 0.5 ? 'findVolume' : 'findMass';
+    const given = Math.round((10 + Math.random() * 85) * 10) / 10; // 10.0 - 95.0
+
+    return {
+      metal: metal,
+      v1True: v1,
+      v2True: v2,
+      massTrue: massTrue,
+      direction: direction,
+      given: given,
+      recorded: { mass: null, v1: null, v2: null, density: null, identify: null, extension: null }
+    };
+  }
+
+  // ---- Helpers shared with the check functions ----
+  function countDecimals(str) {
+    const s = String(str).trim();
+    return s.indexOf('.') === -1 ? 0 : s.length - s.indexOf('.') - 1;
+  }
+
+  function parseUserNumber(str) {
+    if (str == null) return NaN;
+    const cleaned = String(str).trim().replace(/,/g, '');
+    return cleaned === '' ? NaN : parseFloat(cleaned);
+  }
+
+  // Counts significant figures in a typed numeric string, same convention
+  // used sitewide (leading zeros never count; trailing zeros only count
+  // with a decimal point shown -- so "110." is 3 sig figs, "110" is 2).
+  function sigFigsOfNumericString(str) {
+    let s = String(str).trim();
+    if (s.startsWith('-')) s = s.slice(1);
+    if (!/^\d*\.?\d*$/.test(s) || s === '' || s === '.') return null;
+    if (s.includes('.')) {
+      const digits = s.replace('.', '').replace(/^0+/, '');
+      return digits.length > 0 ? digits.length : 1;
+    }
+    const digits = s.replace(/^0+/, '') || '0';
+    const stripped = digits.replace(/0+$/, '');
+    return stripped.length > 0 ? stripped.length : 1;
+  }
+
+  // ---- Small SVG helpers ----
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs) {
+    const el = document.createElementNS(SVGNS, tag);
+    for (const k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+  function svgGradient(id, stops) {
+    const g = svgEl('linearGradient', { id: id, x1: '0', y1: '0', x2: '0', y2: '1' });
+    stops.forEach(s => g.appendChild(svgEl('stop', { offset: s[0], 'stop-color': s[1] })));
+    return g;
+  }
+
+  // ---- Balance illustration ----
+  // A simple digital lab balance: base with an LCD readout, a column, and a
+  // weighing pan. When a sample has been placed, a metal chunk is drawn
+  // sitting on the pan itself (not just floating text) for real feedback.
+  const BAL_W = 220, BAL_H = 190;
+  function drawBalance(host, showSample, massText) {
+    host.innerHTML = '';
+    const svg = svgEl('svg', { width: BAL_W, height: BAL_H, viewBox: `0 0 ${BAL_W} ${BAL_H}` });
+
+    const defs = svgEl('defs', {});
+    defs.appendChild(svgGradient('balBaseGrad', [['0', '#2c3947'], ['1', '#141b22']]));
+    defs.appendChild(svgGradient('balPlatGrad', [['0', '#e3e9ec'], ['1', '#9aa9b2']]));
+    defs.appendChild(svgGradient('balCubeGrad', [['0', '#b0bec5'], ['1', '#78909c']]));
+    svg.appendChild(defs);
+
+    // base body
+    svg.appendChild(svgEl('rect', { x: 25, y: 138, width: 170, height: 36, rx: 8, fill: 'url(#balBaseGrad)', stroke: '#0d1620', 'stroke-width': 1.5 }));
+    // feet
+    svg.appendChild(svgEl('rect', { x: 32, y: 172, width: 14, height: 6, rx: 2, fill: '#0d1620' }));
+    svg.appendChild(svgEl('rect', { x: 174, y: 172, width: 14, height: 6, rx: 2, fill: '#0d1620' }));
+    // LCD bezel + screen
+    svg.appendChild(svgEl('rect', { x: 50, y: 146, width: 120, height: 26, rx: 4, fill: '#0a1117', stroke: '#000', 'stroke-width': 1 }));
+    const readout = svgEl('text', {
+      x: 110, y: 164, 'text-anchor': 'middle',
+      'font-family': "'Consolas','Courier New',monospace", 'font-size': '15', 'font-weight': '700',
+      fill: '#6dffb0'
+    });
+    readout.setAttribute('id', 'balanceReadoutText');
+    readout.textContent = massText;
+    svg.appendChild(readout);
+
+    // column
+    svg.appendChild(svgEl('rect', { x: 100, y: 94, width: 20, height: 46, fill: '#37414c' }));
+    // pan underside (depth)
+    svg.appendChild(svgEl('ellipse', { cx: 110, cy: 98, rx: 58, ry: 13, fill: '#5a6b7d' }));
+    // pan top
+    svg.appendChild(svgEl('ellipse', { cx: 110, cy: 93, rx: 58, ry: 13, fill: 'url(#balPlatGrad)', stroke: '#5a6b7d', 'stroke-width': 1.5 }));
+
+    if (showSample) {
+      const g = svgEl('g', { transform: 'translate(110,74) rotate(-6)' });
+      g.appendChild(svgEl('rect', { x: -20, y: -17, width: 40, height: 34, rx: 5, fill: 'url(#balCubeGrad)', stroke: '#4a5a68', 'stroke-width': 1.3 }));
+      g.appendChild(svgEl('line', { x1: -12, y1: -9, x2: 10, y2: -9, stroke: 'rgba(255,255,255,0.35)', 'stroke-width': 2 }));
+      svg.appendChild(g);
+    }
+
+    host.appendChild(svg);
+  }
+
+  // ---- Graduated cylinder drawing (adapted from measuring-liquids.html;
+  // trimmed to the single fixed capacity/precision this lab always uses) ----
+  function drawCylinderPair(trueValue, showSubmerged) {
+    const fullSVG = document.getElementById('instrumentSVG');
+    const zoomSVG = document.getElementById('zoomSVG');
+    fullSVG.innerHTML = '';
+    zoomSVG.innerHTML = '';
+    drawCylinder(fullSVG, trueValue, false, showSubmerged);
+    drawCylinder(zoomSVG, trueValue, true, showSubmerged);
+  }
+
+  function drawCylinder(svg, actualValue, isZoom, showSubmerged) {
+    const width = CYL_WIDTH, height = CYL_HEIGHT, capacity = CYL_CAPACITY, precision = CYL_PRECISION;
+    let minValue, maxValue;
+    if (isZoom) {
+      const range = 10; // 10 mL window, matches the site's precision-1 zoom convention
+      minValue = Math.max(0, actualValue - range / 2);
+      maxValue = Math.min(capacity, actualValue + range / 2);
+      if (minValue === 0) maxValue = Math.min(capacity, range);
+      else if (maxValue === capacity) minValue = Math.max(0, capacity - range);
+    } else {
+      minValue = 0; maxValue = capacity;
+    }
+
+    svg.setAttribute('width', width + 200);
+    svg.setAttribute('height', height + 100);
+    const startX = 50, startY = 50;
+    const visibleRange = maxValue - minValue;
+    const scale = height / visibleRange;
+
+    if (isZoom) {
+      drawZoomShape(svg, startX, startY, width, height);
+    } else {
+      drawFullShape(svg, startX, startY, width, height);
+    }
+
+    let currentValue = minValue;
+    while (currentValue <= maxValue) {
+      currentValue = Math.round(currentValue / precision) * precision;
+      if (currentValue >= minValue && currentValue <= maxValue) {
+        const y = startY + height - ((currentValue - minValue) * scale);
+        let tickLength, showLabel, fontSize, bold;
+        if (isZoom) {
+          // every 1 mL line is labeled; every 5th is the bold major line
+          if (currentValue % 5 === 0) { tickLength = 18; showLabel = true; fontSize = '14'; bold = true; }
+          else { tickLength = 10; showLabel = true; fontSize = '12'; bold = false; }
+        } else {
+          if (currentValue % 5 === 0) { tickLength = 12; showLabel = true; fontSize = '10'; bold = false; }
+          else { tickLength = 6; showLabel = false; fontSize = '10'; bold = false; }
+        }
+        const tick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        tick.setAttribute('x1', startX + width); tick.setAttribute('y1', y);
+        tick.setAttribute('x2', startX + width + tickLength); tick.setAttribute('y2', y);
+        tick.setAttribute('stroke', '#333');
+        tick.setAttribute('stroke-width', tickLength > 10 ? '2' : '1');
+        svg.appendChild(tick);
+        if (showLabel) {
+          const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          label.setAttribute('x', startX + width + tickLength + 5);
+          label.setAttribute('y', y + 4);
+          label.setAttribute('font-size', fontSize);
+          label.setAttribute('fill', '#333');
+          label.setAttribute('font-weight', bold ? 'bold' : 'normal');
+          label.textContent = currentValue.toString();
+          svg.appendChild(label);
+        }
+      }
+      currentValue += precision;
+    }
+
+    if (actualValue >= minValue && actualValue <= maxValue) {
+      const measurementPoint = startY + height - ((actualValue - minValue) * scale);
+      const meniscusHeight = Math.min(6, width * 0.12);
+      const leftX = startX + 2, rightX = startX + width - 2, centerX = startX + width / 2;
+      const meniscusOffset = 2;
+      let meniscusBottomY = measurementPoint + meniscusOffset;
+      let meniscusTopY = meniscusBottomY - meniscusHeight;
+      const minDistanceFromTop = 15;
+      if (meniscusTopY < startY + minDistanceFromTop) {
+        meniscusTopY = startY + minDistanceFromTop;
+        meniscusBottomY = meniscusTopY + meniscusHeight;
+      }
+      const liquidBottom = startY + height;
+      if (meniscusBottomY < liquidBottom) {
+        const liquidPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const pathData = `M ${leftX} ${liquidBottom} L ${leftX} ${meniscusTopY} Q ${centerX} ${meniscusBottomY} ${rightX} ${meniscusTopY} L ${rightX} ${liquidBottom} Z`;
+        liquidPath.setAttribute('d', pathData);
+        liquidPath.setAttribute('fill', 'rgba(52, 152, 219, 0.7)');
+        liquidPath.setAttribute('stroke', 'none');
+        svg.appendChild(liquidPath);
+      }
+
+      // the submerged sample, resting on the cylinder floor -- full view only;
+      // the zoom view is scoped to just the meniscus and stays uncluttered
+      if (!isZoom && showSubmerged) {
+        const chunkW = 26, chunkH = 20;
+        const chunk = svgEl('rect', {
+          x: centerX - chunkW / 2, y: liquidBottom - chunkH - 3, width: chunkW, height: chunkH,
+          rx: 3, fill: '#8a99a6', stroke: '#4a5a68', 'stroke-width': 1, opacity: '0.9'
+        });
+        svg.appendChild(chunk);
+      }
+    }
+  }
+
+  function drawFullShape(svg, x, y, width, height) {
+    const shape = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    shape.setAttribute('x', x); shape.setAttribute('y', y);
+    shape.setAttribute('width', width); shape.setAttribute('height', height);
+    shape.setAttribute('fill', 'none'); shape.setAttribute('stroke', '#333'); shape.setAttribute('stroke-width', '3');
+    svg.appendChild(shape);
+    const base = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    base.setAttribute('x', x - 5); base.setAttribute('y', y + height);
+    base.setAttribute('width', width + 10); base.setAttribute('height', 8);
+    base.setAttribute('fill', '#666');
+    svg.appendChild(base);
+  }
+
+  function drawZoomShape(svg, x, y, width, height) {
+    const leftWall = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    leftWall.setAttribute('x1', x); leftWall.setAttribute('y1', y);
+    leftWall.setAttribute('x2', x); leftWall.setAttribute('y2', y + height);
+    leftWall.setAttribute('stroke', '#333'); leftWall.setAttribute('stroke-width', '3');
+    svg.appendChild(leftWall);
+    const rightWall = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    rightWall.setAttribute('x1', x + width); rightWall.setAttribute('y1', y);
+    rightWall.setAttribute('x2', x + width); rightWall.setAttribute('y2', y + height);
+    rightWall.setAttribute('stroke', '#333'); rightWall.setAttribute('stroke-width', '3');
+    svg.appendChild(rightWall);
+    [y, y + height].forEach(yy => {
+      const dash = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      dash.setAttribute('x1', x); dash.setAttribute('y1', yy);
+      dash.setAttribute('x2', x + width); dash.setAttribute('y2', yy);
+      dash.setAttribute('stroke', '#666'); dash.setAttribute('stroke-width', '2');
+      dash.setAttribute('stroke-dasharray', '5,5');
+      svg.appendChild(dash);
+    });
+    const zoomText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    zoomText.setAttribute('x', x + width + 20); zoomText.setAttribute('y', y + height + 20);
+    zoomText.setAttribute('font-size', '10'); zoomText.setAttribute('fill', '#666'); zoomText.setAttribute('font-style', 'italic');
+    zoomText.textContent = '(section view)';
+    svg.appendChild(zoomText);
+  }
+
+  // ---- Drag & drop (pointer events: mouse, touch, pen all work) ----
+  // A plain tap/click with no movement also counts as "drop it" -- keeps this
+  // usable for touch/keyboard-adjacent interaction, not just a real drag.
+  function setupDrag(sourceEl, dropZoneEl, onDrop) {
+    if (!sourceEl || !dropZoneEl) return;
+    sourceEl.style.touchAction = 'none';
+    sourceEl.addEventListener('pointerdown', ev => {
+      if (sourceEl.dataset.done === '1') return;
+      if (ev.button !== undefined && ev.button !== 0) return;
+      const startX = ev.clientX, startY = ev.clientY;
+      const rect = sourceEl.getBoundingClientRect();
+      const ox = ev.clientX - rect.left, oy = ev.clientY - rect.top;
+      let moved = false, ghost = null;
+
+      function onMove(mv) {
+        if (!moved) {
+          if (Math.hypot((mv.clientX || 0) - startX, (mv.clientY || 0) - startY) < 4) return;
+          moved = true;
+          ghost = sourceEl.cloneNode(true);
+          ghost.classList.add('drag-ghost');
+          ghost.style.left = rect.left + 'px';
+          ghost.style.top = rect.top + 'px';
+          ghost.style.width = rect.width + 'px';
+          document.body.appendChild(ghost);
+          sourceEl.style.opacity = '0.35';
+        }
+        if (ghost) {
+          ghost.style.left = (mv.clientX - ox) + 'px';
+          ghost.style.top = (mv.clientY - oy) + 'px';
+        }
+        const dz = dropZoneEl.getBoundingClientRect();
+        const over = mv.clientX >= dz.left && mv.clientX <= dz.right && mv.clientY >= dz.top && mv.clientY <= dz.bottom;
+        dropZoneEl.classList.toggle('drop-hover', over);
+      }
+
+      function onUp(uv) {
+        document.removeEventListener('pointermove', onMove);
+        document.removeEventListener('pointerup', onUp);
+        document.removeEventListener('pointercancel', onUp);
+        sourceEl.style.opacity = '';
+        dropZoneEl.classList.remove('drop-hover');
+        if (ghost) ghost.remove();
+        if (!moved) { onDrop(); return; }
+        const dz = dropZoneEl.getBoundingClientRect();
+        const over = uv.clientX >= dz.left && uv.clientX <= dz.right && uv.clientY >= dz.top && uv.clientY <= dz.bottom;
+        if (over) onDrop();
+      }
+
+      document.addEventListener('pointermove', onMove);
+      document.addEventListener('pointerup', onUp);
+      document.addEventListener('pointercancel', onUp);
+    });
+    sourceEl.addEventListener('keydown', ev => {
+      if ((ev.key === 'Enter' || ev.key === ' ') && sourceEl.dataset.done !== '1') { ev.preventDefault(); onDrop(); }
+    });
+  }
+
+  // Animates the cylinder's liquid level rising from one true value to
+  // another over `duration` ms, redrawing both views each frame so the zoom
+  // window tracks the rising meniscus. Simple linear interpolation -- no
+  // physics engine, just a visual cue that the sample went in.
+  function animateRise(fromV, toV, duration, onDone) {
+    const start = Date.now();
+    function frame() {
+      const t = Math.min(1, (Date.now() - start) / duration);
+      drawCylinderPair(fromV + (toV - fromV) * t, true);
+      if (t < 1) requestAnimationFrame(frame);
+      else onDone();
+    }
+    requestAnimationFrame(frame);
+  }
+
+  // ---- Reference table + data table rendering ----
+  function renderReferenceTable() {
+    let html = '<tr><th>Metal</th><th>Density</th></tr>';
+    REFERENCE_TABLE.forEach(m => {
+      html += `<tr><td>${m.name}</td><td>${m.density.toFixed(2)} g/mL</td></tr>`;
+    });
+    document.getElementById('refTable').innerHTML = html;
+  }
+
+  function renderDataTable() {
+    const r = problem.recorded;
+    document.getElementById('dataMass').innerHTML = r.mass !== null ? r.mass.toFixed(2) + ' g' : '<span class="pending">not recorded</span>';
+    document.getElementById('dataV1').innerHTML = r.v1 !== null ? r.v1.toFixed(1) + ' mL' : '<span class="pending">not recorded</span>';
+    document.getElementById('dataV2').innerHTML = r.v2 !== null ? r.v2.toFixed(1) + ' mL' : '<span class="pending">not recorded</span>';
+    document.getElementById('dataVDisp').innerHTML = (r.v1 !== null && r.v2 !== null) ? (r.v2 - r.v1).toFixed(1) + ' mL' : '<span class="pending">&mdash;</span>';
+    document.getElementById('dataDensity').innerHTML = r.density !== null ? r.density.toFixed(2) + ' g/mL' : '<span class="pending">&mdash;</span>';
+  }
+
+  function updateProgress() {
+    document.getElementById('progMetals').textContent = `${completedMetals}/${REQUIRED_METALS}`;
+    document.getElementById('progMetalNum').textContent = `${problemIndex + 1} of ${REQUIRED_METALS}`;
+  }
+
+  // ---- Step rendering ----
+  function renderStep() {
+    clearFeedback();
+    updateProgress();
+    renderDataTable();
+    const step = currentStep();
+    const badge = document.getElementById('stepBadge');
+    const promptText = document.getElementById('promptText');
+    const stepBody = document.getElementById('stepBody');
+    const fieldRow = document.getElementById('fieldRow');
+    const checkBtn = document.getElementById('checkBtn');
+    stepBody.innerHTML = '';
+    fieldRow.innerHTML = '';
+    checkBtn.style.display = 'none';
+    checkBtn.disabled = false;
+
+    if (step === 'mass') {
+      badge.textContent = `Metal ${problemIndex + 1} of ${REQUIRED_METALS} · Step 1: Weigh the sample`;
+      promptText.innerHTML = 'Drag the unknown sample onto the balance to weigh it, then record the mass shown.';
+      stepBody.innerHTML = `
+        <div class="bench">
+          <div class="drop-zone" id="scaleZone">
+            <div class="balance-host" id="balanceHost"></div>
+          </div>
+          <div class="drag-source" id="sampleObj" tabindex="0" role="button" aria-label="Drag the sample onto the balance">
+            <div class="cube"></div><div class="cube-label">Sample</div>
+          </div>
+        </div>`;
+      drawBalance(document.getElementById('balanceHost'), false, '— g');
+      setupDrag(document.getElementById('sampleObj'), document.getElementById('scaleZone'), onWeighed);
+    } else if (step === 'vol1' || step === 'vol2') {
+      const isFirst = step === 'vol1';
+      badge.textContent = `Metal ${problemIndex + 1} of ${REQUIRED_METALS} · Step ${isFirst ? 2 : 4}: Record the volume ${isFirst ? 'before' : 'after'} the sample is added`;
+      promptText.innerHTML = isFirst
+        ? 'Read the water level in the graduated cylinder <b>before</b> the sample goes in. Use the zoomed view to estimate to the nearest tenth of a milliliter.'
+        : 'You dropped the sample into the cylinder and the water rose. Read the new, higher water level. Estimate to the nearest tenth of a milliliter.';
+      const trueValue = isFirst ? problem.v1True : problem.v2True;
+      stepBody.innerHTML = `
+        <div class="instrument-row">
+          <div class="instrument-view"><div class="view-label">Full View</div><svg id="instrumentSVG" width="260" height="350"></svg></div>
+          <div class="instrument-view"><div class="view-label">Zoomed View</div><svg id="zoomSVG" width="260" height="350"></svg>
+            <div class="zoom-note">Use this zoomed view to make your precise measurement reading.</div>
+          </div>
+        </div>`;
+      fieldRow.innerHTML = '<input type="text" id="answerInput" inputmode="decimal" placeholder="volume (mL)" autocomplete="off"><span>mL</span>';
+      checkBtn.style.display = 'inline-block';
+      // drawCylinder needs the SVG elements to exist in the DOM first
+      drawCylinderPair(trueValue, !isFirst);
+    } else if (step === 'drop') {
+      badge.textContent = `Metal ${problemIndex + 1} of ${REQUIRED_METALS} · Step 3: Submerge the sample`;
+      promptText.innerHTML = 'Volume before is recorded. Drag the weighed sample into the graduated cylinder.';
+      stepBody.innerHTML = `
+        <div class="instrument-row">
+          <div class="instrument-view"><div class="view-label">Full View</div><svg id="instrumentSVG" width="260" height="350"></svg></div>
+          <div class="instrument-view"><div class="view-label">Zoomed View</div><svg id="zoomSVG" width="260" height="350"></svg>
+            <div class="zoom-note">Use this zoomed view to make your precise measurement reading.</div>
+          </div>
+        </div>
+        <div class="bench">
+          <div class="drop-zone cyl-zone" id="cylZone">Drop the sample here</div>
+          <div class="drag-source" id="sampleObj2" tabindex="0" role="button" aria-label="Drag the sample into the cylinder">
+            <div class="cube"></div><div class="cube-label">Sample</div>
+          </div>
+        </div>`;
+      drawCylinderPair(problem.v1True);
+      setupDrag(document.getElementById('sampleObj2'), document.getElementById('cylZone'), onSubmerge);
+    } else if (step === 'density') {
+      badge.textContent = `Metal ${problemIndex + 1} of ${REQUIRED_METALS} · Step 5: Calculate the density`;
+      const disp = (problem.recorded.v2 - problem.recorded.v1).toFixed(1);
+      promptText.innerHTML = `Using <b>your own recorded values</b> (mass = ${problem.recorded.mass.toFixed(2)} g, volume displaced = ${disp} mL), calculate the metal's density in g/mL.`;
+      fieldRow.innerHTML = '<input type="text" id="answerInput" inputmode="decimal" placeholder="density" autocomplete="off"><span>g/mL</span>';
+      checkBtn.style.display = 'inline-block';
+    } else if (step === 'identify') {
+      badge.textContent = `Metal ${problemIndex + 1} of ${REQUIRED_METALS} · Step 6: Identify the metal`;
+      promptText.innerHTML = `Your calculated density is <b>${problem.recorded.density.toFixed(2)} g/mL</b>. Compare it to the reference table and identify the metal.`;
+      let options = '<option value="" disabled selected>Select a metal...</option>';
+      REFERENCE_TABLE.forEach(m => { options += `<option value="${m.name}">${m.name}</option>`; });
+      fieldRow.innerHTML = `<select id="answerInput">${options}</select>`;
+      checkBtn.style.display = 'inline-block';
+    } else if (step === 'extension') {
+      badge.textContent = `Metal ${problemIndex + 1} of ${REQUIRED_METALS} · Extension question`;
+      if (problem.direction === 'findVolume') {
+        promptText.innerHTML = `You identified this metal as <b>${problem.metal.name}</b> with a density of <b>${problem.recorded.density.toFixed(2)} g/mL</b>. Using that density as a conversion factor, what volume would a <b>${problem.given.toFixed(1)} g</b> sample of this same metal occupy? Report your answer to <b>3 significant figures</b>.`;
+        fieldRow.innerHTML = '<input type="text" id="answerInput" inputmode="decimal" placeholder="volume" autocomplete="off"><span>mL</span>';
+      } else {
+        promptText.innerHTML = `You identified this metal as <b>${problem.metal.name}</b> with a density of <b>${problem.recorded.density.toFixed(2)} g/mL</b>. Using that density as a conversion factor, what would a <b>${problem.given.toFixed(1)} mL</b> sample of this same metal have a mass of? Report your answer to <b>3 significant figures</b>.`;
+        fieldRow.innerHTML = '<input type="text" id="answerInput" inputmode="decimal" placeholder="mass" autocomplete="off"><span>g</span>';
+      }
+      checkBtn.style.display = 'inline-block';
+    }
+
+    updateDebugPanel();
+
+    const input = document.getElementById('answerInput');
+    if (input) {
+      input.focus();
+      input.addEventListener('keydown', e => { if (e.key === 'Enter') checkAnswer(); });
+    }
+  }
+
+  function showFeedback(msg, cls) {
+    const fb = document.getElementById('feedback');
+    fb.textContent = msg;
+    fb.className = cls;
+  }
+  function clearFeedback() {
+    const fb = document.getElementById('feedback');
+    fb.textContent = '';
+    fb.className = 'empty';
+  }
+
+  // ---- Per-step checking ----
+  function checkAnswer() {
+    const step = currentStep();
+    const el = document.getElementById('answerInput');
+    const raw = el.value;
+
+    if (step === 'identify') {
+      if (!raw) { showFeedback('Select a metal from the list.', 'incorrect'); return; }
+      if (raw === problem.metal.name) {
+        problem.recorded.identify = raw;
+        showFeedback('Correct! That matches the reference table.', 'correct');
+        el.disabled = true;
+        document.getElementById('checkBtn').disabled = true;
+        advanceStep();
+      } else {
+        showFeedback('Not quite. Compare your calculated density to the reference table again.', 'incorrect');
+      }
+      return;
+    }
+
+    if (raw === '' || raw == null) { showFeedback('Enter a value.', 'incorrect'); return; }
+    const val = parseUserNumber(raw);
+    if (!Number.isFinite(val)) { showFeedback('Enter a numeric value.', 'incorrect'); return; }
+
+    if (step === 'mass') {
+      const decimals = countDecimals(raw);
+      if (decimals !== 2) { showFeedback('A digital balance shows two decimal places — record it exactly as displayed.', 'incorrect'); return; }
+      if (Math.abs(val - problem.massTrue) <= MASS_TOLERANCE) {
+        problem.recorded.mass = val;
+        showFeedback('Recorded correctly.', 'correct');
+        el.disabled = true;
+        document.getElementById('checkBtn').disabled = true;
+        advanceStep();
+      } else {
+        showFeedback('That doesn’t match the balance readout. Check your transcription.', 'incorrect');
+      }
+    } else if (step === 'vol1' || step === 'vol2') {
+      const decimals = countDecimals(raw);
+      if (decimals > 1) { showFeedback('Your measurement is too precise. Remember, you can only report one place past what the markings show you — with markings every 1 mL, that’s the tenths place.', 'incorrect'); return; }
+      if (decimals < 1) { showFeedback('With markings every 1 mL, estimate one digit further — report to the tenths place.', 'incorrect'); return; }
+      const trueValue = step === 'vol1' ? problem.v1True : problem.v2True;
+      if (Math.abs(val - trueValue) <= VOL_TOLERANCE) {
+        if (step === 'vol1') problem.recorded.v1 = val; else problem.recorded.v2 = val;
+        showFeedback('Correct reading.', 'correct');
+        el.disabled = true;
+        document.getElementById('checkBtn').disabled = true;
+        advanceStep();
+      } else {
+        showFeedback('Not quite — look carefully at the zoomed view and re-read the meniscus.', 'incorrect');
+      }
+    } else if (step === 'density') {
+      const expected = problem.recorded.mass / (problem.recorded.v2 - problem.recorded.v1);
+      const relErr = Math.abs(val - expected) / Math.abs(expected);
+      if (relErr <= CALC_TOLERANCE) {
+        problem.recorded.density = val;
+        showFeedback('Correct — density = mass ÷ volume displaced.', 'correct');
+        el.disabled = true;
+        document.getElementById('checkBtn').disabled = true;
+        advanceStep();
+      } else {
+        showFeedback('Not quite. Density = mass ÷ volume displaced, using your own recorded numbers.', 'incorrect');
+      }
+    } else if (step === 'extension') {
+      const density = problem.recorded.density;
+      const expected = problem.direction === 'findVolume' ? (problem.given / density) : (problem.given * density);
+      const numericOk = Math.abs(val - expected) / Math.abs(expected) <= CALC_TOLERANCE;
+      const formatOk = sigFigsOfNumericString(raw) === 3;
+      if (numericOk && formatOk) {
+        problem.recorded.extension = val;
+        showFeedback('Correct!', 'correct');
+        el.disabled = true;
+        document.getElementById('checkBtn').disabled = true;
+        finishProblem();
+      } else if (numericOk && !formatOk) {
+        showFeedback('Your value is right, but report it with 3 significant figures — e.g. "7.00" instead of "7", or "110." (with the trailing decimal point) instead of "110".', 'incorrect');
+      } else {
+        showFeedback('Not quite — use the density you calculated as a g/mL conversion factor.', 'incorrect');
+      }
+    }
+  }
+
+  function advanceStep() {
+    stepIdx++;
+    scormSaveProgress();
+    setTimeout(() => { renderStep(); }, 700);
+  }
+
+  // Fired when the sample is dropped onto the balance during the 'mass' step.
+  // Reveals the readout and the input row for recording it -- nothing is
+  // graded by this action itself, same as before.
+  function onWeighed() {
+    const sampleObj = document.getElementById('sampleObj');
+    if (!sampleObj || sampleObj.dataset.done === '1') return;
+    sampleObj.dataset.done = '1';
+    sampleObj.classList.add('placed');
+    drawBalance(document.getElementById('balanceHost'), true, problem.massTrue.toFixed(2) + ' g');
+    document.getElementById('fieldRow').innerHTML =
+      '<input type="text" id="answerInput" inputmode="decimal" placeholder="mass (g)" autocomplete="off"><span>g</span>';
+    document.getElementById('checkBtn').style.display = 'inline-block';
+    const input = document.getElementById('answerInput');
+    input.focus();
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') checkAnswer(); });
+  }
+
+  // Fired when the sample is dropped into the cylinder during the 'drop'
+  // step. Flies the sample from the bench to the cylinder's mouth (shrinking
+  // and fading as it "sinks"), then plays the water-rise animation, then
+  // advances to 'vol2'. Nothing is graded by the drop itself.
+  function onSubmerge() {
+    const sampleObj = document.getElementById('sampleObj2');
+    if (!sampleObj || sampleObj.dataset.done === '1') return;
+    sampleObj.dataset.done = '1';
+
+    const cylSVG = document.getElementById('instrumentSVG');
+    const srcRect = sampleObj.getBoundingClientRect();
+    const svgRect = cylSVG.getBoundingClientRect();
+    const mouthX = svgRect.left + 50 + CYL_WIDTH / 2; // matches drawCylinder's startX + width/2
+    const mouthY = svgRect.top + 50;                  // matches drawCylinder's startY
+
+    const flyer = sampleObj.cloneNode(true);
+    flyer.classList.add('drag-ghost');
+    flyer.style.left = srcRect.left + 'px';
+    flyer.style.top = srcRect.top + 'px';
+    flyer.style.width = srcRect.width + 'px';
+    flyer.style.transition = 'left .45s ease-in, top .45s ease-in, transform .45s ease-in, opacity .25s ease-in .3s';
+    document.body.appendChild(flyer);
+    sampleObj.style.visibility = 'hidden';
+
+    requestAnimationFrame(() => {
+      flyer.style.left = (mouthX - srcRect.width / 2) + 'px';
+      flyer.style.top = mouthY + 'px';
+      flyer.style.transform = 'scale(0.45) rotate(15deg)';
+      flyer.style.opacity = '0.15';
+    });
+
+    setTimeout(() => {
+      flyer.remove();
+      sampleObj.classList.add('placed');
+      animateRise(problem.v1True, problem.v2True, 700, () => {
+        stepIdx++; // 'drop' -> 'vol2'
+        scormSaveProgress();
+        renderStep();
+      });
+    }, 480);
+  }
+
+  function finishProblem() {
+    completedMetals++;
+    if (completedMetals >= REQUIRED_METALS) {
+      challengeFinished = true;
+      setTimeout(() => {
+        document.getElementById('successCountText').textContent =
+          `You correctly identified ${REQUIRED_METALS} unknown metals by water displacement.`;
+        document.getElementById('successModal').classList.add('active');
+        scormReport(100);
+      }, 700);
+    } else {
+      setTimeout(() => {
+        problemIndex++;
+        problem = generateProblem(sessionMetals[problemIndex]);
+        stepIdx = 0;
+        scormSaveProgress();
+        renderStep();
+      }, 900);
+    }
+  }
+
+  function closeSuccessScreen() {
+    document.getElementById('successModal').classList.remove('active');
+  }
+
+  function startActivity() {
+    document.getElementById('startScreen').classList.add('hidden');
+    document.getElementById('mainContent').classList.remove('hidden');
+    renderReferenceTable();
+    if (!problem) {
+      sessionMetals = pickSessionMetals();
+      problemIndex = 0;
+      problem = generateProblem(sessionMetals[0]);
+      stepIdx = 0;
+    }
+    updateProgress();
+    scormSaveProgress();
+    renderStep();
+  }
+
+  document.getElementById('checkBtn').addEventListener('click', checkAnswer);
+
+  // ---- SCORM 1.2 wrapper ----
+  let scormAPI = null;
+  let resumeState = null;
+
+  function findAPI(win) {
+    let attempts = 0;
+    let w = win;
+    while (w && attempts < 10) {
+      if (w.API) return w.API;
+      if (w.parent && w.parent !== w) { w = w.parent; }
+      else if (w.opener) { w = w.opener; }
+      else break;
+      attempts++;
+    }
+    return null;
+  }
+
+  function isValidResumePayload(p) {
+    if (!p || typeof p !== 'object') return false;
+    if (!Array.isArray(p.sessionMetals) || p.sessionMetals.length !== 2) return false;
+    if (typeof p.problemIndex !== 'number' || p.problemIndex < 0 || p.problemIndex > 1) return false;
+    if (typeof p.completedMetals !== 'number' || p.completedMetals < 0 || p.completedMetals > REQUIRED_METALS) return false;
+    if (typeof p.stepIdx !== 'number' || p.stepIdx < 0 || p.stepIdx >= STEP_ORDER.length) return false;
+    if (!p.problem || typeof p.problem !== 'object') return false;
+    if (!p.problem.metal || typeof p.problem.metal.name !== 'string') return false;
+    return true;
+  }
+
+  function scormInit() {
+    try {
+      scormAPI = findAPI(window);
+      if (!scormAPI) return;
+      scormAPI.LMSInitialize('');
+      if (scormAPI.LMSGetValue('cmi.core.entry') === 'resume') {
+        const raw = scormAPI.LMSGetValue('cmi.suspend_data');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (isValidResumePayload(parsed)) resumeState = parsed;
+        }
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  function resumeFromSavedState() {
+    sessionMetals = resumeState.sessionMetals;
+    problemIndex = resumeState.problemIndex;
+    completedMetals = resumeState.completedMetals;
+    stepIdx = resumeState.stepIdx;
+    problem = resumeState.problem;
+    startActivity();
+  }
+
+  function scormSaveProgress() {
+    if (!scormAPI) return;
+    try {
+      scormAPI.LMSSetValue('cmi.suspend_data', JSON.stringify({
+        sessionMetals: sessionMetals,
+        problemIndex: problemIndex,
+        completedMetals: completedMetals,
+        stepIdx: stepIdx,
+        problem: problem
+      }));
+      if (!challengeFinished) {
+        scormAPI.LMSSetValue('cmi.core.lesson_status', 'incomplete');
+        // Mark the exit reason as "suspend" on every save, not just on
+        // beforeunload. Students on Chromebooks/iPads very often exit by
+        // closing the lid or leaving the Schoology tab, which does not
+        // reliably fire beforeunload before the device sleeps and the
+        // network drops. Setting this on every commit means the LMS
+        // already has the correct "resume me" state as of the last save.
+        scormAPI.LMSSetValue('cmi.core.exit', 'suspend');
+      }
+      scormAPI.LMSCommit('');
+    } catch (e) { /* ignore */ }
+  }
+
+  // Manually triggered by the "Save Progress" button. This is the primary,
+  // reliable save path -- students are instructed to click it before closing
+  // their Chromebook, since automatic browser-unload events can't be trusted
+  // to fire when a laptop lid is closed rather than the tab being navigated
+  // away from. Falls back gracefully (shows nothing) if no LMS is present.
+  function manualSaveProgress() {
+    if (!scormAPI) return;
+    scormSaveProgress();
+    const status = document.getElementById('saveStatus');
+    if (!status) return;
+    status.classList.add('visible');
+    clearTimeout(manualSaveProgress._hideTimer);
+    manualSaveProgress._hideTimer = setTimeout(() => {
+      status.classList.remove('visible');
+    }, 2500);
+  }
+
+  function scormReport(scorePercent) {
+    if (!scormAPI) return;
+    try {
+      scormAPI.LMSSetValue('cmi.core.score.min', '0');
+      scormAPI.LMSSetValue('cmi.core.score.max', '100');
+      scormAPI.LMSSetValue('cmi.core.score.raw', String(scorePercent));
+      scormAPI.LMSSetValue('cmi.core.lesson_status', 'passed');
+      scormAPI.LMSSetValue('cmi.core.exit', '');
+      scormAPI.LMSCommit('');
+    } catch (e) { /* ignore */ }
+  }
+
+  function scormFinish() {
+    if (!scormAPI) return;
+    try {
+      if (!challengeFinished) {
+        scormSaveProgress();
+        scormAPI.LMSSetValue('cmi.core.exit', 'suspend');
+        scormAPI.LMSCommit('');
+      }
+      scormAPI.LMSFinish('');
+    } catch (e) { /* ignore */ }
+  }
+
+  // Best-effort safety net for the case where the student closes the
+  // Chromebook lid or leaves the tab without clicking "Save Progress":
+  // these events fire more reliably than beforeunload on that path, but
+  // unlike beforeunload we deliberately do NOT call LMSFinish() here --
+  // visibilitychange in particular fires on every tab switch, not just a
+  // real exit, and terminating the SCORM session on a brief tab-switch
+  // would break the ability to keep saving for the rest of that visit.
+  // We just re-commit the current state so the LMS has it either way.
+  function safetyCommit() {
+    if (!scormAPI || challengeFinished) return;
+    scormSaveProgress();
+  }
+  window.addEventListener('pagehide', safetyCommit);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) safetyCommit();
+  });
+  window.addEventListener('beforeunload', scormFinish);
+  scormInit();
+  if (resumeState) {
+    resumeFromSavedState();
+  }
+</script>
+</body>
+</html>

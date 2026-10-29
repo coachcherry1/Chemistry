@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbital Diagram Filling</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f7f5f0 0%, #d9cfc0 100%);
+        min-height: 100vh;
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    .container {
+        max-width: 920px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        overflow: hidden;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
+        color: #fff;
+        padding: 8px 16px;
+        text-align: center;
+        position: relative;
+    }
+    .header h1 { font-size: 1.2em; margin-bottom: 1px; }
+    .header p { font-size: 0.8em; opacity: 0.92; }
+
+    .score-badge {
+        position: absolute;
+        top: 8px; right: 10px;
+        background: #fffaf0;
+        color: #7c2d12;
+        font-weight: 700;
+        font-size: 12px;
+        padding: 2px 9px;
+        border-radius: 11px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .main-content { padding: 10px 14px 12px; }
+
+    .score-display {
+        text-align: center; margin-bottom: 4px; font-size: 0.95em; font-weight: 700; color: #7c2d12;
+    }
+    .progress-bar-track {
+        width: 100%; height: 6px; background: #e9ecef;
+        border-radius: 3px; overflow: hidden; margin-bottom: 8px;
+    }
+    .progress-fill {
+        height: 100%; background: linear-gradient(90deg, #b45309, #f59e0b); transition: width 0.4s ease;
+    }
+
+    .problem-title { font-size: 1em; font-weight: 700; color: #5c4326; margin-bottom: 3px; }
+    .problem-sub { font-size: 0.82em; color: #a98c66; margin-bottom: 8px; }
+
+    .prompt-box {
+        background: #fffaf0; border-left: 4px solid #f59e0b;
+        border-radius: 6px; padding: 7px 10px; margin-bottom: 10px;
+        font-size: 0.84rem; color: #5c4326; line-height: 1.45;
+    }
+
+    /* ---------------- Working area ---------------- */
+    .working-area {
+        min-height: 96px;
+        background: #fbf7ef;
+        border: 2px dashed #e4d7bd;
+        border-radius: 8px;
+        padding: 10px 14px;
+        display: flex; flex-wrap: wrap; align-items: flex-end; gap: 28px;
+        margin-bottom: 6px;
+        transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .working-area.drag-over { border-color: #b45309; background: #fdf0d9; }
+    .working-area.empty::before {
+        content: "Drag an orbital tile here to begin";
+        color: #a98c66; font-size: 0.85em; font-style: italic; margin: auto;
+    }
+
+    .orbital-group { position: relative; text-align: center; }
+    .orbital-boxes { display: flex; }
+    .orbital-box {
+        width: 34px; height: 34px;
+        border: 2px solid #5c4326;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px; font-weight: 700; color: #7c2d12;
+        background: #fff; cursor: pointer; user-select: none;
+        transition: background 0.12s ease;
+    }
+    .orbital-boxes .orbital-box + .orbital-box { border-left: none; }
+    .orbital-box:hover { background: #fde9c8; }
+    .orbital-box.filled { background: #fde9c8; }
+    .orbital-group-label {
+        font-size: 0.78em; font-weight: 700; color: #5c4326; margin-top: 3px;
+    }
+    .remove-group-btn {
+        position: absolute; top: -9px; right: -9px;
+        width: 18px; height: 18px; border-radius: 50%;
+        background: #dc3545; color: #fff; border: none;
+        font-size: 12px; line-height: 1; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .remove-group-btn:hover { background: #b3261e; }
+
+    /* ---------------- Palette ---------------- */
+    .palette-label {
+        font-size: 0.8em; font-weight: 700; color: #a98c66; margin: 10px 0 6px;
+        text-transform: uppercase; letter-spacing: .03em;
+    }
+    .palette {
+        display: flex; gap: 22px; flex-wrap: wrap; padding: 10px;
+        background: #fff; border: 2px solid #f0d9a8; border-radius: 8px;
+    }
+    .palette-tile { text-align: center; cursor: grab; }
+    .palette-tile:active { cursor: grabbing; }
+    .palette-tile .orbital-boxes .orbital-box {
+        cursor: grab; background: #fffaf0;
+    }
+    .palette-tile .orbital-group-label { color: #7c2d12; }
+
+    .check-btn {
+        background: #28a745; color: #fff; border: none;
+        padding: 9px 22px; border-radius: 20px; font-size: 0.9em; font-weight: 700;
+        cursor: pointer; display: block; margin: 14px auto 0;
+        transition: background 0.2s ease;
+    }
+    .check-btn:hover:not(:disabled) { background: #218838; }
+    .check-btn:disabled { background: #cbb896; cursor: not-allowed; }
+
+    .save-row { margin: 14px 0 0; padding-top: 8px; border-top: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
+    .save-btn {
+        background: linear-gradient(145deg, #b45309, #92400e); color: #fff; border: none; border-radius: 6px;
+        padding: 5px 13px; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .save-btn:hover { background: linear-gradient(145deg, #92400e, #7c2d12); }
+    .save-note { color: #28a745; font-weight: 600; font-size: 12px; opacity: 0; transition: opacity .3s ease; }
+    .save-note.show { opacity: 1; }
+
+    /* ---------------- Start screen ---------------- */
+    .start-screen {
+        position: fixed; inset: 0;
+        background: linear-gradient(135deg, #f7f5f0 0%, #d9cfc0 100%);
+        display: flex; align-items: center; justify-content: center;
+        z-index: 1000; padding: 20px;
+    }
+    .start-card {
+        background: #fff; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        max-width: 560px; width: 100%; padding: 32px; text-align: center;
+    }
+
+    /* ---------------- Completion overlay ---------------- */
+    .complete-screen {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+        align-items: center; justify-content: center; z-index: 2000; padding: 20px;
+    }
+    .complete-card {
+        background: #fff; border-radius: 14px; padding: 34px;
+        max-width: 460px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .complete-card h2 { color: #7c2d12; margin-bottom: 12px; }
+    .complete-card p { color: #495057; line-height: 1.6; margin-bottom: 8px; }
+    .complete-card .close-button {
+        margin-top: 20px; background: #b45309; color: #fff;
+        border: none; border-radius: 6px; padding: 11px 26px; font-size: 15px; cursor: pointer;
+    }
+    .complete-card .close-button:hover { background: #92400e; }
+
+    /* ---------------- Generic small modal (energy-level picker + rule reminders) ---------------- */
+    .small-modal {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+        z-index: 2200; align-items: center; justify-content: center; padding: 16px;
+    }
+    .small-modal.open { display: flex; }
+    .small-modal-card {
+        background: #fff; border-radius: 14px; padding: 20px 22px;
+        max-width: 420px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .small-modal-card h3 { color: #7c2d12; font-size: 1.1rem; margin-bottom: 8px; }
+    .small-modal-card p { color: #4a3722; font-size: 0.9rem; line-height: 1.5; margin-bottom: 10px; }
+    .level-choices { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 6px 0 4px; }
+    .level-btn {
+        border: 2px solid #b45309; background: #fff; color: #7c2d12;
+        border-radius: 8px; width: 44px; height: 44px; font-size: 1.05rem; font-weight: 700; cursor: pointer;
+    }
+    .level-btn:hover { background: #fff3e2; }
+    .rule-modal-card.aufbau h3 { color: #b45309; }
+    .rule-modal-card.hund h3 { color: #7c2d12; }
+    .rule-modal-card.overfull h3 { color: #6b5a41; }
+    .rule-reminder {
+        background: #fffaf0; border-left: 4px solid #f59e0b; border-radius: 6px;
+        padding: 8px 10px; font-size: 0.85rem; color: #5c4326; text-align: left; margin-bottom: 4px;
+    }
+    .small-modal-close {
+        background: #b45309; color: #fff; border: none; border-radius: 8px;
+        padding: 9px 24px; font-size: 0.92rem; font-weight: 600; cursor: pointer; margin-top: 6px;
+    }
+    .small-modal-close:hover { background: #92400e; }
+
+    /* ---------------- Per-problem check-result modal ---------------- */
+    .problem-modal {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+        z-index: 2500; align-items: center; justify-content: center; padding: 16px;
+    }
+    .problem-modal.open { display: flex; }
+    .problem-modal-card {
+        background: #fff; border-radius: 14px; padding: 22px 24px;
+        max-width: 460px; width: 100%; max-height: 88vh; overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4); text-align: center;
+    }
+    .problem-modal-card h3 { margin-bottom: 10px; font-size: 1.2rem; }
+    .problem-modal-card.correct h3 { color: #1e7e34; }
+    .problem-modal-card.incorrect h3 { color: #a12a2a; }
+    .problem-modal-body { text-align: left; font-size: 0.9rem; color: #4a3722; line-height: 1.5; }
+    .problem-modal-body .recap {
+        background: #eafaef; border-left: 4px solid #28a745; border-radius: 6px;
+        padding: 9px 11px; font-size: 0.87rem; color: #1e7e34; text-align: center;
+    }
+    .problem-modal-body ul { margin: 0 0 0 20px; padding: 0; }
+    .problem-modal-body li { margin: 6px 0; }
+    .problem-modal-actions { margin-top: 12px; }
+    .next-btn {
+        background: #b45309; color: #fff; border: none;
+        padding: 10px 24px; border-radius: 20px; font-size: 0.9em; font-weight: 700;
+        cursor: pointer; margin: 0 auto; display: block;
+        transition: background 0.2s ease;
+    }
+    .next-btn:hover { background: #92400e; }
+    .back-btn {
+        background: #efe6d6; color: #7c2d12; border: none;
+        padding: 9px 20px; border-radius: 8px; font-size: 0.92rem; font-weight: 600; cursor: pointer;
+        margin: 0 auto; display: block;
+    }
+    .back-btn:hover { background: #e4d7bd; }
+
+    /* ================= Intro walkthrough ================= */
+    .intro-card {
+        background: #fff; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        max-width: 860px; width: 100%; max-height: 92vh;
+        padding: 20px 26px 12px; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .intro-heading { color: #7c2d12; font-size: 1.3rem; margin-bottom: 10px; }
+    .intro-stage {
+        flex: 1 1 auto; overflow-y: auto; cursor: pointer;
+        padding: 2px 4px 4px 2px; display: flex; flex-wrap: wrap;
+        gap: 14px 20px; align-content: flex-start;
+    }
+    .intro-stage > .beat-note,
+    .intro-stage > .callout,
+    .intro-stage > .beat-diagram,
+    .intro-stage > .check-box { flex-basis: 100%; }
+
+    .beat-note p { color: #4a3722; line-height: 1.55; font-size: 0.97rem; margin-bottom: 6px; }
+    .beat-note ul, .beat-note ol { margin: 4px 0 4px 22px; }
+    .beat-note li { color: #4a3722; line-height: 1.5; font-size: 0.96rem; margin: 5px 0; }
+
+    .chat {
+        position: relative; margin: 8px auto 0; max-width: 460px;
+        background: #fffaf0; border: 1px solid #f0d9a8; border-radius: 12px;
+        padding: 8px 11px; font-size: 0.85rem; line-height: 1.4;
+        color: #5c4326; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .pop { animation: beatPop .2s ease; }
+    @keyframes beatPop { from { opacity: 0; transform: translateY(6px) scale(.97); } to { opacity: 1; transform: none; } }
+
+    .click-hint { text-align: center; color: #a98c66; font-size: 0.8rem; padding: 8px 0 2px; letter-spacing: .02em; }
+
+    .callout {
+        background: #fffaf0; border-left: 4px solid #f59e0b;
+        border-radius: 6px; padding: 10px 12px; margin: 2px 0;
+        color: #5c4326; font-size: 0.93rem; line-height: 1.5;
+    }
+
+    .beat-diagram { text-align: center; }
+    .beat-diagram .orbital-group { display: inline-block; margin: 0 6px 6px; }
+    .beat-diagram .orbital-box { width: 30px; height: 30px; font-size: 13px; cursor: default; }
+    .beat-diagram .orbital-box:hover { background: #fff; }
+    .beat-diagram .orbital-box.filled:hover { background: #fde9c8; }
+
+    .fill-demo-wrap { text-align: center; }
+    .fill-demo-element {
+        font-size: 1.05rem; font-weight: 700; color: #7c2d12;
+        min-height: 1.4em; margin-bottom: 10px;
+    }
+    .fill-demo-diagram { display: flex; justify-content: center; flex-wrap: wrap; gap: 18px; margin-bottom: 10px; }
+    .fill-demo-replay {
+        background: #efe6d6; color: #7c2d12; border: none; border-radius: 8px;
+        padding: 7px 16px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    }
+    .fill-demo-replay:hover { background: #e4d7bd; }
+
+    @keyframes odfFadeIn { from { opacity: 0; transform: scale(0.55); } to { opacity: 1; transform: scale(1); } }
+    .orbital-box.fade-in { animation: odfFadeIn 0.4s ease; }
+
+    .check-box {
+        border: 2px solid #f0d9a8; background: #fffdf8;
+        border-radius: 10px; padding: 14px; margin-top: 6px;
+    }
+    .check-q { font-weight: 700; color: #5c4326; margin-bottom: 10px; font-size: 0.98rem; }
+    .compare-pair { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+    .model-choice {
+        border: 3px solid transparent; border-radius: 12px;
+        background: #fff; padding: 8px 10px 4px; cursor: pointer;
+        transition: border-color .15s ease, background .15s ease;
+    }
+    .model-choice:hover { border-color: #f59e0b; }
+    .model-choice:disabled { cursor: default; }
+    .model-choice.pick-right { border-color: #28a745; background: #eafaef; }
+    .model-choice.pick-wrong { border-color: #dc3545; background: #fdeeee; }
+    .choice-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 4px; }
+    .choice-btn {
+        border: 2px solid #b45309; background: #fff; color: #7c2d12;
+        border-radius: 8px; padding: 9px 16px; font-size: 0.93rem; font-weight: 600; cursor: pointer;
+    }
+    .choice-btn:hover { background: #fff3e2; }
+    .choice-btn:disabled { cursor: default; }
+    .choice-btn.pick-right { background: #28a745; border-color: #28a745; color: #fff; }
+    .choice-btn.pick-wrong { background: #dc3545; border-color: #dc3545; color: #fff; }
+    .check-fb { margin-top: 10px; font-weight: 600; font-size: 0.9rem; display: none; line-height: 1.45; }
+    .check-fb.ok { color: #1e7e34; display: block; }
+    .check-fb.no { color: #b3261e; display: block; }
+
+    .intro-nav {
+        display: flex; align-items: center; gap: 12px;
+        padding-top: 12px; margin-top: 6px; border-top: 1px solid #eee;
+    }
+    .intro-nav .spacer { flex: 1 1 auto; }
+    .intro-dots { display: flex; gap: 6px; }
+    .intro-dots i { width: 8px; height: 8px; border-radius: 50%; background: #e0d3bd; display: block; }
+    .intro-dots i.on { background: #b45309; }
+    .intro-btn { border: none; border-radius: 8px; padding: 9px 20px; font-size: 0.94rem; font-weight: 600; cursor: pointer; }
+    .intro-btn.prev { background: #efe6d6; color: #7c2d12; }
+    .intro-btn.prev:disabled { opacity: .45; cursor: not-allowed; }
+    .intro-btn.next { background: linear-gradient(145deg, #b45309, #92400e); color: #fff; }
+    .intro-btn.next:disabled { opacity: .5; cursor: not-allowed; }
+</style>
+</head>
+<body>
+    <!-- Intro walkthrough -->
+    <div class="start-screen" id="startScreen">
+        <div class="intro-card">
+            <h2 class="intro-heading" id="introHeading"></h2>
+            <div class="intro-stage" id="introStage"></div>
+            <div class="click-hint" id="introHint">click anywhere to continue</div>
+            <div class="intro-nav">
+                <button class="intro-btn prev" id="introBack" type="button">Back</button>
+                <span class="spacer"></span>
+                <div class="intro-dots" id="introDots"></div>
+                <span class="spacer"></span>
+                <button class="intro-btn next" id="introNext" type="button">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="mainSimulation" style="display: none;">
+        <div class="header">
+            <h1>Orbital Diagram Filling</h1>
+            <p>Build the orbital filling diagram for each element</p>
+            <span class="score-badge" id="score-badge">Score 100%</span>
+        </div>
+
+        <div class="main-content">
+            <div class="score-display">
+                Correct: <span id="score">0</span> / 5 &nbsp;|&nbsp; Problem <span id="problem-number">1</span>
+            </div>
+            <div class="progress-bar-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <div class="problem-title" id="problem-title"></div>
+            <div class="problem-sub" id="problem-sub"></div>
+            <p class="prompt-box">Drag orbital tiles from below into the working area, in energy order. You'll be
+                asked which energy level each one belongs to. Then click each box to add electrons: first click
+                adds one electron, second click pairs it, third click clears it.</p>
+
+            <div class="working-area empty" id="workingArea"></div>
+
+            <div class="palette-label">Orbital tiles &mdash; drag into the working area above</div>
+            <div class="palette" id="palette"><!-- filled by JS --></div>
+
+            <button class="check-btn" id="check-btn" disabled onclick="checkDiagram()">Check Diagram</button>
+
+            <div class="save-row" id="save-row" style="display: none;">
+                <button type="button" class="save-btn" onclick="manualSave()">Save progress</button>
+                <span class="save-note" id="save-note">saved</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completion Screen -->
+    <div class="complete-screen" id="completeScreen">
+        <div class="complete-card">
+            <h2>Activity complete</h2>
+            <p>You correctly built the orbital filling diagram for all 5 elements.</p>
+            <p id="complete-score">Final score: 100%</p>
+            <p>Your grade has been submitted to Schoology.</p>
+            <button class="close-button" onclick="closeComplete()">Close</button>
+        </div>
+    </div>
+
+    <!-- Energy level picker modal -->
+    <div class="small-modal" id="levelModal">
+        <div class="small-modal-card">
+            <h3>Which energy level?</h3>
+            <p id="levelModalText"></p>
+            <div class="level-choices" id="levelChoices"></div>
+        </div>
+    </div>
+
+    <!-- Rule reminder modal -->
+    <div class="small-modal" id="ruleModal">
+        <div class="small-modal-card" id="ruleModalCard">
+            <h3 id="ruleModalTitle"></h3>
+            <div class="rule-reminder" id="ruleModalReminder"></div>
+            <button type="button" class="small-modal-close" onclick="closeRuleModal()">Got it</button>
+        </div>
+    </div>
+
+    <!-- Per-problem check-result modal -->
+    <div class="problem-modal" id="problemModal">
+        <div class="problem-modal-card" id="problemModalCard">
+            <h3 id="problemModalTitle"></h3>
+            <div class="problem-modal-body" id="problemModalBody"></div>
+            <div class="problem-modal-actions" id="problemModalActions"></div>
+        </div>
+    </div>
+
+<script>
+    // ---------------- Element data ----------------
+    // Each config entry is one orbital group in correct Aufbau (n+l) filling order.
+    var ELEMENTS = [
+        { symbol: 'H',  name: 'Hydrogen',  z: 1,  config: [
+            {n:1,sub:'s',count:1}
+        ]},
+        { symbol: 'O',  name: 'Oxygen',    z: 8,  config: [
+            {n:1,sub:'s',count:2},{n:2,sub:'s',count:2},{n:2,sub:'p',count:4}
+        ]},
+        { symbol: 'Cl', name: 'Chlorine',  z: 17, config: [
+            {n:1,sub:'s',count:2},{n:2,sub:'s',count:2},{n:2,sub:'p',count:6},
+            {n:3,sub:'s',count:2},{n:3,sub:'p',count:5}
+        ]},
+        { symbol: 'Mn', name: 'Manganese', z: 25, config: [
+            {n:1,sub:'s',count:2},{n:2,sub:'s',count:2},{n:2,sub:'p',count:6},
+            {n:3,sub:'s',count:2},{n:3,sub:'p',count:6},{n:4,sub:'s',count:2},{n:3,sub:'d',count:5}
+        ]},
+        { symbol: 'Se', name: 'Selenium',  z: 34, config: [
+            {n:1,sub:'s',count:2},{n:2,sub:'s',count:2},{n:2,sub:'p',count:6},
+            {n:3,sub:'s',count:2},{n:3,sub:'p',count:6},{n:4,sub:'s',count:2},
+            {n:3,sub:'d',count:10},{n:4,sub:'p',count:4}
+        ]}
+    ];
+    var MAX_N = 4; // highest energy level offered in the level-picker (covers all 5 elements)
+
+    function boxCountFor(sub) { return {s:1,p:3,d:5}[sub]; }
+    function minN(sub) { return {s:1,p:2,d:3}[sub]; }
+
+    // ---------------- Game state ----------------
+    var currentQuestion = 0;
+    var correctAnswersCount = 0;
+    var currentElement = null;
+    var diagramGroups = [];    // ordered array: {id, sub, n, boxes:[0,1,2,...]}
+    var groupIdCounter = 1;
+    var pendingDropSub = null; // subshell letter awaiting an energy-level choice
+
+    var missCount = 0;
+    var SCORE_FLOOR = 60;
+    var MISS_PENALTY = 3;
+    function currentPct() { return Math.max(SCORE_FLOOR, 100 - MISS_PENALTY * missCount); }
+    function updateScoreBadge() {
+        var b = document.getElementById('score-badge');
+        if (b) b.textContent = 'Score ' + currentPct() + '%';
+    }
+    function updateProgress() {
+        document.getElementById('score').textContent = correctAnswersCount;
+        document.getElementById('problem-number').textContent = currentQuestion + 1;
+        document.getElementById('progress-fill').style.width = (correctAnswersCount / 5 * 100) + '%';
+    }
+
+    // ---------------- Problem setup ----------------
+    function generateProblem() {
+        if (correctAnswersCount >= 5) { showCompletion(); return; }
+
+        currentElement = ELEMENTS[currentQuestion];
+        diagramGroups = [];
+        groupIdCounter = 1;
+
+        document.getElementById('problem-title').textContent =
+            'Problem ' + (currentQuestion + 1) + ': ' + currentElement.name + ' (' + currentElement.symbol + ')';
+        document.getElementById('problem-sub').textContent =
+            'Atomic number Z = ' + currentElement.z + ' — build the ground-state orbital filling diagram for a neutral atom of this element.';
+
+        renderWorkingArea();
+        renderPalette();
+        updateCheckEnabled();
+        updateProgress();
+        updateScoreBadge();
+        scormCheckpoint();
+    }
+
+    function renderPalette() {
+        var palette = document.getElementById('palette');
+        palette.innerHTML = '';
+        ['s', 'p', 'd'].forEach(function (sub) {
+            var tile = document.createElement('div');
+            tile.className = 'palette-tile';
+            tile.draggable = true;
+            tile.dataset.sub = sub;
+            tile.innerHTML = orbitalBoxesHTML(sub, null) +
+                '<div class="orbital-group-label">' + sub + ' orbital (' + boxCountFor(sub) + ' box' + (boxCountFor(sub) > 1 ? 'es' : '') + ')</div>';
+            tile.addEventListener('dragstart', function (e) {
+                e.dataTransfer.setData('text/plain', sub);
+                e.dataTransfer.effectAllowed = 'copy';
+            });
+            palette.appendChild(tile);
+        });
+    }
+
+    function orbitalBoxesHTML(sub, boxes) {
+        var n = boxCountFor(sub);
+        var html = '<div class="orbital-boxes">';
+        for (var i = 0; i < n; i++) {
+            var state = boxes ? boxes[i] : 0;
+            html += '<div class="orbital-box' + (state ? ' filled' : '') + '">' + boxGlyph(state) + '</div>';
+        }
+        html += '</div>';
+        return html;
+    }
+
+    function boxGlyph(state) {
+        if (state === 1) return '↑';
+        if (state === 2) return '↑↓';
+        return '';
+    }
+
+    // ---------------- Working-area drag/drop ----------------
+    (function setupWorkingAreaDnD() {
+        var area = document.getElementById('workingArea');
+        area.addEventListener('dragover', function (e) { e.preventDefault(); area.classList.add('drag-over'); });
+        area.addEventListener('dragleave', function () { area.classList.remove('drag-over'); });
+        area.addEventListener('drop', function (e) {
+            e.preventDefault();
+            area.classList.remove('drag-over');
+            var sub = e.dataTransfer.getData('text/plain');
+            if (sub === 's' || sub === 'p' || sub === 'd') onOrbitalDropped(sub);
+        });
+    })();
+
+    function usedLevelsFor(sub) {
+        return diagramGroups.filter(function (g) { return g.sub === sub; }).map(function (g) { return g.n; });
+    }
+
+    function onOrbitalDropped(sub) {
+        var used = usedLevelsFor(sub);
+        var choices = [];
+        for (var n = minN(sub); n <= MAX_N; n++) {
+            if (used.indexOf(n) === -1) choices.push(n);
+        }
+        if (choices.length === 0) {
+            openRuleModal('overfull', {
+                title: 'No levels left',
+                text: 'Every energy level for the ' + sub + ' orbital (up to n=' + MAX_N + ') is already placed in your diagram.'
+            });
+            return;
+        }
+        pendingDropSub = sub;
+        document.getElementById('levelModalText').innerHTML =
+            'You are placing an <strong>' + sub + '</strong> orbital (' + boxCountFor(sub) + ' box' + (boxCountFor(sub) > 1 ? 'es' : '') + '). Which energy level (shell) does it belong on?';
+        var choicesEl = document.getElementById('levelChoices');
+        choicesEl.innerHTML = choices.map(function (n) {
+            return '<button type="button" class="level-btn" onclick="chooseLevel(' + n + ')">' + n + '</button>';
+        }).join('');
+        document.getElementById('levelModal').classList.add('open');
+    }
+
+    function chooseLevel(n) {
+        document.getElementById('levelModal').classList.remove('open');
+        var sub = pendingDropSub;
+        pendingDropSub = null;
+        if (!sub) return;
+        diagramGroups.push({ id: groupIdCounter++, sub: sub, n: n, boxes: new Array(boxCountFor(sub)).fill(0) });
+        renderWorkingArea();
+        updateCheckEnabled();
+        scormCheckpoint();
+    }
+
+    function removeGroup(id) {
+        diagramGroups = diagramGroups.filter(function (g) { return g.id !== id; });
+        renderWorkingArea();
+        updateCheckEnabled();
+        scormCheckpoint();
+    }
+
+    function renderWorkingArea() {
+        var area = document.getElementById('workingArea');
+        area.classList.toggle('empty', diagramGroups.length === 0);
+        area.innerHTML = diagramGroups.map(function (g) {
+            return '<div class="orbital-group" data-gid="' + g.id + '">' +
+                '<button type="button" class="remove-group-btn" title="Remove this orbital" onclick="removeGroup(' + g.id + ')">&times;</button>' +
+                orbitalBoxesHTMLFromGroup(g) +
+                '<div class="orbital-group-label">' + g.n + g.sub + '</div>' +
+                '</div>';
+        }).join('');
+
+        diagramGroups.forEach(function (g, gIdx) {
+            var groupEl = area.querySelector('[data-gid="' + g.id + '"]');
+            var boxEls = groupEl.querySelectorAll('.orbital-box');
+            boxEls.forEach(function (boxEl, boxIdx) {
+                boxEl.addEventListener('click', function () { onBoxClick(gIdx, boxIdx); });
+            });
+        });
+    }
+
+    function orbitalBoxesHTMLFromGroup(g) {
+        var html = '<div class="orbital-boxes">';
+        g.boxes.forEach(function (state) {
+            html += '<div class="orbital-box' + (state ? ' filled' : '') + '">' + boxGlyph(state) + '</div>';
+        });
+        html += '</div>';
+        return html;
+    }
+
+    // ---------------- Electron-filling rules ----------------
+    function groupTotal(g) {
+        return g.boxes.reduce(function (sum, b) { return sum + (b === 1 ? 1 : b === 2 ? 2 : 0); }, 0);
+    }
+    function groupIsFull(g) {
+        return g.boxes.every(function (b) { return b === 2; });
+    }
+    function targetElectronsFor(g) {
+        var match = currentElement.config.filter(function (c) { return c.n === g.n && c.sub === g.sub; })[0];
+        return match ? match.count : boxCountFor(g.sub) * 2;
+    }
+    function groupLabel(g) { return g.n + g.sub; }
+
+    function onBoxClick(groupIdx, boxIdx) {
+        var group = diagramGroups[groupIdx];
+        var cur = group.boxes[boxIdx];
+
+        // Aufbau: every earlier-placed group must be completely filled first.
+        for (var i = 0; i < groupIdx; i++) {
+            if (!groupIsFull(diagramGroups[i])) {
+                openRuleModal('aufbau', {
+                    title: 'Rule broken: Aufbau Principle',
+                    text: 'You need to completely fill the <strong>' + groupLabel(diagramGroups[i]) +
+                        '</strong> orbital before adding electrons to <strong>' + groupLabel(group) +
+                        '</strong>. Lower-energy orbitals fill first, left to right.'
+                });
+                return;
+            }
+        }
+
+        if (cur === 0) {
+            group.boxes[boxIdx] = 1;
+        } else if (cur === 1) {
+            var allHaveOne = group.boxes.every(function (b) { return b >= 1; });
+            if (!allHaveOne) {
+                openRuleModal('hund', {
+                    title: "Rule broken: Hund's Rule",
+                    text: 'Every orbital in the <strong>' + groupLabel(group) + '</strong> subshell needs one electron ' +
+                        'before any of them can be paired. Give each empty orbital in this subshell one electron first.'
+                });
+                return;
+            }
+            group.boxes[boxIdx] = 2;
+        } else {
+            group.boxes[boxIdx] = 0;
+        }
+
+        renderWorkingArea();
+        updateCheckEnabled();
+        scormCheckpoint();
+    }
+
+    function openRuleModal(kind, info) {
+        var card = document.getElementById('ruleModalCard');
+        card.className = 'small-modal-card rule-modal-card ' + kind;
+        document.getElementById('ruleModalTitle').textContent = info.title;
+        document.getElementById('ruleModalReminder').innerHTML = info.text;
+        document.getElementById('ruleModal').classList.add('open');
+    }
+    function closeRuleModal() {
+        document.getElementById('ruleModal').classList.remove('open');
+    }
+
+    function updateCheckEnabled() {
+        document.getElementById('check-btn').disabled = diagramGroups.length === 0;
+    }
+
+    // ---------------- Check diagram ----------------
+    function checkDiagram() {
+        var canonical = currentElement.config.map(function (c) { return c.n + c.sub; });
+        var student = diagramGroups.map(function (g) { return g.n + g.sub; });
+
+        var orderCorrect = student.length === canonical.length &&
+            student.every(function (lbl, i) { return lbl === canonical[i]; });
+        var completeCorrect = orderCorrect && diagramGroups.every(function (g) {
+            return groupTotal(g) === targetElectronsFor(g);
+        });
+
+        var card = document.getElementById('problemModalCard');
+        var title = document.getElementById('problemModalTitle');
+        var body = document.getElementById('problemModalBody');
+        var actions = document.getElementById('problemModalActions');
+
+        if (completeCorrect) {
+            correctAnswersCount++;
+            card.className = 'problem-modal-card correct';
+            title.textContent = 'Correct!';
+            body.innerHTML = '<div class="recap">' + currentElement.name + ' (' + currentElement.symbol + '): ' +
+                canonical.map(function (lbl, i) { return lbl + '<sup>' + currentElement.config[i].count + '</sup>'; }).join(' ') +
+                '</div>';
+            actions.innerHTML = '<button type="button" class="next-btn" onclick="advanceFromModal()">Next Problem</button>';
+        } else {
+            missCount++;
+            card.className = 'problem-modal-card incorrect';
+            title.textContent = 'Not quite yet';
+            var issues = [];
+            if (!orderCorrect) {
+                issues.push('Your orbitals are not in the correct energy order, or you have an extra or missing orbital. Review the Aufbau filling order from the intro (1s, 2s, 2p, 3s, 3p, 4s, 3d, 4p...).');
+            } else {
+                issues.push('Your orbitals are in the right order, but at least one of them is not completely filled yet.');
+            }
+            body.innerHTML = '<ul>' + issues.map(function (i) { return '<li>' + i + '</li>'; }).join('') + '</ul>';
+            actions.innerHTML = '<button type="button" class="back-btn" onclick="closeProblemModal()">Go back to diagram</button>';
+        }
+
+        document.getElementById('problemModal').classList.add('open');
+        updateProgress();
+        updateScoreBadge();
+        scormCheckpoint();
+    }
+
+    function closeProblemModal() {
+        document.getElementById('problemModal').classList.remove('open');
+    }
+    function advanceFromModal() {
+        closeProblemModal();
+        nextProblem();
+    }
+    function nextProblem() {
+        currentQuestion++;
+        generateProblem();
+    }
+
+    function showCompletion() {
+        if (window._odCompleted) return;
+        window._odCompleted = true;
+        scormReport();
+        document.getElementById('complete-score').textContent = 'Final score: ' + currentPct() + '%';
+        document.getElementById('completeScreen').style.display = 'flex';
+    }
+    function closeComplete() {
+        document.getElementById('completeScreen').style.display = 'none';
+    }
+
+    function beginActivity() {
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('mainSimulation').style.display = 'block';
+        if (scormAPI) document.getElementById('save-row').style.display = '';
+
+        if (scormResumeData) {
+            currentQuestion = Number.isInteger(scormResumeData.q) ? scormResumeData.q : 0;
+            correctAnswersCount = Math.min(Math.max(0, Number(scormResumeData.correct) || 0), 5);
+            missCount = Math.max(0, Number(scormResumeData.miss) || 0);
+        }
+
+        updateProgress();
+        updateScoreBadge();
+        if (correctAnswersCount >= 5) {
+            showCompletion();
+        } else {
+            generateProblem();
+            if (scormResumeData && Array.isArray(scormResumeData.groups)) {
+                diagramGroups = scormResumeData.groups.map(function (g) {
+                    return { id: groupIdCounter++, sub: g.sub, n: g.n, boxes: g.boxes.slice() };
+                });
+                renderWorkingArea();
+                updateCheckEnabled();
+            }
+        }
+        scormCheckpoint();
+    }
+
+    // ================= Intro slideshow =================
+    function orbitalPreviewHTML(groups) {
+        return '<div class="beat-diagram"><div style="display:flex; justify-content:center; flex-wrap:wrap; gap:36px;">' +
+            groups.map(function (g) {
+                return '<div class="orbital-group">' + orbitalBoxesHTML(g.sub, g.boxes) +
+                    '<div class="orbital-group-label">' + g.label + '</div></div>';
+            }).join('') +
+            '</div></div>';
+    }
+
+    var INTRO = [
+        {
+            h: 'Orbital diagrams',
+            beats: [
+                { note: '<p>This walkthrough shows you how to build an <b>orbital filling diagram</b> &mdash; a row of boxes that shows exactly how an element\'s electrons are arranged. Each box is one <b>orbital</b> and holds up to <b>2 electrons</b>, drawn as up and down arrows.</p>' +
+                        '<p>Every diagram in this activity is for a <b>neutral atom</b> &mdash; the same number of electrons as protons.</p>' },
+                { note: '<p>Subshells have different numbers of boxes: <b>s</b> = 1 box (2 electrons), <b>p</b> = 3 boxes (6 electrons), <b>d</b> = 5 boxes (10 electrons).</p>',
+                  diagram: { groups: [
+                    { label: 's', sub: 's', boxes: [2] },
+                    { label: 'p', sub: 'p', boxes: [2, 2, 2] },
+                    { label: 'd', sub: 'd', boxes: [2, 2, 2, 2, 2] }
+                ] } }
+            ]
+        },
+        {
+            h: 'Watch it fill: Hydrogen through Calcium',
+            beats: [
+                { note: '<p>This diagram fills itself in automatically, one electron at a time, in the correct order. Watch two things: the order the orbitals fill in, and how each subshell fills before any of its boxes pair up. The element name updates as electrons are added &mdash; each one shown here is that element\'s neutral atom.</p>' },
+                { anim: 'fill-demo' },
+                { callout: 'Important: this is the configuration for a <b>neutral atom</b>. An <b>ion</b> can have the exact same electron configuration as a different neutral element &mdash; for example, Na&#8314; and Ne both have the configuration 1s&sup2; 2s&sup2; 2p&#8310; &mdash; but they are not the same element. This activity only builds diagrams for neutral atoms.' }
+            ]
+        },
+        {
+            h: 'Quick check',
+            beats: [
+                { check: {
+                    kind: 'model',
+                    q: 'Based on what you just watched: a p subshell (3 boxes) has 4 electrons to place. Click the correct one.',
+                    models: [
+                        { sub: 'p', boxes: [2, 2, 0] },
+                        { sub: 'p', boxes: [2, 1, 1] }
+                    ],
+                    correct: 1,
+                    ok: "Correct. Hund's rule: all 3 boxes get one electron first, then the 4th electron pairs up in the first box.",
+                    no: "Not quite. Every box needs one electron before any box gets a second one."
+                } }
+            ]
+        },
+        {
+            h: 'How the activity works',
+            beats: [
+                { note: '<p>Below the working area are three draggable tiles: <b>s</b> (1 box), <b>p</b> (3 boxes), <b>d</b> (5 boxes). Drag them into the working area in energy order, one at a time &mdash; you\'ll be asked which energy level each one belongs on.</p>' },
+                { note: '<p>Click a box once to add an electron, again to pair it, a third time to clear it. If a click breaks the Aufbau principle or Hund\'s rule, you\'ll get a reminder instead of the move happening. When you think the diagram is complete, click <b>Check Diagram</b> for feedback.</p>' }
+            ]
+        },
+        {
+            h: 'Putting it together',
+            beats: [
+                { note: '<ol>' +
+                        '<li>Drag orbital tiles into the working area in energy order.</li>' +
+                        '<li>Choose the correct energy level for each one when asked.</li>' +
+                        '<li>Click boxes to add electrons, following the Aufbau principle and Hund\'s rule.</li>' +
+                        '<li>Click Check Diagram when you think you are done.</li>' +
+                        '</ol>' },
+                { callout: 'The activity has 5 elements, increasing in difficulty. Wrong Check attempts lower the score in the corner but let you keep going, and you can use Save progress to stop and come back.' }
+            ]
+        }
+    ];
+
+    var slideIdx = 0;
+    var beatIdx = 0;
+    var introPassed = new Set();
+    var introAttempts = {};
+
+    function curSlide() { return INTRO[slideIdx]; }
+    function curBeat() { return curSlide().beats[beatIdx]; }
+    function isLastBeatOfIntro() { return slideIdx === INTRO.length - 1 && beatIdx === curSlide().beats.length - 1; }
+    function checkPending() {
+        var b = curBeat();
+        return !!(b && b.check && !introPassed.has(slideIdx));
+    }
+    function slideCheck(i) {
+        var b = INTRO[i].beats.filter(function (x) { return x.check; })[0];
+        return b ? b.check : null;
+    }
+
+    function initIntro() {
+        document.getElementById('introDots').innerHTML =
+            INTRO.map(function (_, i) { return '<i data-i="' + i + '"></i>'; }).join('');
+
+        document.getElementById('introBack').addEventListener('click', function (e) { e.stopPropagation(); beatBack(); });
+        document.getElementById('introNext').addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (isLastBeatOfIntro()) finishIntro(); else beatForward();
+        });
+        document.querySelector('#startScreen .intro-card').addEventListener('click', function (e) {
+            if (e.target.closest('.intro-nav')) return;
+            if (e.target.closest('.check-box')) return;
+            if (e.target.closest('.fill-demo-replay')) return;
+            if (isLastBeatOfIntro()) return;
+            beatForward();
+        });
+        document.getElementById('introStage').addEventListener('click', onIntroCheckClick);
+
+        slideIdx = 0; beatIdx = 0;
+        renderIntro();
+    }
+
+    function beatForward() {
+        if (checkPending()) return;
+        if (beatIdx < curSlide().beats.length - 1) {
+            beatIdx++;
+        } else if (slideIdx < INTRO.length - 1) {
+            slideIdx++; beatIdx = 0;
+        } else { return; }
+        renderIntro();
+    }
+    function beatBack() {
+        if (beatIdx > 0) { beatIdx--; }
+        else if (slideIdx > 0) { slideIdx--; beatIdx = curSlide().beats.length - 1; }
+        else { return; }
+        renderIntro();
+    }
+    function finishIntro() {
+        if (fillDemoTimer) { clearInterval(fillDemoTimer); fillDemoTimer = null; }
+        document.getElementById('startScreen').style.display = 'none';
+        beginActivity();
+    }
+
+    function beatToHTML(b, newest) {
+        var pop = newest ? ' pop' : '';
+        var html = '';
+        if (b.note) html += '<div class="beat-note' + pop + '">' + b.note + '</div>';
+        if (b.diagram) {
+            html += '<div class="beat-diagram' + pop + '">' + orbitalPreviewHTML(b.diagram.groups) +
+                (b.say ? '<div class="chat">' + b.say + '</div>' : '') + '</div>';
+        }
+        if (b.anim === 'fill-demo') html += fillDemoHTML(pop);
+        if (b.callout) html += '<div class="callout' + pop + '">' + b.callout + '</div>';
+        if (b.check) {
+            var c = b.check;
+            var inner;
+            if (c.kind === 'model') {
+                inner = '<div class="compare-pair">' +
+                    c.models.map(function (m, oi) {
+                        return '<button type="button" class="model-choice" data-idx="' + oi + '">' +
+                            orbitalBoxesHTML(m.sub, m.boxes) +
+                            (m.caption ? '<div class="orbital-group-label">' + m.caption + '</div>' : '') +
+                            '</button>';
+                    }).join('') +
+                    '</div>';
+            } else {
+                inner = '<div class="choice-row">' +
+                    c.options.map(function (o, oi) { return '<button type="button" class="choice-btn" data-idx="' + oi + '">' + o + '</button>'; }).join('') +
+                    '</div>';
+            }
+            html += '<div class="check-box' + pop + '" data-slide="' + slideIdx + '"><div class="check-q">' + c.q + '</div>' +
+                inner + '<div class="check-fb" id="ifb-' + slideIdx + '"></div></div>';
+        }
+        return html;
+    }
+
+    // ---- "Watch it fill" auto-play demo (Hydrogen through Calcium, 1s..4s) ----
+    var FILL_DEMO_SKELETON = ['s', 's', 'p', 's', 'p', 's'];
+    var FILL_DEMO_LABELS = ['1s', '2s', '2p', '3s', '3p', '4s'];
+    var FILL_DEMO_ELEMENTS = [null,
+        {sym:'H',name:'Hydrogen'}, {sym:'He',name:'Helium'}, {sym:'Li',name:'Lithium'}, {sym:'Be',name:'Beryllium'},
+        {sym:'B',name:'Boron'}, {sym:'C',name:'Carbon'}, {sym:'N',name:'Nitrogen'}, {sym:'O',name:'Oxygen'},
+        {sym:'F',name:'Fluorine'}, {sym:'Ne',name:'Neon'}, {sym:'Na',name:'Sodium'}, {sym:'Mg',name:'Magnesium'},
+        {sym:'Al',name:'Aluminum'}, {sym:'Si',name:'Silicon'}, {sym:'P',name:'Phosphorus'}, {sym:'S',name:'Sulfur'},
+        {sym:'Cl',name:'Chlorine'}, {sym:'Ar',name:'Argon'}, {sym:'K',name:'Potassium'}, {sym:'Ca',name:'Calcium'}
+    ];
+    var fillDemoTimer = null;
+
+    function fillDemoHTML(pop) {
+        return '<div class="beat-diagram fill-demo-wrap' + pop + '">' +
+            '<div class="fill-demo-element" id="fillDemoElement">&mdash;</div>' +
+            '<div class="fill-demo-diagram" id="fillDemoDiagram"></div>' +
+            '<button type="button" class="fill-demo-replay" id="fillDemoReplay">Replay animation</button>' +
+            '</div>';
+    }
+
+    function buildFillDemoSteps() {
+        var steps = [];
+        FILL_DEMO_SKELETON.forEach(function (sub, gi) {
+            var n = boxCountFor(sub);
+            for (var i = 0; i < n; i++) steps.push({ g: gi, b: i, state: 1 });
+            for (var i2 = 0; i2 < n; i2++) steps.push({ g: gi, b: i2, state: 2 });
+        });
+        return steps;
+    }
+
+    function renderFillDemoDiagram(boxesState, justChanged) {
+        var host = document.getElementById('fillDemoDiagram');
+        if (!host) return;
+        host.innerHTML = FILL_DEMO_SKELETON.map(function (sub, gi) {
+            var boxesHtml = boxesState[gi].map(function (state, bi) {
+                var fresh = justChanged && justChanged.g === gi && justChanged.b === bi;
+                return '<div class="orbital-box' + (state ? ' filled' : '') + (fresh ? ' fade-in' : '') + '">' + boxGlyph(state) + '</div>';
+            }).join('');
+            return '<div class="orbital-group"><div class="orbital-boxes">' + boxesHtml + '</div>' +
+                '<div class="orbital-group-label">' + FILL_DEMO_LABELS[gi] + '</div></div>';
+        }).join('');
+    }
+
+    function startFillDemo() {
+        if (fillDemoTimer) { clearInterval(fillDemoTimer); fillDemoTimer = null; }
+        var host = document.getElementById('fillDemoDiagram');
+        if (!host) return; // this beat isn't on screen
+        var boxesState = FILL_DEMO_SKELETON.map(function (sub) { return new Array(boxCountFor(sub)).fill(0); });
+        var steps = buildFillDemoSteps();
+        var stepIdx = 0;
+        renderFillDemoDiagram(boxesState);
+        var elLabel = document.getElementById('fillDemoElement');
+        if (elLabel) elLabel.textContent = '—';
+
+        var replayBtn = document.getElementById('fillDemoReplay');
+        if (replayBtn) replayBtn.onclick = function () { startFillDemo(); };
+
+        fillDemoTimer = setInterval(function () {
+            if (stepIdx >= steps.length || !document.getElementById('fillDemoDiagram')) {
+                clearInterval(fillDemoTimer); fillDemoTimer = null; return;
+            }
+            var step = steps[stepIdx];
+            boxesState[step.g][step.b] = step.state;
+            renderFillDemoDiagram(boxesState, { g: step.g, b: step.b });
+            var z = stepIdx + 1;
+            var info = FILL_DEMO_ELEMENTS[z];
+            var label = document.getElementById('fillDemoElement');
+            if (label && info) label.textContent = info.name + ' (' + info.sym + ')  —  Z = ' + z;
+            stepIdx++;
+        }, 1700);
+    }
+
+    function renderIntro() {
+        if (fillDemoTimer) { clearInterval(fillDemoTimer); fillDemoTimer = null; }
+
+        document.getElementById('introHeading').textContent = curSlide().h;
+
+        var stage = document.getElementById('introStage');
+        stage.innerHTML = '';
+        var beats = curSlide().beats;
+        for (var i = 0; i <= beatIdx; i++) {
+            stage.insertAdjacentHTML('beforeend', beatToHTML(beats[i], i === beatIdx));
+        }
+
+        if (curBeat() && curBeat().anim === 'fill-demo') startFillDemo();
+
+        if (introPassed.has(slideIdx)) {
+            var box = stage.querySelector('.check-box');
+            var chk = slideCheck(slideIdx);
+            if (box && chk) {
+                var btns = box.querySelectorAll('button');
+                btns.forEach(function (bn) { bn.disabled = true; });
+                if (btns[chk.correct]) btns[chk.correct].classList.add('pick-right');
+                var fb = box.querySelector('.check-fb');
+                fb.className = 'check-fb ok';
+                fb.textContent = chk.ok;
+            }
+        }
+
+        document.querySelectorAll('#introDots i').forEach(function (el) {
+            el.classList.toggle('on', Number(el.dataset.i) === slideIdx);
+        });
+
+        document.getElementById('introBack').disabled = (slideIdx === 0 && beatIdx === 0);
+
+        var nextBtn = document.getElementById('introNext');
+        if (isLastBeatOfIntro()) {
+            nextBtn.textContent = 'Start the 5 problems';
+            nextBtn.disabled = false;
+        } else {
+            nextBtn.textContent = 'Next';
+            nextBtn.disabled = checkPending();
+        }
+
+        var hint = document.getElementById('introHint');
+        if (isLastBeatOfIntro()) {
+            hint.textContent = 'use the button when you are ready';
+        } else if (checkPending()) {
+            hint.textContent = 'answer above to continue';
+        } else {
+            hint.textContent = 'click anywhere to continue   (' + (beatIdx + 1) + ' / ' + beats.length + ')';
+        }
+
+        var newest = stage.lastElementChild;
+        if (newest && newest.scrollIntoView) newest.scrollIntoView({ block: 'nearest' });
+        stage.scrollTop = stage.scrollHeight;
+    }
+
+    function onIntroCheckClick(e) {
+        var btn = e.target.closest('.model-choice, .choice-btn');
+        if (!btn) return;
+        e.stopPropagation();
+        var box = btn.closest('.check-box');
+        var slide = Number(box.dataset.slide);
+        if (introPassed.has(slide)) return;
+
+        var chk = slideCheck(slide);
+        var idx = Number(btn.dataset.idx);
+        var fb = document.getElementById('ifb-' + slide);
+        introAttempts[slide] = (introAttempts[slide] || 0) + 1;
+
+        var finish = function () {
+            introPassed.add(slide);
+            box.querySelectorAll('button').forEach(function (b) { b.disabled = true; });
+            document.getElementById('introNext').disabled = isLastBeatOfIntro() ? false : checkPending();
+            document.getElementById('introHint').textContent = 'click anywhere to continue';
+        };
+
+        if (idx === chk.correct) {
+            btn.classList.add('pick-right');
+            fb.className = 'check-fb ok';
+            fb.textContent = chk.ok;
+            finish();
+        } else {
+            btn.classList.add('pick-wrong');
+            fb.className = 'check-fb no';
+            fb.textContent = chk.no;
+            if (introAttempts[slide] >= 2) {
+                var right = box.querySelectorAll('button')[chk.correct];
+                if (right) right.classList.add('pick-right');
+                fb.textContent = chk.no + ' ' + chk.ok;
+                finish();
+            } else {
+                setTimeout(function () { btn.classList.remove('pick-wrong'); }, 900);
+            }
+        }
+    }
+
+    // ---- SCORM 1.2 ----
+    var scormAPI = null;
+    var scormResumeEntry = false;
+    var scormResumeData = null;
+    var scormDone = false;
+    var scormStartMs = Date.now();
+
+    function findAPI(win) {
+        var n = 0, w = win;
+        while (w && n < 12) {
+            if (w.API) return w.API;
+            w = (w.parent && w.parent !== w) ? w.parent : w.opener;
+            n++;
+        }
+        return null;
+    }
+
+    function scormInit() {
+        try {
+            scormAPI = findAPI(window);
+            if (!scormAPI) return;
+            if (String(scormAPI.LMSInitialize("")) !== "true") { scormAPI = null; return; }
+            var st = scormAPI.LMSGetValue("cmi.core.lesson_status");
+            if (st === "" || st === "not attempted" || st === "unknown") {
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+            }
+            if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                scormResumeEntry = true;
+                var raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                if (raw) {
+                    try {
+                        var d = JSON.parse(raw);
+                        if (d && typeof d === 'object') scormResumeData = d;
+                    } catch (e) { /* ignore bad bookmark */ }
+                }
+            }
+            scormAPI.LMSCommit("");
+        } catch (e) { scormAPI = null; }
+    }
+
+    function scormTime() {
+        var s = Math.floor((Date.now() - scormStartMs) / 1000);
+        var h = String(Math.floor(s / 3600)).padStart(4, '0');
+        s %= 3600;
+        var m = String(Math.floor(s / 60)).padStart(2, '0');
+        var ss = String(s % 60).padStart(2, '0');
+        return h + ':' + m + ':' + ss;
+    }
+
+    function scormCheckpoint() {
+        if (!scormAPI || scormDone) return;
+        try {
+            scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                q: currentQuestion,
+                correct: correctAnswersCount,
+                miss: missCount,
+                groups: diagramGroups.map(function (g) { return { sub: g.sub, n: g.n, boxes: g.boxes }; })
+            }));
+            scormAPI.LMSSetValue("cmi.core.lesson_location", String(currentQuestion));
+            scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+            scormAPI.LMSCommit("");
+        } catch (e) { /* ignore */ }
+    }
+
+    function scormReport() {
+        if (!scormAPI || scormDone) return;
+        try {
+            scormAPI.LMSSetValue("cmi.core.score.min", "0");
+            scormAPI.LMSSetValue("cmi.core.score.max", "100");
+            scormAPI.LMSSetValue("cmi.core.score.raw", String(currentPct()));
+            scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+            scormAPI.LMSSetValue("cmi.core.session_time", scormTime());
+            scormAPI.LMSSetValue("cmi.core.exit", "");
+            scormAPI.LMSCommit("");
+            scormDone = true;
+        } catch (e) { /* ignore */ }
+    }
+
+    function scormTerminate() {
+        if (!scormAPI) return;
+        try {
+            if (!scormDone) scormCheckpoint();
+            scormAPI.LMSFinish("");
+        } catch (e) { /* ignore */ }
+    }
+
+    function manualSave() {
+        if (!scormAPI || scormDone) return;
+        scormCheckpoint();
+        var n = document.getElementById('save-note');
+        if (n) {
+            n.classList.add('show');
+            clearTimeout(manualSave._t);
+            manualSave._t = setTimeout(function () { n.classList.remove('show'); }, 2200);
+        }
+    }
+
+    window.addEventListener('beforeunload', scormTerminate);
+    window.addEventListener('pagehide', function () { scormCheckpoint(); });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) scormCheckpoint(); });
+
+    window.addEventListener('load', function () {
+        scormInit();
+        if (scormResumeEntry && scormResumeData) {
+            beginActivity();
+        } else {
+            initIntro();
+        }
+    });
+</script>
+</body>
+</html>

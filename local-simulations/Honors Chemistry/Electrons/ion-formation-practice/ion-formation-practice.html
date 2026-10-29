@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ion Formation Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 14px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            max-width: 1280px;
+            width: 100%;
+            padding: 18px 22px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 1.6em;
+            font-weight: 600;
+        }
+
+        .student-info {
+            text-align: center;
+            margin-bottom: 14px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .student-info p {
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .student-info button {
+            padding: 10px 30px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .student-info button:hover {
+            background: #45a049;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .instructions-toggle {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .instructions-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .instructions-box {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 4px solid #007bff;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .instructions-box h3 {
+            color: #495057;
+            margin: 0 0 8px 0;
+            font-size: 15px;
+        }
+
+        .instructions-box ol {
+            margin: 0;
+            padding-left: 20px;
+            color: #495057;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .score-board {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .score-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #2c3e50;
+            padding: 5px 12px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 78px;
+        }
+
+        .score-item h4 {
+            font-size: 1.05rem;
+            color: #007bff;
+        }
+
+        .score-item span {
+            font-size: 0.7rem;
+            color: #6c757d;
+        }
+
+        .progress-bar {
+            flex: 1;
+            min-width: 160px;
+            background: #e9ecef;
+            height: 22px;
+            border-radius: 11px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #dee2e6;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #495057, #6c757d);
+            height: 100%;
+            border-radius: 11px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 440px 1fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .periodic-table {
+            display: grid;
+            grid-template-columns: repeat(18, 1fr);
+            gap: 1px;
+            padding: 6px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .element-cell {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+
+        .element-cell.empty {
+            background: transparent;
+            border: none;
+        }
+
+        .element-cell.excluded {
+            background: #eef0f2;
+        }
+
+        .element-cell.highlighted {
+            background: #fff3cd;
+            border: 2px solid #856404;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .element-symbol {
+            font-weight: bold;
+            font-size: 10px;
+            line-height: 1;
+        }
+
+        .element-number {
+            font-size: 6px;
+            color: #666;
+            line-height: 1;
+        }
+
+        .element-info {
+            text-align: center;
+            font-size: 17px;
+            margin-top: 10px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            color: #495057;
+            border: 1px solid #dee2e6;
+            font-weight: 600;
+        }
+
+        .legend {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            margin-top: 8px;
+            font-size: 11px;
+            color: #6c757d;
+        }
+
+        .legend-swatch {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+
+        .right-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .answer-group {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #e2e5e9;
+        }
+
+        .answer-group:last-of-type {
+            border-bottom: none;
+        }
+
+        .answer-group-label {
+            flex: 0 0 250px;
+            text-align: right;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.25;
+            padding-right: 16px;
+            margin-right: 16px;
+            border-right: 2px solid #d7dce1;
+        }
+
+        .opt-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .opt-btn {
+            position: relative;
+            min-width: 42px;
+            padding: 8px 13px;
+            font-size: 14px;
+            font-weight: bold;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #2c3e50;
+        }
+
+        .opt-btn:hover:not(:disabled) {
+            background: #f8f9fa;
+            transform: scale(1.05);
+        }
+
+        .opt-btn.selected {
+            border-color: #007bff;
+            background: #e7f1ff;
+        }
+
+        .opt-btn.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+            animation: correctAnswer 0.5s;
+        }
+
+        .opt-btn.incorrect {
+            background: #fdecea;
+            color: #a52a2a;
+            border-color: #dc3545;
+            animation: shake 0.5s;
+        }
+
+        .opt-btn.incorrect::after {
+            content: '\00d7';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 17px;
+            height: 17px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .opt-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        @keyframes correctAnswer {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 6px;
+        }
+
+        .btn {
+            padding: 10px 28px;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-check {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-check:hover:not(:disabled) {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-check:disabled {
+            background: #adb5bd;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-save {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #1e7e34;
+            transform: translateY(-2px);
+        }
+
+        .save-status {
+            display: inline-block;
+            margin-left: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #28a745;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            vertical-align: middle;
+        }
+
+        .save-status.visible {
+            opacity: 1;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+
+        .feedback.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .feedback.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .feedback.info {
+            background: #fff3cd;
+            color: #7a5c00;
+            border: 1px solid #ffe69c;
+            display: block;
+        }
+
+        /* Walkthrough panel */
+        .walkthrough-panel {
+            display: none;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-left: 4px solid #ffc107;
+            border-radius: 10px;
+            padding: 16px 18px;
+        }
+
+        .walkthrough-panel.active {
+            display: block;
+        }
+
+        .walkthrough-intro {
+            font-size: 14px;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .walkthrough-step-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #856404;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .walkthrough-question {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .walkthrough-answer {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 6px 14px;
+            border-radius: 7px;
+            margin-bottom: 10px;
+        }
+
+        .walkthrough-explanation {
+            font-size: 13.5px;
+            color: #495057;
+            line-height: 1.5;
+            margin-bottom: 14px;
+        }
+
+        .walkthrough-controls {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* Success screen */
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-modal.active {
+            display: flex;
+        }
+
+        .success-container {
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            padding: 40px;
+            margin: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .success-container h2 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+        }
+
+        .success-container p {
+            color: #495057;
+            line-height: 1.6;
+        }
+
+        .success-container .close-button {
+            margin-top: 24px;
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+        }
+
+        .success-container .close-button:hover {
+            background: #0056b3;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            h1 {
+                font-size: 1.4em;
+            }
+
+            .answer-group {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+
+            .answer-group-label {
+                flex: none;
+                text-align: center;
+                padding-right: 0;
+                margin-right: 0;
+                border-right: none;
+                padding-bottom: 6px;
+                border-bottom: 1px dashed #d7dce1;
+            }
+
+            .opt-buttons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Ion Formation Practice</h1>
+        </div>
+
+        <div class="student-info" id="studentEntry">
+            <p>Correctly answer 10 ion-formation problems to complete this activity. For each main-group element you'll identify its valence electrons, whether it gains or loses electrons to form an ion, how many electrons are gained or lost, the resulting charge, and whether it's a cation or anion. You get two attempts per element — if you're still incorrect after your second attempt, you'll be walked through that problem step by step and it won't count toward your 10 completed problems. Your score starts at 100% and drops 4 points for every missed attempt, down to a floor of 60%. Your progress is saved if you're interrupted, and both a completion grade and a score are submitted to Schoology automatically when you finish.</p>
+            <button onclick="startSimulation()">Begin Simulation</button>
+        </div>
+
+        <div id="mainContent" style="display: none;">
+            <div class="top-bar">
+                <button class="instructions-toggle" onclick="toggleInstructions()">Show Instructions</button>
+                <button class="btn btn-save" id="save-progress-btn" onclick="manualSaveProgress()">Save Progress</button>
+                <span class="save-status" id="save-status">Saved ✓</span>
+                <div class="score-board">
+                    <div class="score-item">
+                        <h4 id="correctCountDisplay">0/10</h4>
+                        <span>Completed</span>
+                    </div>
+                    <div class="score-item">
+                        <h4 id="attemptsDisplay">0</h4>
+                        <span>Problems Seen</span>
+                    </div>
+                    <div class="score-item">
+                        <h4 id="scoreDisplay">100%</h4>
+                        <span>Score</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%">0 / 10 Complete</div>
+                </div>
+            </div>
+
+            <div id="instructionsBox" class="instructions-box">
+                <h3>Instructions:</h3>
+                <ol>
+                    <li>An element on the periodic table will be highlighted — only elements from groups 1, 2, 13, 15, 16, and 17 are used as problems (hydrogen is excluded)</li>
+                    <li>Answer all five questions about how that element forms an ion</li>
+                    <li>Click "Check Answer" once all five are selected</li>
+                    <li>Correct answers turn green; incorrect answers are marked with a red X — you get a second attempt</li>
+                    <li>Still incorrect after two attempts? You'll be walked through the problem step by step, and it won't count toward your 10 completed problems</li>
+                    <li>Get 10 elements correct (within two attempts each) to complete the activity</li>
+                    <li><strong>Before you close your Chromebook or exit Schoology,</strong> click the green "Save Progress" button so your work is saved and you can pick up where you left off next time.</li>
+                </ol>
+                <p style="margin-top: 8px; font-size: 12px; font-style: italic; color: #6c757d;">Tip: Metals (groups 1, 2, 13) lose electrons to empty their valence shell. Nonmetals (groups 15, 16, 17) gain electrons to fill their valence shell to 8.</p>
+            </div>
+
+            <div class="main-grid">
+                <div class="left-col">
+                    <div class="periodic-table" id="periodicTable"></div>
+                    <div class="element-info" id="elementInfo">Loading...</div>
+                    <div class="legend">
+                        <span><span class="legend-swatch" style="background:#eef0f2;"></span>Not used for problems (groups 14 &amp; 18, hydrogen)</span>
+                        <span><span class="legend-swatch" style="background:#fff3cd; border:1px solid #856404;"></span>Current problem</span>
+                    </div>
+                </div>
+
+                <div class="right-col">
+                    <div id="quizPanel">
+                        <div class="answer-group">
+                            <div class="answer-group-label">How many valence electrons does this element have?</div>
+                            <div class="opt-buttons" id="group-valence"></div>
+                        </div>
+
+                        <div class="answer-group">
+                            <div class="answer-group-label">Does it gain or lose electrons to form an ion?</div>
+                            <div class="opt-buttons" id="group-action"></div>
+                        </div>
+
+                        <div class="answer-group">
+                            <div class="answer-group-label">How many electrons does it gain or lose?</div>
+                            <div class="opt-buttons" id="group-count"></div>
+                        </div>
+
+                        <div class="answer-group">
+                            <div class="answer-group-label">What is the charge of the ion?</div>
+                            <div class="opt-buttons" id="group-charge"></div>
+                        </div>
+
+                        <div class="answer-group">
+                            <div class="answer-group-label">Is the ion a cation or an anion?</div>
+                            <div class="opt-buttons" id="group-type"></div>
+                        </div>
+
+                        <div class="controls">
+                            <button class="btn btn-check" id="checkAnswerBtn" onclick="checkAnswer()" disabled>Check Answer</button>
+                        </div>
+
+                        <div class="feedback" id="feedback"></div>
+                    </div>
+
+                    <div class="walkthrough-panel" id="walkthroughPanel">
+                        <div class="walkthrough-intro" id="walkthroughIntro"></div>
+                        <div class="walkthrough-step-label" id="walkthroughStepLabel"></div>
+                        <div class="walkthrough-question" id="walkthroughQuestion"></div>
+                        <div class="walkthrough-answer" id="walkthroughAnswer"></div>
+                        <div class="walkthrough-explanation" id="walkthroughExplanation"></div>
+                        <div class="walkthrough-controls">
+                            <button class="btn btn-check" id="walkthroughNextBtn" onclick="nextWalkthroughStep()">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Screen -->
+    <div class="success-modal" id="successModal">
+        <div class="success-container">
+            <h2>Simulation Complete!</h2>
+            <p>You correctly answered 10 ion formation problems.</p>
+            <p>Your completion grade and score have been submitted to Schoology.</p>
+            <button class="close-button" onclick="closeSuccessScreen()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Main group elements eligible to be selected as problems: groups 1, 2, 13, 15, 16, 17
+        // (group 14, group 18/noble gases, and hydrogen are shown on the table but never chosen —
+        // hydrogen's ion behavior is ambiguous, so it's excluded as a problem element)
+        const ionElements = [
+            { symbol: 'Li', name: 'Lithium', number: 3, group: 1, period: 2 },
+            { symbol: 'Be', name: 'Beryllium', number: 4, group: 2, period: 2 },
+            { symbol: 'B', name: 'Boron', number: 5, group: 13, period: 2 },
+            { symbol: 'N', name: 'Nitrogen', number: 7, group: 15, period: 2 },
+            { symbol: 'O', name: 'Oxygen', number: 8, group: 16, period: 2 },
+            { symbol: 'F', name: 'Fluorine', number: 9, group: 17, period: 2 },
+            { symbol: 'Na', name: 'Sodium', number: 11, group: 1, period: 3 },
+            { symbol: 'Mg', name: 'Magnesium', number: 12, group: 2, period: 3 },
+            { symbol: 'Al', name: 'Aluminum', number: 13, group: 13, period: 3 },
+            { symbol: 'P', name: 'Phosphorus', number: 15, group: 15, period: 3 },
+            { symbol: 'S', name: 'Sulfur', number: 16, group: 16, period: 3 },
+            { symbol: 'Cl', name: 'Chlorine', number: 17, group: 17, period: 3 },
+            { symbol: 'K', name: 'Potassium', number: 19, group: 1, period: 4 },
+            { symbol: 'Ca', name: 'Calcium', number: 20, group: 2, period: 4 },
+            { symbol: 'Ga', name: 'Gallium', number: 31, group: 13, period: 4 },
+            { symbol: 'As', name: 'Arsenic', number: 33, group: 15, period: 4 },
+            { symbol: 'Se', name: 'Selenium', number: 34, group: 16, period: 4 },
+            { symbol: 'Br', name: 'Bromine', number: 35, group: 17, period: 4 },
+            { symbol: 'Rb', name: 'Rubidium', number: 37, group: 1, period: 5 },
+            { symbol: 'Sr', name: 'Strontium', number: 38, group: 2, period: 5 },
+            { symbol: 'In', name: 'Indium', number: 49, group: 13, period: 5 },
+            { symbol: 'Sb', name: 'Antimony', number: 51, group: 15, period: 5 },
+            { symbol: 'Te', name: 'Tellurium', number: 52, group: 16, period: 5 },
+            { symbol: 'I', name: 'Iodine', number: 53, group: 17, period: 5 },
+            { symbol: 'Cs', name: 'Cesium', number: 55, group: 1, period: 6 },
+            { symbol: 'Ba', name: 'Barium', number: 56, group: 2, period: 6 },
+            { symbol: 'Tl', name: 'Thallium', number: 81, group: 13, period: 6 },
+            { symbol: 'Bi', name: 'Bismuth', number: 83, group: 15, period: 6 },
+            { symbol: 'Po', name: 'Polonium', number: 84, group: 16, period: 6 },
+            { symbol: 'At', name: 'Astatine', number: 85, group: 17, period: 6 },
+            { symbol: 'Fr', name: 'Francium', number: 87, group: 1, period: 7 },
+            { symbol: 'Ra', name: 'Radium', number: 88, group: 2, period: 7 },
+            { symbol: 'Nh', name: 'Nihonium', number: 113, group: 13, period: 7 },
+            { symbol: 'Mc', name: 'Moscovium', number: 115, group: 15, period: 7 },
+            { symbol: 'Lv', name: 'Livermorium', number: 116, group: 16, period: 7 },
+            { symbol: 'Ts', name: 'Tennessine', number: 117, group: 17, period: 7 }
+        ];
+
+        // Every element on the displayed periodic table, including groups 14 and 18,
+        // so the full table renders. Only entries in ionElements are ever chosen as problems.
+        const displayElements = ionElements.concat([
+            { symbol: 'H', number: 1, group: 1, period: 1 },
+            { symbol: 'He', number: 2, group: 18, period: 1 },
+            { symbol: 'C', number: 6, group: 14, period: 2 },
+            { symbol: 'Ne', number: 10, group: 18, period: 2 },
+            { symbol: 'Si', number: 14, group: 14, period: 3 },
+            { symbol: 'Ar', number: 18, group: 18, period: 3 },
+            { symbol: 'Ge', number: 32, group: 14, period: 4 },
+            { symbol: 'Kr', number: 36, group: 18, period: 4 },
+            { symbol: 'Sn', number: 50, group: 14, period: 5 },
+            { symbol: 'Xe', number: 54, group: 18, period: 5 },
+            { symbol: 'Pb', number: 82, group: 14, period: 6 },
+            { symbol: 'Rn', number: 86, group: 18, period: 6 },
+            { symbol: 'Fl', number: 114, group: 14, period: 7 },
+            { symbol: 'Og', number: 118, group: 18, period: 7 }
+        ]);
+
+        // Full periodic table layout, main groups only (0 = empty cell / d-block gap).
+        const tableLayout = [
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+            [3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 6, 7, 8, 9, 10],
+            [11, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 14, 15, 16, 17, 18],
+            [19, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31, 32, 33, 34, 35, 36],
+            [37, 38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 49, 50, 51, 52, 53, 54],
+            [55, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 81, 82, 83, 84, 85, 86],
+            [87, 88, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 113, 114, 115, 116, 117, 118]
+        ];
+
+        // Ion-formation rules by group (main-group octet-rule simplification)
+        const groupRules = {
+            1: { valence: 1, action: 'Lose', count: 1, charge: '+1', type: 'Cation' },
+            2: { valence: 2, action: 'Lose', count: 2, charge: '+2', type: 'Cation' },
+            13: { valence: 3, action: 'Lose', count: 3, charge: '+3', type: 'Cation' },
+            15: { valence: 5, action: 'Gain', count: 3, charge: '-3', type: 'Anion' },
+            16: { valence: 6, action: 'Gain', count: 2, charge: '-2', type: 'Anion' },
+            17: { valence: 7, action: 'Gain', count: 1, charge: '-1', type: 'Anion' }
+        };
+
+        const answerGroups = [
+            { key: 'valence', elementId: 'group-valence', question: 'How many valence electrons does this element have?', options: [1, 2, 3, 4, 5, 6, 7, 8] },
+            { key: 'action', elementId: 'group-action', question: 'Does it gain or lose electrons to form an ion?', options: ['Lose', 'Gain'] },
+            { key: 'count', elementId: 'group-count', question: 'How many electrons does it gain or lose?', options: [1, 2, 3] },
+            { key: 'charge', elementId: 'group-charge', question: 'What is the charge of the ion?', options: ['+1', '+2', '+3', '-1', '-2', '-3'] },
+            { key: 'type', elementId: 'group-type', question: 'Is the ion a cation or an anion?', options: ['Cation', 'Anion'] }
+        ];
+
+        const PROBLEMS_REQUIRED = 10;
+        const MAX_ATTEMPTS_PER_PROBLEM = 2;
+        const SCORE_PENALTY_PER_MISS = 4; // percentage points deducted for each missed attempt (1st or 2nd)
+        const SCORE_FLOOR = 60;           // score can never drop below this, no matter how many misses
+
+        // Global state
+        let correctCount = 0;              // problems solved within 2 attempts (drives the 10-required completion count)
+        let totalProblemsPresented = 0;    // distinct problems that received at least one check
+        let missCount = 0;                 // total missed attempts across all problems (drives the score deduction)
+        let currentElement = null;
+        let selections = {};
+        let problemLocked = false;
+        let attemptNumber = 1;
+        let usedElements = [];
+        let shuffledElements = [];
+        let walkthroughStepIndex = 0;
+        let walkthroughSteps = [];
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function startSimulation() {
+            document.getElementById('studentEntry').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+
+            initializePeriodicTable();
+            renderAnswerGroups();
+            shuffledElements = shuffleArray(ionElements);
+            usedElements = [];
+            generateNewProblem();
+
+            scormSaveProgress();
+        }
+
+        function initializePeriodicTable() {
+            const table = document.getElementById('periodicTable');
+            table.innerHTML = '';
+
+            const elementMap = {};
+            displayElements.forEach(el => { elementMap[el.number] = el; });
+            const eligibleNumbers = new Set(ionElements.map(el => el.number));
+
+            tableLayout.forEach(row => {
+                row.forEach(num => {
+                    const cell = document.createElement('div');
+                    if (num === 0) {
+                        cell.className = 'element-cell empty';
+                    } else if (elementMap[num]) {
+                        const element = elementMap[num];
+                        cell.className = 'element-cell' + (eligibleNumbers.has(num) ? '' : ' excluded');
+                        cell.dataset.number = num;
+                        cell.innerHTML = `
+                            <div class="element-number">${num}</div>
+                            <div class="element-symbol">${element.symbol}</div>
+                        `;
+                    } else {
+                        cell.className = 'element-cell empty';
+                    }
+                    table.appendChild(cell);
+                });
+            });
+        }
+
+        function renderAnswerGroups() {
+            answerGroups.forEach(group => {
+                const container = document.getElementById(group.elementId);
+                container.innerHTML = '';
+                group.options.forEach(option => {
+                    const btn = document.createElement('button');
+                    btn.className = 'opt-btn';
+                    btn.textContent = option;
+                    btn.dataset.group = group.key;
+                    btn.dataset.value = String(option);
+                    btn.addEventListener('click', () => selectOption(group.key, option, btn));
+                    container.appendChild(btn);
+                });
+            });
+        }
+
+        function selectOption(groupKey, value, btn) {
+            if (problemLocked) return;
+
+            document.querySelectorAll(`.opt-btn[data-group="${groupKey}"]`).forEach(b => {
+                b.classList.remove('selected', 'correct', 'incorrect');
+            });
+            btn.classList.add('selected');
+            selections[groupKey] = value;
+
+            updateCheckButtonState();
+        }
+
+        function updateCheckButtonState() {
+            const allSelected = answerGroups.every(g => selections[g.key] !== undefined && selections[g.key] !== null);
+            document.getElementById('checkAnswerBtn').disabled = problemLocked || !allSelected;
+        }
+
+        function generateNewProblem() {
+            document.getElementById('quizPanel').style.display = 'block';
+            document.getElementById('walkthroughPanel').classList.remove('active');
+
+            problemLocked = false;
+            attemptNumber = 1;
+            selections = {};
+
+            let element;
+            do {
+                if (shuffledElements.length === 0) {
+                    shuffledElements = shuffleArray(ionElements);
+                }
+                element = shuffledElements.pop();
+            } while (usedElements.some(used => used.number === element.number) && usedElements.length < ionElements.length);
+
+            usedElements.push(element);
+            currentElement = element;
+
+            document.querySelectorAll('.element-cell').forEach(cell => cell.classList.remove('highlighted'));
+            const cell = document.querySelector(`[data-number="${element.number}"]`);
+            if (cell) cell.classList.add('highlighted');
+
+            document.getElementById('elementInfo').textContent = `${element.name} (${element.symbol})`;
+
+            document.querySelectorAll('.opt-btn').forEach(b => {
+                b.classList.remove('selected', 'correct', 'incorrect');
+                b.disabled = false;
+            });
+
+            document.getElementById('checkAnswerBtn').disabled = true;
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function checkAnswer() {
+            if (problemLocked) return;
+
+            const correct = groupRules[currentElement.group];
+            let allCorrect = true;
+
+            answerGroups.forEach(group => {
+                const btns = document.querySelectorAll(`.opt-btn[data-group="${group.key}"]`);
+                btns.forEach(b => b.classList.remove('correct', 'incorrect'));
+
+                const userValue = selections[group.key];
+                const isCorrect = String(userValue) === String(correct[group.key]);
+                const selectedBtn = document.querySelector(`.opt-btn[data-group="${group.key}"][data-value="${CSS.escape(String(userValue))}"]`);
+                if (selectedBtn) selectedBtn.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+                if (!isCorrect) allCorrect = false;
+            });
+
+            const feedback = document.getElementById('feedback');
+
+            if (attemptNumber === 1) {
+                totalProblemsPresented++;
+            }
+
+            if (allCorrect) {
+                // Lock the problem immediately so a repeat click on a disabled
+                // button (or a stray event) can never count this element twice.
+                problemLocked = true;
+                document.getElementById('checkAnswerBtn').disabled = true;
+                document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+
+                correctCount++;
+                updateScore();
+                scormSaveProgress();
+
+                feedback.textContent = `Correct! ${currentElement.name} forms a ${correct.type.toLowerCase()} with a ${correct.charge} charge.`;
+                feedback.className = 'feedback success';
+
+                if (correctCount >= PROBLEMS_REQUIRED) {
+                    showSuccessScreen();
+                } else {
+                    setTimeout(() => generateNewProblem(), 1800);
+                }
+                return;
+            }
+
+            missCount++;
+
+            if (attemptNumber === 1) {
+                attemptNumber = 2;
+                updateScore();
+                scormSaveProgress();
+                feedback.textContent = 'Not quite — the answers marked with a red X are incorrect. Fix them and check again. You have one more attempt.';
+                feedback.className = 'feedback error';
+                return;
+            }
+
+            // Second attempt also incorrect: this problem won't count toward completion.
+            // Lock it and walk the student through it step by step instead.
+            problemLocked = true;
+            document.getElementById('checkAnswerBtn').disabled = true;
+            document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+            updateScore();
+            scormSaveProgress();
+            startWalkthrough();
+        }
+
+        function updateScore() {
+            document.getElementById('correctCountDisplay').textContent = `${correctCount}/${PROBLEMS_REQUIRED}`;
+            document.getElementById('attemptsDisplay').textContent = totalProblemsPresented;
+            const score = Math.max(SCORE_FLOOR, 100 - (missCount * SCORE_PENALTY_PER_MISS));
+            document.getElementById('scoreDisplay').textContent = score + '%';
+
+            const percentage = (correctCount / PROBLEMS_REQUIRED) * 100;
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = `${percentage}%`;
+            progressFill.textContent = `${correctCount} / ${PROBLEMS_REQUIRED} Complete`;
+        }
+
+        function toggleInstructions() {
+            const box = document.getElementById('instructionsBox');
+            const button = document.querySelector('.instructions-toggle');
+            if (box.style.display === 'none' || box.style.display === '') {
+                box.style.display = 'block';
+                button.innerHTML = 'Hide Instructions';
+                button.style.background = '#ffc107';
+            } else {
+                box.style.display = 'none';
+                button.innerHTML = 'Show Instructions';
+                button.style.background = '#007bff';
+            }
+        }
+
+        // ---- Step-by-step walkthrough (shown after a 2nd incorrect attempt) ----
+        function buildWalkthroughSteps(element, correct) {
+            const isMetal = correct.action === 'Lose';
+            const familyExplanation = isMetal
+                ? `${element.name} is in group ${element.group}, a metal group. Metals lose electrons to empty their outer (valence) shell, leaving the next lower shell — which is already full — as the new outermost shell.`
+                : `${element.name} is in group ${element.group}, a nonmetal group. Nonmetals gain electrons to fill their outer (valence) shell up to a stable octet of 8 electrons.`;
+
+            const typeWord = correct.type === 'Cation' ? 'positively' : 'negatively';
+
+            return [
+                {
+                    question: 'How many valence electrons does this element have?',
+                    answer: String(correct.valence),
+                    explanation: `${element.name} is in group ${element.group} of the periodic table. For main-group elements, the group number pattern tells you the valence electron count, which here is ${correct.valence}.`
+                },
+                {
+                    question: 'Does it gain or lose electrons to form an ion?',
+                    answer: correct.action,
+                    explanation: familyExplanation
+                },
+                {
+                    question: 'How many electrons does it gain or lose?',
+                    answer: String(correct.count),
+                    explanation: isMetal
+                        ? `${element.name} has ${correct.valence} valence electron(s), so it only needs to lose ${correct.count} electron(s) to empty its outer shell.`
+                        : `${element.name} has ${correct.valence} valence electron(s), so it needs to gain ${correct.count} more electron(s) to reach a full outer shell of 8.`
+                },
+                {
+                    question: 'What is the charge of the ion?',
+                    answer: correct.charge,
+                    explanation: isMetal
+                        ? `Losing ${correct.count} negatively charged electron(s) leaves the atom with more protons than electrons, giving it an overall charge of ${correct.charge}.`
+                        : `Gaining ${correct.count} negatively charged electron(s) gives the atom more electrons than protons, giving it an overall charge of ${correct.charge}.`
+                },
+                {
+                    question: 'Is the ion a cation or an anion?',
+                    answer: correct.type,
+                    explanation: `A ${typeWord} charged ion is called a${correct.type === 'Anion' ? 'n' : ''} ${correct.type.toLowerCase()}. Since ${element.name} forms an ion with a ${correct.charge} charge, it is a${correct.type === 'Anion' ? 'n' : ''} ${correct.type.toLowerCase()}.`
+                }
+            ];
+        }
+
+        function startWalkthrough() {
+            const correct = groupRules[currentElement.group];
+            walkthroughSteps = buildWalkthroughSteps(currentElement, correct);
+            walkthroughStepIndex = 0;
+
+            document.getElementById('walkthroughIntro').textContent =
+                `Let's walk through ${currentElement.name} (${currentElement.symbol}) together, step by step. This problem won't count toward your 10 completed problems.`;
+
+            document.getElementById('quizPanel').style.display = 'none';
+            document.getElementById('walkthroughPanel').classList.add('active');
+
+            renderWalkthroughStep();
+        }
+
+        function renderWalkthroughStep() {
+            const step = walkthroughSteps[walkthroughStepIndex];
+            document.getElementById('walkthroughStepLabel').textContent = `Step ${walkthroughStepIndex + 1} of ${walkthroughSteps.length}`;
+            document.getElementById('walkthroughQuestion').textContent = step.question;
+            document.getElementById('walkthroughAnswer').textContent = step.answer;
+            document.getElementById('walkthroughExplanation').textContent = step.explanation;
+            document.getElementById('walkthroughNextBtn').textContent =
+                walkthroughStepIndex === walkthroughSteps.length - 1 ? 'Continue' : 'Next';
+        }
+
+        function nextWalkthroughStep() {
+            walkthroughStepIndex++;
+            if (walkthroughStepIndex < walkthroughSteps.length) {
+                renderWalkthroughStep();
+                return;
+            }
+
+            document.getElementById('walkthroughPanel').classList.remove('active');
+            generateNewProblem();
+        }
+
+        function showSuccessScreen() {
+            document.getElementById('successModal').classList.add('active');
+            state.challengeFinished = true;
+            const score = Math.max(SCORE_FLOOR, 100 - (missCount * SCORE_PENALTY_PER_MISS));
+            scormReport(score);
+        }
+
+        function closeSuccessScreen() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        // ---- SCORM 1.2 wrapper ----
+        const state = { challengeFinished: false };
+        let scormAPI = null;
+        let resumeState = null;
+
+        function findAPI(win) {
+            let attempts = 0;
+            let w = win;
+            while (w && attempts < 10) {
+                if (w.API) return w.API;
+                if (w.parent && w.parent !== w) {
+                    w = w.parent;
+                } else if (w.opener) {
+                    w = w.opener;
+                } else {
+                    break;
+                }
+                attempts++;
+            }
+            return null;
+        }
+
+        function isValidResumePayload(parsed) {
+            if (!parsed || typeof parsed !== 'object') return false;
+            if (typeof parsed.correctCount !== 'number' || parsed.correctCount < 0 || parsed.correctCount > PROBLEMS_REQUIRED) return false;
+            if (typeof parsed.totalProblemsPresented !== 'number' || parsed.totalProblemsPresented < parsed.correctCount) return false;
+            if (typeof parsed.missCount !== 'number' || parsed.missCount < 0 ||
+                parsed.missCount > parsed.totalProblemsPresented * MAX_ATTEMPTS_PER_PROBLEM) return false;
+            return true;
+        }
+
+        function scormInit() {
+            try {
+                scormAPI = findAPI(window);
+                if (!scormAPI) return;
+                scormAPI.LMSInitialize("");
+                if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                    const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (isValidResumePayload(parsed)) {
+                            resumeState = parsed;
+                        }
+                    }
+                }
+            } catch (e) { /* No LMS present, or malformed bookmark — start fresh */ }
+        }
+
+        function scormSaveProgress() {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                    correctCount: correctCount,
+                    totalProblemsPresented: totalProblemsPresented,
+                    missCount: missCount
+                }));
+                if (!state.challengeFinished) {
+                    scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                    // Mark the exit reason as "suspend" on every save, not just on
+                    // beforeunload/pagehide. Students on Chromebooks/iPads very often
+                    // exit by closing the lid or leaving the Schoology tab, which does
+                    // not reliably fire beforeunload/pagehide before the device sleeps
+                    // and the network drops. Setting this on every commit means the LMS
+                    // already has the correct "resume me" state as of the last save,
+                    // instead of depending on a browser-close event to set it at the end.
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                }
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        // Manually triggered by the "Save Progress" button. This is the primary,
+        // reliable save path — students are instructed to click it before closing
+        // their Chromebook, since automatic browser-unload events can't be trusted
+        // to fire when a laptop lid is closed rather than the tab being navigated
+        // away from. Falls back gracefully (shows nothing) if no LMS is present.
+        function manualSaveProgress() {
+            if (!scormAPI) return;
+            scormSaveProgress();
+            const status = document.getElementById('save-status');
+            if (!status) return;
+            status.classList.add('visible');
+            clearTimeout(manualSaveProgress._hideTimer);
+            manualSaveProgress._hideTimer = setTimeout(() => {
+                status.classList.remove('visible');
+            }, 2500);
+        }
+
+        function scormReport(scorePercent) {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.core.score.min", "0");
+                scormAPI.LMSSetValue("cmi.core.score.max", "100");
+                scormAPI.LMSSetValue("cmi.core.score.raw", String(scorePercent));
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+                scormAPI.LMSSetValue("cmi.core.exit", "");
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function scormFinish() {
+            if (!scormAPI) return;
+            try {
+                if (!state.challengeFinished) {
+                    scormSaveProgress();
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                    scormAPI.LMSCommit("");
+                }
+                scormAPI.LMSFinish("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function resumeFromSavedState() {
+            correctCount = resumeState.correctCount;
+            totalProblemsPresented = resumeState.totalProblemsPresented;
+            missCount = resumeState.missCount;
+
+            document.getElementById('studentEntry').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+
+            initializePeriodicTable();
+            renderAnswerGroups();
+            shuffledElements = shuffleArray(ionElements);
+            usedElements = [];
+
+            updateScore();
+
+            if (correctCount >= PROBLEMS_REQUIRED) {
+                showSuccessScreen();
+            } else {
+                generateNewProblem();
+            }
+        }
+
+        // Best-effort safety net for the case where the student closes the
+        // Chromebook lid or leaves the tab without clicking "Save Progress":
+        // these events fire more reliably than beforeunload on that path, but
+        // unlike beforeunload we deliberately do NOT call LMSFinish() here —
+        // visibilitychange in particular fires on every tab switch, not just a
+        // real exit, and terminating the SCORM session on a brief tab-switch
+        // would break the ability to keep saving for the rest of that visit.
+        // We just re-commit the current state so the LMS has it either way.
+        function safetyCommit() {
+            if (!scormAPI || state.challengeFinished) return;
+            scormSaveProgress();
+        }
+        window.addEventListener('pagehide', safetyCommit);
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) safetyCommit();
+        });
+        window.addEventListener('beforeunload', scormFinish);
+        scormInit();
+        if (resumeState) {
+            resumeFromSavedState();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeSuccessScreen();
+            }
+        });
+    </script>
+</body>
+</html>

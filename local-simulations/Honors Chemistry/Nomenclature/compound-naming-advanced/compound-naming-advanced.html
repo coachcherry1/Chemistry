@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compound Naming - Advanced</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 98vw;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            min-height: calc(100vh - 16px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            min-height: calc(100vh - 200px);
+        }
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section {
+            background: #f8f9ff;
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #e1e8ff;
+            margin-bottom: 10px;
+        }
+
+        .section h2 {
+            color: #4a5568;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .compound-display {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #4facfe;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .compound-formula {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4facfe;
+            margin-bottom: 8px;
+        }
+
+        .compound-name {
+            font-size: 1rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .prediction-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .prediction-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .prediction-btn.ionic {
+            border-color: #718096;
+            color: #718096;
+        }
+
+        .prediction-btn.covalent {
+            border-color: #4a5568;
+            color: #4a5568;
+        }
+
+        .prediction-btn.ionic:hover {
+            background: #718096;
+            color: white;
+        }
+
+        .prediction-btn.covalent:hover {
+            background: #4a5568;
+            color: white;
+        }
+
+        .prediction-btn.selected.ionic {
+            background: #718096;
+            color: white;
+        }
+
+        .prediction-btn.selected.covalent {
+            background: #4a5568;
+            color: white;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #4facfe;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .submit-btn:hover {
+            background: #3b9cfd;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feedback {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #fc8181;
+        }
+
+        .score-display {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #4facfe;
+            text-align: center;
+        }
+
+        .score-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4facfe;
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .guidelines {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .guidelines h3 {
+            color: #4facfe;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .guidelines ul {
+            margin-left: 16px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .guidelines li {
+            margin-bottom: 4px;
+        }
+
+        .next-btn {
+            width: 100%;
+            padding: 10px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .next-btn:hover {
+            background: #38a169;
+        }
+
+        .save-progress-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-save {
+            padding: 8px 16px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save:hover {
+            background: #38a169;
+        }
+
+        .save-status {
+            color: #38a169;
+            font-weight: 500;
+            font-size: 0.85rem;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .save-status.visible {
+            opacity: 1;
+        }
+
+        /* Success Screen Styles */
+        .success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .success-overlay.active {
+            display: flex;
+        }
+
+        .success-modal {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 95%;
+            text-align: center;
+        }
+
+        .success-modal h2 {
+            color: #48bb78;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .success-modal p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .success-close-btn {
+            width: 100%;
+            padding: 12px 20px;
+            background: #4facfe;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .success-close-btn:hover {
+            background: #3b9cfd;
+        }
+
+        /* Title Screen Styles */
+        .title-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .title-overlay.active {
+            display: flex;
+        }
+
+        .title-modal {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 95%;
+            text-align: center;
+        }
+
+        .title-modal h2 {
+            color: #4facfe;
+            margin-bottom: 12px;
+            font-size: 1.5rem;
+        }
+
+        .title-modal > p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .title-requirements {
+            background: #f7fafc;
+            padding: 16px 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4facfe;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .title-requirements h3 {
+            color: #4facfe;
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+        }
+
+        .title-requirements ul {
+            margin-left: 20px;
+            color: #4a5568;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .title-requirements li {
+            margin-bottom: 6px;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 12px 20px;
+            background: #4facfe;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn:hover {
+            background: #3b9cfd;
+        }
+
+        /* Naming Options Styles */
+        .naming-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .naming-option {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .naming-option:hover {
+            border-color: #4facfe;
+            background: #f7fafc;
+        }
+
+        .naming-option.selected {
+            background: #4facfe;
+            color: white;
+            border-color: #4facfe;
+        }
+
+        .progress-container {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #e1e8ff;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-header h3 {
+            color: #4a5568;
+            font-size: 1rem;
+        }
+
+        .progress-score {
+            color: #4facfe;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            transition: width 0.3s ease;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .naming-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                padding: 10px;
+            }
+
+            .compound-formula {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .section {
+                padding: 8px;
+                margin-bottom: 6px;
+            }
+
+            .compound-display {
+                padding: 12px;
+            }
+
+            .compound-formula {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Title Screen -->
+    <div id="title-screen" class="title-overlay active">
+        <div class="title-modal">
+            <h2>Compound Naming &ndash; Advanced</h2>
+            <p>You will be shown a chemical formula. Choose the correct name from four options. Compounds include transition metals that need Roman numerals (like Iron(III) chloride), polyatomic ions (sulfate, nitrate, ammonium, and more), and advanced covalent compounds.</p>
+            <div class="title-requirements">
+                <h3>Completion Requirements</h3>
+                <ul>
+                    <li>Answer <strong>20 problems correctly</strong> to earn your completion grade</li>
+                    <li>You get one attempt per compound &mdash; a miss simply moves on to the next compound</li>
+                    <li>Feedback is shown after every answer</li>
+                    <li>Your progress is saved automatically &mdash; you can close this window and finish later</li>
+                    <li>Before you close your Chromebook or exit Schoology, click the green "Save Progress" button so your work is saved and you can pick up where you left off next time</li>
+                </ul>
+            </div>
+            <button class="start-btn" id="start-assessment-btn" onclick="startAssessment()">Start Assessment</button>
+        </div>
+    </div>
+
+    <!-- Success Screen (shown when assessment is complete) -->
+    <div id="success-screen" class="success-overlay">
+        <div class="success-modal">
+            <h2>Assessment Complete!</h2>
+            <p id="success-summary">You have completed the assessment.</p>
+            <p>Your completion has been reported to your teacher. You may close this window or continue practicing.</p>
+            <button class="success-close-btn" onclick="closeSuccessScreen()">Continue Practicing</button>
+        </div>
+    </div>
+
+    <div class="container" id="main-container">
+        <div class="header">
+            <h1>Compound Naming – Advanced</h1>
+            <p>Choose the correct name for compounds with transition metals and polyatomic ions</p>
+        </div>
+
+        <!-- Progress Tracking -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <h3>Assessment Progress</h3>
+                <span class="progress-score" id="progress-score">0/20 Correct</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+            </div>
+            <div class="save-progress-row">
+                <button class="btn-save" id="save-progress-btn" onclick="manualSaveProgress()">Save Progress</button>
+                <span class="save-status" id="save-status">Saved &#10003;</span>
+            </div>
+        </div>
+
+
+        <div class="main-content">
+            <div class="left-panel">
+                <!-- Compound Display -->
+                <div class="compound-display">
+                    <div class="compound-formula" id="compound-formula">NaCl</div>
+                    <div class="compound-name" id="compound-name">Sodium chloride</div>
+                </div>
+
+                <!-- Prediction Interface -->
+                <div class="section">
+                    <h2 id="question-header">Make Your Prediction</h2>
+
+                    <!-- Bonding Mode Interface -->
+                    <div id="bonding-interface">
+                        <div class="prediction-buttons">
+                            <button class="prediction-btn ionic" onclick="selectPrediction('ionic')">
+                                Ionic Bond
+                            </button>
+                            <button class="prediction-btn covalent" onclick="selectPrediction('covalent')">
+                                Covalent Bond
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Naming Mode Interface -->
+                    <div id="naming-interface" style="display: none;">
+                        <div class="naming-options" id="naming-options">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <button class="submit-btn" id="submit-btn" onclick="submitAnswer()" disabled>
+                        Submit Answer
+                    </button>
+
+                    <div id="feedback-area"></div>
+
+                    <button class="next-btn" id="next-btn" onclick="nextCompound()">
+                        Next Compound →
+                    </button>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <!-- Score Display -->
+                <div class="score-display">
+                    <div class="score-number" id="score-display">0</div>
+                    <div class="score-label">Total Attempts</div>
+                </div>
+
+                <!-- Guidelines -->
+                <div class="section">
+                    <div class="guidelines">
+                        <h3 id="guidelines-title">Naming Guidelines</h3>
+                        <ul id="guidelines-list">
+                            <li><strong>Transition metals:</strong> Use Roman numerals for the charge — Iron(III) chloride</li>
+                            <li><strong>Polyatomic ions:</strong> SO₄²⁻ sulfate, NO₃⁻ nitrate, NH₄⁺ ammonium, OH⁻ hydroxide, CO₃²⁻ carbonate</li>
+                            <li><strong>-ate vs -ite:</strong> -ate has more oxygens, -ite has fewer</li>
+                            <li><strong>Covalent:</strong> Use prefixes (mono-, di-, tri-, tetra-, penta-...)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ---- Assignment configuration (fixed per SCORM package) ----
+        const CONFIG = {
+            assessmentType: 'naming',    // 'bonding' or 'naming'
+            bank: 'advanced',            // 'simple', 'advanced', or 'combined'
+            requiredCorrect: 20
+        };
+
+        // Global variables
+        let currentCompound = null;
+        let selectedPrediction = null;
+        let selectedName = null;
+        let assessment = {
+            correctAnswers: 0,
+            totalAttempts: 0,
+            requiredCorrect: CONFIG.requiredCorrect,
+            usedCompounds: []
+        };
+
+        // Compound databases
+        const compoundDatabase = {
+            simple: [
+                // Simple ionic compounds (25 total)
+                { formula: "NaCl", name: "Sodium chloride", type: "ionic", explanation: "Metal (Na) + Nonmetal (Cl) = Ionic bond", distractors: ["Sodium chlorate", "Sodium hypochlorite", "Sodium perchlorate"] },
+                { formula: "MgO", name: "Magnesium oxide", type: "ionic", explanation: "Metal (Mg) + Nonmetal (O) = Ionic bond", distractors: ["Magnesium peroxide", "Magnesium hydroxide", "Magnesium carbonate"] },
+                { formula: "CaF₂", name: "Calcium fluoride", type: "ionic", explanation: "Metal (Ca) + Nonmetal (F) = Ionic bond", distractors: ["Calcium phosphate", "Calcium carbonate", "Calcium sulfate"] },
+                { formula: "K₂S", name: "Potassium sulfide", type: "ionic", explanation: "Metal (K) + Nonmetal (S) = Ionic bond", distractors: ["Potassium sulfate", "Potassium sulfite", "Potassium thiosulfate"] },
+                { formula: "AlCl₃", name: "Aluminum chloride", type: "ionic", explanation: "Metal (Al) + Nonmetal (Cl) = Ionic bond", distractors: ["Aluminum chlorate", "Aluminum perchlorate", "Aluminum hypochlorite"] },
+                { formula: "Li₂O", name: "Lithium oxide", type: "ionic", explanation: "Metal (Li) + Nonmetal (O) = Ionic bond", distractors: ["Lithium peroxide", "Lithium hydroxide", "Lithium carbonate"] },
+                { formula: "BaI₂", name: "Barium iodide", type: "ionic", explanation: "Metal (Ba) + Nonmetal (I) = Ionic bond", distractors: ["Barium iodate", "Barium periodate", "Barium dichromate"] },
+                { formula: "CaCl₂", name: "Calcium chloride", type: "ionic", explanation: "Metal (Ca) + Nonmetal (Cl) = Ionic bond", distractors: ["Calcium chlorate", "Calcium hypochlorite", "Calcium perchlorate"] },
+                { formula: "Na₂O", name: "Sodium oxide", type: "ionic", explanation: "Metal (Na) + Nonmetal (O) = Ionic bond", distractors: ["Sodium peroxide", "Sodium hydroxide", "Sodium carbonate"] },
+                { formula: "MgCl₂", name: "Magnesium chloride", type: "ionic", explanation: "Metal (Mg) + Nonmetal (Cl) = Ionic bond", distractors: ["Magnesium chlorate", "Magnesium hypochlorite", "Magnesium perchlorate"] },
+                { formula: "KBr", name: "Potassium bromide", type: "ionic", explanation: "Metal (K) + Nonmetal (Br) = Ionic bond", distractors: ["Potassium bromate", "Potassium perbromate", "Potassium hypobromite"] },
+                { formula: "LiF", name: "Lithium fluoride", type: "ionic", explanation: "Metal (Li) + Nonmetal (F) = Ionic bond", distractors: ["Lithium fluorate", "Lithium difluoride", "Lithium trifluoride"] },
+                { formula: "SrO", name: "Strontium oxide", type: "ionic", explanation: "Metal (Sr) + Nonmetal (O) = Ionic bond", distractors: ["Strontium peroxide", "Strontium hydroxide", "Strontium carbonate"] },
+                { formula: "Al₂O₃", name: "Aluminum oxide", type: "ionic", explanation: "Metal (Al) + Nonmetal (O) = Ionic bond", distractors: ["Aluminum peroxide", "Aluminum hydroxide", "Aluminum carbonate"] },
+                { formula: "RbCl", name: "Rubidium chloride", type: "ionic", explanation: "Metal (Rb) + Nonmetal (Cl) = Ionic bond", distractors: ["Rubidium chlorate", "Rubidium hypochlorite", "Rubidium perchlorate"] },
+                { formula: "BeF₂", name: "Beryllium fluoride", type: "ionic", explanation: "Metal (Be) + Nonmetal (F) = Ionic bond", distractors: ["Beryllium difluoride", "Beryllium fluorate", "Beryllium trifluoride"] },
+                { formula: "CsI", name: "Cesium iodide", type: "ionic", explanation: "Metal (Cs) + Nonmetal (I) = Ionic bond", distractors: ["Cesium iodate", "Cesium periodate", "Cesium triiodide"] },
+                { formula: "Mg₃N₂", name: "Magnesium nitride", type: "ionic", explanation: "Metal (Mg) + Nonmetal (N) = Ionic bond", distractors: ["Magnesium nitrate", "Magnesium nitrite", "Magnesium azide"] },
+                { formula: "Na₃P", name: "Sodium phosphide", type: "ionic", explanation: "Metal (Na) + Nonmetal (P) = Ionic bond", distractors: ["Sodium phosphate", "Sodium phosphite", "Sodium hypophosphite"] },
+                { formula: "CaS", name: "Calcium sulfide", type: "ionic", explanation: "Metal (Ca) + Nonmetal (S) = Ionic bond", distractors: ["Calcium sulfate", "Calcium sulfite", "Calcium thiosulfate"] },
+                { formula: "K₂O", name: "Potassium oxide", type: "ionic", explanation: "Metal (K) + Nonmetal (O) = Ionic bond", distractors: ["Potassium peroxide", "Potassium hydroxide", "Potassium carbonate"] },
+                { formula: "SrCl₂", name: "Strontium chloride", type: "ionic", explanation: "Metal (Sr) + Nonmetal (Cl) = Ionic bond", distractors: ["Strontium chlorate", "Strontium hypochlorite", "Strontium perchlorate"] },
+                { formula: "BaO", name: "Barium oxide", type: "ionic", explanation: "Metal (Ba) + Nonmetal (O) = Ionic bond", distractors: ["Barium peroxide", "Barium hydroxide", "Barium carbonate"] },
+                { formula: "LiBr", name: "Lithium bromide", type: "ionic", explanation: "Metal (Li) + Nonmetal (Br) = Ionic bond", distractors: ["Lithium bromate", "Lithium perbromate", "Lithium hypobromite"] },
+                { formula: "AlF₃", name: "Aluminum fluoride", type: "ionic", explanation: "Metal (Al) + Nonmetal (F) = Ionic bond", distractors: ["Aluminum fluorate", "Aluminum trifluoride", "Aluminum hexafluoride"] },
+
+                // Simple covalent compounds (25 total)
+                { formula: "H₂O", name: "Dihydrogen monoxide", type: "covalent", explanation: "Nonmetal (H) + Nonmetal (O) = Covalent bond", distractors: ["Hydrogen oxide", "Water", "Hydroxic acid"] },
+                { formula: "CO₂", name: "Carbon dioxide", type: "covalent", explanation: "Nonmetal (C) + Nonmetal (O) = Covalent bond", distractors: ["Carbon monoxide", "Carbon trioxide", "Carbonous oxide"] },
+                { formula: "NH₃", name: "Nitrogen trihydride", type: "covalent", explanation: "Nonmetal (N) + Nonmetal (H) = Covalent bond", distractors: ["Ammonium", "Ammonia", "Ammonium hydroxide"] },
+                { formula: "CH₄", name: "Carbon tetrahydride", type: "covalent", explanation: "Nonmetal (C) + Nonmetal (H) = Covalent bond", distractors: ["Methane", "Methanol", "Carbon hydride"] },
+                { formula: "CS₂", name: "Carbon disulfide", type: "covalent", explanation: "Nonmetal (C) + Nonmetal (S) = Covalent bond", distractors: ["Carbon sulfide", "Carbon trisulfide", "Carbon persulfide"] },
+                { formula: "SO₂", name: "Sulfur dioxide", type: "covalent", explanation: "Nonmetal (S) + Nonmetal (O) = Covalent bond", distractors: ["Sulfur trioxide", "Sulfur monoxide", "Disulfur dioxide"] },
+                { formula: "N₂O₄", name: "Dinitrogen tetroxide", type: "covalent", explanation: "Nonmetal (N) + Nonmetal (O) = Covalent bond", distractors: ["Nitrogen dioxide", "Dinitrogen pentoxide", "Dinitrogen trioxide"] },
+                { formula: "PCl₃", name: "Phosphorus trichloride", type: "covalent", explanation: "Nonmetal (P) + Nonmetal (Cl) = Covalent bond", distractors: ["Phosphorus pentachloride", "Phosphorus dichloride", "Phosphoric chloride"] },
+                { formula: "N₂H₄", name: "Dinitrogen tetrahydride", type: "covalent", explanation: "Nonmetal (N) + Nonmetal (H) = Covalent bond", distractors: ["Nitrogen hydride", "Dinitrogen hydride", "Nitrogen tetrahydride"] },
+                { formula: "CCl₄", name: "Carbon tetrachloride", type: "covalent", explanation: "Nonmetal (C) + Nonmetal (Cl) = Covalent bond", distractors: ["Carbon trichloride", "Carbon dichloride", "Carbon hexachloride"] },
+                { formula: "SO₃", name: "Sulfur trioxide", type: "covalent", explanation: "Nonmetal (S) + Nonmetal (O) = Covalent bond", distractors: ["Sulfur dioxide", "Sulfur monoxide", "Sulfur tetroxide"] },
+                { formula: "N₂O", name: "Dinitrogen monoxide", type: "covalent", explanation: "Nonmetal (N) + Nonmetal (O) = Covalent bond", distractors: ["Nitrogen dioxide", "Nitrogen monoxide", "Dinitrogen dioxide"] },
+                { formula: "P₂O₃", name: "Diphosphorus trioxide", type: "covalent", explanation: "Nonmetal (P) + Nonmetal (O) = Covalent bond", distractors: ["Phosphorus trioxide", "Diphosphorus dioxide", "Phosphoric oxide"] },
+                { formula: "S₂Cl₂", name: "Disulfur dichloride", type: "covalent", explanation: "Nonmetal (S) + Nonmetal (Cl) = Covalent bond", distractors: ["Sulfur dichloride", "Disulfur chloride", "Sulfur chloride"] },
+                { formula: "Cl₂O", name: "Dichlorine monoxide", type: "covalent", explanation: "Nonmetal (Cl) + Nonmetal (O) = Covalent bond", distractors: ["Chlorine oxide", "Chlorine monoxide", "Dichlorine oxide"] },
+                { formula: "CO", name: "Carbon monoxide", type: "covalent", explanation: "Nonmetal (C) + Nonmetal (O) = Covalent bond", distractors: ["Carbon dioxide", "Carbonyl oxide", "Carbon oxide"] },
+                { formula: "NO", name: "Nitrogen monoxide", type: "covalent", explanation: "Nonmetal (N) + Nonmetal (O) = Covalent bond", distractors: ["Nitric oxide", "Nitrogen oxide", "Nitrogen dioxide"] },
+                { formula: "NO₂", name: "Nitrogen dioxide", type: "covalent", explanation: "Nonmetal (N) + Nonmetal (O) = Covalent bond", distractors: ["Nitrogen monoxide", "Nitrogen trioxide", "Nitrogen oxide"] },
+                { formula: "SiCl₄", name: "Silicon tetrachloride", type: "covalent", explanation: "Nonmetal (Si) + Nonmetal (Cl) = Covalent bond", distractors: ["Silicon trichloride", "Silicon dichloride", "Silicic chloride"] },
+                { formula: "PH₃", name: "Phosphorus trihydride", type: "covalent", explanation: "Nonmetal (P) + Nonmetal (H) = Covalent bond", distractors: ["Phosphine", "Phosphoric acid", "Phosphorus hydride"] },
+                { formula: "SiH₄", name: "Silicon tetrahydride", type: "covalent", explanation: "Nonmetal (Si) + Nonmetal (H) = Covalent bond", distractors: ["Silane", "Silicon hydride", "Silicic acid"] },
+                { formula: "BF₃", name: "Boron trifluoride", type: "covalent", explanation: "Nonmetal (B) + Nonmetal (F) = Covalent bond", distractors: ["Boron difluoride", "Boron tetrafluoride", "Boric fluoride"] },
+                { formula: "AsH₃", name: "Arsenic trihydride", type: "covalent", explanation: "Nonmetal (As) + Nonmetal (H) = Covalent bond", distractors: ["Arsine", "Arsenic acid", "Arsenous hydride"] },
+                { formula: "OF₂", name: "Oxygen difluoride", type: "covalent", explanation: "Nonmetal (O) + Nonmetal (F) = Covalent bond", distractors: ["Oxygen fluoride", "Oxygen trifluoride", "Dioxygen difluoride"] },
+                { formula: "SeO₂", name: "Selenium dioxide", type: "covalent", explanation: "Nonmetal (Se) + Nonmetal (O) = Covalent bond", distractors: ["Selenium trioxide", "Selenium monoxide", "Diselenium dioxide"] }
+            ],
+
+            advanced: [
+                // Advanced ionic compounds (25 total)
+
+                // Transition metal compounds
+                { formula: "FeCl₃", name: "Iron(III) chloride", type: "ionic", explanation: "Transition metal (Fe) + Nonmetal (Cl) = Ionic bond", distractors: ["Iron(II) chloride", "Iron trichloride", "Iron(IV) chloride"] },
+                { formula: "CuSO₄", name: "Copper(II) sulfate", type: "ionic", explanation: "Transition metal (Cu) + Polyatomic ion (SO₄²⁻) = Ionic bond", distractors: ["Copper(I) sulfate", "Copper sulfite", "Copper(III) sulfate"] },
+                { formula: "ZnO", name: "Zinc oxide", type: "ionic", explanation: "Transition metal (Zn) + Nonmetal (O) = Ionic bond", distractors: ["Zinc peroxide", "Zinc hydroxide", "Zinc carbonate"] },
+                { formula: "AgNO₃", name: "Silver nitrate", type: "ionic", explanation: "Transition metal (Ag) + Polyatomic ion (NO₃⁻) = Ionic bond", distractors: ["Silver nitrite", "Silver nitrogen", "Silver azide"] },
+                { formula: "NiCl₂", name: "Nickel(II) chloride", type: "ionic", explanation: "Transition metal (Ni) + Nonmetal (Cl) = Ionic bond", distractors: ["Nickel(III) chloride", "Nickel dichloride", "Nickel(IV) chloride"] },
+                { formula: "Cr₂O₃", name: "Chromium(III) oxide", type: "ionic", explanation: "Transition metal (Cr) + Nonmetal (O) = Ionic bond", distractors: ["Chromium(VI) oxide", "Chromium dioxide", "Chromic trioxide"] },
+                { formula: "MnO₂", name: "Manganese(IV) oxide", type: "ionic", explanation: "Transition metal (Mn) + Nonmetal (O) = Ionic bond", distractors: ["Manganese(II) oxide", "Manganese trioxide", "Manganese(VI) oxide"] },
+                { formula: "CoF₂", name: "Cobalt(II) fluoride", type: "ionic", explanation: "Transition metal (Co) + Nonmetal (F) = Ionic bond", distractors: ["Cobalt(III) fluoride", "Cobalt difluoride", "Cobalt(IV) fluoride"] },
+                { formula: "TiO₂", name: "Titanium(IV) oxide", type: "ionic", explanation: "Transition metal (Ti) + Nonmetal (O) = Ionic bond", distractors: ["Titanium(II) oxide", "Titanium trioxide", "Titanic oxide"] },
+                { formula: "V₂O₅", name: "Vanadium(V) oxide", type: "ionic", explanation: "Transition metal (V) + Nonmetal (O) = Ionic bond", distractors: ["Vanadium(IV) oxide", "Vanadium trioxide", "Vanadic oxide"] },
+
+                // Polyatomic ion compounds
+                { formula: "Ca(NO₃)₂", name: "Calcium nitrate", type: "ionic", explanation: "Metal (Ca) + Polyatomic ion (NO₃⁻) = Ionic bond", distractors: ["Calcium nitrite", "Calcium nitrogen", "Calcium azide"] },
+                { formula: "Na₂SO₄", name: "Sodium sulfate", type: "ionic", explanation: "Metal (Na) + Polyatomic ion (SO₄²⁻) = Ionic bond", distractors: ["Sodium sulfite", "Sodium thiosulfate", "Sodium persulfate"] },
+                { formula: "NH₄Cl", name: "Ammonium chloride", type: "ionic", explanation: "Polyatomic ion (NH₄⁺) + Nonmetal (Cl) = Ionic bond", distractors: ["Ammonium chlorate", "Ammonium hypochlorite", "Ammonium perchlorate"] },
+                { formula: "K₃PO₄", name: "Potassium phosphate", type: "ionic", explanation: "Metal (K) + Polyatomic ion (PO₄³⁻) = Ionic bond", distractors: ["Potassium phosphite", "Potassium hypophosphite", "Potassium pyrophosphate"] },
+                { formula: "(NH₄)₂SO₄", name: "Ammonium sulfate", type: "ionic", explanation: "Polyatomic ion (NH₄⁺) + Polyatomic ion (SO₄²⁻) = Ionic bond", distractors: ["Ammonium sulfite", "Ammonium thiosulfate", "Ammonium persulfate"] },
+                { formula: "Ba(OH)₂", name: "Barium hydroxide", type: "ionic", explanation: "Metal (Ba) + Polyatomic ion (OH⁻) = Ionic bond", distractors: ["Barium oxide", "Barium peroxide", "Barium hydride"] },
+                { formula: "NaHCO₃", name: "Sodium bicarbonate", type: "ionic", explanation: "Metal (Na) + Polyatomic ion (HCO₃⁻) = Ionic bond", distractors: ["Sodium carbonate", "Sodium percarbonate", "Sodium hypocarbonate"] },
+                { formula: "CaCO₃", name: "Calcium carbonate", type: "ionic", explanation: "Metal (Ca) + Polyatomic ion (CO₃²⁻) = Ionic bond", distractors: ["Calcium bicarbonate", "Calcium percarbonate", "Calcium carboxylate"] },
+                { formula: "Mg(ClO₄)₂", name: "Magnesium perchlorate", type: "ionic", explanation: "Metal (Mg) + Polyatomic ion (ClO₄⁻) = Ionic bond", distractors: ["Magnesium chlorate", "Magnesium hypochlorite", "Magnesium dichloride"] },
+                { formula: "Al₂(SO₄)₃", name: "Aluminum sulfate", type: "ionic", explanation: "Metal (Al) + Polyatomic ion (SO₄²⁻) = Ionic bond", distractors: ["Aluminum sulfite", "Aluminum thiosulfate", "Aluminum persulfate"] },
+                { formula: "Fe(NO₃)₃", name: "Iron(III) nitrate", type: "ionic", explanation: "Transition metal (Fe) + Polyatomic ion (NO₃⁻) = Ionic bond", distractors: ["Iron(II) nitrate", "Iron nitrite", "Iron(IV) nitrate"] },
+                { formula: "Cu(OH)₂", name: "Copper(II) hydroxide", type: "ionic", explanation: "Transition metal (Cu) + Polyatomic ion (OH⁻) = Ionic bond", distractors: ["Copper(I) hydroxide", "Copper oxide", "Copper(III) hydroxide"] },
+
+                // Additional transition metal and ionic compounds
+                { formula: "CdCl₂", name: "Cadmium chloride", type: "ionic", explanation: "Transition metal (Cd) + Nonmetal (Cl) = Ionic bond", distractors: ["Cadmium chlorate", "Cadmium hypochlorite", "Cadmium dichloride"] },
+                { formula: "PbO₂", name: "Lead(IV) oxide", type: "ionic", explanation: "Metal (Pb) + Nonmetal (O) = Ionic bond", distractors: ["Lead(II) oxide", "Lead peroxide", "Lead(VI) oxide"] },
+                { formula: "SnO", name: "Tin(II) oxide", type: "ionic", explanation: "Metal (Sn) + Nonmetal (O) = Ionic bond", distractors: ["Tin(IV) oxide", "Tin peroxide", "Stannous oxide"] },
+
+                // Advanced covalent compounds (25 total)
+                { formula: "SF₆", name: "Sulfur hexafluoride", type: "covalent", explanation: "Nonmetal (S) + Nonmetal (F) = Covalent bond", distractors: ["Sulfur tetrafluoride", "Sulfur pentafluoride", "Sulfur difluoride"] },
+                { formula: "IF₅", name: "Iodine pentafluoride", type: "covalent", explanation: "Nonmetal (I) + Nonmetal (F) = Covalent bond", distractors: ["Iodine tetrafluoride", "Iodine hexafluoride", "Iodine trifluoride"] },
+                { formula: "XeF₄", name: "Xenon tetrafluoride", type: "covalent", explanation: "Noble gas (Xe) + Nonmetal (F) = Covalent bond", distractors: ["Xenon pentafluoride", "Xenon hexafluoride", "Xenon trifluoride"] },
+                { formula: "PCl₅", name: "Phosphorus pentachloride", type: "covalent", explanation: "Nonmetal (P) + Nonmetal (Cl) = Covalent bond", distractors: ["Phosphorus tetrachloride", "Phosphorus hexachloride", "Phosphorus dichloride"] },
+                { formula: "ClF₃", name: "Chlorine trifluoride", type: "covalent", explanation: "Nonmetal (Cl) + Nonmetal (F) = Covalent bond", distractors: ["Chlorine tetrafluoride", "Chlorine pentafluoride", "Chlorine difluoride"] },
+                { formula: "BrF₅", name: "Bromine pentafluoride", type: "covalent", explanation: "Nonmetal (Br) + Nonmetal (F) = Covalent bond", distractors: ["Bromine tetrafluoride", "Bromine hexafluoride", "Bromine trifluoride"] },
+                { formula: "XeF₂", name: "Xenon difluoride", type: "covalent", explanation: "Noble gas (Xe) + Nonmetal (F) = Covalent bond", distractors: ["Xenon monofluoride", "Xenon trifluoride", "Xenon fluoride"] },
+                { formula: "SF₄", name: "Sulfur tetrafluoride", type: "covalent", explanation: "Nonmetal (S) + Nonmetal (F) = Covalent bond", distractors: ["Sulfur pentafluoride", "Sulfur trifluoride", "Sulfur difluoride"] },
+                { formula: "TeF₆", name: "Tellurium hexafluoride", type: "covalent", explanation: "Nonmetal (Te) + Nonmetal (F) = Covalent bond", distractors: ["Tellurium pentafluoride", "Tellurium tetrafluoride", "Tellurium trifluoride"] },
+                { formula: "SeF₆", name: "Selenium hexafluoride", type: "covalent", explanation: "Nonmetal (Se) + Nonmetal (F) = Covalent bond", distractors: ["Selenium pentafluoride", "Selenium tetrafluoride", "Selenium trifluoride"] },
+                { formula: "IF₇", name: "Iodine heptafluoride", type: "covalent", explanation: "Nonmetal (I) + Nonmetal (F) = Covalent bond", distractors: ["Iodine hexafluoride", "Iodine octafluoride", "Iodine pentafluoride"] },
+                { formula: "SiO₂", name: "Silicon dioxide", type: "covalent", explanation: "Nonmetal (Si) + Nonmetal (O) = Covalent bond", distractors: ["Silicon monoxide", "Silicon trioxide", "Silicon peroxide"] },
+                { formula: "ClO₂", name: "Chlorine dioxide", type: "covalent", explanation: "Nonmetal (Cl) + Nonmetal (O) = Covalent bond", distractors: ["Chlorine trioxide", "Chlorine monoxide", "Chlorine tetroxide"] },
+                { formula: "N₂F₄", name: "Dinitrogen tetrafluoride", type: "covalent", explanation: "Nonmetal (N) + Nonmetal (F) = Covalent bond", distractors: ["Nitrogen tetrafluoride", "Dinitrogen hexafluoride", "Dinitrogen difluoride"] },
+                { formula: "S₂Cl₂", name: "Disulfur dichloride", type: "covalent", explanation: "Nonmetal (S) + Nonmetal (Cl) = Covalent bond", distractors: ["Sulfur dichloride", "Disulfur tetrachloride", "Sulfur chloride"] },
+                { formula: "P₂O₅", name: "Diphosphorus pentoxide", type: "covalent", explanation: "Nonmetal (P) + Nonmetal (O) = Covalent bond", distractors: ["Phosphorus pentoxide", "Diphosphorus trioxide", "Phosphorus tetroxide"] },
+                { formula: "As₂O₃", name: "Arsenic trioxide", type: "covalent", explanation: "Nonmetal (As) + Nonmetal (O) = Covalent bond", distractors: ["Arsenic pentoxide", "Diarsenic pentoxide", "Arsenic dioxide"] },
+                { formula: "SiF₄", name: "Silicon tetrafluoride", type: "covalent", explanation: "Nonmetal (Si) + Nonmetal (F) = Covalent bond", distractors: ["Silicon trifluoride", "Silicon hexafluoride", "Silicon difluoride"] },
+                { formula: "SiBr₄", name: "Silicon tetrabromide", type: "covalent", explanation: "Nonmetal (Si) + Nonmetal (Br) = Covalent bond", distractors: ["Silicon tribromide", "Silicon dibromide", "Silicon hexabromide"] },
+                { formula: "PI₃", name: "Phosphorus triiodide", type: "covalent", explanation: "Nonmetal (P) + Nonmetal (I) = Covalent bond", distractors: ["Phosphorus diiodide", "Phosphorus tetraiodide", "Phosphorus pentaiodide"] },
+                { formula: "PBr₃", name: "Phosphorus tribromide", type: "covalent", explanation: "Nonmetal (P) + Nonmetal (Br) = Covalent bond", distractors: ["Phosphorus pentabromide", "Phosphorus dibromide", "Phosphorus tetrabromide"] },
+                { formula: "AsCl₃", name: "Arsenic trichloride", type: "covalent", explanation: "Nonmetal (As) + Nonmetal (Cl) = Covalent bond", distractors: ["Arsenic pentachloride", "Arsenic dichloride", "Arsenic tetrachloride"] },
+                { formula: "NBr₃", name: "Nitrogen tribromide", type: "covalent", explanation: "Nonmetal (N) + Nonmetal (Br) = Covalent bond", distractors: ["Nitrogen pentabromide", "Nitrogen dibromide", "Nitrogen tetrabromide"] },
+                { formula: "CF₄", name: "Carbon tetrafluoride", type: "covalent", explanation: "Nonmetal (C) + Nonmetal (F) = Covalent bond", distractors: ["Carbon trifluoride", "Carbon difluoride", "Carbon hexafluoride"] },
+                { formula: "Br₂O", name: "Dibromine monoxide", type: "covalent", explanation: "Nonmetal (Br) + Nonmetal (O) = Covalent bond", distractors: ["Bromine oxide", "Bromine monoxide", "Dibromine oxide"] }
+            ]
+        };
+
+        // Get the active compound bank for this package's configuration
+        function getActiveCompounds() {
+            if (CONFIG.bank === 'combined') {
+                const seen = new Set();
+                return compoundDatabase.simple.concat(compoundDatabase.advanced).filter(compound => {
+                    if (seen.has(compound.formula)) return false;
+                    seen.add(compound.formula);
+                    return true;
+                });
+            }
+            return compoundDatabase[CONFIG.bank];
+        }
+
+        // Update guidelines based on package configuration
+        function updateGuidelines() {
+            const guidelinesTitle = document.getElementById('guidelines-title');
+            const guidelinesList = document.getElementById('guidelines-list');
+
+            if (CONFIG.assessmentType === 'bonding') {
+                guidelinesTitle.textContent = 'Bonding Guidelines';
+                guidelinesList.innerHTML = `
+                    <li><strong>Ionic:</strong> Metal + Nonmetal OR Metal + Polyatomic ion</li>
+                    <li><strong>Ionic:</strong> Polyatomic ion + Nonmetal OR Polyatomic ion + Polyatomic ion</li>
+                    <li><strong>Covalent:</strong> Nonmetal + Nonmetal</li>
+                    <li><strong>Transition metals:</strong> Usually form ionic compounds</li>
+                    <li><strong>Polyatomic ions:</strong> SO₄²⁻, NO₃⁻, NH₄⁺, PO₄³⁻, OH⁻</li>
+                    <li><strong>Heavy metals:</strong> Cd, Pb, Sn can form ionic compounds</li>
+                `;
+            } else if (CONFIG.bank === 'simple') {
+                guidelinesTitle.textContent = 'Naming Guidelines';
+                guidelinesList.innerHTML = `
+                    <li><strong>Ionic:</strong> Name the metal, then the nonmetal with an -ide ending</li>
+                    <li><strong>Covalent:</strong> Use prefixes (mono-, di-, tri-, tetra-, penta-...)</li>
+                    <li><strong>First element:</strong> Never uses the mono- prefix</li>
+                    <li><strong>Systematic names:</strong> H₂O = Dihydrogen monoxide (not "water")</li>
+                `;
+            } else {
+                guidelinesTitle.textContent = 'Naming Guidelines';
+                guidelinesList.innerHTML = `
+                    <li><strong>Transition metals:</strong> Use Roman numerals for the charge — Iron(III) chloride</li>
+                    <li><strong>Polyatomic ions:</strong> SO₄²⁻ sulfate, NO₃⁻ nitrate, NH₄⁺ ammonium, OH⁻ hydroxide, CO₃²⁻ carbonate</li>
+                    <li><strong>-ate vs -ite:</strong> -ate has more oxygens, -ite has fewer</li>
+                    <li><strong>Covalent:</strong> Use prefixes (mono-, di-, tri-, tetra-, penta-...)</li>
+                `;
+            }
+        }
+
+        // Get next compound
+        function nextCompound() {
+            const compounds = getActiveCompounds();
+
+            // Get unused compounds
+            const unusedCompounds = compounds.filter(compound =>
+                !assessment.usedCompounds.includes(compound.formula)
+            );
+
+            // If all compounds used, reset the list
+            if (unusedCompounds.length === 0) {
+                assessment.usedCompounds = [];
+                unusedCompounds.push(...compounds);
+            }
+
+            // Select random unused compound
+            const randomIndex = Math.floor(Math.random() * unusedCompounds.length);
+            currentCompound = unusedCompounds[randomIndex];
+
+            // Mark compound as used
+            assessment.usedCompounds.push(currentCompound.formula);
+
+            // Update display
+            document.getElementById('compound-formula').textContent = currentCompound.formula;
+
+            // Show/hide compound name based on assessment type
+            const nameDisplay = document.getElementById('compound-name');
+            if (CONFIG.assessmentType === 'naming') {
+                nameDisplay.style.display = 'none';
+            } else {
+                nameDisplay.textContent = currentCompound.name;
+                nameDisplay.style.display = 'block';
+            }
+
+            // Update question interface
+            updateQuestionInterface();
+
+            // Reset interface
+            resetInterface();
+        }
+
+        // Reset interface for new compound
+        function resetInterface() {
+            selectedPrediction = null;
+            selectedName = null;
+
+            // Clear bonding prediction selection
+            document.querySelectorAll('.prediction-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            // Clear naming selection
+            document.querySelectorAll('.naming-option').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            // Reset buttons
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('next-btn').style.display = 'none';
+
+            // Clear feedback
+            document.getElementById('feedback-area').innerHTML = '';
+        }
+
+        // Update question interface based on assessment type
+        function updateQuestionInterface() {
+            const header = document.getElementById('question-header');
+            const bondingInterface = document.getElementById('bonding-interface');
+            const namingInterface = document.getElementById('naming-interface');
+
+            if (CONFIG.assessmentType === 'bonding') {
+                header.textContent = 'Predict Bond Type';
+                bondingInterface.style.display = 'block';
+                namingInterface.style.display = 'none';
+            } else {
+                header.textContent = 'Choose Correct Name';
+                bondingInterface.style.display = 'none';
+                namingInterface.style.display = 'block';
+                setupNamingOptions();
+            }
+        }
+
+        // Setup naming options with distractors
+        function setupNamingOptions() {
+            const namingOptions = document.getElementById('naming-options');
+            namingOptions.innerHTML = '';
+
+            // Create array with correct name and distractors
+            let options = [currentCompound.name];
+            if (currentCompound.distractors) {
+                options = options.concat(currentCompound.distractors);
+            } else {
+                // Fallback distractors if none provided
+                options = options.concat([
+                    "Compound name not available",
+                    "Alternative name not listed",
+                    "Chemical name unknown"
+                ]);
+            }
+
+            // Shuffle options
+            options = options.sort(() => Math.random() - 0.5);
+
+            // Create option buttons
+            options.forEach((option) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'naming-option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = (e) => selectName(option, e.currentTarget);
+                namingOptions.appendChild(optionDiv);
+            });
+        }
+
+        // Select name option
+        function selectName(name, element) {
+            selectedName = name;
+
+            // Update button styles
+            document.querySelectorAll('.naming-option').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            element.classList.add('selected');
+
+            // Enable submit button
+            document.getElementById('submit-btn').disabled = false;
+        }
+
+        // Select prediction
+        function selectPrediction(type) {
+            selectedPrediction = type;
+
+            // Update button styles
+            document.querySelectorAll('.prediction-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            document.querySelector(`.prediction-btn.${type}`).classList.add('selected');
+
+            // Enable submit button
+            document.getElementById('submit-btn').disabled = false;
+        }
+
+        // Submit answer (handles both bonding and naming modes)
+        function submitAnswer() {
+            let isCorrect = false;
+            let feedbackMessage = '';
+
+            assessment.totalAttempts++;
+
+            if (CONFIG.assessmentType === 'bonding') {
+                if (!selectedPrediction) return;
+                isCorrect = selectedPrediction === currentCompound.type;
+                feedbackMessage = isCorrect ?
+                    `Excellent! ${currentCompound.explanation}` :
+                    `Not quite. ${currentCompound.explanation}`;
+            } else {
+                if (!selectedName) return;
+                isCorrect = selectedName === currentCompound.name;
+                feedbackMessage = isCorrect ?
+                    `Correct! The compound ${currentCompound.formula} is named ${currentCompound.name}.` :
+                    `Incorrect. The compound ${currentCompound.formula} is ${currentCompound.name}, not ${selectedName}.`;
+            }
+
+            if (isCorrect) {
+                assessment.correctAnswers++;
+            }
+
+            showFeedback(isCorrect, feedbackMessage);
+            updateProgress();
+            scormSaveProgress();
+
+            // Disable submit button and show next button
+            document.getElementById('submit-btn').disabled = true;
+            document.getElementById('next-btn').style.display = 'block';
+
+            // Check if completion requirements met (fires once)
+            if (!state.challengeFinished && assessment.correctAnswers >= assessment.requiredCorrect) {
+                setTimeout(() => {
+                    showSuccessScreen();
+                }, 1200);
+            }
+        }
+
+        // Show feedback
+        function showFeedback(isCorrect, message) {
+            const feedbackArea = document.getElementById('feedback-area');
+            const feedbackClass = isCorrect ? 'correct' : 'incorrect';
+            const icon = isCorrect ? '✅' : '❌';
+
+            feedbackArea.innerHTML = `
+                <div class="feedback ${feedbackClass}">
+                    ${icon} ${message}
+                </div>
+            `;
+        }
+
+        // Update progress display
+        function updateProgress() {
+            // Update main progress bar
+            const progressPercent = (assessment.correctAnswers / assessment.requiredCorrect) * 100;
+            document.getElementById('progress-fill').style.width = `${Math.min(progressPercent, 100)}%`;
+            document.getElementById('progress-score').textContent =
+                `${assessment.correctAnswers}/${assessment.requiredCorrect} Correct`;
+
+            // Update total attempts display
+            document.getElementById('score-display').textContent =
+                `${assessment.totalAttempts}`;
+        }
+
+        // Success screen (replaces the old certificate)
+        function showSuccessScreen() {
+            const accuracy = assessment.totalAttempts > 0 ?
+                Math.round((assessment.correctAnswers / assessment.totalAttempts) * 100) : 100;
+            document.getElementById('success-summary').textContent =
+                `You answered ${assessment.correctAnswers} correctly in ${assessment.totalAttempts} attempts (${accuracy}% accuracy).`;
+            document.getElementById('title-screen').classList.remove('active');
+            document.getElementById('success-screen').classList.add('active');
+            state.challengeFinished = true;
+            scormReport(100);
+        }
+
+        function closeSuccessScreen() {
+            document.getElementById('success-screen').classList.remove('active');
+        }
+
+        // Title screen
+        function startAssessment() {
+            document.getElementById('title-screen').classList.remove('active');
+        }
+
+        // ---- SCORM 1.2 wrapper ----
+        const state = { challengeFinished: false };
+        let scormAPI = null;
+        let resumeState = null;
+
+        function findAPI(win) {
+            let attempts = 0;
+            let w = win;
+            while (w && attempts < 10) {
+                if (w.API) return w.API;
+                if (w.parent && w.parent !== w) {
+                    w = w.parent;
+                } else if (w.opener) {
+                    w = w.opener;
+                } else {
+                    break;
+                }
+                attempts++;
+            }
+            return null;
+        }
+
+        function isValidResumePayload(parsed) {
+            if (!parsed || typeof parsed !== 'object') return false;
+            if (typeof parsed.correctAnswers !== 'number' || parsed.correctAnswers < 0 || parsed.correctAnswers > 1000) return false;
+            if (typeof parsed.totalAttempts !== 'number' || parsed.totalAttempts < parsed.correctAnswers || parsed.totalAttempts > 10000) return false;
+            if (!Array.isArray(parsed.usedCompounds) || parsed.usedCompounds.length > 300) return false;
+            if (!parsed.usedCompounds.every(f => typeof f === 'string')) return false;
+            return true;
+        }
+
+        function scormInit() {
+            try {
+                scormAPI = findAPI(window);
+                if (!scormAPI) return;
+                scormAPI.LMSInitialize("");
+                if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                    const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (isValidResumePayload(parsed)) {
+                            resumeState = parsed;
+                        }
+                    }
+                }
+            } catch (e) { /* No LMS present, or malformed bookmark — start fresh */ }
+        }
+
+        function scormSaveProgress() {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                    correctAnswers: assessment.correctAnswers,
+                    totalAttempts: assessment.totalAttempts,
+                    usedCompounds: assessment.usedCompounds
+                }));
+                if (!state.challengeFinished) {
+                    scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                }
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        let manualSaveStatusTimer = null;
+        function manualSaveProgress() {
+            scormSaveProgress();
+            const status = document.getElementById('save-status');
+            if (status) {
+                status.classList.add('visible');
+                clearTimeout(manualSaveStatusTimer);
+                manualSaveStatusTimer = setTimeout(() => {
+                    status.classList.remove('visible');
+                }, 2500);
+            }
+        }
+
+        function scormReport(scorePercent) {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.core.score.min", "0");
+                scormAPI.LMSSetValue("cmi.core.score.max", "100");
+                scormAPI.LMSSetValue("cmi.core.score.raw", String(scorePercent));
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+                scormAPI.LMSSetValue("cmi.core.exit", "");
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function scormFinish() {
+            if (!scormAPI) return;
+            try {
+                if (!state.challengeFinished) {
+                    scormSaveProgress();
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                    scormAPI.LMSCommit("");
+                }
+                scormAPI.LMSFinish("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function resumeFromSavedState() {
+            assessment.correctAnswers = resumeState.correctAnswers;
+            assessment.totalAttempts = resumeState.totalAttempts;
+            assessment.usedCompounds = resumeState.usedCompounds;
+
+            updateProgress();
+            nextCompound();
+
+            document.getElementById('start-assessment-btn').textContent = 'Continue Assessment';
+
+            if (assessment.correctAnswers >= assessment.requiredCorrect) {
+                showSuccessScreen();
+            }
+        }
+
+        window.addEventListener('beforeunload', scormFinish);
+
+        // Backup incremental saves for lid-close / tab-teardown cases where
+        // beforeunload never fires. These must NOT call scormFinish/LMSFinish.
+        window.addEventListener('pagehide', scormSaveProgress);
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                scormSaveProgress();
+            }
+        });
+
+        // Initialize
+        updateGuidelines();
+        scormInit();
+        if (resumeState) {
+            resumeFromSavedState();
+        } else {
+            nextCompound();
+        }
+    </script>
+</body>
+</html>

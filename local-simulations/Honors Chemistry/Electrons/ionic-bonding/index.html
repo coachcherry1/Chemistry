@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ionic Bonding</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f7f5f0 0%, #d9cfc0 100%);
+        min-height: 100vh;
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    .container {
+        max-width: 920px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        overflow: hidden;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
+        color: #fff;
+        padding: 8px 16px;
+        text-align: center;
+        position: relative;
+    }
+    .header h1 { font-size: 1.2em; margin-bottom: 1px; }
+    .header p { font-size: 0.8em; opacity: 0.92; }
+
+    .score-badge {
+        position: absolute;
+        top: 8px; right: 10px;
+        background: #fffaf0;
+        color: #7c2d12;
+        font-weight: 700;
+        font-size: 12px;
+        padding: 2px 9px;
+        border-radius: 11px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .main-content { padding: 10px 14px 12px; }
+
+    .score-display {
+        text-align: center; margin-bottom: 4px; font-size: 0.95em; font-weight: 700; color: #7c2d12;
+    }
+    .progress-bar-track {
+        width: 100%; height: 6px; background: #e9ecef;
+        border-radius: 3px; overflow: hidden; margin-bottom: 8px;
+    }
+    .progress-fill {
+        height: 100%; background: linear-gradient(90deg, #b45309, #f59e0b); transition: width 0.4s ease;
+    }
+
+    .problem-title { font-size: 1em; font-weight: 700; color: #5c4326; margin-bottom: 3px; }
+    .problem-sub { font-size: 0.82em; color: #a98c66; margin-bottom: 8px; }
+
+    .prompt-box {
+        background: #fffaf0; border-left: 4px solid #f59e0b;
+        border-radius: 6px; padding: 7px 10px; margin-bottom: 10px;
+        font-size: 0.84rem; color: #5c4326; line-height: 1.45;
+    }
+
+    /* ---------------- Atom / ion diagrams ---------------- */
+    .atom-pair, .compare-pair {
+        display: flex; gap: 32px; justify-content: center; align-items: flex-end;
+        flex-wrap: wrap; margin: 6px 0;
+    }
+    .atom-card { text-align: center; }
+    .atom-card svg { display: block; margin: 0 auto; }
+    .atom-label { font-size: 0.85em; font-weight: 700; color: #5c4326; margin-top: 4px; }
+    .atom-sub { font-size: 0.76em; color: #a98c66; }
+
+    #atomPair {
+        background: #fbf7ef; border: 2px dashed #e4d7bd; border-radius: 8px;
+        padding: 14px 10px; margin-bottom: 12px;
+    }
+
+    /* ---------------- Wizard steps ---------------- */
+    .wiz-step {
+        border: 2px solid #f0d9a8; background: #fffdf8; border-radius: 10px;
+        padding: 12px 14px; margin-top: 10px;
+    }
+    .wiz-step.locked { opacity: 0.82; }
+    .wiz-q { font-weight: 700; color: #5c4326; margin-bottom: 8px; font-size: 0.95rem; }
+    .wiz-subgroup-label { font-size: 0.8em; color: #a98c66; margin: 8px 0 4px; font-weight: 600; text-transform: uppercase; letter-spacing: .02em; }
+    .wiz-fb { margin-top: 8px; font-weight: 600; font-size: 0.87rem; min-height: 1.2em; line-height: 1.4; }
+    .wiz-fb.no { color: #b3261e; }
+    .wiz-fb.ok { color: #1e7e34; }
+
+    .choice-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .choice-btn {
+        border: 2px solid #b45309; background: #fff; color: #7c2d12;
+        border-radius: 8px; padding: 9px 16px; font-size: 0.93rem; font-weight: 600; cursor: pointer;
+    }
+    .choice-btn:hover:not(:disabled) { background: #fff3e2; }
+    .choice-btn:disabled { cursor: default; }
+    .choice-btn.selected { background: #fff3e2; border-color: #92400e; }
+    .choice-btn.pick-right { background: #28a745; border-color: #28a745; color: #fff; }
+    .choice-btn.pick-wrong { background: #dc3545; border-color: #dc3545; color: #fff; }
+
+    .small-check {
+        background: #28a745; color: #fff; border: none;
+        padding: 8px 18px; border-radius: 18px; font-size: 0.88em; font-weight: 700;
+        cursor: pointer; margin-top: 10px;
+    }
+    .small-check:hover:not(:disabled) { background: #218838; }
+    .small-check:disabled { background: #cbb896; cursor: not-allowed; }
+
+    .save-row { margin: 14px 0 0; padding-top: 8px; border-top: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
+    .save-btn {
+        background: linear-gradient(145deg, #b45309, #92400e); color: #fff; border: none; border-radius: 6px;
+        padding: 5px 13px; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .save-btn:hover { background: linear-gradient(145deg, #92400e, #7c2d12); }
+    .save-note { color: #28a745; font-weight: 600; font-size: 12px; opacity: 0; transition: opacity .3s ease; }
+    .save-note.show { opacity: 1; }
+
+    /* ---------------- Start screen ---------------- */
+    .start-screen {
+        position: fixed; inset: 0;
+        background: linear-gradient(135deg, #f7f5f0 0%, #d9cfc0 100%);
+        display: flex; align-items: center; justify-content: center;
+        z-index: 1000; padding: 20px;
+    }
+
+    /* ---------------- Completion overlay ---------------- */
+    .complete-screen {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+        align-items: center; justify-content: center; z-index: 2000; padding: 20px;
+    }
+    .complete-card {
+        background: #fff; border-radius: 14px; padding: 34px;
+        max-width: 460px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .complete-card h2 { color: #7c2d12; margin-bottom: 12px; }
+    .complete-card p { color: #495057; line-height: 1.6; margin-bottom: 8px; }
+    .complete-card .close-button {
+        margin-top: 20px; background: #b45309; color: #fff;
+        border: none; border-radius: 6px; padding: 11px 26px; font-size: 15px; cursor: pointer;
+    }
+    .complete-card .close-button:hover { background: #92400e; }
+
+    /* ---------------- Per-problem completion modal ---------------- */
+    .problem-modal {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+        z-index: 2500; align-items: center; justify-content: center; padding: 16px;
+    }
+    .problem-modal.open { display: flex; }
+    .problem-modal-card {
+        background: #fff; border-radius: 14px; padding: 22px 24px;
+        max-width: 460px; width: 100%; max-height: 88vh; overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4); text-align: center;
+    }
+    .problem-modal-card h3 { margin-bottom: 10px; font-size: 1.2rem; }
+    .problem-modal-card.correct h3 { color: #1e7e34; }
+    .problem-modal-body { text-align: left; font-size: 0.9rem; color: #4a3722; line-height: 1.5; }
+    .problem-modal-body .recap {
+        background: #eafaef; border-left: 4px solid #28a745; border-radius: 6px;
+        padding: 9px 11px; font-size: 0.87rem; color: #1e7e34; text-align: center;
+    }
+    .problem-modal-actions { margin-top: 12px; }
+    .next-btn {
+        background: #b45309; color: #fff; border: none;
+        padding: 10px 24px; border-radius: 20px; font-size: 0.9em; font-weight: 700;
+        cursor: pointer; margin: 0 auto; display: block;
+        transition: background 0.2s ease;
+    }
+    .next-btn:hover { background: #92400e; }
+
+    /* ================= Intro walkthrough ================= */
+    .intro-card {
+        background: #fff; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        max-width: 860px; width: 100%; max-height: 92vh;
+        padding: 20px 26px 12px; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .intro-heading { color: #7c2d12; font-size: 1.3rem; margin-bottom: 10px; }
+    .intro-stage {
+        flex: 1 1 auto; overflow-y: auto; cursor: pointer;
+        padding: 2px 4px 4px 2px; display: flex; flex-wrap: wrap;
+        gap: 14px 20px; align-content: flex-start;
+    }
+    .intro-stage > .beat-note,
+    .intro-stage > .callout,
+    .intro-stage > .beat-diagram,
+    .intro-stage > .check-box { flex-basis: 100%; }
+
+    .beat-note p { color: #4a3722; line-height: 1.55; font-size: 0.97rem; margin-bottom: 6px; }
+    .beat-note ul, .beat-note ol { margin: 4px 0 4px 22px; }
+    .beat-note li { color: #4a3722; line-height: 1.5; font-size: 0.96rem; margin: 5px 0; }
+
+    .pop { animation: beatPop .2s ease; }
+    @keyframes beatPop { from { opacity: 0; transform: translateY(6px) scale(.97); } to { opacity: 1; transform: none; } }
+
+    .click-hint { text-align: center; color: #a98c66; font-size: 0.8rem; padding: 8px 0 2px; letter-spacing: .02em; }
+
+    .callout {
+        background: #fffaf0; border-left: 4px solid #f59e0b;
+        border-radius: 6px; padding: 10px 12px; margin: 2px 0;
+        color: #5c4326; font-size: 0.93rem; line-height: 1.5;
+    }
+
+    .beat-diagram { text-align: center; }
+
+    /* ---- lattice / ratio illustrations ---- */
+    .lattice-grid {
+        display: grid; grid-template-columns: repeat(6, 32px); gap: 4px;
+        justify-content: center; margin: 8px auto;
+    }
+    .lattice-ion {
+        width: 32px; height: 32px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; color: #fff; font-size: 13px; line-height: 1;
+    }
+    .lattice-ion.cation { background: #b45309; }
+    .lattice-ion.anion { background: #5c4326; }
+    .lattice-caption { font-size: 0.82em; color: #a98c66; text-align: center; margin-top: 6px; }
+    .ratio-row { display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; margin: 8px 0; }
+    .ratio-group { display: flex; gap: 6px; }
+    .ratio-arrow { font-size: 1.3em; color: #a98c66; }
+    .ratio-formula { font-weight: 700; color: #7c2d12; font-size: 1.05em; }
+
+    /* ---- electronegativity heat-map grid ---- */
+    .en-grid { display: inline-flex; flex-direction: column; gap: 4px; margin: 8px auto; }
+    .en-row { display: flex; gap: 4px; justify-content: center; }
+    .en-cell {
+        width: 54px; height: 46px; border-radius: 6px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        font-weight: 700;
+    }
+    .en-sym { font-size: 13px; }
+    .en-val { font-size: 10px; font-weight: 600; opacity: .9; }
+    .en-highlight { box-shadow: 0 0 0 3px #b45309; }
+    .en-arrows { display: flex; justify-content: center; gap: 18px; margin-top: 6px; font-size: 0.8em; color: #a98c66; }
+
+    /* ---- melting point comparison chart ---- */
+    .mp-chart { position: relative; max-width: 460px; margin: 8px auto 0; padding: 4px 0; }
+    .mp-section-label {
+        font-size: 0.78em; font-weight: 700; color: #a98c66; text-transform: uppercase;
+        letter-spacing: .03em; margin: 8px 0 4px;
+    }
+    .mp-row { display: flex; align-items: center; gap: 8px; margin: 3px 0; font-size: 0.85em; }
+    .mp-label { width: 58px; text-align: right; font-weight: 700; color: #5c4326; flex-shrink: 0; }
+    .mp-track { flex: 1 1 auto; background: #f3ece0; border-radius: 4px; height: 16px; position: relative; overflow: hidden; }
+    .mp-bar { height: 100%; border-radius: 4px; }
+    .mp-bar.mp-ionic { background: linear-gradient(90deg, #b45309, #f59e0b); }
+    .mp-bar.mp-covalent { background: #8a7355; }
+    .mp-value { width: 58px; font-size: 0.82em; color: #5c4326; flex-shrink: 0; }
+    .mp-room-tick {
+        position: absolute; top: 0; bottom: 0; width: 2px; z-index: 2;
+        background: repeating-linear-gradient(#7c2d12 0 3px, transparent 3px 6px);
+    }
+
+    /* ---- 3D rotatable ion lattice ---- */
+    .lattice3d-wrap {
+        width: 100%; max-width: 360px; height: 260px; margin: 10px auto 4px;
+        perspective: 700px; cursor: grab; touch-action: none;
+        background: #fbf7ef; border: 2px dashed #e4d7bd; border-radius: 10px;
+    }
+    .lattice3d-wrap:active { cursor: grabbing; }
+    .lattice3d-scene { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
+    .ion3d {
+        position: absolute; top: 50%; left: 50%;
+        width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 12px; color: #fff; transform-style: preserve-3d;
+    }
+    .ion3d.cation { background: radial-gradient(circle at 35% 30%, #f59e0b, #b45309 70%); }
+    .ion3d.anion { background: radial-gradient(circle at 35% 30%, #8a7355, #5c4326 70%); }
+    .lattice3d-hint { text-align: center; color: #a98c66; font-size: 0.8em; margin-top: 4px; }
+
+    /* ---- electron-transfer demo ---- */
+    .transfer-wrap { text-align: center; }
+    .transfer-stage {
+        display: flex; align-items: center; justify-content: center; gap: 56px;
+        position: relative; padding: 8px 0 4px; min-height: 150px;
+    }
+    .transfer-atom { text-align: center; }
+    .transfer-label { font-weight: 700; color: #5c4326; margin-top: 4px; font-size: 0.9em; }
+    .transfer-flyer {
+        position: absolute; width: 11px; height: 11px; border-radius: 50%;
+        background: #dc2626; box-shadow: 0 0 7px rgba(220,38,38,0.75); opacity: 0; pointer-events: none;
+    }
+    .transfer-note { color: #5c4326; font-size: 0.86em; margin-top: 4px; min-height: 1.4em; }
+    .fill-demo-replay {
+        background: #efe6d6; color: #7c2d12; border: none; border-radius: 8px;
+        padding: 7px 16px; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 8px;
+    }
+    .fill-demo-replay:hover { background: #e4d7bd; }
+
+    .check-box {
+        border: 2px solid #f0d9a8; background: #fffdf8;
+        border-radius: 10px; padding: 14px; margin-top: 6px;
+    }
+    .check-q { font-weight: 700; color: #5c4326; margin-bottom: 10px; font-size: 0.98rem; }
+    .model-choice {
+        border: 3px solid transparent; border-radius: 12px;
+        background: #fff; padding: 8px 10px 4px; cursor: pointer;
+        transition: border-color .15s ease, background .15s ease;
+    }
+    .model-choice:hover:not(:disabled) { border-color: #f59e0b; }
+    .model-choice:disabled { cursor: default; }
+    .model-choice.pick-right { border-color: #28a745; background: #eafaef; }
+    .model-choice.pick-wrong { border-color: #dc3545; background: #fdeeee; }
+    .model-caption { font-size: 0.8em; font-weight: 700; color: #5c4326; margin-top: 4px; }
+    .check-fb { margin-top: 10px; font-weight: 600; font-size: 0.9rem; display: none; line-height: 1.45; }
+    .check-fb.ok { color: #1e7e34; display: block; }
+    .check-fb.no { color: #b3261e; display: block; }
+
+    .intro-nav {
+        display: flex; align-items: center; gap: 12px;
+        padding-top: 12px; margin-top: 6px; border-top: 1px solid #eee;
+    }
+    .intro-nav .spacer { flex: 1 1 auto; }
+    .intro-dots { display: flex; gap: 6px; }
+    .intro-dots i { width: 8px; height: 8px; border-radius: 50%; background: #e0d3bd; display: block; }
+    .intro-dots i.on { background: #b45309; }
+    .intro-btn { border: none; border-radius: 8px; padding: 9px 20px; font-size: 0.94rem; font-weight: 600; cursor: pointer; }
+    .intro-btn.prev { background: #efe6d6; color: #7c2d12; }
+    .intro-btn.prev:disabled { opacity: .45; cursor: not-allowed; }
+    .intro-btn.next { background: linear-gradient(145deg, #b45309, #92400e); color: #fff; }
+    .intro-btn.next:disabled { opacity: .5; cursor: not-allowed; }
+</style>
+</head>
+<body>
+    <!-- Intro walkthrough -->
+    <div class="start-screen" id="startScreen">
+        <div class="intro-card">
+            <h2 class="intro-heading" id="introHeading"></h2>
+            <div class="intro-stage" id="introStage"></div>
+            <div class="click-hint" id="introHint">click anywhere to continue</div>
+            <div class="intro-nav">
+                <button class="intro-btn prev" id="introBack" type="button">Back</button>
+                <span class="spacer"></span>
+                <div class="intro-dots" id="introDots"></div>
+                <span class="spacer"></span>
+                <button class="intro-btn next" id="introNext" type="button">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="mainSimulation" style="display: none;">
+        <div class="header">
+            <h1>Ionic Bonding</h1>
+            <p>Electron transfer, ion formation, and the crystal lattice</p>
+            <span class="score-badge" id="score-badge">Score 100%</span>
+        </div>
+
+        <div class="main-content">
+            <div class="score-display">
+                Correct: <span id="score">0</span> / 5 &nbsp;|&nbsp; Problem <span id="problem-number">1</span>
+            </div>
+            <div class="progress-bar-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <div class="problem-title" id="problem-title"></div>
+            <div class="problem-sub" id="problem-sub"></div>
+            <p class="prompt-box">Work through the four steps below in order. Each step unlocks the next once you get
+                it right. Wrong answers won't tell you the correct answer directly &mdash; use the hint and try again.</p>
+
+            <div id="atomPair"></div>
+            <div id="wizardArea"></div>
+
+            <div class="save-row" id="save-row" style="display: none;">
+                <button type="button" class="save-btn" onclick="manualSave()">Save progress</button>
+                <span class="save-note" id="save-note">saved</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completion Screen -->
+    <div class="complete-screen" id="completeScreen">
+        <div class="complete-card">
+            <h2>Activity complete</h2>
+            <p>You correctly worked out the electron transfer, ion charges, and formula for all 5 ionic compounds.</p>
+            <p id="complete-score">Final score: 100%</p>
+            <p>Your grade has been submitted to Schoology.</p>
+            <button class="close-button" onclick="closeComplete()">Close</button>
+        </div>
+    </div>
+
+    <!-- Per-problem completion modal -->
+    <div class="problem-modal" id="problemModal">
+        <div class="problem-modal-card" id="problemModalCard">
+            <h3 id="problemModalTitle"></h3>
+            <div class="problem-modal-body" id="problemModalBody"></div>
+            <div class="problem-modal-actions" id="problemModalActions"></div>
+        </div>
+    </div>
+
+<script>
+    // ---------------- Element data ----------------
+    var ELEMENT_INFO = {
+        Na: { shells: [2,8,1],   name: 'Sodium'    },
+        Mg: { shells: [2,8,2],   name: 'Magnesium' },
+        Ca: { shells: [2,8,8,2], name: 'Calcium'   },
+        Al: { shells: [2,8,3],   name: 'Aluminum'  },
+        Cl: { shells: [2,8,7],   name: 'Chlorine'  },
+        O:  { shells: [2,6],     name: 'Oxygen'    },
+        F:  { shells: [2,7],     name: 'Fluorine'  }
+    };
+
+    var CHARGE_SUP = { 1: '⁺', 2: '²⁺', 3: '³⁺', '-1': '⁻', '-2': '²⁻', '-3': '³⁻' };
+
+    var PROBLEMS = [
+        { metal:'Na', nonmetal:'Cl', metalLose:1, nmGain:1, metalCharge:1, nmCharge:-1, metalCount:1, nmCount:1,
+          formula:'NaCl', formulaOptions:['NaCl','Na2Cl','NaCl2','Na2Cl2'] },
+        { metal:'Mg', nonmetal:'Cl', metalLose:2, nmGain:1, metalCharge:2, nmCharge:-1, metalCount:1, nmCount:2,
+          formula:'MgCl2', formulaOptions:['MgCl','MgCl2','Mg2Cl','Mg2Cl3'] },
+        { metal:'Na', nonmetal:'O',  metalLose:1, nmGain:2, metalCharge:1, nmCharge:-2, metalCount:2, nmCount:1,
+          formula:'Na2O', formulaOptions:['NaO','Na2O','NaO2','Na2O2'] },
+        { metal:'Ca', nonmetal:'F',  metalLose:2, nmGain:1, metalCharge:2, nmCharge:-1, metalCount:1, nmCount:2,
+          formula:'CaF2', formulaOptions:['CaF','CaF2','Ca2F','Ca2F3'] },
+        { metal:'Al', nonmetal:'O',  metalLose:3, nmGain:2, metalCharge:3, nmCharge:-2, metalCount:2, nmCount:3,
+          formula:'Al2O3', formulaOptions:['AlO','Al2O3','AlO3','Al3O2'] }
+    ];
+
+    function computeIonShells(baseShells, electronDelta) {
+        var s = baseShells.slice();
+        s[s.length - 1] += electronDelta;
+        if (s[s.length - 1] <= 0) s.pop();
+        return s;
+    }
+
+    function formulaHTML(f) {
+        return f.replace(/([A-Za-z]+)(\d*)/g, function (_, letters, num) {
+            return letters + (num ? '<sub>' + num + '</sub>' : '');
+        });
+    }
+
+    function shuffle(arr) {
+        for (var i = arr.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+        }
+        return arr;
+    }
+
+    // ---------------- Bohr diagram renderer ----------------
+    // Accurate paired-electron Bohr models: inner shells (always full: 2 or 8)
+    // are drawn as pairs at four 90-degree-apart positions (top/right/bottom/left).
+    // The outer (valence) shell follows the standard Lewis-dot convention: one
+    // electron is placed at each of the four positions before any of them pair up.
+    var QUAD = [-Math.PI / 2, 0, Math.PI / 2, Math.PI];
+
+    function outerSlots(count) {
+        var slots = [0, 0, 0, 0];
+        var remaining = count;
+        for (var p = 0; p < 4 && remaining > 0; p++) { slots[p] = 1; remaining--; }
+        for (var p2 = 0; p2 < 4 && remaining > 0; p2++) { slots[p2] += 1; remaining--; }
+        return slots;
+    }
+
+    function shellSVG(shells, opts) {
+        opts = opts || {};
+        var n = shells.length;
+        var size = 78 + n * 24;
+        var cx = size / 2, cy = size / 2, maxR = size * 0.4;
+        var rStep = maxR / (n + 0.6);
+        var nucleusR = 12;
+        var dotR = 3.4;
+        var s = '<svg viewBox="0 0 ' + size + ' ' + size + '" width="' + size + '" height="' + size + '">';
+
+        for (var i = 0; i < n; i++) {
+            var r = rStep * (i + 1);
+            var isOuter = i === n - 1;
+            s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' +
+                (isOuter ? '#f59e0b' : '#d9c3a3') + '" stroke-width="' + (isOuter ? 2.3 : 1.15) + '"/>';
+            var count = shells[i];
+            var color = isOuter ? '#7c2d12' : '#8a7355';
+
+            if (isOuter) {
+                var slots = outerSlots(count);
+                var unpairedIdx = -1;
+                for (var u = 0; u < 4; u++) { if (slots[u] === 1) { unpairedIdx = u; break; } }
+                for (var qi = 0; qi < 4; qi++) {
+                    var cnt = slots[qi];
+                    if (cnt === 0) continue;
+                    var ang = QUAD[qi];
+                    var rx = cx + r * Math.cos(ang), ry = cy + r * Math.sin(ang);
+                    if (cnt === 1) {
+                        var id1 = '';
+                        if (opts.tag && opts.tag.kind === 'single' && count === 1) id1 = opts.tag.id;
+                        else if (opts.tag && opts.tag.kind === 'unpaired' && qi === unpairedIdx) id1 = opts.tag.id;
+                        s += '<circle' + (id1 ? ' id="' + id1 + '"' : '') + ' cx="' + rx.toFixed(1) + '" cy="' +
+                            ry.toFixed(1) + '" r="' + dotR + '" fill="' + color + '"/>';
+                    } else {
+                        var tx = -Math.sin(ang), ty = Math.cos(ang), off = 4.2;
+                        s += '<circle cx="' + (rx + tx * off).toFixed(1) + '" cy="' + (ry + ty * off).toFixed(1) + '" r="' + dotR + '" fill="' + color + '"/>';
+                        s += '<circle cx="' + (rx - tx * off).toFixed(1) + '" cy="' + (ry - ty * off).toFixed(1) + '" r="' + dotR + '" fill="' + color + '"/>';
+                    }
+                }
+            } else {
+                var pairs = count / 2;
+                for (var k = 0; k < pairs; k++) {
+                    var angI = QUAD[k % 4];
+                    var rxi = cx + r * Math.cos(angI), ryi = cy + r * Math.sin(angI);
+                    var txi = -Math.sin(angI), tyi = Math.cos(angI), offI = 4.0;
+                    s += '<circle cx="' + (rxi + txi * offI).toFixed(1) + '" cy="' + (ryi + tyi * offI).toFixed(1) + '" r="' + dotR + '" fill="' + color + '"/>';
+                    s += '<circle cx="' + (rxi - txi * offI).toFixed(1) + '" cy="' + (ryi - tyi * offI).toFixed(1) + '" r="' + dotR + '" fill="' + color + '"/>';
+                }
+            }
+        }
+
+        s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + nucleusR + '" fill="#b45309"/>';
+        if (opts.label) {
+            s += '<text x="' + cx + '" y="' + (cy + 4) + '" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">' + opts.label + '</text>';
+        }
+        s += '</svg>';
+        return s;
+    }
+
+    function atomSVGTagged(symbol, tagId, tagKind) {
+        var info = ELEMENT_INFO[symbol];
+        return shellSVG(info.shells, { label: symbol, tag: tagId ? { id: tagId, kind: tagKind } : null });
+    }
+
+    // ---------------- Game state ----------------
+    var currentQuestion = 0;
+    var correctAnswersCount = 0;
+    var currentProblem = null;
+    var wiz = null;
+
+    var missCount = 0;
+    var SCORE_FLOOR = 60;
+    var MISS_PENALTY = 3;
+    function currentPct() { return Math.max(SCORE_FLOOR, 100 - MISS_PENALTY * missCount); }
+    function updateScoreBadge() {
+        var b = document.getElementById('score-badge');
+        if (b) b.textContent = 'Score ' + currentPct() + '%';
+    }
+    function updateProgress() {
+        document.getElementById('score').textContent = correctAnswersCount;
+        document.getElementById('problem-number').textContent = currentQuestion + 1;
+        document.getElementById('progress-fill').style.width = (correctAnswersCount / 5 * 100) + '%';
+    }
+
+    // ---------------- Problem setup ----------------
+    function generateProblem() {
+        if (correctAnswersCount >= 5) { showCompletion(); return; }
+
+        currentProblem = PROBLEMS[currentQuestion];
+        var m = ELEMENT_INFO[currentProblem.metal], nm = ELEMENT_INFO[currentProblem.nonmetal];
+
+        var opts = [
+            { label: m.name + ' (' + currentProblem.metal + ') transfers electrons to ' + nm.name + ' (' + currentProblem.nonmetal + ')', correct: true },
+            { label: nm.name + ' (' + currentProblem.nonmetal + ') transfers electrons to ' + m.name + ' (' + currentProblem.metal + ')', correct: false }
+        ];
+        if (Math.random() < 0.5) opts.reverse();
+
+        wiz = {
+            step: 1,
+            dirOptions: opts,
+            s2MetalSel: null, s2NmSel: null,
+            s3MetalSel: null, s3NmSel: null,
+            formulaOptions: shuffle(currentProblem.formulaOptions.slice())
+        };
+
+        document.getElementById('problem-title').textContent =
+            'Problem ' + (currentQuestion + 1) + ': ' + m.name + ' and ' + nm.name;
+        document.getElementById('problem-sub').textContent =
+            'Figure out how these two neutral atoms react to form an ionic compound.';
+
+        renderAtomPair();
+        renderWizard();
+        updateProgress();
+        updateScoreBadge();
+        scormCheckpoint();
+    }
+
+    function renderAtomPair() {
+        var m = currentProblem.metal, nm = currentProblem.nonmetal;
+        document.getElementById('atomPair').innerHTML =
+            '<div class="atom-pair">' +
+            '<div class="atom-card">' + shellSVG(ELEMENT_INFO[m].shells, { label: m }) +
+            '<div class="atom-label">' + ELEMENT_INFO[m].name + ' (' + m + ')</div>' +
+            '<div class="atom-sub">valence electrons: ' + ELEMENT_INFO[m].shells[ELEMENT_INFO[m].shells.length - 1] + '</div></div>' +
+            '<div class="atom-card">' + shellSVG(ELEMENT_INFO[nm].shells, { label: nm }) +
+            '<div class="atom-label">' + ELEMENT_INFO[nm].name + ' (' + nm + ')</div>' +
+            '<div class="atom-sub">valence electrons: ' + ELEMENT_INFO[nm].shells[ELEMENT_INFO[nm].shells.length - 1] + '</div></div>' +
+            '</div>';
+    }
+
+    // ---------------- Wizard ----------------
+    function renderWizard() {
+        var area = document.getElementById('wizardArea');
+        var html = wizStep1HTML();
+        if (wiz.step >= 2) html += wizStep2HTML();
+        if (wiz.step >= 3) html += wizStep3HTML();
+        if (wiz.step >= 4) html += wizStep4HTML();
+        area.innerHTML = html;
+        var last = area.lastElementChild;
+        if (last && last.scrollIntoView) last.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    function wizStep1HTML() {
+        var locked = wiz.step > 1;
+        var btns = wiz.dirOptions.map(function (o, i) {
+            var cls = 'choice-btn' + (locked && o.correct ? ' pick-right' : '');
+            return '<button type="button" class="' + cls + '"' + (locked ? ' disabled' : ' onclick="wizStep1Pick(' + i + ')"') + '>' + o.label + '</button>';
+        }).join('');
+        return '<div class="wiz-step' + (locked ? ' locked' : '') + '">' +
+            '<div class="wiz-q">Step 1 &mdash; Which atom transfers electrons to the other?</div>' +
+            '<div class="choice-row">' + btns + '</div>' +
+            '<div class="wiz-fb" id="wizFb1"></div></div>';
+    }
+    function wizStep1Pick(i) {
+        if (wiz.step > 1) return;
+        var fb = document.getElementById('wizFb1');
+        if (wiz.dirOptions[i].correct) {
+            wiz.step = 2;
+            renderWizard();
+        } else {
+            missCount++; updateScoreBadge(); scormCheckpoint();
+            fb.className = 'wiz-fb no';
+            fb.textContent = 'Not quite — metals lose electrons to empty out their outer shell, while nonmetals gain electrons to fill theirs. Which of these two atoms is the metal?';
+        }
+    }
+
+    function wizStep2HTML() {
+        var locked = wiz.step > 2;
+        var m = currentProblem.metal, nm = currentProblem.nonmetal;
+        var mBtns = [1, 2, 3].map(function (v) {
+            var cls = 'choice-btn' + (wiz.s2MetalSel === v ? ' selected' : '') + (locked && v === currentProblem.metalLose ? ' pick-right' : '');
+            return '<button type="button" class="' + cls + '"' + (locked ? ' disabled' : '') + " onclick='wizSelect(\"s2Metal\"," + v + ")'>" + v + '</button>';
+        }).join('');
+        var nBtns = [1, 2, 3].map(function (v) {
+            var cls = 'choice-btn' + (wiz.s2NmSel === v ? ' selected' : '') + (locked && v === currentProblem.nmGain ? ' pick-right' : '');
+            return '<button type="button" class="' + cls + '"' + (locked ? ' disabled' : '') + " onclick='wizSelect(\"s2Nm\"," + v + ")'>" + v + '</button>';
+        }).join('');
+        var checkDisabled = locked || wiz.s2MetalSel === null || wiz.s2NmSel === null;
+        return '<div class="wiz-step' + (locked ? ' locked' : '') + '">' +
+            '<div class="wiz-q">Step 2 &mdash; How many electrons move so each atom reaches a full outer shell?</div>' +
+            '<div class="wiz-subgroup-label">' + m + ' loses:</div><div class="choice-row">' + mBtns + '</div>' +
+            '<div class="wiz-subgroup-label">Each ' + nm + ' atom gains:</div><div class="choice-row">' + nBtns + '</div>' +
+            (locked ? '' : '<button type="button" class="small-check"' + (checkDisabled ? ' disabled' : '') + ' onclick="wizCheckStep2()">Check</button>') +
+            '<div class="wiz-fb" id="wizFb2"></div></div>';
+    }
+    function wizSelect(which, v) {
+        if (which === 's2Metal') wiz.s2MetalSel = v;
+        else if (which === 's2Nm') wiz.s2NmSel = v;
+        else if (which === 's3Metal') wiz.s3MetalSel = v;
+        else if (which === 's3Nm') wiz.s3NmSel = v;
+        renderWizard();
+    }
+    function wizCheckStep2() {
+        var mOk = wiz.s2MetalSel === currentProblem.metalLose;
+        var nOk = wiz.s2NmSel === currentProblem.nmGain;
+        var fb = document.getElementById('wizFb2');
+        if (mOk && nOk) {
+            wiz.step = 3;
+            renderWizard();
+        } else {
+            missCount++; updateScoreBadge(); scormCheckpoint();
+            var msgs = [];
+            if (!mOk) msgs.push('the number of electrons ' + currentProblem.metal + ' loses');
+            if (!nOk) msgs.push('the number of electrons each ' + currentProblem.nonmetal + ' atom gains');
+            fb.className = 'wiz-fb no';
+            fb.textContent = 'Not yet — recheck ' + msgs.join(' and ') + '. Count how many electrons each atom needs to add or remove to reach a full outer shell.';
+        }
+    }
+
+    function wizStep3HTML() {
+        var locked = wiz.step > 3;
+        var m = currentProblem.metal, nm = currentProblem.nonmetal;
+        var mBtns = [1, 2, 3].map(function (v) {
+            var cls = 'choice-btn' + (wiz.s3MetalSel === v ? ' selected' : '') + (locked && v === currentProblem.metalCharge ? ' pick-right' : '');
+            return '<button type="button" class="' + cls + '"' + (locked ? ' disabled' : '') + " onclick='wizSelect(\"s3Metal\"," + v + ")'>+" + v + '</button>';
+        }).join('');
+        var nBtns = [-1, -2, -3].map(function (v) {
+            var cls = 'choice-btn' + (wiz.s3NmSel === v ? ' selected' : '') + (locked && v === currentProblem.nmCharge ? ' pick-right' : '');
+            return '<button type="button" class="' + cls + '"' + (locked ? ' disabled' : '') + " onclick='wizSelect(\"s3Nm\"," + v + ")'>" + v + '</button>';
+        }).join('');
+        var checkDisabled = locked || wiz.s3MetalSel === null || wiz.s3NmSel === null;
+        return '<div class="wiz-step' + (locked ? ' locked' : '') + '">' +
+            '<div class="wiz-q">Step 3 &mdash; What charge does each resulting ion have?</div>' +
+            '<div class="wiz-subgroup-label">' + m + ' ion charge:</div><div class="choice-row">' + mBtns + '</div>' +
+            '<div class="wiz-subgroup-label">' + nm + ' ion charge:</div><div class="choice-row">' + nBtns + '</div>' +
+            (locked ? '' : '<button type="button" class="small-check"' + (checkDisabled ? ' disabled' : '') + ' onclick="wizCheckStep3()">Check</button>') +
+            '<div class="wiz-fb" id="wizFb3"></div></div>';
+    }
+    function wizCheckStep3() {
+        var mOk = wiz.s3MetalSel === currentProblem.metalCharge;
+        var nOk = wiz.s3NmSel === currentProblem.nmCharge;
+        var fb = document.getElementById('wizFb3');
+        if (mOk && nOk) {
+            wiz.step = 4;
+            renderWizard();
+        } else {
+            missCount++; updateScoreBadge(); scormCheckpoint();
+            var msgs = [];
+            if (!mOk) msgs.push('the ' + currentProblem.metal + ' ion charge');
+            if (!nOk) msgs.push('the ' + currentProblem.nonmetal + ' ion charge');
+            fb.className = 'wiz-fb no';
+            fb.textContent = 'Not yet — recheck ' + msgs.join(' and ') + '. Losing electrons makes an ion positive; gaining electrons makes it negative, and the size of the charge matches how many electrons moved.';
+        }
+    }
+
+    function wizStep4HTML() {
+        var btns = wiz.formulaOptions.map(function (f) {
+            return '<button type="button" class="choice-btn" onclick="wizStep4Pick(\'' + f + '\')">' + formulaHTML(f) + '</button>';
+        }).join('');
+        return '<div class="wiz-step">' +
+            '<div class="wiz-q">Step 4 &mdash; What is the empirical formula of the compound?</div>' +
+            '<div class="choice-row">' + btns + '</div>' +
+            '<div class="wiz-fb" id="wizFb4"></div></div>';
+    }
+    function wizStep4Pick(f) {
+        var fb = document.getElementById('wizFb4');
+        if (f === currentProblem.formula) {
+            correctAnswersCount++;
+            showProblemCorrectModal();
+        } else {
+            missCount++; updateScoreBadge(); scormCheckpoint();
+            fb.className = 'wiz-fb no';
+            fb.textContent = 'Not quite — that ratio does not balance the positive and negative charges to a net charge of zero. Revisit the charges from Step 3.';
+        }
+    }
+
+    function showProblemCorrectModal() {
+        var card = document.getElementById('problemModalCard');
+        var title = document.getElementById('problemModalTitle');
+        var body = document.getElementById('problemModalBody');
+        var actions = document.getElementById('problemModalActions');
+        var m = currentProblem.metal, nm = currentProblem.nonmetal;
+        card.className = 'problem-modal-card correct';
+        title.textContent = 'Correct!';
+        body.innerHTML = '<div class="recap">' + ELEMENT_INFO[m].name + ' loses ' + currentProblem.metalLose +
+            ' electron' + (currentProblem.metalLose > 1 ? 's' : '') + ' to form ' + m + CHARGE_SUP[currentProblem.metalCharge] +
+            '. Each ' + nm + ' atom gains ' + currentProblem.nmGain + ' electron' + (currentProblem.nmGain > 1 ? 's' : '') +
+            ' to form ' + nm + CHARGE_SUP[currentProblem.nmCharge] + '. Ratio ' + currentProblem.metalCount + ':' +
+            currentProblem.nmCount + ' &rarr; ' + formulaHTML(currentProblem.formula) + '</div>';
+        actions.innerHTML = '<button type="button" class="next-btn" onclick="advanceFromModal()">Next Problem</button>';
+        document.getElementById('problemModal').classList.add('open');
+        updateProgress(); updateScoreBadge(); scormCheckpoint();
+    }
+    function closeProblemModal() { document.getElementById('problemModal').classList.remove('open'); }
+    function advanceFromModal() { closeProblemModal(); nextProblem(); }
+    function nextProblem() { currentQuestion++; generateProblem(); }
+
+    function showCompletion() {
+        if (window._ibCompleted) return;
+        window._ibCompleted = true;
+        scormReport();
+        document.getElementById('complete-score').textContent = 'Final score: ' + currentPct() + '%';
+        document.getElementById('completeScreen').style.display = 'flex';
+    }
+    function closeComplete() { document.getElementById('completeScreen').style.display = 'none'; }
+
+    function beginActivity() {
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('mainSimulation').style.display = 'block';
+        if (scormAPI) document.getElementById('save-row').style.display = '';
+
+        if (scormResumeData) {
+            currentQuestion = Number.isInteger(scormResumeData.q) ? scormResumeData.q : 0;
+            correctAnswersCount = Math.min(Math.max(0, Number(scormResumeData.correct) || 0), 5);
+            missCount = Math.max(0, Number(scormResumeData.miss) || 0);
+        }
+
+        updateProgress();
+        updateScoreBadge();
+        if (correctAnswersCount >= 5) showCompletion(); else generateProblem();
+        scormCheckpoint();
+    }
+
+    // ================= Intro slideshow =================
+    function ionCard(symbol, delta, roleLabel) {
+        var shells = computeIonShells(ELEMENT_INFO[symbol].shells, delta);
+        var label = symbol + CHARGE_SUP[delta > 0 ? Math.min(delta, 3) : Math.max(delta, -3)];
+        return '<div class="atom-card">' + shellSVG(shells, { label: label }) +
+            '<div class="atom-label">' + label + '</div>' +
+            (roleLabel ? '<div class="atom-sub">' + roleLabel + '</div>' : '') + '</div>';
+    }
+
+    function neutralAtomsRaw() {
+        return '<div class="beat-diagram"><div class="atom-pair">' +
+            '<div class="atom-card">' + shellSVG(ELEMENT_INFO.Na.shells, { label: 'Na' }) +
+            '<div class="atom-label">Sodium (Na)</div><div class="atom-sub">valence electrons: 1</div></div>' +
+            '<div class="atom-card">' + shellSVG(ELEMENT_INFO.Cl.shells, { label: 'Cl' }) +
+            '<div class="atom-label">Chlorine (Cl)</div><div class="atom-sub">valence electrons: 7</div></div>' +
+            '</div></div>';
+    }
+
+    function ionsRaw() {
+        return '<div class="beat-diagram"><div class="atom-pair">' +
+            ionCard('Na', -1, 'cation — lost 1 electron') +
+            ionCard('Cl', 1, 'anion — gained 1 electron') +
+            '</div></div>';
+    }
+
+    function latticeGridHTML() {
+        var cells = '';
+        for (var r = 0; r < 4; r++) {
+            for (var c = 0; c < 6; c++) {
+                var isCation = (r + c) % 2 === 0;
+                cells += '<div class="lattice-ion ' + (isCation ? 'cation' : 'anion') + '">' + (isCation ? '+' : '−') + '</div>';
+            }
+        }
+        return '<div class="beat-diagram"><div class="lattice-grid">' + cells + '</div>' +
+            '<div class="lattice-caption">Na<sup>+</sup> (orange) and Cl<sup>−</sup> (brown) ions alternate in a repeating pattern that extends in three dimensions — this grid is one 2D slice through it.</div></div>';
+    }
+
+    function ratioVisualHTML() {
+        return '<div class="beat-diagram">' +
+            '<div class="ratio-row">' +
+            '<div class="lattice-ion cation" style="width:42px;height:42px;font-size:12px;">Mg<sup>2+</sup></div>' +
+            '<div class="ratio-arrow">+</div>' +
+            '<div class="ratio-group"><div class="lattice-ion anion" style="width:34px;height:34px;">Cl<sup>-</sup></div><div class="lattice-ion anion" style="width:34px;height:34px;">Cl<sup>-</sup></div></div>' +
+            '<div class="ratio-arrow">&rarr;</div><div class="ratio-formula">MgCl<sub>2</sub></div>' +
+            '</div>' +
+            '<div class="ratio-row">' +
+            '<div class="lattice-ion cation" style="width:34px;height:34px;">Na<sup>+</sup></div>' +
+            '<div class="ratio-arrow">+</div>' +
+            '<div class="lattice-ion anion" style="width:34px;height:34px;">Cl<sup>-</sup></div>' +
+            '<div class="ratio-arrow">&rarr;</div><div class="ratio-formula">NaCl</div>' +
+            '</div></div>';
+    }
+
+    function enColor(val) {
+        var t = (val - 0.9) / (4.0 - 0.9);
+        t = Math.max(0, Math.min(1, t));
+        var c1 = [253, 240, 217], c2 = [124, 45, 18];
+        var r = Math.round(c1[0] + (c2[0] - c1[0]) * t);
+        var g = Math.round(c1[1] + (c2[1] - c1[1]) * t);
+        var b = Math.round(c1[2] + (c2[2] - c1[2]) * t);
+        return 'rgb(' + r + ',' + g + ',' + b + ')';
+    }
+    function enTextColor(val) { return val > 2.4 ? '#fff' : '#5c4326'; }
+
+    var EN_TABLE = [
+        { cells: [ { sym: 'Li', val: 0.98 }, { sym: 'Be', val: 1.57 }, { sym: 'B', val: 2.04 }, { sym: 'C', val: 2.55 },
+                   { sym: 'N', val: 3.04 }, { sym: 'O', val: 3.44 }, { sym: 'F', val: 3.98 } ] },
+        { cells: [ { sym: 'Na', val: 0.93 }, { sym: 'Mg', val: 1.31 }, { sym: 'Al', val: 1.61 }, { sym: 'Si', val: 1.90 },
+                   { sym: 'P', val: 2.19 }, { sym: 'S', val: 2.58 }, { sym: 'Cl', val: 3.16 } ] }
+    ];
+
+    function enGridHTML() {
+        var rows = EN_TABLE.map(function (row) {
+            var cells = row.cells.map(function (c) {
+                var isF = c.sym === 'F';
+                return '<div class="en-cell' + (isF ? ' en-highlight' : '') + '" style="background:' + enColor(c.val) +
+                    '; color:' + enTextColor(c.val) + ';"><div class="en-sym">' + c.sym + '</div><div class="en-val">' + c.val.toFixed(2) + '</div></div>';
+            }).join('');
+            return '<div class="en-row">' + cells + '</div>';
+        }).join('');
+        return '<div class="beat-diagram"><div class="en-grid">' + rows + '</div>' +
+            '<div class="en-arrows"><span>&uarr; increases up a group</span><span>&rarr; increases across a period</span></div>' +
+            '<div class="lattice-caption">Electronegativity (Pauling scale) increases up and to the right across the periodic table (the noble gases are left out — they don\'t normally bond). <b>Fluorine (F)</b> is the most electronegative element of all, at 3.98.</div></div>';
+    }
+
+    // ---- Melting point comparison chart (ionic vs. covalent/molecular) ----
+    var MELTING_POINTS = {
+        ionic: [
+            { formula: 'NaCl', mp: 801 },
+            { formula: 'CaF2', mp: 1418 },
+            { formula: 'Al2O3', mp: 2072 },
+            { formula: 'MgO', mp: 2852 }
+        ],
+        covalent: [
+            { formula: 'CH4', mp: -182 },
+            { formula: 'CO2', mp: -78 },
+            { formula: 'H2O', mp: 0 },
+            { formula: 'I2', mp: 114 }
+        ]
+    };
+    var MP_MIN = -200, MP_MAX = 2900, MP_RANGE = MP_MAX - MP_MIN;
+
+    function mpBarHTML(item, cls, roomPct) {
+        var pct = ((item.mp - MP_MIN) / MP_RANGE) * 100;
+        return '<div class="mp-row"><div class="mp-label">' + formulaHTML(item.formula) + '</div>' +
+            '<div class="mp-track"><div class="mp-bar ' + cls + '" style="width:' + pct.toFixed(1) + '%;"></div>' +
+            '<div class="mp-room-tick" style="left:' + roomPct.toFixed(1) + '%;"></div></div>' +
+            '<div class="mp-value">' + item.mp + '&deg;C</div></div>';
+    }
+
+    function meltingPointChartHTML() {
+        var roomPct = ((25 - MP_MIN) / MP_RANGE) * 100;
+        var rows = '<div class="mp-section-label">Ionic compounds</div>' +
+            MELTING_POINTS.ionic.map(function (it) { return mpBarHTML(it, 'mp-ionic', roomPct); }).join('') +
+            '<div class="mp-section-label">Covalent (molecular) compounds</div>' +
+            MELTING_POINTS.covalent.map(function (it) { return mpBarHTML(it, 'mp-covalent', roomPct); }).join('');
+        return '<div class="beat-diagram"><div class="mp-chart">' + rows + '</div>' +
+            '<div class="lattice-caption">The dashed line in each bar marks room temperature (~25&deg;C). Ionic compounds melt far above it; many covalent (molecular) substances are already liquid or gas at room temperature.</div></div>';
+    }
+
+    // ---- 3D rotatable ion lattice (pure CSS 3D transforms, drag to orbit) ----
+    function lattice3DHTML() {
+        var ions = '';
+        for (var i = 0; i < 3; i++) {
+            for (var j = 0; j < 3; j++) {
+                for (var k = 0; k < 3; k++) {
+                    var x = (i - 1) * 46, y = (j - 1) * 46, z = (k - 1) * 46;
+                    var isCation = (i + j + k) % 2 === 0;
+                    ions += '<div class="ion3d ' + (isCation ? 'cation' : 'anion') + '" data-x="' + x + '" data-y="' + y + '" data-z="' + z + '">' +
+                        (isCation ? '+' : '−') + '</div>';
+                }
+            }
+        }
+        return '<div class="beat-diagram"><div class="lattice3d-wrap" id="lattice3dWrap"><div class="lattice3d-scene" id="lattice3dScene">' + ions + '</div></div>' +
+            '<div class="lattice3d-hint">drag to rotate the lattice</div>' +
+            '<div class="lattice-caption">Na<sup>+</sup> (orange) and Cl<sup>&minus;</sup> (brown) ions repeat in three dimensions, layer after layer — the flat grid above was a single slice through a structure like this one.</div></div>';
+    }
+
+    function initLattice3D(wrap) {
+        var scene = wrap.querySelector('.lattice3d-scene');
+        if (!scene) return;
+        var rx = -20, ry = -30;
+        var dragging = false, lastX = 0, lastY = 0;
+
+        function applyTransform() {
+            scene.style.transform = 'rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)';
+            var ions = scene.querySelectorAll('.ion3d');
+            for (var n = 0; n < ions.length; n++) {
+                var el = ions[n];
+                var x = el.dataset.x, y = el.dataset.y, z = el.dataset.z;
+                el.style.transform = 'translate3d(' + x + 'px,' + y + 'px,' + z + 'px) rotateY(' + (-ry) + 'deg) rotateX(' + (-rx) + 'deg)';
+            }
+        }
+
+        wrap.addEventListener('pointerdown', function (e) {
+            dragging = true; lastX = e.clientX; lastY = e.clientY;
+            try { wrap.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+        });
+        wrap.addEventListener('pointermove', function (e) {
+            if (!dragging) return;
+            var dx = e.clientX - lastX, dy = e.clientY - lastY;
+            lastX = e.clientX; lastY = e.clientY;
+            ry += dx * 0.4;
+            rx = Math.max(-85, Math.min(85, rx - dy * 0.4));
+            applyTransform();
+        });
+        wrap.addEventListener('pointerup', function () { dragging = false; });
+        wrap.addEventListener('pointerleave', function () { dragging = false; });
+
+        applyTransform();
+    }
+
+    var INTRO = [
+        {
+            h: 'Metals give, nonmetals take',
+            beats: [
+                { note: '<p>Atoms are most stable with a full outer (valence) shell of electrons — usually <b>8 electrons</b>, an octet. Metals on the left side of the periodic table have only <b>1&ndash;3 valence electrons</b>, so it is easier for them to <b>lose</b> those few electrons than to gain a whole shell\'s worth. Nonmetals on the right have <b>5&ndash;7 valence electrons</b>, so it is easier for them to <b>gain</b> just a few more to complete their octet.</p>' },
+                { note: '<p>Compare sodium and chlorine below. Sodium has 1 valence electron; chlorine has 7. If sodium gives its 1 electron to chlorine, sodium is left with a full shell underneath, and chlorine ends up with a full 8.</p>',
+                  raw: neutralAtomsRaw() }
+            ]
+        },
+        {
+            h: 'Electronegativity: why the transfer happens',
+            beats: [
+                { note: '<p><b>Electronegativity</b> measures how strongly an atom pulls on nearby electrons. When two atoms bond, the size of the electronegativity <i>difference</i> between them decides what kind of bond forms: a small difference lets the atoms <b>share</b> electrons (a covalent bond); a large difference means one atom pulls the electron(s) away completely — an <b>ionic bond</b>.</p>' },
+                { raw: enGridHTML() },
+                { note: '<p>Sodium (electronegativity ≈ 0.93) and chlorine (≈ 3.16) differ by about 2.2 — one of the largest possible gaps. That huge pull imbalance is exactly why sodium\'s electron transfers completely to chlorine instead of being shared.</p>' },
+                { check: { kind: 'btn',
+                    q: 'Based on the trend, which element pulls harder on electrons: oxygen or sulfur?',
+                    options: ['Oxygen — higher up the group', 'Sulfur — lower down the group'], correct: 0,
+                    ok: 'Correct — electronegativity increases going up a group, so oxygen (higher up) pulls harder on electrons than sulfur.',
+                    no: 'Not quite — electronegativity increases going up a group, so the element higher up the group should pull harder.'
+                } }
+            ]
+        },
+        {
+            h: 'Watch the electron transfer',
+            beats: [
+                { note: '<p>Watch sodium\'s single valence electron move over to chlorine.</p>' },
+                { anim: 'transfer-demo' },
+                { callout: 'Both atoms now have a full outer shell of 8 electrons — but the number of protons in each atom never changed. That mismatch between protons and electrons is what creates a charge.' }
+            ]
+        },
+        {
+            h: 'Two ions, opposite charges',
+            beats: [
+                { note: '<p>Sodium now has 11 protons but only 10 electrons, so it is left with an overall <b>+1 charge</b> — a positively charged ion, called a <b>cation</b>. Chlorine now has 17 protons but 18 electrons, giving it an overall <b>&minus;1 charge</b> — a negatively charged ion, called an <b>anion</b>.</p>',
+                  raw: ionsRaw() },
+                { callout: 'Opposite charges attract. That electrostatic attraction between the cation and the anion <b>is</b> the ionic bond.' },
+                { check: { kind: 'model', q: 'Which of these ions is the cation — the positively charged one?',
+                    models: [
+                        { raw: shellSVG(computeIonShells(ELEMENT_INFO.Na.shells, -1), { label: 'Na' + CHARGE_SUP[1] }), caption: 'Sodium ion (Na⁺)' },
+                        { raw: shellSVG(computeIonShells(ELEMENT_INFO.Cl.shells, 1), { label: 'Cl' + CHARGE_SUP[-1] }), caption: 'Chloride ion (Cl⁻)' }
+                    ],
+                    correct: 0,
+                    ok: 'Correct — Na⁺ is the cation because sodium lost an electron, leaving more protons than electrons.',
+                    no: 'Not quite — the cation is the ion that lost electrons, which is why it carries a positive charge.'
+                } }
+            ]
+        },
+        {
+            h: 'It’s not one molecule — it’s a lattice',
+            beats: [
+                { note: '<p>Solid NaCl is <b>not</b> a single "molecule" of one Na⁺ stuck to one Cl⁻. Instead, enormous numbers of Na⁺ and Cl⁻ ions arrange themselves into a repeating, alternating 3D pattern called a <b>crystal lattice</b>, where each ion is surrounded by several ions of the opposite charge.</p>' },
+                { raw: latticeGridHTML() },
+                { note: '<p>Now see it in three dimensions. This model shows several layers of alternating ions — drag it to rotate and look at it from different angles.</p>',
+                  raw: lattice3DHTML(), init3d: true }
+            ]
+        },
+        {
+            h: 'Why ionic compounds are solids at room temperature',
+            beats: [
+                { callout: 'The attraction between ions isn’t limited to one pair — it happens over and over, throughout the <b>entire lattice</b>. Pulling the lattice apart means breaking a huge number of these attractions at once, which takes a lot of energy. That’s why ionic compounds have very high melting points and are <b>solids at room temperature</b>.' },
+                { note: '<p>Compare real melting points below. Covalent (molecular) compounds are held together by much weaker forces <i>between</i> their molecules, so they melt (and often boil) at far lower temperatures — many are liquid or gas at room temperature.</p>',
+                  raw: meltingPointChartHTML() }
+            ]
+        },
+        {
+            h: 'Different ratios make different lattices',
+            beats: [
+                { note: '<p>The ratio of ions in a compound is set by balancing the total electrons lost with the total electrons gained. Magnesium loses 2 electrons, but each chlorine atom can only accept 1 — so it takes <b>2 chlorine atoms for every 1 magnesium atom</b> to balance the transfer.</p>',
+                  raw: ratioVisualHTML() },
+                { check: { kind: 'btn',
+                    q: 'Aluminum (Al) loses 3 electrons to reach a full shell. Oxygen (O) gains 2 electrons each. What ratio of Al to O balances the total electrons transferred?',
+                    options: ['2 Al : 3 O', '3 Al : 2 O'], correct: 0,
+                    ok: 'Correct — 2 Al atoms lose 3 electrons each (6 total), and 3 O atoms gain 2 electrons each (6 total). That balance gives the formula Al₂O₃.',
+                    no: 'Not quite — find the smallest numbers of each atom where (Al atoms × 3) equals (O atoms × 2).'
+                } }
+            ]
+        },
+        {
+            h: 'How the activity works',
+            beats: [
+                { note: '<p>For each of 5 element pairs, you\'ll work through four steps: (1) which atom transfers electrons, (2) how many electrons move, (3) the resulting ion charges, and (4) the compound\'s empirical formula. Each step unlocks the next once you get it right.</p>' },
+                { callout: 'Wrong answers won’t reveal the correct one — you’ll get a hint and can try again. Each miss lowers the score badge slightly but never blocks you from finishing. Use Save progress if you need to stop and come back.' }
+            ]
+        }
+    ];
+
+    var slideIdx = 0;
+    var beatIdx = 0;
+    var introPassed = new Set();
+    var introAttempts = {};
+
+    function curSlide() { return INTRO[slideIdx]; }
+    function curBeat() { return curSlide().beats[beatIdx]; }
+    function isLastBeatOfIntro() { return slideIdx === INTRO.length - 1 && beatIdx === curSlide().beats.length - 1; }
+    function checkPending() {
+        var b = curBeat();
+        return !!(b && b.check && !introPassed.has(slideIdx));
+    }
+    function slideCheck(i) {
+        var b = INTRO[i].beats.filter(function (x) { return x.check; })[0];
+        return b ? b.check : null;
+    }
+
+    function initIntro() {
+        document.getElementById('introDots').innerHTML =
+            INTRO.map(function (_, i) { return '<i data-i="' + i + '"></i>'; }).join('');
+
+        document.getElementById('introBack').addEventListener('click', function (e) { e.stopPropagation(); beatBack(); });
+        document.getElementById('introNext').addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (isLastBeatOfIntro()) finishIntro(); else beatForward();
+        });
+        document.querySelector('#startScreen .intro-card').addEventListener('click', function (e) {
+            if (e.target.closest('.intro-nav')) return;
+            if (e.target.closest('.check-box')) return;
+            if (e.target.closest('.fill-demo-replay')) return;
+            if (e.target.closest('.lattice3d-wrap')) return;
+            if (isLastBeatOfIntro()) return;
+            beatForward();
+        });
+        document.getElementById('introStage').addEventListener('click', onIntroCheckClick);
+
+        slideIdx = 0; beatIdx = 0;
+        renderIntro();
+    }
+
+    function beatForward() {
+        if (checkPending()) return;
+        if (beatIdx < curSlide().beats.length - 1) { beatIdx++; }
+        else if (slideIdx < INTRO.length - 1) { slideIdx++; beatIdx = 0; }
+        else { return; }
+        renderIntro();
+    }
+    function beatBack() {
+        if (beatIdx > 0) { beatIdx--; }
+        else if (slideIdx > 0) { slideIdx--; beatIdx = curSlide().beats.length - 1; }
+        else { return; }
+        renderIntro();
+    }
+    function finishIntro() {
+        if (transferRAF) { cancelAnimationFrame(transferRAF); transferRAF = null; }
+        document.getElementById('startScreen').style.display = 'none';
+        beginActivity();
+    }
+
+    function beatToHTML(b, newest) {
+        var pop = newest ? ' pop' : '';
+        var html = '';
+        if (b.note) html += '<div class="beat-note' + pop + '">' + b.note + '</div>';
+        if (b.raw) html += b.raw;
+        if (b.anim === 'transfer-demo') html += transferDemoHTML(pop);
+        if (b.callout) html += '<div class="callout' + pop + '">' + b.callout + '</div>';
+        if (b.check) {
+            var c = b.check;
+            var inner;
+            if (c.kind === 'model') {
+                inner = '<div class="compare-pair">' +
+                    c.models.map(function (m, oi) {
+                        return '<button type="button" class="model-choice" data-idx="' + oi + '">' +
+                            m.raw + (m.caption ? '<div class="model-caption">' + m.caption + '</div>' : '') + '</button>';
+                    }).join('') + '</div>';
+            } else {
+                inner = '<div class="choice-row" style="justify-content:center;">' +
+                    c.options.map(function (o, oi) { return '<button type="button" class="choice-btn" data-idx="' + oi + '">' + o + '</button>'; }).join('') +
+                    '</div>';
+            }
+            html += '<div class="check-box' + pop + '" data-slide="' + slideIdx + '"><div class="check-q">' + c.q + '</div>' +
+                inner + '<div class="check-fb" id="ifb-' + slideIdx + '"></div></div>';
+        }
+        return html;
+    }
+
+    // ---- Electron-transfer demo (JS-driven via requestAnimationFrame, not CSS
+    // @keyframes, so it always plays even on browsers/policies that disable
+    // CSS animations for prefers-reduced-motion) ----
+    var transferRAF = null;
+
+    function transferDemoHTML(pop) {
+        return '<div class="beat-diagram transfer-wrap' + pop + '">' +
+            '<div class="transfer-stage" id="transferStage"></div>' +
+            '<div class="transfer-note" id="transferNote">Watch the highlighted electron move from sodium to chlorine.</div>' +
+            '<button type="button" class="fill-demo-replay" id="transferReplay">Replay animation</button></div>';
+    }
+
+    function renderTransferStage() {
+        var stage = document.getElementById('transferStage');
+        if (!stage) return;
+        stage.innerHTML =
+            '<div class="transfer-atom" id="transferNaBox">' + atomSVGTagged('Na', 'transferSrcDot', 'single') +
+            '<div class="transfer-label">Sodium (Na)</div></div>' +
+            '<div class="transfer-flyer" id="transferFlyer"></div>' +
+            '<div class="transfer-atom" id="transferClBox">' + atomSVGTagged('Cl', 'transferDstDot', 'unpaired') +
+            '<div class="transfer-label">Chlorine (Cl)</div></div>';
+        var note = document.getElementById('transferNote');
+        if (note) note.textContent = 'Watch the highlighted electron move from sodium to chlorine.';
+    }
+
+    function startTransferDemo() {
+        if (transferRAF) { cancelAnimationFrame(transferRAF); transferRAF = null; }
+        var host = document.getElementById('transferStage');
+        if (!host) return;
+        renderTransferStage();
+        var replayBtn = document.getElementById('transferReplay');
+        if (replayBtn) replayBtn.onclick = function () { startTransferDemo(); };
+
+        setTimeout(function () {
+            var stage = document.getElementById('transferStage');
+            var src = document.getElementById('transferSrcDot');
+            var dst = document.getElementById('transferDstDot');
+            var flyer = document.getElementById('transferFlyer');
+            if (!stage || !src || !dst || !flyer) return;
+
+            var stageBox = stage.getBoundingClientRect();
+            var srcBox = src.getBoundingClientRect();
+            var dstBox = dst.getBoundingClientRect();
+            var sx = srcBox.left + srcBox.width / 2 - stageBox.left;
+            var sy = srcBox.top + srcBox.height / 2 - stageBox.top;
+            var ex = dstBox.left + dstBox.width / 2 - stageBox.left;
+            var ey = dstBox.top + dstBox.height / 2 - stageBox.top;
+
+            flyer.style.opacity = '1';
+            flyer.style.left = (sx - 5.5) + 'px';
+            flyer.style.top = (sy - 5.5) + 'px';
+            src.style.opacity = '0.15';
+
+            var duration = 1600, start = null;
+            function step(ts) {
+                if (!start) start = ts;
+                var t = Math.min(1, (ts - start) / duration);
+                var arc = Math.sin(t * Math.PI) * -26;
+                var x = sx + (ex - sx) * t;
+                var y = sy + (ey - sy) * t + arc;
+                flyer.style.left = (x - 5.5) + 'px';
+                flyer.style.top = (y - 5.5) + 'px';
+                if (t < 1) {
+                    transferRAF = requestAnimationFrame(step);
+                } else {
+                    transferRAF = null;
+                    flyer.style.opacity = '0';
+                    finishTransferDemo();
+                }
+            }
+            transferRAF = requestAnimationFrame(step);
+        }, 500);
+    }
+
+    function finishTransferDemo() {
+        var naBox = document.getElementById('transferNaBox');
+        var clBox = document.getElementById('transferClBox');
+        if (naBox) {
+            naBox.innerHTML = shellSVG(computeIonShells(ELEMENT_INFO.Na.shells, -1), { label: 'Na' + CHARGE_SUP[1] }) +
+                '<div class="transfer-label">Sodium ion (Na' + CHARGE_SUP[1] + ')</div>';
+        }
+        if (clBox) {
+            clBox.innerHTML = shellSVG(computeIonShells(ELEMENT_INFO.Cl.shells, 1), { label: 'Cl' + CHARGE_SUP[-1] }) +
+                '<div class="transfer-label">Chloride ion (Cl' + CHARGE_SUP[-1] + ')</div>';
+        }
+        var note = document.getElementById('transferNote');
+        if (note) note.textContent = 'Sodium lost its 1 valence electron to chlorine. Both now have a full, stable outer shell of 8.';
+    }
+
+    function renderIntro() {
+        if (transferRAF) { cancelAnimationFrame(transferRAF); transferRAF = null; }
+
+        document.getElementById('introHeading').textContent = curSlide().h;
+
+        var stage = document.getElementById('introStage');
+        stage.innerHTML = '';
+        var beats = curSlide().beats;
+        for (var i = 0; i <= beatIdx; i++) {
+            stage.insertAdjacentHTML('beforeend', beatToHTML(beats[i], i === beatIdx));
+        }
+
+        if (curBeat() && curBeat().anim === 'transfer-demo') startTransferDemo();
+        if (curBeat() && curBeat().init3d) {
+            var latticeWrap = document.getElementById('lattice3dWrap');
+            if (latticeWrap) initLattice3D(latticeWrap);
+        }
+
+        if (introPassed.has(slideIdx)) {
+            var box = stage.querySelector('.check-box');
+            var chk = slideCheck(slideIdx);
+            if (box && chk) {
+                var btns = box.querySelectorAll('button');
+                btns.forEach(function (bn) { bn.disabled = true; });
+                if (btns[chk.correct]) btns[chk.correct].classList.add('pick-right');
+                var fb = box.querySelector('.check-fb');
+                fb.className = 'check-fb ok';
+                fb.textContent = chk.ok;
+            }
+        }
+
+        document.querySelectorAll('#introDots i').forEach(function (el) {
+            el.classList.toggle('on', Number(el.dataset.i) === slideIdx);
+        });
+
+        document.getElementById('introBack').disabled = (slideIdx === 0 && beatIdx === 0);
+
+        var nextBtn = document.getElementById('introNext');
+        if (isLastBeatOfIntro()) {
+            nextBtn.textContent = 'Start the 5 problems';
+            nextBtn.disabled = false;
+        } else {
+            nextBtn.textContent = 'Next';
+            nextBtn.disabled = checkPending();
+        }
+
+        var hint = document.getElementById('introHint');
+        if (isLastBeatOfIntro()) {
+            hint.textContent = 'use the button when you are ready';
+        } else if (checkPending()) {
+            hint.textContent = 'answer above to continue';
+        } else {
+            hint.textContent = 'click anywhere to continue   (' + (beatIdx + 1) + ' / ' + beats.length + ')';
+        }
+
+        var newest = stage.lastElementChild;
+        if (newest && newest.scrollIntoView) newest.scrollIntoView({ block: 'nearest' });
+        stage.scrollTop = stage.scrollHeight;
+    }
+
+    function onIntroCheckClick(e) {
+        var btn = e.target.closest('.model-choice, .choice-btn');
+        if (!btn) return;
+        e.stopPropagation();
+        var box = btn.closest('.check-box');
+        var slide = Number(box.dataset.slide);
+        if (introPassed.has(slide)) return;
+
+        var chk = slideCheck(slide);
+        var idx = Number(btn.dataset.idx);
+        var fb = document.getElementById('ifb-' + slide);
+        introAttempts[slide] = (introAttempts[slide] || 0) + 1;
+
+        var finish = function () {
+            introPassed.add(slide);
+            box.querySelectorAll('button').forEach(function (b) { b.disabled = true; });
+            document.getElementById('introNext').disabled = isLastBeatOfIntro() ? false : checkPending();
+            document.getElementById('introHint').textContent = 'click anywhere to continue';
+        };
+
+        if (idx === chk.correct) {
+            btn.classList.add('pick-right');
+            fb.className = 'check-fb ok';
+            fb.textContent = chk.ok;
+            finish();
+        } else {
+            btn.classList.add('pick-wrong');
+            fb.className = 'check-fb no';
+            fb.textContent = chk.no;
+            if (introAttempts[slide] >= 2) {
+                var right = box.querySelectorAll('button')[chk.correct];
+                if (right) right.classList.add('pick-right');
+                fb.textContent = chk.no + ' ' + chk.ok;
+                finish();
+            } else {
+                setTimeout(function () { btn.classList.remove('pick-wrong'); }, 900);
+            }
+        }
+    }
+
+    // ---- SCORM 1.2 ----
+    var scormAPI = null;
+    var scormResumeEntry = false;
+    var scormResumeData = null;
+    var scormDone = false;
+    var scormStartMs = Date.now();
+
+    function findAPI(win) {
+        var n = 0, w = win;
+        while (w && n < 12) {
+            if (w.API) return w.API;
+            w = (w.parent && w.parent !== w) ? w.parent : w.opener;
+            n++;
+        }
+        return null;
+    }
+
+    function scormInit() {
+        try {
+            scormAPI = findAPI(window);
+            if (!scormAPI) return;
+            if (String(scormAPI.LMSInitialize("")) !== "true") { scormAPI = null; return; }
+            var st = scormAPI.LMSGetValue("cmi.core.lesson_status");
+            if (st === "" || st === "not attempted" || st === "unknown") {
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+            }
+            if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                scormResumeEntry = true;
+                var raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                if (raw) {
+                    try {
+                        var d = JSON.parse(raw);
+                        if (d && typeof d === 'object') scormResumeData = d;
+                    } catch (e) { /* ignore bad bookmark */ }
+                }
+            }
+            scormAPI.LMSCommit("");
+        } catch (e) { scormAPI = null; }
+    }
+
+    function scormTime() {
+        var s = Math.floor((Date.now() - scormStartMs) / 1000);
+        var h = String(Math.floor(s / 3600)).padStart(4, '0');
+        s %= 3600;
+        var m = String(Math.floor(s / 60)).padStart(2, '0');
+        var ss = String(s % 60).padStart(2, '0');
+        return h + ':' + m + ':' + ss;
+    }
+
+    function scormCheckpoint() {
+        if (!scormAPI || scormDone) return;
+        try {
+            scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                q: currentQuestion, correct: correctAnswersCount, miss: missCount
+            }));
+            scormAPI.LMSSetValue("cmi.core.lesson_location", String(currentQuestion));
+            scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+            scormAPI.LMSCommit("");
+        } catch (e) { /* ignore */ }
+    }
+
+    function scormReport() {
+        if (!scormAPI || scormDone) return;
+        try {
+            scormAPI.LMSSetValue("cmi.core.score.min", "0");
+            scormAPI.LMSSetValue("cmi.core.score.max", "100");
+            scormAPI.LMSSetValue("cmi.core.score.raw", String(currentPct()));
+            scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+            scormAPI.LMSSetValue("cmi.core.session_time", scormTime());
+            scormAPI.LMSSetValue("cmi.core.exit", "");
+            scormAPI.LMSCommit("");
+            scormDone = true;
+        } catch (e) { /* ignore */ }
+    }
+
+    function scormTerminate() {
+        if (!scormAPI) return;
+        try {
+            if (!scormDone) scormCheckpoint();
+            scormAPI.LMSFinish("");
+        } catch (e) { /* ignore */ }
+    }
+
+    function manualSave() {
+        if (!scormAPI || scormDone) return;
+        scormCheckpoint();
+        var n = document.getElementById('save-note');
+        if (n) {
+            n.classList.add('show');
+            clearTimeout(manualSave._t);
+            manualSave._t = setTimeout(function () { n.classList.remove('show'); }, 2200);
+        }
+    }
+
+    window.addEventListener('beforeunload', scormTerminate);
+    window.addEventListener('pagehide', function () { scormCheckpoint(); });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) scormCheckpoint(); });
+
+    window.addEventListener('load', function () {
+        scormInit();
+        if (scormResumeEntry && scormResumeData) {
+            beginActivity();
+        } else {
+            initIntro();
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bonding &amp; Properties Lab</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f7f5f0 0%, #d9cfc0 100%);
+        min-height: 100vh;
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    .container {
+        max-width: 980px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        overflow: hidden;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
+        color: #fff;
+        padding: 8px 16px;
+        text-align: center;
+        position: relative;
+    }
+    .header h1 { font-size: 1.2em; margin-bottom: 1px; }
+    .header p { font-size: 0.8em; opacity: 0.92; }
+
+    .score-badge {
+        position: absolute;
+        top: 8px; right: 10px;
+        background: #fffaf0;
+        color: #7c2d12;
+        font-weight: 700;
+        font-size: 12px;
+        padding: 2px 9px;
+        border-radius: 11px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .main-content { padding: 10px 14px 12px; }
+
+    .progress-bar-track {
+        width: 100%; height: 6px; background: #e9ecef;
+        border-radius: 3px; overflow: hidden; margin-bottom: 8px;
+    }
+    .progress-fill {
+        height: 100%; background: linear-gradient(90deg, #b45309, #f59e0b); transition: width 0.4s ease;
+    }
+    .progress-label { text-align: center; font-size: 0.85em; font-weight: 700; color: #7c2d12; margin-bottom: 8px; }
+
+    /* ---------------- Tabs ---------------- */
+    .tab-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; border-bottom: 2px solid #f0d9a8; padding-bottom: 6px; }
+    .tab-btn {
+        border: 2px solid #b45309; background: #fff; color: #7c2d12;
+        border-radius: 8px 8px 0 0; padding: 8px 14px; font-size: 0.86em; font-weight: 700; cursor: pointer;
+    }
+    .tab-btn.active { background: linear-gradient(145deg, #b45309, #92400e); color: #fff; }
+    .tab-btn:disabled { opacity: .45; cursor: not-allowed; border-color: #cbb896; color: #a98c66; background: #fff; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .prompt-box {
+        background: #fffaf0; border-left: 4px solid #f59e0b;
+        border-radius: 6px; padding: 7px 10px; margin-bottom: 10px;
+        font-size: 0.84rem; color: #5c4326; line-height: 1.45;
+    }
+
+    /* ---------------- Substance selector (single workbench at a time) ---------------- */
+    .substance-selector { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    .substance-select-btn {
+        border: 2px solid #b45309; background: #fff; color: #7c2d12;
+        border-radius: 8px; padding: 7px 12px; font-size: 0.84em; font-weight: 700; cursor: pointer;
+        display: flex; align-items: center; gap: 6px;
+    }
+    .substance-select-btn.active { background: linear-gradient(145deg, #b45309, #92400e); color: #fff; }
+    .substance-select-btn .done-badge { color: #28a745; font-weight: 900; }
+    .substance-select-btn.active .done-badge { color: #d7f7de; }
+
+    .substance-block { border: 2px solid #f0d9a8; border-radius: 10px; padding: 10px; margin-bottom: 12px; background: #fffdf8; }
+    .substance-title { font-weight: 700; color: #5c4326; margin-bottom: 6px; font-size: 0.95em; }
+
+    /* ---- free-drag workbench: solid sample, beaker, and tester can all be
+       dragged anywhere on the bench; touching the tester's electrodes to the
+       beaker's contents is what triggers a conductivity test ---- */
+    .workbench {
+        position: relative; width: 100%; height: 160px; margin-bottom: 8px;
+        background: repeating-linear-gradient(#fbf7ef, #fbf7ef 27px, #f3ecdd 28px);
+        border: 2px solid #e4d7bd; border-radius: 10px; overflow: hidden;
+    }
+    .wb-item { position: absolute; cursor: grab; user-select: none; touch-action: none; text-align: center; }
+    .wb-item.fixed { cursor: default; }
+    .wb-item:active { cursor: grabbing; }
+    .wb-item.dragging { z-index: 50; filter: drop-shadow(0 5px 8px rgba(0,0,0,.28)); }
+    .wb-caption { font-size: 0.68em; color: #a98c66; margin-top: 2px; white-space: nowrap; }
+    .wb-target-glow { outline: 2px dashed #b45309; outline-offset: 2px; border-radius: 13px; }
+
+    .solid-tile-visual { position: relative; width: 42px; height: 32px; margin: 0 auto; }
+
+    /* ---- conductivity tester probe (battery + light-bulb indicator + electrodes) ---- */
+    .tester-device .bulb-glass { fill: #e8e4da; transition: fill .15s ease; }
+    .tester-device.lit .bulb-glass { fill: #ffd23f; }
+    .tester-device .bulb-filament { stroke: #c9bfa8; transition: stroke .15s ease; }
+    .tester-device.lit .bulb-filament { stroke: #7c2d12; }
+    .tester-device .bulb-glow { opacity: 0; transition: opacity .15s ease; }
+    .tester-device.lit .bulb-glow { opacity: 1; }
+    /* Invisible zone over just the probe tips (not the whole apparatus) —
+       contact is only counted when this overlaps the beaker's actual contents. */
+    .electrode-tip-marker { position: absolute; left: 15px; top: 74px; width: 41px; height: 23px; pointer-events: none; }
+
+    .beaker-shape {
+        width: 70px; height: 60px; margin: 0 auto; border: 2px solid #9fb8c9; border-top: none;
+        border-radius: 0 0 13px 13px; position: relative; overflow: hidden;
+        background: linear-gradient(120deg, rgba(255,255,255,.9), rgba(223,238,247,.5) 45%, rgba(207,227,242,.35));
+        box-shadow: inset 2px 0 4px rgba(255,255,255,.7), inset -2px 0 5px rgba(120,150,170,.2);
+    }
+    .beaker-shape::before { content: ''; position: absolute; left: -3px; right: -3px; top: -2px; height: 3px; background: #9fb8c9; border-radius: 2px; }
+    .beaker-shape::after {
+        content: ''; position: absolute; right: 5px; top: 8px; bottom: 8px; width: 5px;
+        background: repeating-linear-gradient(0deg, #b7c9d6 0 1px, transparent 1px 10px); opacity: .55;
+    }
+    .beaker-solid-visual { position: absolute; left: 6px; right: 6px; bottom: 3px; height: 28px; }
+    .beaker-liquid {
+        position: absolute; left: 2px; right: 2px; bottom: 2px; height: 18px;
+        background: linear-gradient(180deg, #f0dfae, #e0c789); border-radius: 0 0 10px 10px;
+    }
+    .beaker-liquid::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: rgba(255,255,255,.6); }
+    .beaker-water {
+        position: absolute; left: 2px; right: 2px; bottom: 2px; height: 40px;
+        background: linear-gradient(180deg, #d7ecf7, #b9d8ec); border-radius: 0 0 10px 10px;
+    }
+    .beaker-water::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: rgba(255,255,255,.75); }
+    .beaker-water.dissolved { background: linear-gradient(180deg, #dcf0f9, #c1e0f0); }
+    .beaker-floaters { position: absolute; left: 8px; right: 8px; top: 4px; height: 10px; }
+    .float-chunk { position: absolute; width: 13px; height: 7px; border-radius: 40% 60% 55% 45%; background: linear-gradient(180deg,#fdf8ec,#eddca8); border: 1px solid #d8c48f; }
+    .burner-under-beaker { margin-top: -4px; }
+    .station-hint { font-size: 0.76em; color: #a98c66; font-style: italic; min-height: 1.2em; margin-top: 4px; }
+    .station-controls { text-align: center; min-width: 90px; padding-top: 10px; }
+    .station-test-area { margin-top: 8px; }
+    .state-tested-label { font-size: 0.8em; font-weight: 700; color: #7c2d12; margin-bottom: 2px; }
+
+    /* ---- realistic solid textures ---- */
+    .crystal-piece { position: absolute; }
+    .nacl-crystal {
+        background: linear-gradient(135deg,#ffffff,#d7e4ee); border: 1px solid #aec2d3; border-radius: 2px;
+        box-shadow: inset -1px -1px 2px rgba(255,255,255,.9), 1px 1px 2px rgba(70,90,110,.2);
+    }
+    .cacl2-flake {
+        background: linear-gradient(135deg,#fcfaf5,#e7e0d0); border: 1px solid #cec5ad;
+        border-radius: 40% 60% 55% 45% / 50% 45% 55% 50%; box-shadow: inset -1px -1px 2px rgba(255,255,255,.8);
+    }
+    .sugar-grain { background: radial-gradient(circle at 35% 30%, #ffffff, #ece7d9 75%); border-radius: 1px; box-shadow: 0 0 1px rgba(0,0,0,.25); }
+    .wax-block {
+        position: absolute; left: 3px; right: 3px; top: 2px; bottom: 0;
+        background: linear-gradient(180deg,#fdf8ec,#ecdcb4); border-radius: 4px 4px 7px 7px;
+        border: 1px solid #d8c48f; box-shadow: inset 0 2px 4px rgba(255,255,255,.7);
+    }
+
+    .circuit-box { margin: 4px auto; }
+    .particle-box {
+        position: relative; width: 120px; height: 78px; margin: 6px auto;
+        background: #eef2f5; border: 2px solid #c9c2b3; border-radius: 8px; overflow: hidden;
+    }
+    .particle-box.locked { background: #f3ece0; }
+    .particle-dot {
+        position: absolute; width: 13px; height: 13px; margin: -6.5px 0 0 -6.5px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; color: #fff;
+    }
+    .particle-dot.cation { background: #b45309; }
+    .particle-dot.anion { background: #5c4326; }
+    .particle-molecule { position: absolute; width: 16px; height: 11px; margin: -5.5px 0 0 -8px; border-radius: 6px; background: #8a7355; }
+    .particle-molecule.wax { background: #c9a876; }
+    .particle-water { position: absolute; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: #8ec5e8; opacity: .85; }
+    .particle-caption { text-align: center; font-size: 0.7em; color: #a98c66; margin-top: 2px; line-height: 1.3; }
+
+    .choice-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 6px; }
+    .choice-btn {
+        border: 2px solid #b45309; background: #fff; color: #7c2d12;
+        border-radius: 8px; padding: 7px 12px; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+    }
+    .choice-btn:hover:not(:disabled) { background: #fff3e2; }
+    .choice-btn:disabled { cursor: default; }
+    .choice-btn.pick-right { background: #28a745; border-color: #28a745; color: #fff; }
+    .choice-btn.pick-wrong { background: #dc3545; border-color: #dc3545; color: #fff; }
+    .wiz-fb { margin-top: 6px; font-weight: 600; font-size: 0.8rem; min-height: 1.1em; line-height: 1.4; }
+    .wiz-fb.no { color: #b3261e; }
+    .wiz-fb.ok { color: #1e7e34; }
+
+    /* ---------------- Melting point rig ---------------- */
+    .mp-card { border: 2px solid #f0d9a8; border-radius: 10px; padding: 10px; margin-bottom: 12px; background: #fffdf8; text-align: center; }
+    .mp-title { font-weight: 700; color: #5c4326; margin-bottom: 6px; font-size: 0.95em; }
+    .mp-rig { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px; }
+    .mp-tube-stack { display: flex; flex-direction: column; align-items: center; }
+    .mp-tube {
+        width: 32px; height: 72px; border: 2px solid #9fb8c9; border-top: none; border-radius: 0 0 13px 13px;
+        position: relative; overflow: hidden; background: linear-gradient(120deg, rgba(255,255,255,.9), rgba(223,238,247,.45));
+    }
+    .mp-tube-solid { position: absolute; left: 3px; right: 3px; bottom: 2px; height: 28px; }
+    .mp-tube-liquid {
+        position: absolute; left: 2px; right: 2px; bottom: 1px; height: 12px;
+        background: linear-gradient(180deg, #f0dfae, #e0c789); border-radius: 0 0 10px 10px;
+        opacity: 0; transition: opacity .4s ease;
+    }
+    .mp-tube-liquid.show { opacity: 1; }
+    .mp-thermo { width: 18px; height: 72px; border: 2px solid #7c2d12; border-radius: 9px 9px 3px 3px; position: relative; background: #fff; overflow: visible; }
+    .mp-thermo::after {
+        content: ''; position: absolute; left: 50%; bottom: -9px; width: 16px; height: 16px;
+        margin-left: -8px; border-radius: 50%; background: #dc3545; border: 2px solid #7c2d12;
+    }
+    .mp-thermo-fill { position: absolute; left: 1px; right: 1px; bottom: 0; height: 5%; background: linear-gradient(0deg, #dc3545, #f59e0b); transition: height .1s linear; }
+    .mp-temp-label { font-size: 0.78em; font-weight: 700; color: #5c4326; margin-top: 9px; }
+    .mp-melt-msg { font-size: 0.84em; font-weight: 700; color: #b45309; min-height: 1.2em; margin-bottom: 4px; }
+
+    .small-check {
+        background: #28a745; color: #fff; border: none;
+        padding: 8px 18px; border-radius: 18px; font-size: 0.88em; font-weight: 700;
+        cursor: pointer; margin-top: 4px;
+    }
+    .small-check:hover:not(:disabled) { background: #218838; }
+    .small-check:disabled { background: #cbb896; cursor: not-allowed; }
+
+    /* ---------------- Data table ---------------- */
+    .tab-with-sidetable { display: flex; gap: 12px; align-items: flex-start; }
+    .tab-main { flex: 0 0 300px; min-width: 0; }
+    .mini-datatable {
+        flex: 1 1 auto; border: 2px solid #f0d9a8; border-radius: 8px;
+        padding: 8px; background: #fffdf8;
+    }
+    .mini-datatable-title { font-size: 0.85em; font-weight: 700; color: #7c2d12; margin-bottom: 6px; }
+    .data-table.mini { font-size: 0.8em; }
+    .data-table.mini th, .data-table.mini td { padding: 4px 6px; }
+    @media (max-width: 720px) {
+        .tab-with-sidetable { flex-direction: column; }
+        .tab-main { flex-basis: auto; width: 100%; }
+        .mini-datatable { width: 100%; }
+    }
+
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
+    .data-table th, .data-table td { border: 1px solid #e4d7bd; padding: 6px 8px; text-align: center; }
+    .data-table th { background: #fdf0d9; color: #7c2d12; font-weight: 700; }
+    .data-table td:first-child { text-align: left; font-weight: 600; color: #5c4326; }
+    .dt-pending { color: #cbb896; }
+    .dt-yes { color: #1e7e34; font-weight: 700; }
+    .dt-no { color: #b3261e; font-weight: 700; }
+    .dt-na { color: #7c5a2e; font-style: italic; }
+    .mp-input-cell { display: flex; align-items: center; justify-content: center; gap: 4px; flex-wrap: wrap; }
+    .mp-input { width: 58px; padding: 3px 4px; border: 1px solid #cbb896; border-radius: 4px; font-size: 0.85em; text-align: right; }
+    .mp-input:disabled { background: #f3ece0; color: #cbb896; }
+    .mp-submit-btn {
+        background: #b45309; color: #fff; border: none; border-radius: 5px;
+        padding: 3px 8px; font-size: 0.8em; font-weight: 700; cursor: pointer;
+    }
+    .mp-submit-btn:disabled { background: #cbb896; cursor: not-allowed; }
+    .mp-cell-fb { font-size: 0.7em; color: #b3261e; width: 100%; }
+
+    /* ---------------- Reflection ---------------- */
+    .wiz-step { border: 2px solid #f0d9a8; background: #fffdf8; border-radius: 10px; padding: 12px 14px; margin-top: 10px; }
+    .wiz-step.locked { opacity: 0.82; }
+    .wiz-q { font-weight: 700; color: #5c4326; margin-bottom: 8px; font-size: 0.95rem; }
+    .locked-msg { text-align: center; color: #a98c66; font-size: 0.88em; padding: 20px 10px; }
+
+    .save-row { margin: 14px 0 0; padding-top: 8px; border-top: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
+    .save-btn {
+        background: linear-gradient(145deg, #b45309, #92400e); color: #fff; border: none; border-radius: 6px;
+        padding: 5px 13px; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .save-btn:hover { background: linear-gradient(145deg, #92400e, #7c2d12); }
+    .save-note { color: #28a745; font-weight: 600; font-size: 12px; opacity: 0; transition: opacity .3s ease; }
+    .save-note.show { opacity: 1; }
+
+    /* ---------------- Start screen ---------------- */
+    .start-screen {
+        position: fixed; inset: 0;
+        background: linear-gradient(135deg, #f7f5f0 0%, #d9cfc0 100%);
+        display: flex; align-items: center; justify-content: center;
+        z-index: 1000; padding: 20px;
+    }
+
+    /* ---------------- Completion / summary overlay ---------------- */
+    .complete-screen {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+        align-items: center; justify-content: center; z-index: 2000; padding: 20px; overflow-y: auto;
+    }
+    .complete-card {
+        background: #fff; border-radius: 14px; padding: 28px;
+        max-width: 640px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        margin: 20px 0; max-height: 90vh; overflow-y: auto;
+    }
+    .complete-card h2 { color: #7c2d12; margin-bottom: 12px; }
+    .complete-card p { color: #495057; line-height: 1.6; margin-bottom: 8px; text-align: left; }
+    .complete-card .close-button {
+        margin-top: 16px; background: #b45309; color: #fff;
+        border: none; border-radius: 6px; padding: 11px 26px; font-size: 15px; cursor: pointer;
+    }
+    .complete-card .close-button:hover { background: #92400e; }
+    .takeaway-box {
+        background: #fffaf0; border-left: 4px solid #f59e0b; border-radius: 6px;
+        padding: 10px 12px; margin: 10px 0; font-size: 0.88rem; color: #5c4326; text-align: left; line-height: 1.5;
+    }
+
+    /* ================= Intro walkthrough ================= */
+    .intro-card {
+        background: #fff; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        max-width: 860px; width: 100%; max-height: 92vh;
+        padding: 20px 26px 12px; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .intro-heading { color: #7c2d12; font-size: 1.3rem; margin-bottom: 10px; }
+    .intro-stage {
+        flex: 1 1 auto; overflow-y: auto; cursor: pointer;
+        padding: 2px 4px 4px 2px; display: flex; flex-wrap: wrap;
+        gap: 14px 20px; align-content: flex-start;
+    }
+    .intro-stage > .beat-note,
+    .intro-stage > .callout,
+    .intro-stage > .beat-diagram,
+    .intro-stage > .check-box { flex-basis: 100%; }
+
+    .beat-note p { color: #4a3722; line-height: 1.55; font-size: 0.97rem; margin-bottom: 6px; }
+    .beat-note ul, .beat-note ol { margin: 4px 0 4px 22px; }
+    .beat-note li { color: #4a3722; line-height: 1.5; font-size: 0.96rem; margin: 5px 0; }
+
+    .pop { animation: beatPop .2s ease; }
+    @keyframes beatPop { from { opacity: 0; transform: translateY(6px) scale(.97); } to { opacity: 1; transform: none; } }
+
+    .click-hint { text-align: center; color: #a98c66; font-size: 0.8rem; padding: 8px 0 2px; letter-spacing: .02em; }
+
+    .callout {
+        background: #fffaf0; border-left: 4px solid #f59e0b;
+        border-radius: 6px; padding: 10px 12px; margin: 2px 0;
+        color: #5c4326; font-size: 0.93rem; line-height: 1.5;
+    }
+
+    .beat-diagram { text-align: center; }
+    .diagram-caption { font-size: 0.82em; color: #a98c66; text-align: center; margin-top: 6px; }
+
+    .check-box {
+        border: 2px solid #f0d9a8; background: #fffdf8;
+        border-radius: 10px; padding: 14px; margin-top: 6px;
+    }
+    .check-q { font-weight: 700; color: #5c4326; margin-bottom: 10px; font-size: 0.98rem; }
+    .check-fb { margin-top: 10px; font-weight: 600; font-size: 0.9rem; display: none; line-height: 1.45; }
+    .check-fb.ok { color: #1e7e34; display: block; }
+    .check-fb.no { color: #b3261e; display: block; }
+
+    .intro-nav {
+        display: flex; align-items: center; gap: 12px;
+        padding-top: 12px; margin-top: 6px; border-top: 1px solid #eee;
+    }
+    .intro-nav .spacer { flex: 1 1 auto; }
+    .intro-dots { display: flex; gap: 6px; }
+    .intro-dots i { width: 8px; height: 8px; border-radius: 50%; background: #e0d3bd; display: block; }
+    .intro-dots i.on { background: #b45309; }
+    .intro-btn { border: none; border-radius: 8px; padding: 9px 20px; font-size: 0.94rem; font-weight: 600; cursor: pointer; }
+    .intro-btn.prev { background: #efe6d6; color: #7c2d12; }
+    .intro-btn.prev:disabled { opacity: .45; cursor: not-allowed; }
+    .intro-btn.next { background: linear-gradient(145deg, #b45309, #92400e); color: #fff; }
+    .intro-btn.next:disabled { opacity: .5; cursor: not-allowed; }
+</style>
+</head>
+<body>
+    <!-- Intro walkthrough -->
+    <div class="start-screen" id="startScreen">
+        <div class="intro-card">
+            <h2 class="intro-heading" id="introHeading"></h2>
+            <div class="intro-stage" id="introStage"></div>
+            <div class="click-hint" id="introHint">click anywhere to continue</div>
+            <div class="intro-nav">
+                <button class="intro-btn prev" id="introBack" type="button">Back</button>
+                <span class="spacer"></span>
+                <div class="intro-dots" id="introDots"></div>
+                <span class="spacer"></span>
+                <button class="intro-btn next" id="introNext" type="button">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="mainSimulation" style="display: none;">
+        <div class="header">
+            <h1>Bonding &amp; Properties Lab</h1>
+            <p>Test conductivity and melting point to see how bond type predicts properties</p>
+            <span class="score-badge" id="score-badge">Score 100%</span>
+        </div>
+
+        <div class="main-content">
+            <div class="progress-label"><span id="progressCount">0</span> / <span id="progressTotal">21</span> tests recorded</div>
+            <div class="progress-bar-track"><div class="progress-fill" id="progress-fill"></div></div>
+
+            <div class="tab-bar">
+                <button type="button" class="tab-btn active" id="tabBtnCond" onclick="switchTab('cond')">Conductivity Testing</button>
+                <button type="button" class="tab-btn" id="tabBtnMp" onclick="switchTab('mp')">Melting Point Testing</button>
+                <button type="button" class="tab-btn" id="tabBtnTable" onclick="switchTab('table')">Data Table</button>
+                <button type="button" class="tab-btn" id="tabBtnReflect" onclick="switchTab('reflect')" disabled>Reflection Questions</button>
+            </div>
+
+            <!-- Conductivity tab -->
+            <div class="tab-panel active" id="panelCond">
+                <p class="prompt-box">Choose one substance at a time below. Drag the solid sample onto the beaker, heat it until it melts, then reset, pour water, and dissolve it. Drag the conductivity tester so its electrodes touch the beaker's contents.</p>
+                <div class="substance-selector" id="condSelector"></div>
+                <div class="tab-with-sidetable">
+                    <div class="tab-main"><div id="condWorkbench"></div></div>
+                    <div class="mini-datatable">
+                        <div class="mini-datatable-title">Data Table</div>
+                        <div style="overflow-x:auto;">
+                        <table class="data-table mini">
+                            <thead><tr><th>Substance</th><th>Solid</th><th>Liquid</th><th>Aqueous</th><th>Melting Point</th></tr></thead>
+                            <tbody id="condMiniTableBody"></tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Melting point tab -->
+            <div class="tab-panel" id="panelMp">
+                <p class="prompt-box">Choose one substance at a time below. Drag the solid into the beaker, then click Heat to warm it over the burner and watch the thermometer. Once it melts, go to the Data Table to type in what you observed.</p>
+                <div class="substance-selector" id="mpSelector"></div>
+                <div class="tab-with-sidetable">
+                    <div class="tab-main"><div id="mpWorkbench"></div></div>
+                    <div class="mini-datatable">
+                        <div class="mini-datatable-title">Data Table</div>
+                        <div style="overflow-x:auto;">
+                        <table class="data-table mini">
+                            <thead><tr><th>Substance</th><th>Solid</th><th>Liquid</th><th>Aqueous</th><th>Melting Point</th></tr></thead>
+                            <tbody id="mpMiniTableBody"></tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data table tab -->
+            <div class="tab-panel" id="panelTable">
+                <p class="prompt-box">This table fills in automatically as you correctly record each test result.</p>
+                <div style="overflow-x:auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Substance</th><th>Solid</th><th>Liquid</th><th>Aqueous</th><th>Melting Point</th></tr>
+                    </thead>
+                    <tbody id="dataTableBody"></tbody>
+                </table>
+                </div>
+            </div>
+
+            <!-- Reflection tab -->
+            <div class="tab-panel" id="panelReflect">
+                <div id="reflectArea"></div>
+            </div>
+
+            <div class="save-row" id="save-row" style="display: none;">
+                <button type="button" class="save-btn" onclick="manualSave()">Save progress</button>
+                <span class="save-note" id="save-note">saved</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completion / Summary Screen -->
+    <div class="complete-screen" id="completeScreen">
+        <div class="complete-card">
+            <h2>Lab Complete — Summary</h2>
+            <p>You tested the conductivity and melting point of all four substances and answered the reflection questions. Here is your final data:</p>
+            <div style="overflow-x:auto;">
+            <table class="data-table" id="summaryTable">
+                <thead><tr><th>Substance</th><th>Solid</th><th>Liquid</th><th>Aqueous</th><th>Melting Point</th></tr></thead>
+                <tbody id="summaryTableBody"></tbody>
+            </table>
+            </div>
+            <div class="takeaway-box">
+                <b>Big picture:</b> the way atoms bond determines the structure of the substance, and that structure determines its properties.
+                Ionic compounds (NaCl, CaCl<sub>2</sub>) never conduct as solids — their ions are locked in a rigid lattice — but conduct as
+                liquids and in solution, where the ions are free to move. Covalent/molecular substances (sugar, wax) never conduct in any state,
+                because they contain no charged particles at all. That same ionic lattice, held together by countless strong attractions, is also
+                why ionic compounds melt at far higher temperatures than the covalent/molecular substances tested.
+            </div>
+            <p id="complete-score" style="text-align:center; font-weight:700; color:#7c2d12;">Final score: 100%</p>
+            <p style="text-align:center;">Your grade has been submitted to Schoology.</p>
+            <button class="close-button" onclick="closeComplete()">Close</button>
+        </div>
+    </div>
+
+<script>
+    // ---------------- Substance data ----------------
+    var SUBSTANCES = [
+        { id: 'nacl', name: 'Sodium Chloride', formula: 'NaCl', type: 'ionic', mp: 801, mpBucket: 'high',
+          conduct: { solid: false, liquid: true, aqueous: true } },
+        { id: 'sugar', name: 'Table Sugar (Sucrose)', formula: 'C12H22O11', type: 'covalent', mp: 186, mpBucket: 'moderate',
+          conduct: { solid: false, liquid: false, aqueous: false } },
+        { id: 'wax', name: 'Paraffin Wax', formula: 'C25H52', type: 'covalent', mp: 60, mpBucket: 'low',
+          conduct: { solid: false, liquid: false, aqueous: 'insoluble' } },
+        { id: 'cacl2', name: 'Calcium Chloride', formula: 'CaCl2', type: 'ionic', mp: 772, mpBucket: 'high',
+          conduct: { solid: false, liquid: true, aqueous: true } }
+    ];
+    var STATES = ['solid', 'liquid', 'aqueous'];
+
+    function subById(id) { return SUBSTANCES.filter(function (s) { return s.id === id; })[0]; }
+    function formulaHTML(f) {
+        return f.replace(/([A-Za-z]+)(\d*)/g, function (_, letters, num) {
+            return letters + (num ? '<sub>' + num + '</sub>' : '');
+        });
+    }
+
+    // ---------------- Lab state ----------------
+    var labState = {};
+    SUBSTANCES.forEach(function (s) {
+        labState[s.id] = {
+            cond: { solid: { tested: false, recorded: false, sel: null }, liquid: { tested: false, recorded: false, sel: null }, aqueous: { tested: false, recorded: false, sel: null } },
+            mp: { heated: false, recorded: false, sel: null }
+        };
+    });
+
+    var missCount = 0;
+    var SCORE_FLOOR = 60;
+    var MISS_PENALTY = 3;
+    var TOTAL_CHECKPOINTS = 21; // 4 substances x 3 states + 4 melting points + 5 reflection questions
+    function currentPct() { return Math.max(SCORE_FLOOR, 100 - MISS_PENALTY * missCount); }
+    function updateScoreBadge() {
+        var b = document.getElementById('score-badge');
+        if (b) b.textContent = 'Score ' + currentPct() + '%';
+    }
+    function countCompleted() {
+        var n = 0;
+        SUBSTANCES.forEach(function (s) {
+            STATES.forEach(function (st) { if (labState[s.id].cond[st].recorded) n++; });
+            if (labState[s.id].mp.recorded) n++;
+        });
+        n += reflectPassed.size;
+        return n;
+    }
+    function updateProgress() {
+        var n = countCompleted();
+        document.getElementById('progressCount').textContent = n;
+        document.getElementById('progress-fill').style.width = (n / TOTAL_CHECKPOINTS * 100) + '%';
+        document.getElementById('tabBtnReflect').disabled = !allDataRecorded();
+        if (n >= TOTAL_CHECKPOINTS) showCompletion();
+    }
+    function allDataRecorded() {
+        return SUBSTANCES.every(function (s) {
+            return STATES.every(function (st) { return labState[s.id].cond[st].recorded; }) && labState[s.id].mp.recorded;
+        });
+    }
+
+    // ---------------- Tabs ----------------
+    function switchTab(name) {
+        ['cond', 'mp', 'table', 'reflect'].forEach(function (t) {
+            document.getElementById('panel' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === name);
+            document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('active', t === name);
+        });
+        if (name === 'table') renderDataTable();
+        if (name === 'reflect') renderReflect();
+    }
+
+    // ---------------- Realistic solid textures ----------------
+    // Each substance gets a distinct look instead of a plain colored block:
+    // NaCl = faceted cubic crystals, CaCl2 = irregular flaky chunks,
+    // sugar = fine sparkly granules, wax = a smooth waxy block.
+    function naclSolidHTML() {
+        var pieces = [
+            [2, 10, 12, 8], [14, 3, 11, -6], [24, 11, 13, 12],
+            [7, 19, 11, -10], [19, 19, 12, 5], [30, 5, 10, -15]
+        ];
+        return pieces.map(function (p) {
+            return '<div class="crystal-piece nacl-crystal" style="left:' + p[0] + 'px; top:' + p[1] + 'px; width:' + p[2] + 'px; height:' + p[2] + 'px; transform:rotate(' + p[3] + 'deg);"></div>';
+        }).join('');
+    }
+    function cacl2SolidHTML() {
+        var pieces = [
+            [2, 12, 14, 9, 6], [15, 5, 13, 8, -8], [26, 13, 13, 9, 10],
+            [8, 21, 12, 8, -4], [21, 20, 12, 8, 7]
+        ];
+        return pieces.map(function (p) {
+            return '<div class="crystal-piece cacl2-flake" style="left:' + p[0] + 'px; top:' + p[1] + 'px; width:' + p[2] + 'px; height:' + p[3] + 'px; transform:rotate(' + p[4] + 'deg);"></div>';
+        }).join('');
+    }
+    function sugarSolidHTML() {
+        var dots = [
+            [3, 8], [8, 5], [13, 9], [18, 6], [23, 10], [28, 7], [33, 11],
+            [5, 16], [10, 19], [15, 15], [20, 19], [25, 16], [30, 20], [35, 17],
+            [8, 25], [14, 23], [20, 26], [26, 23], [32, 25]
+        ];
+        return dots.map(function (p) {
+            return '<div class="crystal-piece sugar-grain" style="left:' + p[0] + 'px; top:' + p[1] + 'px; width:5px; height:5px;"></div>';
+        }).join('');
+    }
+    function waxSolidHTML() { return '<div class="wax-block"></div>'; }
+
+    function solidVisualHTML(subId) {
+        if (subId === 'nacl') return naclSolidHTML();
+        if (subId === 'cacl2') return cacl2SolidHTML();
+        if (subId === 'sugar') return sugarSolidHTML();
+        if (subId === 'wax') return waxSolidHTML();
+        return '';
+    }
+
+    // ---------------- Bunsen burner ----------------
+    function bunsenBurnerSVG() {
+        return '<svg viewBox="0 0 40 56" width="28" height="40">' +
+            '<defs><linearGradient id="burnerBarrel" x1="0" y1="0" x2="1" y2="0">' +
+            '<stop offset="0" stop-color="#8f959a"/><stop offset="0.5" stop-color="#d8dcdf"/><stop offset="1" stop-color="#8f959a"/>' +
+            '</linearGradient></defs>' +
+            '<path d="M20,2 C13,13 12,21 16,27 C14,23 18,19 20,15 C22,19 26,23 24,27 C28,21 27,13 20,2 Z" fill="#3aa0f0" opacity="0.85"/>' +
+            '<path d="M20,9 C16,16 16,22 19,26 C18,23 20,20 20,17 C20,20 22,23 21,26 C24,22 24,16 20,9 Z" fill="#ffb703"/>' +
+            '<rect x="14" y="30" width="12" height="20" rx="1" fill="url(#burnerBarrel)" stroke="#6b6f73" stroke-width="0.5"/>' +
+            '<rect x="7" y="48" width="26" height="6" rx="2" fill="#6b6f73"/>' +
+            '</svg>';
+    }
+
+    // ---------------- Conductivity probe (battery + light bulb + electrodes) ----------------
+    // A real incandescent-bulb silhouette (rounded glass envelope tapering to
+    // a threaded screw base) so it actually reads as a light bulb, not a
+    // circle. Lit/unlit is driven entirely by the .lit CSS class on the
+    // wrapping element (see .tester-device rules) so the live drag-touch
+    // interaction can toggle it instantly without rebuilding the SVG.
+    // Wired as an actual series circuit: one battery terminal runs down
+    // through the bulb before reaching the left probe; the other terminal
+    // runs straight down to the right probe. Touching both probes to a
+    // conductive sample closes the loop and lights the bulb.
+    function testerSVG() {
+        return '<svg viewBox="0 0 100 150" width="70" height="105">' +
+            '<defs>' +
+            '<linearGradient id="battHousing" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a5a34"/><stop offset="1" stop-color="#5c4326"/></linearGradient>' +
+            '<radialGradient id="bulbGlowGrad" cx="50%" cy="45%"><stop offset="0" stop-color="#fff6c2"/><stop offset="55%" stop-color="#ffd23f" stop-opacity="0.65"/><stop offset="100%" stop-color="#ffd23f" stop-opacity="0"/></radialGradient>' +
+            '</defs>' +
+            '<rect x="20" y="4" width="60" height="18" rx="3" fill="url(#battHousing)"/>' +
+            '<text x="50" y="16.5" text-anchor="middle" font-size="8" fill="#fff" font-weight="700">9V BATTERY</text>' +
+            '<circle cx="28" cy="22" r="2.2" fill="#3a3a3a"/><circle cx="72" cy="22" r="2.2" fill="#3a3a3a"/>' +
+            '<path d="M28,22 L28,32 L30,40" stroke="#3a3a3a" stroke-width="2.5" fill="none"/>' +
+            '<circle class="bulb-glow" cx="30" cy="57" r="24" fill="url(#bulbGlowGrad)"/>' +
+            '<path class="bulb-glass" d="M30,40 C22,40 16,47 16,55 C16,61 20,64 22,68 L22,73 L38,73 L38,68 C40,64 44,61 44,55 C44,47 38,40 30,40 Z" stroke="#5c4326" stroke-width="1.5"/>' +
+            '<path class="bulb-filament" d="M23,52 L27,60 L30,52 L33,60 L37,52" fill="none" stroke-width="1.6" stroke-linecap="round"/>' +
+            '<rect x="23" y="73" width="14" height="4" fill="#8a8f94"/>' +
+            '<rect x="23" y="78" width="14" height="4" fill="#8a8f94"/>' +
+            '<path d="M30,82 L30,95 L26,106" stroke="#3a3a3a" stroke-width="2.5" fill="none"/>' +
+            '<path d="M72,22 C72,50 74,80 76,106" stroke="#3a3a3a" stroke-width="2.5" fill="none"/>' +
+            '<rect x="21" y="106" width="9" height="24" rx="2" fill="#9aa0a5"/>' +
+            '<rect x="71" y="106" width="9" height="24" rx="2" fill="#9aa0a5"/>' +
+            '<path d="M21,130 L25.5,138 L30,130 Z" fill="#5a5f63"/>' +
+            '<path d="M71,130 L75.5,138 L80,130 Z" fill="#5a5f63"/>' +
+            '</svg>';
+    }
+
+    // ---------------- Free-drag workbench helpers ----------------
+    function rectsOverlap(r1, r2) {
+        return !(r1.right < r2.left || r1.left > r2.right || r1.bottom < r2.top || r1.top > r2.bottom);
+    }
+
+    // Makes `el` freely draggable by pointer within `container`'s bounds.
+    // onMove fires on every move (for live feedback like the tester's bulb);
+    // onEnd fires once when the drag is released (for drop-style actions
+    // like placing the solid sample into the beaker).
+    function makeWbDraggable(el, container, onMove, onEnd) {
+        var startX, startY, origX, origY, dragging = false;
+        el.addEventListener('pointerdown', function (e) {
+            dragging = true;
+            el.classList.add('dragging');
+            startX = e.clientX; startY = e.clientY;
+            origX = parseFloat(el.style.left) || 0;
+            origY = parseFloat(el.style.top) || 0;
+            try { el.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+        });
+        el.addEventListener('pointermove', function (e) {
+            if (!dragging) return;
+            var dx = e.clientX - startX, dy = e.clientY - startY;
+            var cRect = container.getBoundingClientRect();
+            var elRect = el.getBoundingClientRect();
+            var nx = origX + dx, ny = origY + dy;
+            var maxX = Math.max(0, cRect.width - elRect.width);
+            var maxY = Math.max(0, cRect.height - elRect.height);
+            nx = Math.max(0, Math.min(nx, maxX));
+            ny = Math.max(0, Math.min(ny, maxY));
+            el.style.left = nx + 'px';
+            el.style.top = ny + 'px';
+            if (onMove) onMove();
+        });
+        function end() {
+            if (!dragging) return;
+            dragging = false;
+            el.classList.remove('dragging');
+            if (onEnd) onEnd();
+        }
+        el.addEventListener('pointerup', end);
+        el.addEventListener('pointercancel', end);
+    }
+
+    var LATTICE_POS = [
+        [15, 18], [40, 18], [65, 18], [90, 18],
+        [15, 50], [40, 50], [65, 50], [90, 50],
+        [15, 82], [40, 82], [65, 82], [90, 82]
+    ];
+    var DISPERSED_POS = [
+        [15, 20], [45, 12], [75, 25], [25, 45], [60, 50],
+        [85, 62], [12, 70], [42, 82], [72, 85], [90, 38]
+    ];
+    var WATER_DOT_POS = [
+        [8, 8], [22, 30], [35, 62], [50, 15], [65, 40], [80, 10], [92, 55],
+        [15, 90], [55, 88], [78, 80], [30, 25], [60, 72], [88, 25], [5, 50]
+    ];
+
+    // Liquid/aqueous particles actually bounce around (JS-driven, see
+    // animateParticles below) to visually reinforce "free to move" — solids
+    // stay put, reinforcing "locked in place". No water molecules are drawn;
+    // the caption text alone covers "dissolved in water".
+    function randVel() { return (0.15 + Math.random() * 0.35) * (Math.random() < 0.5 ? -1 : 1); }
+    function velAttrs() { return ' data-vx="' + randVel().toFixed(2) + '" data-vy="' + randVel().toFixed(2) + '"'; }
+
+    function particleDiagramHTML(sub, state) {
+        var isIonic = sub.type === 'ionic';
+
+        if (state === 'solid') {
+            var dots = LATTICE_POS.map(function (p, i) {
+                if (isIonic) {
+                    var cation = i % 2 === 0;
+                    return '<div class="particle-dot ' + (cation ? 'cation' : 'anion') + '" style="left:' + p[0] + '%; top:' + p[1] + '%;">' + (cation ? '+' : '−') + '</div>';
+                }
+                return '<div class="particle-molecule' + (sub.id === 'wax' ? ' wax' : '') + '" style="left:' + p[0] + '%; top:' + p[1] + '%;"></div>';
+            }).join('');
+            return '<div class="particle-box locked">' + dots + '</div>' +
+                '<div class="particle-caption">' + (isIonic ? 'Ions locked in a fixed lattice — can\'t move' : 'Molecules locked in a fixed solid — can\'t move') + '</div>';
+        }
+
+        if (state === 'aqueous' && sub.conduct.aqueous === 'insoluble') {
+            var clumps = [[35, 20], [50, 15], [65, 22], [42, 32], [58, 32]].map(function (p) {
+                return '<div class="particle-molecule wax" style="left:' + p[0] + '%; top:' + p[1] + '%;"' + velAttrs() + '></div>';
+            }).join('');
+            return '<div class="particle-box animated">' + clumps + '</div>' +
+                '<div class="particle-caption">Wax clumps together and floats — it never mixes with the water</div>';
+        }
+
+        var particles = DISPERSED_POS.map(function (p, i) {
+            if (isIonic) {
+                var cation = i % 2 === 0;
+                return '<div class="particle-dot ' + (cation ? 'cation' : 'anion') + '" style="left:' + p[0] + '%; top:' + p[1] + '%;"' + velAttrs() + '>' + (cation ? '+' : '−') + '</div>';
+            }
+            return '<div class="particle-molecule' + (sub.id === 'wax' ? ' wax' : '') + '" style="left:' + p[0] + '%; top:' + p[1] + '%;"' + velAttrs() + '></div>';
+        }).join('');
+        var caption = isIonic ? 'Ions are free to move and carry charge' : 'Whole molecules move freely, but none of them are charged';
+        return '<div class="particle-box animated">' + particles + '</div>' +
+            '<div class="particle-caption">' + caption + '</div>';
+    }
+
+    // Single continuous rAF loop animates every currently-mounted "animated"
+    // particle box on the page (there may be several at once, e.g. side by
+    // side in a reflection question), bouncing particles off the box edges.
+    function animateParticles() {
+        document.querySelectorAll('.particle-box.animated > .particle-dot, .particle-box.animated > .particle-molecule').forEach(function (el) {
+            var vx = parseFloat(el.dataset.vx) || 0;
+            var vy = parseFloat(el.dataset.vy) || 0;
+            var x = parseFloat(el.style.left) || 50;
+            var y = parseFloat(el.style.top) || 50;
+            x += vx; y += vy;
+            if (x < 4) { x = 4; vx = Math.abs(vx); }
+            else if (x > 96) { x = 96; vx = -Math.abs(vx); }
+            if (y < 8) { y = 8; vy = Math.abs(vy); }
+            else if (y > 92) { y = 92; vy = -Math.abs(vy); }
+            el.style.left = x + '%';
+            el.style.top = y + '%';
+            el.dataset.vx = vx;
+            el.dataset.vy = vy;
+        });
+        requestAnimationFrame(animateParticles);
+    }
+    requestAnimationFrame(animateParticles);
+
+    // ---------------- Conductivity tab ----------------
+    // Only one substance's beaker is shown at a time, chosen with a selector
+    // row. Each beaker walks through a realistic procedure: drag the solid
+    // in -> test solid -> heat until it melts -> test liquid -> reset/empty
+    // -> pour water -> drag the solid in to dissolve it -> test aqueous. One
+    // draggable "tester" probe is reused across every station, matching the
+    // reusable-tile convention used elsewhere (tiles are never consumed on drop).
+    var stationPhase = {};
+    SUBSTANCES.forEach(function (s) { stationPhase[s.id] = 'empty'; });
+    var currentCondSub = SUBSTANCES[0].id;
+
+    function renderConductivityTab() {
+        // Resume: infer the furthest reached phase from recorded results.
+        SUBSTANCES.forEach(function (s) {
+            var c = labState[s.id].cond;
+            if (c.aqueous.recorded) stationPhase[s.id] = 'aqueous';
+            else if (c.liquid.recorded) stationPhase[s.id] = 'liquid';
+            else if (c.solid.recorded) stationPhase[s.id] = 'solid';
+        });
+        renderCondSelector();
+        renderCondWorkbench();
+    }
+
+    function renderCondSelector() {
+        var host = document.getElementById('condSelector');
+        host.innerHTML = SUBSTANCES.map(function (s) {
+            var done = STATES.every(function (st) { return labState[s.id].cond[st].recorded; });
+            return '<button type="button" class="substance-select-btn' + (s.id === currentCondSub ? ' active' : '') + '" onclick="selectCondSubstance(\'' + s.id + '\')">' +
+                s.name + (done ? ' <span class="done-badge">&#10003;</span>' : '') + '</button>';
+        }).join('');
+    }
+
+    function selectCondSubstance(subId) {
+        currentCondSub = subId;
+        renderCondSelector();
+        renderCondWorkbench();
+    }
+
+    function renderCondWorkbench() {
+        var s = subById(currentCondSub);
+        document.getElementById('condWorkbench').innerHTML = stationHTML(s);
+        wireStation(s);
+    }
+
+    function stationHTML(s) {
+        return '<div class="substance-block"><div class="substance-title">' + s.name + ' (' + formulaHTML(s.formula) + ')</div>' +
+            '<div class="workbench" id="workbench-' + s.id + '">' +
+            '<div class="wb-item" id="solidTile-' + s.id + '" style="left:8px; top:95px;">' +
+            '<div class="solid-tile-visual">' + solidVisualHTML(s.id) + '</div><div class="wb-caption">solid sample</div></div>' +
+            '<div class="wb-item fixed" id="beakerItem-' + s.id + '" style="left:100px; top:65px;">' +
+            '<div class="beaker-visual" id="beakerVisual-' + s.id + '"></div></div>' +
+            '<div class="wb-item tester-device" id="testerDevice-' + s.id + '" style="left:205px; top:2px;">' +
+            testerSVG() + '<div class="electrode-tip-marker" id="electrodeTip-' + s.id + '"></div>' +
+            '<div class="wb-caption">conductivity tester</div></div>' +
+            '</div>' +
+            '<div class="station-hint" id="stationHint-' + s.id + '"></div>' +
+            '<div class="station-controls" id="stationControls-' + s.id + '"></div>' +
+            '<div class="station-test-area" id="stationTest-' + s.id + '"></div>' +
+            '</div>';
+    }
+
+    var testerTouchState = {};
+
+    function wireStation(s) {
+        var container = document.getElementById('workbench-' + s.id);
+        var beakerItem = document.getElementById('beakerItem-' + s.id);
+        var solidTile = document.getElementById('solidTile-' + s.id);
+        var tester = document.getElementById('testerDevice-' + s.id);
+        if (!container || !beakerItem || !solidTile || !tester) return;
+
+        // The beaker stays fixed in place (not draggable) so the solid or
+        // tester can't be accidentally dragged out from under it.
+
+        makeWbDraggable(solidTile, container,
+            function () { // live: highlight the beaker while the solid overlaps it
+                var beakerVisual = document.getElementById('beakerVisual-' + s.id);
+                if (!beakerVisual) return;
+                beakerVisual.classList.toggle('wb-target-glow', rectsOverlap(solidTile.getBoundingClientRect(), beakerVisual.getBoundingClientRect()));
+            },
+            function () { // on release: drop the solid in if it landed on the beaker
+                var beakerVisual = document.getElementById('beakerVisual-' + s.id);
+                if (!beakerVisual) return;
+                beakerVisual.classList.remove('wb-target-glow');
+                if (rectsOverlap(solidTile.getBoundingClientRect(), beakerVisual.getBoundingClientRect())) onSolidDropped(s.id);
+            });
+
+        makeWbDraggable(tester, container,
+            function () { updateTesterTouch(s.id); },
+            function () { updateTesterTouch(s.id); });
+
+        renderStation(s.id);
+    }
+
+    function onSolidDropped(subId) {
+        var phase = stationPhase[subId];
+        if (phase === 'empty') { stationPhase[subId] = 'solid'; renderStation(subId); }
+        else if (phase === 'water') { stationPhase[subId] = 'aqueous'; renderStation(subId); }
+        // otherwise: beaker already occupied, no-op
+    }
+
+    // Returns the specific content element inside the beaker for whichever
+    // phase is currently showing (the solid block, the liquid pool, or the
+    // water/solution) — not just the outer glass — so contact has to be with
+    // the actual sample, not merely anywhere inside the beaker's silhouette.
+    function getBeakerContentEl(subId) {
+        var beakerVisual = document.getElementById('beakerVisual-' + subId);
+        if (!beakerVisual) return null;
+        return beakerVisual.querySelector('.beaker-solid-visual, .beaker-liquid, .beaker-water');
+    }
+
+    // Live, position-based conductivity test: while the tester is being
+    // dragged, its electrode tips "touch" the sample only when that small
+    // marker zone (positioned over the probe points in the SVG) overlaps the
+    // beaker's actual contents. The bulb lights in real time (and dims again
+    // if dragged away); the first time contact is made for a testable phase,
+    // the recording UI (particle diagram + answer choices) is revealed.
+    function updateTesterTouch(subId) {
+        var tester = document.getElementById('testerDevice-' + subId);
+        var tipMarker = document.getElementById('electrodeTip-' + subId);
+        var beakerVisual = document.getElementById('beakerVisual-' + subId);
+        if (!tester || !tipMarker || !beakerVisual) return;
+        var phase = stationPhase[subId];
+        var testable = (phase === 'solid' || phase === 'liquid' || phase === 'aqueous');
+        var contentEl = testable ? getBeakerContentEl(subId) : null;
+        var touching = !!contentEl && rectsOverlap(tipMarker.getBoundingClientRect(), contentEl.getBoundingClientRect());
+
+        var s = subById(subId);
+        var lit = touching && s.conduct[phase] === true;
+        tester.classList.toggle('lit', lit);
+        beakerVisual.classList.toggle('wb-target-glow', touching);
+
+        var wasTouching = !!testerTouchState[subId];
+        testerTouchState[subId] = touching;
+        if (touching && !wasTouching) runConductivityTest(subId, phase);
+    }
+
+    function clickHeat(subId) {
+        var btn = document.getElementById('heatBtn-' + subId);
+        if (btn) btn.disabled = true;
+        stationPhase[subId] = 'heating';
+        renderStation(subId);
+        setTimeout(function () {
+            stationPhase[subId] = 'liquid';
+            renderStation(subId);
+        }, 1300);
+    }
+
+    function clickReset(subId) {
+        stationPhase[subId] = 'empty-post';
+        renderStation(subId);
+    }
+
+    function clickPourWater(subId) {
+        stationPhase[subId] = 'water';
+        renderStation(subId);
+    }
+
+    function beakerVisualHTML(subId) {
+        var s = subById(subId);
+        var phase = stationPhase[subId];
+        if (phase === 'solid') {
+            return '<div class="beaker-shape"><div class="beaker-solid-visual">' + solidVisualHTML(s.id) + '</div></div>';
+        }
+        if (phase === 'heating') {
+            return '<div class="beaker-shape"><div class="beaker-solid-visual">' + solidVisualHTML(s.id) + '</div></div>' +
+                '<div class="burner-under-beaker">' + bunsenBurnerSVG() + '</div>';
+        }
+        if (phase === 'liquid') return '<div class="beaker-shape"><div class="beaker-liquid"></div></div>';
+        if (phase === 'water') return '<div class="beaker-shape"><div class="beaker-water"></div></div>';
+        if (phase === 'aqueous') {
+            if (s.conduct.aqueous === 'insoluble') {
+                return '<div class="beaker-shape"><div class="beaker-water"></div><div class="beaker-floaters">' +
+                    '<div class="float-chunk" style="left:2px; top:1px;"></div><div class="float-chunk" style="right:2px; top:3px;"></div>' +
+                    '</div></div>';
+            }
+            return '<div class="beaker-shape"><div class="beaker-water dissolved"></div></div>';
+        }
+        return '<div class="beaker-shape"></div>';
+    }
+
+    function stationHintText(subId) {
+        var phase = stationPhase[subId];
+        if (phase === 'empty') return 'Drag the solid sample into the beaker';
+        if (phase === 'solid') return labState[subId].cond.solid.recorded ? '' : 'Drag the tester onto the beaker to test it';
+        if (phase === 'heating') return 'Heating…';
+        if (phase === 'liquid') return labState[subId].cond.liquid.recorded ? '' : 'Drag the tester onto the beaker to test it';
+        if (phase === 'empty-post') return 'Click "Pour Water" to continue';
+        if (phase === 'water') return 'Drag the solid sample into the water to dissolve it';
+        if (phase === 'aqueous') return labState[subId].cond.aqueous.recorded ? '' : 'Drag the tester onto the beaker to test it';
+        return '';
+    }
+
+    function stationControlsHTML(subId) {
+        var st = labState[subId];
+        var phase = stationPhase[subId];
+        if (phase === 'solid' && st.cond.solid.recorded) {
+            return '<button type="button" class="small-check" id="heatBtn-' + subId + '" onclick="clickHeat(\'' + subId + '\')">Heat</button>';
+        }
+        if (phase === 'liquid' && st.cond.liquid.recorded) {
+            return '<button type="button" class="small-check" onclick="clickReset(\'' + subId + '\')">Reset / Empty Beaker</button>';
+        }
+        if (phase === 'empty-post') {
+            return '<button type="button" class="small-check" onclick="clickPourWater(\'' + subId + '\')">Pour Water</button>';
+        }
+        if (phase === 'aqueous' && st.cond.aqueous.recorded) {
+            return '<div class="wiz-fb ok" style="margin-top:0;">Station complete ✓</div>';
+        }
+        if (phase === 'aqueous') {
+            return '<button type="button" class="small-check" onclick="toggleDissolveParticles(\'' + subId + '\')">Show particle diagram</button>' +
+                '<div id="dissolveParticles-' + subId + '" style="display:none; margin-top:8px;"></div>';
+        }
+        return '';
+    }
+
+    function toggleDissolveParticles(subId) {
+        var box = document.getElementById('dissolveParticles-' + subId);
+        if (!box) return;
+        if (box.style.display === 'block') {
+            box.style.display = 'none';
+            box.innerHTML = '';
+        } else {
+            box.innerHTML = particleDiagramHTML(subById(subId), 'aqueous');
+            box.style.display = 'block';
+        }
+    }
+
+    function renderStation(subId) {
+        // Only one substance's workbench is in the DOM at a time. If the
+        // student switched away (e.g. while a Heat timer was still pending),
+        // these elements won't exist — the underlying stationPhase/labState
+        // change still happened and will be reflected when they switch back.
+        var visualEl = document.getElementById('beakerVisual-' + subId);
+        if (!visualEl) return;
+        visualEl.innerHTML = beakerVisualHTML(subId);
+        var hint = document.getElementById('stationHint-' + subId);
+        if (hint) hint.textContent = stationHintText(subId);
+        var controls = document.getElementById('stationControls-' + subId);
+        if (controls) controls.innerHTML = stationControlsHTML(subId);
+
+        // The solid sample tile is only available to drag while the beaker
+        // is empty or holds plain water — once it's already placed, hide it
+        // until Reset + Pour Water makes it relevant again.
+        var phase = stationPhase[subId];
+        var solidTile = document.getElementById('solidTile-' + subId);
+        if (solidTile) solidTile.style.display = (phase === 'empty' || phase === 'water') ? '' : 'none';
+
+        if ((phase === 'solid' || phase === 'liquid' || phase === 'aqueous') && labState[subId].cond[phase].recorded) {
+            revealCondResult(subId, phase);
+        }
+        // In case the tester happens to already be resting on the beaker
+        // when the phase changes (e.g. right after heating finishes).
+        updateTesterTouch(subId);
+    }
+
+    function runConductivityTest(subId, state) {
+        var c = labState[subId].cond[state];
+        c.tested = true;
+        revealCondResult(subId, state);
+    }
+
+    // The particle diagram is hidden behind a button (not shown automatically),
+    // and instead of picking "Conducts / Does not conduct" directly, the
+    // student reasons through it: are charged particles present, and if so,
+    // are they free to move? That derived answer is what gets recorded.
+    function conductTruth(s, state) {
+        var v = s.conduct[state];
+        return v === true ? 'yes' : v === false ? 'no' : 'insoluble';
+    }
+    function chargesTruth(s, state) {
+        if (state === 'aqueous' && s.conduct.aqueous === 'insoluble') return 'insoluble';
+        return s.type === 'ionic' ? 'yes' : 'no';
+    }
+    function mobileTruth(state) { return state === 'solid' ? 'no' : 'yes'; }
+
+    function revealCondResult(subId, state) {
+        var s = subById(subId);
+        var c = labState[subId].cond[state];
+        var testArea = document.getElementById('stationTest-' + subId);
+        if (!testArea) return; // not the currently visible workbench
+        if (!c.step) c.step = c.recorded ? 'done' : 'q0';
+
+        var showBtn = '<button type="button" class="small-check" onclick="toggleTestParticles(\'' + subId + '\',\'' + state + '\')">Show particle diagram</button>' +
+            '<div id="testParticles-' + subId + '" style="display:none; margin-top:6px;"></div>';
+
+        var body;
+        if (c.recorded) {
+            var label = c.sel === 'yes' ? 'Conducts' : c.sel === 'no' ? 'Does not conduct' : 'Insoluble — can\'t test';
+            body = '<div class="wiz-fb ok">Recorded: ' + label + '</div>';
+        } else if (c.step === 'q0') {
+            var opts0 = [
+                { v: 'yes', label: 'Yes — it conducts' },
+                { v: 'no', label: 'No — it does not conduct' }
+            ];
+            if (state === 'aqueous') opts0.push({ v: 'insoluble', label: 'It doesn\'t dissolve' });
+            body = '<div class="wiz-q" style="font-size:0.85em;">Based on the bulb, does this sample conduct electricity?</div>' +
+                '<div class="choice-row">' + opts0.map(function (o) {
+                    return '<button type="button" class="choice-btn" onclick="pickConducts(\'' + subId + '\',\'' + state + '\',\'' + o.v + '\')">' + o.label + '</button>';
+                }).join('') + '</div><div class="wiz-fb" id="fbCond-' + subId + '-' + state + '"></div>';
+        } else if (c.step === 'q2') {
+            body = '<div class="wiz-fb ok" style="margin-bottom:4px;">Charges present: yes</div>' +
+                '<div class="wiz-q" style="font-size:0.85em;">Are those charges free to move (mobile)?</div>' +
+                '<div class="choice-row">' +
+                '<button type="button" class="choice-btn" onclick="pickMobile(\'' + subId + '\',\'' + state + '\',\'yes\')">Yes — free to move</button>' +
+                '<button type="button" class="choice-btn" onclick="pickMobile(\'' + subId + '\',\'' + state + '\',\'no\')">No — locked in place</button>' +
+                '</div><div class="wiz-fb" id="fbCond-' + subId + '-' + state + '"></div>';
+        } else {
+            var opts = [
+                { v: 'yes', label: 'Yes — there are charged particles' },
+                { v: 'no', label: 'No — no charged particles' }
+            ];
+            if (state === 'aqueous') opts.push({ v: 'insoluble', label: 'It doesn\'t dissolve' });
+            body = '<div class="wiz-q" style="font-size:0.85em;">Are there charged particles (ions) present right now?</div>' +
+                '<div class="choice-row">' + opts.map(function (o) {
+                    return '<button type="button" class="choice-btn" onclick="pickCharges(\'' + subId + '\',\'' + state + '\',\'' + o.v + '\')">' + o.label + '</button>';
+                }).join('') + '</div><div class="wiz-fb" id="fbCond-' + subId + '-' + state + '"></div>';
+        }
+
+        testArea.innerHTML = '<div class="state-tested-label">Testing: ' + state.charAt(0).toUpperCase() + state.slice(1) + '</div>' +
+            showBtn + body;
+    }
+
+    function toggleTestParticles(subId, state) {
+        var box = document.getElementById('testParticles-' + subId);
+        if (!box) return;
+        if (box.style.display === 'block') {
+            box.style.display = 'none';
+            box.innerHTML = '';
+        } else {
+            box.innerHTML = particleDiagramHTML(subById(subId), state);
+            box.style.display = 'block';
+        }
+    }
+
+    function pickConducts(subId, state, val) {
+        var s = subById(subId);
+        var c = labState[subId].cond[state];
+        var truth = conductTruth(s, state);
+        var fb = document.getElementById('fbCond-' + subId + '-' + state);
+        if (val === truth) {
+            if (truth === 'insoluble') { c.recorded = true; c.sel = 'insoluble'; }
+            else { c.step = 'q1'; }
+            revealCondResult(subId, state);
+            renderStation(subId);
+            renderCondSelector();
+            if (c.recorded) { updateProgress(); scormCheckpoint(); refreshAllDataTables(); }
+        } else {
+            missCount++; updateScoreBadge(); scormCheckpoint();
+            if (fb) { fb.className = 'wiz-fb no'; fb.textContent = 'Not quite — watch the bulb closely. Drag the tester back onto the beaker if you need to check again.'; }
+        }
+    }
+
+    function pickCharges(subId, state, val) {
+        var s = subById(subId);
+        var c = labState[subId].cond[state];
+        var truth = chargesTruth(s, state);
+        var fb = document.getElementById('fbCond-' + subId + '-' + state);
+        if (val === truth) {
+            if (truth === 'insoluble') { c.recorded = true; c.sel = 'insoluble'; }
+            else if (truth === 'no') { c.recorded = true; c.sel = 'no'; }
+            else { c.step = 'q2'; }
+            revealCondResult(subId, state);
+            renderStation(subId);
+            renderCondSelector();
+            if (c.recorded) { updateProgress(); scormCheckpoint(); refreshAllDataTables(); }
+        } else {
+            missCount++; updateScoreBadge(); scormCheckpoint();
+            if (fb) { fb.className = 'wiz-fb no'; fb.textContent = 'Not quite — show the particle diagram again and look carefully for + and − charges.'; }
+        }
+    }
+
+    function pickMobile(subId, state, val) {
+        var c = labState[subId].cond[state];
+        var truth = mobileTruth(state);
+        var fb = document.getElementById('fbCond-' + subId + '-' + state);
+        if (val === truth) {
+            c.recorded = true;
+            c.sel = (val === 'yes') ? 'yes' : 'no';
+            revealCondResult(subId, state);
+            renderStation(subId);
+            renderCondSelector();
+            updateProgress(); scormCheckpoint(); refreshAllDataTables();
+        } else {
+            missCount++; updateScoreBadge(); scormCheckpoint();
+            if (fb) { fb.className = 'wiz-fb no'; fb.textContent = 'Not quite — think about whether this state lets particles move around freely or holds them in a fixed position.'; }
+        }
+    }
+
+    // ---------------- Melting point tab ----------------
+    // Only one substance's rig is shown at a time. Heating just reveals the
+    // reading (the actual recording/grading happens by typing the observed
+    // value into the Data Table tab).
+    var currentMpSub = SUBSTANCES[0].id;
+
+    function renderMeltingTab() {
+        renderMpSelector();
+        renderMpWorkbench();
+    }
+
+    function renderMpSelector() {
+        var host = document.getElementById('mpSelector');
+        host.innerHTML = SUBSTANCES.map(function (s) {
+            var done = labState[s.id].mp.recorded;
+            return '<button type="button" class="substance-select-btn' + (s.id === currentMpSub ? ' active' : '') + '" onclick="selectMpSubstance(\'' + s.id + '\')">' +
+                s.name + (done ? ' <span class="done-badge">&#10003;</span>' : '') + '</button>';
+        }).join('');
+    }
+
+    function selectMpSubstance(subId) {
+        currentMpSub = subId;
+        renderMpSelector();
+        renderMpWorkbench();
+    }
+
+    function renderMpWorkbench() {
+        var s = subById(currentMpSub);
+        document.getElementById('mpWorkbench').innerHTML = mpCardHTML(s);
+        if (labState[s.id].mp.heated) showMeltedState(s.id, true);
+    }
+
+    function mpCardHTML(s) {
+        return '<div class="mp-card" id="mpCard-' + s.id + '">' +
+            '<div class="mp-title">' + s.name + ' (' + formulaHTML(s.formula) + ')</div>' +
+            '<div class="mp-melt-msg" id="mpMsg-' + s.id + '"></div>' +
+            '<div class="mp-rig">' +
+            '<div class="mp-tube-stack">' +
+            '<div class="mp-tube"><div class="mp-tube-solid" id="mpSolid-' + s.id + '">' + solidVisualHTML(s.id) + '</div>' +
+            '<div class="mp-tube-liquid" id="mpLiquid-' + s.id + '"></div></div>' +
+            '<div class="burner-under-beaker">' + bunsenBurnerSVG() + '</div>' +
+            '</div>' +
+            '<div><div class="mp-thermo"><div class="mp-thermo-fill" id="mpFill-' + s.id + '"></div></div>' +
+            '<div class="mp-temp-label" id="mpTemp-' + s.id + '">20&deg;C</div></div>' +
+            '</div>' +
+            '<button type="button" class="small-check" id="mpHeatBtn-' + s.id + '" onclick="heatSubstance(\'' + s.id + '\')">Heat</button>' +
+            '<div id="mpAnswer-' + s.id + '" style="display:none;"></div>' +
+            '</div>';
+    }
+
+    var mpTimers = {};
+    // Shared across all substances (not per-substance) so the thermometer
+    // fill is genuinely comparable — wax (60°C) barely rises while NaCl
+    // (801°C) climbs nearly to the top, instead of every substance looking
+    // the same ~87% full regardless of how hot it actually needed to get.
+    var MP_GLOBAL_MAX = Math.max.apply(null, SUBSTANCES.map(function (s) { return s.mp; })) * 1.1;
+
+    function heatSubstance(subId) {
+        var s = subById(subId);
+        var btn = document.getElementById('mpHeatBtn-' + subId);
+        btn.disabled = true;
+        var maxDisplay = MP_GLOBAL_MAX;
+        var temp = 20;
+        var fill = document.getElementById('mpFill-' + subId);
+        var tempLabel = document.getElementById('mpTemp-' + subId);
+        var step = Math.max(4, Math.round(s.mp / 30));
+
+        mpTimers[subId] = setInterval(function () {
+            temp = Math.min(s.mp, temp + step);
+            tempLabel.textContent = temp + '°C';
+            fill.style.height = Math.min(100, ((temp - 20) / (maxDisplay - 20)) * 100) + '%';
+            if (temp >= s.mp) {
+                clearInterval(mpTimers[subId]);
+                labState[subId].mp.heated = true;
+                showMeltedState(subId, false);
+            }
+        }, 80);
+    }
+
+    function showMeltedState(subId, silent) {
+        var s = subById(subId);
+        var solidEl = document.getElementById('mpSolid-' + subId);
+        if (solidEl) solidEl.style.display = 'none';
+        var liquidEl = document.getElementById('mpLiquid-' + subId);
+        if (liquidEl) liquidEl.classList.add('show');
+        var msg = document.getElementById('mpMsg-' + subId);
+        if (msg) msg.textContent = s.name + ' melted at ' + s.mp + '°C!';
+        var tempLabel = document.getElementById('mpTemp-' + subId);
+        if (tempLabel) tempLabel.textContent = s.mp + '°C';
+        var fill = document.getElementById('mpFill-' + subId);
+        if (fill) fill.style.height = Math.min(100, ((s.mp - 20) / (MP_GLOBAL_MAX - 20)) * 100) + '%';
+
+        var answerBox = document.getElementById('mpAnswer-' + subId);
+        if (answerBox) {
+            answerBox.style.display = 'block';
+            answerBox.innerHTML = labState[subId].mp.recorded
+                ? '<div class="wiz-fb ok">Recorded: ' + labState[subId].mp.sel + '&deg;C</div>'
+                : '<div class="wiz-fb ok">Type the melting point you observed for ' + s.name + ' into the Data Table on the right.</div>';
+        }
+        if (!silent) { updateProgress(); scormCheckpoint(); refreshAllDataTables(); }
+    }
+
+    // ---------------- Data table ----------------
+    // The melting-point column is where the student actually records their
+    // observation: once a substance has been heated (in the Melting Point
+    // tab), its cell here becomes a live number input to type the reading
+    // into, checked with a small tolerance since it's a thermometer reading.
+    var MP_TOLERANCE = 15;
+
+    // `scope` keeps element ids unique across the three simultaneously-mounted
+    // copies of this table (the dedicated Data Table tab, plus the mini
+    // sidebar on the Conductivity and Melting Point tabs) so typing a melting
+    // point works from any of them, not just the dedicated tab.
+    function dataTableRowsHTML(interactive, compact, scope) {
+        scope = scope || 'main';
+        return SUBSTANCES.map(function (s) {
+            var st = labState[s.id];
+            function condCell(state) {
+                var c = st.cond[state];
+                if (!c.recorded) return '<span class="dt-pending">&mdash;</span>';
+                if (compact) {
+                    if (c.sel === 'yes') return '<span class="dt-yes" title="Conducts">&#10003;</span>';
+                    if (c.sel === 'no') return '<span class="dt-no" title="Does not conduct">&#10007;</span>';
+                    return '<span class="dt-na" title="Insoluble">ins</span>';
+                }
+                if (c.sel === 'yes') return '<span class="dt-yes">Conducts</span>';
+                if (c.sel === 'no') return '<span class="dt-no">Does not conduct</span>';
+                return '<span class="dt-na">Insoluble</span>';
+            }
+            var mpCell;
+            if (st.mp.recorded) {
+                mpCell = '<span class="dt-yes">' + st.mp.sel + '&deg;C</span>';
+            } else if (interactive && st.mp.heated) {
+                mpCell = '<div class="mp-input-cell">' +
+                    '<input type="number" class="mp-input" id="mpDataInput-' + scope + '-' + s.id + '" placeholder="°C">' +
+                    '<button type="button" class="mp-submit-btn" onclick="submitMpInput(\'' + scope + '\',\'' + s.id + '\')">&#10003;</button>' +
+                    '<span class="mp-cell-fb" id="mpDataFb-' + scope + '-' + s.id + '"></span></div>';
+            } else if (interactive) {
+                mpCell = '<span class="dt-pending" title="Heat it in the Melting Point tab first">test first</span>';
+            } else {
+                mpCell = '<span class="dt-pending">&mdash;</span>';
+            }
+            var subCell = compact ? formulaHTML(s.formula) : (s.name + ' (' + formulaHTML(s.formula) + ')');
+            return '<tr><td>' + subCell + '</td>' +
+                '<td>' + condCell('solid') + '</td><td>' + condCell('liquid') + '</td><td>' + condCell('aqueous') + '</td>' +
+                '<td>' + mpCell + '</td></tr>';
+        }).join('');
+    }
+
+    function submitMpInput(scope, subId) {
+        var s = subById(subId);
+        var input = document.getElementById('mpDataInput-' + scope + '-' + subId);
+        var fb = document.getElementById('mpDataFb-' + scope + '-' + subId);
+        if (!input || input.value === '') {
+            if (fb) fb.textContent = 'Type a number first.';
+            return;
+        }
+        var val = Number(input.value);
+        if (isNaN(val)) { if (fb) fb.textContent = 'Type a number first.'; return; }
+
+        if (Math.abs(val - s.mp) <= MP_TOLERANCE) {
+            labState[subId].mp.recorded = true;
+            labState[subId].mp.sel = s.mp;
+            renderMpSelector();
+            updateProgress(); scormCheckpoint(); refreshAllDataTables();
+        } else {
+            missCount++; updateScoreBadge(); scormCheckpoint();
+            if (fb) fb.textContent = 'Not quite — double check the thermometer reading from the Melting Point tab and try again.';
+        }
+    }
+
+    function renderDataTable() {
+        var body = document.getElementById('dataTableBody');
+        if (body) body.innerHTML = dataTableRowsHTML(true, false, 'main');
+    }
+
+    function refreshAllDataTables() {
+        renderDataTable();
+        var condMini = document.getElementById('condMiniTableBody');
+        if (condMini) condMini.innerHTML = dataTableRowsHTML(true, false, 'cond');
+        var mpMini = document.getElementById('mpMiniTableBody');
+        if (mpMini) mpMini.innerHTML = dataTableRowsHTML(true, false, 'mp');
+    }
+
+    // ---------------- Reflection questions ----------------
+    var REFLECT_QUESTIONS = [
+        { q: 'Why do ionic solids like NaCl NOT conduct electricity, even though they are made of charged ions?',
+          raw: '<div class="beat-diagram"><div class="atom-pair" style="gap:22px;">' +
+               '<div>' + particleDiagramHTML(subById('nacl'), 'solid') + '<div class="diagram-caption"><b>Solid NaCl</b> &mdash; you found: does not conduct</div></div>' +
+               '<div>' + particleDiagramHTML(subById('nacl'), 'liquid') + '<div class="diagram-caption"><b>Liquid NaCl</b> &mdash; you found: conducts</div></div>' +
+               '</div></div>',
+          options: [
+              { label: 'The ions are locked in fixed positions in the lattice and can\'t move to carry a charge.', correct: true },
+              { label: 'Ionic solids have no charged particles at all.', correct: false },
+              { label: 'The circuit needs a liquid to complete it, regardless of the substance.', correct: false }
+          ] },
+        { q: 'Why do melted (liquid) and dissolved (aqueous) ionic compounds conduct electricity?',
+          options: [
+              { label: 'Melting or dissolving frees the ions to move, so they can carry electric charge.', correct: true },
+              { label: 'Water itself is what conducts the electricity, not the compound.', correct: false },
+              { label: 'Heat creates brand-new charged particles that weren\'t there before.', correct: false }
+          ] },
+        { q: 'Why do covalent/molecular substances like sugar and wax never conduct electricity, in any state?',
+          raw: '<div class="beat-diagram"><div class="atom-pair" style="gap:22px;">' +
+               '<div>' + particleDiagramHTML(subById('sugar'), 'solid') + '<div class="diagram-caption"><b>Solid sugar</b> &mdash; you found: does not conduct</div></div>' +
+               '<div>' + particleDiagramHTML(subById('sugar'), 'aqueous') + '<div class="diagram-caption"><b>Dissolved sugar</b> &mdash; you found: still does not conduct</div></div>' +
+               '</div></div>',
+          options: [
+              { label: 'They are made of neutral molecules, not ions — there are no charged particles to carry current in any state.', correct: true },
+              { label: 'They melt at too low a temperature to ever conduct.', correct: false },
+              { label: 'They are always insoluble in water.', correct: false }
+          ] },
+        { q: 'Why do the ionic compounds you tested have such higher melting points than the covalent/molecular substances?',
+          raw: '<div class="beat-diagram"><div class="atom-pair" style="gap:22px;">' +
+               '<div>' + particleDiagramHTML(subById('nacl'), 'solid') + '<div class="diagram-caption"><b>Solid NaCl</b> (ionic lattice)</div></div>' +
+               '<div>' + particleDiagramHTML(subById('wax'), 'solid') + '<div class="diagram-caption"><b>Solid wax</b> (molecular solid)</div></div>' +
+               '</div></div>',
+          options: [
+              { label: 'Every ion in the lattice is strongly attracted to surrounding ions of the opposite charge, and breaking apart that whole 3D lattice takes a lot of energy.', correct: true },
+              { label: 'Ionic compounds are always made of bigger, heavier atoms.', correct: false },
+              { label: 'Covalent compounds have weaker bonds between the atoms within each molecule.', correct: false }
+          ] },
+        { q: 'An unknown compound conducts electricity when dissolved in water but NOT as a solid, and has a very high melting point. Is it more likely ionic or covalent?',
+          options: [
+              { label: 'Ionic — that pattern (conducts only when melted/dissolved, high melting point) matches an ionic lattice.', correct: true },
+              { label: 'Covalent — molecular substances typically conduct once dissolved in water.', correct: false }
+          ] }
+    ];
+    var reflectStep = 0;
+    var reflectPassed = new Set();
+    var reflectAttempts = {};
+
+    function renderReflect() {
+        if (!allDataRecorded()) {
+            document.getElementById('reflectArea').innerHTML = '<div class="locked-msg">Finish recording every test in the Conductivity and Melting Point tabs first.</div>';
+            return;
+        }
+        var html = '';
+        for (var i = 0; i <= reflectStep && i < REFLECT_QUESTIONS.length; i++) {
+            html += reflectStepHTML(i);
+        }
+        document.getElementById('reflectArea').innerHTML = html;
+    }
+
+    function reflectStepHTML(i) {
+        var q = REFLECT_QUESTIONS[i];
+        var locked = reflectPassed.has(i);
+        var btns = q.options.map(function (o, oi) {
+            var cls = 'choice-btn' + (locked && o.correct ? ' pick-right' : '');
+            return '<button type="button" class="' + cls + '" style="text-align:left;"' + (locked ? ' disabled' : ' onclick="reflectPick(' + i + ',' + oi + ')"') + '>' + o.label + '</button>';
+        }).join('');
+        return '<div class="wiz-step' + (locked ? ' locked' : '') + '">' +
+            '<div class="wiz-q">Question ' + (i + 1) + ' of ' + REFLECT_QUESTIONS.length + ' &mdash; ' + q.q + '</div>' +
+            (q.raw || '') +
+            '<div class="choice-row" style="flex-direction:column; align-items:stretch;">' + btns + '</div>' +
+            '<div class="wiz-fb" id="fbReflect-' + i + '"></div></div>';
+    }
+
+    function reflectPick(i, oi) {
+        if (reflectPassed.has(i)) return;
+        var q = REFLECT_QUESTIONS[i];
+        var fb = document.getElementById('fbReflect-' + i);
+        reflectAttempts[i] = (reflectAttempts[i] || 0) + 1;
+        if (q.options[oi].correct) {
+            reflectPassed.add(i);
+            if (i === reflectStep && reflectStep < REFLECT_QUESTIONS.length - 1) reflectStep++;
+            renderReflect();
+            updateProgress();
+            scormCheckpoint();
+        } else {
+            missCount++; updateScoreBadge(); scormCheckpoint();
+            fb.className = 'wiz-fb no';
+            fb.textContent = 'Not quite — think back to what the particle diagrams and data table showed you, and try again.';
+        }
+    }
+
+    // ---------------- Completion ----------------
+    function showCompletion() {
+        if (window._bplCompleted) return;
+        window._bplCompleted = true;
+        scormReport();
+        document.getElementById('summaryTableBody').innerHTML = dataTableRowsHTML(false);
+        document.getElementById('complete-score').textContent = 'Final score: ' + currentPct() + '%';
+        document.getElementById('completeScreen').style.display = 'flex';
+    }
+    function closeComplete() { document.getElementById('completeScreen').style.display = 'none'; }
+
+    // ---------------- Activity bootstrap ----------------
+    function beginActivity() {
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('mainSimulation').style.display = 'block';
+        if (scormAPI) document.getElementById('save-row').style.display = '';
+
+        if (scormResumeData) {
+            try {
+                missCount = Math.max(0, Number(scormResumeData.miss) || 0);
+                if (scormResumeData.state) {
+                    Object.keys(scormResumeData.state).forEach(function (subId) {
+                        if (!labState[subId]) return;
+                        var saved = scormResumeData.state[subId];
+                        STATES.forEach(function (st) {
+                            if (saved.cond && saved.cond[st]) labState[subId].cond[st] = saved.cond[st];
+                        });
+                        if (saved.mp) labState[subId].mp = saved.mp;
+                    });
+                }
+                if (Array.isArray(scormResumeData.reflectPassed)) {
+                    scormResumeData.reflectPassed.forEach(function (i) { reflectPassed.add(i); });
+                    reflectStep = Math.min(REFLECT_QUESTIONS.length - 1, reflectPassed.size);
+                }
+            } catch (e) { /* ignore bad bookmark */ }
+        }
+
+        renderConductivityTab();
+        renderMeltingTab();
+        refreshAllDataTables();
+        updateScoreBadge();
+        updateProgress();
+        scormCheckpoint();
+    }
+
+    // ================= Intro slideshow =================
+    function circuitPreviewHTML(lit, caption) {
+        return '<div class="beat-diagram"><div class="tester-device' + (lit ? ' lit' : '') + '" style="display:inline-block;">' + testerSVG() + '</div>' +
+            '<div class="diagram-caption">' + caption + '</div></div>';
+    }
+
+    var INTRO = [
+        {
+            h: 'From bonds to properties',
+            beats: [
+                { note: '<p>You\'ve already seen how atoms bond &mdash; ionic compounds transfer electrons and form a crystal lattice; covalent compounds share electrons and form neutral molecules. Today you\'ll run a virtual lab testing two measurable <b>properties</b> of real substances: <b>electrical conductivity</b> and <b>melting point</b> &mdash; and see how those properties trace directly back to bond type.</p>' }
+            ]
+        },
+        {
+            h: 'Conductivity needs moving charges',
+            beats: [
+                { note: '<p>Electric current only flows when charged particles are <b>free to move</b>. You will test each substance as a solid, as a liquid, and dissolved in water &mdash; for every test, you will decide whether charged particles are present, and whether they are free to move.</p>' }
+            ]
+        },
+        {
+            h: 'Melting point matters too',
+            beats: [
+                { note: '<p>You will also measure each substance\'s melting point. Some patterns should start to emerge once your data table is filled in &mdash; that is exactly what the reflection questions at the end will ask you about.</p>' }
+            ]
+        },
+        {
+            h: 'How the lab works',
+            beats: [
+                { note: '<p>In the Conductivity tab, choose one substance at a time: drag the solid in and test it, heat it until it melts and test the liquid, then reset, pour in water, dissolve the solid, and test the solution. In the Melting Point tab, heat each test tube to find its melting point, then go to the Data Table and type in the value you observed.</p>' },
+                { callout: 'Once every cell in the Data Table is filled in, five reflection questions unlock. Finish those for a full lab summary. Wrong answers give a hint and let you retry — they lower the score badge slightly but never block you from finishing. Use Save progress if you need to stop and come back.' }
+            ]
+        }
+    ];
+
+    var slideIdx = 0;
+    var beatIdx = 0;
+    var introPassed = new Set();
+    var introAttempts = {};
+
+    function curSlide() { return INTRO[slideIdx]; }
+    function curBeat() { return curSlide().beats[beatIdx]; }
+    function isLastBeatOfIntro() { return slideIdx === INTRO.length - 1 && beatIdx === curSlide().beats.length - 1; }
+    function checkPending() {
+        var b = curBeat();
+        return !!(b && b.check && !introPassed.has(slideIdx));
+    }
+    function slideCheck(i) {
+        var b = INTRO[i].beats.filter(function (x) { return x.check; })[0];
+        return b ? b.check : null;
+    }
+
+    function initIntro() {
+        document.getElementById('introDots').innerHTML =
+            INTRO.map(function (_, i) { return '<i data-i="' + i + '"></i>'; }).join('');
+
+        document.getElementById('introBack').addEventListener('click', function (e) { e.stopPropagation(); beatBack(); });
+        document.getElementById('introNext').addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (isLastBeatOfIntro()) finishIntro(); else beatForward();
+        });
+        document.querySelector('#startScreen .intro-card').addEventListener('click', function (e) {
+            if (e.target.closest('.intro-nav')) return;
+            if (e.target.closest('.check-box')) return;
+            if (isLastBeatOfIntro()) return;
+            beatForward();
+        });
+        document.getElementById('introStage').addEventListener('click', onIntroCheckClick);
+
+        slideIdx = 0; beatIdx = 0;
+        renderIntro();
+    }
+
+    function beatForward() {
+        if (checkPending()) return;
+        if (beatIdx < curSlide().beats.length - 1) { beatIdx++; }
+        else if (slideIdx < INTRO.length - 1) { slideIdx++; beatIdx = 0; }
+        else { return; }
+        renderIntro();
+    }
+    function beatBack() {
+        if (beatIdx > 0) { beatIdx--; }
+        else if (slideIdx > 0) { slideIdx--; beatIdx = curSlide().beats.length - 1; }
+        else { return; }
+        renderIntro();
+    }
+    function finishIntro() {
+        document.getElementById('startScreen').style.display = 'none';
+        beginActivity();
+    }
+
+    function beatToHTML(b, newest) {
+        var pop = newest ? ' pop' : '';
+        var html = '';
+        if (b.note) html += '<div class="beat-note' + pop + '">' + b.note + '</div>';
+        if (b.raw) html += b.raw;
+        if (b.callout) html += '<div class="callout' + pop + '">' + b.callout + '</div>';
+        if (b.check) {
+            var c = b.check;
+            var inner = '<div class="choice-row" style="justify-content:center;">' +
+                c.options.map(function (o, oi) { return '<button type="button" class="choice-btn" data-idx="' + oi + '">' + o + '</button>'; }).join('') +
+                '</div>';
+            html += '<div class="check-box' + pop + '" data-slide="' + slideIdx + '"><div class="check-q">' + c.q + '</div>' +
+                inner + '<div class="check-fb" id="ifb-' + slideIdx + '"></div></div>';
+        }
+        return html;
+    }
+
+    function renderIntro() {
+        document.getElementById('introHeading').textContent = curSlide().h;
+
+        var stage = document.getElementById('introStage');
+        stage.innerHTML = '';
+        var beats = curSlide().beats;
+        for (var i = 0; i <= beatIdx; i++) {
+            stage.insertAdjacentHTML('beforeend', beatToHTML(beats[i], i === beatIdx));
+        }
+
+        if (introPassed.has(slideIdx)) {
+            var box = stage.querySelector('.check-box');
+            var chk = slideCheck(slideIdx);
+            if (box && chk) {
+                var btns = box.querySelectorAll('button');
+                btns.forEach(function (bn) { bn.disabled = true; });
+                if (btns[chk.correct]) btns[chk.correct].classList.add('pick-right');
+                var fb = box.querySelector('.check-fb');
+                fb.className = 'check-fb ok';
+                fb.textContent = chk.ok;
+            }
+        }
+
+        document.querySelectorAll('#introDots i').forEach(function (el) {
+            el.classList.toggle('on', Number(el.dataset.i) === slideIdx);
+        });
+
+        document.getElementById('introBack').disabled = (slideIdx === 0 && beatIdx === 0);
+
+        var nextBtn = document.getElementById('introNext');
+        if (isLastBeatOfIntro()) {
+            nextBtn.textContent = 'Start the lab';
+            nextBtn.disabled = false;
+        } else {
+            nextBtn.textContent = 'Next';
+            nextBtn.disabled = checkPending();
+        }
+
+        var hint = document.getElementById('introHint');
+        if (isLastBeatOfIntro()) {
+            hint.textContent = 'use the button when you are ready';
+        } else if (checkPending()) {
+            hint.textContent = 'answer above to continue';
+        } else {
+            hint.textContent = 'click anywhere to continue   (' + (beatIdx + 1) + ' / ' + beats.length + ')';
+        }
+
+        var newest = stage.lastElementChild;
+        if (newest && newest.scrollIntoView) newest.scrollIntoView({ block: 'nearest' });
+        stage.scrollTop = stage.scrollHeight;
+    }
+
+    function onIntroCheckClick(e) {
+        var btn = e.target.closest('.choice-btn');
+        if (!btn) return;
+        e.stopPropagation();
+        var box = btn.closest('.check-box');
+        if (!box) return;
+        var slide = Number(box.dataset.slide);
+        if (introPassed.has(slide)) return;
+
+        var chk = slideCheck(slide);
+        var idx = Number(btn.dataset.idx);
+        var fb = document.getElementById('ifb-' + slide);
+        introAttempts[slide] = (introAttempts[slide] || 0) + 1;
+
+        var finish = function () {
+            introPassed.add(slide);
+            box.querySelectorAll('button').forEach(function (b) { b.disabled = true; });
+            document.getElementById('introNext').disabled = isLastBeatOfIntro() ? false : checkPending();
+            document.getElementById('introHint').textContent = 'click anywhere to continue';
+        };
+
+        if (idx === chk.correct) {
+            btn.classList.add('pick-right');
+            fb.className = 'check-fb ok';
+            fb.textContent = chk.ok;
+            finish();
+        } else {
+            btn.classList.add('pick-wrong');
+            fb.className = 'check-fb no';
+            fb.textContent = chk.no;
+            if (introAttempts[slide] >= 2) {
+                var right = box.querySelectorAll('button')[chk.correct];
+                if (right) right.classList.add('pick-right');
+                fb.textContent = chk.no + ' ' + chk.ok;
+                finish();
+            } else {
+                setTimeout(function () { btn.classList.remove('pick-wrong'); }, 900);
+            }
+        }
+    }
+
+    // ---- SCORM 1.2 ----
+    var scormAPI = null;
+    var scormResumeEntry = false;
+    var scormResumeData = null;
+    var scormDone = false;
+    var scormStartMs = Date.now();
+
+    function findAPI(win) {
+        var n = 0, w = win;
+        while (w && n < 12) {
+            if (w.API) return w.API;
+            w = (w.parent && w.parent !== w) ? w.parent : w.opener;
+            n++;
+        }
+        return null;
+    }
+
+    function scormInit() {
+        try {
+            scormAPI = findAPI(window);
+            if (!scormAPI) return;
+            if (String(scormAPI.LMSInitialize("")) !== "true") { scormAPI = null; return; }
+            var st = scormAPI.LMSGetValue("cmi.core.lesson_status");
+            if (st === "" || st === "not attempted" || st === "unknown") {
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+            }
+            if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                scormResumeEntry = true;
+                var raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                if (raw) {
+                    try {
+                        var d = JSON.parse(raw);
+                        if (d && typeof d === 'object') scormResumeData = d;
+                    } catch (e) { /* ignore bad bookmark */ }
+                }
+            }
+            scormAPI.LMSCommit("");
+        } catch (e) { scormAPI = null; }
+    }
+
+    function scormTime() {
+        var s = Math.floor((Date.now() - scormStartMs) / 1000);
+        var h = String(Math.floor(s / 3600)).padStart(4, '0');
+        s %= 3600;
+        var m = String(Math.floor(s / 60)).padStart(2, '0');
+        var ss = String(s % 60).padStart(2, '0');
+        return h + ':' + m + ':' + ss;
+    }
+
+    function scormCheckpoint() {
+        if (!scormAPI || scormDone) return;
+        try {
+            var stateOut = {};
+            SUBSTANCES.forEach(function (s) { stateOut[s.id] = labState[s.id]; });
+            scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                miss: missCount,
+                state: stateOut,
+                reflectPassed: Array.from(reflectPassed)
+            }));
+            scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+            scormAPI.LMSCommit("");
+        } catch (e) { /* ignore */ }
+    }
+
+    function scormReport() {
+        if (!scormAPI || scormDone) return;
+        try {
+            scormAPI.LMSSetValue("cmi.core.score.min", "0");
+            scormAPI.LMSSetValue("cmi.core.score.max", "100");
+            scormAPI.LMSSetValue("cmi.core.score.raw", String(currentPct()));
+            scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+            scormAPI.LMSSetValue("cmi.core.session_time", scormTime());
+            scormAPI.LMSSetValue("cmi.core.exit", "");
+            scormAPI.LMSCommit("");
+            scormDone = true;
+        } catch (e) { /* ignore */ }
+    }
+
+    function scormTerminate() {
+        if (!scormAPI) return;
+        try {
+            if (!scormDone) scormCheckpoint();
+            scormAPI.LMSFinish("");
+        } catch (e) { /* ignore */ }
+    }
+
+    function manualSave() {
+        if (!scormAPI || scormDone) return;
+        scormCheckpoint();
+        var n = document.getElementById('save-note');
+        if (n) {
+            n.classList.add('show');
+            clearTimeout(manualSave._t);
+            manualSave._t = setTimeout(function () { n.classList.remove('show'); }, 2200);
+        }
+    }
+
+    window.addEventListener('beforeunload', scormTerminate);
+    window.addEventListener('pagehide', function () { scormCheckpoint(); });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) scormCheckpoint(); });
+
+    window.addEventListener('load', function () {
+        scormInit();
+        if (scormResumeEntry && scormResumeData) {
+            beginActivity();
+        } else {
+            initIntro();
+        }
+    });
+</script>
+</body>
+</html>

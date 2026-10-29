@@ -1,0 +1,2985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NaOH and KMnO4 Standardization Virtual Lab</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        padding: 6px;
+    }
+
+    .container {
+        max-width: 1340px;
+        margin: 0 auto;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 10px;
+        padding: 8px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+        color: #fff;
+        padding: 6px 12px;
+        border-radius: 6px;
+        box-shadow: 0 3px 8px rgba(33,147,176,0.3);
+    }
+
+    .header h1 { font-size: 1.1rem; font-weight: 400; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .header p { font-size: 0.75rem; margin-top: 1px; }
+
+    .hidden { display: none !important; }
+
+    .btn {
+        background: linear-gradient(145deg, #4a90e2, #357abd);
+        color: #fff;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 13px;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        min-height: 40px;
+    }
+    .btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); background: linear-gradient(145deg, #357abd, #2c5aa0); }
+    .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-lg { min-height: 55px; min-width: 110px; font-size: 14px; }
+    .btn-primary-intro { display: block; margin: 16px auto 0; padding: 14px 30px; font-size: 16px; }
+
+    .screen { padding: 6px 4px; }
+
+    .intro-box { background: #f0f8ff; border-left: 4px solid #4a90e2; padding: 14px; border-radius: 6px; margin: 10px 0; font-size: 0.9rem; line-height: 1.5; }
+    .intro-box h3 { margin-bottom: 6px; color: #2193b0; }
+    .intro-box ol { margin-left: 20px; margin-top: 6px; }
+
+    .trial-title-bar {
+        text-align: center;
+        background: #f0f8ff;
+        border-left: 4px solid #4a90e2;
+        padding: 5px 8px;
+        border-radius: 6px;
+        margin-bottom: 6px;
+        font-weight: 600;
+        font-size: 0.92rem;
+        color: #2c3e50;
+    }
+
+    .tab-nav { display: flex; gap: 6px; margin-bottom: 0; }
+    .tab-btn {
+        flex: 1; padding: 8px; border: none; border-radius: 8px 8px 0 0; background: #e9ecef; color: #555;
+        cursor: pointer; font-weight: 600; font-size: 13px; font-family: inherit; transition: background 0.2s;
+    }
+    .tab-btn.active { background: #4a90e2; color: #fff; }
+    .tab-btn:disabled { cursor: not-allowed; opacity: 0.5; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .step-tracker { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 7px; }
+    .step {
+        flex: 1 1 130px;
+        padding: 4px 6px;
+        border-radius: 4px;
+        font-size: 0.68rem;
+        line-height: 1.15;
+        background: #f0f0f0;
+        color: #666;
+        text-align: center;
+        transition: all 0.3s;
+    }
+    .step.active { background: #fff3cd; color: #856404; font-weight: 600; }
+    .step.completed { background: #d4edda; color: #155724; }
+
+    .feedback-bar {
+        padding: 10px 14px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        font-size: 0.85rem;
+        animation: slideDown 0.3s ease-out;
+    }
+    @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .feedback-bar.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .feedback-bar.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+    .lab-panel {
+        display: grid;
+        grid-template-columns: 150px 1fr;
+        gap: 14px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        padding: 8px;
+        margin-bottom: 14px;
+        border: 1px solid #e9ecef;
+    }
+    @media (max-width: 900px) {
+        .lab-panel { grid-template-columns: 1fr; }
+    }
+    .lab-panel h4 { font-size: 0.95rem; color: #2193b0; margin-bottom: 8px; }
+
+    .materials-col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+    .equipment-row { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start; }
+    .equipment-item { text-align: center; }
+    .titration-stack { display: flex; flex-direction: column; align-items: center; }
+    .equipment-label { font-size: 0.75rem; color: #555; margin-top: 4px; }
+
+    /* --- draggable salt bottle (ported from solution-prep-solid.html) --- */
+    .draggable { cursor: move; user-select: none; touch-action: none; transition: transform 0.2s; }
+    .draggable:hover { transform: scale(1.05); }
+    .draggable.dragging { opacity: 0.7; transform: scale(1.1); }
+
+    .salt-container {
+        width: 64px; height: 78px; display: inline-block; margin: 3px; position: relative;
+    }
+    .salt-container .beaker-formula { font-size: 11px; font-weight: bold; fill: #2c3e50; }
+    .compound-label { text-align: center; font-size: 10px; margin-top: 3px; color: #555; }
+
+    /* --- scale (ported) --- */
+    .scale { position: relative; width: 140px; height: 80px; margin: 0 auto; }
+    .drop-zone {
+        border: 2px dashed #4a90e2; border-radius: 6px; padding: 6px; text-align: center; color: #666;
+        font-size: 10px; transition: all 0.3s; min-height: 26px; display: flex; align-items: center; justify-content: center;
+    }
+    .drop-zone.hover { background: #e8f2fc; border-color: #2193b0; transform: scale(1.02); }
+    .weighboat-on-scale {
+        background: rgba(248,248,248,0.95); border: 2px solid #666; border-radius: 12px; cursor: move;
+        text-align: center; font-size: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); display: flex;
+        align-items: center; justify-content: center; padding: 2px;
+    }
+
+    /* --- flasks --- */
+    .flask-svg { width: 150px; height: 225px; }
+    #erlenmeyer-flask .flask-svg, #e2-erlenmeyer-flask .flask-svg { width: 64px; height: 96px; }
+
+    /* --- buret --- */
+    .buret-wrapper { position: relative; display: inline-block; }
+    canvas { border: 1px solid #ccc; background: #f9f9f9; border-radius: 4px; }
+    #buretCanvas, #e2-buretCanvas { width: 150px; height: 113px; }
+    #zoomCanvas, #e2-zoomCanvas { width: 150px; height: 400px; }
+
+    .stopcock { position: absolute; left: 38px; top: 103px; width: 15px; height: 9px; pointer-events: none; }
+    .stopcock-handle {
+        width: 2px; height: 8px; background: #555; margin: 0 auto; border-radius: 2px;
+        transform-origin: center; transition: transform 0.15s ease;
+    }
+    .stopcock.closed .stopcock-handle { transform: rotate(90deg); }
+    .stopcock.stream .stopcock-handle { transform: rotate(0deg); background: #357abd; }
+    .stopcock.drops .stopcock-handle { transform: rotate(45deg); background: #357abd; }
+
+    .drip { position: absolute; left: 44px; top: 111px; width: 3px; height: 3px; border-radius: 50%; background: #a0c4ff; animation: dripFall 0.5s ease forwards; }
+    @keyframes dripFall { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(8px); } }
+
+    .dispense-controls { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; justify-content: center; }
+    .dispense-controls .btn { flex: 0 0 auto; }
+    .btn-compact { min-height: 30px; padding: 5px 10px; font-size: 12px; }
+    .stopcock-hint { font-size: 0.68rem; color: #777; margin-top: 2px; max-width: 220px; }
+    .equipment-label-sm { font-size: 0.7rem; color: #555; margin-top: 2px; }
+
+    .info-box {
+        background: #f0f8ff; border-left: 4px solid #28a745; padding: 10px 14px; border-radius: 6px;
+        margin: 10px 0; font-size: 0.85rem;
+    }
+
+    .target-banner {
+        background: #f0f8ff; border-left: 4px solid #2193b0; padding: 10px 14px; border-radius: 6px;
+        margin-bottom: 12px; font-size: 0.88rem; font-weight: 600; color: #2c3e50;
+    }
+
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+    .modal.open { display: flex; }
+    .modal-content { background: #fff; border-radius: 10px; padding: 22px; max-width: 380px; width: 90%; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+    .modal-content h3 { color: #2193b0; margin-bottom: 8px; }
+    .modal-hint { font-size: 0.82rem; color: #555; margin-bottom: 12px; line-height: 1.4; }
+    .pour-stage { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .pour-beaker { cursor: pointer; transition: transform 0.1s; }
+    .pour-beaker:hover { transform: scale(1.05); }
+    .pour-beaker:active { transform: scale(0.96); }
+    .pour-arrow { font-size: 0.75rem; color: #888; }
+    .pour-chute { display: block; margin: 0 auto; }
+    .pour-particle { fill: #ffffff; stroke: #000; stroke-width: 0.8; opacity: 0; }
+    .pour-particle.fall { animation: pourParticleFall 0.5s ease-in forwards; }
+    @keyframes pourParticleFall {
+        0% { opacity: 1; transform: translateY(0); }
+        100% { opacity: 0; transform: translateY(36px); }
+    }
+    .pour-reading {
+        font-family: 'Courier New', monospace; font-size: 1.3rem; font-weight: bold;
+        background: #000; color: #00ff00; display: inline-block; padding: 6px 18px; border-radius: 4px; margin: 12px 0 8px;
+    }
+    .pour-actions { display: flex; gap: 8px; justify-content: center; }
+    .pour-status { font-size: 0.8rem; margin-top: 8px; min-height: 1.2em; }
+    .pour-status.ok { color: #155724; }
+    .pour-status.warn { color: #856404; }
+
+    .buret-reading-panel { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; border-radius: 6px; margin-top: 10px; }
+    .buret-reading-panel input { padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; width: 120px; }
+    .field-error { color: #721c24; background: #f8d7da; border: 1px solid #f5c6cb; padding: 6px 10px; border-radius: 4px; margin-top: 6px; font-size: 0.8rem; }
+
+    .trial-result-box { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 12px 14px; border-radius: 6px; margin-top: 10px; font-size: 0.88rem; line-height: 1.5; }
+
+    .summary-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.85rem; }
+    .summary-table th, .summary-table td { border: 1px solid #ddd; padding: 8px 10px; text-align: center; }
+    .summary-table th { background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%); color: #fff; }
+    .summary-table td:first-child { text-align: left; font-weight: 600; color: #333; background: #f9f9f9; }
+
+    .explainer { font-size: 0.9rem; line-height: 1.6; background: #f9f9f9; border-radius: 6px; padding: 14px; margin-top: 10px; }
+
+    /* --- top-level experiment selector --- */
+    .exp-tab-nav { display: flex; gap: 6px; margin-bottom: 8px; }
+    .exp-tab-btn {
+        flex: 1; padding: 6px 10px; border: 2px solid #2193b0; border-radius: 8px;
+        background: #fff; color: #2193b0; cursor: pointer; font-weight: 700; font-size: 12.5px;
+        font-family: inherit; transition: all 0.2s; line-height: 1.2;
+    }
+    .exp-tab-btn small { display: block; font-weight: 500; font-size: 0.66rem; opacity: 0.8; margin-top: 0; }
+    .exp-tab-btn.active { background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%); color: #fff; border-color: #2193b0; }
+    .exp-tab-btn.done { border-color: #28a745; color: #28a745; }
+    .exp-tab-btn.done.active { background: linear-gradient(135deg, #28a745 0%, #6dd56d 100%); color: #fff; border-color: #28a745; }
+
+    .exp-done-banner { text-align: center; font-weight: 600; }
+
+    /* Experiment 2 reaction banner */
+    .e2-reaction-banner {
+        text-align: center;
+        background: #f6eefb;
+        border: 1px solid #e0c8ef;
+        border-radius: 6px;
+        padding: 6px 10px;
+        margin-bottom: 7px;
+        overflow-x: auto;
+    }
+    .e2-reaction-banner .eqn {
+        font-family: 'Courier New', monospace;
+        font-size: clamp(0.95rem, 2.2vw, 1.3rem);
+        font-weight: 700;
+        color: #4b006e;
+        white-space: nowrap;
+    }
+    .e2-reaction-banner .eqn b { color: #8e24aa; font-size: 1.15em; }
+    .e2-reaction-banner .ratio-note {
+        margin-top: 2px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #555;
+    }
+
+    /* deep-purple permanganate accents */
+    .kmno4-swatch { color: #4b006e; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>NaOH and KMnO<sub>4</sub> Standardization Virtual Lab</h1>
+        <p>Two titration experiments: standardize a base against KHP, then standardize diluted permanganate against iron.</p>
+    </div>
+
+    <!-- ============ INTRO SCREEN ============ -->
+    <div id="intro-screen" class="screen">
+        <div class="intro-box">
+            <h3>Why standardize a solution?</h3>
+            <p>The concentration you calculate from the mass or volume you measured out (the <strong>nominal</strong> concentration) is only as trustworthy as the reagent. Solid NaOH absorbs water from the air; stock KMnO<sub>4</sub> slowly decomposes and reacts with traces of organic matter. To get the <em>true</em> concentration you titrate against a carefully weighed <strong>primary standard</strong> &mdash; a stable, high-purity solid.</p>
+
+            <h3 style="margin-top:10px;">Experiment 1 &mdash; NaOH / KHP (1:1)</h3>
+            <ol>
+                <li>Weigh solid NaOH and prepare a solution in a volumetric flask</li>
+                <li>Weigh a KHP sample (primary standard) and titrate it with your NaOH</li>
+                <li>Compare your nominal (mass-based) and standardized (titration-based) concentrations</li>
+            </ol>
+
+            <h3 style="margin-top:10px;">Experiment 2 &mdash; Iron / Permanganate (1:5)</h3>
+            <ol>
+                <li>Measure a calculated volume of stock KMnO<sub>4</sub> and dilute it in a volumetric flask</li>
+                <li>Weigh a sample of ferrous ammonium sulfate (primary standard for Fe<sup>2+</sup>) and titrate it with your diluted KMnO<sub>4</sub></li>
+                <li>Permanganate is its own indicator &mdash; the endpoint is the first permanent pink. The reaction is <strong>not</strong> 1:1: MnO<sub>4</sub><sup>&minus;</sup> + 5&nbsp;Fe<sup>2+</sup> + 8&nbsp;H<sup>+</sup> &rarr; Mn<sup>2+</sup> + 5&nbsp;Fe<sup>3+</sup> + 4&nbsp;H<sub>2</sub>O</li>
+            </ol>
+
+            <h3 style="margin-top:10px;">Completion &amp; grading</h3>
+            <ul style="margin-left:20px; margin-top:6px;">
+                <li>You must complete <strong>both</strong> experiments. Use the two tabs at the top to switch between them.</li>
+                <li>When both are finished, a completion grade is automatically submitted to Schoology &mdash; there is no progress to save, so work straight through in one sitting.</li>
+            </ul>
+        </div>
+        <button class="btn btn-primary-intro" onclick="startSimulation()">Begin Labs</button>
+    </div>
+
+    <!-- ============ LABS CONTAINER (two experiments) ============ -->
+    <div id="labs-container" class="screen hidden">
+    <div class="exp-tab-nav">
+        <button class="exp-tab-btn active" id="exp-tab-btn-1" type="button" onclick="switchExperiment(1)">Experiment 1: NaOH / KHP<small>weigh solid &rarr; make solution &rarr; titrate (1:1)</small></button>
+        <button class="exp-tab-btn" id="exp-tab-btn-2" type="button" onclick="switchExperiment(2)">Experiment 2: Iron / Permanganate<small>dilute stock &rarr; weigh solid &rarr; titrate (1:5)</small></button>
+    </div>
+
+    <!-- ---------- EXPERIMENT 1 PANEL ---------- -->
+    <div id="exp-panel-1">
+    <div id="exp1-done-banner" class="trial-result-box exp-done-banner hidden">&#9989; Experiment 1 complete. Switch to Experiment 2 to finish the assignment.</div>
+    <div id="trial-container">
+        <div class="trial-title-bar" id="trial-title">Experiment 1 &mdash; NaOH Standardization</div>
+
+        <div class="step-tracker">
+            <div id="step1" class="step">1. Weigh NaOH</div>
+            <div id="step2" class="step">2. Prepare NaOH solution</div>
+            <div id="step3" class="step">3. Weigh KHP</div>
+            <div id="step4" class="step">4. Dissolve KHP + indicator</div>
+            <div id="step5" class="step">5. Titrate</div>
+            <div id="step6" class="step">6. Read buret &amp; record</div>
+        </div>
+
+        <div id="feedback" class="feedback-bar hidden"></div>
+
+        <div class="tab-nav">
+            <button class="tab-btn active" id="tab-btn-prep" onclick="switchTab('prep')" type="button">1. Prepare NaOH Solution</button>
+            <button class="tab-btn" id="tab-btn-standardize" onclick="switchTab('standardize')" type="button" disabled>2. Standardize with KHP</button>
+        </div>
+
+        <!-- ---- Prep phase: balance + volumetric flask ---- -->
+        <div class="tab-panel active" id="tab-prep">
+        <div id="naoh-target-banner" class="target-banner"></div>
+        <div class="lab-panel">
+            <div class="materials-col">
+                <h4>Materials</h4>
+                <div id="naoh-bottle" class="compound-row">
+                    <div class="salt-container draggable" draggable="true" data-type="salt" data-compound="NaOH">
+                        <svg viewBox="0 0 64 78" width="64" height="78">
+                            <path d="M14 10 L14 64 Q14 68 18 68 L46 68 Q50 68 50 64 L50 13 L56 6" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="50" y1="26" x2="46" y2="26" stroke="#999" stroke-width="1"/>
+                            <line x1="50" y1="40" x2="46" y2="40" stroke="#999" stroke-width="1"/>
+                            <line x1="50" y1="54" x2="46" y2="54" stroke="#999" stroke-width="1"/>
+                            <path d="M17 68 Q17 55 32 55 Q47 55 47 68 Z" fill="#ffffff" stroke="#ccc" stroke-width="1"/>
+                            <text x="32" y="45" text-anchor="middle" class="beaker-formula">NaOH</text>
+                        </svg>
+                    </div>
+                    <div class="compound-label">Solid NaOH</div>
+                </div>
+            </div>
+
+            <div>
+                <h4>Balance &amp; Volumetric Flask</h4>
+                <div class="equipment-row">
+                    <div class="equipment-item">
+                        <div class="scale">
+                            <svg class="scale-base" viewBox="0 0 140 80" style="width:140px;height:80px;">
+                                <rect x="15" y="50" width="110" height="12" fill="#ddd" stroke="#999" stroke-width="1" rx="2"/>
+                                <g id="empty-weigh-boat">
+                                    <path d="M40 35 L100 35 Q105 35 105 40 L103 45 Q100 48 95 48 L45 48 Q40 48 37 45 L35 40 Q35 35 40 35 Z" fill="#f8f8f8" stroke="#333" stroke-width="1.5"/>
+                                    <path d="M40 35 L100 35 Q105 35 105 40 L103 40 Q100 37 95 37 L45 37 Q40 37 37 40 L35 40 Q35 35 40 35" fill="none" stroke="#333" stroke-width="1"/>
+                                </g>
+                                <rect x="35" y="65" width="70" height="12" fill="#000" rx="2"/>
+                                <text x="70" y="73" text-anchor="middle" fill="#00ff00" font-family="Courier New" font-size="9" id="scale-reading">0.0000 g</text>
+                            </svg>
+                            <div class="drop-zone" id="scale-drop-zone" data-drop="scale" style="position:absolute; top:12px; left:30px; width:80px; height:26px;">Drop solid here</div>
+                            <div class="weighboat-on-scale hidden draggable" id="weighboat-with-sample" draggable="true" data-type="weigh-boat" style="position:absolute; top:15px; left:30px; width:80px; height:25px;">
+                                <span class="wb-label">Sample ready</span>
+                            </div>
+                        </div>
+                        <div class="equipment-label">Analytical Balance</div>
+                    </div>
+
+                    <div class="equipment-item" id="naoh-flask">
+                        <svg class="flask-svg" viewBox="0 0 160 240">
+                            <rect x="75" y="20" width="10" height="80" fill="none" stroke="#333" stroke-width="2.5"/>
+                            <path d="M75 100 Q75 104 77 108 Q77 114 77 120 Q75 136 64 152 Q48 168 40 184 Q32 200 35 216 Q40 232 56 237 Q72 240 80 240 Q88 240 104 237 Q120 232 125 216 Q128 200 120 184 Q112 168 96 152 Q85 136 83 120 Q83 114 83 108 Q85 104 85 100 Z" fill="none" stroke="#333" stroke-width="2.5"/>
+                            <text x="88" y="107" font-size="10" fill="#333">100.0 mL</text>
+                            <path id="flask-liquid" d="" fill="rgba(59,130,246,0.6)" style="opacity:0;"/>
+                        </svg>
+                        <div class="drop-zone" id="flask-drop-zone" data-drop="flask" style="width:110px;">Drop sample here</div>
+                        <div class="equipment-label">Volumetric Flask</div>
+                    </div>
+                </div>
+
+                <div class="dispense-controls" style="margin-top:10px;">
+                    <button class="btn" id="add-partial-water-btn" onclick="addPartialWater()" disabled>Add Water to Dissolve</button>
+                    <button class="btn" id="add-water-btn" onclick="addWaterToLine()" disabled>Fill to 100 mL Line</button>
+                    <button class="btn" id="mix-btn" onclick="mixSolution()" disabled>Mix Solution</button>
+                </div>
+
+                <div id="nominal-molarity-box" class="info-box hidden">
+                    <p>Calculate the nominal concentration of your NaOH solution and enter it below.</p>
+                    <input type="text" id="nominal-molarity-input" placeholder="e.g. 0.1234">
+                    <button class="btn" onclick="checkNominalMolarity()">Check</button>
+                    <div id="nominal-molarity-feedback" class="pour-status hidden"></div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- ---- Standardization phase: KHP + Erlenmeyer + buret (own balance, separate from NaOH prep) ---- -->
+        <div class="tab-panel" id="tab-standardize">
+        <div class="lab-panel">
+            <div class="materials-col">
+                <h4>Materials</h4>
+                <div id="khp-bottle" class="compound-row">
+                    <div class="salt-container draggable" draggable="true" data-type="khp-salt" data-compound="KHP">
+                        <svg viewBox="0 0 64 78" width="64" height="78">
+                            <path d="M14 10 L14 64 Q14 68 18 68 L46 68 Q50 68 50 64 L50 13 L56 6" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="50" y1="26" x2="46" y2="26" stroke="#999" stroke-width="1"/>
+                            <line x1="50" y1="40" x2="46" y2="40" stroke="#999" stroke-width="1"/>
+                            <line x1="50" y1="54" x2="46" y2="54" stroke="#999" stroke-width="1"/>
+                            <path d="M17 68 Q17 55 32 55 Q47 55 47 68 Z" fill="#ffffff" stroke="#ccc" stroke-width="1"/>
+                            <text x="32" y="45" text-anchor="middle" class="beaker-formula">KHP</text>
+                        </svg>
+                    </div>
+                    <div class="compound-label">Solid KHP</div>
+                </div>
+            </div>
+
+            <div>
+                <h4>Balance, Erlenmeyer Flask &amp; Buret</h4>
+                <div class="equipment-row">
+                    <div class="equipment-item">
+                        <div class="scale">
+                            <svg class="scale-base" viewBox="0 0 140 80" style="width:140px;height:80px;">
+                                <rect x="15" y="50" width="110" height="12" fill="#ddd" stroke="#999" stroke-width="1" rx="2"/>
+                                <g id="empty-weigh-boat-khp">
+                                    <path d="M40 35 L100 35 Q105 35 105 40 L103 45 Q100 48 95 48 L45 48 Q40 48 37 45 L35 40 Q35 35 40 35 Z" fill="#f8f8f8" stroke="#333" stroke-width="1.5"/>
+                                    <path d="M40 35 L100 35 Q105 35 105 40 L103 40 Q100 37 95 37 L45 37 Q40 37 37 40 L35 40 Q35 35 40 35" fill="none" stroke="#333" stroke-width="1"/>
+                                </g>
+                                <rect x="35" y="65" width="70" height="12" fill="#000" rx="2"/>
+                                <text x="70" y="73" text-anchor="middle" fill="#00ff00" font-family="Courier New" font-size="9" id="scale-reading-khp">0.0000 g</text>
+                            </svg>
+                            <div class="drop-zone" id="scale-drop-zone-khp" data-drop="scale-khp" style="position:absolute; top:12px; left:30px; width:80px; height:26px;">Drop solid here</div>
+                            <div class="weighboat-on-scale hidden draggable" id="weighboat-with-sample-khp" draggable="true" data-type="khp-weigh-boat" style="position:absolute; top:15px; left:30px; width:80px; height:25px;">
+                                <span class="wb-label">Sample ready</span>
+                            </div>
+                        </div>
+                        <div class="equipment-label">Analytical Balance</div>
+                    </div>
+
+                    <div class="equipment-item titration-stack">
+                        <div id="buret-loaded-banner" class="info-box hidden" style="margin:0 0 4px; padding:5px 10px; font-size:0.75rem;"></div>
+                        <div id="buret-wrapper" class="buret-wrapper">
+                            <canvas id="buretCanvas" width="400" height="300"></canvas>
+                            <div id="stopcock" class="stopcock closed"><div class="stopcock-handle"></div></div>
+                        </div>
+                        <div class="equipment-label-sm">Buret (50 mL)</div>
+                        <div class="dispense-controls">
+                            <button class="btn btn-compact" id="stream-btn" disabled>Stream</button>
+                            <button class="btn btn-compact" id="drops-btn" onclick="dispenseDrop()" disabled>Drops</button>
+                            <button class="btn btn-compact" id="stop-endpoint-btn" onclick="stopEndpoint()" disabled>Stop</button>
+                        </div>
+
+                        <div id="erlenmeyer-flask" style="margin-top:2px;">
+                            <svg class="flask-svg" viewBox="0 0 160 240">
+                                <rect x="72" y="20" width="16" height="50" fill="none" stroke="#333" stroke-width="2.5"/>
+                                <path d="M64 70 L96 70 L128 210 Q128 225 113 228 L47 228 Q32 225 32 210 Z" fill="none" stroke="#333" stroke-width="2.5"/>
+                                <path id="erlenmeyer-liquid" d="" fill="rgba(200,220,255,0.35)" style="opacity:0;"/>
+                            </svg>
+                            <div class="drop-zone" id="erlenmeyer-drop-zone" data-drop="erlenmeyer" style="width:110px;">Drop KHP sample here</div>
+                            <div class="equipment-label-sm">Erlenmeyer Flask</div>
+                            <div class="dispense-controls" style="margin-top:4px;">
+                                <button class="btn btn-compact" id="add-water-erlenmeyer-btn" onclick="openAddWaterModal()" disabled>Add Water</button>
+                                <button class="btn btn-compact" id="add-indicator-btn" onclick="addIndicator()" disabled>Add Phenolphthalein</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="equipment-item">
+                        <canvas id="zoomCanvas" width="150" height="400"></canvas>
+                        <div class="equipment-label">Zoomed Meniscus View</div>
+                    </div>
+                </div>
+
+                <div id="buret-reading-panel" class="buret-reading-panel hidden">
+                    <p><strong>Read the buret.</strong> Look at the zoomed meniscus view and enter the volume you read, to the nearest 0.05 mL (in mL).</p>
+                    <input type="text" id="buret-reading-input" placeholder="e.g. 24.35">
+                    <button class="btn" onclick="recordBuretReading()" id="record-reading-btn">Record Reading</button>
+                    <div id="buret-reading-error" class="field-error hidden"></div>
+                </div>
+
+                <div id="standardized-molarity-panel" class="buret-reading-panel hidden">
+                    <p>Using the KHP mass you weighed and the volume of NaOH you just recorded, calculate the standardized concentration of your NaOH solution and enter it below. KHP has a molar mass of 204.22 g/mol and reacts with NaOH in a 1:1 mole ratio.</p>
+                    <input type="text" id="standardized-molarity-input" placeholder="e.g. 0.2231">
+                    <button class="btn" onclick="checkStandardizedMolarity()" id="check-standardized-btn">Check</button>
+                    <div id="standardized-molarity-error" class="field-error hidden"></div>
+                </div>
+
+                <div id="trial-result-box" class="trial-result-box hidden"></div>
+                <button class="btn btn-lg hidden" id="next-trial-btn" onclick="proceedAfterTrial()" style="margin-top:10px;">Continue</button>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div><!-- /#exp-panel-1 -->
+
+    <!-- ---------- EXPERIMENT 2 PANEL ---------- -->
+    <div id="exp-panel-2" class="hidden">
+    <div id="exp2-done-banner" class="trial-result-box exp-done-banner hidden">&#9989; Experiment 2 complete. Switch to Experiment 1 to finish the assignment.</div>
+    <div id="e2-container">
+        <div class="trial-title-bar">Experiment 2 &mdash; Iron / Permanganate Titration</div>
+
+        <div class="e2-reaction-banner">
+            <span class="eqn">MnO<sub>4</sub><sup>&minus;</sup>&nbsp; + &nbsp;<b>5</b>&nbsp;Fe<sup>2+</sup>&nbsp; + &nbsp;8&nbsp;H<sup>+</sup>&nbsp; &rarr; &nbsp;Mn<sup>2+</sup>&nbsp; + &nbsp;<b>5</b>&nbsp;Fe<sup>3+</sup>&nbsp; + &nbsp;4&nbsp;H<sub>2</sub>O</span>
+            <div class="ratio-note">Mole ratio &mdash; 1 mol MnO<sub>4</sub><sup>&minus;</sup> reacts with 5 mol Fe<sup>2+</sup>&nbsp; (1&nbsp;:&nbsp;5)</div>
+        </div>
+
+        <div class="step-tracker">
+            <div id="e2-step1" class="step">1. Measure stock KMnO&#8324;</div>
+            <div id="e2-step2" class="step">2. Dilute to 100 mL &amp; mix</div>
+            <div id="e2-step3" class="step">3. Calculate diluted molarity</div>
+            <div id="e2-step4" class="step">4. Weigh Fe&#178;&#8314; salt (FAS)</div>
+            <div id="e2-step5" class="step">5. Dissolve in dilute acid</div>
+            <div id="e2-step6" class="step">6. Redox check</div>
+            <div id="e2-step7" class="step">7. Titrate &amp; record</div>
+        </div>
+
+        <div id="e2-feedback" class="feedback-bar hidden"></div>
+
+        <div class="tab-nav">
+            <button class="tab-btn active" id="e2-tab-btn-dilute" onclick="switchE2Tab('dilute')" type="button">1. Dilute KMnO&#8324; Solution</button>
+            <button class="tab-btn" id="e2-tab-btn-standardize" onclick="switchE2Tab('standardize')" type="button" disabled>2. Standardize with Fe&#178;&#8314;</button>
+        </div>
+
+        <!-- ---- Dilution phase ---- -->
+        <div class="tab-panel active" id="e2-tab-dilute">
+        <div id="e2-target-banner" class="target-banner"></div>
+        <div class="lab-panel">
+            <div class="materials-col">
+                <h4>Materials</h4>
+                <div class="compound-row">
+                    <div class="salt-container draggable" draggable="true" data-type="kmno4-stock" data-compound="KMnO4">
+                        <svg viewBox="0 0 64 78" width="64" height="78">
+                            <path d="M14 10 L14 64 Q14 68 18 68 L46 68 Q50 68 50 64 L50 13 L56 6" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M16 34 L48 34 L47 63 Q47 66 44 66 L20 66 Q17 66 17 63 Z" fill="#4b006e"/>
+                            <text x="32" y="26" text-anchor="middle" class="beaker-formula">KMnO&#8324;</text>
+                        </svg>
+                    </div>
+                    <div class="compound-label">Stock KMnO&#8324; (0.1000 M)</div>
+                </div>
+            </div>
+
+            <div>
+                <h4>Graduated Cylinder &amp; Volumetric Flask</h4>
+                <div class="equipment-row">
+                    <div class="equipment-item">
+                        <div class="grad-cyl-wrap" style="position:relative; width:96px; height:172px; margin:0 auto;">
+                            <svg viewBox="0 0 96 172" width="96" height="172">
+                                <path d="M30 13 Q25 5 34 4" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M30 12 L30 150 Q30 160 48 160 Q66 160 66 150 L66 12" fill="none" stroke="#333" stroke-width="2" stroke-linejoin="round"/>
+                                <ellipse cx="48" cy="165" rx="17" ry="4" fill="none" stroke="#333" stroke-width="2"/>
+                                <line x1="48" y1="160" x2="48" y2="163" stroke="#333" stroke-width="2"/>
+                                <path id="e2-cyl-liquid" d="" fill="rgba(107,27,138,0.85)" style="opacity:0;"/>
+                                <g stroke="#555" stroke-width="1">
+                                    <line x1="52" y1="122.4" x2="66" y2="122.4"/>
+                                    <line x1="52" y1="94.8"  x2="66" y2="94.8"/>
+                                    <line x1="52" y1="67.2"  x2="66" y2="67.2"/>
+                                    <line x1="52" y1="39.6"  x2="66" y2="39.6"/>
+                                </g>
+                                <g stroke="#aaa" stroke-width="0.75">
+                                    <line x1="59" y1="136.2" x2="66" y2="136.2"/>
+                                    <line x1="59" y1="108.6" x2="66" y2="108.6"/>
+                                    <line x1="59" y1="81"    x2="66" y2="81"/>
+                                    <line x1="59" y1="53.4"  x2="66" y2="53.4"/>
+                                    <line x1="59" y1="25.8"  x2="66" y2="25.8"/>
+                                </g>
+                                <g font-size="8" fill="#555" text-anchor="end">
+                                    <text x="26" y="125.4">10</text>
+                                    <text x="26" y="97.8">20</text>
+                                    <text x="26" y="70.2">30</text>
+                                    <text x="26" y="42.6">40</text>
+                                    <text x="26" y="15">mL</text>
+                                </g>
+                            </svg>
+                            <div class="drop-zone" id="e2-cyl-drop-zone" data-drop="cylinder" style="position:absolute; top:0; left:8px; width:80px; height:26px;">Pour stock here</div>
+                            <div class="weighboat-on-scale hidden draggable" id="e2-cyl-filled" draggable="true" data-type="kmno4-cylinder" style="position:absolute; top:0; left:8px; width:80px; height:22px;">
+                                <span class="wb-label">measured</span>
+                            </div>
+                        </div>
+                        <div class="equipment-label">50 mL Graduated Cylinder</div>
+                    </div>
+
+                    <div class="equipment-item" id="e2-flask">
+                        <svg class="flask-svg" viewBox="0 0 160 240">
+                            <rect x="75" y="20" width="10" height="80" fill="none" stroke="#333" stroke-width="2.5"/>
+                            <path d="M75 100 Q75 104 77 108 Q77 114 77 120 Q75 136 64 152 Q48 168 40 184 Q32 200 35 216 Q40 232 56 237 Q72 240 80 240 Q88 240 104 237 Q120 232 125 216 Q128 200 120 184 Q112 168 96 152 Q85 136 83 120 Q83 114 83 108 Q85 104 85 100 Z" fill="none" stroke="#333" stroke-width="2.5"/>
+                            <text x="88" y="107" font-size="10" fill="#333">100.0 mL</text>
+                            <path id="e2-flask-liquid" d="" fill="rgba(107,27,138,0.8)" style="opacity:0;"/>
+                        </svg>
+                        <div class="drop-zone" id="e2-flask-drop-zone" data-drop="e2-flask" style="width:110px;">Drop cylinder here</div>
+                        <div class="equipment-label">100.0 mL Volumetric Flask</div>
+                    </div>
+                </div>
+
+                <div class="dispense-controls" style="margin-top:10px;">
+                    <button class="btn" id="e2-fill-btn" onclick="e2FillToLine()" disabled>Fill to 100 mL Line</button>
+                    <button class="btn" id="e2-mix-btn" onclick="e2MixSolution()" disabled>Mix Solution</button>
+                </div>
+
+                <div id="e2-diluted-molarity-box" class="info-box hidden">
+                    <p>Calculate the diluted (nominal) concentration of your KMnO<sub>4</sub> solution from the volume of stock you measured and the 100.0 mL final volume, and enter it below.</p>
+                    <input type="text" id="e2-diluted-molarity-input" placeholder="e.g. 0.01750">
+                    <button class="btn" onclick="e2CheckDilutedMolarity()">Check</button>
+                    <div id="e2-diluted-molarity-feedback" class="pour-status hidden"></div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- ---- Standardization phase ---- -->
+        <div class="tab-panel" id="e2-tab-standardize">
+        <div class="lab-panel">
+            <div class="materials-col">
+                <h4>Materials</h4>
+                <div class="compound-row">
+                    <div class="salt-container draggable" draggable="true" data-type="fas-salt" data-compound="FAS">
+                        <svg viewBox="0 0 64 78" width="64" height="78">
+                            <path d="M14 10 L14 64 Q14 68 18 68 L46 68 Q50 68 50 64 L50 13 L56 6" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <line x1="50" y1="26" x2="46" y2="26" stroke="#999" stroke-width="1"/>
+                            <line x1="50" y1="40" x2="46" y2="40" stroke="#999" stroke-width="1"/>
+                            <line x1="50" y1="54" x2="46" y2="54" stroke="#999" stroke-width="1"/>
+                            <path d="M17 68 Q17 55 32 55 Q47 55 47 68 Z" fill="#b6e3c4" stroke="#ccc" stroke-width="1"/>
+                            <text x="32" y="45" text-anchor="middle" class="beaker-formula" font-size="9">FAS</text>
+                        </svg>
+                    </div>
+                    <div class="compound-label">Ferrous ammonium sulfate<br>(392.14 g/mol)</div>
+                </div>
+            </div>
+
+            <div>
+                <h4>Balance, Erlenmeyer Flask &amp; Buret</h4>
+                <div class="equipment-row">
+                    <div class="equipment-item">
+                        <div class="scale">
+                            <svg class="scale-base" viewBox="0 0 140 80" style="width:140px;height:80px;">
+                                <rect x="15" y="50" width="110" height="12" fill="#ddd" stroke="#999" stroke-width="1" rx="2"/>
+                                <g id="e2-empty-weigh-boat">
+                                    <path d="M40 35 L100 35 Q105 35 105 40 L103 45 Q100 48 95 48 L45 48 Q40 48 37 45 L35 40 Q35 35 40 35 Z" fill="#f8f8f8" stroke="#333" stroke-width="1.5"/>
+                                    <path d="M40 35 L100 35 Q105 35 105 40 L103 40 Q100 37 95 37 L45 37 Q40 37 37 40 L35 40 Q35 35 40 35" fill="none" stroke="#333" stroke-width="1"/>
+                                </g>
+                                <rect x="35" y="65" width="70" height="12" fill="#000" rx="2"/>
+                                <text x="70" y="73" text-anchor="middle" fill="#00ff00" font-family="Courier New" font-size="9" id="e2-scale-reading">0.0000 g</text>
+                            </svg>
+                            <div class="drop-zone" id="e2-scale-drop-zone" data-drop="e2-scale" style="position:absolute; top:12px; left:30px; width:80px; height:26px;">Drop solid here</div>
+                            <div class="weighboat-on-scale hidden draggable" id="e2-weighboat-with-sample" draggable="true" data-type="fas-weigh-boat" style="position:absolute; top:15px; left:30px; width:80px; height:25px;">
+                                <span class="wb-label">Sample ready</span>
+                            </div>
+                        </div>
+                        <div class="equipment-label">Analytical Balance</div>
+                    </div>
+
+                    <div class="equipment-item titration-stack">
+                        <div id="e2-buret-loaded-banner" class="info-box hidden" style="margin:0 0 4px; padding:5px 10px; font-size:0.75rem;"></div>
+                        <div id="e2-buret-wrapper" class="buret-wrapper">
+                            <canvas id="e2-buretCanvas" width="400" height="300"></canvas>
+                            <div id="e2-stopcock" class="stopcock closed"><div class="stopcock-handle"></div></div>
+                        </div>
+                        <div class="equipment-label-sm">Buret (50 mL)</div>
+                        <div class="dispense-controls">
+                            <button class="btn btn-compact" id="e2-stream-btn" disabled>Stream</button>
+                            <button class="btn btn-compact" id="e2-drops-btn" onclick="e2DispenseDrop()" disabled>Drops</button>
+                            <button class="btn btn-compact" id="e2-stop-endpoint-btn" onclick="e2StopEndpoint()" disabled>Stop</button>
+                        </div>
+
+                        <div id="e2-erlenmeyer-flask" style="margin-top:2px;">
+                            <svg class="flask-svg" viewBox="0 0 160 240">
+                                <rect x="72" y="20" width="16" height="50" fill="none" stroke="#333" stroke-width="2.5"/>
+                                <path d="M64 70 L96 70 L128 210 Q128 225 113 228 L47 228 Q32 225 32 210 Z" fill="none" stroke="#333" stroke-width="2.5"/>
+                                <path id="e2-erlenmeyer-liquid" d="" fill="rgba(210,225,180,0.35)" style="opacity:0;"/>
+                            </svg>
+                            <div class="drop-zone" id="e2-erlenmeyer-drop-zone" data-drop="e2-erlenmeyer" style="width:110px;">Drop FAS sample here</div>
+                            <div class="equipment-label-sm">Erlenmeyer Flask</div>
+                            <div class="dispense-controls" style="margin-top:4px;">
+                                <button class="btn btn-compact" id="e2-add-water-btn" onclick="e2AddWaterAcid()" disabled>Add Water + Dilute H&#8322;SO&#8324;</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="equipment-item">
+                        <canvas id="e2-zoomCanvas" width="150" height="400"></canvas>
+                        <div class="equipment-label">Zoomed Meniscus View</div>
+                    </div>
+                </div>
+
+                <div id="e2-buret-reading-panel" class="buret-reading-panel hidden">
+                    <p><strong>Read the buret.</strong> Look at the zoomed meniscus view and enter the volume you read, to the nearest 0.05 mL (in mL).</p>
+                    <input type="text" id="e2-buret-reading-input" placeholder="e.g. 15.35">
+                    <button class="btn" onclick="e2RecordBuretReading()" id="e2-record-reading-btn">Record Reading</button>
+                    <div id="e2-buret-reading-error" class="field-error hidden"></div>
+                </div>
+
+                <div id="e2-standardized-molarity-panel" class="buret-reading-panel hidden">
+                    <p>Using the FAS mass you weighed and the volume of KMnO<sub>4</sub> you just recorded, calculate the standardized concentration of your KMnO<sub>4</sub> solution and enter it below. Ferrous ammonium sulfate has a molar mass of <strong>392.14 g/mol</strong> and gives one Fe<sup>2+</sup> per formula unit; remember MnO<sub>4</sub><sup>&minus;</sup> reacts with Fe<sup>2+</sup> in a <strong>1:5</strong> mole ratio.</p>
+                    <input type="text" id="e2-standardized-molarity-input" placeholder="e.g. 0.01680">
+                    <button class="btn" onclick="e2CheckStandardizedMolarity()" id="e2-check-standardized-btn">Check</button>
+                    <div id="e2-standardized-molarity-error" class="field-error hidden"></div>
+                </div>
+
+                <div id="e2-trial-result-box" class="trial-result-box hidden"></div>
+                <button class="btn btn-lg hidden" id="e2-next-trial-btn" onclick="e2ProceedAfterTrial()" style="margin-top:10px;">Continue</button>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div><!-- /#exp-panel-2 -->
+    </div><!-- /#labs-container -->
+
+    <!-- ============ SUMMARY SCREEN ============ -->
+    <div id="summary-screen" class="screen hidden">
+        <div class="trial-result-box" style="text-align:center; font-weight:600;">Both experiments complete &mdash; your completion grade has been submitted to Schoology.</div>
+        <div class="intro-box">
+            <h3>Experiment 1 &mdash; NaOH / KHP (1:1)</h3>
+            <div id="summary-table-container"></div>
+        </div>
+        <div class="intro-box">
+            <h3>Experiment 2 &mdash; Iron / Permanganate (1:5)</h3>
+            <div id="e2-summary-table-container"></div>
+        </div>
+        <div class="explainer">
+            <p>In both experiments your <strong>nominal concentration</strong> (from the mass or volume you measured out) is <em>not the same</em> as your <strong>standardized concentration</strong> (from titrating against a weighed primary standard).</p>
+            <p style="margin-top:8px;"><strong>NaOH</strong> is hygroscopic and picks up water and carbonate from the air, so the mass you weigh never matches the label. <strong>Stock KMnO<sub>4</sub></strong> is not a primary standard either &mdash; it slowly decomposes and is reduced by traces of organic matter, so the bottle&rsquo;s stated concentration drifts over time. KHP and ferrous ammonium sulfate, by contrast, are stable, high-purity solids that can be weighed accurately.</p>
+            <p style="margin-top:8px;">Experiment 2 also shows that titration stoichiometry is not always 1:1: each MnO<sub>4</sub><sup>&minus;</sup> oxidizes <strong>five</strong> Fe<sup>2+</sup>, so the mole ratio has to be built into the calculation. Permanganate needs no added indicator &mdash; it is deep purple, and the endpoint is simply the first drop that leaves a permanent pale pink.</p>
+            <p style="margin-top:8px;">This is why analytical chemists standardize a titrant before using it &mdash; skipping the step carries the reagent&rsquo;s error into every later result.</p>
+        </div>
+        <button class="btn btn-primary-intro" onclick="resetAll()">Try Again</button>
+    </div>
+</div>
+
+<!-- ============ NaOH POUR MODAL ============ -->
+<div id="naoh-pour-modal" class="modal">
+    <div class="modal-content">
+        <h3>Weigh Solid NaOH</h3>
+        <p id="naoh-pour-target-text" class="modal-hint"></p>
+        <div class="pour-stage">
+            <svg viewBox="0 0 120 150" width="120" height="150" class="pour-beaker" id="naoh-pour-beaker">
+                <path d="M28 15 L28 95 Q28 102 34 102 L86 102 Q92 102 92 95 L92 20 L100 8" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M33 95 Q33 75 60 75 Q87 75 87 95 L86 100 Q85 105 78 105 L42 105 Q35 105 34 100 Z" fill="#ffffff" stroke="#ccc" stroke-width="1"/>
+                <text x="60" y="55" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c3e50">NaOH</text>
+            </svg>
+            <div class="pour-arrow">&#8595; press and hold the beaker to pour &#8595;</div>
+            <svg viewBox="0 0 20 40" width="20" height="40" class="pour-chute" id="naoh-pour-chute">
+                <circle class="pour-particle" cx="7" cy="2" r="2"/>
+                <circle class="pour-particle" cx="12" cy="2" r="1.6"/>
+                <circle class="pour-particle" cx="9" cy="2" r="2.2"/>
+                <circle class="pour-particle" cx="11" cy="2" r="1.8"/>
+            </svg>
+            <svg viewBox="0 0 140 60" width="140" height="60" class="pour-weighboat">
+                <path d="M20 15 L120 15 Q128 15 128 22 L124 32 Q118 38 108 38 L32 38 Q22 38 16 32 L12 22 Q12 15 20 15 Z" fill="#f8f8f8" stroke="#333" stroke-width="1.5"/>
+                <g id="naoh-pour-particles"></g>
+            </svg>
+        </div>
+        <div class="pour-reading" id="naoh-pour-reading">0.0000 g</div>
+        <div id="naoh-pour-error" class="field-error hidden"></div>
+        <div class="pour-actions">
+            <button class="btn" onclick="resetNaOHPour()">Reset</button>
+            <button class="btn" id="naoh-pour-confirm-btn" onclick="confirmNaOHPour()" disabled>Add to Flask</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ KHP POUR MODAL ============ -->
+<div id="khp-pour-modal" class="modal">
+    <div class="modal-content">
+        <h3>Weigh Solid KHP</h3>
+        <p id="khp-pour-target-text" class="modal-hint"></p>
+        <div class="pour-stage">
+            <svg viewBox="0 0 120 150" width="120" height="150" class="pour-beaker" id="khp-pour-beaker">
+                <path d="M28 15 L28 95 Q28 102 34 102 L86 102 Q92 102 92 95 L92 20 L100 8" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M33 95 Q33 75 60 75 Q87 75 87 95 L86 100 Q85 105 78 105 L42 105 Q35 105 34 100 Z" fill="#ffffff" stroke="#ccc" stroke-width="1"/>
+                <text x="60" y="55" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c3e50">KHP</text>
+            </svg>
+            <div class="pour-arrow">&#8595; press and hold the beaker to pour &#8595;</div>
+            <svg viewBox="0 0 20 40" width="20" height="40" class="pour-chute" id="khp-pour-chute">
+                <circle class="pour-particle" cx="7" cy="2" r="2"/>
+                <circle class="pour-particle" cx="12" cy="2" r="1.6"/>
+                <circle class="pour-particle" cx="9" cy="2" r="2.2"/>
+                <circle class="pour-particle" cx="11" cy="2" r="1.8"/>
+            </svg>
+            <svg viewBox="0 0 140 60" width="140" height="60" class="pour-weighboat">
+                <path d="M20 15 L120 15 Q128 15 128 22 L124 32 Q118 38 108 38 L32 38 Q22 38 16 32 L12 22 Q12 15 20 15 Z" fill="#f8f8f8" stroke="#333" stroke-width="1.5"/>
+                <g id="khp-pour-particles"></g>
+            </svg>
+        </div>
+        <div class="pour-reading" id="khp-pour-reading">0.0000 g</div>
+        <div id="khp-pour-status" class="pour-status"></div>
+        <div class="pour-actions">
+            <button class="btn" onclick="resetKHPPour()">Reset</button>
+            <button class="btn" id="khp-pour-confirm-btn" onclick="confirmKHPPour()" disabled>Add to Flask</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ WATER QUESTION MODAL ============ -->
+<div id="water-question-modal" class="modal">
+    <div class="modal-content">
+        <h3>Add Water to the Erlenmeyer Flask</h3>
+        <p class="modal-hint">Before you titrate, the KHP needs to be dissolved in some water.</p>
+        <p style="font-weight:600; margin:10px 0;">Does it matter exactly how much water you add?</p>
+        <div class="pour-actions" id="water-question-buttons">
+            <button class="btn" onclick="answerWaterQuestion(true)">Yes, it matters</button>
+            <button class="btn" onclick="answerWaterQuestion(false)">No, it doesn't matter</button>
+        </div>
+        <div id="water-question-feedback" class="pour-status hidden" style="text-align:left; margin-top:10px;"></div>
+        <button class="btn hidden" id="water-question-continue-btn" onclick="continueAfterWaterQuestion()" style="margin-top:10px;">Add the Water</button>
+    </div>
+</div>
+
+<!-- ============ REDOX CONCEPT MODAL (Experiment 2) ============ -->
+<div id="e2-redox-modal" class="modal">
+    <div class="modal-content" style="max-width:460px;">
+        <h3>Before You Titrate: The Redox Reaction</h3>
+        <p class="modal-hint" style="font-family:'Courier New',monospace; font-size:0.9rem;">MnO&#8324;&#8315; + 5 Fe&#178;&#8314; + 8 H&#8314; &rarr; Mn&#178;&#8314; + 5 Fe&#179;&#8314; + 4 H&#8322;O</p>
+        <div id="e2-redox-qtext" style="font-weight:600; margin:12px 0 8px;"></div>
+        <div id="e2-redox-choices" class="pour-actions" style="flex-wrap:wrap;"></div>
+        <div id="e2-redox-feedback" class="pour-status hidden" style="text-align:left; margin-top:10px;"></div>
+        <button class="btn hidden" id="e2-redox-next-btn" onclick="e2RedoxNext()" style="margin-top:12px;">Next</button>
+    </div>
+</div>
+
+<!-- ============ KMnO4 MEASURE MODAL (Experiment 2) ============ -->
+<div id="e2-kmno4-pour-modal" class="modal">
+    <div class="modal-content">
+        <h3>Measure Stock KMnO&#8324;</h3>
+        <p id="e2-kmno4-pour-target-text" class="modal-hint"></p>
+        <div class="pour-stage">
+            <svg viewBox="0 0 120 150" width="120" height="150" class="pour-beaker" id="e2-kmno4-pour-beaker">
+                <path d="M28 15 L28 95 Q28 102 34 102 L86 102 Q92 102 92 95 L92 20 L100 8" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M31 55 L89 55 L86 96 Q86 100 82 100 L38 100 Q34 100 34 96 Z" fill="#4b006e"/>
+                <text x="58" y="42" text-anchor="middle" font-size="14" font-weight="bold" fill="#4b006e">KMnO&#8324;</text>
+            </svg>
+            <div class="pour-arrow">&#8595; press and hold the beaker to pour into the cylinder &#8595;</div>
+            <svg viewBox="0 0 48 120" width="44" height="110" class="pour-chute">
+                <path d="M16 6 L16 104 Q16 112 25 112 Q34 112 34 104 L34 6" fill="none" stroke="#333" stroke-width="1.5" stroke-linejoin="round"/>
+                <ellipse cx="25" cy="114" rx="9" ry="2.5" fill="none" stroke="#333" stroke-width="1.5"/>
+                <path id="e2-kmno4-cyl-fill" d="" fill="#6b1b8a" style="opacity:0.9;"/>
+                <g stroke="#555" stroke-width="1">
+                    <line x1="26" y1="72" x2="34" y2="72"/>
+                    <line x1="26" y1="40" x2="34" y2="40"/>
+                    <line x1="26" y1="8"  x2="34" y2="8"/>
+                </g>
+                <g stroke="#aaa" stroke-width="0.75">
+                    <line x1="30" y1="88" x2="34" y2="88"/>
+                    <line x1="30" y1="56" x2="34" y2="56"/>
+                    <line x1="30" y1="24" x2="34" y2="24"/>
+                </g>
+                <g font-size="7" fill="#555" text-anchor="end">
+                    <text x="13" y="75">10</text>
+                    <text x="13" y="43">20</text>
+                    <text x="13" y="11">30</text>
+                </g>
+            </svg>
+        </div>
+        <div class="pour-reading" id="e2-kmno4-pour-reading">0.00 mL</div>
+        <div id="e2-kmno4-pour-error" class="field-error hidden"></div>
+        <div class="pour-actions">
+            <button class="btn" onclick="e2ResetKMnO4Pour()">Reset</button>
+            <button class="btn" id="e2-kmno4-pour-confirm-btn" onclick="e2ConfirmKMnO4Pour()" disabled>Use This Volume</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ FERROUS AMMONIUM SULFATE POUR MODAL (Experiment 2) ============ -->
+<div id="e2-fas-pour-modal" class="modal">
+    <div class="modal-content">
+        <h3>Weigh Ferrous Ammonium Sulfate</h3>
+        <p id="e2-fas-pour-target-text" class="modal-hint"></p>
+        <div class="pour-stage">
+            <svg viewBox="0 0 120 150" width="120" height="150" class="pour-beaker" id="e2-fas-pour-beaker">
+                <path d="M28 15 L28 95 Q28 102 34 102 L86 102 Q92 102 92 95 L92 20 L100 8" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M33 95 Q33 75 60 75 Q87 75 87 95 L86 100 Q85 105 78 105 L42 105 Q35 105 34 100 Z" fill="#b6e3c4" stroke="#ccc" stroke-width="1"/>
+                <text x="60" y="55" text-anchor="middle" font-size="14" font-weight="bold" fill="#2c3e50">FAS</text>
+            </svg>
+            <div class="pour-arrow">&#8595; press and hold the beaker to pour &#8595;</div>
+            <svg viewBox="0 0 20 40" width="20" height="40" class="pour-chute" id="e2-fas-pour-chute">
+                <circle class="pour-particle" cx="7" cy="2" r="2"/>
+                <circle class="pour-particle" cx="12" cy="2" r="1.6"/>
+                <circle class="pour-particle" cx="9" cy="2" r="2.2"/>
+                <circle class="pour-particle" cx="11" cy="2" r="1.8"/>
+            </svg>
+            <svg viewBox="0 0 140 60" width="140" height="60" class="pour-weighboat">
+                <path d="M20 15 L120 15 Q128 15 128 22 L124 32 Q118 38 108 38 L32 38 Q22 38 16 32 L12 22 Q12 15 20 15 Z" fill="#f8f8f8" stroke="#333" stroke-width="1.5"/>
+                <g id="e2-fas-pour-particles"></g>
+            </svg>
+        </div>
+        <div class="pour-reading" id="e2-fas-pour-reading">0.0000 g</div>
+        <div id="e2-fas-pour-status" class="pour-status"></div>
+        <div class="pour-actions">
+            <button class="btn" onclick="e2ResetFASPour()">Reset</button>
+            <button class="btn" id="e2-fas-pour-confirm-btn" onclick="e2ConfirmFASPour()" disabled>Add to Flask</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/* =========================================================
+   SECTION A: Data & State
+   ========================================================= */
+const compounds = {
+    NaOH: { name: 'NaOH', mw: 40.00 },
+    KHP:  { name: 'KHP', mw: 204.22 }
+};
+
+const NAOH_VOLUME_L = 0.100;        // fixed 100.0 mL volumetric flask
+const BURET_CAPACITY_ML = 50;
+
+const NAOH_MOLARITY_MIN = 0.100;
+const NAOH_MOLARITY_MAX = 0.300;
+const KHP_VOLUME_MIN_ML = 10;
+const KHP_VOLUME_MAX_ML = 20;
+
+const NAOH_POUR_VISUAL_MAX = 1.8;   // g, pile reaches full visual size around here
+const NAOH_POUR_TICK_FAST_MIN = 0.006;   // g added per pour tick while far from target
+const NAOH_POUR_TICK_FAST_MAX = 0.014;
+const NAOH_POUR_TICK_SLOW_MIN = 0.0009;  // g added per pour tick once close to target, for fine control
+const NAOH_POUR_TICK_SLOW_MAX = 0.0027;
+const NAOH_POUR_SLOWDOWN_START = 0.6;    // fraction of target mass where the pour begins slowing down
+const KHP_POUR_TICK_FAST_MIN = 0.003;    // g added per pour tick while far from the min target
+const KHP_POUR_TICK_FAST_MAX = 0.007;
+const KHP_POUR_TICK_SLOW_MIN = 0.00075;  // g added per pour tick once inside the acceptable window, for fine control
+const KHP_POUR_TICK_SLOW_MAX = 0.00225;
+const KHP_POUR_SLOWDOWN_START = 0.6;     // fraction of the min target where the pour begins slowing down
+const POUR_TICK_INTERVAL_MS = 55;
+
+const PARTIAL_WATER_PATH = 'M60 220 L100 220 Q108 224 112 232 Q116 236 112 238 Q100 239 80 240 Q60 239 48 238 Q44 236 48 232 Q52 224 60 220 Z';
+const FULL_FLASK_PATH = 'M75 100 Q75 104 77 108 Q77 114 77 120 Q75 136 64 152 Q48 168 40 184 Q32 200 35 216 Q40 232 56 237 Q72 240 80 240 Q88 240 104 237 Q120 232 125 216 Q128 200 120 184 Q112 168 96 152 Q85 136 83 120 Q83 114 83 108 Q85 104 85 100 L75 100 Z';
+const ERLENMEYER_LIQUID_PATH = 'M50 175 L110 175 Q122 195 122 210 Q122 224 110 227 L50 227 Q38 224 38 210 Q38 195 50 175 Z';
+
+const ENDPOINT_COLORS = {
+    'clear':      'rgba(200,220,255,0.25)',
+    'faint-pink': 'rgba(255,192,203,0.30)',
+    'pale-pink':  'rgba(255,192,203,0.55)',
+    'pink':       'rgba(255,105,180,0.60)',
+    'hot-pink':   'rgba(255,20,147,0.85)'
+};
+
+function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+function generateTargetMolarity() {
+    const steps = [];
+    for (let m = NAOH_MOLARITY_MIN; m <= NAOH_MOLARITY_MAX + 1e-9; m += 0.005) steps.push(+m.toFixed(3));
+    return steps[Math.floor(Math.random() * steps.length)];
+}
+
+function makeEmptyTrial() {
+    return {
+        targetMolarity: null,
+        naohMassWeighed: null,
+        naohVolumeL: NAOH_VOLUME_L,
+        nominalMolarity: null,
+        khpMassWeighed: null,
+        khpMolesUsed: null,
+        khpMassMinTarget: null,
+        khpMassMaxTarget: null,
+        naohVolumeDispensedML: null,
+        standardizedMolarity: null,
+        trueEquivalenceVolumeML: null,
+        overshootFlag: false,
+        completed: false
+    };
+}
+
+let simState = {
+    currentTrial: 1,
+    currentStepInTrial: 1,
+    trial1: makeEmptyTrial(),
+    trial2: makeEmptyTrial(),
+    completed: false,
+    exp1Done: false,
+    exp2Done: false
+};
+
+function currentTrialData() { return simState['trial' + simState.currentTrial]; }
+
+let draggedElement = null;
+let draggedData = {};
+let isAnimating = false;
+let brCtx, znCtx;
+
+let dispenseState = { stopcock: 'closed', currentVolumeML: 0, isDispensing: false, streamIntervalId: null, stopped: false };
+let pourState = { mass: 0 };
+
+/* =========================================================
+   SECTION B: Step / Trial Manager
+   ========================================================= */
+function updateProgress() {
+    for (let i = 1; i <= 6; i++) {
+        const el = document.getElementById('step' + i);
+        if (!el) continue;
+        el.classList.remove('active', 'completed');
+        if (i < simState.currentStepInTrial) el.classList.add('completed');
+        else if (i === simState.currentStepInTrial) el.classList.add('active');
+    }
+}
+
+function advanceStep() {
+    simState.currentStepInTrial++;
+    if (simState.currentStepInTrial > 6) {
+        completeTrial(simState.currentTrial);
+    } else {
+        updateProgress();
+    }
+}
+
+function completeTrial(n) {
+    simState['trial' + n].completed = true;
+    markExperimentDone(1);
+}
+
+/* ---- Top-level experiment switching + combined completion ---- */
+function switchExperiment(n) {
+    document.getElementById('exp-panel-1').classList.toggle('hidden', n !== 1);
+    document.getElementById('exp-panel-2').classList.toggle('hidden', n !== 2);
+    document.getElementById('exp-tab-btn-1').classList.toggle('active', n === 1);
+    document.getElementById('exp-tab-btn-2').classList.toggle('active', n === 2);
+}
+
+function markExperimentDone(n) {
+    if (n === 1) {
+        simState.exp1Done = true;
+        document.getElementById('exp1-done-banner').classList.remove('hidden');
+        document.getElementById('trial-container').classList.add('hidden');
+        document.getElementById('exp-tab-btn-1').classList.add('done');
+    } else {
+        simState.exp2Done = true;
+        document.getElementById('exp2-done-banner').classList.remove('hidden');
+        document.getElementById('e2-container').classList.add('hidden');
+        document.getElementById('exp-tab-btn-2').classList.add('done');
+    }
+    if (simState.exp1Done && simState.exp2Done) {
+        renderCombinedSummary();
+    } else {
+        switchExperiment(n === 1 ? 2 : 1);
+    }
+}
+
+/* =========================================================
+   SECTION C: Drag & Drop + Prep Phase (forked from solution-prep-solid.html)
+   ========================================================= */
+function initializeDragAndDrop() {
+    document.querySelectorAll('.draggable').forEach(item => {
+        item.removeEventListener('dragstart', handleDragStart);
+        item.removeEventListener('dragend', handleDragEnd);
+    });
+    document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.removeEventListener('dragover', handleDragOver);
+        zone.removeEventListener('drop', handleDrop);
+        zone.removeEventListener('dragenter', handleDragEnter);
+        zone.removeEventListener('dragleave', handleDragLeave);
+    });
+    document.querySelectorAll('.draggable').forEach(item => {
+        item.addEventListener('dragstart', handleDragStart);
+        item.addEventListener('dragend', handleDragEnd);
+    });
+    document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.addEventListener('dragover', handleDragOver);
+        zone.addEventListener('drop', handleDrop);
+        zone.addEventListener('dragenter', handleDragEnter);
+        zone.addEventListener('dragleave', handleDragLeave);
+    });
+}
+
+function handleDragStart(e) {
+    if (isAnimating) { e.preventDefault(); return; }
+    draggedElement = e.currentTarget;
+    draggedData = { type: draggedElement.getAttribute('data-type'), compound: draggedElement.getAttribute('data-compound') };
+    draggedElement.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', '');
+}
+function handleDragEnd() {
+    if (draggedElement) draggedElement.classList.remove('dragging');
+    draggedElement = null; draggedData = {};
+}
+function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
+function handleDragEnter(e) {
+    e.preventDefault();
+    const target = e.currentTarget;
+    const dropType = target.getAttribute('data-drop');
+    if (draggedElement && dropType && isValidDrop(draggedData.type, dropType)) target.classList.add('hover');
+}
+function handleDragLeave(e) {
+    const target = e.currentTarget;
+    if (!target.contains(e.relatedTarget)) target.classList.remove('hover');
+}
+function handleDrop(e) {
+    e.preventDefault();
+    const target = e.currentTarget;
+    target.classList.remove('hover');
+    if (!draggedElement || isAnimating) return;
+    const dropZone = target.getAttribute('data-drop');
+    const e2Types = ['kmno4-stock', 'kmno4-cylinder', 'fas-salt', 'fas-weigh-boat'];
+    if (!dropZone || !isValidDrop(draggedData.type, dropZone)) {
+        (e2Types.indexOf(draggedData.type) !== -1 ? e2ShowError : showError)("That doesn't go there.");
+        return;
+    }
+    if (draggedData.type === 'salt' && dropZone === 'scale') openNaOHPourModal();
+    else if (draggedData.type === 'khp-salt' && dropZone === 'scale-khp') openKHPPourModal();
+    else if (draggedData.type === 'weigh-boat' && dropZone === 'flask') handleWeighBoatToFlask();
+    else if (draggedData.type === 'khp-weigh-boat' && dropZone === 'erlenmeyer') handleWeighBoatToErlenmeyer();
+    else if (draggedData.type === 'kmno4-stock' && dropZone === 'cylinder') e2OpenKMnO4PourModal();
+    else if (draggedData.type === 'kmno4-cylinder' && dropZone === 'e2-flask') e2HandleCylinderToFlask();
+    else if (draggedData.type === 'fas-salt' && dropZone === 'e2-scale') e2OpenFASPourModal();
+    else if (draggedData.type === 'fas-weigh-boat' && dropZone === 'e2-erlenmeyer') e2HandleWeighBoatToErlenmeyer();
+}
+function isValidDrop(type, dropZone) {
+    const valid = {
+        'salt': ['scale'], 'khp-salt': ['scale-khp'], 'weigh-boat': ['flask'], 'khp-weigh-boat': ['erlenmeyer'],
+        'kmno4-stock': ['cylinder'], 'kmno4-cylinder': ['e2-flask'], 'fas-salt': ['e2-scale'], 'fas-weigh-boat': ['e2-erlenmeyer']
+    };
+    return valid[type] && valid[type].includes(dropZone);
+}
+
+function handleWeighBoatToFlask() {
+    const trial = currentTrialData();
+    if (trial.naohMassWeighed) transferSolidToFlask();
+    else showError('No sample on the weigh boat yet.');
+}
+function handleWeighBoatToErlenmeyer() {
+    const trial = currentTrialData();
+    if (trial.khpMassWeighed) transferKHPToErlenmeyer();
+    else showError('No sample on the weigh boat yet.');
+}
+
+function showError(message) {
+    const el = document.getElementById('feedback');
+    el.className = 'feedback-bar error';
+    el.textContent = message;
+    el.classList.remove('hidden');
+    setTimeout(() => el.classList.add('hidden'), 4000);
+}
+function showSuccess(message) {
+    const el = document.getElementById('feedback');
+    el.className = 'feedback-bar success';
+    el.textContent = message;
+    el.classList.remove('hidden');
+    setTimeout(() => el.classList.add('hidden'), 5000);
+}
+
+function recordScaleReading(mass, label, suffix) {
+    document.getElementById('scale-reading' + suffix).textContent = mass.toFixed(4) + ' g';
+    document.getElementById('empty-weigh-boat' + suffix).style.opacity = '0';
+    document.getElementById('scale-drop-zone' + suffix).classList.add('hidden');
+    const wb = document.getElementById('weighboat-with-sample' + suffix);
+    wb.classList.remove('hidden');
+    wb.querySelector('.wb-label').textContent = mass.toFixed(4) + ' g ' + label;
+    initializeDragAndDrop();
+}
+
+/* =========================================================
+   Pour modals: student manually weighs NaOH and KHP
+   ========================================================= */
+let pourHoldInterval = null;
+
+function renderPourPile(groupId, mass, visualMax, fill) {
+    const g = document.getElementById(groupId);
+    g.innerHTML = '';
+    if (mass <= 0) return;
+    const frac = Math.min(mass / visualMax, 1);
+    const count = 4 + Math.round(frac * 20);
+    for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const spread = 6 + frac * 18;
+        const r = Math.random() * spread;
+        const cx = 70 + Math.cos(angle) * r;
+        const cy = 27 + Math.sin(angle) * r * 0.35;
+        const rad = 1 + Math.random() * 1.3;
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('cx', cx.toFixed(1));
+        c.setAttribute('cy', cy.toFixed(1));
+        c.setAttribute('r', rad.toFixed(1));
+        c.setAttribute('fill', fill || '#ffffff');
+        c.setAttribute('stroke', '#000');
+        c.setAttribute('stroke-width', '0.6');
+        g.appendChild(c);
+    }
+}
+
+function triggerPourParticles(chuteId) {
+    const chute = document.getElementById(chuteId);
+    const particles = chute.querySelectorAll('.pour-particle');
+    const p = particles[Math.floor(Math.random() * particles.length)];
+    p.classList.remove('fall');
+    void p.getBBox();
+    p.classList.add('fall');
+}
+
+function startPourHold(compound) {
+    if (pourHoldInterval) return;
+    pourTick(compound);
+    pourHoldInterval = setInterval(() => pourTick(compound), POUR_TICK_INTERVAL_MS);
+}
+
+function stopPourHold() {
+    clearInterval(pourHoldInterval);
+    pourHoldInterval = null;
+}
+
+function naohRequiredMass(trial) {
+    return trial.targetMolarity * compounds.NaOH.mw * trial.naohVolumeL;
+}
+
+function pourTickSize(mass, target, slowdownStart, fastMin, fastMax, slowMin, slowMax) {
+    const ratio = target > 0 ? mass / target : 0;
+    const t = Math.min(Math.max((ratio - slowdownStart) / (1 - slowdownStart), 0), 1);
+    return {
+        min: fastMin + (slowMin - fastMin) * t,
+        max: fastMax + (slowMax - fastMax) * t
+    };
+}
+
+function pourTick(compound) {
+    if (compound === 'NaOH') {
+        const trial = currentTrialData();
+        const target = naohRequiredMass(trial);
+        const { min: tickMin, max: tickMax } = pourTickSize(
+            pourState.mass, target, NAOH_POUR_SLOWDOWN_START,
+            NAOH_POUR_TICK_FAST_MIN, NAOH_POUR_TICK_FAST_MAX, NAOH_POUR_TICK_SLOW_MIN, NAOH_POUR_TICK_SLOW_MAX
+        );
+        pourState.mass = +(pourState.mass + randomInRange(tickMin, tickMax)).toFixed(4);
+        document.getElementById('naoh-pour-reading').textContent = pourState.mass.toFixed(4) + ' g';
+        renderPourPile('naoh-pour-particles', pourState.mass, NAOH_POUR_VISUAL_MAX);
+        document.getElementById('naoh-pour-confirm-btn').disabled = false;
+        triggerPourParticles('naoh-pour-chute');
+    } else {
+        const trial = currentTrialData();
+        if (pourState.mass >= trial.khpMassMaxTarget) { stopPourHold(); updateKHPPourStatus(); return; }
+        const { min: tickMin, max: tickMax } = pourTickSize(
+            pourState.mass, trial.khpMassMinTarget, KHP_POUR_SLOWDOWN_START,
+            KHP_POUR_TICK_FAST_MIN, KHP_POUR_TICK_FAST_MAX, KHP_POUR_TICK_SLOW_MIN, KHP_POUR_TICK_SLOW_MAX
+        );
+        pourState.mass = Math.min(+(pourState.mass + randomInRange(tickMin, tickMax)).toFixed(4), trial.khpMassMaxTarget);
+        document.getElementById('khp-pour-reading').textContent = pourState.mass.toFixed(4) + ' g';
+        renderPourPile('khp-pour-particles', pourState.mass, trial.khpMassMaxTarget);
+        document.getElementById('khp-pour-confirm-btn').disabled = pourState.mass < trial.khpMassMinTarget;
+        triggerPourParticles('khp-pour-chute');
+        updateKHPPourStatus();
+        if (pourState.mass >= trial.khpMassMaxTarget) stopPourHold();
+    }
+}
+
+function openNaOHPourModal() {
+    pourState.mass = 0;
+    stopPourHold();
+    document.getElementById('naoh-pour-reading').textContent = '0.0000 g';
+    document.getElementById('naoh-pour-error').classList.add('hidden');
+    renderPourPile('naoh-pour-particles', 0, NAOH_POUR_VISUAL_MAX);
+    document.getElementById('naoh-pour-confirm-btn').disabled = true;
+    const trial = currentTrialData();
+    document.getElementById('naoh-pour-target-text').textContent =
+        'Target: prepare 100.0 mL of ' + trial.targetMolarity.toFixed(3) + ' M NaOH solution (molar mass 40.00 g/mol). Calculate the mass you need, then press and hold the beaker to pour it into the weigh boat.';
+    document.getElementById('naoh-pour-modal').classList.add('open');
+}
+
+function resetNaOHPour() {
+    pourState.mass = 0;
+    stopPourHold();
+    document.getElementById('naoh-pour-reading').textContent = '0.0000 g';
+    document.getElementById('naoh-pour-error').classList.add('hidden');
+    renderPourPile('naoh-pour-particles', 0, NAOH_POUR_VISUAL_MAX);
+    document.getElementById('naoh-pour-confirm-btn').disabled = true;
+}
+
+function confirmNaOHPour() {
+    stopPourHold();
+    const trial = currentTrialData();
+    const requiredMass = naohRequiredMass(trial);
+    const percentError = Math.abs(pourState.mass - requiredMass) / requiredMass;
+    const errorEl = document.getElementById('naoh-pour-error');
+    if (percentError > 0.20) {
+        errorEl.textContent = "That gram value doesn't look right for your target concentration — double check your math, then Reset and pour again.";
+        errorEl.classList.remove('hidden');
+        return;
+    }
+    errorEl.classList.add('hidden');
+    trial.naohMassWeighed = pourState.mass;
+    document.getElementById('naoh-pour-modal').classList.remove('open');
+    recordScaleReading(pourState.mass, 'NaOH', '');
+    showSuccess('Balance reads ' + pourState.mass.toFixed(4) + ' g of NaOH.');
+    advanceStep();
+}
+
+function openKHPPourModal() {
+    pourState.mass = 0;
+    stopPourHold();
+    const trial = currentTrialData();
+    trial.khpMassMinTarget = trial.nominalMolarity * (KHP_VOLUME_MIN_ML / 1000) * compounds.KHP.mw;
+    trial.khpMassMaxTarget = trial.nominalMolarity * (KHP_VOLUME_MAX_ML / 1000) * compounds.KHP.mw;
+    document.getElementById('khp-pour-reading').textContent = '0.0000 g';
+    renderPourPile('khp-pour-particles', 0, trial.khpMassMaxTarget);
+    document.getElementById('khp-pour-confirm-btn').disabled = true;
+    document.getElementById('khp-pour-target-text').textContent =
+        'Your NaOH solution is about ' + trial.nominalMolarity.toFixed(3) + ' M. KHP has a molar mass of ' + compounds.KHP.mw.toFixed(2) + ' g/mol and reacts with NaOH in a 1:1 mole ratio. The titration should take between ' + KHP_VOLUME_MIN_ML + ' and ' + KHP_VOLUME_MAX_ML + ' mL of it. Calculate the KHP mass that lands in that range, then press and hold the beaker to pour it (the balance won’t let you add more than the trial allows).';
+    updateKHPPourStatus();
+    document.getElementById('khp-pour-modal').classList.add('open');
+}
+
+function updateKHPPourStatus() {
+    const trial = currentTrialData();
+    const statusEl = document.getElementById('khp-pour-status');
+    if (pourState.mass <= 0) {
+        statusEl.className = 'pour-status';
+        statusEl.textContent = '';
+    } else if (pourState.mass < trial.khpMassMinTarget) {
+        statusEl.className = 'pour-status warn';
+        statusEl.textContent = 'Keep pouring — that’s not yet enough for a ' + KHP_VOLUME_MIN_ML + ' mL titration.';
+    } else if (pourState.mass >= trial.khpMassMaxTarget) {
+        statusEl.className = 'pour-status warn';
+        statusEl.textContent = 'That’s the most KHP you should add this trial — any more and the titration would need over ' + KHP_VOLUME_MAX_ML + ' mL.';
+    } else {
+        statusEl.className = 'pour-status ok';
+        statusEl.textContent = 'Good — this amount should take between ' + KHP_VOLUME_MIN_ML + ' and ' + KHP_VOLUME_MAX_ML + ' mL to titrate.';
+    }
+}
+
+function resetKHPPour() {
+    pourState.mass = 0;
+    stopPourHold();
+    const trial = currentTrialData();
+    document.getElementById('khp-pour-reading').textContent = '0.0000 g';
+    renderPourPile('khp-pour-particles', 0, trial.khpMassMaxTarget);
+    document.getElementById('khp-pour-confirm-btn').disabled = true;
+    updateKHPPourStatus();
+}
+
+function confirmKHPPour() {
+    stopPourHold();
+    const trial = currentTrialData();
+    trial.khpMassWeighed = pourState.mass;
+    trial.khpMolesUsed = pourState.mass / compounds.KHP.mw;
+    trial.trueEquivalenceVolumeML = (trial.khpMolesUsed / trial.nominalMolarity) * 1000;
+    document.getElementById('khp-pour-modal').classList.remove('open');
+    recordScaleReading(pourState.mass, 'KHP', '-khp');
+    showSuccess('Balance reads ' + pourState.mass.toFixed(4) + ' g of KHP.');
+    advanceStep();
+}
+
+function switchTab(name) {
+    const prepBtn = document.getElementById('tab-btn-prep');
+    const standardizeBtn = document.getElementById('tab-btn-standardize');
+    if (name === 'standardize' && standardizeBtn.disabled) return;
+    document.getElementById('tab-prep').classList.toggle('active', name === 'prep');
+    document.getElementById('tab-standardize').classList.toggle('active', name === 'standardize');
+    prepBtn.classList.toggle('active', name === 'prep');
+    standardizeBtn.classList.toggle('active', name === 'standardize');
+}
+
+function enterStandardizationPhase() {
+    document.getElementById('tab-btn-standardize').disabled = false;
+    switchTab('standardize');
+    const trial = currentTrialData();
+    const banner = document.getElementById('buret-loaded-banner');
+    banner.textContent = 'Your NaOH solution has been loaded into the buret above, ready to titrate.';
+    banner.classList.remove('hidden');
+}
+
+/* ---- NaOH: transfer, dissolve, fill to mark, mix (ported from solution-prep-solid.html) ---- */
+function transferSolidToFlask() {
+    if (isAnimating) return;
+    isAnimating = true;
+    document.getElementById('weighboat-with-sample').classList.add('hidden');
+    document.getElementById('flask-drop-zone').classList.add('hidden');
+    addSolidParticlesToFlask();
+    setTimeout(() => {
+        isAnimating = false;
+        document.getElementById('add-partial-water-btn').disabled = false;
+        showSuccess('NaOH transferred to the flask. Now add water to dissolve it.');
+    }, 1000);
+}
+
+function addSolidParticlesToFlask() {
+    const flaskSvg = document.querySelector('#naoh-flask .flask-svg');
+    const existing = document.getElementById('solid-particles');
+    if (existing) existing.remove();
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.id = 'solid-particles';
+    const particles = [
+        {x:72,y:235,r:2.5},{x:77,y:237,r:1.5},{x:83,y:237,r:2.5},
+        {x:88,y:235,r:1.5},{x:67,y:232,r:1.5},{x:93,y:232,r:2.5},
+        {x:80,y:233,r:1.5},{x:74,y:230,r:1.5},{x:86,y:230,r:1.5},
+        {x:78,y:238,r:1.5},{x:82,y:232,r:1.5},{x:70,y:233,r:1.5},
+        {x:90,y:233,r:1.5},{x:75,y:228,r:1},{x:85,y:228,r:1}
+    ];
+    particles.forEach((p, i) => {
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('cx', p.x); c.setAttribute('cy', p.y); c.setAttribute('r', p.r);
+        c.setAttribute('fill', '#ffffff'); c.setAttribute('stroke', '#000000'); c.setAttribute('stroke-width', '0.8');
+        c.setAttribute('opacity', '0');
+        setTimeout(() => { c.style.transition = 'opacity 0.3s ease-in'; c.setAttribute('opacity', '1'); }, i * 100);
+        g.appendChild(c);
+    });
+    flaskSvg.appendChild(g);
+}
+
+function addPartialWater() {
+    if (isAnimating) return;
+    isAnimating = true;
+    document.getElementById('add-partial-water-btn').disabled = true;
+    const liquid = document.getElementById('flask-liquid');
+    liquid.style.transition = 'opacity 1s ease-in';
+    liquid.setAttribute('d', PARTIAL_WATER_PATH);
+    liquid.style.fill = 'rgba(59,130,246,0.6)';
+    setTimeout(() => {
+        liquid.style.opacity = '1';
+        startSwirlingAnimation();
+    }, 500);
+}
+
+function startSwirlingAnimation() {
+    const flask = document.querySelector('#naoh-flask .flask-svg');
+    const particles = document.getElementById('solid-particles');
+    let swirls = 0;
+    const total = 3;
+    function performSwirl() {
+        if (swirls < total && particles) {
+            flask.style.transition = 'transform 0.5s ease-in-out';
+            flask.style.transform = 'rotate(-12deg)';
+            setTimeout(() => {
+                flask.style.transform = 'rotate(12deg)';
+                setTimeout(() => {
+                    flask.style.transform = 'rotate(-8deg)';
+                    setTimeout(() => {
+                        flask.style.transform = 'rotate(8deg)';
+                        setTimeout(() => {
+                            flask.style.transform = 'rotate(0deg)';
+                            swirls++;
+                            if (particles && swirls === 1) {
+                                particles.style.transition = 'opacity 1.5s ease-out';
+                                particles.style.opacity = '0.3';
+                            }
+                            setTimeout(() => {
+                                if (swirls < total && particles) {
+                                    performSwirl();
+                                } else {
+                                    if (particles) {
+                                        particles.style.transition = 'opacity 1s ease-out';
+                                        particles.style.opacity = '0';
+                                        setTimeout(() => { if (particles.parentNode) particles.parentNode.removeChild(particles); }, 1000);
+                                    }
+                                    flask.style.transition = '';
+                                    isAnimating = false;
+                                    document.getElementById('add-water-btn').disabled = false;
+                                    showSuccess('Solid dissolved! Now fill the flask to the 100 mL line.');
+                                }
+                            }, 300);
+                        }, 300);
+                    }, 500);
+                }, 500);
+            }, 500);
+        }
+    }
+    performSwirl();
+}
+
+function addWaterToLine() {
+    if (isAnimating) return;
+    isAnimating = true;
+    document.getElementById('add-water-btn').disabled = true;
+    const liquid = document.getElementById('flask-liquid');
+    liquid.style.transition = 'all 1.5s ease-in-out';
+    liquid.setAttribute('d', FULL_FLASK_PATH);
+    setTimeout(() => {
+        isAnimating = false;
+        document.getElementById('mix-btn').disabled = false;
+        showSuccess('Filled to the 100 mL mark. Now mix the solution.');
+    }, 1500);
+}
+
+function mixSolution() {
+    if (isAnimating) return;
+    isAnimating = true;
+    document.getElementById('mix-btn').disabled = true;
+    const flask = document.querySelector('#naoh-flask .flask-svg');
+    let count = 0;
+    const total = 2;
+    function rock() {
+        flask.style.transition = 'transform 0.6s ease-in-out';
+        flask.style.transform = 'rotate(150deg)';
+        setTimeout(() => {
+            flask.style.transform = 'rotate(0deg)';
+            count++;
+            setTimeout(() => {
+                if (count < total) rock();
+                else {
+                    flask.style.transition = '';
+                    isAnimating = false;
+                    finishNaOHPrep();
+                }
+            }, 600);
+        }, 600);
+    }
+    rock();
+}
+
+function finishNaOHPrep() {
+    const trial = currentTrialData();
+    trial.nominalMolarity = trial.naohMassWeighed / compounds.NaOH.mw / trial.naohVolumeL;
+    const input = document.getElementById('nominal-molarity-input');
+    input.value = '';
+    input.disabled = false;
+    document.getElementById('nominal-molarity-feedback').classList.add('hidden');
+    document.getElementById('nominal-molarity-box').classList.remove('hidden');
+    showSuccess('Solution mixed. Now calculate its nominal concentration.');
+}
+
+function checkNominalMolarity() {
+    const trial = currentTrialData();
+    const input = document.getElementById('nominal-molarity-input');
+    const raw = input.value.trim();
+    const value = parseFloat(raw);
+    const feedback = document.getElementById('nominal-molarity-feedback');
+    feedback.classList.remove('hidden');
+    if (!/^\d*\.\d{4}$/.test(raw)) {
+        feedback.className = 'pour-status warn';
+        feedback.textContent = 'Report your answer to 4 decimal places (matching the precision of your measurements), e.g. 0.2150.';
+        return;
+    }
+    if (isNaN(value)) {
+        feedback.className = 'pour-status warn';
+        feedback.textContent = 'Enter a number.';
+        return;
+    }
+    const tolerance = trial.nominalMolarity * 0.01;
+    if (Math.abs(value - trial.nominalMolarity) > tolerance) {
+        feedback.className = 'pour-status warn';
+        feedback.textContent = 'Not quite — double-check your calculation and try again.';
+        return;
+    }
+    feedback.className = 'pour-status ok';
+    feedback.textContent = 'Correct! Nominal concentration: ' + trial.nominalMolarity.toFixed(4) + ' M.';
+    input.disabled = true;
+    showSuccess("This \"nominal\" concentration is only as good as your weighing — next you'll standardize it against KHP to find the true value.");
+    advanceStep();
+    enterStandardizationPhase();
+}
+
+/* ---- KHP: transfer, dissolve, add indicator ---- */
+function transferKHPToErlenmeyer() {
+    if (isAnimating) return;
+    isAnimating = true;
+    document.getElementById('weighboat-with-sample-khp').classList.add('hidden');
+    document.getElementById('erlenmeyer-drop-zone').classList.add('hidden');
+    addParticlesToErlenmeyer();
+    setTimeout(() => {
+        isAnimating = false;
+        document.getElementById('add-water-erlenmeyer-btn').disabled = false;
+        showSuccess('KHP added to the flask. Now add water to dissolve it.');
+    }, 800);
+}
+
+function addParticlesToErlenmeyer() {
+    const svg = document.querySelector('#erlenmeyer-flask .flask-svg');
+    const existing = document.getElementById('erlenmeyer-particles');
+    if (existing) existing.remove();
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.id = 'erlenmeyer-particles';
+    const particles = [
+        {x:70,y:215,r:2},{x:78,y:218,r:1.5},{x:86,y:216,r:2},
+        {x:92,y:213,r:1.5},{x:64,y:212,r:1.5},{x:98,y:212,r:1.5},
+        {x:80,y:210,r:1.5},{x:74,y:220,r:1},{x:90,y:220,r:1}
+    ];
+    particles.forEach((p, i) => {
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('cx', p.x); c.setAttribute('cy', p.y); c.setAttribute('r', p.r);
+        c.setAttribute('fill', '#ffffff'); c.setAttribute('stroke', '#000'); c.setAttribute('stroke-width', '0.6');
+        c.setAttribute('opacity', '0');
+        setTimeout(() => { c.style.transition = 'opacity 0.3s ease-in'; c.setAttribute('opacity', '1'); }, i * 80);
+        g.appendChild(c);
+    });
+    svg.appendChild(g);
+}
+
+function openAddWaterModal() {
+    document.getElementById('water-question-buttons').classList.remove('hidden');
+    document.getElementById('water-question-feedback').classList.add('hidden');
+    document.getElementById('water-question-continue-btn').classList.add('hidden');
+    document.getElementById('water-question-modal').classList.add('open');
+}
+
+function answerWaterQuestion(saidMatters) {
+    document.getElementById('water-question-buttons').classList.add('hidden');
+    const fb = document.getElementById('water-question-feedback');
+    fb.classList.remove('hidden');
+    if (saidMatters) {
+        fb.className = 'pour-status warn';
+        fb.textContent = "Actually, no — it doesn't matter here. You already know exactly how many moles of KHP you weighed out. Water is only the solvent that lets you see the color change and swirl the reaction; adding more or less of it doesn't change the moles of acid present or the volume of NaOH needed to reach the endpoint.";
+    } else {
+        fb.className = 'pour-status ok';
+        fb.textContent = 'Correct! Since you already know the moles of KHP from its mass, water is only there to dissolve it and let you see the indicator change color. Any reasonable amount works — it won’t change the equivalence point.';
+    }
+    document.getElementById('water-question-continue-btn').classList.remove('hidden');
+}
+
+function continueAfterWaterQuestion() {
+    document.getElementById('water-question-modal').classList.remove('open');
+    document.getElementById('add-water-erlenmeyer-btn').disabled = true;
+    isAnimating = true;
+    dissolveKHPInErlenmeyer();
+}
+
+function dissolveKHPInErlenmeyer() {
+    const liquid = document.getElementById('erlenmeyer-liquid');
+    liquid.style.transition = 'opacity 1s ease-in';
+    liquid.setAttribute('d', ERLENMEYER_LIQUID_PATH);
+    liquid.style.fill = 'rgba(200,220,255,0.35)';
+    liquid.style.opacity = '1';
+    swirlErlenmeyer();
+}
+
+function swirlErlenmeyer() {
+    const flask = document.querySelector('#erlenmeyer-flask .flask-svg');
+    const particles = document.getElementById('erlenmeyer-particles');
+    let swirls = 0;
+    const total = 2;
+    function step() {
+        flask.style.transition = 'transform 0.5s ease-in-out';
+        flask.style.transform = 'rotate(-10deg)';
+        setTimeout(() => {
+            flask.style.transform = 'rotate(10deg)';
+            setTimeout(() => {
+                flask.style.transform = 'rotate(0deg)';
+                swirls++;
+                if (particles && swirls === 1) {
+                    particles.style.transition = 'opacity 1s ease-out';
+                    particles.style.opacity = '0.2';
+                }
+                setTimeout(() => {
+                    if (swirls < total) {
+                        step();
+                    } else {
+                        if (particles) {
+                            particles.style.transition = 'opacity 0.8s ease-out';
+                            particles.style.opacity = '0';
+                            setTimeout(() => { if (particles.parentNode) particles.parentNode.removeChild(particles); }, 800);
+                        }
+                        flask.style.transition = '';
+                        isAnimating = false;
+                        document.getElementById('add-indicator-btn').disabled = false;
+                        showSuccess('KHP dissolved. Add a few drops of phenolphthalein indicator.');
+                    }
+                }, 300);
+            }, 500);
+        }, 500);
+    }
+    step();
+}
+
+function addIndicator() {
+    document.getElementById('add-indicator-btn').disabled = true;
+    const liquid = document.getElementById('erlenmeyer-liquid');
+    liquid.style.transition = 'fill 0.5s ease';
+    liquid.style.fill = ENDPOINT_COLORS['clear'];
+    enableTitrationControls();
+    advanceStep();
+    showSuccess('Phenolphthalein added — colorless in this acidic solution. Time to titrate!');
+}
+
+/* =========================================================
+   SECTION D/E: Buret drawing (ported from acetic-acid-titration.html)
+   + Stopcock / Stream-Drop dispensing engine (new)
+   ========================================================= */
+function drawBuretLevel(ctx, vol) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.strokeStyle = '#000';
+    ctx.strokeRect(100, 20, 40, 260);
+
+    const liquidFraction = Math.max(0, 1 - (vol / BURET_CAPACITY_ML));
+    const liquidHeight = 260 * liquidFraction;
+    ctx.fillStyle = '#a0c4ff';
+    if (liquidHeight > 0) ctx.fillRect(100, 20 + 260 - liquidHeight, 40, liquidHeight);
+
+    ctx.font = '12px sans-serif';
+    ctx.fillStyle = '#000';
+    for (let i = 0; i <= 10; i++) {
+        const y = 20 + 260 * (i / 10);
+        ctx.beginPath();
+        ctx.moveTo(100, y);
+        ctx.lineTo(120, y);
+        ctx.stroke();
+        const reading = BURET_CAPACITY_ML * (i / 10);
+        ctx.fillText(reading.toFixed(0), 60, y + 4);
+    }
+    if (vol > BURET_CAPACITY_ML) {
+        ctx.fillStyle = 'red';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.fillText('OVERFLOW!', 150, 150);
+    }
+}
+
+function drawZoom(vol) {
+    znCtx.clearRect(0, 0, znCtx.canvas.width, znCtx.canvas.height);
+    znCtx.strokeRect(10, 10, znCtx.canvas.width - 20, znCtx.canvas.height - 20);
+
+    const volRounded = Math.floor(vol * 10) / 10;
+    const startTick = Math.max(0, volRounded - 0.5);
+    const range = 1.0;
+    const innerW = znCtx.canvas.width - 20;
+    const innerH = znCtx.canvas.height - 20;
+
+    let frac = (vol - startTick) / range;
+    frac = Math.max(0, Math.min(1, frac));
+
+    znCtx.fillStyle = '#a0c4ff';
+    znCtx.fillRect(10, 10 + innerH * frac, innerW, innerH * (1 - frac));
+
+    znCtx.font = '10px sans-serif';
+    znCtx.fillStyle = znCtx.strokeStyle = '#000';
+    for (let i = 0; i <= 10; i++) {
+        const y = 10 + innerH * (i / 10);
+        znCtx.beginPath();
+        znCtx.moveTo(10, y);
+        znCtx.lineTo(20, y);
+        znCtx.stroke();
+        const v = (startTick + 0.1 * i).toFixed(1);
+        znCtx.fillText(v, 25, y + 3);
+    }
+
+    const meniscusY = 10 + innerH * frac;
+    znCtx.strokeStyle = 'red';
+    znCtx.lineWidth = 2;
+    znCtx.beginPath();
+    znCtx.moveTo(10, meniscusY);
+    znCtx.lineTo(30, meniscusY);
+    znCtx.stroke();
+    znCtx.lineWidth = 1;
+}
+
+function getEndpointProximity(currentVol, trueEqVol) {
+    const diff = currentVol - trueEqVol;
+    if (diff < -0.3) return 'clear';
+    if (diff < -0.02) return 'faint-pink';
+    if (diff <= 0.05) return 'pale-pink';
+    if (diff <= 0.3) return 'pink';
+    return 'hot-pink';
+}
+
+function dispenseVolume(deltaML) {
+    const trial = currentTrialData();
+    dispenseState.currentVolumeML = Math.min(dispenseState.currentVolumeML + deltaML, BURET_CAPACITY_ML);
+    drawBuretLevel(brCtx, dispenseState.currentVolumeML);
+    drawZoom(dispenseState.currentVolumeML);
+    const proximity = getEndpointProximity(dispenseState.currentVolumeML, trial.trueEquivalenceVolumeML);
+    document.getElementById('erlenmeyer-liquid').style.fill = ENDPOINT_COLORS[proximity];
+    if (dispenseState.currentVolumeML > 0) document.getElementById('stop-endpoint-btn').disabled = false;
+    if (dispenseState.currentVolumeML >= BURET_CAPACITY_ML) stopStream();
+}
+
+function enableTitrationControls() {
+    document.getElementById('stream-btn').disabled = false;
+    document.getElementById('drops-btn').disabled = false;
+}
+
+function startStream() {
+    if (dispenseState.stopcock !== 'closed' || dispenseState.stopped) return;
+    dispenseState.stopcock = 'stream';
+    updateStopcockVisual();
+    dispenseState.streamIntervalId = setInterval(() => dispenseVolume(0.15), 100);
+}
+function stopStream() {
+    clearInterval(dispenseState.streamIntervalId);
+    dispenseState.streamIntervalId = null;
+    if (dispenseState.stopcock === 'stream') { dispenseState.stopcock = 'closed'; updateStopcockVisual(); }
+}
+function dispenseDrop() {
+    if (dispenseState.isDispensing || dispenseState.stopped) return;
+    dispenseState.isDispensing = true;
+    dispenseState.stopcock = 'drops';
+    updateStopcockVisual();
+    dispenseVolume(0.05);
+    showDripAnimation();
+    setTimeout(() => {
+        dispenseState.stopcock = 'closed';
+        updateStopcockVisual();
+        dispenseState.isDispensing = false;
+    }, 220);
+}
+function updateStopcockVisual() {
+    const el = document.getElementById('stopcock');
+    el.className = 'stopcock ' + dispenseState.stopcock;
+}
+function showDripAnimation() {
+    const wrapper = document.getElementById('buret-wrapper');
+    const drip = document.createElement('div');
+    drip.className = 'drip';
+    wrapper.appendChild(drip);
+    setTimeout(() => drip.remove(), 500);
+}
+
+function stopEndpoint() {
+    stopStream();
+    dispenseState.stopped = true;
+    document.getElementById('stream-btn').disabled = true;
+    document.getElementById('drops-btn').disabled = true;
+    document.getElementById('stop-endpoint-btn').disabled = true;
+    document.getElementById('buret-reading-panel').classList.remove('hidden');
+    document.getElementById('buret-reading-input').focus();
+}
+
+/* =========================================================
+   Buret reading capture + trial result
+   ========================================================= */
+function recordBuretReading() {
+    const input = document.getElementById('buret-reading-input');
+    const raw = input.value.trim();
+    const value = parseFloat(raw);
+    const errorEl = document.getElementById('buret-reading-error');
+    if (!/^\d{1,2}\.\d{2}$/.test(raw)) {
+        errorEl.textContent = 'Enter your reading to exactly two decimal places (e.g. 13.90 or 13.95).';
+        errorEl.classList.remove('hidden');
+        return;
+    }
+    if (isNaN(value) || value < 0 || value > BURET_CAPACITY_ML) {
+        errorEl.textContent = 'Enter a valid reading between 0 and 50 mL.';
+        errorEl.classList.remove('hidden');
+        return;
+    }
+    const actual = dispenseState.currentVolumeML;
+    const expected = Math.round(actual / 0.05) * 0.05;
+    if (Math.abs(value - expected) > 0.005) {
+        errorEl.textContent = 'Read the meniscus to the nearest 0.05 mL (e.g. 13.90 if it sits on a line, 13.95 if it sits between the 13.9 and 14.0 lines) and try again.';
+        errorEl.classList.remove('hidden');
+        return;
+    }
+    errorEl.classList.add('hidden');
+    const trial = currentTrialData();
+    trial.naohVolumeDispensedML = value;
+    trial.overshootFlag = value > trial.trueEquivalenceVolumeML + 0.3;
+    document.getElementById('record-reading-btn').disabled = true;
+    document.getElementById('buret-reading-panel').classList.add('hidden');
+    const stdInput = document.getElementById('standardized-molarity-input');
+    stdInput.value = '';
+    stdInput.disabled = false;
+    document.getElementById('standardized-molarity-error').classList.add('hidden');
+    document.getElementById('standardized-molarity-panel').classList.remove('hidden');
+}
+
+function checkStandardizedMolarity() {
+    const trial = currentTrialData();
+    const input = document.getElementById('standardized-molarity-input');
+    const raw = input.value.trim();
+    const value = parseFloat(raw);
+    const errorEl = document.getElementById('standardized-molarity-error');
+    errorEl.classList.remove('hidden');
+    const correct = trial.khpMolesUsed / (trial.naohVolumeDispensedML / 1000);
+    if (!/^\d*\.\d{4}$/.test(raw)) {
+        errorEl.textContent = 'Report your answer to 4 decimal places, e.g. 0.2231.';
+        return;
+    }
+    if (isNaN(value)) {
+        errorEl.textContent = 'Enter a number.';
+        return;
+    }
+    const tolerance = correct * 0.01;
+    if (Math.abs(value - correct) > tolerance) {
+        errorEl.textContent = 'Not quite — double-check your calculation and try again.';
+        return;
+    }
+    errorEl.classList.add('hidden');
+    trial.standardizedMolarity = correct;
+    input.disabled = true;
+    document.getElementById('standardized-molarity-panel').classList.add('hidden');
+    showTrialResult(trial);
+}
+
+function showTrialResult(trial) {
+    const box = document.getElementById('trial-result-box');
+    const diffPct = Math.abs(trial.standardizedMolarity - trial.nominalMolarity) / trial.nominalMolarity * 100;
+    box.innerHTML =
+        '<p><strong>Nominal concentration:</strong> ' + trial.nominalMolarity.toFixed(4) + ' M</p>' +
+        '<p><strong>Standardized concentration:</strong> ' + trial.standardizedMolarity.toFixed(4) + ' M</p>' +
+        '<p>These differ by ' + diffPct.toFixed(1) + '%' + (trial.overshootFlag ? ' — and you overshot the endpoint a bit, which pushes the standardized value off too.' : '.') + '</p>';
+    box.classList.remove('hidden');
+    document.getElementById('next-trial-btn').classList.remove('hidden');
+}
+
+function proceedAfterTrial() {
+    advanceStep();
+}
+
+/* =========================================================
+   SECTION G: Transition / Summary screens
+   ========================================================= */
+function buildSummaryTable(rows, data) {
+    let html = '<table class="summary-table"><tr><th>Measurement</th><th>Value</th></tr>';
+    rows.forEach(([label, fn]) => {
+        html += '<tr><td>' + label + '</td><td>' + fn(data) + '</td></tr>';
+    });
+    return html + '</table>';
+}
+
+function renderCombinedSummary() {
+    document.getElementById('labs-container').classList.add('hidden');
+
+    const t1 = simState.trial1;
+    document.getElementById('summary-table-container').innerHTML = buildSummaryTable([
+        ['NaOH mass weighed', v => v.naohMassWeighed.toFixed(4) + ' g'],
+        ['Nominal molarity', v => v.nominalMolarity.toFixed(4) + ' M'],
+        ['KHP mass weighed', v => v.khpMassWeighed.toFixed(4) + ' g'],
+        ['NaOH volume to endpoint (your reading)', v => v.naohVolumeDispensedML.toFixed(2) + ' mL'],
+        ['Standardized molarity', v => v.standardizedMolarity.toFixed(4) + ' M'],
+        ['% difference (nominal vs. standardized)', v => (Math.abs(v.standardizedMolarity - v.nominalMolarity) / v.nominalMolarity * 100).toFixed(1) + '%']
+    ], t1);
+
+    const t2 = e2State.trial;
+    document.getElementById('e2-summary-table-container').innerHTML = buildSummaryTable([
+        ['Stock KMnO₄ measured', v => v.stockVolumeML.toFixed(2) + ' mL of 0.1000 M'],
+        ['Diluted (nominal) molarity', v => v.nominalMolarity.toFixed(5) + ' M'],
+        ['Ferrous ammonium sulfate weighed', v => v.fasMassWeighed.toFixed(4) + ' g'],
+        ['KMnO₄ volume to endpoint (your reading)', v => v.kmno4VolumeDispensedML.toFixed(2) + ' mL'],
+        ['Standardized molarity', v => v.standardizedMolarity.toFixed(5) + ' M'],
+        ['% difference (nominal vs. standardized)', v => (Math.abs(v.standardizedMolarity - v.nominalMolarity) / v.nominalMolarity * 100).toFixed(1) + '%']
+    ], t2);
+
+    document.getElementById('summary-screen').classList.remove('hidden');
+    scormReportCompletion();
+}
+
+/* =========================================================
+   SECTION H: Reset / Init
+   ========================================================= */
+function resetTrialUI() {
+    isAnimating = false;
+    dispenseState = { stopcock: 'closed', currentVolumeML: 0, isDispensing: false, streamIntervalId: null, stopped: false };
+    updateStopcockVisual();
+
+    pourState.mass = 0;
+    stopPourHold();
+    document.getElementById('naoh-pour-modal').classList.remove('open');
+    document.getElementById('khp-pour-modal').classList.remove('open');
+
+    const trial = currentTrialData();
+    trial.targetMolarity = generateTargetMolarity();
+    document.getElementById('naoh-target-banner').textContent =
+        'Target: prepare 100.0 mL of ' + trial.targetMolarity.toFixed(3) + ' M NaOH solution. (Molar mass of NaOH: 40.00 g/mol — calculate the mass you need, then weigh it out.)';
+
+    document.getElementById('scale-reading').textContent = '0.0000 g';
+    document.getElementById('empty-weigh-boat').style.opacity = '1';
+    document.getElementById('scale-drop-zone').classList.remove('hidden');
+    document.getElementById('weighboat-with-sample').classList.add('hidden');
+
+    document.getElementById('scale-reading-khp').textContent = '0.0000 g';
+    document.getElementById('empty-weigh-boat-khp').style.opacity = '1';
+    document.getElementById('scale-drop-zone-khp').classList.remove('hidden');
+    document.getElementById('weighboat-with-sample-khp').classList.add('hidden');
+
+    document.getElementById('tab-btn-standardize').disabled = true;
+    switchTab('prep');
+
+    const flaskLiquid = document.getElementById('flask-liquid');
+    flaskLiquid.style.transition = ''; flaskLiquid.style.opacity = '0'; flaskLiquid.setAttribute('d', '');
+    const flaskParticles = document.getElementById('solid-particles');
+    if (flaskParticles) flaskParticles.remove();
+    document.getElementById('flask-drop-zone').classList.remove('hidden');
+    document.querySelector('#naoh-flask .flask-svg').style.transform = 'rotate(0deg)';
+
+    const erLiquid = document.getElementById('erlenmeyer-liquid');
+    erLiquid.style.transition = ''; erLiquid.style.opacity = '0'; erLiquid.setAttribute('d', ''); erLiquid.style.fill = 'rgba(200,220,255,0.35)';
+    const erParticles = document.getElementById('erlenmeyer-particles');
+    if (erParticles) erParticles.remove();
+    document.getElementById('erlenmeyer-drop-zone').classList.remove('hidden');
+    document.querySelector('#erlenmeyer-flask .flask-svg').style.transform = 'rotate(0deg)';
+
+    document.getElementById('water-question-modal').classList.remove('open');
+    document.getElementById('buret-loaded-banner').classList.add('hidden');
+
+    document.getElementById('nominal-molarity-box').classList.add('hidden');
+    document.getElementById('nominal-molarity-input').value = '';
+    document.getElementById('nominal-molarity-input').disabled = false;
+    document.getElementById('nominal-molarity-feedback').classList.add('hidden');
+    document.getElementById('trial-result-box').classList.add('hidden');
+    document.getElementById('buret-reading-panel').classList.add('hidden');
+    document.getElementById('buret-reading-input').value = '';
+    document.getElementById('buret-reading-error').classList.add('hidden');
+    document.getElementById('record-reading-btn').disabled = false;
+    document.getElementById('standardized-molarity-panel').classList.add('hidden');
+    document.getElementById('standardized-molarity-input').value = '';
+    document.getElementById('standardized-molarity-input').disabled = false;
+    document.getElementById('standardized-molarity-error').classList.add('hidden');
+    document.getElementById('next-trial-btn').classList.add('hidden');
+
+    document.getElementById('add-partial-water-btn').disabled = true;
+    document.getElementById('add-water-btn').disabled = true;
+    document.getElementById('mix-btn').disabled = true;
+    document.getElementById('add-water-erlenmeyer-btn').disabled = true;
+    document.getElementById('add-indicator-btn').disabled = true;
+    document.getElementById('stream-btn').disabled = true;
+    document.getElementById('drops-btn').disabled = true;
+    document.getElementById('stop-endpoint-btn').disabled = true;
+    document.getElementById('record-reading-btn').disabled = false;
+
+    drawBuretLevel(brCtx, 0);
+    drawZoom(0);
+
+    initializeDragAndDrop();
+    updateProgress();
+}
+
+function startSimulation() {
+    document.getElementById('intro-screen').classList.add('hidden');
+    document.getElementById('labs-container').classList.remove('hidden');
+    document.getElementById('trial-container').classList.remove('hidden');
+    document.getElementById('e2-container').classList.remove('hidden');
+    document.getElementById('exp1-done-banner').classList.add('hidden');
+    document.getElementById('exp2-done-banner').classList.add('hidden');
+    document.getElementById('exp-tab-btn-1').classList.remove('done');
+    document.getElementById('exp-tab-btn-2').classList.remove('done');
+    resetTrialUI();
+    e2ResetUI();
+    switchExperiment(1);
+}
+
+function resetAll() {
+    simState = { currentTrial: 1, currentStepInTrial: 1, trial1: makeEmptyTrial(), trial2: makeEmptyTrial(), completed: false, exp1Done: false, exp2Done: false };
+    e2State = { trial: makeEmptyE2Trial(), currentStep: 1 };
+    document.getElementById('summary-screen').classList.add('hidden');
+    document.getElementById('intro-screen').classList.remove('hidden');
+}
+
+/* =========================================================
+   SECTION E2: Experiment 2 — Iron / Permanganate titration
+   Reuses the shared helpers (pourTickSize, randomInRange,
+   triggerPourParticles, renderPourPile, initializeDragAndDrop)
+   and the shared path constants. All DOM ids are prefixed "e2-".
+   ========================================================= */
+const E2_KMNO4_STOCK_M   = 0.1000;      // labelled concentration of the stock
+const E2_VOLFLASK_L      = 0.100;       // 100.0 mL volumetric flask
+const E2_FE_PER_MNO4     = 5;           // MnO4- + 5 Fe2+ + 8 H+ -> Mn2+ + 5 Fe3+ + 4 H2O
+const E2_FAS_MW          = 392.14;      // Fe(NH4)2(SO4)2·6H2O, g/mol
+const E2_BURET_CAPACITY_ML = 50;
+const E2_TITRATION_MIN_ML = 10;
+const E2_TITRATION_MAX_ML = 20;
+
+const E2_CYL_TICK_FAST_MIN = 0.18, E2_CYL_TICK_FAST_MAX = 0.42;   // mL per pour tick, far from target
+const E2_CYL_TICK_SLOW_MIN = 0.015, E2_CYL_TICK_SLOW_MAX = 0.05;  // mL per pour tick, fine control
+const E2_CYL_SLOWDOWN_START = 0.75;
+
+const E2_FAS_TICK_FAST_MIN = 0.004, E2_FAS_TICK_FAST_MAX = 0.010; // g per pour tick, far from target
+const E2_FAS_TICK_SLOW_MIN = 0.001, E2_FAS_TICK_SLOW_MAX = 0.003; // g per pour tick, fine control
+const E2_FAS_SLOWDOWN_START = 0.6;
+
+const E2_KMNO4_BURET_COLOR = '#6b1b8a';   // deep purple titrant
+const E2_ENDPOINT_COLORS = {
+    'colorless':  'rgba(250,240,200,0.18)',   // pale yellow Fe3+ / essentially colourless
+    'flash-pink': 'rgba(220,150,200,0.28)',   // fleeting pink that swirls out
+    'faint-pink': 'rgba(200,120,190,0.50)',   // first permanent pink = endpoint
+    'pink':       'rgba(165,55,160,0.62)',
+    'purple':     'rgba(90,0,120,0.82)'
+};
+
+function e2GenerateTargetMolarity() {
+    const steps = [];
+    for (let m = 0.0100; m <= 0.0250 + 1e-9; m += 0.0025) steps.push(+m.toFixed(4));
+    return steps[Math.floor(Math.random() * steps.length)];
+}
+
+function makeEmptyE2Trial() {
+    return {
+        targetMolarity: null,
+        stockVolumeCalcML: null,
+        stockVolumeML: null,
+        nominalMolarity: null,
+        stockTrueFactor: null,
+        trueDilutedM: null,
+        fasMassMinTarget: null,
+        fasMassMaxTarget: null,
+        fasMassWeighed: null,
+        molesFe: null,
+        molesMnO4Needed: null,
+        trueEquivalenceVolumeML: null,
+        kmno4VolumeDispensedML: null,
+        standardizedMolarity: null,
+        overshootFlag: false,
+        completed: false
+    };
+}
+
+let e2State = { trial: makeEmptyE2Trial(), currentStep: 1 };
+function e2Trial() { return e2State.trial; }
+
+let e2IsAnimating = false;
+let e2BrCtx, e2ZnCtx;
+let e2Dispense = { stopcock: 'closed', currentVolumeML: 0, isDispensing: false, streamIntervalId: null, stopped: false };
+let e2PourState = { amount: 0 };
+let e2PourHoldInterval = null;
+
+/* ---- step tracker ---- */
+function e2UpdateProgress() {
+    for (let i = 1; i <= 7; i++) {
+        const el = document.getElementById('e2-step' + i);
+        if (!el) continue;
+        el.classList.remove('active', 'completed');
+        if (i < e2State.currentStep) el.classList.add('completed');
+        else if (i === e2State.currentStep) el.classList.add('active');
+    }
+}
+function e2AdvanceStep() {
+    e2State.currentStep++;
+    if (e2State.currentStep > 7) { e2Trial().completed = true; markExperimentDone(2); }
+    else e2UpdateProgress();
+}
+
+/* ---- feedback bar ---- */
+function e2ShowError(message) {
+    const el = document.getElementById('e2-feedback');
+    el.className = 'feedback-bar error';
+    el.textContent = message;
+    el.classList.remove('hidden');
+    setTimeout(() => el.classList.add('hidden'), 4000);
+}
+function e2ShowSuccess(message) {
+    const el = document.getElementById('e2-feedback');
+    el.className = 'feedback-bar success';
+    el.textContent = message;
+    el.classList.remove('hidden');
+    setTimeout(() => el.classList.add('hidden'), 5000);
+}
+
+/* ---- inner tab switching ---- */
+function switchE2Tab(name) {
+    const dBtn = document.getElementById('e2-tab-btn-dilute');
+    const sBtn = document.getElementById('e2-tab-btn-standardize');
+    if (name === 'standardize' && sBtn.disabled) return;
+    document.getElementById('e2-tab-dilute').classList.toggle('active', name === 'dilute');
+    document.getElementById('e2-tab-standardize').classList.toggle('active', name === 'standardize');
+    dBtn.classList.toggle('active', name === 'dilute');
+    sBtn.classList.toggle('active', name === 'standardize');
+}
+
+/* ---- graduated-cylinder liquid path (viewBox 0 0 80 150, inner 24..56, 12..138) ---- */
+function e2CylPath(ml) {
+    const frac = Math.max(0, Math.min(ml / 50, 1));
+    const topY = (150 - 138 * frac).toFixed(1);
+    return 'M31 ' + topY + ' L65 ' + topY + ' L65 150 Q65 159 48 159 Q31 159 31 150 Z';
+}
+function e2KMnO4CylFillPath(ml) {
+    const frac = Math.max(0, Math.min(ml / 30, 1));
+    const topY = (104 - 96 * frac).toFixed(1);
+    return 'M17 ' + topY + ' L33 ' + topY + ' L33 104 Q33 109 25 109 Q17 109 17 104 Z';
+}
+
+/* =========================================================
+   Phase 1: measure stock KMnO4 and dilute to the mark
+   ========================================================= */
+function e2OpenKMnO4PourModal() {
+    e2PourState.amount = 0;
+    e2StopPourHold();
+    const trial = e2Trial();
+    document.getElementById('e2-kmno4-pour-reading').textContent = '0.00 mL';
+    document.getElementById('e2-kmno4-pour-error').classList.add('hidden');
+    document.getElementById('e2-kmno4-cyl-fill').setAttribute('d', '');
+    document.getElementById('e2-kmno4-pour-confirm-btn').disabled = true;
+    document.getElementById('e2-kmno4-pour-target-text').textContent =
+        'Target: 100.0 mL of ' + trial.targetMolarity.toFixed(4) + ' M KMnO₄ from 0.1000 M stock. Work out the volume of stock that gives that concentration once it is diluted to 100.0 mL, then press and hold the beaker to pour that many mL into the graduated cylinder.';
+    document.getElementById('e2-kmno4-pour-modal').classList.add('open');
+}
+
+function e2StartPourHold(which) {
+    if (e2PourHoldInterval) return;
+    e2PourTick(which);
+    e2PourHoldInterval = setInterval(() => e2PourTick(which), POUR_TICK_INTERVAL_MS);
+}
+function e2StopPourHold() {
+    clearInterval(e2PourHoldInterval);
+    e2PourHoldInterval = null;
+}
+
+function e2PourTick(which) {
+    const trial = e2Trial();
+    if (which === 'kmno4') {
+        const { min: tickMin, max: tickMax } = pourTickSize(
+            e2PourState.amount, trial.stockVolumeCalcML, E2_CYL_SLOWDOWN_START,
+            E2_CYL_TICK_FAST_MIN, E2_CYL_TICK_FAST_MAX, E2_CYL_TICK_SLOW_MIN, E2_CYL_TICK_SLOW_MAX
+        );
+        e2PourState.amount = +(e2PourState.amount + randomInRange(tickMin, tickMax)).toFixed(3);
+        if (e2PourState.amount > 50) e2PourState.amount = 50;
+        document.getElementById('e2-kmno4-pour-reading').textContent = e2PourState.amount.toFixed(2) + ' mL';
+        document.getElementById('e2-kmno4-cyl-fill').setAttribute('d', e2KMnO4CylFillPath(e2PourState.amount));
+        document.getElementById('e2-kmno4-pour-confirm-btn').disabled = e2PourState.amount <= 0;
+        if (e2PourState.amount >= 50) e2StopPourHold();
+    } else {
+        if (e2PourState.amount >= trial.fasMassMaxTarget) { e2StopPourHold(); e2UpdateFASPourStatus(); return; }
+        const { min: tickMin, max: tickMax } = pourTickSize(
+            e2PourState.amount, trial.fasMassMinTarget, E2_FAS_SLOWDOWN_START,
+            E2_FAS_TICK_FAST_MIN, E2_FAS_TICK_FAST_MAX, E2_FAS_TICK_SLOW_MIN, E2_FAS_TICK_SLOW_MAX
+        );
+        e2PourState.amount = Math.min(+(e2PourState.amount + randomInRange(tickMin, tickMax)).toFixed(4), trial.fasMassMaxTarget);
+        document.getElementById('e2-fas-pour-reading').textContent = e2PourState.amount.toFixed(4) + ' g';
+        renderPourPile('e2-fas-pour-particles', e2PourState.amount, trial.fasMassMaxTarget, '#cfeecf');
+        document.getElementById('e2-fas-pour-confirm-btn').disabled = e2PourState.amount < trial.fasMassMinTarget;
+        triggerPourParticles('e2-fas-pour-chute');
+        e2UpdateFASPourStatus();
+        if (e2PourState.amount >= trial.fasMassMaxTarget) e2StopPourHold();
+    }
+}
+
+function e2ResetKMnO4Pour() {
+    e2PourState.amount = 0;
+    e2StopPourHold();
+    document.getElementById('e2-kmno4-pour-reading').textContent = '0.00 mL';
+    document.getElementById('e2-kmno4-pour-error').classList.add('hidden');
+    document.getElementById('e2-kmno4-cyl-fill').setAttribute('d', '');
+    document.getElementById('e2-kmno4-pour-confirm-btn').disabled = true;
+}
+
+function e2ConfirmKMnO4Pour() {
+    e2StopPourHold();
+    const trial = e2Trial();
+    const pct = Math.abs(e2PourState.amount - trial.stockVolumeCalcML) / trial.stockVolumeCalcML;
+    const errEl = document.getElementById('e2-kmno4-pour-error');
+    if (pct > 0.20) {
+        errEl.textContent = "That volume doesn't look right for your target concentration — re-check your dilution calculation, then Reset and pour again.";
+        errEl.classList.remove('hidden');
+        return;
+    }
+    errEl.classList.add('hidden');
+    trial.stockVolumeML = e2PourState.amount;
+    document.getElementById('e2-kmno4-pour-modal').classList.remove('open');
+    const cylLiquid = document.getElementById('e2-cyl-liquid');
+    cylLiquid.setAttribute('d', e2CylPath(e2PourState.amount));
+    cylLiquid.style.opacity = '1';
+    document.getElementById('e2-cyl-drop-zone').classList.add('hidden');
+    const filled = document.getElementById('e2-cyl-filled');
+    filled.classList.remove('hidden');
+    filled.querySelector('.wb-label').textContent = e2PourState.amount.toFixed(2) + ' mL';
+    initializeDragAndDrop();
+    e2ShowSuccess('Measured ' + e2PourState.amount.toFixed(2) + ' mL of stock KMnO₄. Now drag the cylinder to the volumetric flask.');
+    e2AdvanceStep();
+}
+
+function e2HandleCylinderToFlask() {
+    if (e2Trial().stockVolumeML == null) { e2ShowError('Measure the stock KMnO₄ first.'); return; }
+    if (e2IsAnimating) return;
+    e2IsAnimating = true;
+    document.getElementById('e2-cyl-filled').classList.add('hidden');
+    document.getElementById('e2-cyl-liquid').style.opacity = '0';
+    document.getElementById('e2-flask-drop-zone').classList.add('hidden');
+    const liquid = document.getElementById('e2-flask-liquid');
+    liquid.style.transition = 'opacity 0.8s ease-in';
+    liquid.setAttribute('d', PARTIAL_WATER_PATH);
+    liquid.style.fill = 'rgba(120,20,150,0.85)';
+    setTimeout(() => {
+        liquid.style.opacity = '1';
+        e2IsAnimating = false;
+        document.getElementById('e2-fill-btn').disabled = false;
+        e2ShowSuccess('Stock KMnO₄ added to the flask. Now fill to the 100 mL line.');
+    }, 500);
+}
+
+function e2FillToLine() {
+    if (e2IsAnimating) return;
+    e2IsAnimating = true;
+    document.getElementById('e2-fill-btn').disabled = true;
+    const liquid = document.getElementById('e2-flask-liquid');
+    liquid.style.transition = 'all 1.5s ease-in-out';
+    liquid.setAttribute('d', FULL_FLASK_PATH);
+    liquid.style.fill = 'rgba(130,25,165,0.7)';
+    setTimeout(() => {
+        e2IsAnimating = false;
+        document.getElementById('e2-mix-btn').disabled = false;
+        e2ShowSuccess('Filled to the 100 mL mark. Now mix the solution.');
+    }, 1500);
+}
+
+function e2MixSolution() {
+    if (e2IsAnimating) return;
+    e2IsAnimating = true;
+    document.getElementById('e2-mix-btn').disabled = true;
+    const flask = document.querySelector('#e2-flask .flask-svg');
+    let count = 0;
+    const total = 2;
+    function rock() {
+        flask.style.transition = 'transform 0.6s ease-in-out';
+        flask.style.transform = 'rotate(150deg)';
+        setTimeout(() => {
+            flask.style.transform = 'rotate(0deg)';
+            count++;
+            setTimeout(() => {
+                if (count < total) rock();
+                else {
+                    flask.style.transition = '';
+                    e2IsAnimating = false;
+                    e2FinishDilution();
+                }
+            }, 600);
+        }, 600);
+    }
+    rock();
+}
+
+function e2FinishDilution() {
+    const trial = e2Trial();
+    trial.nominalMolarity = E2_KMNO4_STOCK_M * (trial.stockVolumeML / 1000) / E2_VOLFLASK_L;
+    trial.trueDilutedM = trial.nominalMolarity * trial.stockTrueFactor;
+    const input = document.getElementById('e2-diluted-molarity-input');
+    input.value = '';
+    input.disabled = false;
+    document.getElementById('e2-diluted-molarity-feedback').classList.add('hidden');
+    document.getElementById('e2-diluted-molarity-box').classList.remove('hidden');
+    e2AdvanceStep();
+    e2ShowSuccess('Solution mixed. Now calculate its diluted concentration.');
+}
+
+function e2CheckDilutedMolarity() {
+    const trial = e2Trial();
+    const input = document.getElementById('e2-diluted-molarity-input');
+    const raw = input.value.trim();
+    const value = parseFloat(raw);
+    const fb = document.getElementById('e2-diluted-molarity-feedback');
+    fb.classList.remove('hidden');
+    if (!/^\d*\.\d{4,5}$/.test(raw)) {
+        fb.className = 'pour-status warn';
+        fb.textContent = 'Report your answer to 4–5 decimal places to match your measurement precision, e.g. 0.01750.';
+        return;
+    }
+    if (isNaN(value)) { fb.className = 'pour-status warn'; fb.textContent = 'Enter a number.'; return; }
+    if (Math.abs(value - trial.nominalMolarity) > trial.nominalMolarity * 0.01) {
+        fb.className = 'pour-status warn';
+        fb.textContent = 'Not quite — check your dilution calculation and try again.';
+        return;
+    }
+    fb.className = 'pour-status ok';
+    fb.textContent = 'Correct! Diluted (nominal) concentration: ' + trial.nominalMolarity.toFixed(5) + ' M.';
+    input.disabled = true;
+    e2ShowSuccess('This nominal value assumes the stock is exactly 0.1000 M — next you’ll standardize against weighed iron to find the true value.');
+    e2AdvanceStep();
+    e2EnterStandardizationPhase();
+}
+
+function e2EnterStandardizationPhase() {
+    document.getElementById('e2-tab-btn-standardize').disabled = false;
+    switchE2Tab('standardize');
+    const banner = document.getElementById('e2-buret-loaded-banner');
+    banner.textContent = 'Your diluted KMnO₄ has been loaded into the buret above, ready to titrate.';
+    banner.classList.remove('hidden');
+    e2DrawBuret(0);
+    e2DrawZoom(0);
+}
+
+/* =========================================================
+   Phase 2: weigh ferrous ammonium sulfate, dissolve, titrate
+   ========================================================= */
+function e2OpenFASPourModal() {
+    e2PourState.amount = 0;
+    e2StopPourHold();
+    const trial = e2Trial();
+    trial.fasMassMinTarget = E2_FE_PER_MNO4 * trial.nominalMolarity * (E2_TITRATION_MIN_ML / 1000) * E2_FAS_MW;
+    trial.fasMassMaxTarget = E2_FE_PER_MNO4 * trial.nominalMolarity * (E2_TITRATION_MAX_ML / 1000) * E2_FAS_MW;
+    document.getElementById('e2-fas-pour-reading').textContent = '0.0000 g';
+    renderPourPile('e2-fas-pour-particles', 0, trial.fasMassMaxTarget, '#cfeecf');
+    document.getElementById('e2-fas-pour-confirm-btn').disabled = true;
+    document.getElementById('e2-fas-pour-target-text').textContent =
+        'Your diluted KMnO₄ is about ' + trial.nominalMolarity.toFixed(5) + ' M. Ferrous ammonium sulfate (392.14 g/mol) gives one Fe²⁺ per formula unit, and MnO₄⁻ reacts with Fe²⁺ in a 1:5 ratio. The titration should take between ' + E2_TITRATION_MIN_ML + ' and ' + E2_TITRATION_MAX_ML + ' mL. Calculate the FAS mass that lands in that range, then press and hold the beaker to pour it (the balance won’t let you add more than the trial allows).';
+    e2UpdateFASPourStatus();
+    document.getElementById('e2-fas-pour-modal').classList.add('open');
+}
+
+function e2UpdateFASPourStatus() {
+    const trial = e2Trial();
+    const el = document.getElementById('e2-fas-pour-status');
+    if (e2PourState.amount <= 0) { el.className = 'pour-status'; el.textContent = ''; }
+    else if (e2PourState.amount < trial.fasMassMinTarget) {
+        el.className = 'pour-status warn';
+        el.textContent = 'Keep pouring — that’s not yet enough for a ' + E2_TITRATION_MIN_ML + ' mL titration.';
+    } else if (e2PourState.amount >= trial.fasMassMaxTarget) {
+        el.className = 'pour-status warn';
+        el.textContent = 'That’s the most you should add this trial — any more would need over ' + E2_TITRATION_MAX_ML + ' mL of titrant.';
+    } else {
+        el.className = 'pour-status ok';
+        el.textContent = 'Good — this amount should take between ' + E2_TITRATION_MIN_ML + ' and ' + E2_TITRATION_MAX_ML + ' mL to titrate.';
+    }
+}
+
+function e2ResetFASPour() {
+    e2PourState.amount = 0;
+    e2StopPourHold();
+    const trial = e2Trial();
+    document.getElementById('e2-fas-pour-reading').textContent = '0.0000 g';
+    renderPourPile('e2-fas-pour-particles', 0, trial.fasMassMaxTarget, '#cfeecf');
+    document.getElementById('e2-fas-pour-confirm-btn').disabled = true;
+    e2UpdateFASPourStatus();
+}
+
+function e2ConfirmFASPour() {
+    e2StopPourHold();
+    const trial = e2Trial();
+    trial.fasMassWeighed = e2PourState.amount;
+    trial.molesFe = e2PourState.amount / E2_FAS_MW;
+    trial.molesMnO4Needed = trial.molesFe / E2_FE_PER_MNO4;
+    trial.trueEquivalenceVolumeML = (trial.molesMnO4Needed / trial.trueDilutedM) * 1000;
+    document.getElementById('e2-fas-pour-modal').classList.remove('open');
+    e2RecordScaleReading(e2PourState.amount);
+    e2ShowSuccess('Balance reads ' + e2PourState.amount.toFixed(4) + ' g of ferrous ammonium sulfate.');
+    e2AdvanceStep();
+}
+
+function e2RecordScaleReading(mass) {
+    document.getElementById('e2-scale-reading').textContent = mass.toFixed(4) + ' g';
+    document.getElementById('e2-empty-weigh-boat').style.opacity = '0';
+    document.getElementById('e2-scale-drop-zone').classList.add('hidden');
+    const wb = document.getElementById('e2-weighboat-with-sample');
+    wb.classList.remove('hidden');
+    wb.querySelector('.wb-label').textContent = mass.toFixed(4) + ' g FAS';
+    initializeDragAndDrop();
+}
+
+function e2HandleWeighBoatToErlenmeyer() {
+    if (e2Trial().fasMassWeighed == null) { e2ShowError('No sample on the weigh boat yet.'); return; }
+    if (e2IsAnimating) return;
+    e2IsAnimating = true;
+    document.getElementById('e2-weighboat-with-sample').classList.add('hidden');
+    document.getElementById('e2-erlenmeyer-drop-zone').classList.add('hidden');
+    e2AddParticlesToErlenmeyer();
+    setTimeout(() => {
+        e2IsAnimating = false;
+        document.getElementById('e2-add-water-btn').disabled = false;
+        e2ShowSuccess('Iron salt added to the flask. Now dissolve it in water and dilute sulfuric acid.');
+    }, 800);
+}
+
+function e2AddParticlesToErlenmeyer() {
+    const svg = document.querySelector('#e2-erlenmeyer-flask .flask-svg');
+    const existing = document.getElementById('e2-erlenmeyer-particles');
+    if (existing) existing.remove();
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.id = 'e2-erlenmeyer-particles';
+    const particles = [
+        {x:70,y:215,r:2},{x:78,y:218,r:1.5},{x:86,y:216,r:2},
+        {x:92,y:213,r:1.5},{x:64,y:212,r:1.5},{x:98,y:212,r:1.5},
+        {x:80,y:210,r:1.5},{x:74,y:220,r:1},{x:90,y:220,r:1}
+    ];
+    particles.forEach((p, i) => {
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('cx', p.x); c.setAttribute('cy', p.y); c.setAttribute('r', p.r);
+        c.setAttribute('fill', '#cfeecf'); c.setAttribute('stroke', '#4c7a4c'); c.setAttribute('stroke-width', '0.6');
+        c.setAttribute('opacity', '0');
+        setTimeout(() => { c.style.transition = 'opacity 0.3s ease-in'; c.setAttribute('opacity', '1'); }, i * 80);
+        g.appendChild(c);
+    });
+    svg.appendChild(g);
+}
+
+function e2AddWaterAcid() {
+    if (e2IsAnimating) return;
+    e2IsAnimating = true;
+    document.getElementById('e2-add-water-btn').disabled = true;
+    const liquid = document.getElementById('e2-erlenmeyer-liquid');
+    liquid.style.transition = 'opacity 1s ease-in';
+    liquid.setAttribute('d', ERLENMEYER_LIQUID_PATH);
+    liquid.style.fill = 'rgba(210,225,180,0.35)';
+    liquid.style.opacity = '1';
+    e2ShowSuccess('The iron is dissolved in dilute H₂SO₄ — permanganate only oxidises Fe²⁺ cleanly in acid. The exact volume of water/acid doesn’t matter; it doesn’t change the moles of Fe²⁺.');
+    e2SwirlErlenmeyer();
+}
+
+function e2SwirlErlenmeyer() {
+    const flask = document.querySelector('#e2-erlenmeyer-flask .flask-svg');
+    const particles = document.getElementById('e2-erlenmeyer-particles');
+    let swirls = 0;
+    const total = 2;
+    function step() {
+        flask.style.transition = 'transform 0.5s ease-in-out';
+        flask.style.transform = 'rotate(-10deg)';
+        setTimeout(() => {
+            flask.style.transform = 'rotate(10deg)';
+            setTimeout(() => {
+                flask.style.transform = 'rotate(0deg)';
+                swirls++;
+                if (particles && swirls === 1) { particles.style.transition = 'opacity 1s ease-out'; particles.style.opacity = '0.2'; }
+                setTimeout(() => {
+                    if (swirls < total) step();
+                    else {
+                        if (particles) {
+                            particles.style.transition = 'opacity 0.8s ease-out';
+                            particles.style.opacity = '0';
+                            setTimeout(() => { if (particles.parentNode) particles.parentNode.removeChild(particles); }, 800);
+                        }
+                        flask.style.transition = '';
+                        e2IsAnimating = false;
+                        e2AdvanceStep();               // step 5 -> 6 (redox check)
+                        e2OpenRedoxModal();
+                    }
+                }, 300);
+            }, 500);
+        }, 500);
+    }
+    step();
+}
+
+/* ---- redox concept check (gate between dissolving and titrating) ---- */
+const E2_REDOX_QUESTIONS = [
+    {
+        q: 'What is the oxidation state of manganese in the permanganate ion, MnO₄⁻?',
+        choices: ['+2', '+4', '+5', '+7'],
+        answer: '+7',
+        ok: 'Right. Each oxygen is −2, and four of them give −8; the ion carries an overall −1 charge, so Mn must be +7.'
+    },
+    {
+        q: 'Manganese goes from MnO₄⁻ (+7) to Mn²⁺ (+2). Manganese is therefore…',
+        choices: ['oxidized — it loses electrons', 'reduced — it gains electrons'],
+        answer: 'reduced — it gains electrons',
+        ok: '+7 → +2 is a gain of 5 electrons per manganese, so the permanganate ion is reduced.'
+    },
+    {
+        q: 'Iron goes from Fe²⁺ to Fe³⁺. Iron is therefore…',
+        choices: ['oxidized — it loses an electron', 'reduced — it gains an electron', 'unchanged — its oxidation state stays the same'],
+        answer: 'oxidized — it loses an electron',
+        ok: 'Each Fe²⁺ loses one electron (+2 → +3). Five Fe²⁺ supply exactly the 5 electrons one MnO₄⁻ needs — that is why the mole ratio is 1:5, not 1:1.'
+    }
+];
+let e2RedoxIndex = 0;
+
+function e2OpenRedoxModal() {
+    e2RedoxIndex = 0;
+    e2RenderRedoxQuestion();
+    document.getElementById('e2-redox-modal').classList.add('open');
+}
+
+function e2RenderRedoxQuestion() {
+    const item = E2_REDOX_QUESTIONS[e2RedoxIndex];
+    document.getElementById('e2-redox-qtext').textContent = (e2RedoxIndex + 1) + ' of ' + E2_REDOX_QUESTIONS.length + '.  ' + item.q;
+    const box = document.getElementById('e2-redox-choices');
+    box.innerHTML = '';
+    item.choices.forEach(c => {
+        const b = document.createElement('button');
+        b.className = 'btn';
+        b.type = 'button';
+        b.textContent = c;
+        b.addEventListener('click', () => e2AnswerRedox(c, b));
+        box.appendChild(b);
+    });
+    const fb = document.getElementById('e2-redox-feedback');
+    fb.classList.add('hidden');
+    fb.textContent = '';
+    document.getElementById('e2-redox-next-btn').classList.add('hidden');
+}
+
+function e2AnswerRedox(choice, btnEl) {
+    const item = E2_REDOX_QUESTIONS[e2RedoxIndex];
+    const fb = document.getElementById('e2-redox-feedback');
+    fb.classList.remove('hidden');
+    if (choice === item.answer) {
+        fb.className = 'pour-status ok';
+        fb.textContent = item.ok;
+        Array.from(document.getElementById('e2-redox-choices').children).forEach(b => b.disabled = true);
+        const nb = document.getElementById('e2-redox-next-btn');
+        nb.textContent = (e2RedoxIndex < E2_REDOX_QUESTIONS.length - 1) ? 'Next question' : 'Start titrating';
+        nb.classList.remove('hidden');
+    } else {
+        fb.className = 'pour-status warn';
+        fb.textContent = 'Not quite — think about the charge balance, then try another answer.';
+        if (btnEl) btnEl.disabled = true;
+    }
+}
+
+function e2RedoxNext() {
+    if (e2RedoxIndex < E2_REDOX_QUESTIONS.length - 1) {
+        e2RedoxIndex++;
+        e2RenderRedoxQuestion();
+    } else {
+        document.getElementById('e2-redox-modal').classList.remove('open');
+        e2AdvanceStep();                 // step 6 -> 7 (titrate & record)
+        e2EnableTitrationControls();
+        e2ShowSuccess('Permanganate is its own indicator — titrate until the first permanent pink.');
+    }
+}
+
+/* ---- buret + zoom drawing (deep purple) ---- */
+function e2DrawBuret(vol) {
+    const ctx = e2BrCtx;
+    if (!ctx) return;
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.strokeStyle = '#000';
+    ctx.strokeRect(100, 20, 40, 260);
+    const liquidFraction = Math.max(0, 1 - (vol / E2_BURET_CAPACITY_ML));
+    const liquidHeight = 260 * liquidFraction;
+    ctx.fillStyle = E2_KMNO4_BURET_COLOR;
+    if (liquidHeight > 0) ctx.fillRect(100, 20 + 260 - liquidHeight, 40, liquidHeight);
+    ctx.font = '12px sans-serif';
+    ctx.fillStyle = '#000';
+    for (let i = 0; i <= 10; i++) {
+        const y = 20 + 260 * (i / 10);
+        ctx.beginPath(); ctx.moveTo(100, y); ctx.lineTo(120, y); ctx.stroke();
+        ctx.fillText((E2_BURET_CAPACITY_ML * (i / 10)).toFixed(0), 60, y + 4);
+    }
+    if (vol > E2_BURET_CAPACITY_ML) {
+        ctx.fillStyle = 'red'; ctx.font = 'bold 14px sans-serif'; ctx.fillText('OVERFLOW!', 150, 150);
+    }
+}
+
+function e2DrawZoom(vol) {
+    const ctx = e2ZnCtx;
+    if (!ctx) return;
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.strokeStyle = '#000';
+    ctx.strokeRect(10, 10, ctx.canvas.width - 20, ctx.canvas.height - 20);
+    const volRounded = Math.floor(vol * 10) / 10;
+    const startTick = Math.max(0, volRounded - 0.5);
+    const range = 1.0;
+    const innerW = ctx.canvas.width - 20;
+    const innerH = ctx.canvas.height - 20;
+    let frac = (vol - startTick) / range;
+    frac = Math.max(0, Math.min(1, frac));
+    ctx.fillStyle = E2_KMNO4_BURET_COLOR;
+    ctx.fillRect(10, 10 + innerH * frac, innerW, innerH * (1 - frac));
+    ctx.font = '10px sans-serif';
+    ctx.fillStyle = ctx.strokeStyle = '#000';
+    for (let i = 0; i <= 10; i++) {
+        const y = 10 + innerH * (i / 10);
+        ctx.beginPath(); ctx.moveTo(10, y); ctx.lineTo(20, y); ctx.stroke();
+        ctx.fillText((startTick + 0.1 * i).toFixed(1), 25, y + 3);
+    }
+    const meniscusY = 10 + innerH * frac;
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(10, meniscusY); ctx.lineTo(30, meniscusY); ctx.stroke();
+    ctx.lineWidth = 1;
+}
+
+function e2GetEndpointProximity(currentVol, trueEqVol) {
+    const diff = currentVol - trueEqVol;
+    if (diff < -0.3) return 'colorless';
+    if (diff < -0.02) return 'flash-pink';
+    if (diff <= 0.05) return 'faint-pink';
+    if (diff <= 0.3) return 'pink';
+    return 'purple';
+}
+
+function e2DispenseVolume(deltaML) {
+    const trial = e2Trial();
+    e2Dispense.currentVolumeML = Math.min(e2Dispense.currentVolumeML + deltaML, E2_BURET_CAPACITY_ML);
+    e2DrawBuret(e2Dispense.currentVolumeML);
+    e2DrawZoom(e2Dispense.currentVolumeML);
+    const prox = e2GetEndpointProximity(e2Dispense.currentVolumeML, trial.trueEquivalenceVolumeML);
+    document.getElementById('e2-erlenmeyer-liquid').style.fill = E2_ENDPOINT_COLORS[prox];
+    if (e2Dispense.currentVolumeML > 0) document.getElementById('e2-stop-endpoint-btn').disabled = false;
+    if (e2Dispense.currentVolumeML >= E2_BURET_CAPACITY_ML) e2StopStream();
+}
+
+function e2EnableTitrationControls() {
+    document.getElementById('e2-stream-btn').disabled = false;
+    document.getElementById('e2-drops-btn').disabled = false;
+}
+
+function e2StartStream() {
+    if (e2Dispense.stopcock !== 'closed' || e2Dispense.stopped) return;
+    e2Dispense.stopcock = 'stream';
+    e2UpdateStopcockVisual();
+    e2Dispense.streamIntervalId = setInterval(() => e2DispenseVolume(0.15), 100);
+}
+function e2StopStream() {
+    clearInterval(e2Dispense.streamIntervalId);
+    e2Dispense.streamIntervalId = null;
+    if (e2Dispense.stopcock === 'stream') { e2Dispense.stopcock = 'closed'; e2UpdateStopcockVisual(); }
+}
+function e2DispenseDrop() {
+    if (e2Dispense.isDispensing || e2Dispense.stopped) return;
+    e2Dispense.isDispensing = true;
+    e2Dispense.stopcock = 'drops';
+    e2UpdateStopcockVisual();
+    e2DispenseVolume(0.05);
+    e2ShowDrip();
+    setTimeout(() => {
+        e2Dispense.stopcock = 'closed';
+        e2UpdateStopcockVisual();
+        e2Dispense.isDispensing = false;
+    }, 220);
+}
+function e2UpdateStopcockVisual() {
+    const el = document.getElementById('e2-stopcock');
+    if (el) el.className = 'stopcock ' + e2Dispense.stopcock;
+}
+function e2ShowDrip() {
+    const wrapper = document.getElementById('e2-buret-wrapper');
+    const drip = document.createElement('div');
+    drip.className = 'drip';
+    wrapper.appendChild(drip);
+    setTimeout(() => drip.remove(), 500);
+}
+
+function e2StopEndpoint() {
+    e2StopStream();
+    e2Dispense.stopped = true;
+    document.getElementById('e2-stream-btn').disabled = true;
+    document.getElementById('e2-drops-btn').disabled = true;
+    document.getElementById('e2-stop-endpoint-btn').disabled = true;
+    document.getElementById('e2-buret-reading-panel').classList.remove('hidden');
+    document.getElementById('e2-buret-reading-input').focus();
+}
+
+function e2RecordBuretReading() {
+    const input = document.getElementById('e2-buret-reading-input');
+    const raw = input.value.trim();
+    const value = parseFloat(raw);
+    const errEl = document.getElementById('e2-buret-reading-error');
+    if (!/^\d{1,2}\.\d{2}$/.test(raw)) {
+        errEl.textContent = 'Enter your reading to exactly two decimal places (e.g. 15.30 or 15.35).';
+        errEl.classList.remove('hidden');
+        return;
+    }
+    if (isNaN(value) || value < 0 || value > E2_BURET_CAPACITY_ML) {
+        errEl.textContent = 'Enter a valid reading between 0 and 50 mL.';
+        errEl.classList.remove('hidden');
+        return;
+    }
+    const actual = e2Dispense.currentVolumeML;
+    const expected = Math.round(actual / 0.05) * 0.05;
+    if (Math.abs(value - expected) > 0.005) {
+        errEl.textContent = 'Read the meniscus to the nearest 0.05 mL (e.g. 15.30 on a line, 15.35 between lines) and try again.';
+        errEl.classList.remove('hidden');
+        return;
+    }
+    errEl.classList.add('hidden');
+    const trial = e2Trial();
+    trial.kmno4VolumeDispensedML = value;
+    trial.overshootFlag = value > trial.trueEquivalenceVolumeML + 0.3;
+    document.getElementById('e2-record-reading-btn').disabled = true;
+    document.getElementById('e2-buret-reading-panel').classList.add('hidden');
+    const stdInput = document.getElementById('e2-standardized-molarity-input');
+    stdInput.value = '';
+    stdInput.disabled = false;
+    document.getElementById('e2-standardized-molarity-error').classList.add('hidden');
+    document.getElementById('e2-standardized-molarity-panel').classList.remove('hidden');
+}
+
+function e2CheckStandardizedMolarity() {
+    const trial = e2Trial();
+    const input = document.getElementById('e2-standardized-molarity-input');
+    const raw = input.value.trim();
+    const value = parseFloat(raw);
+    const errEl = document.getElementById('e2-standardized-molarity-error');
+    errEl.classList.remove('hidden');
+    const correct = (trial.fasMassWeighed / E2_FAS_MW / E2_FE_PER_MNO4) / (trial.kmno4VolumeDispensedML / 1000);
+    if (!/^\d*\.\d{4,5}$/.test(raw)) { errEl.textContent = 'Report your answer to 4–5 decimal places, e.g. 0.01680.'; return; }
+    if (isNaN(value)) { errEl.textContent = 'Enter a number.'; return; }
+    if (Math.abs(value - correct) > correct * 0.01) { errEl.textContent = 'Not quite — check your 1:5 mole ratio and try again.'; return; }
+    errEl.classList.add('hidden');
+    trial.standardizedMolarity = correct;
+    input.disabled = true;
+    document.getElementById('e2-standardized-molarity-panel').classList.add('hidden');
+    e2ShowTrialResult(trial);
+}
+
+function e2ShowTrialResult(trial) {
+    const box = document.getElementById('e2-trial-result-box');
+    const diffPct = Math.abs(trial.standardizedMolarity - trial.nominalMolarity) / trial.nominalMolarity * 100;
+    box.innerHTML =
+        '<p><strong>Diluted (nominal) concentration:</strong> ' + trial.nominalMolarity.toFixed(5) + ' M</p>' +
+        '<p><strong>Standardized concentration:</strong> ' + trial.standardizedMolarity.toFixed(5) + ' M</p>' +
+        '<p>These differ by ' + diffPct.toFixed(1) + '%' + (trial.overshootFlag ? ' — and you overshot the endpoint, which pushes the standardized value off too.' : '.') + '</p>';
+    box.classList.remove('hidden');
+    document.getElementById('e2-next-trial-btn').classList.remove('hidden');
+}
+
+function e2ProceedAfterTrial() { e2AdvanceStep(); }
+
+/* ---- reset / init ---- */
+function e2ResetUI() {
+    e2IsAnimating = false;
+    e2Dispense = { stopcock: 'closed', currentVolumeML: 0, isDispensing: false, streamIntervalId: null, stopped: false };
+    e2UpdateStopcockVisual();
+    e2PourState.amount = 0;
+    e2StopPourHold();
+    document.getElementById('e2-kmno4-pour-modal').classList.remove('open');
+    document.getElementById('e2-fas-pour-modal').classList.remove('open');
+    document.getElementById('e2-redox-modal').classList.remove('open');
+
+    e2State.trial = makeEmptyE2Trial();
+    e2State.currentStep = 1;
+    const trial = e2State.trial;
+    trial.targetMolarity = e2GenerateTargetMolarity();
+    trial.stockVolumeCalcML = trial.targetMolarity * (E2_VOLFLASK_L * 1000) / E2_KMNO4_STOCK_M;
+    trial.stockTrueFactor = randomInRange(0.95, 1.03);
+
+    document.getElementById('e2-target-banner').textContent =
+        'Target: prepare 100.0 mL of ' + trial.targetMolarity.toFixed(4) + ' M KMnO₄ by diluting 0.1000 M stock. (Work out the stock volume needed, measure it in the graduated cylinder, then dilute to the mark.)';
+
+    document.getElementById('e2-scale-reading').textContent = '0.0000 g';
+    document.getElementById('e2-empty-weigh-boat').style.opacity = '1';
+    document.getElementById('e2-scale-drop-zone').classList.remove('hidden');
+    document.getElementById('e2-weighboat-with-sample').classList.add('hidden');
+
+    document.getElementById('e2-cyl-drop-zone').classList.remove('hidden');
+    document.getElementById('e2-cyl-filled').classList.add('hidden');
+    const cylLiquid = document.getElementById('e2-cyl-liquid');
+    cylLiquid.setAttribute('d', ''); cylLiquid.style.opacity = '0';
+
+    document.getElementById('e2-tab-btn-standardize').disabled = true;
+    switchE2Tab('dilute');
+
+    const flaskLiquid = document.getElementById('e2-flask-liquid');
+    flaskLiquid.style.transition = ''; flaskLiquid.style.opacity = '0'; flaskLiquid.setAttribute('d', '');
+    document.getElementById('e2-flask-drop-zone').classList.remove('hidden');
+    document.querySelector('#e2-flask .flask-svg').style.transform = 'rotate(0deg)';
+
+    const erLiquid = document.getElementById('e2-erlenmeyer-liquid');
+    erLiquid.style.transition = ''; erLiquid.style.opacity = '0'; erLiquid.setAttribute('d', ''); erLiquid.style.fill = 'rgba(210,225,180,0.35)';
+    const erParticles = document.getElementById('e2-erlenmeyer-particles');
+    if (erParticles) erParticles.remove();
+    document.getElementById('e2-erlenmeyer-drop-zone').classList.remove('hidden');
+    document.querySelector('#e2-erlenmeyer-flask .flask-svg').style.transform = 'rotate(0deg)';
+
+    document.getElementById('e2-buret-loaded-banner').classList.add('hidden');
+    document.getElementById('e2-diluted-molarity-box').classList.add('hidden');
+    document.getElementById('e2-diluted-molarity-input').value = '';
+    document.getElementById('e2-diluted-molarity-input').disabled = false;
+    document.getElementById('e2-diluted-molarity-feedback').classList.add('hidden');
+
+    document.getElementById('e2-trial-result-box').classList.add('hidden');
+    document.getElementById('e2-buret-reading-panel').classList.add('hidden');
+    document.getElementById('e2-buret-reading-input').value = '';
+    document.getElementById('e2-buret-reading-error').classList.add('hidden');
+    document.getElementById('e2-record-reading-btn').disabled = false;
+    document.getElementById('e2-standardized-molarity-panel').classList.add('hidden');
+    document.getElementById('e2-standardized-molarity-input').value = '';
+    document.getElementById('e2-standardized-molarity-input').disabled = false;
+    document.getElementById('e2-standardized-molarity-error').classList.add('hidden');
+    document.getElementById('e2-next-trial-btn').classList.add('hidden');
+
+    document.getElementById('e2-fill-btn').disabled = true;
+    document.getElementById('e2-mix-btn').disabled = true;
+    document.getElementById('e2-add-water-btn').disabled = true;
+    document.getElementById('e2-stream-btn').disabled = true;
+    document.getElementById('e2-drops-btn').disabled = true;
+    document.getElementById('e2-stop-endpoint-btn').disabled = true;
+
+    e2DrawBuret(0);
+    e2DrawZoom(0);
+    initializeDragAndDrop();
+    e2UpdateProgress();
+}
+
+function e2Init() {
+    e2BrCtx = document.getElementById('e2-buretCanvas').getContext('2d');
+    e2ZnCtx = document.getElementById('e2-zoomCanvas').getContext('2d');
+
+    const streamBtn = document.getElementById('e2-stream-btn');
+    streamBtn.addEventListener('mousedown', e2StartStream);
+    streamBtn.addEventListener('mouseup', e2StopStream);
+    streamBtn.addEventListener('mouseleave', e2StopStream);
+    streamBtn.addEventListener('touchstart', (e) => { e.preventDefault(); e2StartStream(); });
+    streamBtn.addEventListener('touchend', (e) => { e.preventDefault(); e2StopStream(); });
+
+    const kmno4Beaker = document.getElementById('e2-kmno4-pour-beaker');
+    kmno4Beaker.addEventListener('mousedown', () => e2StartPourHold('kmno4'));
+    kmno4Beaker.addEventListener('mouseup', e2StopPourHold);
+    kmno4Beaker.addEventListener('mouseleave', e2StopPourHold);
+    kmno4Beaker.addEventListener('touchstart', (e) => { e.preventDefault(); e2StartPourHold('kmno4'); });
+    kmno4Beaker.addEventListener('touchend', (e) => { e.preventDefault(); e2StopPourHold(); });
+
+    const fasBeaker = document.getElementById('e2-fas-pour-beaker');
+    fasBeaker.addEventListener('mousedown', () => e2StartPourHold('fas'));
+    fasBeaker.addEventListener('mouseup', e2StopPourHold);
+    fasBeaker.addEventListener('mouseleave', e2StopPourHold);
+    fasBeaker.addEventListener('touchstart', (e) => { e.preventDefault(); e2StartPourHold('fas'); });
+    fasBeaker.addEventListener('touchend', (e) => { e.preventDefault(); e2StopPourHold(); });
+
+    e2DrawBuret(0);
+    e2DrawZoom(0);
+    e2UpdateProgress();
+}
+
+/* =========================================================
+   SECTION I: SCORM 1.2 / Schoology gradebook reporting
+   This is a single-run lab: there is no suspend/resume and no manual
+   "Save Progress" button. On load we open the LMS session; when the
+   student finishes the standardization we post a "completed" status and
+   a raw score of 100 so Schoology records the completion grade.
+   Runs harmlessly as a plain web page when no LMS (API) is present.
+   ========================================================= */
+let scormAPI = null;
+let scormFinished = false;
+
+function findAPI(win) {
+    let attempts = 0;
+    let w = win;
+    while (w && attempts < 10) {
+        if (w.API) return w.API;
+        if (w.parent && w.parent !== w) w = w.parent;
+        else if (w.opener) w = w.opener;
+        else break;
+        attempts++;
+    }
+    return null;
+}
+
+function scormInit() {
+    try {
+        scormAPI = findAPI(window);
+        if (!scormAPI) return;
+        scormAPI.LMSInitialize("");
+        const status = scormAPI.LMSGetValue("cmi.core.lesson_status");
+        if (!status || status === "not attempted" || status === "unknown") {
+            scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+        }
+        scormAPI.LMSSetValue("cmi.core.exit", "");
+        scormAPI.LMSCommit("");
+    } catch (e) { /* No LMS present — run standalone */ }
+}
+
+function scormReportCompletion() {
+    if (!scormAPI || scormFinished) return;
+    try {
+        scormAPI.LMSSetValue("cmi.core.score.min", "0");
+        scormAPI.LMSSetValue("cmi.core.score.max", "100");
+        scormAPI.LMSSetValue("cmi.core.score.raw", "100");
+        scormAPI.LMSSetValue("cmi.core.lesson_status", "completed");
+        scormAPI.LMSSetValue("cmi.core.exit", "");
+        scormAPI.LMSCommit("");
+        scormFinished = true;
+    } catch (e) { /* ignore */ }
+}
+
+function scormTerminate() {
+    if (!scormAPI) return;
+    try {
+        if (!scormFinished) {
+            scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+            scormAPI.LMSCommit("");
+        }
+        scormAPI.LMSFinish("");
+    } catch (e) { /* ignore */ }
+}
+
+window.addEventListener('beforeunload', scormTerminate);
+window.addEventListener('pagehide', function () {
+    try { if (scormAPI && !scormFinished) scormAPI.LMSCommit(""); } catch (e) { /* ignore */ }
+});
+
+function init() {
+    scormInit();
+    brCtx = document.getElementById('buretCanvas').getContext('2d');
+    znCtx = document.getElementById('zoomCanvas').getContext('2d');
+
+    const streamBtn = document.getElementById('stream-btn');
+    streamBtn.addEventListener('mousedown', startStream);
+    streamBtn.addEventListener('mouseup', stopStream);
+    streamBtn.addEventListener('mouseleave', stopStream);
+    streamBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startStream(); });
+    streamBtn.addEventListener('touchend', (e) => { e.preventDefault(); stopStream(); });
+
+    const naohBeaker = document.getElementById('naoh-pour-beaker');
+    naohBeaker.addEventListener('mousedown', () => startPourHold('NaOH'));
+    naohBeaker.addEventListener('mouseup', stopPourHold);
+    naohBeaker.addEventListener('mouseleave', stopPourHold);
+    naohBeaker.addEventListener('touchstart', (e) => { e.preventDefault(); startPourHold('NaOH'); });
+    naohBeaker.addEventListener('touchend', (e) => { e.preventDefault(); stopPourHold(); });
+
+    const khpBeaker = document.getElementById('khp-pour-beaker');
+    khpBeaker.addEventListener('mousedown', () => startPourHold('KHP'));
+    khpBeaker.addEventListener('mouseup', stopPourHold);
+    khpBeaker.addEventListener('mouseleave', stopPourHold);
+    khpBeaker.addEventListener('touchstart', (e) => { e.preventDefault(); startPourHold('KHP'); });
+    khpBeaker.addEventListener('touchend', (e) => { e.preventDefault(); stopPourHold(); });
+
+    document.addEventListener('dragstart', function(e) {
+        if (!e.target.classList || !e.target.classList.contains('draggable')) e.preventDefault();
+    });
+
+    drawBuretLevel(brCtx, 0);
+    drawZoom(0);
+    updateProgress();
+
+    e2Init();
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

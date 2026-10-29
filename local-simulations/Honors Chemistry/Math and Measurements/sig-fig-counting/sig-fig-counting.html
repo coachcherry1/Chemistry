@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Significant Figures: Counting Practice</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  h1 {
+    text-align: center;
+    margin: 0.5rem 0 1rem 0;
+    color: #2c3e50;
+    font-size: 2rem;
+    font-weight: 300;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .hidden { display: none !important; }
+
+  .start-screen {
+    max-width: 600px;
+    margin: 60px auto;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 32px;
+    text-align: center;
+  }
+  .start-screen h2 { color: #2c3e50; margin-top: 0; }
+  .start-screen p { color: #495057; line-height: 1.6; }
+  .start-screen button {
+    background: linear-gradient(145deg, #4a90e2, #357abd);
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+  }
+  .start-screen button:hover { background: linear-gradient(145deg, #357abd, #2c5aa0); }
+
+  .progress-board {
+    max-width: 260px;
+    margin: 0 auto 16px;
+    background: white;
+    border: 1px solid #d7e3ea;
+    border-radius: 8px;
+    padding: 10px 14px;
+    text-align: center;
+  }
+  .progress-board .label { font-size: 0.8rem; color: #34495e; }
+  .progress-board .value { font-size: 1.2rem; font-weight: 600; color: #1c6e85; }
+
+  .success-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+  }
+  .success-modal.active { display: flex; }
+  .success-container {
+    background: white;
+    border-radius: 14px;
+    padding: 32px;
+    max-width: 420px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    color: #2c3e50;
+  }
+  .success-container h2 { color: #28a745; margin-top: 0; }
+  .close-button {
+    background: linear-gradient(145deg, #4a90e2, #357abd);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 12px;
+    font-weight: 600;
+  }
+  .close-button:hover { background: linear-gradient(145deg, #357abd, #2c5aa0); }
+
+  .card {
+    max-width: 560px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    text-align: center;
+  }
+  .measurement {
+    background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+    color: white;
+    padding: 1.4rem 1.5rem;
+    border-radius: 12px;
+    font-size: 2.1rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 6px 20px rgba(33, 147, 176, 0.4);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    margin: 0.5rem 0 1.5rem 0;
+    letter-spacing: 0.5px;
+  }
+  .prompt-label {
+    color: #34495e;
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  #answerRow {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+  #answerInput {
+    width: 90px;
+    font-size: 1.3rem;
+    text-align: center;
+    padding: 0.5rem;
+    border: 2px solid #d0d7de;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  #answerInput:focus {
+    outline: none;
+    border-color: #4a90e2;
+  }
+  button.action {
+    padding: 0.65rem 1.4rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  #checkBtn {
+    background: linear-gradient(145deg, #28a745, #218838);
+    color: white;
+  }
+  #checkBtn:hover { background: linear-gradient(145deg, #218838, #1e7e34); transform: translateY(-1px); }
+  #nextBtn {
+    background: linear-gradient(145deg, #4a90e2, #357abd);
+    color: white;
+    display: none;
+  }
+  #nextBtn:hover { background: linear-gradient(145deg, #357abd, #2c5aa0); transform: translateY(-1px); }
+  #feedback {
+    font-weight: 600;
+    min-height: 1.6rem;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+  }
+  #feedback.correct { color: #1e7e34; }
+  #feedback.incorrect { color: #c0392b; }
+  #streak {
+    font-size: 0.9rem;
+    color: #34495e;
+    background: rgba(0,0,0,0.05);
+    display: inline-block;
+    padding: 0.3rem 0.7rem;
+    border-radius: 15px;
+  }
+  #hintBox {
+    margin-top: 1.2rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(145deg, #fff8e1, #ffecb3);
+    border: 1px solid #ffd54f;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #795548;
+    text-align: left;
+  }
+  .save-row {
+    margin-top: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn-save {
+    background: linear-gradient(145deg, #28a745, #218838);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .btn-save:hover { background: linear-gradient(145deg, #218838, #1e7e34); }
+  .save-status {
+    margin-left: 0.6rem;
+    color: #1e7e34;
+    font-weight: 600;
+    font-size: 0.85rem;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .save-status.visible { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="start-screen" id="startScreen">
+  <h2>Significant Figures: Counting Practice</h2>
+  <p>You'll be shown a measured value. Type the number of significant figures it has and check your answer.</p>
+  <p>Correctly count the sig figs of <strong><span id="introRequiredCount">10</span> measurements</strong> to complete this activity.</p>
+  <p>Your progress is saved if you're interrupted, and a completion grade is submitted to your LMS automatically when you finish.</p>
+  <p>Before you close your Chromebook or exit Schoology, click the green "Save Progress" button so your work is saved and you can pick up where you left off next time.</p>
+  <button onclick="startActivity()">Begin Activity</button>
+</div>
+
+<div class="hidden" id="mainContent">
+  <h1>Significant Figures: Counting Practice</h1>
+  <div class="progress-board">
+    <div class="label">Correct Answers</div>
+    <div class="value" id="progressText">0/10</div>
+  </div>
+
+  <div class="card">
+    <div class="prompt-label">How many significant figures does this measurement have?</div>
+    <div class="measurement" id="measurementDisplay"></div>
+    <div id="answerRow">
+      <input type="number" id="answerInput" min="1" max="9" placeholder="?" autocomplete="off"/>
+      <button class="action" id="checkBtn">Check</button>
+      <button class="action" id="nextBtn">Next</button>
+    </div>
+    <div id="feedback"></div>
+    <div id="streak">Streak: 0</div>
+    <div id="hintBox">
+      <strong>Rules reminder:</strong> All nonzero digits count. Zeros between nonzero digits always count.
+      Leading zeros never count. Trailing zeros only count if the number has a decimal point shown.
+    </div>
+    <div class="save-row">
+      <button type="button" class="btn-save" id="saveProgressBtn">Save Progress</button>
+      <span class="save-status" id="saveStatus">Saved ✓</span>
+    </div>
+  </div>
+</div>
+
+<div class="success-modal" id="successModal">
+  <div class="success-container">
+    <h2>Activity Complete!</h2>
+    <p id="successCountText">You correctly counted significant figures for 10 measurements.</p>
+    <p>Your completion grade has been submitted to your LMS automatically.</p>
+    <button class="close-button" onclick="closeSuccessScreen()">Close</button>
+  </div>
+</div>
+
+<script>
+  // ---- Sig fig counting logic ----
+  function sigFigsOfNumericString(str) {
+    str = String(str).trim();
+    if (str.startsWith('-')) str = str.slice(1);
+    if (!/^\d*\.?\d*$/.test(str) || str === '' || str === '.') return null;
+    if (str.includes('.')) {
+      let digits = str.replace('.', '').replace(/^0+/, '');
+      return digits.length > 0 ? digits.length : 1;
+    }
+    let digits = str.replace(/^0+/, '') || '0';
+    let stripped = digits.replace(/0+$/, '');
+    return stripped.length > 0 ? stripped.length : 1;
+  }
+
+  function extractNumericPart(display) {
+    // \d+ before the optional dot (not \d*) so a trailing bare decimal point
+    // (e.g. "1200." with nothing after it) is still captured, not dropped.
+    const m = display.match(/^-?\d+\.?\d*/);
+    return m ? m[0] : display;
+  }
+
+  // Bank of (display, unit-flavored) measurements with pre-verified sig fig counts.
+  const MEASUREMENTS = [
+    { display: '24.5 g', sig: 3 },
+    { display: '0.500 mL', sig: 3 },
+    { display: '1200 mL', sig: 2 },
+    { display: '1200. mL', sig: 4 },
+    { display: '0.0067 M', sig: 2 },
+    { display: '0.00670 M', sig: 3 },
+    { display: '8.00 cm', sig: 3 },
+    { display: '50.0 °C', sig: 3 },
+    { display: '0.045 g', sig: 2 },
+    { display: '3.60 × 10² L', sig: 3 },
+    { display: '2 × 10⁴ mL', sig: 1 },
+    { display: '1.0500 g', sig: 5 },
+    { display: '60 s', sig: 1 },
+    { display: '60. s', sig: 2 },
+    { display: '0.020 m', sig: 2 },
+    { display: '705 mg', sig: 3 },
+    { display: '7050 mg', sig: 3 },
+    { display: '100 mL', sig: 1 },
+    { display: '100.0 mL', sig: 4 },
+    { display: '0.3 M', sig: 1 },
+    { display: '12.34 g', sig: 4 },
+    { display: '9.8 m/s²', sig: 2 },
+    { display: '0.00100 g', sig: 3 },
+    { display: '3400 cm', sig: 2 },
+    { display: '3400. cm', sig: 4 },
+    { display: '0.9 mL', sig: 1 },
+    { display: '45.60 g', sig: 4 },
+    { display: '500 K', sig: 1 },
+    { display: '500. K', sig: 3 },
+    { display: '1.0 × 10⁻³ M', sig: 2 }
+  ];
+
+  // Self-check the authored bank against the counting function (numeric part only).
+  MEASUREMENTS.forEach(m => {
+    const computed = sigFigsOfNumericString(extractNumericPart(m.display));
+    if (computed !== m.sig) {
+      console.warn('Sig fig bank mismatch:', m.display, 'expected', m.sig, 'computed', computed);
+    }
+  });
+
+  const REQUIRED_PROBLEMS = /*__REQUIRED_PROBLEMS__*/10;
+  let challengeFinished = false;
+  let correctCount = 0;
+  let streak = 0;
+  let current = null;
+  let pool = [];
+
+  function refillPool() {
+    pool = MEASUREMENTS.map((_, i) => i);
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+  }
+
+  function nextProblem() {
+    if (pool.length === 0) refillPool();
+    const idx = pool.pop();
+    current = MEASUREMENTS[idx];
+    document.getElementById('measurementDisplay').textContent = current.display;
+    document.getElementById('answerInput').value = '';
+    document.getElementById('answerInput').disabled = false;
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('feedback').className = '';
+    document.getElementById('checkBtn').style.display = 'inline-block';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('answerInput').focus();
+  }
+
+  function checkAnswer() {
+    const val = parseInt(document.getElementById('answerInput').value, 10);
+    const fb = document.getElementById('feedback');
+    if (!Number.isFinite(val)) {
+      fb.textContent = 'Enter a number.';
+      fb.className = 'incorrect';
+      return;
+    }
+    if (val === current.sig) {
+      streak++;
+      fb.textContent = `✅ Correct! ${current.display} has ${current.sig} significant figures.`;
+      fb.className = 'correct';
+      correctCount++;
+      updateProgressDisplay();
+      scormSaveProgress();
+      checkForCompletion();
+      document.getElementById('checkBtn').style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'inline-block';
+      document.getElementById('answerInput').disabled = true;
+    } else {
+      streak = 0;
+      fb.textContent = '❌ Not quite. Check the rules below and try again.';
+      fb.className = 'incorrect';
+    }
+    document.getElementById('streak').textContent = `Streak: ${streak}`;
+  }
+
+  document.getElementById('checkBtn').addEventListener('click', checkAnswer);
+  document.getElementById('nextBtn').addEventListener('click', nextProblem);
+  document.getElementById('answerInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      if (document.getElementById('checkBtn').style.display !== 'none') checkAnswer();
+      else nextProblem();
+    }
+  });
+
+  function updateProgressDisplay() {
+    document.getElementById('progressText').textContent = `${Math.min(correctCount, REQUIRED_PROBLEMS)}/${REQUIRED_PROBLEMS}`;
+  }
+
+  function checkForCompletion() {
+    if (correctCount >= REQUIRED_PROBLEMS && !challengeFinished) {
+      challengeFinished = true;
+      document.getElementById('successCountText').textContent =
+        `You correctly counted significant figures for ${REQUIRED_PROBLEMS} measurements.`;
+      document.getElementById('successModal').classList.add('active');
+      scormReport(100);
+    }
+  }
+
+  function closeSuccessScreen() {
+    document.getElementById('successModal').classList.remove('active');
+  }
+
+  function startActivity() {
+    document.getElementById('startScreen').classList.add('hidden');
+    document.getElementById('mainContent').classList.remove('hidden');
+    document.getElementById('introRequiredCount').textContent = REQUIRED_PROBLEMS;
+    updateProgressDisplay();
+    scormSaveProgress();
+  }
+
+  // ---- SCORM 1.2 wrapper ----
+  let scormAPI = null;
+  let resumeState = null;
+
+  function findAPI(win) {
+    let attempts = 0;
+    let w = win;
+    while (w && attempts < 10) {
+      if (w.API) return w.API;
+      if (w.parent && w.parent !== w) { w = w.parent; }
+      else if (w.opener) { w = w.opener; }
+      else break;
+      attempts++;
+    }
+    return null;
+  }
+
+  function isValidResumePayload(parsed) {
+    if (!parsed || typeof parsed !== 'object') return false;
+    if (typeof parsed.correctCount !== 'number' || parsed.correctCount < 0) return false;
+    return true;
+  }
+
+  function scormInit() {
+    try {
+      scormAPI = findAPI(window);
+      if (!scormAPI) return;
+      scormAPI.LMSInitialize('');
+      if (scormAPI.LMSGetValue('cmi.core.entry') === 'resume') {
+        const raw = scormAPI.LMSGetValue('cmi.suspend_data');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (isValidResumePayload(parsed)) resumeState = parsed;
+        }
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  function resumeFromSavedState() {
+    correctCount = resumeState.correctCount;
+    startActivity();
+    checkForCompletion();
+  }
+
+  function scormSaveProgress() {
+    if (!scormAPI) return;
+    try {
+      scormAPI.LMSSetValue('cmi.suspend_data', JSON.stringify({ correctCount: correctCount }));
+      // Never touch lesson_status/exit once the activity has already been
+      // reported as passed -- otherwise a late safety-net save (pagehide,
+      // visibilitychange, or the manual Save Progress button) could revert
+      // an already-submitted final status back to "incomplete".
+      if (!challengeFinished) {
+        scormAPI.LMSSetValue('cmi.core.lesson_status', 'incomplete');
+        // Setting exit to "suspend" on every incremental save (not just in
+        // the beforeunload-triggered finish handler) ensures the LMS treats
+        // an abrupt close (lid closed, tab killed, network drop before
+        // beforeunload fires) as a resumable attempt rather than a reset.
+        scormAPI.LMSSetValue('cmi.core.exit', 'suspend');
+      }
+      scormAPI.LMSCommit('');
+    } catch (e) { /* ignore */ }
+  }
+
+  function manualSaveProgress() {
+    scormSaveProgress();
+    const status = document.getElementById('saveStatus');
+    if (!status) return;
+    status.classList.add('visible');
+    clearTimeout(manualSaveProgress._hideTimer);
+    manualSaveProgress._hideTimer = setTimeout(() => {
+      status.classList.remove('visible');
+    }, 2500);
+  }
+
+  function safetyCommit() {
+    scormSaveProgress();
+  }
+
+  function scormReport(scorePercent) {
+    if (!scormAPI) return;
+    try {
+      scormAPI.LMSSetValue('cmi.core.score.min', '0');
+      scormAPI.LMSSetValue('cmi.core.score.max', '100');
+      scormAPI.LMSSetValue('cmi.core.score.raw', String(scorePercent));
+      scormAPI.LMSSetValue('cmi.core.lesson_status', 'passed');
+      scormAPI.LMSSetValue('cmi.core.exit', '');
+      scormAPI.LMSCommit('');
+    } catch (e) { /* ignore */ }
+  }
+
+  function scormFinish() {
+    if (!scormAPI) return;
+    try {
+      if (!challengeFinished) {
+        scormSaveProgress();
+        scormAPI.LMSSetValue('cmi.core.exit', 'suspend');
+        scormAPI.LMSCommit('');
+      }
+      scormAPI.LMSFinish('');
+    } catch (e) { /* ignore */ }
+  }
+
+  window.addEventListener('beforeunload', scormFinish);
+
+  // Backup commits for abrupt closes (lid closed, tab torn down by the LMS,
+  // device sleep) where beforeunload frequently never fires. These must only
+  // call the incremental save, never LMSFinish/scormFinish.
+  window.addEventListener('pagehide', safetyCommit);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) safetyCommit();
+  });
+
+  document.getElementById('saveProgressBtn').addEventListener('click', manualSaveProgress);
+
+  refillPool();
+  nextProblem();
+  scormInit();
+  if (resumeState) resumeFromSavedState();
+</script>
+</body>
+</html>

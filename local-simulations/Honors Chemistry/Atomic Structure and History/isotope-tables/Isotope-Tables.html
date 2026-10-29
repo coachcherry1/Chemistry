@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Isotope Table Simulator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 12px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+            color: white;
+            padding: 12px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            font-weight: 300;
+            margin-bottom: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.25);
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 12px 20px 20px 20px;
+        }
+
+        .instructions {
+            background: #f8f9fa;
+            border-left: 4px solid #2193b0;
+            border-radius: 8px;
+            padding: 8px 16px;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+
+        .instructions p {
+            margin: 4px 0;
+            color: #34495e;
+        }
+
+        .instructions summary {
+            color: #1c6e85;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+
+        .instructions li {
+            color: #34495e;
+        }
+
+        .instructions ul {
+            margin: 6px 0 2px 20px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .controls-left {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .score-board {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .score-item {
+            background: white;
+            border: 1px solid #d7e3ea;
+            color: #2c3e50;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-align: center;
+            min-width: 70px;
+            font-size: 0.85rem;
+        }
+
+        .score-item h4 {
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+            color: #1c6e85;
+        }
+
+        .btn {
+            background: linear-gradient(145deg, #4a90e2, #357abd);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            background: linear-gradient(145deg, #357abd, #2c5aa0);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-save {
+            background: linear-gradient(145deg, #28a745, #1e7e34);
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-save:hover {
+            background: linear-gradient(145deg, #1e7e34, #19692c);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+        }
+
+        .save-status {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #28a745;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            vertical-align: middle;
+        }
+
+        .save-status.visible {
+            opacity: 1;
+        }
+
+        .isotope-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .isotope-table th {
+            background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .isotope-table td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #e0e6ed;
+            background: white;
+            position: relative;
+        }
+
+        .isotope-table tr:nth-child(even) td {
+            background: #f8f9fa;
+        }
+
+        .isotope-table input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .isotope-table input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
+        }
+
+        .isotope-table input.correct {
+            border-color: #28a745;
+            background-color: #eafaf0;
+            animation: correctPulse 0.6s ease;
+        }
+
+        .isotope-table input.incorrect {
+            border-color: #dc3545;
+            background-color: #fdecea;
+            animation: shake 0.5s ease;
+        }
+
+        .isotope-table .fixed {
+            background: #f0f9fb;
+            font-weight: 600;
+            color: #1c6e85;
+        }
+
+        .nuclear-symbol-input {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            min-height: 80px;
+        }
+
+        .nuclear-symbol-input .numbers-column {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .nuclear-symbol-input input {
+            width: 40px !important;
+            height: 30px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: bold;
+            border: 2px solid #e0e0e0;
+            border-radius: 3px;
+            padding: 2px;
+        }
+
+        .nuclear-symbol-input .element-symbol {
+            width: 50px !important;
+            height: 40px !important;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .feedback.success {
+            background: linear-gradient(145deg, #28a745, #218838);
+            color: white;
+        }
+
+        .feedback.error {
+            background: #fdecea;
+            color: #a52a2a;
+        }
+
+        .feedback.hint {
+            background: #f0f9fb;
+            color: #1c6e85;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            .controls {
+                justify-content: center;
+            }
+            
+            .controls-left {
+                justify-content: center;
+            }
+            
+            .isotope-table {
+                font-size: 12px;
+            }
+            
+            .isotope-table th,
+            .isotope-table td {
+                padding: 8px 4px;
+            }
+        }
+
+        /* Success screen shown on completion */
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-modal.active {
+            display: flex;
+        }
+
+        .success-container {
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            padding: 40px;
+            margin: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .success-container h2 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+        }
+
+        .success-container p {
+            color: #495057;
+            line-height: 1.6;
+        }
+
+        .success-container .close-button {
+            margin-top: 24px;
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #4a90e2;
+            color: white;
+        }
+
+        .success-container .close-button:hover {
+            background: #357abd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Isotope Table Simulator</h1>
+            <p>Master the relationships between atomic number, mass number, protons, neutrons, and electrons!</p>
+        </div>
+        
+        <div class="content">
+            <div class="instructions">
+                <p>Fill in the missing values in the isotope table below. All atoms are neutral. Complete <strong>3 tables</strong> correctly to finish this activity — you have unlimited tries on each table.</p>
+                <details>
+                    <summary>Show the rules</summary>
+                    <ul>
+                        <li><strong>Atomic Number</strong> = Number of Protons = Number of Electrons</li>
+                        <li><strong>Mass Number</strong> = Protons + Neutrons</li>
+                        <li><strong>Neutrons</strong> = Mass Number - Atomic Number</li>
+                        <li><strong>Nuclear Symbol:</strong> Fill in the three boxes - mass number (top), element symbol (middle), atomic number (bottom)</li>
+                        <li><strong>Isotope Symbol:</strong> Format is Element-MassNumber (e.g., C-14, Na-23, U-235)</li>
+                        <li><strong>Before you close your Chromebook or exit Schoology,</strong> click the green "Save Progress" button so your work is saved and you can pick up where you left off next time.</li>
+                    </ul>
+                </details>
+            </div>
+
+            <div class="controls">
+                <div class="controls-left">
+                    <button class="btn" id="check-answers-btn" onclick="checkAnswers()">Check Answers</button>
+                    <button class="btn" onclick="showHint()">Hint</button>
+                    <button class="btn" onclick="resetTable()">Reset</button>
+                    <button class="btn btn-save" id="save-progress-btn" onclick="manualSaveProgress()">Save Progress</button>
+                    <span class="save-status" id="save-status">Saved ✓</span>
+                </div>
+
+                <div class="score-board">
+                    <div class="score-item">
+                        <h4 id="correct-count">0/3</h4>
+                        <span>Tables Completed</span>
+                    </div>
+                    <div class="score-item">
+                        <h4 id="total-problems">0</h4>
+                        <span>Attempts</span>
+                    </div>
+                    <div class="score-item">
+                        <h4 id="accuracy">0%</h4>
+                        <span>Accuracy</span>
+                    </div>
+                </div>
+            </div>
+
+            <table class="isotope-table" id="isotope-table">
+                <thead>
+                    <tr>
+                        <th>Nuclear<br>Symbol</th>
+                        <th>Element<br>Name</th>
+                        <th>Isotope<br>Symbol</th>
+                        <th>Atomic<br>Number</th>
+                        <th>Mass<br>Number</th>
+                        <th># p⁺</th>
+                        <th># n⁰</th>
+                        <th># e⁻</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+            </table>
+
+            <div class="feedback" id="feedback"></div>
+        </div>
+    </div>
+
+    <!-- Success Screen -->
+    <div class="success-modal" id="successModal">
+        <div class="success-container">
+            <h2>Practice Complete!</h2>
+            <p>You completed 5 isotope tables correctly.</p>
+            <p>Your completion grade has been submitted to Schoology.</p>
+            <button class="close-button" onclick="closeSuccessScreen()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const predefinedProblems = [
+            // 1. Nuclear symbol only
+            {element: {symbol: 'H', name: 'Hydrogen', atomicNumber: 1}, massNumber: 3, infoSet: ['nuclearSymbol']},
+            {element: {symbol: 'C', name: 'Carbon', atomicNumber: 6}, massNumber: 14, infoSet: ['nuclearSymbol']},
+            {element: {symbol: 'Ne', name: 'Neon', atomicNumber: 10}, massNumber: 22, infoSet: ['nuclearSymbol']},
+            
+            // 2. Element name and mass number
+            {element: {symbol: 'He', name: 'Helium', atomicNumber: 2}, massNumber: 4, infoSet: ['elementName', 'massNumber']},
+            {element: {symbol: 'Li', name: 'Lithium', atomicNumber: 3}, massNumber: 7, infoSet: ['elementName', 'massNumber']},
+            {element: {symbol: 'N', name: 'Nitrogen', atomicNumber: 7}, massNumber: 15, infoSet: ['elementName', 'massNumber']},
+            {element: {symbol: 'Na', name: 'Sodium', atomicNumber: 11}, massNumber: 23, infoSet: ['elementName', 'massNumber']},
+            
+            // 3. Protons and neutrons
+            {element: {symbol: 'B', name: 'Boron', atomicNumber: 5}, massNumber: 11, infoSet: ['protons', 'neutrons']},
+            {element: {symbol: 'F', name: 'Fluorine', atomicNumber: 9}, massNumber: 19, infoSet: ['protons', 'neutrons']},
+            {element: {symbol: 'Al', name: 'Aluminum', atomicNumber: 13}, massNumber: 27, infoSet: ['protons', 'neutrons']},
+            {element: {symbol: 'P', name: 'Phosphorus', atomicNumber: 15}, massNumber: 32, infoSet: ['protons', 'neutrons']},
+            
+            // 4. Mass number and protons
+            {element: {symbol: 'Be', name: 'Beryllium', atomicNumber: 4}, massNumber: 9, infoSet: ['massNumber', 'protons']},
+            {element: {symbol: 'O', name: 'Oxygen', atomicNumber: 8}, massNumber: 18, infoSet: ['massNumber', 'protons']},
+            {element: {symbol: 'Mg', name: 'Magnesium', atomicNumber: 12}, massNumber: 26, infoSet: ['massNumber', 'protons']},
+            {element: {symbol: 'S', name: 'Sulfur', atomicNumber: 16}, massNumber: 35, infoSet: ['massNumber', 'protons']},
+            
+            // 5. Electrons and mass number
+            {element: {symbol: 'Ne', name: 'Neon', atomicNumber: 10}, massNumber: 22, infoSet: ['electrons', 'massNumber']},
+            {element: {symbol: 'Si', name: 'Silicon', atomicNumber: 14}, massNumber: 30, infoSet: ['electrons', 'massNumber']},
+            {element: {symbol: 'Cl', name: 'Chlorine', atomicNumber: 17}, massNumber: 37, infoSet: ['electrons', 'massNumber']},
+            {element: {symbol: 'K', name: 'Potassium', atomicNumber: 19}, massNumber: 41, infoSet: ['electrons', 'massNumber']},
+            
+            // 6. Electrons and neutrons
+            {element: {symbol: 'Ar', name: 'Argon', atomicNumber: 18}, massNumber: 40, infoSet: ['electrons', 'neutrons']},
+            {element: {symbol: 'Ca', name: 'Calcium', atomicNumber: 20}, massNumber: 44, infoSet: ['electrons', 'neutrons']},
+            {element: {symbol: 'Ti', name: 'Titanium', atomicNumber: 22}, massNumber: 48, infoSet: ['electrons', 'neutrons']},
+            {element: {symbol: 'Fe', name: 'Iron', atomicNumber: 26}, massNumber: 56, infoSet: ['electrons', 'neutrons']},
+            
+            // 7. Mass number and neutrons
+            {element: {symbol: 'Sc', name: 'Scandium', atomicNumber: 21}, massNumber: 45, infoSet: ['massNumber', 'neutrons']},
+            {element: {symbol: 'V', name: 'Vanadium', atomicNumber: 23}, massNumber: 51, infoSet: ['massNumber', 'neutrons']},
+            {element: {symbol: 'Cr', name: 'Chromium', atomicNumber: 24}, massNumber: 52, infoSet: ['massNumber', 'neutrons']},
+            {element: {symbol: 'Ni', name: 'Nickel', atomicNumber: 28}, massNumber: 60, infoSet: ['massNumber', 'neutrons']},
+            
+            // 8. Atomic symbol only (Element-MassNumber format)
+            {element: {symbol: 'Mn', name: 'Manganese', atomicNumber: 25}, massNumber: 55, infoSet: ['atomicSymbol']},
+            {element: {symbol: 'Co', name: 'Cobalt', atomicNumber: 27}, massNumber: 59, infoSet: ['atomicSymbol']},
+            {element: {symbol: 'Br', name: 'Bromine', atomicNumber: 35}, massNumber: 81, infoSet: ['atomicSymbol']}
+        ];
+
+        let currentProblems = [];
+        let tablesCorrect = 0;
+        let totalAttempts = 0;
+
+        function generateNuclearSymbol(element, massNumber) {
+            return `<div style="position: relative; display: inline-block; font-family: 'Courier New', monospace; font-weight: bold; font-size: 18px; line-height: 1.2;">
+                <span style="position: absolute; top: -8px; left: -15px; font-size: 14px;">${massNumber}</span>
+                <span style="position: absolute; bottom: -8px; left: -15px; font-size: 14px;">${element.atomicNumber}</span>
+                <span style="margin-left: 10px;">${element.symbol}</span>
+            </div>`;
+        }
+
+        function generateNewProblem() {
+            const checkBtn = document.getElementById('check-answers-btn');
+            if (checkBtn) checkBtn.disabled = false;
+            const tableBody = document.getElementById('table-body');
+            tableBody.innerHTML = '';
+            currentProblems = [];
+
+            // Randomly select 3 problems from the predefined set
+            const selectedProblems = [];
+            const usedIndices = new Set();
+            
+            for (let i = 0; i < 3; i++) {
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * predefinedProblems.length);
+                } while (usedIndices.has(randomIndex));
+                
+                usedIndices.add(randomIndex);
+                selectedProblems.push(predefinedProblems[randomIndex]);
+            }
+            
+            selectedProblems.forEach((problemData, i) => {
+                const element = problemData.element;
+                const massNumber = problemData.massNumber;
+                const fieldsToShow = problemData.infoSet;
+                
+                const problem = {
+                    nuclearSymbol: generateNuclearSymbol(element, massNumber),
+                    nuclearMassNumber: massNumber,
+                    nuclearElementSymbol: element.symbol,
+                    nuclearAtomicNumber: element.atomicNumber,
+                    elementName: element.name,
+                    atomicSymbol: `${element.symbol}-${massNumber}`,
+                    atomicNumber: element.atomicNumber,
+                    massNumber: massNumber,
+                    protons: element.atomicNumber,
+                    neutrons: massNumber - element.atomicNumber,
+                    electrons: element.atomicNumber
+                };
+
+                currentProblems.push(problem);
+
+                const row = tableBody.insertRow();
+                const fields = ['nuclearSymbol', 'elementName', 'atomicSymbol', 'atomicNumber', 'massNumber', 'protons', 'neutrons', 'electrons'];
+
+                fields.forEach((field, index) => {
+                    const cell = row.insertCell();
+                    if (fieldsToShow.includes(field)) {
+                        cell.innerHTML = `<span class="fixed">${problem[field]}</span>`;
+                        cell.classList.add('fixed');
+                    } else if (field === 'nuclearSymbol') {
+                        // Create the three-box nuclear symbol input
+                        const nuclearDiv = document.createElement('div');
+                        nuclearDiv.className = 'nuclear-symbol-input';
+                        
+                        // Create container for the two number boxes on the left
+                        const numbersColumn = document.createElement('div');
+                        numbersColumn.className = 'numbers-column';
+                        
+                        const massInput = document.createElement('input');
+                        massInput.type = 'number';
+                        massInput.className = 'mass-number';
+                        massInput.id = `row${i}_nuclearMassNumber`;
+                        massInput.dataset.row = i;
+                        massInput.dataset.field = 'nuclearMassNumber';
+                        massInput.placeholder = 'A';
+                        massInput.addEventListener('input', validateInput);
+                        
+                        const atomicInput = document.createElement('input');
+                        atomicInput.type = 'number';
+                        atomicInput.className = 'atomic-number';
+                        atomicInput.id = `row${i}_nuclearAtomicNumber`;
+                        atomicInput.dataset.row = i;
+                        atomicInput.dataset.field = 'nuclearAtomicNumber';
+                        atomicInput.placeholder = 'Z';
+                        atomicInput.addEventListener('input', validateInput);
+                        
+                        const elementInput = document.createElement('input');
+                        elementInput.type = 'text';
+                        elementInput.className = 'element-symbol';
+                        elementInput.id = `row${i}_nuclearElementSymbol`;
+                        elementInput.dataset.row = i;
+                        elementInput.dataset.field = 'nuclearElementSymbol';
+                        elementInput.placeholder = 'X';
+                        elementInput.addEventListener('input', validateInput);
+                        
+                        // Add mass and atomic number to the left column
+                        numbersColumn.appendChild(massInput);
+                        numbersColumn.appendChild(atomicInput);
+                        
+                        // Add the column and element symbol to the main container
+                        nuclearDiv.appendChild(numbersColumn);
+                        nuclearDiv.appendChild(elementInput);
+                        cell.appendChild(nuclearDiv);
+                    } else {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.id = `row${i}_${field}`;
+                        input.dataset.row = i;
+                        input.dataset.field = field;
+                        input.addEventListener('input', validateInput);
+                        cell.appendChild(input);
+                    }
+                });
+            });
+
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('feedback').className = 'feedback';
+        }
+
+        function validateInput(event) {
+            const input = event.target;
+            const row = parseInt(input.dataset.row);
+            const field = input.dataset.field;
+            const correctValue = currentProblems[row][field];
+            
+            let userValue = input.value.trim();
+            
+            // Convert to number for numeric fields
+            if (field.includes('Number') || field === 'protons' || field === 'neutrons' || field === 'electrons' || field === 'atomicNumber' || field === 'massNumber') {
+                userValue = parseInt(userValue);
+            }
+            
+            // Handle case sensitivity - element names are case-insensitive, atomic symbols are case-sensitive
+            let isCorrect = false;
+            if (field === 'elementName') {
+                isCorrect = userValue.toLowerCase() === correctValue.toLowerCase();
+            } else {
+                isCorrect = userValue === correctValue;
+            }
+
+            input.classList.remove('correct', 'incorrect');
+            
+            if (isCorrect) {
+                input.classList.add('correct');
+            } else if (input.value !== '') {
+                input.classList.add('incorrect');
+            }
+        }
+
+        const TABLES_REQUIRED = 3;
+
+        function checkAnswers() {
+            let allCorrect = true;
+            let answeredCount = 0;
+            let correctCount = 0;
+
+            currentProblems.forEach((problem, rowIndex) => {
+                const fields = ['nuclearMassNumber', 'nuclearElementSymbol', 'nuclearAtomicNumber', 'elementName', 'atomicSymbol', 'atomicNumber', 'massNumber', 'protons', 'neutrons', 'electrons'];
+
+                fields.forEach(field => {
+                    const input = document.getElementById(`row${rowIndex}_${field}`);
+                    if (input) {
+                        answeredCount++;
+                        let userValue = input.value.trim();
+                        const correctValue = problem[field];
+
+                        // Convert to number for numeric fields
+                        if (field.includes('Number') || field === 'protons' || field === 'neutrons' || field === 'electrons' || field === 'atomicNumber' || field === 'massNumber') {
+                            userValue = parseInt(userValue);
+                        }
+
+                        // Handle case sensitivity - element names are case-insensitive, atomic symbols are case-sensitive
+                        let isCorrect = false;
+                        if (field === 'elementName') {
+                            isCorrect = userValue.toLowerCase() === correctValue.toLowerCase();
+                        } else {
+                            isCorrect = userValue === correctValue;
+                        }
+
+                        if (isCorrect) {
+                            input.classList.remove('incorrect');
+                            input.classList.add('correct');
+                            correctCount++;
+                        } else {
+                            input.classList.remove('correct');
+                            input.classList.add('incorrect');
+                            allCorrect = false;
+                        }
+                    }
+                });
+            });
+
+            const feedback = document.getElementById('feedback');
+            if (answeredCount === 0) {
+                feedback.textContent = 'Please fill in some answers first!';
+                feedback.className = 'feedback error';
+                return;
+            }
+
+            totalAttempts++;
+
+            if (allCorrect) {
+                document.getElementById('check-answers-btn').disabled = true;
+                tablesCorrect++;
+                updateScore();
+                scormSaveProgress();
+
+                if (tablesCorrect >= TABLES_REQUIRED) {
+                    feedback.textContent = 'Excellent! All answers are correct!';
+                    feedback.className = 'feedback success';
+                    showSuccessScreen();
+                } else {
+                    feedback.textContent = 'Excellent! All answers are correct! Loading a new table...';
+                    feedback.className = 'feedback success';
+                    setTimeout(() => generateNewProblem(), 1500);
+                }
+            } else {
+                feedback.textContent = `${correctCount}/${answeredCount} correct. Keep trying!`;
+                feedback.className = 'feedback error';
+                updateScore();
+            }
+        }
+
+        function updateScore() {
+            document.getElementById('correct-count').textContent = `${tablesCorrect}/${TABLES_REQUIRED}`;
+            document.getElementById('total-problems').textContent = totalAttempts;
+            const accuracy = totalAttempts > 0 ? Math.round((tablesCorrect / totalAttempts) * 100) : 0;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+        }
+
+        function showHint() {
+            const hints = [
+                "Remember: Atomic Number = Number of Protons = Number of Electrons",
+                "Mass Number = Protons + Neutrons",
+                "Neutrons = Mass Number - Atomic Number",
+                "Nuclear symbol: Mass number (top left), Element symbol (middle), Atomic number (bottom left)",
+                "Isotope symbol format: Element-MassNumber (e.g., Na-23, C-14)",
+                "All atoms in this exercise are neutral (no charge)"
+            ];
+
+            const randomHint = hints[Math.floor(Math.random() * hints.length)];
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = randomHint;
+            feedback.className = 'feedback hint';
+        }
+
+        function resetTable() {
+            const inputs = document.querySelectorAll('#isotope-table input');
+            inputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('correct', 'incorrect');
+            });
+
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('feedback').className = 'feedback';
+        }
+
+        // Show success screen
+        function showSuccessScreen() {
+            document.getElementById('successModal').classList.add('active');
+            state.challengeFinished = true;
+            const accuracy = totalAttempts > 0 ? Math.round((tablesCorrect / totalAttempts) * 100) : 100;
+            scormReport(accuracy);
+        }
+
+        function closeSuccessScreen() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        // ---- SCORM 1.2 wrapper ----
+        const state = { challengeFinished: false };
+        let scormAPI = null;
+        let resumeState = null;
+
+        function findAPI(win) {
+            let attempts = 0;
+            let w = win;
+            while (w && attempts < 10) {
+                if (w.API) return w.API;
+                if (w.parent && w.parent !== w) {
+                    w = w.parent;
+                } else if (w.opener) {
+                    w = w.opener;
+                } else {
+                    break;
+                }
+                attempts++;
+            }
+            return null;
+        }
+
+        function isValidResumePayload(parsed) {
+            if (!parsed || typeof parsed !== 'object') return false;
+            if (typeof parsed.tablesCorrect !== 'number' || parsed.tablesCorrect < 0 || parsed.tablesCorrect > TABLES_REQUIRED) return false;
+            if (typeof parsed.totalAttempts !== 'number' || parsed.totalAttempts < 0) return false;
+            return true;
+        }
+
+        function scormInit() {
+            try {
+                scormAPI = findAPI(window);
+                if (!scormAPI) return;
+                scormAPI.LMSInitialize("");
+                if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                    const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (isValidResumePayload(parsed)) {
+                            resumeState = parsed;
+                        }
+                    }
+                }
+            } catch (e) { /* No LMS present, or malformed bookmark — start fresh */ }
+        }
+
+        function scormSaveProgress() {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                    tablesCorrect: tablesCorrect,
+                    totalAttempts: totalAttempts
+                }));
+                if (!state.challengeFinished) {
+                    scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                    // Mark the exit reason as "suspend" on every save, not just on
+                    // beforeunload/pagehide. Students on Chromebooks/iPads very often
+                    // exit by closing the lid or leaving the Schoology tab, which does
+                    // not reliably fire beforeunload/pagehide before the device sleeps
+                    // and the network drops. Setting this on every commit means the LMS
+                    // already has the correct "resume me" state as of the last save,
+                    // instead of depending on a browser-close event to set it at the end.
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                }
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        // Manually triggered by the "Save Progress" button. This is the primary,
+        // reliable save path — students are instructed to click it before closing
+        // their Chromebook, since automatic browser-unload events can't be trusted
+        // to fire when a laptop lid is closed rather than the tab being navigated
+        // away from. Falls back gracefully (shows nothing) if no LMS is present.
+        function manualSaveProgress() {
+            if (!scormAPI) return;
+            scormSaveProgress();
+            const status = document.getElementById('save-status');
+            if (!status) return;
+            status.classList.add('visible');
+            clearTimeout(manualSaveProgress._hideTimer);
+            manualSaveProgress._hideTimer = setTimeout(() => {
+                status.classList.remove('visible');
+            }, 2500);
+        }
+
+        function scormReport(scorePercent) {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.core.score.min", "0");
+                scormAPI.LMSSetValue("cmi.core.score.max", "100");
+                scormAPI.LMSSetValue("cmi.core.score.raw", String(scorePercent));
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+                scormAPI.LMSSetValue("cmi.core.exit", "");
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function scormFinish() {
+            if (!scormAPI) return;
+            try {
+                if (!state.challengeFinished) {
+                    scormSaveProgress();
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                    scormAPI.LMSCommit("");
+                }
+                scormAPI.LMSFinish("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function resumeFromSavedState() {
+            tablesCorrect = resumeState.tablesCorrect;
+            totalAttempts = resumeState.totalAttempts;
+            updateScore();
+        }
+
+        // Best-effort safety net for the case where the student closes the
+        // Chromebook lid or leaves the tab without clicking "Save Progress":
+        // these events fire more reliably than beforeunload on that path, but
+        // unlike beforeunload we deliberately do NOT call LMSFinish() here —
+        // visibilitychange in particular fires on every tab switch, not just a
+        // real exit, and terminating the SCORM session on a brief tab-switch
+        // would break the ability to keep saving for the rest of that visit.
+        // We just re-commit the current state so the LMS has it either way.
+        function safetyCommit() {
+            if (!scormAPI || state.challengeFinished) return;
+            scormSaveProgress();
+        }
+        window.addEventListener('pagehide', safetyCommit);
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) safetyCommit();
+        });
+        window.addEventListener('beforeunload', scormFinish);
+        scormInit();
+
+        // Initialize with a new problem
+        generateNewProblem();
+        if (resumeState) {
+            resumeFromSavedState();
+        }
+    </script>
+</body>
+</html>

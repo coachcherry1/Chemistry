@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electron Configuration Practice</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 6px;
+            background: linear-gradient(135deg, #f7f5f0 0%, #d9cfc0 100%);
+            min-height: 100vh;
+            color: #333;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1340px;
+            margin: 0 auto;
+            position: relative;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            padding: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Compact top menu bar */
+        .topbar {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px 10px;
+            padding: 6px 8px;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, #b45309 0%, #92400e 100%);
+            border-radius: 6px;
+        }
+
+        .topbar-title {
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+        }
+
+        .mode-selection {
+            display: flex;
+            gap: 6px;
+        }
+
+        .mode-btn {
+            background: linear-gradient(145deg, #7c2d12, #5c1e0c);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.25);
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.15s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+
+        .mode-btn:hover {
+            background: linear-gradient(145deg, #5c1e0c, #451607);
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(145deg, #28a745, #218838);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .mode-btn:disabled,
+        .mode-btn:disabled:hover {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(0.4);
+            background: linear-gradient(145deg, #7c2d12, #5c1e0c);
+        }
+
+        .score-badge {
+            margin-left: auto;
+            background: #fffaf0;
+            color: #7c2d12;
+            padding: 3px 10px;
+            border-radius: 11px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .statusline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px 10px;
+            font-size: 12px;
+            color: #5c4326;
+            font-weight: 600;
+            margin-bottom: 6px;
+            min-height: 15px;
+        }
+
+
+        .game-area {
+            display: none;
+        }
+
+        .game-area.active {
+            display: block;
+        }
+
+        .problem-section {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border: 1px solid #e0e6ed;
+            border-radius: 8px;
+            padding: 8px;
+            margin-bottom: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .problem-text {
+            font-size: 1.02rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 6px rgba(180, 83, 9, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .electron-config-display {
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            padding: 5px 8px;
+            border-radius: 5px;
+            border: 2px solid #d0d7de;
+            margin: 4px 0 0;
+            min-height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+        }
+
+        .electron-config-display sup,
+        .config-item sup {
+            font-size: 0.7em;
+            vertical-align: super;
+            line-height: 0;
+        }
+
+        .work-area {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border: 1px solid #e0e6ed;
+            border-radius: 6px;
+            padding: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .work-area h3 {
+            margin: 0 0 6px 0;
+            color: #5c4326;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .orbital-database {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .orbital-group {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border: 1px solid #e0e6ed;
+            border-radius: 5px;
+            padding: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .orbital-group.s-orbitals { border-color: #f44336; }
+        .orbital-group.p-orbitals { border-color: #4caf50; }
+        .orbital-group.d-orbitals { border-color: #a16207; }
+
+        .orbital-group h4 {
+            text-align: center;
+            margin: 0 0 6px 0;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .orbital-group.s-orbitals h4 { color: #f44336; }
+        .orbital-group.p-orbitals h4 { color: #4caf50; }
+        .orbital-group.d-orbitals h4 { color: #a16207; }
+
+        .orbital-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+        }
+
+        .orbital-btn {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            border: 1px solid #d0d7de;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .orbital-btn:hover {
+            background: linear-gradient(145deg, #b45309, #92400e);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(180, 83, 9, 0.3);
+        }
+
+        .config-builder {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border: 2px solid #d0d7de;
+            border-radius: 6px;
+            padding: 8px;
+            min-height: 38px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+            gap: 8px;
+        }
+
+        .config-item {
+            background: linear-gradient(145deg, #e8f4fd, #d1ecf1);
+            border: 1px solid #b45309;
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(180, 83, 9, 0.2);
+        }
+
+        .config-item:hover {
+            background: linear-gradient(145deg, #d1ecf1, #b8d8e7);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(180, 83, 9, 0.3);
+        }
+
+        .periodic-table {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border: 1px solid #e0e6ed;
+            border-radius: 8px;
+            padding: 6px;
+            margin-bottom: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .periodic-table h3 {
+            margin: 0 0 4px 0;
+            color: #5c4326;
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .period {
+            display: flex;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            line-height: 0;
+        }
+
+        .element {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #9ca3af;
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 1px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .element:hover {
+            transform: scale(1.15);
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+        }
+
+        .element.correct {
+            background: linear-gradient(145deg, #28a745, #218838);
+            color: white;
+            border-color: #1e7e34;
+            animation: correctPulse 0.6s ease;
+            box-shadow: 0 2px 6px rgba(40, 167, 69, 0.3);
+        }
+
+        .element.incorrect {
+            background: linear-gradient(145deg, #dc3545, #c82333);
+            color: white;
+            border-color: #bd2130;
+            animation: shake 0.6s ease;
+            box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
+        }
+
+        .empty-cell {
+            width: 30px;
+            height: 30px;
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+        }
+
+        .period-label {
+            width: 14px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 600;
+            color: #666;
+            flex-shrink: 0;
+        }
+
+        .group-number-tag {
+            position: absolute;
+            top: -11px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 8px;
+            font-weight: 600;
+            color: #666;
+            line-height: 1;
+        }
+
+        .element-symbol-pt {
+            font-size: 9px;
+            line-height: 1;
+            margin: 0;
+        }
+
+        .atomic-num {
+            font-size: 6px;
+            color: #666;
+            line-height: 1;
+            margin: 0;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 6px 0;
+        }
+
+        .btn.btn-sm {
+            padding: 5px 12px;
+            font-size: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+        .btn.btn-sm:hover { transform: none; }
+
+        .btn {
+            background: linear-gradient(145deg, #b45309, #92400e);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            background: linear-gradient(145deg, #92400e, #7c2d12);
+        }
+
+        .btn.success {
+            background: linear-gradient(145deg, #28a745, #218838);
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+        }
+        .btn.success:hover {
+            background: linear-gradient(145deg, #218838, #1e7e34);
+        }
+
+        .btn.danger {
+            background: linear-gradient(145deg, #dc3545, #c82333);
+            box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+        }
+        .btn.danger:hover {
+            background: linear-gradient(145deg, #c82333, #bd2130);
+        }
+
+        .save-status {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #28a745;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            vertical-align: middle;
+        }
+
+        .save-status.visible {
+            opacity: 1;
+        }
+
+        .feedback {
+            text-align: center;
+            padding: 6px 10px;
+            border-radius: 6px;
+            margin: 6px 0 0;
+            font-size: 0.92rem;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .feedback.success {
+            background: linear-gradient(145deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 1px solid #28a745;
+        }
+
+        .feedback.error {
+            background: linear-gradient(145deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border: 1px solid #dc3545;
+        }
+
+        .score {
+            font-size: 12px;
+            font-weight: 600;
+            color: #5c4326;
+            text-align: right;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .modal h3 {
+            margin: 0 0 20px 0;
+            color: #5c4326;
+            font-weight: 500;
+        }
+
+        .number-input {
+            width: 120px;
+            padding: 12px;
+            font-size: 1.1rem;
+            text-align: center;
+            border: 2px solid #d0d7de;
+            border-radius: 6px;
+            margin: 10px;
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            transition: all 0.2s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+        }
+        .number-input:focus {
+            outline: none;
+            border-color: #b45309;
+            box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.2);
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @media (max-width: 768px) {
+            .orbital-database {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .element {
+                width: 27px;
+                height: 27px;
+                font-size: 7px;
+            }
+
+            .empty-cell {
+                width: 27px;
+                height: 27px;
+            }
+
+            .element-symbol-pt {
+                font-size: 9px;
+            }
+
+            .atomic-num {
+                font-size: 6px;
+            }
+
+            .topbar-title { width: 100%; text-align: center; }
+            .score-badge { margin: 0; }
+        }
+        /* Success screen (replaces certificate in the SCORM copy) */
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-modal.active {
+            display: flex;
+        }
+
+        .success-container {
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            padding: 40px;
+            margin: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .success-container h2 {
+            color: #5c4326;
+            margin-bottom: 12px;
+        }
+
+        .success-container p {
+            color: #495057;
+            line-height: 1.6;
+        }
+
+        .success-container .close-button {
+            margin-top: 24px;
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #b45309;
+            color: white;
+        }
+
+        .success-container .close-button:hover {
+            background: #92400e;
+        }
+
+        /* Start Screen Styles */
+        .name-input-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f7f5f0 0%, #d9cfc0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .name-input-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .name-input-container h2 {
+            color: #5c4326;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .name-input-container p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .start-simulation-btn {
+            background: linear-gradient(145deg, #b45309, #92400e);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .start-simulation-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(180, 83, 9, 0.3);
+        }
+
+        .start-simulation-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Start Screen -->
+    <div class="name-input-screen" id="nameInputScreen">
+        <div class="name-input-container">
+            <h2>Electron Configuration Practice</h2>
+            <p>Mode 1 requires 10 correct answers. Mode 2 unlocks after Mode 1 and requires 5 correct answers. Both must be finished to complete this activity.</p>
+            <p style="font-size: 0.95rem; margin-top: -20px; margin-bottom: 30px;"><strong>Before you close your Chromebook or exit Schoology,</strong> click the green "Save Progress" button so your work is saved and you can pick up where you left off next time.</p>
+            <button id="startSimulationBtn"
+                    class="start-simulation-btn"
+                    onclick="startSimulation()">
+                Start Simulation
+            </button>
+        </div>
+    </div>
+
+    <div class="container" id="mainSimulation" style="display: none;">
+        <div class="topbar">
+            <span class="topbar-title">Electron Configuration Practice</span>
+            <div class="mode-selection">
+                <button class="mode-btn" id="mode1Btn">Mode 1: Config to Element</button>
+                <button class="mode-btn" id="mode2Btn" disabled>Mode 2: Element to Config</button>
+            </div>
+            <button class="btn success btn-sm" id="save-progress-btn" onclick="manualSaveProgress()" style="margin-left:auto;">Save Progress</button>
+            <span class="save-status" id="save-status">Saved</span>
+            <span class="score-badge" id="scoreBadge" style="margin-left:0;">Score 100%</span>
+        </div>
+
+        <div class="statusline">
+            <span class="score" id="scoreDisplay">Score: 0/0</span>
+        </div>
+
+        <!-- Mode 1: Configuration to Element -->
+        <div class="game-area" id="mode1Area">
+            <div class="problem-section">
+                <div class="problem-text">Which element has this electron configuration? Click it on the table below.</div>
+                <div class="electron-config-display" id="configProblem"></div>
+                <div class="feedback" id="mode1Feedback" style="display: none;"></div>
+            </div>
+
+            <div class="periodic-table">
+                <div id="periodicTable1"></div>
+            </div>
+
+        </div>
+
+        <!-- Mode 2: Element to Configuration -->
+        <div class="game-area" id="mode2Area">
+            <div class="instructions" style="background: #fffaf0; border: 1px solid #b45309; border-radius: 6px; padding: 5px 8px; margin-bottom: 6px; text-align: center; font-size: 11px; line-height: 1.3;">
+                Click an orbital below to add it; click an orbital already in your answer to change its electron count or remove it. 5 correct to finish this mode.
+            </div>
+            <div class="problem-section">
+                <div class="problem-text">Write the electron configuration for:</div>
+                <div class="electron-config-display" id="elementProblem"></div>
+                <div class="feedback" id="mode2Feedback" style="display: none;"></div>
+            </div>
+            
+            <div class="work-area">
+                <h3>Build Your Answer</h3>
+                <div class="config-builder" id="configBuilder">
+                    <span style="color: #666; font-style: italic;">Click orbitals below to build your configuration...</span>
+                </div>
+                
+                <div class="orbital-database">
+                    <div class="orbital-group s-orbitals">
+                        <h4>s orbitals</h4>
+                        <div class="orbital-options" id="sOrbitals"></div>
+                    </div>
+                    <div class="orbital-group p-orbitals">
+                        <h4>p orbitals</h4>
+                        <div class="orbital-options" id="pOrbitals"></div>
+                    </div>
+                    <div class="orbital-group d-orbitals">
+                        <h4>d orbitals</h4>
+                        <div class="orbital-options" id="dOrbitals"></div>
+                    </div>
+                    <div class="orbital-group">
+                        <h4>Actions</h4>
+                        <div class="orbital-options">
+                            <button class="orbital-btn" id="clearConfig" style="background: #dc3545; color: white;">Clear All</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn success" id="checkAnswer2">Check Answer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for editing orbital electrons -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <h3>Edit Orbital</h3>
+            <p>How many electrons in <span id="modalOrbital"></span>?</p>
+            <input type="number" id="electronInput" class="number-input" min="0" max="14" value="2">
+            <div style="margin: 20px 0;">
+                <button class="btn success" id="saveEdit">Save</button>
+                <button class="btn" id="cancelEdit">Cancel</button>
+                <button class="btn danger" id="deleteOrbital">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Screen -->
+    <div class="success-modal" id="successModal">
+        <div class="success-container">
+            <h2>Practice Complete!</h2>
+            <p>You reached 10 correct in Mode 1 and 5 correct in Mode 2.</p>
+            <p>Your completion grade has been submitted to Schoology.</p>
+            <button class="close-button" onclick="closeSuccessScreen()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Elements data (up to 5p6, no f-block)
+        const elements = [
+            { symbol: 'H', name: 'Hydrogen', number: 1 },
+            { symbol: 'He', name: 'Helium', number: 2 },
+            { symbol: 'Li', name: 'Lithium', number: 3 },
+            { symbol: 'Be', name: 'Beryllium', number: 4 },
+            { symbol: 'B', name: 'Boron', number: 5 },
+            { symbol: 'C', name: 'Carbon', number: 6 },
+            { symbol: 'N', name: 'Nitrogen', number: 7 },
+            { symbol: 'O', name: 'Oxygen', number: 8 },
+            { symbol: 'F', name: 'Fluorine', number: 9 },
+            { symbol: 'Ne', name: 'Neon', number: 10 },
+            { symbol: 'Na', name: 'Sodium', number: 11 },
+            { symbol: 'Mg', name: 'Magnesium', number: 12 },
+            { symbol: 'Al', name: 'Aluminum', number: 13 },
+            { symbol: 'Si', name: 'Silicon', number: 14 },
+            { symbol: 'P', name: 'Phosphorus', number: 15 },
+            { symbol: 'S', name: 'Sulfur', number: 16 },
+            { symbol: 'Cl', name: 'Chlorine', number: 17 },
+            { symbol: 'Ar', name: 'Argon', number: 18 },
+            { symbol: 'K', name: 'Potassium', number: 19 },
+            { symbol: 'Ca', name: 'Calcium', number: 20 },
+            { symbol: 'Sc', name: 'Scandium', number: 21 },
+            { symbol: 'Ti', name: 'Titanium', number: 22 },
+            { symbol: 'V', name: 'Vanadium', number: 23 },
+            { symbol: 'Cr', name: 'Chromium', number: 24 },
+            { symbol: 'Mn', name: 'Manganese', number: 25 },
+            { symbol: 'Fe', name: 'Iron', number: 26 },
+            { symbol: 'Co', name: 'Cobalt', number: 27 },
+            { symbol: 'Ni', name: 'Nickel', number: 28 },
+            { symbol: 'Cu', name: 'Copper', number: 29 },
+            { symbol: 'Zn', name: 'Zinc', number: 30 },
+            { symbol: 'Ga', name: 'Gallium', number: 31 },
+            { symbol: 'Ge', name: 'Germanium', number: 32 },
+            { symbol: 'As', name: 'Arsenic', number: 33 },
+            { symbol: 'Se', name: 'Selenium', number: 34 },
+            { symbol: 'Br', name: 'Bromine', number: 35 },
+            { symbol: 'Kr', name: 'Krypton', number: 36 },
+            { symbol: 'Rb', name: 'Rubidium', number: 37 },
+            { symbol: 'Sr', name: 'Strontium', number: 38 },
+            { symbol: 'Y', name: 'Yttrium', number: 39 },
+            { symbol: 'Zr', name: 'Zirconium', number: 40 },
+            { symbol: 'Nb', name: 'Niobium', number: 41 },
+            { symbol: 'Mo', name: 'Molybdenum', number: 42 },
+            { symbol: 'Tc', name: 'Technetium', number: 43 },
+            { symbol: 'Ru', name: 'Ruthenium', number: 44 },
+            { symbol: 'Rh', name: 'Rhodium', number: 45 },
+            { symbol: 'Pd', name: 'Palladium', number: 46 },
+            { symbol: 'Ag', name: 'Silver', number: 47 },
+            { symbol: 'Cd', name: 'Cadmium', number: 48 },
+            { symbol: 'In', name: 'Indium', number: 49 },
+            { symbol: 'Sn', name: 'Tin', number: 50 },
+            { symbol: 'Sb', name: 'Antimony', number: 51 },
+            { symbol: 'Te', name: 'Tellurium', number: 52 },
+            { symbol: 'I', name: 'Iodine', number: 53 },
+            { symbol: 'Xe', name: 'Xenon', number: 54 },
+            { symbol: 'Cs', name: 'Cesium', number: 55 },
+            { symbol: 'Ba', name: 'Barium', number: 56 },
+            { symbol: 'La', name: 'Lanthanum', number: 57 },
+            { symbol: 'Ce', name: 'Cerium', number: 58 },
+            { symbol: 'Pr', name: 'Praseodymium', number: 59 },
+            { symbol: 'Nd', name: 'Neodymium', number: 60 },
+            { symbol: 'Pm', name: 'Promethium', number: 61 },
+            { symbol: 'Sm', name: 'Samarium', number: 62 },
+            { symbol: 'Eu', name: 'Europium', number: 63 },
+            { symbol: 'Gd', name: 'Gadolinium', number: 64 },
+            { symbol: 'Tb', name: 'Terbium', number: 65 },
+            { symbol: 'Dy', name: 'Dysprosium', number: 66 },
+            { symbol: 'Ho', name: 'Holmium', number: 67 },
+            { symbol: 'Er', name: 'Erbium', number: 68 },
+            { symbol: 'Tm', name: 'Thulium', number: 69 },
+            { symbol: 'Yb', name: 'Ytterbium', number: 70 },
+            { symbol: 'Lu', name: 'Lutetium', number: 71 },
+            { symbol: 'Hf', name: 'Hafnium', number: 72 },
+            { symbol: 'Ta', name: 'Tantalum', number: 73 },
+            { symbol: 'W', name: 'Tungsten', number: 74 },
+            { symbol: 'Re', name: 'Rhenium', number: 75 },
+            { symbol: 'Os', name: 'Osmium', number: 76 },
+            { symbol: 'Ir', name: 'Iridium', number: 77 },
+            { symbol: 'Pt', name: 'Platinum', number: 78 },
+            { symbol: 'Au', name: 'Gold', number: 79 },
+            { symbol: 'Hg', name: 'Mercury', number: 80 },
+            { symbol: 'Tl', name: 'Thallium', number: 81 },
+            { symbol: 'Pb', name: 'Lead', number: 82 },
+            { symbol: 'Bi', name: 'Bismuth', number: 83 },
+            { symbol: 'Po', name: 'Polonium', number: 84 },
+            { symbol: 'At', name: 'Astatine', number: 85 },
+            { symbol: 'Rn', name: 'Radon', number: 86 },
+            { symbol: 'Fr', name: 'Francium', number: 87 },
+            { symbol: 'Ra', name: 'Radium', number: 88 },
+            { symbol: 'Ac', name: 'Actinium', number: 89 },
+            { symbol: 'Th', name: 'Thorium', number: 90 },
+            { symbol: 'Pa', name: 'Protactinium', number: 91 },
+            { symbol: 'U', name: 'Uranium', number: 92 },
+            { symbol: 'Np', name: 'Neptunium', number: 93 },
+            { symbol: 'Pu', name: 'Plutonium', number: 94 },
+            { symbol: 'Am', name: 'Americium', number: 95 },
+            { symbol: 'Cm', name: 'Curium', number: 96 },
+            { symbol: 'Bk', name: 'Berkelium', number: 97 },
+            { symbol: 'Cf', name: 'Californium', number: 98 },
+            { symbol: 'Es', name: 'Einsteinium', number: 99 },
+            { symbol: 'Fm', name: 'Fermium', number: 100 },
+            { symbol: 'Md', name: 'Mendelevium', number: 101 },
+            { symbol: 'No', name: 'Nobelium', number: 102 },
+            { symbol: 'Lr', name: 'Lawrencium', number: 103 },
+            { symbol: 'Rf', name: 'Rutherfordium', number: 104 },
+            { symbol: 'Db', name: 'Dubnium', number: 105 },
+            { symbol: 'Sg', name: 'Seaborgium', number: 106 },
+            { symbol: 'Bh', name: 'Bohrium', number: 107 },
+            { symbol: 'Hs', name: 'Hassium', number: 108 },
+            { symbol: 'Mt', name: 'Meitnerium', number: 109 },
+            { symbol: 'Ds', name: 'Darmstadtium', number: 110 },
+            { symbol: 'Rg', name: 'Roentgenium', number: 111 },
+            { symbol: 'Cn', name: 'Copernicium', number: 112 },
+            { symbol: 'Nh', name: 'Nihonium', number: 113 },
+            { symbol: 'Fl', name: 'Flerovium', number: 114 },
+            { symbol: 'Mc', name: 'Moscovium', number: 115 },
+            { symbol: 'Lv', name: 'Livermorium', number: 116 },
+            { symbol: 'Ts', name: 'Tennessine', number: 117 },
+            { symbol: 'Og', name: 'Oganesson', number: 118 }
+        ];
+
+        // Orbital filling order (up to 5p6)
+        const orbitalOrder = [
+            '1s', '2s', '2p', '3s', '3p', '4s', '3d', '4p', '5s', '4d', '5p'
+        ];
+
+        // Maximum electrons per orbital type
+        const orbitalCapacity = {
+            's': 2,
+            'p': 6,
+            'd': 10
+        };
+
+        // Game state
+        let currentMode = null;
+        let currentProblem = null;
+        let score = { correct: 0, total: 0 };
+        let userConfig = [];
+        let mode1Answered = false;
+        
+        // Completion tracking
+        let mode1Correct = 0;
+        let mode2Correct = 0;
+        const MODE1_REQUIREMENT = 10;
+        const MODE2_REQUIREMENT = 5;
+        let certificateEarned = false;
+
+        // Miss-penalty scoring: start at 100%, lose 3% per wrong answer, floor 60%.
+        let missCount = 0;
+        function currentPct() {
+            return Math.max(60, 100 - 3 * missCount);
+        }
+
+        // Mode 2 must include at least one transition metal. The forced pool
+        // leaves out the common anomalous configurations (Cr, Cu, Mo, Ag) since
+        // this builder checks against the plain Aufbau filling order.
+        const TM_FORCE_POOL = [21, 22, 23, 25, 26, 27, 28, 30, 39, 40, 41, 43, 44, 45, 46, 48];
+        const TM_ALL = [21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48];
+        let mode2TMdone = false;
+
+        // Track the last element shown in each mode so the next random pick can
+        // avoid repeating it back-to-back.
+        let lastMode1Number = null;
+        let lastMode2Number = null;
+
+        // Pick a random element (index 0-53, elements 1-54 up to Xe) that isn't
+        // the same one just shown in that mode. Falls back to whatever it draws
+        // after a handful of tries rather than looping forever.
+        function pickNonRepeatingElement(lastNumber) {
+            let el = elements[Math.floor(Math.random() * 54)];
+            for (let tries = 0; tries < 10 && el.number === lastNumber; tries++) {
+                el = elements[Math.floor(Math.random() * 54)];
+            }
+            return el;
+        }
+
+        // DOM elements
+        const mode1Btn = document.getElementById('mode1Btn');
+        const mode2Btn = document.getElementById('mode2Btn');
+        const mode1Area = document.getElementById('mode1Area');
+        const mode2Area = document.getElementById('mode2Area');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+
+        // Start simulation function
+        function startSimulation() {
+            // Hide start screen and show simulation
+            document.getElementById('nameInputScreen').style.display = 'none';
+            document.getElementById('mainSimulation').style.display = 'block';
+
+            // Initialize the simulation
+            init();
+        }
+
+        // Initialize
+        function init() {
+            createPeriodicTable();
+            createOrbitalDatabase();
+            setupEventListeners();
+            updateModeLock();
+            switchMode(1);
+            updateScoreDisplay();
+            updateScoreBadge();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            mode1Btn.addEventListener('click', () => switchMode(1));
+            mode2Btn.addEventListener('click', () => switchMode(2));
+            
+            document.getElementById('checkAnswer2').addEventListener('click', checkMode2Answer);
+            document.getElementById('clearConfig').addEventListener('click', clearConfiguration);
+            
+            // Modal event listeners
+            document.getElementById('saveEdit').addEventListener('click', saveOrbitalEdit);
+            document.getElementById('cancelEdit').addEventListener('click', closeModal);
+            document.getElementById('deleteOrbital').addEventListener('click', deleteOrbital);
+        }
+
+        // Switch between modes
+        function switchMode(mode) {
+            if (mode === 2 && mode1Correct < MODE1_REQUIREMENT) return;
+            currentMode = mode;
+
+            mode1Btn.classList.toggle('active', mode === 1);
+            mode2Btn.classList.toggle('active', mode === 2);
+
+            mode1Area.classList.toggle('active', mode === 1);
+            mode2Area.classList.toggle('active', mode === 2);
+
+            generateNewProblem(mode);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Lock Mode 2 until Mode 1 is finished
+        function updateModeLock() {
+            const unlocked = mode1Correct >= MODE1_REQUIREMENT;
+            mode2Btn.disabled = !unlocked;
+            const note = document.getElementById('mode2LockNote');
+            if (note) note.style.display = unlocked ? 'none' : 'block';
+        }
+
+        function updateScoreBadge() {
+            const b = document.getElementById('scoreBadge');
+            if (b) b.textContent = 'Score ' + currentPct() + '%';
+        }
+
+        // Create periodic table
+        function createPeriodicTable() {
+            const periodicLayout = [
+                [1, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 2],
+                [3, 4, null, null, null, null, null, null, null, null, null, null, 5, 6, 7, 8, 9, 10],
+                [11, 12, null, null, null, null, null, null, null, null, null, null, 13, 14, 15, 16, 17, 18],
+                [19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36],
+                [37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54],
+                [55, 56, null, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86],
+                [87, 88, null, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118],
+                [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null],
+                [null, null, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, null],
+                [null, null, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, null]
+            ];
+
+            // Period number to show next to each row (main table rows are periods 1-7;
+            // the extracted f-block rows belong to periods 6 and 7 respectively)
+            const periodLabels = [1, 2, 3, 4, 5, 6, 7, null, 6, 7];
+
+            // For each column (group 1-18), find the first main-table row (periods 1-7,
+            // i.e. periodicLayout indices 0-6) where that column is occupied, so the
+            // group number can sit right above the box where the group actually starts
+            // instead of floating over empty rows above transition-metal columns.
+            const topmostRowForColumn = new Array(18).fill(null);
+            for (let periodIndex = 0; periodIndex <= 6; periodIndex++) {
+                periodicLayout[periodIndex].forEach((atomicNum, position) => {
+                    if (atomicNum !== null && topmostRowForColumn[position] === null) {
+                        topmostRowForColumn[position] = periodIndex;
+                    }
+                });
+            }
+
+            const table = document.getElementById('periodicTable1');
+            table.innerHTML = '';
+
+            periodicLayout.forEach((period, periodIndex) => {
+                const periodDiv = document.createElement('div');
+                periodDiv.className = 'period';
+
+                // Always add a leading label cell (blank on the spacer row) so every
+                // row has the same column count and stays aligned with the header.
+                const periodNumEl = document.createElement('div');
+                periodNumEl.className = 'period-label';
+                const periodLabel = periodLabels[periodIndex];
+                if (periodLabel !== null) {
+                    periodNumEl.textContent = periodLabel;
+                }
+                periodDiv.appendChild(periodNumEl);
+
+                period.forEach((atomicNum, position) => {
+                    if (atomicNum === null) {
+                        const emptyCell = document.createElement('div');
+                        emptyCell.className = 'empty-cell';
+                        periodDiv.appendChild(emptyCell);
+                    } else {
+                        const element = elements.find(el => el.number === atomicNum);
+                        if (element) {
+                            const elementDiv = document.createElement('div');
+                            elementDiv.className = 'element';
+                            elementDiv.dataset.atomicNumber = element.number;
+                            const groupTag = topmostRowForColumn[position] === periodIndex
+                                ? `<div class="group-number-tag">${position + 1}</div>`
+                                : '';
+                            elementDiv.innerHTML = `
+                                ${groupTag}
+                                <div class="atomic-num">${element.number}</div>
+                                <div class="element-symbol-pt">${element.symbol}</div>
+                            `;
+                            elementDiv.addEventListener('click', () => handleElementClick(element.number));
+                            periodDiv.appendChild(elementDiv);
+                        }
+                    }
+                });
+
+                table.appendChild(periodDiv);
+            });
+        }
+
+        // Create orbital database for mode 2
+        function createOrbitalDatabase() {
+            const sOrbitals = document.getElementById('sOrbitals');
+            const pOrbitals = document.getElementById('pOrbitals');
+            const dOrbitals = document.getElementById('dOrbitals');
+            
+            // S orbitals
+            for (let n = 1; n <= 5; n++) {
+                const btn = document.createElement('button');
+                btn.className = 'orbital-btn';
+                btn.textContent = `${n}s`;
+                btn.addEventListener('click', () => addOrbital(`${n}s`));
+                sOrbitals.appendChild(btn);
+            }
+            
+            // P orbitals
+            for (let n = 2; n <= 5; n++) {
+                const btn = document.createElement('button');
+                btn.className = 'orbital-btn';
+                btn.textContent = `${n}p`;
+                btn.addEventListener('click', () => addOrbital(`${n}p`));
+                pOrbitals.appendChild(btn);
+            }
+            
+            // D orbitals
+            for (let n = 3; n <= 4; n++) {
+                const btn = document.createElement('button');
+                btn.className = 'orbital-btn';
+                btn.textContent = `${n}d`;
+                btn.addEventListener('click', () => addOrbital(`${n}d`));
+                dOrbitals.appendChild(btn);
+            }
+        }
+
+        // Generate electron configuration for element with proper spacing
+        function generateElectronConfiguration(atomicNumber) {
+            const config = [];
+            let remainingElectrons = atomicNumber;
+            
+            for (const orbital of orbitalOrder) {
+                if (remainingElectrons <= 0) break;
+                
+                const orbitalType = orbital.slice(-1);
+                const maxCapacity = orbitalCapacity[orbitalType];
+                const electronsInOrbital = Math.min(remainingElectrons, maxCapacity);
+                
+                if (electronsInOrbital > 0) {
+                    config.push(`${orbital}<sup>${electronsInOrbital}</sup>`);
+                    remainingElectrons -= electronsInOrbital;
+                }
+            }
+            
+            return config.join('&nbsp; ');
+        }
+
+        // Generate plain text configuration
+        function generatePlainConfig(atomicNumber) {
+            const config = [];
+            let remainingElectrons = atomicNumber;
+            
+            for (const orbital of orbitalOrder) {
+                if (remainingElectrons <= 0) break;
+                
+                const orbitalType = orbital.slice(-1);
+                const maxCapacity = orbitalCapacity[orbitalType];
+                const electronsInOrbital = Math.min(remainingElectrons, maxCapacity);
+                
+                if (electronsInOrbital > 0) {
+                    config.push(`${orbital}${electronsInOrbital}`);
+                    remainingElectrons -= electronsInOrbital;
+                }
+            }
+            
+            return config.join(' ');
+        }
+
+        // Generate new problem
+        function generateNewProblem(mode) {
+            clearFeedback();
+            clearElementHighlights();
+            
+            if (mode === 1) {
+                // Mode 1: Show configuration, user picks element (only up to Xe)
+                mode1Answered = false;
+                const randomElement = pickNonRepeatingElement(lastMode1Number);
+                lastMode1Number = randomElement.number;
+                currentProblem = randomElement.number;
+                const config = generateElectronConfiguration(currentProblem);
+                document.getElementById('configProblem').innerHTML = config;
+            } else if (mode === 2) {
+                // Mode 2: Show element, user builds configuration (only up to Xe)
+                const checkAnswer2Btn = document.getElementById('checkAnswer2');
+                if (checkAnswer2Btn) checkAnswer2Btn.disabled = false;
+                let randomElement;
+                if (!mode2TMdone && mode2Correct >= MODE2_REQUIREMENT - 1) {
+                    // Guarantee at least one transition metal gets answered in Mode 2
+                    let tm = TM_FORCE_POOL[Math.floor(Math.random() * TM_FORCE_POOL.length)];
+                    for (let tries = 0; tries < 10 && tm === lastMode2Number && TM_FORCE_POOL.length > 1; tries++) {
+                        tm = TM_FORCE_POOL[Math.floor(Math.random() * TM_FORCE_POOL.length)];
+                    }
+                    randomElement = elements.find(el => el.number === tm);
+                } else {
+                    randomElement = pickNonRepeatingElement(lastMode2Number);
+                }
+                lastMode2Number = randomElement.number;
+                currentProblem = randomElement.number;
+                document.getElementById('elementProblem').innerHTML = `<strong>${randomElement.symbol}</strong> (${randomElement.name})`;
+                clearConfiguration();
+            }
+        }
+
+        // Handle element click in Mode 1
+        function handleElementClick(atomicNumber) {
+            if (currentMode !== 1) return;
+            if (mode1Answered) return;
+
+            clearElementHighlights();
+            
+            const element = document.querySelector(`[data-atomic-number="${atomicNumber}"]`);
+            
+            if (atomicNumber === currentProblem) {
+                // Correct answer
+                element.classList.add('correct');
+                showFeedback('Correct! Well done!', 'success', 1);
+                mode1Answered = true;
+                score.correct++;
+                score.total++;
+                mode1Correct++;
+
+                scormSaveProgress();
+                checkCertificateEligibility();
+                if (mode1Correct === MODE1_REQUIREMENT) {
+                    updateModeLock();
+                    showFeedback('Mode 1 complete. Mode 2 is now unlocked.', 'success', 1);
+                    setTimeout(() => { if (!certificateEarned) switchMode(2); }, 1800);
+                } else {
+                    setTimeout(() => generateNewProblem(1), 1500);
+                }
+            } else {
+                // Incorrect answer
+                element.classList.add('incorrect');
+                showFeedback('Not quite. Try again.', 'error', 1);
+                score.total++;
+                missCount++;
+                updateScoreBadge();
+                scormSaveProgress();
+                setTimeout(() => clearElementHighlights(), 1000);
+            }
+            
+            updateScoreDisplay();
+        }
+
+        // Add orbital to configuration builder
+        function addOrbital(orbital) {
+            if (currentMode !== 2) return;
+            
+            // Get default electron count
+            const orbitalType = orbital.slice(-1);
+            const defaultElectrons = orbitalCapacity[orbitalType];
+            
+            // Check if orbital already exists
+            const existingIndex = userConfig.findIndex(item => item.orbital === orbital);
+            if (existingIndex !== -1) {
+                // Replace existing
+                userConfig[existingIndex].electrons = defaultElectrons;
+            } else {
+                // Add new
+                userConfig.push({ orbital, electrons: defaultElectrons });
+            }
+            
+            updateConfigBuilder();
+        }
+
+        // Update configuration builder display
+        function updateConfigBuilder() {
+            const builder = document.getElementById('configBuilder');
+            builder.innerHTML = '';
+            
+            if (userConfig.length === 0) {
+                builder.innerHTML = '<span style="color: #666; font-style: italic;">Click orbitals below to build your configuration...</span>';
+                return;
+            }
+            
+            userConfig.forEach((item, index) => {
+                const configItem = document.createElement('div');
+                configItem.className = 'config-item';
+                configItem.innerHTML = `${item.orbital}<sup>${item.electrons}</sup>`;
+                configItem.addEventListener('click', () => editOrbital(index));
+                builder.appendChild(configItem);
+            });
+        }
+
+        // Edit orbital electron count
+        function editOrbital(index) {
+            const item = userConfig[index];
+            document.getElementById('modalOrbital').textContent = item.orbital;
+            document.getElementById('electronInput').value = item.electrons;
+            
+            // Store the index for saving
+            document.getElementById('editModal').dataset.editIndex = index;
+            document.getElementById('editModal').classList.add('active');
+            document.getElementById('electronInput').focus();
+        }
+
+        // Save orbital edit
+        function saveOrbitalEdit() {
+            const index = parseInt(document.getElementById('editModal').dataset.editIndex);
+            const newElectronCount = parseInt(document.getElementById('electronInput').value);
+            
+            if (newElectronCount >= 0 && newElectronCount <= 14) {
+                userConfig[index].electrons = newElectronCount;
+                updateConfigBuilder();
+                closeModal();
+            }
+        }
+
+        // Delete orbital
+        function deleteOrbital() {
+            const index = parseInt(document.getElementById('editModal').dataset.editIndex);
+            userConfig.splice(index, 1);
+            updateConfigBuilder();
+            closeModal();
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        // Clear configuration
+        function clearConfiguration() {
+            userConfig = [];
+            updateConfigBuilder();
+        }
+
+        // Check Mode 2 answer
+        function checkMode2Answer() {
+            if (currentMode !== 2) return;
+            
+            // Generate correct configuration
+            const correctConfig = generatePlainConfig(currentProblem);
+            
+            // Generate user configuration
+            const userConfigString = userConfig
+                .map(item => `${item.orbital}${item.electrons}`)
+                .join(' ');
+            
+            if (userConfigString === correctConfig) {
+                showFeedback('Correct. Nice work.', 'success', 2);
+                const checkAnswer2Btn = document.getElementById('checkAnswer2');
+                if (checkAnswer2Btn) checkAnswer2Btn.disabled = true;
+                score.correct++;
+                score.total++;
+                mode2Correct++;
+                if (TM_ALL.indexOf(currentProblem) !== -1) mode2TMdone = true;
+
+                scormSaveProgress();
+                checkCertificateEligibility();
+                setTimeout(() => generateNewProblem(2), 1500);
+            } else {
+                // Deliberately doesn't reveal the correct configuration — giving
+                // it away here just invites copying it back in rather than
+                // fixing the actual mistake.
+                showFeedback('Not quite. Check your subshell order and electron counts, then try again.', 'error', 2);
+                score.total++;
+                missCount++;
+                updateScoreBadge();
+                scormSaveProgress();
+            }
+            
+            updateScoreDisplay();
+        }
+
+        // Skip problem (removed - function no longer needed)
+        // function skipProblem(mode) {
+        //     score.total++;
+        //     updateScoreDisplay();
+        //     generateNewProblem(mode);
+        // }
+
+        // Show feedback
+        function showFeedback(message, type, mode) {
+            const feedbackEl = document.getElementById(`mode${mode}Feedback`);
+            feedbackEl.textContent = message;
+            feedbackEl.className = `feedback ${type}`;
+            feedbackEl.style.display = 'block';
+        }
+
+        // Clear feedback
+        function clearFeedback() {
+            document.getElementById('mode1Feedback').style.display = 'none';
+            document.getElementById('mode2Feedback').style.display = 'none';
+        }
+
+        // Clear element highlights
+        function clearElementHighlights() {
+            document.querySelectorAll('.element').forEach(el => {
+                el.classList.remove('correct', 'incorrect');
+            });
+        }
+
+        // Update score display
+        function updateScoreDisplay() {
+            let txt;
+            if (certificateEarned) {
+                txt = 'Mode 1 and Mode 2 complete. Your grade has been submitted to Schoology.';
+            } else if (mode1Correct < MODE1_REQUIREMENT) {
+                txt = `Mode 1: ${mode1Correct} / ${MODE1_REQUIREMENT} correct    |    Mode 2: locked until Mode 1 is finished`;
+            } else {
+                txt = `Mode 1: complete    |    Mode 2: ${mode2Correct} / ${MODE2_REQUIREMENT} correct`;
+            }
+            scoreDisplay.textContent = txt;
+            updateScoreBadge();
+        }
+
+        // Check whether both mode requirements are met
+        function checkCertificateEligibility() {
+            if (!certificateEarned) {
+                if (mode1Correct >= MODE1_REQUIREMENT && mode2Correct >= MODE2_REQUIREMENT) {
+                    certificateEarned = true;
+                    setTimeout(() => {
+                        showSuccessScreen();
+                    }, 1500);
+                }
+            }
+        }
+
+        // Show success screen (replaces certificate)
+        function showSuccessScreen() {
+            document.getElementById('successModal').classList.add('active');
+            state.challengeFinished = true;
+            scormReport(currentPct());
+        }
+
+        function closeSuccessScreen() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        // ---- SCORM 1.2 wrapper ----
+        const state = { challengeFinished: false };
+        let scormAPI = null;
+        let resumeState = null;
+        const scormStartMs = Date.now();
+
+        // Elapsed wall-clock time this session as SCORM 1.2 CMITimespan (HHHH:MM:SS)
+        function scormSessionTime() {
+            let s = Math.floor((Date.now() - scormStartMs) / 1000);
+            const hh = String(Math.floor(s / 3600)).padStart(4, '0');
+            s %= 3600;
+            const mm = String(Math.floor(s / 60)).padStart(2, '0');
+            const ss = String(s % 60).padStart(2, '0');
+            return hh + ':' + mm + ':' + ss;
+        }
+
+        function findAPI(win) {
+            let attempts = 0;
+            let w = win;
+            while (w && attempts < 10) {
+                if (w.API) return w.API;
+                if (w.parent && w.parent !== w) {
+                    w = w.parent;
+                } else if (w.opener) {
+                    w = w.opener;
+                } else {
+                    break;
+                }
+                attempts++;
+            }
+            return null;
+        }
+
+        function isValidResumePayload(parsed) {
+            if (!parsed || typeof parsed !== 'object') return false;
+            if (typeof parsed.mode1Correct !== 'number' || parsed.mode1Correct < 0 || parsed.mode1Correct > MODE1_REQUIREMENT) return false;
+            if (typeof parsed.mode2Correct !== 'number' || parsed.mode2Correct < 0 || parsed.mode2Correct > MODE2_REQUIREMENT) return false;
+            if (typeof parsed.scoreCorrect !== 'number' || parsed.scoreCorrect < 0) return false;
+            if (typeof parsed.scoreTotal !== 'number' || parsed.scoreTotal < 0) return false;
+            if (typeof parsed.missCount !== 'number' || parsed.missCount < 0) return false;
+            return true;
+        }
+
+        function scormInit() {
+            try {
+                scormAPI = findAPI(window);
+                if (!scormAPI) return;
+                scormAPI.LMSInitialize("");
+                const status = scormAPI.LMSGetValue("cmi.core.lesson_status");
+                if (status === "" || status === "not attempted" || status === "unknown") {
+                    scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                }
+                if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                    const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (isValidResumePayload(parsed)) {
+                            resumeState = parsed;
+                        }
+                    }
+                }
+            } catch (e) { /* No LMS present, or malformed bookmark -start fresh */ }
+        }
+
+        function scormSaveProgress() {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                    mode1Correct: mode1Correct,
+                    mode2Correct: mode2Correct,
+                    scoreCorrect: score.correct,
+                    scoreTotal: score.total,
+                    missCount: missCount,
+                    mode2TMdone: mode2TMdone
+                }));
+                if (!state.challengeFinished) {
+                    scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                    // Mark the exit reason as "suspend" on every save, not just on
+                    // beforeunload/pagehide. Students on Chromebooks/iPads very often
+                    // exit by closing the lid or leaving the Schoology tab, which does
+                    // not reliably fire beforeunload/pagehide before the device sleeps
+                    // and the network drops. Setting this on every commit means the LMS
+                    // already has the correct "resume me" state as of the last save,
+                    // instead of depending on a browser-close event to set it at the end.
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                }
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        // Manually triggered by the "Save Progress" button. This is the primary,
+        // reliable save path -students are instructed to click it before closing
+        // their Chromebook, since automatic browser-unload events can't be trusted
+        // to fire when a laptop lid is closed rather than the tab being navigated
+        // away from. Falls back gracefully (shows nothing) if no LMS is present.
+        function manualSaveProgress() {
+            if (!scormAPI) return;
+            scormSaveProgress();
+            const status = document.getElementById('save-status');
+            if (!status) return;
+            status.classList.add('visible');
+            clearTimeout(manualSaveProgress._hideTimer);
+            manualSaveProgress._hideTimer = setTimeout(() => {
+                status.classList.remove('visible');
+            }, 2500);
+        }
+
+        function scormReport(scorePercent) {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.core.score.min", "0");
+                scormAPI.LMSSetValue("cmi.core.score.max", "100");
+                scormAPI.LMSSetValue("cmi.core.score.raw", String(scorePercent));
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+                scormAPI.LMSSetValue("cmi.core.session_time", scormSessionTime());
+                scormAPI.LMSSetValue("cmi.core.exit", "");
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function scormFinish() {
+            if (!scormAPI) return;
+            try {
+                if (!state.challengeFinished) {
+                    scormSaveProgress();
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                    scormAPI.LMSCommit("");
+                }
+                scormAPI.LMSFinish("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function resumeFromSavedState() {
+            mode1Correct = resumeState.mode1Correct;
+            mode2Correct = resumeState.mode2Correct;
+            score.correct = resumeState.scoreCorrect;
+            score.total = resumeState.scoreTotal;
+            missCount = resumeState.missCount || 0;
+            mode2TMdone = !!resumeState.mode2TMdone;
+
+            document.getElementById('nameInputScreen').style.display = 'none';
+            document.getElementById('mainSimulation').style.display = 'block';
+
+            init();
+
+            if (mode1Correct >= MODE1_REQUIREMENT && mode2Correct >= MODE2_REQUIREMENT) {
+                certificateEarned = true;
+                showSuccessScreen();
+            } else if (mode1Correct >= MODE1_REQUIREMENT) {
+                switchMode(2);
+            }
+        }
+
+        // Best-effort safety net for the case where the student closes the
+        // Chromebook lid or leaves the tab without clicking "Save Progress":
+        // these events fire more reliably than beforeunload on that path, but
+        // unlike beforeunload we deliberately do NOT call LMSFinish() here:
+        // visibilitychange in particular fires on every tab switch, not just a
+        // real exit, and terminating the SCORM session on a brief tab-switch
+        // would break the ability to keep saving for the rest of that visit.
+        // We just re-commit the current state so the LMS has it either way.
+        function safetyCommit() {
+            if (!scormAPI || state.challengeFinished) return;
+            scormSaveProgress();
+        }
+        window.addEventListener('pagehide', safetyCommit);
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) safetyCommit();
+        });
+        window.addEventListener('beforeunload', scormFinish);
+        scormInit();
+        if (resumeState) {
+            resumeFromSavedState();
+        }
+    </script>
+</body>
+</html>

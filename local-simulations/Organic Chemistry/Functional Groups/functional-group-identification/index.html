@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Functional Group Identification</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #fdf6ea 0%, #f3e6d0 100%);
+    color:#3a2f1e; min-height:100vh; padding:16px;
+  }
+  .wrap { max-width:820px; margin:0 auto; }
+  header { text-align:center; margin-bottom:14px; }
+  header h1 { color:#7c2d12; font-size:1.5em; }
+  header p.sub { color:#8a6a3c; font-size:0.9em; margin-top:2px; }
+
+  .intro-screen {
+    background:#fffaf0; border:2px solid #d97706; border-radius:12px;
+    padding:22px 24px; text-align:center;
+  }
+  .intro-screen p { line-height:1.6; color:#5c4326; margin-bottom:10px; text-align:left; }
+  .intro-screen ul { text-align:left; color:#5c4326; margin:10px 0 16px 22px; line-height:1.6; }
+  .btn {
+    padding:9px 22px; font-size:0.92rem; border:none; border-radius:8px;
+    cursor:pointer; font-weight:700; color:#fff;
+    background: linear-gradient(145deg, #f59e0b, #d97706);
+  }
+  .btn:hover:not(:disabled) { filter:brightness(1.05); }
+  .btn:disabled { background:#cbb99f; cursor:not-allowed; }
+  .btn-row { display:flex; justify-content:center; margin-top:12px; }
+
+  .top-bar {
+    display:flex; align-items:center; justify-content:center; margin-bottom:12px;
+  }
+  .progress-label { font-size:0.86rem; font-weight:700; color:#7c2d12; }
+
+  .block {
+    background:#fffaf0; border:1px solid #e7dcc9; border-radius:12px;
+    padding:18px 20px;
+  }
+
+  .canvas-area {
+    background:#faf5ea; border:1px dashed #d9c3a3; border-radius:8px; padding:14px;
+    display:flex; justify-content:center;
+  }
+  .img-wrap { position:relative; display:inline-block; max-width:100%; }
+  .img-wrap img { display:block; max-width:100%; height:auto; user-select:none; -webkit-user-drag:none; }
+  .overlay-svg { position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none; }
+
+  .tip-dot {
+    position:absolute; width:7px; height:7px; margin-left:-3.5px; margin-top:-3.5px;
+    border-radius:50%; background:#7c2d12;
+    pointer-events:none;
+  }
+  .drop-box {
+    position:absolute; transform:translate(-50%,-50%);
+    min-width:74px; min-height:26px; padding:4px 8px;
+    border:2px dashed #b45309; border-radius:6px; background:#fff;
+    color:#7c2d12; font-size:0.74rem; font-weight:700; text-align:center;
+    display:flex; align-items:center; justify-content:center; white-space:nowrap;
+  }
+  .drop-box.filled { border-style:solid; background:#fff3e0; }
+  .drop-box.correct { border-color:#2f7d32; background:#e3f3e1; color:#1f5a22; }
+  .drop-box.wrong { border-color:#c0392b; background:#fbe9e7; color:#8a2418; }
+  .drop-box.drag-over { outline:2px solid #b45309; outline-offset:2px; }
+
+  .fg-palette {
+    display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-top:16px;
+    padding:12px; background:#fff3e0; border:1px solid #f0c987; border-radius:8px;
+  }
+  .fg-tile {
+    padding:8px 14px; background:linear-gradient(145deg,#f59e0b,#d97706); color:#fff;
+    font-weight:700; font-size:0.85rem; border-radius:7px; cursor:grab; user-select:none;
+  }
+  .fg-tile:active { cursor:grabbing; }
+
+  .feedback { margin-top:12px; padding:9px 12px; border-radius:8px; font-size:0.86rem; display:none; text-align:center; }
+  .feedback.wrong { display:block; background:#fbe9e7; color:#8a2418; border:1px solid #f0c4bd; }
+  .feedback.right { display:block; background:#e3f3e1; color:#1f5a22; border:1px solid #bfe0bb; }
+
+  .summary-final {
+    background:#fff7ec; border:2px solid #d97706; border-radius:12px;
+    padding:20px 22px; text-align:center; line-height:1.6; color:#3a2f1e; font-size:0.98rem;
+  }
+
+  #flow { display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Functional Group Identification</h1>
+    <p class="sub">Drag each functional group label onto the correct spot in the structure</p>
+  </header>
+
+  <div class="intro-screen" id="introScreen">
+    <p>Each molecule below has one or more functional groups marked with an arrow. Drag the correct
+    functional group name from the palette into the box next to each arrow.</p>
+    <ul>
+      <li>Every box on a molecule must be filled before you can check your answer.</li>
+      <li>If something isn't right, you'll get to try again — it won't tell you which answer is correct, just that something needs fixing.</li>
+      <li>A functional group name can be used more than once if a molecule has more than one of it.</li>
+      <li>Correctly complete all 10 molecules to finish the activity.</li>
+    </ul>
+    <div class="btn-row"><button class="btn" onclick="beginActivity()">Begin</button></div>
+  </div>
+
+  <div class="top-bar" id="topBar" style="display:none;">
+    <span class="progress-label" id="progressLabel">Molecule 1 of 10</span>
+  </div>
+
+  <div id="flow"></div>
+</div>
+
+<script>
+const FUNCTIONAL_GROUPS = ['Alcohol','Aldehyde','Alkene','Alkyne','Amine','Carboxylic Acid','Ester','Ketone'];
+
+const MOLECULES = [
+  { image: '1-Alkene-Alcohol.png', arrows: [
+    { id:'a1', tipXPct:26.08257804632427, tipYPct:45.77048953228628, boxXPct:24.169184290030213, boxYPct:63.28074945020693, answer:'Alcohol' },
+    { id:'a2', tipXPct:56.49546827794561, tipYPct:46.213787251727304, boxXPct:55.48841893252769, boxYPct:67.93537550433774, answer:'Alkene' }
+  ]},
+  { image: '2-carbox-amine.png', arrows: [
+    { id:'a3', tipXPct:24.06847935548842, tipYPct:59.62354326481844, boxXPct:20.946626384692852, boxYPct:78.46369634106219, answer:'Amine' },
+    { id:'a4', tipXPct:72.80966767371602, tipYPct:38.56690159136954, boxXPct:83.22658610271903, boxYPct:25.02568009835668, answer:'Carboxylic Acid' }
+  ]},
+  { image: '3-alkyne-ester.png', arrows: [
+    { id:'a5', tipXPct:23.26283987915408, tipYPct:33.579802247657966, boxXPct:21.997985901309164, boxYPct:14.940656981073264, answer:'Alkyne' },
+    { id:'a6', tipXPct:61.22860020140987, tipYPct:55.523039359988914, boxXPct:68.9828801611279, boxYPct:71.03845954042495, answer:'Ester' }
+  ]},
+  { image: '4-Aldehyde.png', arrows: [
+    { id:'a7', tipXPct:76.83786505538771, tipYPct:63.059100590486416, boxXPct:80.66465256797582, boxYPct:85.00233770281737, answer:'Aldehyde' }
+  ]},
+  { image: '5-Alcohol.png', arrows: [
+    { id:'a8', tipXPct:63.24269889224572, tipYPct:47.10038269060936, boxXPct:64.6525679758308, boxYPct:67.71372664461722, answer:'Alcohol' }
+  ]},
+  { image: '6-Alkyne-Ketone.png', arrows: [
+    { id:'a9', tipXPct:61.73212487411883, tipYPct:33.24732895807719, boxXPct:73.51460221550856, boxYPct:18.61850421652323, answer:'Alkyne' },
+    { id:'a10', tipXPct:19.436052366565963, tipYPct:50.75758887599785, boxXPct:11.178247734138973, boxYPct:62.72662730090565, answer:'Ketone' }
+  ]},
+  { image: '7-carbox-amine-alkene.png', arrows: [
+    { id:'a11', tipXPct:23.96777442094663, tipYPct:59.51271883495818, boxXPct:17.623363544813696, boxYPct:76.57968103343781, answer:'Carboxylic Acid' },
+    { id:'a12', tipXPct:47.3313192346425, tipYPct:34.46639768654003, boxXPct:49.14400805639476, boxYPct:8.533481099239813, answer:'Alkene' },
+    { id:'a13', tipXPct:76.9385699899295, tipYPct:54.19314620166583, boxXPct:80.26183282980867, boxYPct:75.69308559455575, answer:'Amine' }
+  ]},
+  { image: '8-Ester-Alcohol.png', arrows: [
+    { id:'a14', tipXPct:35.146022155085596, tipYPct:32.80403123863616, boxXPct:40.98690835850957, boxYPct:15.73706904015654, answer:'Alcohol' },
+    { id:'a15', tipXPct:70.1913393756294, tipYPct:61.17508528286204, boxXPct:75.12588116817724, boxYPct:76.46885660357755, answer:'Ester' }
+  ]},
+  { image: '9-alkyne-ketones-alkene.png', arrows: [
+    { id:'a16', tipXPct:20.84592145015106, tipYPct:35.46381755528234, boxXPct:20.946626384692852, boxYPct:14.628824741553967, answer:'Alkyne' },
+    { id:'a17', tipXPct:35.64954682779456, tipYPct:59.84519212453895, boxXPct:31.319234642497484, boxYPct:84.00491783407504, answer:'Ketone' },
+    { id:'a18', tipXPct:65.05538771399799, tipYPct:54.96891721068763, boxXPct:72.30614300100704, boxYPct:73.36577256749035, answer:'Ketone' },
+    { id:'a19', tipXPct:81.87311178247734, tipYPct:44.10812308438241, boxXPct:90.83585095669687, boxYPct:26.819512026182274, answer:'Alkene' }
+  ]},
+  { image: '10-carbox-ester-amine.png', arrows: [
+    { id:'a20', tipXPct:29.003021148036257, tipYPct:40.340092469133666, boxXPct:35.750251762336354, boxYPct:15.958717899877053, answer:'Carboxylic Acid' },
+    { id:'a21', tipXPct:53.37361530715005, tipYPct:68.93279537308005, boxXPct:62.134944612286006, boxYPct:88.21624616876483, answer:'Ester' },
+    { id:'a22', tipXPct:83.88721047331319, tipYPct:41.669985627456754, boxXPct:89.92950654582074, boxYPct:21.05664167344889, answer:'Amine' }
+  ]}
+];
+
+let order = [];
+let currentIdx = 0;
+let assignments = {}; // arrowId -> functional group name, for the molecule currently on screen
+
+function shuffleArray(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function beginActivity() {
+  document.getElementById('introScreen').style.display = 'none';
+  document.getElementById('topBar').style.display = 'flex';
+  document.getElementById('flow').style.display = 'block';
+  order = shuffleArray(MOLECULES.map((_, i) => i));
+  currentIdx = 0;
+  renderMolecule();
+}
+
+function updateProgressLabel() {
+  document.getElementById('progressLabel').textContent = `Molecule ${currentIdx + 1} of ${MOLECULES.length}`;
+}
+
+function renderMolecule() {
+  updateProgressLabel();
+  assignments = {};
+  const mol = MOLECULES[order[currentIdx]];
+  const flow = document.getElementById('flow');
+  flow.innerHTML = `
+    <div class="block" id="block">
+      <div class="canvas-area">
+        <div class="img-wrap" id="imgWrap">
+          <img id="molImg" src="images/${mol.image}" alt="molecule structure">
+          <svg class="overlay-svg" id="overlaySvg"></svg>
+        </div>
+      </div>
+      <div class="fg-palette" id="fgPalette"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="btn-row" style="margin-top:14px;">
+        <button class="btn" id="checkBtn" disabled>Check Answers</button>
+      </div>
+    </div>`;
+
+  buildPalette();
+  buildOverlay(mol);
+}
+
+function buildPalette() {
+  const palette = document.getElementById('fgPalette');
+  palette.innerHTML = '';
+  FUNCTIONAL_GROUPS.forEach(fg => {
+    const tile = document.createElement('div');
+    tile.className = 'fg-tile';
+    tile.textContent = fg;
+    tile.draggable = true;
+    tile.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', fg));
+    palette.appendChild(tile);
+  });
+}
+
+function buildOverlay(mol) {
+  const svg = document.getElementById('overlaySvg');
+  const wrap = document.getElementById('imgWrap');
+  svg.innerHTML = '<defs><marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#7c2d12"/></marker></defs>';
+
+  mol.arrows.forEach(arrow => {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', arrow.boxXPct + '%'); line.setAttribute('y1', arrow.boxYPct + '%');
+    line.setAttribute('x2', arrow.tipXPct + '%'); line.setAttribute('y2', arrow.tipYPct + '%');
+    line.setAttribute('stroke', '#7c2d12'); line.setAttribute('stroke-width', '2');
+    line.setAttribute('marker-end', 'url(#arrowhead)');
+    svg.appendChild(line);
+
+    const tipDot = document.createElement('div');
+    tipDot.className = 'tip-dot';
+    tipDot.style.left = arrow.tipXPct + '%'; tipDot.style.top = arrow.tipYPct + '%';
+    wrap.appendChild(tipDot);
+
+    const box = document.createElement('div');
+    box.className = 'drop-box';
+    box.id = 'box-' + arrow.id;
+    box.style.left = arrow.boxXPct + '%'; box.style.top = arrow.boxYPct + '%';
+    box.textContent = '';
+    box.addEventListener('dragover', e => { e.preventDefault(); box.classList.add('drag-over'); });
+    box.addEventListener('dragleave', () => box.classList.remove('drag-over'));
+    box.addEventListener('drop', e => {
+      e.preventDefault();
+      box.classList.remove('drag-over');
+      const fg = e.dataTransfer.getData('text/plain');
+      if (!fg) return;
+      assignments[arrow.id] = fg;
+      box.textContent = fg;
+      box.classList.add('filled');
+      box.classList.remove('correct', 'wrong');
+      updateCheckButtonState(mol);
+    });
+    wrap.appendChild(box);
+  });
+}
+
+function updateCheckButtonState(mol) {
+  const allFilled = mol.arrows.every(a => assignments[a.id]);
+  document.getElementById('checkBtn').disabled = !allFilled;
+}
+
+document.addEventListener('click', e => {
+  if (e.target && e.target.id === 'checkBtn') checkAnswers();
+});
+
+function checkAnswers() {
+  const mol = MOLECULES[order[currentIdx]];
+  let allCorrect = true;
+  mol.arrows.forEach(arrow => {
+    const box = document.getElementById('box-' + arrow.id);
+    box.classList.remove('correct', 'wrong');
+    const isRight = assignments[arrow.id] === arrow.answer;
+    box.classList.add(isRight ? 'correct' : 'wrong');
+    if (!isRight) allCorrect = false;
+  });
+
+  const feedback = document.getElementById('feedback');
+  if (allCorrect) {
+    feedback.textContent = 'Correct! All functional groups identified.';
+    feedback.className = 'feedback right';
+    document.getElementById('checkBtn').disabled = true;
+    document.querySelectorAll('.fg-tile').forEach(t => t.setAttribute('draggable', 'false'));
+    setTimeout(() => {
+      currentIdx++;
+      if (currentIdx >= MOLECULES.length) {
+        finishActivity();
+      } else {
+        renderMolecule();
+      }
+    }, 1200);
+  } else {
+    feedback.textContent = 'Not quite — the boxes marked in red need another look. Drag a different label into them and check again.';
+    feedback.className = 'feedback wrong';
+  }
+}
+
+function finishActivity() {
+  const flow = document.getElementById('flow');
+  document.getElementById('topBar').style.display = 'none';
+  flow.innerHTML = `
+    <div class="block">
+      <div class="summary-final">
+        <p>You've correctly identified the functional groups in all 10 molecules.</p>
+        <p style="margin-top:8px; font-weight:700; color:#1f5a22;">Your completion has been submitted.</p>
+      </div>
+    </div>`;
+  scormComplete();
+}
+
+/* ============================================================
+   SCORM 1.2 (completion-only, no save/resume)
+   ============================================================ */
+let scormAPI = null;
+let scormDone = false;
+const scormStartMs = Date.now();
+
+function findAPI(win) {
+  let n = 0, w = win;
+  while (w && n < 12) {
+    if (w.API) return w.API;
+    w = (w.parent && w.parent !== w) ? w.parent : w.opener;
+    n++;
+  }
+  return null;
+}
+
+function scormInit() {
+  try {
+    scormAPI = findAPI(window);
+    if (!scormAPI) return;
+    if (String(scormAPI.LMSInitialize("")) !== "true") { scormAPI = null; return; }
+    const st = scormAPI.LMSGetValue("cmi.core.lesson_status");
+    if (st === "" || st === "not attempted" || st === "unknown") {
+      scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+    }
+    scormAPI.LMSCommit("");
+  } catch (e) { scormAPI = null; }
+}
+
+function scormTime() {
+  let s = Math.floor((Date.now() - scormStartMs) / 1000);
+  const h = String(Math.floor(s / 3600)).padStart(4, '0');
+  s %= 3600;
+  const m = String(Math.floor(s / 60)).padStart(2, '0');
+  const ss = String(s % 60).padStart(2, '0');
+  return h + ':' + m + ':' + ss;
+}
+
+function scormComplete() {
+  if (!scormAPI || scormDone) { scormDone = true; return; }
+  try {
+    scormAPI.LMSSetValue("cmi.core.score.min", "0");
+    scormAPI.LMSSetValue("cmi.core.score.max", "100");
+    scormAPI.LMSSetValue("cmi.core.score.raw", "100");
+    scormAPI.LMSSetValue("cmi.core.lesson_status", "completed");
+    scormAPI.LMSSetValue("cmi.core.session_time", scormTime());
+    scormAPI.LMSSetValue("cmi.core.exit", "");
+    scormAPI.LMSCommit("");
+    scormDone = true;
+  } catch (e) { /* ignore */ }
+}
+
+function scormTerminate() {
+  if (!scormAPI) return;
+  try { scormAPI.LMSFinish(""); } catch (e) { /* ignore */ }
+}
+
+window.addEventListener('beforeunload', scormTerminate);
+scormInit();
+</script>
+</body>
+</html>
