@@ -22,6 +22,7 @@ A new package goes in the topic folder that fits it (make the folder if none doe
 | `chemistry/bonding/lewis-drawing-tool/` | Teacher's drawing tool, same 5-rule engine, reports no score |
 | `chemistry/bonding/vsepr-polarity-scorm/` | VSEPR: build by the 5 rules beside a 3D window, molecular geometry for 2 to 6 domains, polarity by radial symmetry |
 | `chemistry/imfs/intermolecular-forces-scorm/` | IMFs: heating stage with real mp/bp, LDF and polarizability, dipole-dipole, hydrogen bonds (follows VSEPR) |
+| `chemistry/imfs/intermolecular-forces-liquids-scorm/` | The same IMF activity plus a part 6, properties of liquids: surface tension, viscosity, evaporation rate (about 40 min) |
 
 **AP chemistry**
 
@@ -227,3 +228,23 @@ not the full page.
 - **Files:** `mol.js`, `name.js`, `layout.js`, `draw.js`, `react.js`, `build3d.js`, `viewer3d.js`, `anim.js`, `mech.js`,
   `arrows.js`, `chair.js` (from the chairs activity), `molecules.js`, `quiz.js`, `app.js`, `steps1.js` (Parts 1-2),
   `steps2.js` (Parts 3-4), `steps3.js` (Part 5).
+
+## intermolecular-forces-liquids-scorm (zip v1, SCHEMA 1)
+
+- A copy of `intermolecular-forces-scorm/` (left as it is; the teacher's base version) with part 6, **properties of
+  liquids** (10 to 15 min), and its own SCORM ids (`IMFL_*`) and storage key. Fixes to parts 1 to 5 belong in both copies.
+- 27 steps in 6 parts; 23 graded questions (4+4+5+5+5) from a pool of 77. The rule sits beside checkpoint 5.
+- **Teacher's rules for part 6:** at the same temperature, stronger IMFs mean higher surface tension, higher viscosity
+  and slower evaporation (direct, direct, inverse). No vapour pressure, molecular complexity or entanglement, and no
+  numbers on screen. A saturated hydrocarbon is nonpolar, LDF only. IUPAC names in the class's style (2-butanone,
+  1-butanol, 1,5-pentanediol), never the compounds of the paper prelab (ethanol, 2-propanone, hexane,
+  1,2,3-propanetriol, water, dimethyl ether).
+- **Liquids:** pentane, heptane, octane, decane, 2-butanone, 1-butanol, 1-hexanol, 1,5-pentanediol, built by
+  `straightChain()` in `data.js`. `LIQUID` holds real 20 °C surface tension, viscosity and vapour pressure, used only by
+  the validator and to pace `bench.js`. A property is asked only when `Chem.propWinner` and `Chem.propAgrees` (margins
+  5%, 30%, 50%) agree; rankings need the real bp to agree (mp is ignored here). 2-Butanone and 1-butanol tie on surface
+  tension, so that pair is never compared by it.
+- **Step kind `props`** (`RENDER.props`): IMF cards led by the name (and hydrogen-bond counts where `count`), rank
+  strongest first, predict each `[prop, most]`, then run the liquid bench (drop on plastic, pipet draining, drop left
+  out). Reduced motion shows a still partway through with the order in words.
+
