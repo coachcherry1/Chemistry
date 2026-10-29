@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Functional Group Setup Tool</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #fdf6ea 0%, #f3e6d0 100%);
+    color:#3a2f1e; padding:16px;
+  }
+  h1 { color:#7c2d12; font-size:1.4em; margin-bottom:4px; }
+  .sub { color:#8a6a3c; font-size:0.85em; margin-bottom:14px; }
+  .layout { display:grid; grid-template-columns: 1fr 320px; gap:16px; align-items:start; }
+  .panel {
+    background:#fffaf0; border:1px solid #e7dcc9; border-radius:10px; padding:16px;
+  }
+  .panel h2 { color:#b45309; font-size:1rem; margin-bottom:10px; }
+  .row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+  label { font-size:0.85rem; font-weight:600; color:#5c4326; }
+  input[type=text], select {
+    padding:7px 10px; border:2px solid #d9c3a3; border-radius:7px; font-size:0.88rem;
+    color:#3a2f1e;
+  }
+  input[type=text] { flex:1; min-width:140px; }
+  .btn {
+    padding:8px 16px; font-size:0.86rem; font-weight:700; border:none; border-radius:7px;
+    cursor:pointer; color:#fff; background:linear-gradient(145deg,#f59e0b,#d97706);
+  }
+  .btn:hover { filter:brightness(1.05); }
+  .btn-grey { background:linear-gradient(145deg,#9c8f7a,#7c7060); }
+  .btn-green { background:linear-gradient(145deg,#4b8b3b,#35682a); }
+  .btn-red { background:linear-gradient(145deg,#c0392b,#922b21); }
+  .btn-small { padding:4px 10px; font-size:0.76rem; }
+  .instructions {
+    background:#fff3e0; border:1px solid #f0c987; color:#7c2d12;
+    padding:8px 12px; border-radius:7px; font-size:0.85rem; margin-bottom:10px;
+  }
+
+  .canvas-area {
+    background:#f5efe2; border:1px dashed #d9c3a3; border-radius:8px; padding:14px;
+    display:flex; justify-content:center; min-height:240px; align-items:center;
+  }
+  .img-wrap { position:relative; display:inline-block; max-width:100%; }
+  .img-wrap.drag-over { outline:3px dashed #b45309; outline-offset:2px; }
+  .img-wrap img { display:block; max-width:100%; height:auto; user-select:none; -webkit-user-drag:none; }
+  .placeholder-text { color:#a8916e; font-size:0.9rem; text-align:center; }
+
+  .overlay-svg { position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none; }
+  .marker {
+    position:absolute; width:14px; height:14px; margin-left:-7px; margin-top:-7px;
+    border-radius:50%; background:#c0392b; border:2px solid #fff; box-shadow:0 0 0 1px #7c2d12;
+    cursor:grab; pointer-events:auto;
+  }
+  .marker.box-marker {
+    width:auto; height:auto; border-radius:6px; background:#fff; border:2px dashed #b45309;
+    color:#7c2d12; font-size:0.72rem; font-weight:700; padding:4px 7px; margin-left:0; margin-top:0;
+    transform:translate(-50%,-50%); white-space:nowrap; box-shadow:none;
+  }
+
+  .fg-palette {
+    display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; padding:12px;
+    background:#fff3e0; border:1px solid #f0c987; border-radius:8px;
+  }
+  .fg-tile {
+    padding:8px 14px; background:linear-gradient(145deg,#f59e0b,#d97706); color:#fff;
+    font-weight:700; font-size:0.85rem; border-radius:7px; cursor:grab; user-select:none;
+  }
+  .fg-tile:active { cursor:grabbing; }
+
+  .arrow-list { display:flex; flex-direction:column; gap:8px; max-height:220px; overflow-y:auto; }
+  .arrow-row {
+    display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e7dcc9;
+    border-radius:7px; padding:6px 8px;
+  }
+  .arrow-row span.idx { font-weight:700; color:#7c2d12; width:18px; flex-shrink:0; }
+  .arrow-row select { flex:1; padding:5px 6px; font-size:0.8rem; }
+
+  .progress-list { display:flex; flex-direction:column; gap:5px; max-height:260px; overflow-y:auto; }
+  .progress-item {
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    background:#fff; border:1px solid #e7dcc9; border-radius:7px; padding:6px 10px; font-size:0.8rem;
+    cursor:pointer;
+  }
+  .progress-item:hover { background:#fff3e0; }
+  .progress-item.current { border-color:#b45309; background:#fff3e0; }
+  .progress-item .count.done { color:#2f7d32; font-weight:700; }
+  .progress-item .count.pending { color:#a8916e; }
+
+  .note { font-size:0.76rem; color:#8a6a3c; margin-top:6px; line-height:1.4; }
+  .status { font-size:0.8rem; font-weight:700; margin-left:6px; }
+  .status.ok { color:#2f7d32; }
+  .status.warn { color:#b45309; }
+</style>
+</head>
+<body>
+<h1>Functional Group Setup Tool</h1>
+<p class="sub">Teacher-only authoring tool. Images are already loaded from the <code>images/</code> folder — pick a molecule below, then drag functional group tiles onto the structure and export a config file for the student simulation.</p>
+
+<div class="layout">
+  <div class="panel">
+    <div class="row">
+      <label>Molecule:</label>
+      <button class="btn btn-grey btn-small" id="prevBtn">&larr; Prev</button>
+      <select id="moleculeSelect"></select>
+      <button class="btn btn-grey btn-small" id="nextBtn">Next &rarr;</button>
+      <label style="margin-left:10px;">Label:</label>
+      <input type="text" id="moleculeId" placeholder="display label (optional)">
+    </div>
+    <div class="instructions">Drag a functional group tile from the palette below and drop it directly on the functional group in the structure. Drag the red dot or the label afterward to fine-tune position. You can drag the same tile onto a molecule more than once if it has multiple of that group.</div>
+    <div class="canvas-area" id="canvasArea"></div>
+    <div class="fg-palette" id="fgPalette"></div>
+    <div class="row" style="margin-top:12px;">
+      <button class="btn btn-green" id="saveMoleculeBtn">Save Progress</button>
+      <button class="btn btn-red" id="clearMoleculeBtn">Clear This Molecule</button>
+      <span class="status" id="saveStatus"></span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Arrows on this molecule</h2>
+    <div class="arrow-list" id="arrowList"></div>
+    <div class="note" id="arrowEmptyNote">No arrows yet — drag a functional group tile onto the structure.</div>
+
+    <h2 style="margin-top:18px;">Progress (<span id="doneCount">0</span> / <span id="totalCount">10</span> molecules started)</h2>
+    <div class="progress-list" id="progressList"></div>
+
+    <div class="row" style="margin-top:16px;">
+      <button class="btn" id="exportBtn">Export Config (JSON)</button>
+      <input type="file" id="importInput" accept="application/json" style="display:none;">
+      <button class="btn btn-grey" id="importBtn">Import Config</button>
+    </div>
+    <div class="note">Export once all 10 molecules are done, or anytime to back up progress. Re-importing later restores everything, including which image goes with which arrows.</div>
+  </div>
+</div>
+
+<script>
+const FUNCTIONAL_GROUPS = ['Carboxylic Acid','Ester','Aldehyde','Ketone','Alcohol','Amine','Alkene','Alkyne'];
+const MOLECULE_IMAGES = [
+  '1-Alkene-Alcohol.png',
+  '2-carbox-amine.png',
+  '3-alkyne-ester.png',
+  '4-Aldehyde.png',
+  '5-Alcohol.png',
+  '6-Alkyne-Ketone.png',
+  '7-carbox-amine-alkene.png',
+  '8-Ester-Alcohol.png',
+  '9-alkyne-ketones-alkene.png',
+  '10-carbox-ester-amine.png'
+];
+const AUTOSAVE_KEY = 'fg-setup-autosave-v2';
+
+// molecules keyed by image filename: { image: { id, arrows:[{id,tipXPct,tipYPct,boxXPct,boxYPct,answer}] } }
+var molecules = {};
+var currentImage = MOLECULE_IMAGES[0];
+var currentArrows = [];
+var dragging = null;      // { arrowId, part: 'tip'|'box' } — repositioning an existing marker
+var arrowIdCounter = 1;
+
+const canvasArea = document.getElementById('canvasArea');
+const arrowListEl = document.getElementById('arrowList');
+const arrowEmptyNote = document.getElementById('arrowEmptyNote');
+const progressListEl = document.getElementById('progressList');
+const doneCountEl = document.getElementById('doneCount');
+const saveStatus = document.getElementById('saveStatus');
+const moleculeSelect = document.getElementById('moleculeSelect');
+const moleculeIdInput = document.getElementById('moleculeId');
+
+function labelFromFilename(name) {
+  return name.replace(/\.[a-z]+$/i, '').replace(/^\d+-/, '').replace(/-/g, ' ');
+}
+
+function buildPalette() {
+  const palette = document.getElementById('fgPalette');
+  palette.innerHTML = '';
+  FUNCTIONAL_GROUPS.forEach(fg => {
+    const tile = document.createElement('div');
+    tile.className = 'fg-tile';
+    tile.textContent = fg;
+    tile.draggable = true;
+    tile.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', fg));
+    palette.appendChild(tile);
+  });
+}
+
+function buildMoleculeSelect() {
+  moleculeSelect.innerHTML = '';
+  MOLECULE_IMAGES.forEach(img => {
+    const opt = document.createElement('option');
+    opt.value = img; opt.textContent = img;
+    moleculeSelect.appendChild(opt);
+  });
+  moleculeSelect.addEventListener('change', () => switchMolecule(moleculeSelect.value));
+  document.getElementById('prevBtn').addEventListener('click', () => stepMolecule(-1));
+  document.getElementById('nextBtn').addEventListener('click', () => stepMolecule(1));
+  moleculeIdInput.addEventListener('input', () => {
+    if (!molecules[currentImage]) molecules[currentImage] = { id: '', arrows: [] };
+    molecules[currentImage].id = moleculeIdInput.value;
+    autosave();
+  });
+}
+
+function stepMolecule(delta) {
+  const idx = MOLECULE_IMAGES.indexOf(currentImage);
+  const next = (idx + delta + MOLECULE_IMAGES.length) % MOLECULE_IMAGES.length;
+  moleculeSelect.value = MOLECULE_IMAGES[next];
+  switchMolecule(MOLECULE_IMAGES[next]);
+}
+
+function switchMolecule(image) {
+  persistCurrent();
+  currentImage = image;
+  moleculeSelect.value = image;
+  const saved = molecules[image];
+  currentArrows = saved ? JSON.parse(JSON.stringify(saved.arrows)) : [];
+  moleculeIdInput.value = saved ? saved.id : labelFromFilename(image);
+  loadCanvas(image);
+  renderProgressList();
+}
+
+function loadCanvas(image) {
+  canvasArea.innerHTML = `
+    <div class="img-wrap" id="imgWrap">
+      <img id="molImg" src="images/${image}" alt="molecule">
+      <svg class="overlay-svg" id="overlaySvg"></svg>
+    </div>`;
+  const wrap = document.getElementById('imgWrap');
+  wrap.addEventListener('dragover', e => { e.preventDefault(); wrap.classList.add('drag-over'); });
+  wrap.addEventListener('dragleave', () => wrap.classList.remove('drag-over'));
+  wrap.addEventListener('drop', onTileDrop);
+  wrap.addEventListener('mousemove', onCanvasDrag);
+  wrap.addEventListener('mouseup', () => dragging = null);
+  wrap.addEventListener('mouseleave', () => dragging = null);
+  renderArrows();
+}
+
+function pctFromEvent(e) {
+  const wrap = document.getElementById('imgWrap');
+  const rect = wrap.getBoundingClientRect();
+  const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+  const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+  return { x, y };
+}
+
+function onTileDrop(e) {
+  e.preventDefault();
+  document.getElementById('imgWrap').classList.remove('drag-over');
+  const fg = e.dataTransfer.getData('text/plain');
+  if (!fg) return;
+  const p = pctFromEvent(e);
+  const arrow = {
+    id: 'a' + (arrowIdCounter++),
+    tipXPct: p.x, tipYPct: p.y,
+    boxXPct: Math.min(96, p.x + 8), boxYPct: Math.max(4, p.y - 8),
+    answer: fg
+  };
+  currentArrows.push(arrow);
+  renderArrows();
+  persistCurrent();
+}
+
+function onCanvasDrag(e) {
+  if (!dragging) return;
+  const p = pctFromEvent(e);
+  const arrow = currentArrows.find(a => a.id === dragging.arrowId);
+  if (!arrow) return;
+  if (dragging.part === 'tip') { arrow.tipXPct = p.x; arrow.tipYPct = p.y; }
+  else { arrow.boxXPct = p.x; arrow.boxYPct = p.y; }
+  renderArrows();
+}
+
+function renderArrows() {
+  const svg = document.getElementById('overlaySvg');
+  const wrap = document.getElementById('imgWrap');
+  if (!svg || !wrap) return;
+  wrap.querySelectorAll('.marker').forEach(el => el.remove());
+  svg.innerHTML = '<defs><marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#7c2d12"/></marker></defs>';
+
+  currentArrows.forEach(arrow => {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', arrow.boxXPct + '%'); line.setAttribute('y1', arrow.boxYPct + '%');
+    line.setAttribute('x2', arrow.tipXPct + '%'); line.setAttribute('y2', arrow.tipYPct + '%');
+    line.setAttribute('stroke', '#7c2d12'); line.setAttribute('stroke-width', '2');
+    line.setAttribute('marker-end', 'url(#arrowhead)');
+    svg.appendChild(line);
+
+    const tipDot = document.createElement('div');
+    tipDot.className = 'marker';
+    tipDot.style.left = arrow.tipXPct + '%'; tipDot.style.top = arrow.tipYPct + '%';
+    tipDot.addEventListener('mousedown', () => dragging = { arrowId: arrow.id, part: 'tip' });
+    wrap.appendChild(tipDot);
+
+    const box = document.createElement('div');
+    box.className = 'marker box-marker';
+    box.style.left = arrow.boxXPct + '%'; box.style.top = arrow.boxYPct + '%';
+    box.textContent = arrow.answer;
+    box.addEventListener('mousedown', () => dragging = { arrowId: arrow.id, part: 'box' });
+    wrap.appendChild(box);
+  });
+
+  renderArrowSidebar();
+}
+
+function renderArrowSidebar() {
+  arrowListEl.innerHTML = '';
+  arrowEmptyNote.style.display = currentArrows.length ? 'none' : 'block';
+  currentArrows.forEach((arrow, i) => {
+    const row = document.createElement('div');
+    row.className = 'arrow-row';
+    row.innerHTML = `<span class="idx">${i + 1}.</span>`;
+    const select = document.createElement('select');
+    FUNCTIONAL_GROUPS.forEach(fg => {
+      const opt = document.createElement('option');
+      opt.value = fg; opt.textContent = fg;
+      if (fg === arrow.answer) opt.selected = true;
+      select.appendChild(opt);
+    });
+    select.addEventListener('change', () => { arrow.answer = select.value; renderArrows(); persistCurrent(); });
+    row.appendChild(select);
+    const del = document.createElement('button');
+    del.className = 'btn btn-red btn-small';
+    del.textContent = 'Remove';
+    del.addEventListener('click', () => {
+      currentArrows = currentArrows.filter(a => a.id !== arrow.id);
+      renderArrows();
+      persistCurrent();
+    });
+    row.appendChild(del);
+    arrowListEl.appendChild(row);
+  });
+}
+
+function persistCurrent() {
+  if (currentArrows.length) {
+    molecules[currentImage] = {
+      id: moleculeIdInput.value || labelFromFilename(currentImage),
+      arrows: JSON.parse(JSON.stringify(currentArrows))
+    };
+  } else {
+    delete molecules[currentImage];
+  }
+  autosave();
+  renderProgressList();
+}
+
+function renderProgressList() {
+  progressListEl.innerHTML = '';
+  let done = 0;
+  MOLECULE_IMAGES.forEach(img => {
+    const count = molecules[img] ? molecules[img].arrows.length : 0;
+    if (count > 0) done++;
+    const item = document.createElement('div');
+    item.className = 'progress-item' + (img === currentImage ? ' current' : '');
+    item.innerHTML = `<span>${img}</span><span class="count ${count ? 'done' : 'pending'}">${count ? count + ' arrow(s)' : 'not started'}</span>`;
+    item.addEventListener('click', () => { moleculeSelect.value = img; switchMolecule(img); });
+    progressListEl.appendChild(item);
+  });
+  doneCountEl.textContent = done;
+}
+
+function flashStatus(msg, cls) {
+  saveStatus.textContent = msg;
+  saveStatus.className = 'status ' + cls;
+  clearTimeout(flashStatus._t);
+  flashStatus._t = setTimeout(() => { saveStatus.textContent = ''; }, 2500);
+}
+
+document.getElementById('saveMoleculeBtn').addEventListener('click', () => {
+  persistCurrent();
+  flashStatus('Saved.', 'ok');
+});
+document.getElementById('clearMoleculeBtn').addEventListener('click', () => {
+  currentArrows = [];
+  renderArrows();
+  persistCurrent();
+  flashStatus('Cleared this molecule\'s arrows.', 'warn');
+});
+document.getElementById('exportBtn').addEventListener('click', exportConfig);
+document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importInput').click());
+document.getElementById('importInput').addEventListener('change', onImportSelected);
+
+function exportConfig() {
+  persistCurrent();
+  const payload = {
+    version: '2.0',
+    exported: new Date().toISOString(),
+    functionalGroups: FUNCTIONAL_GROUPS,
+    molecules: MOLECULE_IMAGES.filter(img => molecules[img]).map(img => ({
+      image: img,
+      id: molecules[img].id,
+      arrows: molecules[img].arrows
+    }))
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'functional-group-config.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function onImportSelected(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      if (Array.isArray(parsed.molecules)) {
+        molecules = {};
+        parsed.molecules.forEach(m => { molecules[m.image] = { id: m.id, arrows: m.arrows }; });
+        switchMolecule(currentImage);
+        autosave();
+        flashStatus('Imported ' + parsed.molecules.length + ' molecule(s).', 'ok');
+      }
+    } catch (err) { flashStatus('Could not read that file as valid JSON.', 'warn'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function autosave() {
+  try { localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(molecules)); } catch (e) { /* ignore */ }
+}
+
+function restoreAutosave() {
+  try {
+    const raw = localStorage.getItem(AUTOSAVE_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object') {
+      molecules = parsed;
+      flashStatus('Restored progress from your last session.', 'ok');
+    }
+  } catch (e) { /* ignore */ }
+}
+
+buildPalette();
+buildMoleculeSelect();
+restoreAutosave();
+switchMolecule(currentImage);
+</script>
+</body>
+</html>

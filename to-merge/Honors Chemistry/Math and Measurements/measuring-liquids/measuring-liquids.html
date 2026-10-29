@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratory Measurement Simulation</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            padding: 28px 32px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-weight: 300;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background: linear-gradient(145deg, #4a90e2, #357abd);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(145deg, #357abd, #2c5aa0);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+        }
+
+        button:disabled {
+            background: #b0bec5;
+            color: #eceff1;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        button:disabled:hover {
+            transform: none;
+            background: #b0bec5;
+            box-shadow: none;
+        }
+
+        .btn-save {
+            background: linear-gradient(145deg, #43a047, #2e7d32);
+            box-shadow: 0 2px 8px rgba(67, 160, 71, 0.3);
+        }
+
+        .btn-save:hover {
+            background: linear-gradient(145deg, #388e3c, #1b5e20);
+            box-shadow: 0 5px 15px rgba(67, 160, 71, 0.4);
+        }
+
+        .save-confirm {
+            display: inline-block;
+            margin-left: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2e7d32;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .save-confirm.show {
+            opacity: 1;
+        }
+
+        .save-note {
+            text-align: center;
+            font-size: 13.5px;
+            color: #52606d;
+            margin: -10px 0 20px;
+        }
+
+        .score-board {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .score-item {
+            background: white;
+            border: 1px solid #d7e3ea;
+            color: #2c3e50;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-align: center;
+            min-width: 90px;
+        }
+
+        .score-item h4 {
+            font-size: 1.2rem;
+            margin: 0 0 2px 0;
+            color: #1c6e85;
+        }
+
+        .score-item span {
+            font-size: 0.8rem;
+        }
+
+        .instrument-container {
+            text-align: center;
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .instrument-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .view-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1c6e85;
+            margin-bottom: 10px;
+        }
+
+        svg {
+            border: 1px solid #e0e6ed;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+
+        .input-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            margin: 0 10px;
+            width: 150px;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
+        }
+
+        .feedback {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .correct {
+            background: #eafaf0;
+            color: #1e7e34;
+            border: 1px solid #c3e6cb;
+        }
+
+        .incorrect {
+            background: #fdecea;
+            color: #a52a2a;
+            border: 1px solid #f5c6cb;
+        }
+
+        .info {
+            background: #f0f9fb;
+            color: #1c6e85;
+            border-left: 4px solid #2193b0;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        /* Success screen shown on completion */
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-modal.active {
+            display: flex;
+        }
+
+        .success-container {
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            padding: 40px;
+            margin: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .success-container h2 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+        }
+
+        .success-container p {
+            color: #495057;
+            line-height: 1.6;
+        }
+
+        .success-container .close-button {
+            margin-top: 24px;
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #4a90e2;
+            color: white;
+        }
+
+        .success-container .close-button:hover {
+            background: #357abd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Laboratory Measurement Simulation</h1>
+        <p class="save-note">Before you close your Chromebook or exit Schoology, click the green <strong>Save Progress</strong> button so your work is saved and you can pick up where you left off next time.</p>
+
+        <div class="score-board">
+            <div class="score-item">
+                <h4 id="correct-count">0/10</h4>
+                <span>Correct Readings</span>
+            </div>
+            <div class="score-item">
+                <h4 id="total-attempts">0</h4>
+                <span>Attempts</span>
+            </div>
+            <div class="score-item">
+                <h4 id="accuracy">0%</h4>
+                <span>Accuracy</span>
+            </div>
+        </div>
+
+        <div id="problemInfo" class="info"></div>
+
+        <div class="instrument-container">
+            <div class="instrument-view">
+                <div class="view-label">Full View</div>
+                <svg id="instrumentSVG" width="400" height="400"></svg>
+            </div>
+            <div class="instrument-view" id="zoomContainer" style="display: none;">
+                <div class="view-label">Zoomed View</div>
+                <svg id="zoomSVG" width="400" height="400"></svg>
+                <div id="zoomMessage" style="color: red; font-weight: bold; font-size: 14px; margin-top: 10px; text-align: center;">
+                    Use this zoomed view to make your precise measurement reading.
+                </div>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <label for="studentAnswer">Enter your reading: </label>
+            <input type="number" id="studentAnswer" step="any" placeholder="0.00">
+            <span id="units"></span>
+        </div>
+
+        <div class="controls">
+            <button id="checkAnswerBtn" onclick="checkAnswer()">Check Answer</button>
+            <button id="saveProgressBtn" class="btn-save" onclick="manualSaveProgress()">Save Progress</button>
+            <span id="saveConfirm" class="save-confirm">Saved &#10003;</span>
+        </div>
+
+        <div id="feedback" class="feedback" style="display: none;"></div>
+    </div>
+
+    <!-- Success Screen -->
+    <div class="success-modal" id="successModal">
+        <div class="success-container">
+            <h2>Practice Complete!</h2>
+            <p>You correctly read 10 instrument measurements.</p>
+            <p>Your completion grade has been submitted to Schoology.</p>
+            <button class="close-button" onclick="closeSuccessScreen()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        let currentProblem = {};
+        let correctReadings = 0;
+        let totalAttempts = 0;
+        let problemLocked = false; // true once this problem has been answered correctly
+        const READINGS_REQUIRED = 10;
+
+        const instruments = {
+            beaker: {
+                name: "Beaker",
+                unit: "mL",
+                precisions: [10, 100], // Only coarse markings for beakers
+                capacity: 250,
+                width: 100,
+                height: 150
+            },
+            buret: {
+                name: "Buret", 
+                unit: "mL",
+                precisions: [0.1, 1], // Fine precision for burets
+                capacities: {0.1: 10, 1: 50}, // 0.1 precision limited to 10 mL, 1 precision up to 50 mL
+                width: 50,
+                height: 300
+            },
+            graduatedCylinder: {
+                name: "Graduated Cylinder",
+                unit: "mL", 
+                precisions: [0.1, 1, 10], // Various precisions
+                capacities: {0.1: 10, 1: 50, 10: 100}, // Match capacity to precision
+                width: 60,
+                height: 250
+            }
+        };
+        
+        function generateNewProblem() {
+            const instrumentTypes = Object.keys(instruments);
+            const selectedType = instrumentTypes[Math.floor(Math.random() * instrumentTypes.length)];
+            const instrument = instruments[selectedType];
+            
+            const precision = instrument.precisions[Math.floor(Math.random() * instrument.precisions.length)];
+            
+            // Set capacity based on precision for instruments that have variable capacities
+            let capacity;
+            if (selectedType === 'graduatedCylinder' || selectedType === 'buret') {
+                capacity = instrument.capacities[precision];
+            } else {
+                capacity = instrument.capacity;
+            }
+            
+            let actualValue;
+            let attempts = 0;
+            const maxAttempts = 100;
+            
+            do {
+                actualValue = Math.random() * capacity;
+                attempts++;
+            } while ((isAmbiguousValue(actualValue, precision) || isTooCloseToTop(actualValue, capacity)) && attempts < maxAttempts);
+            
+            // Fallback if we can't find a good value
+            if (attempts >= maxAttempts) {
+                actualValue = capacity * 0.4; // Use 40% of capacity as safe fallback
+            }
+        
+        function isTooCloseToTop(value, capacity) {
+            // Prevent liquid from getting too close to the top of the instrument
+            // Reserve at least 15% of the capacity for the top space
+            const maxLiquidLevel = capacity * 0.85;
+            return value > maxLiquidLevel;
+        }
+            
+            // Round the actual value to one place beyond the instrument precision
+            // This eliminates bias in tolerance checking
+            let roundedActualValue;
+            if (precision === 100) {
+                // 100 mL intervals: round to 10s place
+                roundedActualValue = Math.round(actualValue / 10) * 10;
+            } else if (precision === 10) {
+                // 10 mL intervals: round to 1s place
+                roundedActualValue = Math.round(actualValue);
+            } else if (precision === 1) {
+                // 1 mL intervals: round to 0.1 place (1 decimal)
+                roundedActualValue = Math.round(actualValue * 10) / 10;
+            } else if (precision === 0.1) {
+                // 0.1 mL intervals: round to 0.01 place (2 decimals)
+                roundedActualValue = Math.round(actualValue * 100) / 100;
+            } else {
+                // Default: round to one decimal place beyond precision
+                const multiplier = 1 / (precision / 10);
+                roundedActualValue = Math.round(actualValue * multiplier) / multiplier;
+            }
+            
+            currentProblem = {
+                type: selectedType,
+                instrument: instrument,
+                precision: precision,
+                actualValue: roundedActualValue, // Use rounded value for display
+                capacity: capacity,
+                correctAnswer: roundedActualValue // Use same rounded value for validation
+            };
+            
+            drawInstrument();
+            updateProblemInfo();
+            clearFeedback();
+            document.getElementById('studentAnswer').value = '';
+            problemLocked = false;
+            document.getElementById('checkAnswerBtn').disabled = false;
+        }
+        
+        function isAmbiguousValue(value, precision) {
+            if (precision === 100) {
+                // For 100 mL intervals, avoid ±20 mL around multiples of 100
+                const nearestHundred = Math.round(value / 100) * 100;
+                return Math.abs(value - nearestHundred) <= 20;
+            } else if (precision === 10) {
+                // For 10 mL intervals, avoid ±2 mL around multiples of 100 (for 100, 200, etc.)
+                const nearestHundred = Math.round(value / 100) * 100;
+                if (Math.abs(value - nearestHundred) <= 2) {
+                    return true;
+                }
+                // Also avoid ±2 mL around multiples of 10 (for 10, 20, 30, etc.)
+                const nearestTen = Math.round(value / 10) * 10;
+                const distanceFromTen = Math.abs(value - nearestTen);
+                return distanceFromTen <= 2;
+            }
+            // No restrictions for finer precisions (1 mL, 0.1 mL)
+            return false;
+        }
+        
+        function roundToPrecision(value, precision) {
+            return Math.round(value / precision) * precision;
+        }
+        
+        function drawInstrument() {
+            const svg = document.getElementById('instrumentSVG');
+            const zoomSVG = document.getElementById('zoomSVG');
+            const zoomContainer = document.getElementById('zoomContainer');
+            
+            svg.innerHTML = '';
+            zoomSVG.innerHTML = '';
+            
+            const { type, instrument, precision, actualValue } = currentProblem;
+            
+            // Always show full view
+            drawVolumetricInstrument(svg, type, instrument, precision, actualValue, false);
+            
+            // Show zoom view for fine markings
+            if (precision <= 10) {
+                zoomContainer.style.display = 'block';
+                drawVolumetricInstrument(zoomSVG, type, instrument, precision, actualValue, true);
+            } else {
+                zoomContainer.style.display = 'none';
+            }
+        }
+        
+        function drawVolumetricInstrument(svg, type, instrument, precision, actualValue, isZoom = false) {
+            const { width, height } = instrument;
+            const capacity = currentProblem.capacity;
+            
+            // Determine range based on zoom
+            let minValue, maxValue;
+            
+            if (isZoom && precision <= 10) {
+                if (precision === 0.1) {
+                    // Show 2 mL range for 0.1 precision (1 mL in each direction)
+                    const range = 2;
+                    minValue = Math.max(0, actualValue - range/2);
+                    maxValue = Math.min(capacity, actualValue + range/2);
+                    
+                    // Adjust if we hit boundaries
+                    if (minValue === 0) {
+                        maxValue = Math.min(capacity, range);
+                    } else if (maxValue === capacity) {
+                        minValue = Math.max(0, capacity - range);
+                    }
+                } else if (precision === 1) {
+                    // Show 10 mL range for 1 precision
+                    const range = 10;
+                    minValue = Math.max(0, actualValue - range/2);
+                    maxValue = Math.min(capacity, actualValue + range/2);
+                    
+                    // Adjust if we hit boundaries
+                    if (minValue === 0) {
+                        maxValue = Math.min(capacity, range);
+                    } else if (maxValue === capacity) {
+                        minValue = Math.max(0, capacity - range);
+                    }
+                } else if (precision === 10) {
+                    // Show 50 mL range for 10 precision
+                    const range = 50;
+                    minValue = Math.max(0, actualValue - range/2);
+                    maxValue = Math.min(capacity, actualValue + range/2);
+                    
+                    // Adjust if we hit boundaries
+                    if (minValue === 0) {
+                        maxValue = Math.min(capacity, range);
+                    } else if (maxValue === capacity) {
+                        minValue = Math.max(0, capacity - range);
+                    }
+                }
+            } else {
+                // Full view
+                minValue = 0;
+                maxValue = capacity;
+            }
+            
+            // Set SVG size
+            svg.setAttribute('width', width + 200);
+            svg.setAttribute('height', height + 100);
+            
+            const startX = 50;
+            const startY = 50;
+            
+            // Calculate scale based on visible range
+            const visibleRange = maxValue - minValue;
+            const scale = height / visibleRange;
+            
+            // Draw instrument outline - different for zoom vs full view
+            if (isZoom) {
+                drawZoomedInstrumentShape(svg, type, startX, startY, width, height);
+            } else {
+                drawInstrumentShape(svg, type, startX, startY, width, height);
+            }
+            
+            // Draw markings only in visible range
+            let currentValue = minValue;
+            while (currentValue <= maxValue) {
+                // Clean up floating point precision
+                currentValue = Math.round(currentValue / precision) * precision;
+                
+                if (currentValue >= minValue && currentValue <= maxValue) {
+                    const y = startY + height - ((currentValue - minValue) * scale);
+                    
+                    // Determine tick size and labeling based on precision and view type
+                    let tickLength = 6;
+                    let showLabel = false;
+                    let fontSize = '12';
+                    
+                    if (isZoom) {
+                        // In zoom view, use detailed markings with proper hierarchy
+                        if (precision === 0.1) {
+                            if (currentValue % 1 === 0) {
+                                // Whole number - larger tick and label
+                                tickLength = 15;
+                                showLabel = true;
+                                fontSize = '14';
+                            } else {
+                                // 0.1 increment - small tick, no label
+                                tickLength = 6;
+                                showLabel = false;
+                            }
+                        } else if (precision === 1) {
+                            // For 1 mL precision in zoom: different tick sizes based on value
+                            if (currentValue % 5 === 0) {
+                                // Every 5 mL - largest tick and bold label
+                                tickLength = 18;
+                                showLabel = true;
+                                fontSize = '14';
+                            } else {
+                                // Individual mL - medium tick and regular label
+                                tickLength = 10;
+                                showLabel = true;
+                                fontSize = '12';
+                            }
+                        } else if (precision === 10) {
+                            // For 10 mL precision in zoom: different tick sizes
+                            if (currentValue % 50 === 0) {
+                                // Every 50 mL - largest tick and bold label
+                                tickLength = 18;
+                                showLabel = true;
+                                fontSize = '14';
+                            } else {
+                                // Every 10 mL - medium tick and regular label
+                                tickLength = 12;
+                                showLabel = true;
+                                fontSize = '12';
+                            }
+                        }
+                    } else {
+                        // In full view, show fewer markings to avoid clutter
+                        if (precision === 0.1) {
+                            // Show ALL 0.1 mL tick marks but only label whole numbers
+                            if (currentValue % 1 === 0) {
+                                // Whole number - medium tick and label
+                                tickLength = 10;
+                                showLabel = true;
+                                fontSize = '10';
+                            } else {
+                                // 0.1 increment - small tick, no label
+                                tickLength = 4;
+                                showLabel = false;
+                            }
+                        } else if (precision === 1) {
+                            // Show every 5 mL in full view
+                            if (currentValue % 5 === 0) {
+                                tickLength = 12;
+                                showLabel = true;
+                                fontSize = '10'; // Smaller font for full view
+                            } else {
+                                tickLength = 6;
+                                showLabel = false;
+                            }
+                        } else if (type === 'beaker') {
+                            // For beakers, only show major markings
+                            if (precision === 10) {
+                                if (currentValue % 50 === 0) {
+                                    tickLength = 15;
+                                    showLabel = true;
+                                    fontSize = '12';
+                                } else {
+                                    tickLength = 8;
+                                    showLabel = false;
+                                }
+                            } else if (precision === 100) {
+                                tickLength = 15;
+                                showLabel = true;
+                                fontSize = '12';
+                            }
+                        } else {
+                            // Default for other instruments - reduced labeling
+                            if (currentValue % (precision * 2) === 0) {
+                                // Only show every other marking to reduce clutter
+                                tickLength = 12;
+                                showLabel = true;
+                                fontSize = '10';
+                            } else {
+                                tickLength = 8;
+                                showLabel = false;
+                            }
+                        }
+                    }
+                    
+                    // Draw tick mark
+                    const tick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    tick.setAttribute('x1', startX + width);
+                    tick.setAttribute('y1', y);
+                    tick.setAttribute('x2', startX + width + tickLength);
+                    tick.setAttribute('y2', y);
+                    tick.setAttribute('stroke', '#333');
+                    tick.setAttribute('stroke-width', tickLength > 10 ? '2' : '1');
+                    svg.appendChild(tick);
+                    
+                    // Add label if needed
+                    if (showLabel) {
+                        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                        label.setAttribute('x', startX + width + tickLength + 5);
+                        label.setAttribute('y', y + 4);
+                        label.setAttribute('font-size', fontSize);
+                        label.setAttribute('fill', '#333');
+                        // Make major markings bold in zoom view
+                        if (isZoom && precision === 1 && currentValue % 5 === 0) {
+                            label.setAttribute('font-weight', 'bold');
+                        } else if (isZoom && precision === 10 && currentValue % 50 === 0) {
+                            label.setAttribute('font-weight', 'bold');
+                        } else if (tickLength > 14) {
+                            label.setAttribute('font-weight', 'bold');
+                        } else {
+                            label.setAttribute('font-weight', 'normal');
+                        }
+                        label.textContent = currentValue.toString();
+                        svg.appendChild(label);
+                    }
+                }
+                
+                currentValue += precision;
+            }
+            
+            // Draw liquid if it's in visible range
+            if (actualValue >= minValue && actualValue <= maxValue) {
+                const measurementPoint = startY + height - ((actualValue - minValue) * scale);
+                
+                // Calculate meniscus dimensions
+                const meniscusHeight = Math.min(6, width * 0.12);
+                const leftX = startX + 2;
+                const rightX = startX + width - 2;
+                const centerX = startX + width / 2;
+                
+                // Adjust meniscus to align better with measurement point
+                const meniscusOffset = 2; // Shift meniscus down by 2 pixels to align with red dot
+                let meniscusBottomY = measurementPoint + meniscusOffset; // Slightly below the measurement point
+                let meniscusTopY = meniscusBottomY - meniscusHeight; // Top of the curve
+                
+                // Prevent meniscus from getting too close to top of instrument
+                const minDistanceFromTop = 15;
+                if (meniscusTopY < startY + minDistanceFromTop) {
+                    // If too close to top, adjust BOTH top and bottom to maintain the curve shape
+                    meniscusTopY = startY + minDistanceFromTop;
+                    meniscusBottomY = meniscusTopY + meniscusHeight;
+                }
+                
+                // Only draw if there's enough space for liquid
+                const liquidBottom = startY + height;
+                if (meniscusBottomY < liquidBottom) {
+                    // Draw everything as one unified liquid shape
+                    const liquidPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    
+                    // The quadratic curve should have its lowest point at meniscusBottomY
+                    const pathData = `M ${leftX} ${liquidBottom}
+                                     L ${leftX} ${meniscusTopY}
+                                     Q ${centerX} ${meniscusBottomY} ${rightX} ${meniscusTopY}
+                                     L ${rightX} ${liquidBottom}
+                                     Z`;
+                    
+                    liquidPath.setAttribute('d', pathData);
+                    liquidPath.setAttribute('fill', 'rgba(52, 152, 219, 0.7)');
+                    liquidPath.setAttribute('stroke', 'none');
+                    svg.appendChild(liquidPath);
+                }
+            }
+        }
+        
+        function drawZoomedInstrumentShape(svg, type, x, y, width, height) {
+            // For zoomed view, draw a simple rectangular section with dashed lines 
+            // at top and bottom to indicate it's a cutout section
+            
+            // Main instrument walls (left and right sides only)
+            const leftWall = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            leftWall.setAttribute('x1', x);
+            leftWall.setAttribute('y1', y);
+            leftWall.setAttribute('x2', x);
+            leftWall.setAttribute('y2', y + height);
+            leftWall.setAttribute('stroke', '#333');
+            leftWall.setAttribute('stroke-width', '3');
+            svg.appendChild(leftWall);
+            
+            const rightWall = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            rightWall.setAttribute('x1', x + width);
+            rightWall.setAttribute('y1', y);
+            rightWall.setAttribute('x2', x + width);
+            rightWall.setAttribute('y2', y + height);
+            rightWall.setAttribute('stroke', '#333');
+            rightWall.setAttribute('stroke-width', '3');
+            svg.appendChild(rightWall);
+            
+            // Dashed lines at top and bottom to show it's a section
+            const topDash = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            topDash.setAttribute('x1', x);
+            topDash.setAttribute('y1', y);
+            topDash.setAttribute('x2', x + width);
+            topDash.setAttribute('y2', y);
+            topDash.setAttribute('stroke', '#666');
+            topDash.setAttribute('stroke-width', '2');
+            topDash.setAttribute('stroke-dasharray', '5,5');
+            svg.appendChild(topDash);
+            
+            const bottomDash = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            bottomDash.setAttribute('x1', x);
+            bottomDash.setAttribute('y1', y + height);
+            bottomDash.setAttribute('x2', x + width);
+            bottomDash.setAttribute('y2', y + height);
+            bottomDash.setAttribute('stroke', '#666');
+            bottomDash.setAttribute('stroke-width', '2');
+            bottomDash.setAttribute('stroke-dasharray', '5,5');
+            svg.appendChild(bottomDash);
+            
+            // Add text to make it clear this is a zoom section
+            const zoomText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            zoomText.setAttribute('x', x + width + 20);
+            zoomText.setAttribute('y', y + height + 20);
+            zoomText.setAttribute('font-size', '10');
+            zoomText.setAttribute('fill', '#666');
+            zoomText.setAttribute('font-style', 'italic');
+            zoomText.textContent = '(section view)';
+            svg.appendChild(zoomText);
+        }
+        
+        function drawInstrumentShape(svg, type, x, y, width, height) {
+            const shape = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            shape.setAttribute('x', x);
+            shape.setAttribute('y', y);
+            shape.setAttribute('width', width);
+            shape.setAttribute('height', height);
+            shape.setAttribute('fill', 'none');
+            shape.setAttribute('stroke', '#333');
+            shape.setAttribute('stroke-width', '3');
+            svg.appendChild(shape);
+            
+            if (type === 'buret') {
+                // Add stopcock
+                const stopcock = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                stopcock.setAttribute('x', x + width/2 - 3);
+                stopcock.setAttribute('y', y + height);
+                stopcock.setAttribute('width', 6);
+                stopcock.setAttribute('height', 10);
+                stopcock.setAttribute('fill', '#666');
+                svg.appendChild(stopcock);
+            } else if (type === 'graduatedCylinder') {
+                // Add base
+                const base = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                base.setAttribute('x', x - 5);
+                base.setAttribute('y', y + height);
+                base.setAttribute('width', width + 10);
+                base.setAttribute('height', 8);
+                base.setAttribute('fill', '#666');
+                svg.appendChild(base);
+            }
+        }
+        
+        function drawRuler(svg, instrument, precision, lineLength) {
+            const { width, height, capacity } = instrument;
+            
+            // Determine range
+            let minValue, maxValue, isZoom;
+            
+            if (precision <= 1) {
+                isZoom = true;
+                if (precision === 0.1) {
+                    minValue = Math.max(0, lineLength - 2);
+                    maxValue = Math.min(capacity, lineLength + 2);
+                } else if (precision === 1) {
+                    minValue = Math.max(0, lineLength - 5);
+                    maxValue = Math.min(capacity, lineLength + 5);
+                }
+            } else {
+                isZoom = false;
+                minValue = 0;
+                maxValue = capacity;
+            }
+            
+            svg.setAttribute('width', width + 100);
+            svg.setAttribute('height', height + 100);
+            
+            const startX = 50;
+            const startY = 50;
+            const scale = width / (maxValue - minValue);
+            
+            // Draw ruler body
+            const ruler = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            ruler.setAttribute('x', startX);
+            ruler.setAttribute('y', startY);
+            ruler.setAttribute('width', width);
+            ruler.setAttribute('height', height);
+            ruler.setAttribute('fill', '#f0f0f0');
+            ruler.setAttribute('stroke', '#333');
+            ruler.setAttribute('stroke-width', '2');
+            svg.appendChild(ruler);
+            
+            // Draw markings
+            for (let value = minValue; value <= maxValue; value += precision) {
+                value = Math.round(value * 10) / 10;
+                
+                const x = startX + ((value - minValue) * scale);
+                
+                const tick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                tick.setAttribute('x1', x);
+                tick.setAttribute('y1', startY);
+                tick.setAttribute('x2', x);
+                tick.setAttribute('y2', startY + 15);
+                tick.setAttribute('stroke', '#333');
+                tick.setAttribute('stroke-width', '1');
+                svg.appendChild(tick);
+                
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', x);
+                label.setAttribute('y', startY + 30);
+                label.setAttribute('text-anchor', 'middle');
+                label.setAttribute('font-size', '12');
+                label.textContent = precision === 0.1 ? value.toFixed(1) : value.toString();
+                svg.appendChild(label);
+            }
+            
+            // Draw measurement line
+            if (lineLength >= minValue && lineLength <= maxValue) {
+                const lineX = startX + ((lineLength - minValue) * scale);
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', startX);
+                line.setAttribute('y1', startY + height + 15);
+                line.setAttribute('x2', lineX);
+                line.setAttribute('y2', startY + height + 15);
+                line.setAttribute('stroke', '#e74c3c');
+                line.setAttribute('stroke-width', '3');
+                svg.appendChild(line);
+            }
+        }
+        
+        function updateProblemInfo() {
+            const { instrument, precision } = currentProblem;
+            const precisionText = precision < 1 ? precision.toString() : precision.toString();
+            const isZoom = precision <= 10;
+            
+            let zoomText = '';
+            if (isZoom) {
+                let range;
+                if (precision === 0.1) range = '2';
+                else if (precision === 1) range = '10';
+                else if (precision === 10) range = '50';
+                zoomText = `<strong>View:</strong> Zoomed (${range} ${instrument.unit} range)<br>`;
+            }
+            
+            document.getElementById('problemInfo').innerHTML = `
+                <strong>Instrument:</strong> ${instrument.name}<br>
+                <strong>Precision:</strong> Markings every ${precisionText} ${instrument.unit}<br>
+                ${zoomText}
+                <strong>Instructions:</strong> Read the measurement and report your answer with the appropriate number of decimal places.
+            `;
+            
+            document.getElementById('units').textContent = instrument.unit;
+        }
+        
+        function checkAnswer() {
+            // Once this problem has been answered correctly, the button is
+            // disabled -- this is a belt-and-suspenders guard against that
+            // same correct answer being re-submitted and counted again.
+            if (problemLocked) return;
+
+            const studentInput = document.getElementById('studentAnswer').value;
+            if (studentInput === '') {
+                showFeedback('Please enter an answer.', 'incorrect');
+                return;
+            }
+            
+            const studentAnswer = parseFloat(studentInput);
+            const { correctAnswer, precision, instrument } = currentProblem;
+
+            totalAttempts++;
+            updateScore();
+
+            // Check significant figures and decimal places first
+            const expectedDecimals = getExpectedDecimals(precision);
+            const studentDecimals = countDecimals(studentInput);
+            
+            // Determine required decimal places based on precision
+            let requiredDecimals;
+            let estimationPlace;
+            
+            if (precision === 100) {
+                // 100 mL markings: estimate to 10s place (no decimals, must be multiples of 10)
+                requiredDecimals = 0;
+                estimationPlace = 10;
+            } else if (precision === 10) {
+                // 10 mL markings: estimate to 1s place (no decimals)
+                requiredDecimals = 0;
+                estimationPlace = 1;
+            } else if (precision === 1) {
+                // 1 mL markings: estimate to 0.1 place (1 decimal)
+                requiredDecimals = 1;
+                estimationPlace = 0.1;
+            } else if (precision === 0.1) {
+                // 0.1 mL markings: estimate to 0.01 place (2 decimals)
+                requiredDecimals = 2;
+                estimationPlace = 0.01;
+            } else {
+                // Default: one digit beyond marked precision
+                requiredDecimals = expectedDecimals + 1;
+                estimationPlace = precision / 10;
+            }
+            
+            // Check if student has the correct number of decimal places
+            if (studentDecimals !== requiredDecimals) {
+                if (studentDecimals < requiredDecimals) {
+                    showFeedback(`You need to include the estimated digit. With markings every ${precision} ${instrument.unit}, you must estimate between markings.`, 'incorrect');
+                } else {
+                    showFeedback(`You're reporting too many digits. With markings every ${precision} ${instrument.unit}, you can only estimate to a certain precision.`, 'incorrect');
+                }
+                return;
+            }
+            
+            // For 100 mL markings, check if answer is a multiple of 10
+            if (precision === 100) {
+                if (studentAnswer % 10 !== 0) {
+                    showFeedback(`With markings every 100 ${instrument.unit}, you can only estimate to the nearest 10 ${instrument.unit}. Your answer should be a multiple of 10.`, 'incorrect');
+                    return;
+                }
+            }
+            
+            // For validation, use a reasonable tolerance for interpolation
+            let tolerance;
+            if (precision === 100) {
+                tolerance = 10; // ±10 mL for 100 mL markings
+            } else if (precision === 10) {
+                tolerance = 1; // ±1 mL for 10 mL markings
+            } else if (precision === 1) {
+                tolerance = 0.2; // ±0.2 mL for 1 mL markings
+            } else if (precision === 0.1) {
+                tolerance = 0.03; // ±0.03 mL for 0.1 mL markings
+            } else {
+                tolerance = precision / 2; // Standard tolerance for other markings
+            }
+            
+            const isCorrectValue = Math.abs(studentAnswer - correctAnswer) <= tolerance;
+
+            let feedback = '';
+            if (isCorrectValue) {
+                problemLocked = true;
+                document.getElementById('checkAnswerBtn').disabled = true;
+                correctReadings++;
+                updateScore();
+                scormSaveProgress();
+
+                if (correctReadings >= READINGS_REQUIRED) {
+                    feedback = `Excellent! Your answer of ${studentInput} ${instrument.unit} shows proper measurement technique with correct significant figures.`;
+                    showFeedback(feedback, 'correct');
+                    showSuccessScreen();
+                } else {
+                    feedback = `Excellent! Your answer of ${studentInput} ${instrument.unit} shows proper measurement technique with correct significant figures. Loading a new instrument...`;
+                    showFeedback(feedback, 'correct');
+                    setTimeout(() => generateNewProblem(), 1500);
+                }
+            } else {
+                feedback = `Not quite right. Please try again and carefully read the measurement from the instrument.`;
+                showFeedback(feedback, 'incorrect');
+            }
+        }
+
+        function updateScore() {
+            document.getElementById('correct-count').textContent = `${correctReadings}/${READINGS_REQUIRED}`;
+            document.getElementById('total-attempts').textContent = totalAttempts;
+            const accuracy = totalAttempts > 0 ? Math.round((correctReadings / totalAttempts) * 100) : 0;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+        }
+
+        function getExpectedDecimals(precision) {
+            if (precision >= 1) return 0;
+            return precision.toString().split('.')[1].length;
+        }
+        
+        function countDecimals(value) {
+            if (value.toString().indexOf('.') === -1) return 0;
+            return value.toString().split('.')[1].length;
+        }
+        
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = message;
+            feedback.className = `feedback ${type}`;
+            feedback.style.display = 'block';
+        }
+        
+        function clearFeedback() {
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        // Show success screen
+        function showSuccessScreen() {
+            document.getElementById('successModal').classList.add('active');
+            state.challengeFinished = true;
+            const accuracy = totalAttempts > 0 ? Math.round((correctReadings / totalAttempts) * 100) : 100;
+            scormReport(accuracy);
+        }
+
+        function closeSuccessScreen() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        // ---- SCORM 1.2 wrapper ----
+        const state = { challengeFinished: false };
+        let scormAPI = null;
+        let resumeState = null;
+
+        function findAPI(win) {
+            let attempts = 0;
+            let w = win;
+            while (w && attempts < 10) {
+                if (w.API) return w.API;
+                if (w.parent && w.parent !== w) {
+                    w = w.parent;
+                } else if (w.opener) {
+                    w = w.opener;
+                } else {
+                    break;
+                }
+                attempts++;
+            }
+            return null;
+        }
+
+        function isValidResumePayload(parsed) {
+            if (!parsed || typeof parsed !== 'object') return false;
+            if (typeof parsed.correctReadings !== 'number' || parsed.correctReadings < 0 || parsed.correctReadings > READINGS_REQUIRED) return false;
+            if (typeof parsed.totalAttempts !== 'number' || parsed.totalAttempts < 0) return false;
+            return true;
+        }
+
+        function scormInit() {
+            try {
+                scormAPI = findAPI(window);
+                if (!scormAPI) return;
+                scormAPI.LMSInitialize("");
+                if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                    const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (isValidResumePayload(parsed)) {
+                            resumeState = parsed;
+                        }
+                    }
+                }
+            } catch (e) { /* No LMS present, or malformed bookmark — start fresh */ }
+        }
+
+        function scormSaveProgress() {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                    correctReadings: correctReadings,
+                    totalAttempts: totalAttempts
+                }));
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                // cmi.core.exit is SCORM's only defined trigger for "this is a
+                // resumable attempt" -- set it on every incremental save (not
+                // just at a clean shutdown) so a lid-close or torn-down tab
+                // still leaves the LMS knowing to resume, not reset, next
+                // launch. Skip it once the activity is actually finished, so
+                // we don't mark a completed attempt as suspended.
+                if (!state.challengeFinished) {
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                }
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        /** Student-driven save, wired to the visible Save Progress button. Just
+            re-commits the same checkpoint used by the automatic safety nets,
+            then shows a brief inline confirmation next to the button. */
+        function manualSaveProgress() {
+            scormSaveProgress();
+            const el = document.getElementById('saveConfirm');
+            if (!el) return;
+            el.classList.add('show');
+            clearTimeout(manualSaveProgress._t);
+            manualSaveProgress._t = setTimeout(() => { el.classList.remove('show'); }, 2500);
+        }
+
+        function scormReport(scorePercent) {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.core.score.min", "0");
+                scormAPI.LMSSetValue("cmi.core.score.max", "100");
+                scormAPI.LMSSetValue("cmi.core.score.raw", String(scorePercent));
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+                scormAPI.LMSSetValue("cmi.core.exit", "");
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function scormFinish() {
+            if (!scormAPI) return;
+            try {
+                if (!state.challengeFinished) {
+                    scormSaveProgress();
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                    scormAPI.LMSCommit("");
+                }
+                scormAPI.LMSFinish("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function resumeFromSavedState() {
+            correctReadings = resumeState.correctReadings;
+            totalAttempts = resumeState.totalAttempts;
+            updateScore();
+        }
+
+        window.addEventListener('beforeunload', scormFinish);
+        // Backup nets for the lid-close / tab-teardown paths where
+        // beforeunload never fires: same incremental checkpoint save, never
+        // LMSFinish (visibilitychange fires on every tab-switch, not just a
+        // real exit, so calling LMSFinish there would end the SCORM session
+        // prematurely).
+        window.addEventListener('pagehide', function () {
+            if (scormAPI && !state.challengeFinished) scormSaveProgress();
+        });
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'hidden' && scormAPI && !state.challengeFinished) scormSaveProgress();
+        });
+
+        scormInit();
+        if (!scormAPI) {
+            const btn = document.getElementById('saveProgressBtn');
+            if (btn) btn.style.display = 'none';
+        }
+
+        // Initialize
+        generateNewProblem();
+        if (resumeState) {
+            resumeFromSavedState();
+        }
+    </script>
+</body>
+</html>

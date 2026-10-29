@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bohr Models & Valence Electrons Simulation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            max-width: 1200px;
+            width: 100%;
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .student-info {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .student-info input {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            width: 300px;
+            max-width: 100%;
+        }
+
+        .student-info button {
+            margin-left: 10px;
+            padding: 10px 30px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .student-info button:hover {
+            background: #45a049;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #495057;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .tab:hover:not(.active) {
+            background: #e9ecef;
+            color: #343a40;
+        }
+
+        .tab.completed::after {
+            content: '✓';
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #28a745;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tab 1: Bohr Model Builder */
+        .bohr-builder {
+            text-align: center;
+        }
+
+        .element-prompt {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            height: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #dee2e6;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #495057, #6c757d);
+            height: 100%;
+            border-radius: 15px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+        }
+
+        .atom-container {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            margin: 0 auto 20px;
+            background: #f9f9f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nucleus {
+            width: 35px;
+            height: 35px;
+            background: radial-gradient(circle, #dc3545, #c82333);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+            position: relative;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        }
+
+        .nucleus:hover {
+            transform: scale(1.1);
+        }
+
+        .electron-shell {
+            position: absolute;
+            border: 2px dashed #ccc;
+            border-radius: 50%;
+            pointer-events: none;
+            transition: all 0.2s;
+        }
+
+        .electron-shell.clickable {
+            border-color: #2196F3;
+        }
+
+        .shell-click-area {
+            transition: all 0.2s;
+        }
+
+        .shell-click-area:hover {
+            fill: rgba(76, 175, 80, 0.2) !important;
+        }
+
+        .shell-click-area.clickable {
+            fill: rgba(33, 150, 243, 0.1) !important;
+        }
+
+        .shell-1 {
+            width: 105px;
+            height: 105px;
+        }
+
+        .shell-2 {
+            width: 175px;
+            height: 175px;
+        }
+
+        .shell-3 {
+            width: 245px;
+            height: 245px;
+        }
+
+        .electron {
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle, #17a2b8, #138496);
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(23, 162, 184, 0.4);
+        }
+
+        .electron:hover {
+            transform: scale(1.2);
+        }
+
+        .electron.selected {
+            background: radial-gradient(circle, #dc3545, #c82333);
+            transform: scale(1.3);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.6);
+        }
+
+        .electron.placed {
+            position: absolute;
+        }
+
+        .electron.placed:hover {
+            transform: scale(1.4);
+            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.8);
+        }
+
+        .electron.placed.selected-for-removal {
+            background: radial-gradient(circle, #ffc107, #e0a800);
+            transform: scale(1.3);
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.6);
+        }
+
+        .electron-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            min-height: 80px;
+        }
+
+        .dragging {
+            opacity: 0.5;
+        }
+
+        .drop-zone {
+            position: absolute;
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+        
+        .drop-zone-ring {
+            position: absolute;
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        
+        .drop-zone-ring::after {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            border: 15px solid transparent;
+            border-radius: 50%;
+            pointer-events: all;
+        }
+
+        .drop-zone-ring.hover::after {
+            border-color: rgba(76, 175, 80, 0.3);
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-check {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-check:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-reset {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+
+        .btn-save {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #1e7e34;
+            transform: translateY(-2px);
+        }
+
+        .save-status {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #28a745;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            vertical-align: middle;
+            align-self: center;
+        }
+
+        .save-status.visible {
+            opacity: 1;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            display: none;
+        }
+
+        .feedback.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .feedback.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        /* Tab 2: Valence Electrons */
+        .valence-practice {
+            text-align: center;
+        }
+
+        .streak-counter {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .streak-counter span {
+            color: #28a745;
+        }
+
+        .periodic-table {
+            display: grid;
+            grid-template-columns: repeat(18, 1fr);
+            gap: 2px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+
+        .element-cell {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 2px;
+        }
+
+        .element-cell:hover {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+
+        .element-cell.empty {
+            background: transparent;
+            border: none;
+            cursor: default;
+        }
+
+        .element-cell.empty:hover {
+            transform: none;
+        }
+
+        .element-cell.highlighted {
+            background: #fff3cd;
+            border: 2px solid #856404;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .element-symbol {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .element-number {
+            font-size: 10px;
+            color: #666;
+        }
+
+        .element-info {
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            color: #495057;
+            border: 1px solid #dee2e6;
+        }
+
+        .valence-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .valence-btn {
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            font-weight: bold;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .valence-btn:hover {
+            background: #f8f9fa;
+            transform: scale(1.1);
+        }
+
+        .valence-btn.correct {
+            background: #28a745;
+            color: white;
+            animation: correctAnswer 0.5s;
+        }
+
+        .valence-btn.incorrect {
+            background: #dc3545;
+            color: white;
+            animation: shake 0.5s;
+        }
+
+        @keyframes correctAnswer {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @keyframes slideDown {
+            from { 
+                opacity: 0; 
+                transform: translateY(-20px); 
+                max-height: 0; 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+                max-height: 300px; 
+            }
+        }
+
+        .instructions-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Modal Dialogs */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .modal-btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .modal-btn-secondary {
+            background: #ccc;
+            color: #333;
+        }
+
+        .modal-btn-secondary:hover {
+            background: #bbb;
+        }
+
+        /* Success screen (replaces certificate in the SCORM copy) */
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-modal.active {
+            display: flex;
+        }
+
+        .success-container {
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            padding: 40px;
+            margin: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .success-container h2 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+        }
+
+        .success-container p {
+            color: #495057;
+            line-height: 1.6;
+        }
+
+        .success-container .close-button {
+            margin-top: 24px;
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+        }
+
+        .success-container .close-button:hover {
+            background: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .atom-container {
+                width: 350px;
+                height: 350px;
+            }
+
+            .periodic-table {
+                grid-template-columns: repeat(9, 1fr);
+            }
+
+            .element-cell {
+                font-size: 10px;
+            }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚛️ Bohr Models & Valence Electrons</h1>
+        </div>
+
+        <div class="student-info" id="studentEntry">
+            <p style="margin-bottom: 15px; color: #495057;">Build 5 correct Bohr models, then correctly answer 20 valence-electron questions total (you get two attempts per element before moving on). Your progress is saved if you're interrupted, and a completion grade is submitted to Schoology automatically when you finish.</p>
+            <button onclick="startSimulation()">Begin Simulation</button>
+        </div>
+
+        <div id="mainContent" style="display: none;">
+            <div class="tabs">
+                <button class="tab active" id="tab1" onclick="switchTab(1)">
+                    Build Bohr Models (0/5)
+                </button>
+                <button class="tab" id="tab2" onclick="switchTab(2)">
+                    Identify Valence Electrons (0/20)
+                </button>
+            </div>
+
+            <div class="controls" style="margin: 10px 0;">
+                <button class="btn btn-save" id="save-progress-btn" onclick="manualSaveProgress()">Save Progress</button>
+                <span class="save-status" id="save-status">Saved ✓</span>
+            </div>
+
+            <div class="tab-content active" id="content1">
+                <div class="bohr-builder">
+                    <button class="instructions-toggle" onclick="toggleInstructions('tab1')" style="
+                        background: #007bff; 
+                        color: white; 
+                        border: none; 
+                        padding: 8px 16px; 
+                        border-radius: 20px; 
+                        font-size: 14px; 
+                        cursor: pointer; 
+                        margin-bottom: 15px;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        transition: all 0.3s;
+                    ">
+                        📋 Show Instructions
+                    </button>
+                    
+                    <div id="instructions-tab1" class="instructions-box" style="
+                        background: #f8f9fa; 
+                        padding: 15px; 
+                        margin-bottom: 20px; 
+                        border-radius: 10px; 
+                        border-left: 4px solid #007bff;
+                        display: none;
+                        animation: slideDown 0.3s ease-out;
+                    ">
+                        <h3 style="color: #495057; margin: 0 0 10px 0; font-size: 16px;">📋 Instructions:</h3>
+                        <ol style="margin: 0; padding-left: 20px; color: #495057; font-size: 14px; line-height: 1.4;">
+                            <li>Click the nucleus and enter the number of protons for the given element</li>
+                            <li>Choose how many electron rings (energy levels) the element needs</li>
+                            <li>Click an electron from the bank, then click on a ring to place it</li>
+                            <li>Fill electrons following proper Bohr model rules</li>
+                            <li>Click "Check" to verify your model</li>
+                            <li><strong>Before you close your Chromebook or exit Schoology,</strong> click the green "Save Progress" button so your work is saved and you can pick up where you left off next time.</li>
+                        </ol>
+                        <p style="margin: 10px 0 0 0; font-size: 12px; font-style: italic; color: #6c757d;">💡 Tip: Remember to fill inner rings before outer rings!</p>
+                    </div>
+
+                    <div class="element-prompt" id="elementPrompt">Loading...</div>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="bohrProgress" style="width: 0%">
+                            0 / 4 Models Complete
+                        </div>
+                    </div>
+
+                    <div class="atom-container" id="atomContainer">
+                        <div class="nucleus" id="nucleus" onclick="setProtons()">
+                            <span id="nucleusText">+</span>
+                        </div>
+                        <div class="electron-shell shell-1" id="shell1"></div>
+                        <div class="electron-shell shell-2" id="shell2"></div>
+                        <div class="electron-shell shell-3" id="shell3"></div>
+                        
+                        <!-- Ring click areas - SVG rings that don't overlap -->
+                        <svg width="350" height="350" style="position: absolute; left: 0; top: 0; pointer-events: none;">
+                            <!-- Ring 1: Inner radius 42, outer radius 63 -->
+                            <path id="clickArea1" 
+                                  d="M 175 112 A 63 63 0 1 1 175 238 A 63 63 0 1 1 175 112 Z
+                                     M 175 133 A 42 42 0 1 0 175 217 A 42 42 0 1 0 175 133 Z"
+                                  fill="transparent" 
+                                  fill-rule="evenodd"
+                                  style="cursor: pointer; pointer-events: all; display: none;"
+                                  stroke="none"/>
+                                  
+                            <!-- Ring 2: Inner radius 77, outer radius 98 -->
+                            <path id="clickArea2" 
+                                  d="M 175 77 A 98 98 0 1 1 175 273 A 98 98 0 1 1 175 77 Z
+                                     M 175 98 A 77 77 0 1 0 175 252 A 77 77 0 1 0 175 98 Z"
+                                  fill="transparent" 
+                                  fill-rule="evenodd"
+                                  style="cursor: pointer; pointer-events: all; display: none;"
+                                  stroke="none"/>
+                                  
+                            <!-- Ring 3: Inner radius 112, outer radius 133 -->
+                            <path id="clickArea3" 
+                                  d="M 175 42 A 133 133 0 1 1 175 308 A 133 133 0 1 1 175 42 Z
+                                     M 175 63 A 112 112 0 1 0 175 287 A 112 112 0 1 0 175 63 Z"
+                                  fill="transparent" 
+                                  fill-rule="evenodd"
+                                  style="cursor: pointer; pointer-events: all; display: none;"
+                                  stroke="none"/>
+                        </svg>
+                    </div>
+
+                    <div class="electron-bank" id="electronBank"></div>
+                    
+                    <div style="text-align: center; margin: 20px 0; font-style: italic; color: #666;">
+                        <span id="instructionText">Click an electron, then click a ring to place it</span>
+                    </div>
+
+                    <div class="controls">
+                        <button class="btn btn-reset" onclick="resetBohrModel()">Reset</button>
+                        <button class="btn btn-check" id="bohrCheckBtn" onclick="checkBohrModel()">Check</button>
+                        <button class="btn btn-remove" id="removeElectronBtn" onclick="removeSelectedElectron()" style="display: none; background: #6c757d; color: white;">Remove Electron</button>
+                    </div>
+
+                    <div class="feedback" id="bohrFeedback"></div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="content2">
+                <div class="valence-practice">
+                    <button class="instructions-toggle" onclick="toggleInstructions('tab2')" style="
+                        background: #007bff; 
+                        color: white; 
+                        border: none; 
+                        padding: 8px 16px; 
+                        border-radius: 20px; 
+                        font-size: 14px; 
+                        cursor: pointer; 
+                        margin-bottom: 15px;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        transition: all 0.3s;
+                    ">
+                        📋 Show Instructions
+                    </button>
+                    
+                    <div id="instructions-tab2" class="instructions-box" style="
+                        background: #f8f9fa; 
+                        padding: 15px; 
+                        margin-bottom: 20px; 
+                        border-radius: 10px; 
+                        border-left: 4px solid #007bff;
+                        display: none;
+                        animation: slideDown 0.3s ease-out;
+                    ">
+                        <h3 style="color: #495057; margin: 0 0 10px 0; font-size: 16px;">📋 Instructions:</h3>
+                        <ol style="margin: 0; padding-left: 20px; color: #495057; font-size: 14px; line-height: 1.4;">
+                            <li>Look at the highlighted element on the periodic table</li>
+                            <li>Count the number of valence electrons (outermost shell electrons)</li>
+                            <li>Click the button with the correct number of valence electrons</li>
+                            <li>Get 20 correct answers total to complete this section (two attempts allowed per element)</li>
+                        </ol>
+                        <p style="margin: 10px 0 0 0; font-size: 12px; font-style: italic; color: #6c757d;">💡 Tip: Valence electrons determine how atoms bond with each other!</p>
+                    </div>
+
+                    <div class="streak-counter">
+                        Correct Answers: <span id="streakCount">0</span> / 20
+                    </div>
+
+                    <div class="element-info" id="elementInfo">
+                        Click Start to begin identifying valence electrons
+                    </div>
+
+                    <div class="periodic-table" id="periodicTable"></div>
+
+                    <div class="valence-buttons" id="valenceButtons">
+                        <button class="valence-btn" onclick="checkValence(1)">1</button>
+                        <button class="valence-btn" onclick="checkValence(2)">2</button>
+                        <button class="valence-btn" onclick="checkValence(3)">3</button>
+                        <button class="valence-btn" onclick="checkValence(4)">4</button>
+                        <button class="valence-btn" onclick="checkValence(5)">5</button>
+                        <button class="valence-btn" onclick="checkValence(6)">6</button>
+                        <button class="valence-btn" onclick="checkValence(7)">7</button>
+                        <button class="valence-btn" onclick="checkValence(8)">8</button>
+                    </div>
+
+                    <button class="btn btn-check" onclick="startValencePractice()">Start Practice</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Proton Input Modal -->
+    <div class="modal" id="protonModal">
+        <div class="modal-content">
+            <div class="modal-header">How many protons?</div>
+            <input type="number" class="modal-input" id="protonInput" min="1" max="18">
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('protonModal')">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="confirmProtons()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Energy Level Modal -->
+    <div class="modal" id="energyModal">
+        <div class="modal-content">
+            <div class="modal-header">How many energy levels (rings)?</div>
+            <input type="number" class="modal-input" id="energyInput" min="1" max="3">
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('energyModal')">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="confirmEnergyLevels()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Screen -->
+    <div class="success-modal" id="successModal">
+        <div class="success-container">
+            <h2>Simulation Complete!</h2>
+            <p>You built 5 correct Bohr models and answered 20 valence electron questions correctly.</p>
+            <p>Your completion grade has been submitted to Schoology.</p>
+            <button class="close-button" onclick="closeSuccessScreen()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Element data for elements 1-18
+        const elements = {
+            1: { symbol: 'H', name: 'Hydrogen', protons: 1, electrons: [1], valence: 1 },
+            2: { symbol: 'He', name: 'Helium', protons: 2, electrons: [2], valence: 2 },
+            3: { symbol: 'Li', name: 'Lithium', protons: 3, electrons: [2, 1], valence: 1 },
+            4: { symbol: 'Be', name: 'Beryllium', protons: 4, electrons: [2, 2], valence: 2 },
+            5: { symbol: 'B', name: 'Boron', protons: 5, electrons: [2, 3], valence: 3 },
+            6: { symbol: 'C', name: 'Carbon', protons: 6, electrons: [2, 4], valence: 4 },
+            7: { symbol: 'N', name: 'Nitrogen', protons: 7, electrons: [2, 5], valence: 5 },
+            8: { symbol: 'O', name: 'Oxygen', protons: 8, electrons: [2, 6], valence: 6 },
+            9: { symbol: 'F', name: 'Fluorine', protons: 9, electrons: [2, 7], valence: 7 },
+            10: { symbol: 'Ne', name: 'Neon', protons: 10, electrons: [2, 8], valence: 8 },
+            11: { symbol: 'Na', name: 'Sodium', protons: 11, electrons: [2, 8, 1], valence: 1 },
+            12: { symbol: 'Mg', name: 'Magnesium', protons: 12, electrons: [2, 8, 2], valence: 2 },
+            13: { symbol: 'Al', name: 'Aluminum', protons: 13, electrons: [2, 8, 3], valence: 3 },
+            14: { symbol: 'Si', name: 'Silicon', protons: 14, electrons: [2, 8, 4], valence: 4 },
+            15: { symbol: 'P', name: 'Phosphorus', protons: 15, electrons: [2, 8, 5], valence: 5 },
+            16: { symbol: 'S', name: 'Sulfur', protons: 16, electrons: [2, 8, 6], valence: 6 },
+            17: { symbol: 'Cl', name: 'Chlorine', protons: 17, electrons: [2, 8, 7], valence: 7 },
+            18: { symbol: 'Ar', name: 'Argon', protons: 18, electrons: [2, 8, 8], valence: 8 }
+        };
+
+        // Main group elements for valence practice (excluding transition metals, lanthanides, actinides)
+        const mainGroupElements = [
+            // Period 1
+            { symbol: 'H', name: 'Hydrogen', number: 1, valence: 1, group: 1, period: 1 },
+            { symbol: 'He', name: 'Helium', number: 2, valence: 2, group: 18, period: 1 },
+            // Period 2
+            { symbol: 'Li', name: 'Lithium', number: 3, valence: 1, group: 1, period: 2 },
+            { symbol: 'Be', name: 'Beryllium', number: 4, valence: 2, group: 2, period: 2 },
+            { symbol: 'B', name: 'Boron', number: 5, valence: 3, group: 13, period: 2 },
+            { symbol: 'C', name: 'Carbon', number: 6, valence: 4, group: 14, period: 2 },
+            { symbol: 'N', name: 'Nitrogen', number: 7, valence: 5, group: 15, period: 2 },
+            { symbol: 'O', name: 'Oxygen', number: 8, valence: 6, group: 16, period: 2 },
+            { symbol: 'F', name: 'Fluorine', number: 9, valence: 7, group: 17, period: 2 },
+            { symbol: 'Ne', name: 'Neon', number: 10, valence: 8, group: 18, period: 2 },
+            // Period 3
+            { symbol: 'Na', name: 'Sodium', number: 11, valence: 1, group: 1, period: 3 },
+            { symbol: 'Mg', name: 'Magnesium', number: 12, valence: 2, group: 2, period: 3 },
+            { symbol: 'Al', name: 'Aluminum', number: 13, valence: 3, group: 13, period: 3 },
+            { symbol: 'Si', name: 'Silicon', number: 14, valence: 4, group: 14, period: 3 },
+            { symbol: 'P', name: 'Phosphorus', number: 15, valence: 5, group: 15, period: 3 },
+            { symbol: 'S', name: 'Sulfur', number: 16, valence: 6, group: 16, period: 3 },
+            { symbol: 'Cl', name: 'Chlorine', number: 17, valence: 7, group: 17, period: 3 },
+            { symbol: 'Ar', name: 'Argon', number: 18, valence: 8, group: 18, period: 3 },
+            // Period 4 (main groups only)
+            { symbol: 'K', name: 'Potassium', number: 19, valence: 1, group: 1, period: 4 },
+            { symbol: 'Ca', name: 'Calcium', number: 20, valence: 2, group: 2, period: 4 },
+            { symbol: 'Ga', name: 'Gallium', number: 31, valence: 3, group: 13, period: 4 },
+            { symbol: 'Ge', name: 'Germanium', number: 32, valence: 4, group: 14, period: 4 },
+            { symbol: 'As', name: 'Arsenic', number: 33, valence: 5, group: 15, period: 4 },
+            { symbol: 'Se', name: 'Selenium', number: 34, valence: 6, group: 16, period: 4 },
+            { symbol: 'Br', name: 'Bromine', number: 35, valence: 7, group: 17, period: 4 },
+            { symbol: 'Kr', name: 'Krypton', number: 36, valence: 8, group: 18, period: 4 },
+            // Period 5 (main groups only)
+            { symbol: 'Rb', name: 'Rubidium', number: 37, valence: 1, group: 1, period: 5 },
+            { symbol: 'Sr', name: 'Strontium', number: 38, valence: 2, group: 2, period: 5 },
+            { symbol: 'In', name: 'Indium', number: 49, valence: 3, group: 13, period: 5 },
+            { symbol: 'Sn', name: 'Tin', number: 50, valence: 4, group: 14, period: 5 },
+            { symbol: 'Sb', name: 'Antimony', number: 51, valence: 5, group: 15, period: 5 },
+            { symbol: 'Te', name: 'Tellurium', number: 52, valence: 6, group: 16, period: 5 },
+            { symbol: 'I', name: 'Iodine', number: 53, valence: 7, group: 17, period: 5 },
+            { symbol: 'Xe', name: 'Xenon', number: 54, valence: 8, group: 18, period: 5 },
+            // Period 6 (main groups only)
+            { symbol: 'Cs', name: 'Cesium', number: 55, valence: 1, group: 1, period: 6 },
+            { symbol: 'Ba', name: 'Barium', number: 56, valence: 2, group: 2, period: 6 },
+            { symbol: 'Tl', name: 'Thallium', number: 81, valence: 3, group: 13, period: 6 },
+            { symbol: 'Pb', name: 'Lead', number: 82, valence: 4, group: 14, period: 6 },
+            { symbol: 'Bi', name: 'Bismuth', number: 83, valence: 5, group: 15, period: 6 },
+            { symbol: 'Po', name: 'Polonium', number: 84, valence: 6, group: 16, period: 6 },
+            { symbol: 'At', name: 'Astatine', number: 85, valence: 7, group: 17, period: 6 },
+            { symbol: 'Rn', name: 'Radon', number: 86, valence: 8, group: 18, period: 6 },
+            // Period 7 (main groups only)
+            { symbol: 'Fr', name: 'Francium', number: 87, valence: 1, group: 1, period: 7 },
+            { symbol: 'Ra', name: 'Radium', number: 88, valence: 2, group: 2, period: 7 },
+            { symbol: 'Nh', name: 'Nihonium', number: 113, valence: 3, group: 13, period: 7 },
+            { symbol: 'Fl', name: 'Flerovium', number: 114, valence: 4, group: 14, period: 7 },
+            { symbol: 'Mc', name: 'Moscovium', number: 115, valence: 5, group: 15, period: 7 },
+            { symbol: 'Lv', name: 'Livermorium', number: 116, valence: 6, group: 16, period: 7 },
+            { symbol: 'Ts', name: 'Tennessine', number: 117, valence: 7, group: 17, period: 7 },
+            { symbol: 'Og', name: 'Oganesson', number: 118, valence: 8, group: 18, period: 7 }
+        ];
+
+        // Global state
+        let bohrModelsComplete = 0;
+        let valenceCorrectTotal = 0;
+        let attemptsOnCurrentElement = 0;
+        let currentElement = null;
+        let currentValenceElement = null;
+        let placedElectrons = [];
+        let selectedElectron = null;
+        let selectedForRemoval = null;
+        let protonCount = 0;
+        let energyLevels = 0;
+        let tab1Complete = false;
+        let tab2Complete = false;
+        
+        // Problem tracking to prevent duplicates
+        let usedBohrElements = [];
+        let usedValenceElements = [];
+        let shuffledBohrElements = [];
+        let shuffledValenceElements = [];
+
+        // Shuffle array function (Fisher-Yates shuffle)
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+        
+        // Initialize problem sets
+        function initializeProblemSets() {
+            // Create shuffled array of all Bohr elements (1-18)
+            const bohrElementIds = Object.keys(elements).map(id => parseInt(id));
+            shuffledBohrElements = shuffleArray(bohrElementIds);
+            
+            // Create shuffled array of all valence elements 
+            shuffledValenceElements = shuffleArray([...mainGroupElements]);
+            
+            // Reset used arrays
+            usedBohrElements = [];
+            usedValenceElements = [];
+        }
+
+        // Start simulation
+        function startSimulation() {
+            document.getElementById('studentEntry').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+
+            initializeProblemSets();
+            initializeBohrBuilder();
+            initializePeriodicTable();
+
+            scormSaveProgress();
+        }
+
+        // Tab switching
+        function switchTab(tabNum) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            document.getElementById(`tab${tabNum}`).classList.add('active');
+            document.getElementById(`content${tabNum}`).classList.add('active');
+        }
+
+        // Initialize Bohr Builder
+        function initializeBohrBuilder() {
+            generateNewBohrProblem();
+            setupElectronBank();
+            setupShellClickHandlers();
+        }
+
+        // Generate new Bohr model problem
+        function generateNewBohrProblem() {
+            const bohrCheckBtn = document.getElementById('bohrCheckBtn');
+            if (bohrCheckBtn) bohrCheckBtn.disabled = false;
+            // Get next unused element from shuffled array
+            let elementId;
+            do {
+                if (shuffledBohrElements.length === 0) {
+                    // If we've used all elements, reshuffle (shouldn't happen with 5 problems from 18 elements)
+                    const bohrElementIds = Object.keys(elements).map(id => parseInt(id));
+                    shuffledBohrElements = shuffleArray(bohrElementIds);
+                }
+                elementId = shuffledBohrElements.pop();
+            } while (usedBohrElements.includes(elementId));
+            
+            usedBohrElements.push(elementId);
+            currentElement = elements[elementId];
+            
+            document.getElementById('elementPrompt').textContent = `Build: ${currentElement.name}`;
+            resetBohrModel();
+        }
+
+        // Setup electron bank
+        function setupElectronBank() {
+            const bank = document.getElementById('electronBank');
+            bank.innerHTML = '';
+            
+            for (let i = 0; i < 18; i++) {
+                const electron = document.createElement('div');
+                electron.className = 'electron';
+                electron.textContent = '−';
+                electron.id = `electron-${i}`;
+                
+                electron.addEventListener('click', handleElectronClick);
+                
+                bank.appendChild(electron);
+            }
+        }
+
+        // Setup shell click handlers
+        function setupShellClickHandlers() {
+            document.getElementById('clickArea1').addEventListener('click', () => handleShellClick(1));
+            document.getElementById('clickArea2').addEventListener('click', () => handleShellClick(2));
+            document.getElementById('clickArea3').addEventListener('click', () => handleShellClick(3));
+        }
+
+        // Handle electron selection
+        function handleElectronClick(e) {
+            if (!protonCount || !energyLevels) {
+                alert('Please set up the nucleus and energy levels first!');
+                return;
+            }
+
+            // Clear all selections first
+            clearAllSelections();
+            
+            // Select this electron
+            selectedElectron = e.target;
+            selectedElectron.classList.add('selected');
+            
+            // Update instruction text
+            document.getElementById('instructionText').textContent = 'Now click on a ring to place the electron';
+            
+            // Make shells clickable
+            updateShellStates();
+        }
+
+        // Handle shell clicks
+        function handleShellClick(shellNum) {
+            if (!selectedElectron) {
+                alert('Please select an electron first!');
+                return;
+            }
+
+            if (shellNum > energyLevels) {
+                alert(`This element only has ${energyLevels} energy level(s)`);
+                return;
+            }
+
+            const maxElectrons = shellNum === 1 ? 2 : 8;
+            const electronsInShell = placedElectrons.filter(e => e.shell === shellNum).length;
+            
+            if (electronsInShell >= maxElectrons) {
+                alert(`Shell ${shellNum} can only hold ${maxElectrons} electrons`);
+                return;
+            }
+            
+            // Place electron on the ring using proper Bohr model filling
+            const radius = 52.5 + (shellNum - 1) * 35; // Scaled down: 75->52.5, 50->35
+            const { x, y } = getElectronPosition(shellNum, electronsInShell, radius);
+            
+            selectedElectron.style.position = 'absolute';
+            selectedElectron.style.left = `${x - 8}px`;
+            selectedElectron.style.top = `${y - 8}px`;
+            selectedElectron.classList.remove('selected');
+            selectedElectron.classList.add('placed');
+            
+            // Remove old click handler and add new one for placed electrons
+            selectedElectron.removeEventListener('click', handleElectronClick);
+            selectedElectron.addEventListener('click', handlePlacedElectronClick);
+            
+            document.getElementById('atomContainer').appendChild(selectedElectron);
+            
+            placedElectrons.push({
+                element: selectedElectron,
+                shell: shellNum
+            });
+            
+            // Create new electron in bank
+            const newElectron = document.createElement('div');
+            newElectron.className = 'electron';
+            newElectron.textContent = '−';
+            newElectron.id = `electron-new-${Date.now()}`;
+            newElectron.addEventListener('click', handleElectronClick);
+            document.getElementById('electronBank').appendChild(newElectron);
+            
+            // Clear selection
+            selectedElectron = null;
+            updateShellStates();
+            
+            // Reset instruction text
+            document.getElementById('instructionText').textContent = 'Click an electron, then click a ring to place it';
+        }
+
+        // Handle clicks on placed electrons
+        function handlePlacedElectronClick(e) {
+            // Clear any previous selections
+            clearAllSelections();
+            
+            // Select this electron for removal
+            selectedForRemoval = e.target;
+            selectedForRemoval.classList.add('selected-for-removal');
+            
+            // Show remove button and update instruction
+            document.getElementById('removeElectronBtn').style.display = 'inline-block';
+            document.getElementById('instructionText').textContent = 'Click "Remove Electron" to remove the selected electron';
+        }
+
+        // Remove selected electron
+        function removeSelectedElectron() {
+            if (!selectedForRemoval) return;
+            
+            // Find and remove from placedElectrons array
+            const index = placedElectrons.findIndex(e => e.element === selectedForRemoval);
+            if (index > -1) {
+                placedElectrons.splice(index, 1);
+            }
+            
+            // Remove from DOM
+            if (selectedForRemoval.parentNode) {
+                selectedForRemoval.parentNode.removeChild(selectedForRemoval);
+            }
+            
+            // Clear selection and hide button
+            selectedForRemoval = null;
+            document.getElementById('removeElectronBtn').style.display = 'none';
+            document.getElementById('instructionText').textContent = 'Click an electron, then click a ring to place it';
+        }
+
+        // Clear all selections
+        function clearAllSelections() {
+            // Clear electron selection
+            if (selectedElectron) {
+                selectedElectron.classList.remove('selected');
+                selectedElectron = null;
+            }
+            
+            // Clear removal selection
+            if (selectedForRemoval) {
+                selectedForRemoval.classList.remove('selected-for-removal');
+                selectedForRemoval = null;
+                document.getElementById('removeElectronBtn').style.display = 'none';
+            }
+            
+            // Clear all electron selections
+            document.querySelectorAll('.electron').forEach(el => {
+                el.classList.remove('selected', 'selected-for-removal');
+            });
+            
+            updateShellStates();
+        }
+
+        // Get electron position following proper Bohr model filling rules
+        function getElectronPosition(shellNum, electronIndex, radius) {
+            const centerX = 175; // Scaled down from 250
+            const centerY = 175; // Scaled down from 250
+            
+            if (shellNum === 1) {
+                // Shell 1: 2 electrons side by side
+                const offset = 12; // Distance from center for pairing
+                if (electronIndex === 0) {
+                    return { x: centerX - offset, y: centerY - radius };
+                } else {
+                    return { x: centerX + offset, y: centerY - radius };
+                }
+            } else {
+                // Shells 2 and 3: First 4 at corners, then pair up
+                // Calculate angles for proper positioning on the circle
+                const angleOffset = 8; // Degrees offset for pairing (closer together)
+                
+                const baseAngles = [
+                    270,  // Top (12 o'clock) = -90 degrees
+                    0,    // Right (3 o'clock) = 0 degrees
+                    90,   // Bottom (6 o'clock) = 90 degrees
+                    180   // Left (9 o'clock) = 180 degrees
+                ];
+                
+                if (electronIndex < 4) {
+                    // First 4 electrons at cardinal directions
+                    const angle = baseAngles[electronIndex] * Math.PI / 180;
+                    return {
+                        x: centerX + radius * Math.cos(angle),
+                        y: centerY + radius * Math.sin(angle)
+                    };
+                } else if (electronIndex < 8) {
+                    // Next 4 electrons paired with the first 4
+                    const baseIndex = electronIndex - 4;
+                    const baseAngle = baseAngles[baseIndex];
+                    const pairAngle = (baseAngle + angleOffset) * Math.PI / 180;
+                    return {
+                        x: centerX + radius * Math.cos(pairAngle),
+                        y: centerY + radius * Math.sin(pairAngle)
+                    };
+                } else {
+                    // Fallback to even distribution for more than 8 electrons
+                    const angle = (electronIndex * (360 / 8)) * Math.PI / 180;
+                    return {
+                        x: centerX + radius * Math.cos(angle),
+                        y: centerY + radius * Math.sin(angle)
+                    };
+                }
+            }
+        }
+
+        // Update shell visual states
+        function updateShellStates() {
+            const shells = [1, 2, 3];
+            shells.forEach(shellNum => {
+                const shell = document.getElementById(`shell${shellNum}`);
+                const clickArea = document.getElementById(`clickArea${shellNum}`);
+                
+                if (shell && clickArea) {
+                    if (selectedElectron && shellNum <= energyLevels) {
+                        shell.classList.add('clickable');
+                        clickArea.classList.add('clickable');
+                        clickArea.setAttribute('class', 'shell-click-area clickable');
+                    } else {
+                        shell.classList.remove('clickable');
+                        clickArea.classList.remove('clickable');
+                        clickArea.setAttribute('class', 'shell-click-area');
+                    }
+                }
+            });
+        }
+
+        // Set protons
+        function setProtons() {
+            document.getElementById('protonModal').classList.add('active');
+            document.getElementById('protonInput').value = '';
+            document.getElementById('protonInput').focus();
+        }
+
+        function confirmProtons() {
+            const input = document.getElementById('protonInput').value;
+            if (!input || input < 1 || input > 18) {
+                alert('Please enter a valid number (1-18)');
+                return;
+            }
+            
+            protonCount = parseInt(input);
+            document.getElementById('nucleusText').textContent = `+${protonCount}`;
+            closeModal('protonModal');
+            
+            // Now ask for energy levels
+            document.getElementById('energyModal').classList.add('active');
+            document.getElementById('energyInput').value = '';
+            document.getElementById('energyInput').focus();
+        }
+
+        function confirmEnergyLevels() {
+            const input = document.getElementById('energyInput').value;
+            if (!input || input < 1 || input > 3) {
+                alert('Please enter a valid number (1-3)');
+                return;
+            }
+            
+            energyLevels = parseInt(input);
+            
+            // Show/hide shells based on energy levels
+            document.getElementById('shell1').style.display = energyLevels >= 1 ? 'block' : 'none';
+            document.getElementById('shell2').style.display = energyLevels >= 2 ? 'block' : 'none';
+            document.getElementById('shell3').style.display = energyLevels >= 3 ? 'block' : 'none';
+            
+            // Show/hide click areas based on energy levels
+            const clickArea1 = document.getElementById('clickArea1');
+            const clickArea2 = document.getElementById('clickArea2');
+            const clickArea3 = document.getElementById('clickArea3');
+            
+            if (clickArea1) clickArea1.style.display = energyLevels >= 1 ? 'block' : 'none';
+            if (clickArea2) clickArea2.style.display = energyLevels >= 2 ? 'block' : 'none';
+            if (clickArea3) clickArea3.style.display = energyLevels >= 3 ? 'block' : 'none';
+            
+            // Update shell states
+            updateShellStates();
+            
+            closeModal('energyModal');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Reset Bohr model
+        function resetBohrModel() {
+            protonCount = 0;
+            energyLevels = 0;
+            selectedElectron = null;
+            selectedForRemoval = null;
+            
+            placedElectrons.forEach(e => {
+                if (e.element && e.element.parentNode) {
+                    e.element.parentNode.removeChild(e.element);
+                }
+            });
+            placedElectrons = [];
+            
+            document.getElementById('nucleusText').textContent = '+';
+            document.getElementById('bohrFeedback').style.display = 'none';
+            document.getElementById('instructionText').textContent = 'Click an electron, then click a ring to place it';
+            document.getElementById('removeElectronBtn').style.display = 'none';
+            
+            // Hide all shells initially
+            document.getElementById('shell1').style.display = 'none';
+            document.getElementById('shell2').style.display = 'none';
+            document.getElementById('shell3').style.display = 'none';
+            
+            // Hide all click areas initially
+            const clickArea1 = document.getElementById('clickArea1');
+            const clickArea2 = document.getElementById('clickArea2');
+            const clickArea3 = document.getElementById('clickArea3');
+            
+            if (clickArea1) clickArea1.style.display = 'none';
+            if (clickArea2) clickArea2.style.display = 'none';
+            if (clickArea3) clickArea3.style.display = 'none';
+            
+            // Clear shell states
+            document.querySelectorAll('.electron-shell').forEach(shell => {
+                shell.classList.remove('clickable');
+            });
+            
+            // Clear SVG path states
+            [clickArea1, clickArea2, clickArea3].forEach(area => {
+                if (area) {
+                    area.classList.remove('clickable');
+                    area.setAttribute('class', 'shell-click-area');
+                }
+            });
+            
+            setupElectronBank();
+        }
+
+        // Check Bohr model
+        function checkBohrModel() {
+            if (!currentElement || !protonCount || !energyLevels) {
+                alert('Please complete the setup first!');
+                return;
+            }
+            
+            const feedback = document.getElementById('bohrFeedback');
+            feedback.className = 'feedback';
+            
+            // Check proton count
+            if (protonCount !== currentElement.protons) {
+                feedback.className = 'feedback error';
+                feedback.textContent = `Incorrect! ${currentElement.name} has ${currentElement.protons} protons, not ${protonCount}.`;
+                feedback.style.display = 'block';
+                return;
+            }
+            
+            // Check energy levels
+            const expectedLevels = currentElement.electrons.length;
+            if (energyLevels !== expectedLevels) {
+                feedback.className = 'feedback error';
+                feedback.textContent = `Incorrect! ${currentElement.name} needs ${expectedLevels} energy level(s), not ${energyLevels}.`;
+                feedback.style.display = 'block';
+                return;
+            }
+            
+            // Check electron distribution
+            const electronsByShell = [0, 0, 0];
+            placedElectrons.forEach(e => {
+                electronsByShell[e.shell - 1]++;
+            });
+            
+            let isCorrect = true;
+            for (let i = 0; i < expectedLevels; i++) {
+                if (electronsByShell[i] !== currentElement.electrons[i]) {
+                    feedback.className = 'feedback error';
+                    feedback.textContent = `Incorrect! Shell ${i + 1} should have ${currentElement.electrons[i]} electron(s), not ${electronsByShell[i]}.`;
+                    feedback.style.display = 'block';
+                    isCorrect = false;
+                    break;
+                }
+            }
+            
+            if (isCorrect) {
+                feedback.className = 'feedback success';
+                feedback.textContent = `Excellent! You correctly built the Bohr model for ${currentElement.name}!`;
+                feedback.style.display = 'block';
+                document.getElementById('bohrCheckBtn').disabled = true;
+
+                bohrModelsComplete++;
+                updateBohrProgress();
+                scormSaveProgress();
+
+                if (bohrModelsComplete >= 5) {
+                    tab1Complete = true;
+                    document.getElementById('tab1').classList.add('completed');
+                    scormSaveProgress();
+                    checkForCertificate();
+
+                    setTimeout(() => {
+                        alert('Congratulations! You\'ve completed all 5 Bohr models. Now try the Valence Electrons tab!');
+                        switchTab(2);
+                    }, 2000);
+                } else {
+                    setTimeout(() => {
+                        generateNewBohrProblem();
+                    }, 2000);
+                }
+            }
+        }
+
+        // Update Bohr progress
+        function updateBohrProgress() {
+            const progress = document.getElementById('bohrProgress');
+            const percentage = (bohrModelsComplete / 5) * 100;
+            progress.style.width = `${percentage}%`;
+            progress.textContent = `${bohrModelsComplete} / 5 Models Complete`;
+            
+            document.getElementById('tab1').textContent = `Build Bohr Models (${bohrModelsComplete}/5)`;
+        }
+
+        // Initialize periodic table
+        function initializePeriodicTable() {
+            const table = document.getElementById('periodicTable');
+            table.innerHTML = '';
+            
+            // Create simplified periodic table layout
+            const layout = [
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+                [3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 6, 7, 8, 9, 10],
+                [11, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 14, 15, 16, 17, 18],
+                [19, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31, 32, 33, 34, 35, 36],
+                [37, 38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 49, 50, 51, 52, 53, 54],
+                [55, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 81, 82, 83, 84, 85, 86],
+                [87, 88, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 113, 114, 115, 116, 117, 118]
+            ];
+            
+            const elementMap = {};
+            mainGroupElements.forEach(el => {
+                elementMap[el.number] = el;
+            });
+            
+            layout.forEach(row => {
+                row.forEach(num => {
+                    const cell = document.createElement('div');
+                    
+                    if (num === 0) {
+                        cell.className = 'element-cell empty';
+                    } else if (elementMap[num]) {
+                        const element = elementMap[num];
+                        cell.className = 'element-cell';
+                        cell.dataset.number = num;
+                        cell.innerHTML = `
+                            <div class="element-number">${num}</div>
+                            <div class="element-symbol">${element.symbol}</div>
+                        `;
+                    }
+                    
+                    table.appendChild(cell);
+                });
+            });
+        }
+
+        // Start valence practice
+        function startValencePractice() {
+            // Reset valence tracking when starting fresh
+            usedValenceElements = [];
+            shuffledValenceElements = shuffleArray([...mainGroupElements]);
+            selectRandomElement();
+        }
+
+        // Select random element for valence practice
+        function selectRandomElement() {
+            // Clear previous highlights
+            document.querySelectorAll('.element-cell').forEach(cell => {
+                cell.classList.remove('highlighted');
+            });
+            
+            // Get next unused element from shuffled array
+            let element;
+            do {
+                if (shuffledValenceElements.length === 0) {
+                    // If we've used all elements, reshuffle 
+                    shuffledValenceElements = shuffleArray([...mainGroupElements]);
+                }
+                element = shuffledValenceElements.pop();
+            } while (usedValenceElements.some(used => used.number === element.number));
+            
+            usedValenceElements.push(element);
+            currentValenceElement = element;
+            
+            // Highlight element in table
+            const cell = document.querySelector(`[data-number="${currentValenceElement.number}"]`);
+            if (cell) {
+                cell.classList.add('highlighted');
+            }
+            
+            // Update info
+            document.getElementById('elementInfo').textContent = 
+                `${currentValenceElement.name} (${currentValenceElement.symbol})`;
+            
+            // Reset button states
+            document.querySelectorAll('.valence-btn').forEach(btn => {
+                btn.classList.remove('correct', 'incorrect');
+                btn.disabled = false;
+            });
+        }
+
+        // Check valence answer
+        function checkValence(answer) {
+            if (!currentValenceElement) {
+                alert('Please start the practice first!');
+                return;
+            }
+
+            const buttons = document.querySelectorAll('.valence-btn');
+
+            if (answer === currentValenceElement.valence ||
+                (currentValenceElement.symbol === 'He' && answer === 2)) {
+                // Correct answer
+                buttons[answer - 1].classList.add('correct');
+                buttons.forEach(b => b.disabled = true);
+                valenceCorrectTotal++;
+                attemptsOnCurrentElement = 0;
+                updateValenceProgress();
+                scormSaveProgress();
+
+                if (valenceCorrectTotal >= 20) {
+                    tab2Complete = true;
+                    document.getElementById('tab2').classList.add('completed');
+                    scormSaveProgress();
+                    checkForCertificate();
+
+                    setTimeout(() => {
+                        alert('Amazing! You\'ve answered 20 valence electron questions correctly!');
+                    }, 1000);
+                } else {
+                    setTimeout(() => {
+                        selectRandomElement();
+                    }, 1500);
+                }
+            } else if (attemptsOnCurrentElement === 0) {
+                // First miss on this element: let them try again, no penalty
+                buttons[answer - 1].classList.add('incorrect');
+                attemptsOnCurrentElement = 1;
+
+                setTimeout(() => {
+                    buttons.forEach(b => b.classList.remove('incorrect'));
+                }, 700);
+            } else {
+                // Second miss on this element: reveal the answer and move on
+                // (this element does not count toward the 20 correct)
+                buttons[answer - 1].classList.add('incorrect');
+                attemptsOnCurrentElement = 0;
+                scormSaveProgress();
+
+                setTimeout(() => {
+                    alert(`Incorrect. ${currentValenceElement.name} has ${currentValenceElement.valence} valence electron(s). Let's try a new element.`);
+                    selectRandomElement();
+                }, 1000);
+            }
+        }
+
+        // Update valence progress
+        function updateValenceProgress() {
+            document.getElementById('streakCount').textContent = valenceCorrectTotal;
+            document.getElementById('tab2').textContent = `Identify Valence Electrons (${valenceCorrectTotal}/20)`;
+        }
+
+        // Check for full-simulation completion (replaces the old certificate trigger)
+        function checkForCertificate() {
+            if (tab1Complete && tab2Complete) {
+                setTimeout(() => {
+                    showSuccessScreen();
+                }, 1000);
+            }
+        }
+
+        function showSuccessScreen() {
+            document.getElementById('successModal').classList.add('active');
+            state.challengeFinished = true;
+            scormReport(100);
+        }
+
+        function closeSuccessScreen() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        // ---- SCORM 1.2 wrapper ----
+        const state = { challengeFinished: false };
+        let scormAPI = null;
+        let resumeState = null;
+
+        function findAPI(win) {
+            let attempts = 0;
+            let w = win;
+            while (w && attempts < 10) {
+                if (w.API) return w.API;
+                if (w.parent && w.parent !== w) {
+                    w = w.parent;
+                } else if (w.opener) {
+                    w = w.opener;
+                } else {
+                    break;
+                }
+                attempts++;
+            }
+            return null;
+        }
+
+        function isValidResumePayload(parsed) {
+            if (!parsed || typeof parsed !== 'object') return false;
+            if (typeof parsed.bohrModelsComplete !== 'number' || parsed.bohrModelsComplete < 0 || parsed.bohrModelsComplete > 5) return false;
+            if (typeof parsed.valenceCorrectTotal !== 'number' || parsed.valenceCorrectTotal < 0 || parsed.valenceCorrectTotal > 20) return false;
+            if (typeof parsed.tab1Complete !== 'boolean' || typeof parsed.tab2Complete !== 'boolean') return false;
+            return true;
+        }
+
+        function scormInit() {
+            try {
+                scormAPI = findAPI(window);
+                if (!scormAPI) return;
+                scormAPI.LMSInitialize("");
+                if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                    const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (isValidResumePayload(parsed)) {
+                            resumeState = parsed;
+                        }
+                    }
+                }
+            } catch (e) { /* No LMS present, or malformed bookmark — start fresh */ }
+        }
+
+        function scormSaveProgress() {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                    bohrModelsComplete: bohrModelsComplete,
+                    valenceCorrectTotal: valenceCorrectTotal,
+                    tab1Complete: tab1Complete,
+                    tab2Complete: tab2Complete
+                }));
+                if (!state.challengeFinished) {
+                    scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                    // Mark the exit reason as "suspend" on every save, not just on
+                    // beforeunload/pagehide. Students on Chromebooks/iPads very often
+                    // exit by closing the lid or leaving the Schoology tab, which does
+                    // not reliably fire beforeunload/pagehide before the device sleeps
+                    // and the network drops. Setting this on every commit means the LMS
+                    // already has the correct "resume me" state as of the last save,
+                    // instead of depending on a browser-close event to set it at the end.
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                }
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        // Manually triggered by the "Save Progress" button. This is the primary,
+        // reliable save path — students are instructed to click it before closing
+        // their Chromebook, since automatic browser-unload events can't be trusted
+        // to fire when a laptop lid is closed rather than the tab being navigated
+        // away from. Falls back gracefully (shows nothing) if no LMS is present.
+        function manualSaveProgress() {
+            if (!scormAPI) return;
+            scormSaveProgress();
+            const status = document.getElementById('save-status');
+            if (!status) return;
+            status.classList.add('visible');
+            clearTimeout(manualSaveProgress._hideTimer);
+            manualSaveProgress._hideTimer = setTimeout(() => {
+                status.classList.remove('visible');
+            }, 2500);
+        }
+
+        function scormReport(scorePercent) {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.core.score.min", "0");
+                scormAPI.LMSSetValue("cmi.core.score.max", "100");
+                scormAPI.LMSSetValue("cmi.core.score.raw", String(scorePercent));
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+                scormAPI.LMSSetValue("cmi.core.exit", "");
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function scormFinish() {
+            if (!scormAPI) return;
+            try {
+                if (!state.challengeFinished) {
+                    scormSaveProgress();
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                    scormAPI.LMSCommit("");
+                }
+                scormAPI.LMSFinish("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function resumeFromSavedState() {
+            bohrModelsComplete = resumeState.bohrModelsComplete;
+            valenceCorrectTotal = resumeState.valenceCorrectTotal;
+            tab1Complete = resumeState.tab1Complete;
+            tab2Complete = resumeState.tab2Complete;
+
+            document.getElementById('studentEntry').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+
+            initializeProblemSets();
+            initializeBohrBuilder();
+            initializePeriodicTable();
+
+            updateBohrProgress();
+            updateValenceProgress();
+
+            if (tab1Complete) {
+                document.getElementById('tab1').classList.add('completed');
+            }
+            if (tab2Complete) {
+                document.getElementById('tab2').classList.add('completed');
+            }
+
+            if (tab1Complete && !tab2Complete) {
+                switchTab(2);
+            }
+
+            if (tab1Complete && tab2Complete) {
+                showSuccessScreen();
+            }
+        }
+
+        // Best-effort safety net for the case where the student closes the
+        // Chromebook lid or leaves the tab without clicking "Save Progress":
+        // these events fire more reliably than beforeunload on that path, but
+        // unlike beforeunload we deliberately do NOT call LMSFinish() here —
+        // visibilitychange in particular fires on every tab switch, not just a
+        // real exit, and terminating the SCORM session on a brief tab-switch
+        // would break the ability to keep saving for the rest of that visit.
+        // We just re-commit the current state so the LMS has it either way.
+        function safetyCommit() {
+            if (!scormAPI || state.challengeFinished) return;
+            scormSaveProgress();
+        }
+        window.addEventListener('pagehide', safetyCommit);
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) safetyCommit();
+        });
+        window.addEventListener('beforeunload', scormFinish);
+        scormInit();
+        if (resumeState) {
+            resumeFromSavedState();
+        }
+
+        // Toggle instructions display
+        function toggleInstructions(tabId) {
+            const instructionsBox = document.getElementById(`instructions-${tabId}`);
+            const button = document.querySelector(`button[onclick="toggleInstructions('${tabId}')"]`);
+            
+            if (instructionsBox.style.display === 'none' || instructionsBox.style.display === '') {
+                instructionsBox.style.display = 'block';
+                button.innerHTML = '📋 Hide Instructions';
+                button.style.background = '#ffc107';
+            } else {
+                instructionsBox.style.display = 'none';
+                button.innerHTML = '📋 Show Instructions';
+                button.style.background = '#007bff';
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                closeSuccessScreen();
+            }
+        });
+
+        // Enter key support for modals
+        document.getElementById('protonInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') confirmProtons();
+        });
+
+        document.getElementById('energyInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') confirmEnergyLevels();
+        });
+    </script>
+</body>
+</html>

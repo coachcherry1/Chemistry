@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stoichiometry Conversion Practice</title>
+<style>
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        color: #2c3e50;
+    }
+
+    .app {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 14px;
+        padding: 28px 32px;
+        margin-bottom: 18px;
+    }
+
+    .title-header {
+        text-align: center;
+        margin-bottom: 6px;
+    }
+
+    .title-header h1 {
+        font-size: 1.8rem;
+        font-weight: 300;
+        color: #2c3e50;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        margin: 0 0 6px 0;
+    }
+
+    .title-header p {
+        margin: 0;
+        color: #5a6b7d;
+        font-size: 0.95rem;
+    }
+
+    ul.overview-list {
+        max-width: 560px;
+        margin: 14px auto;
+        padding-left: 20px;
+        color: #34495e;
+        line-height: 1.7;
+    }
+
+    .intro-actions {
+        text-align: center;
+        margin-top: 18px;
+    }
+
+    /* Progress dots */
+    .progress-dots {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin: 4px 0 6px 0;
+    }
+
+    .dot {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.9rem;
+        background: #e9ecef;
+        color: #5a6b7d;
+        border: 2px solid #cdd7e1;
+        transition: all 0.2s ease;
+    }
+
+    .dot.active {
+        background: linear-gradient(135deg, #2193b0, #6dd5ed);
+        color: white;
+        border-color: #2193b0;
+    }
+
+    .dot.solved {
+        background: linear-gradient(145deg, #28a745, #218838);
+        color: white;
+        border-color: #218838;
+    }
+
+    .dot.retry {
+        background: #fff3cd;
+        color: #8a6300;
+        border-color: #e0a800;
+    }
+
+    .progress-label {
+        text-align: center;
+        font-size: 0.85rem;
+        color: #5a6b7d;
+        margin-bottom: 16px;
+    }
+
+    /* Question area */
+    .type-label {
+        text-align: center;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #1c6e85;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 10px;
+    }
+
+    .equation-box {
+        background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+        color: white;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: 600;
+        padding: 14px 18px;
+        border-radius: 8px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.25);
+        box-shadow: 0 3px 8px rgba(33, 147, 176, 0.3);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        margin-bottom: 16px;
+        letter-spacing: 0.5px;
+    }
+
+    .scenario-box {
+        background: #f8f9fa;
+        border-left: 4px solid #2193b0;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 18px;
+        line-height: 1.6;
+    }
+
+    .scenario-box p {
+        margin: 0;
+        color: #34495e;
+        font-size: 1rem;
+    }
+
+    .data-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .data-chip {
+        background: white;
+        border: 1px solid #d7e3ea;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 0.88rem;
+        color: #2c3e50;
+    }
+
+    .data-chip strong {
+        color: #1c6e85;
+    }
+
+    .answer-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+    }
+
+    .answer-row label {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 0.98rem;
+    }
+
+    .answer-input {
+        flex: 0 1 200px;
+        padding: 12px 14px;
+        font-size: 1.2rem;
+        border-radius: 8px;
+        border: 2px solid #cdd7e1;
+        font-family: inherit;
+        color: #2c3e50;
+    }
+
+    .answer-input:focus {
+        outline: none;
+        border-color: #4a90e2;
+    }
+
+    .answer-input:disabled {
+        background: #f0f0f0;
+        color: #888;
+    }
+
+    .unit-label {
+        font-size: 1rem;
+        color: #5a6b7d;
+        font-weight: 600;
+        min-width: 60px;
+    }
+
+    .answer-hint {
+        font-size: 0.85rem;
+        color: #5a6b7d;
+        margin: 0 0 16px 0;
+    }
+
+    .btn {
+        background: linear-gradient(145deg, #4a90e2, #357abd);
+        color: white;
+        border: none;
+        padding: 11px 24px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.98rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        background: linear-gradient(145deg, #357abd, #2c5aa0);
+    }
+
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .btn-row {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .btn-save {
+        background: linear-gradient(145deg, #28a745, #1e7e34);
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn-save:hover:not(:disabled) {
+        background: linear-gradient(145deg, #1e7e34, #19692c);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+    }
+
+    .save-progress-row {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 4px;
+        margin: 6px 0 0 0;
+    }
+
+    .save-status {
+        display: inline-block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #28a745;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .save-status.visible {
+        opacity: 1;
+    }
+
+    .feedback {
+        margin-top: 14px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        display: none;
+    }
+
+    .feedback.correct {
+        display: block;
+        background: #eafaf0;
+        color: #1e7e34;
+        border: 1px solid #28a745;
+    }
+
+    .feedback.incorrect {
+        display: block;
+        background: #fdecea;
+        color: #a52a2a;
+        border: 1px solid #dc3545;
+    }
+
+    /* Completion panel */
+    .complete-panel {
+        text-align: center;
+        padding: 24px;
+        background: #f0f9fb;
+        border-radius: 10px;
+        border: 1px solid #bfe3ec;
+    }
+
+    .complete-panel h3 {
+        margin: 0 0 10px 0;
+        color: #1c6e85;
+        font-size: 1.4rem;
+    }
+
+    .stats-panel {
+        margin: 20px auto;
+        max-width: 420px;
+        background: white;
+        padding: 16px 24px;
+        border-radius: 10px;
+        text-align: left;
+    }
+
+    .stat-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 8px 0;
+        font-size: 0.98rem;
+    }
+
+    .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+    <div class="card title-header">
+        <h1>Stoichiometry Conversion Practice</h1>
+        <p>Solve five stoichiometry problems using balanced chemical equations. Get all five correct to finish — missed problems come back later with new numbers.</p>
+    </div>
+
+    <!-- INTRO SCREEN -->
+    <div class="card" id="intro-screen">
+        <h2 style="text-align:center; color:#1c6e85; font-weight:600;">Before You Begin</h2>
+        <ul class="overview-list">
+            <li>You will solve <strong>5 stoichiometry problems</strong>: mass-to-mass, mass-to-volume (STP), mass-to-moles, moles-to-moles, and volume-to-moles.</li>
+            <li>Each problem gives you a balanced chemical equation — read the coefficients carefully, they are not always 1:1.</li>
+            <li>Type your final numeric answer only (no units) using exactly <strong>3 significant figures</strong>.</li>
+            <li>If you miss a problem, it will come back later with different numbers — you must answer all 5 correctly to finish.</li>
+            <li>The numbers are randomized, so no two attempts are exactly the same.</li>
+            <li>Once you answer all 5 correctly, a completion grade is automatically submitted to Schoology.</li>
+            <li>If you're interrupted, your progress is saved — reopening the assignment picks up right where you left off.</li>
+            <li><strong>Before you close your Chromebook or exit Schoology,</strong> click the green "Save Progress" button so your work is saved and you can pick up where you left off next time.</li>
+        </ul>
+        <div class="intro-actions">
+            <button class="btn" id="begin-btn">Begin Practice</button>
+        </div>
+    </div>
+
+    <!-- MAIN QUIZ SCREEN -->
+    <div class="card hidden" id="quiz-screen">
+        <div class="progress-dots" id="progress-dots"></div>
+        <div class="progress-label" id="progress-label">Solved 0 of 5</div>
+        <div class="save-progress-row">
+            <button class="btn btn-save" id="save-progress-btn">Save Progress</button>
+            <span class="save-status" id="save-status">Saved ✓</span>
+        </div>
+
+        <div class="type-label" id="type-label"></div>
+        <div class="equation-box" id="equation-box"></div>
+
+        <div class="scenario-box">
+            <p id="question-text"></p>
+            <div class="data-chip-row" id="chips-row"></div>
+        </div>
+
+        <div class="answer-row">
+            <label for="answer-input">Your answer:</label>
+            <input type="text" inputmode="decimal" autocomplete="off" class="answer-input" id="answer-input" placeholder="e.g. 24.5">
+            <span class="unit-label" id="unit-label"></span>
+        </div>
+        <p class="answer-hint">Enter your answer to exactly 3 significant figures. Do not type units.</p>
+
+        <div class="btn-row">
+            <button class="btn" id="check-btn">Check Answer</button>
+            <button class="btn hidden" id="continue-btn">Continue</button>
+        </div>
+
+        <div class="feedback" id="feedback-box"></div>
+    </div>
+
+    <!-- COMPLETION SCREEN -->
+    <div class="card hidden" id="complete-screen">
+        <div class="complete-panel">
+            <h3>All 5 Problems Solved!</h3>
+            <p>Nice work — you correctly worked through every stoichiometry conversion type. Your completion grade has been submitted to Schoology.</p>
+            <div class="stats-panel">
+                <div class="stat-row"><span><strong>Solved on first try:</strong></span><span id="stat-first-try"></span></div>
+                <div class="stat-row"><span><strong>Total attempts:</strong></span><span id="stat-attempts"></span></div>
+                <div class="stat-row"><span><strong>Time spent:</strong></span><span id="stat-time"></span></div>
+            </div>
+            <div class="btn-row" style="justify-content:center;">
+                <button class="btn" id="restart-btn">Practice Again</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+(function () {
+    "use strict";
+
+    // Fixed molar masses (g/mol), rounded to 2 decimal places
+    const MM = {
+        Al: 26.98,
+        Cu: 63.55,
+        KClO3: 122.55,
+        H2: 2.02
+    };
+    const STP_VOLUME = 22.4; // L/mol at STP
+
+    function randNiceValue(min, max, decimals) {
+        const scale = Math.pow(10, decimals);
+        const lo = Math.round(min * scale);
+        const hi = Math.round(max * scale);
+        const r = lo + Math.floor(Math.random() * (hi - lo + 1));
+        return r / scale;
+    }
+
+    function roundToSigFigs(num, sig) {
+        if (num === 0) return 0;
+        const d = Math.ceil(Math.log10(Math.abs(num)));
+        const power = sig - d;
+        const magnitude = Math.pow(10, power);
+        return Math.round(num * magnitude) / magnitude;
+    }
+
+    function formatSigFigs(num, sig) {
+        const rounded = roundToSigFigs(num, sig);
+        const d = Math.floor(Math.log10(Math.abs(rounded))) + 1;
+        let decimals = sig - d;
+        if (decimals < 0) decimals = 0;
+        return rounded.toFixed(decimals);
+    }
+
+    function countSigFigs(input) {
+        let s = String(input).trim();
+        if (!s) return 0;
+        s = s.replace(/^[+-]/, '');
+        if (!/^\d*\.?\d*$/.test(s) || s === '' || s === '.') return 0;
+        if (s.includes('.')) {
+            let digits = s.replace('.', '');
+            digits = digits.replace(/^0+/, '');
+            if (digits === '') digits = '0';
+            return digits.length;
+        } else {
+            let digits = s.replace(/^0+/, '') || '0';
+            return digits.length;
+        }
+    }
+
+    let scormAPI = null;
+    let resumeState = null;
+
+    function findAPI(win) {
+        let attempts = 0;
+        let w = win;
+        while (w && attempts < 10) {
+            if (w.API) return w.API;
+            if (w.parent && w.parent !== w) {
+                w = w.parent;
+            } else if (w.opener) {
+                w = w.opener;
+            } else {
+                break;
+            }
+            attempts++;
+        }
+        return null;
+    }
+
+    function isValidResumePayload(parsed) {
+        if (!parsed || typeof parsed !== 'object') return false;
+        if (!Array.isArray(parsed.queue) || !Array.isArray(parsed.solved) || !Array.isArray(parsed.failedOnce)) return false;
+        const inRange = (n) => Number.isInteger(n) && n >= 0 && n < PROBLEM_TYPES.length;
+        if (!parsed.queue.every(inRange) || !parsed.solved.every(inRange) || !parsed.failedOnce.every(inRange)) return false;
+        if (typeof parsed.totalAttempts !== 'number' || typeof parsed.firstTryCount !== 'number') return false;
+        return true;
+    }
+
+    function scormInit() {
+        try {
+            scormAPI = findAPI(window);
+            if (!scormAPI) return;
+            scormAPI.LMSInitialize("");
+            if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (isValidResumePayload(parsed)) {
+                        resumeState = parsed;
+                    }
+                }
+            }
+        } catch (e) { /* No LMS present, or malformed bookmark — start fresh */ }
+    }
+
+    function scormSaveProgress() {
+        if (!scormAPI) return;
+        try {
+            scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                queue: state.queue,
+                solved: Array.from(state.solved),
+                failedOnce: Array.from(state.failedOnce),
+                totalAttempts: state.totalAttempts,
+                firstTryCount: state.firstTryCount
+            }));
+            if (!state.challengeFinished) {
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                // Mark the exit reason as "suspend" on every save, not just on
+                // beforeunload/pagehide. Students on Chromebooks/iPads very often
+                // exit by closing the lid or leaving the Schoology tab, which does
+                // not reliably fire beforeunload/pagehide before the device sleeps
+                // and the network drops. Setting this on every commit means the LMS
+                // already has the correct "resume me" state as of the last save,
+                // instead of depending on a browser-close event to set it at the end.
+                scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+            }
+            scormAPI.LMSCommit("");
+        } catch (e) { /* ignore */ }
+    }
+
+    // Manually triggered by the "Save Progress" button. This is the primary,
+    // reliable save path — students are instructed to click it before closing
+    // their Chromebook, since automatic browser-unload events can't be trusted
+    // to fire when a laptop lid is closed rather than the tab being navigated
+    // away from. Falls back gracefully (shows nothing) if no LMS is present.
+    function manualSaveProgress() {
+        if (!scormAPI) return;
+        scormSaveProgress();
+        const status = document.getElementById('save-status');
+        if (!status) return;
+        status.classList.add('visible');
+        clearTimeout(manualSaveProgress._hideTimer);
+        manualSaveProgress._hideTimer = setTimeout(() => {
+            status.classList.remove('visible');
+        }, 2500);
+    }
+
+    function scormReport(scorePercent) {
+        if (!scormAPI) return;
+        try {
+            scormAPI.LMSSetValue("cmi.core.score.min", "0");
+            scormAPI.LMSSetValue("cmi.core.score.max", "100");
+            scormAPI.LMSSetValue("cmi.core.score.raw", String(scorePercent));
+            scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+            scormAPI.LMSSetValue("cmi.core.exit", "");
+            scormAPI.LMSCommit("");
+        } catch (e) { /* ignore */ }
+    }
+
+    function scormFinish() {
+        if (!scormAPI) return;
+        try {
+            if (!state.challengeFinished) {
+                scormSaveProgress();
+                scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                scormAPI.LMSCommit("");
+            }
+            scormAPI.LMSFinish("");
+        } catch (e) { /* ignore */ }
+    }
+
+    function evaluateAnswer(raw, correctValue) {
+        const trimmed = raw.trim();
+        const validFormat = /^\d*\.?\d+$/.test(trimmed);
+        if (!validFormat) {
+            return { numericOK: false, sigFigOK: false, num: null, sigFigs: 0 };
+        }
+        const num = parseFloat(trimmed);
+        const sigFigs = countSigFigs(trimmed);
+        const relError = Math.abs(num - correctValue) / Math.abs(correctValue);
+        return {
+            numericOK: relError <= 0.02,
+            sigFigOK: sigFigs === 3,
+            num: num,
+            sigFigs: sigFigs
+        };
+    }
+
+    const PROBLEM_TYPES = [
+        {
+            typeLabel: "Problem 1: Mass → Mass",
+            equation: "2 Al (s)  +  3 CuSO₄ (aq)  →  Al₂(SO₄)₃ (aq)  +  3 Cu (s)",
+            generate() {
+                const massAl = randNiceValue(10.0, 99.9, 1);
+                const molesAl = massAl / MM.Al;
+                const molesCu = molesAl * (3 / 2);
+                const massCu = molesCu * MM.Cu;
+                return {
+                    question: `A reaction vessel contains ${massAl.toFixed(1)} g of aluminum reacting with excess copper(II) sulfate solution. What mass of copper metal is produced?`,
+                    chips: [
+                        `Given: ${massAl.toFixed(1)} g Al`,
+                        `Molar mass Al = ${MM.Al.toFixed(2)} g/mol`,
+                        `Molar mass Cu = ${MM.Cu.toFixed(2)} g/mol`
+                    ],
+                    correctValue: massCu,
+                    unit: "g Cu"
+                };
+            }
+        },
+        {
+            typeLabel: "Problem 2: Mass → Volume (STP)",
+            equation: "2 KClO₃ (s)  →  2 KCl (s)  +  3 O₂ (g)",
+            generate() {
+                const massKClO3 = randNiceValue(10.0, 99.9, 1);
+                const molesKClO3 = massKClO3 / MM.KClO3;
+                const molesO2 = molesKClO3 * (3 / 2);
+                const litersO2 = molesO2 * STP_VOLUME;
+                return {
+                    question: `A sample of potassium chlorate, ${massKClO3.toFixed(1)} g, is heated until it fully decomposes. What volume of oxygen gas is produced, measured at STP?`,
+                    chips: [
+                        `Given: ${massKClO3.toFixed(1)} g KClO₃`,
+                        `Molar mass KClO₃ = ${MM.KClO3.toFixed(2)} g/mol`,
+                        `Molar volume at STP = ${STP_VOLUME.toFixed(1)} L/mol`
+                    ],
+                    correctValue: litersO2,
+                    unit: "L O₂"
+                };
+            }
+        },
+        {
+            typeLabel: "Problem 3: Mass → Moles",
+            equation: "N₂ (g)  +  3 H₂ (g)  →  2 NH₃ (g)",
+            generate() {
+                const massH2 = randNiceValue(10.0, 99.9, 1);
+                const molesH2 = massH2 / MM.H2;
+                const molesNH3 = molesH2 * (2 / 3);
+                return {
+                    question: `In the Haber process, ${massH2.toFixed(1)} g of hydrogen gas reacts completely with excess nitrogen gas. How many moles of ammonia (NH₃) are produced?`,
+                    chips: [
+                        `Given: ${massH2.toFixed(1)} g H₂`,
+                        `Molar mass H₂ = ${MM.H2.toFixed(2)} g/mol`
+                    ],
+                    correctValue: molesNH3,
+                    unit: "mol NH₃"
+                };
+            }
+        },
+        {
+            typeLabel: "Problem 4: Moles → Moles",
+            equation: "4 Fe (s)  +  3 O₂ (g)  →  2 Fe₂O₃ (s)",
+            generate() {
+                const molesFe = randNiceValue(1.00, 9.99, 2);
+                const molesFe2O3 = molesFe * (2 / 4);
+                return {
+                    question: `A sample containing ${molesFe.toFixed(2)} mol of iron reacts completely with excess oxygen gas. How many moles of iron(III) oxide (Fe₂O₃) are produced?`,
+                    chips: [
+                        `Given: ${molesFe.toFixed(2)} mol Fe`
+                    ],
+                    correctValue: molesFe2O3,
+                    unit: "mol Fe₂O₃"
+                };
+            }
+        },
+        {
+            typeLabel: "Problem 5: Volume → Moles",
+            equation: "C₃H₈ (g)  +  5 O₂ (g)  →  3 CO₂ (g)  +  4 H₂O (g)",
+            generate() {
+                const litersO2 = randNiceValue(10.0, 99.9, 1);
+                const molesO2 = litersO2 / STP_VOLUME;
+                const molesCO2 = molesO2 * (3 / 5);
+                return {
+                    question: `A propane torch consumes ${litersO2.toFixed(1)} L of oxygen gas, measured at STP, during combustion. How many moles of carbon dioxide (CO₂) are produced?`,
+                    chips: [
+                        `Given: ${litersO2.toFixed(1)} L O₂ (at STP)`,
+                        `Molar volume at STP = ${STP_VOLUME.toFixed(1)} L/mol`
+                    ],
+                    correctValue: molesCO2,
+                    unit: "mol CO₂"
+                };
+            }
+        }
+    ];
+
+    const state = {
+        queue: [],
+        solved: new Set(),
+        failedOnce: new Set(),
+        totalAttempts: 0,
+        firstTryCount: 0,
+        current: null,
+        startTime: null,
+        challengeFinished: false
+    };
+
+    const el = {
+        introScreen: document.getElementById('intro-screen'),
+        quizScreen: document.getElementById('quiz-screen'),
+        completeScreen: document.getElementById('complete-screen'),
+        beginBtn: document.getElementById('begin-btn'),
+        dotsRow: document.getElementById('progress-dots'),
+        progressLabel: document.getElementById('progress-label'),
+        typeLabel: document.getElementById('type-label'),
+        equationBox: document.getElementById('equation-box'),
+        questionText: document.getElementById('question-text'),
+        chipsRow: document.getElementById('chips-row'),
+        answerInput: document.getElementById('answer-input'),
+        unitLabel: document.getElementById('unit-label'),
+        checkBtn: document.getElementById('check-btn'),
+        continueBtn: document.getElementById('continue-btn'),
+        feedbackBox: document.getElementById('feedback-box'),
+        restartBtn: document.getElementById('restart-btn')
+    };
+
+    function buildDots() {
+        el.dotsRow.innerHTML = '';
+        PROBLEM_TYPES.forEach((t, i) => {
+            const d = document.createElement('div');
+            d.className = 'dot';
+            d.id = 'dot-' + i;
+            d.textContent = (i + 1);
+            el.dotsRow.appendChild(d);
+        });
+    }
+
+    function updateDots() {
+        PROBLEM_TYPES.forEach((t, i) => {
+            const d = document.getElementById('dot-' + i);
+            d.className = 'dot';
+            if (state.solved.has(i)) {
+                d.classList.add('solved');
+            } else if (state.current && state.current.typeIndex === i) {
+                d.classList.add('active');
+            } else if (state.failedOnce.has(i)) {
+                d.classList.add('retry');
+            }
+        });
+    }
+
+    function nextProblem() {
+        if (state.queue.length === 0) {
+            showCompletion();
+            return;
+        }
+        const typeIndex = state.queue[0];
+        const type = PROBLEM_TYPES[typeIndex];
+        const data = type.generate();
+        state.current = Object.assign({ typeIndex: typeIndex }, data);
+        renderProblem();
+    }
+
+    function renderProblem() {
+        const type = PROBLEM_TYPES[state.current.typeIndex];
+        el.typeLabel.textContent = type.typeLabel;
+        el.equationBox.textContent = type.equation;
+        el.questionText.textContent = state.current.question;
+
+        el.chipsRow.innerHTML = '';
+        state.current.chips.forEach(chip => {
+            const div = document.createElement('div');
+            div.className = 'data-chip';
+            div.innerHTML = chip.replace(/=(.*)$/, '=<strong>$1</strong>');
+            el.chipsRow.appendChild(div);
+        });
+
+        el.unitLabel.textContent = state.current.unit;
+        el.answerInput.value = '';
+        el.answerInput.disabled = false;
+        el.checkBtn.disabled = false;
+        el.checkBtn.classList.remove('hidden');
+        el.continueBtn.classList.add('hidden');
+        el.feedbackBox.className = 'feedback';
+        el.feedbackBox.textContent = '';
+
+        el.progressLabel.textContent = 'Solved ' + state.solved.size + ' of ' + PROBLEM_TYPES.length;
+        updateDots();
+        el.answerInput.focus();
+    }
+
+    function handleCheck() {
+        const raw = el.answerInput.value;
+        if (!raw.trim()) return;
+
+        const result = evaluateAnswer(raw, state.current.correctValue);
+        state.totalAttempts++;
+        const typeIndex = state.current.typeIndex;
+        const correctStr = formatSigFigs(state.current.correctValue, 3);
+
+        el.answerInput.disabled = true;
+        el.checkBtn.disabled = true;
+
+        if (result.numericOK && result.sigFigOK) {
+            state.solved.add(typeIndex);
+            if (!state.failedOnce.has(typeIndex)) state.firstTryCount++;
+            el.feedbackBox.className = 'feedback correct';
+            el.feedbackBox.textContent = 'Correct! ' + correctStr + ' ' + state.current.unit;
+            state.queue.shift();
+        } else {
+            state.failedOnce.add(typeIndex);
+            let reason;
+            if (!result.numericOK && !result.sigFigOK) {
+                reason = 'the value is not correct and the significant figures are off';
+            } else if (!result.numericOK) {
+                reason = 'the value is not correct';
+            } else {
+                reason = 'the value is correct, but it needs exactly 3 significant figures';
+            }
+            el.feedbackBox.className = 'feedback incorrect';
+            el.feedbackBox.textContent = 'Not quite — ' + reason + '. The correct answer was ' +
+                correctStr + ' ' + state.current.unit + '. You\'ll see this problem again later with new numbers.';
+            state.queue.shift();
+            state.queue.push(typeIndex);
+        }
+
+        el.progressLabel.textContent = 'Solved ' + state.solved.size + ' of ' + PROBLEM_TYPES.length;
+        updateDots();
+        el.checkBtn.classList.add('hidden');
+        el.continueBtn.classList.remove('hidden');
+        el.continueBtn.focus();
+
+        scormSaveProgress();
+    }
+
+    function handleContinue() {
+        nextProblem();
+    }
+
+    function formatTime(ms) {
+        const totalSec = Math.floor(ms / 1000);
+        const min = Math.floor(totalSec / 60);
+        const sec = totalSec % 60;
+        return min + ' min ' + (sec < 10 ? '0' + sec : sec) + ' sec';
+    }
+
+    function showCompletion() {
+        el.quizScreen.classList.add('hidden');
+        el.completeScreen.classList.remove('hidden');
+        const elapsed = Date.now() - state.startTime;
+        document.getElementById('stat-first-try').textContent = state.firstTryCount + ' / ' + PROBLEM_TYPES.length;
+        document.getElementById('stat-attempts').textContent = state.totalAttempts;
+        document.getElementById('stat-time').textContent = formatTime(elapsed);
+
+        state.challengeFinished = true;
+        const scorePercent = Math.round((state.firstTryCount / PROBLEM_TYPES.length) * 100);
+        scormReport(scorePercent);
+    }
+
+    function startPractice() {
+        state.queue = [0, 1, 2, 3, 4];
+        state.solved = new Set();
+        state.failedOnce = new Set();
+        state.totalAttempts = 0;
+        state.firstTryCount = 0;
+        state.startTime = Date.now();
+        state.challengeFinished = false;
+
+        el.introScreen.classList.add('hidden');
+        el.completeScreen.classList.add('hidden');
+        el.quizScreen.classList.remove('hidden');
+
+        buildDots();
+        nextProblem();
+        scormSaveProgress();
+    }
+
+    el.beginBtn.addEventListener('click', startPractice);
+    el.checkBtn.addEventListener('click', handleCheck);
+    document.getElementById('save-progress-btn').addEventListener('click', manualSaveProgress);
+    el.continueBtn.addEventListener('click', handleContinue);
+    el.restartBtn.addEventListener('click', function () {
+        el.completeScreen.classList.add('hidden');
+        el.introScreen.classList.remove('hidden');
+    });
+
+    el.answerInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            if (!el.checkBtn.classList.contains('hidden')) {
+                handleCheck();
+            } else if (!el.continueBtn.classList.contains('hidden')) {
+                handleContinue();
+            }
+        }
+    });
+
+    // Best-effort safety net for the case where the student closes the
+    // Chromebook lid or leaves the tab without clicking "Save Progress":
+    // these events fire more reliably than beforeunload on that path, but
+    // unlike beforeunload we deliberately do NOT call LMSFinish() here —
+    // visibilitychange in particular fires on every tab switch, not just a
+    // real exit, and terminating the SCORM session on a brief tab-switch
+    // would break the ability to keep saving for the rest of that visit.
+    // We just re-commit the current state so the LMS has it either way.
+    function safetyCommit() {
+        if (!scormAPI || state.challengeFinished) return;
+        scormSaveProgress();
+    }
+    window.addEventListener('pagehide', safetyCommit);
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) safetyCommit();
+    });
+    window.addEventListener('beforeunload', scormFinish);
+    scormInit();
+
+    if (resumeState) {
+        state.queue = resumeState.queue.slice();
+        state.solved = new Set(resumeState.solved);
+        state.failedOnce = new Set(resumeState.failedOnce);
+        state.totalAttempts = resumeState.totalAttempts;
+        state.firstTryCount = resumeState.firstTryCount;
+        state.startTime = Date.now();
+        state.challengeFinished = false;
+
+        el.introScreen.classList.add('hidden');
+        el.quizScreen.classList.remove('hidden');
+
+        buildDots();
+        if (state.queue.length === 0) {
+            showCompletion();
+        } else {
+            nextProblem();
+        }
+    }
+
+})();
+</script>
+
+</body>
+</html>

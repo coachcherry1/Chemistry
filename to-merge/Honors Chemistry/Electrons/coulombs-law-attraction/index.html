@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coulomb's Law &amp; Attraction</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #fdf6ea 0%, #f3e6d0 100%);
+    color: #3a2f1e;
+    min-height: 100vh;
+    padding: 16px;
+  }
+  .wrap { max-width: 820px; margin: 0 auto; }
+  header {
+    text-align:center; margin-bottom: 14px;
+  }
+  header h1 { color:#7c2d12; font-size:1.55em; }
+  header p.sub { color:#8a6a3c; font-size:0.9em; margin-top:2px; }
+
+  .top-bar {
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px; margin-bottom:12px; flex-wrap:wrap;
+  }
+  .progress-label { font-size:0.82rem; font-weight:700; color:#7c2d12; }
+  .save-btn {
+    background: transparent; border:1px solid #d9c3a3; color:#7c2d12;
+    padding:6px 14px; border-radius:20px; font-size:0.78rem; cursor:pointer;
+    font-weight:600;
+  }
+  .save-btn:hover { background:#fff3e0; }
+  .save-note { font-size:0.72rem; color:#2f7d32; font-weight:700; margin-left:8px; opacity:0; transition:opacity .3s; }
+  .save-note.show { opacity:1; }
+
+  .intro-screen {
+    background:#fffaf0; border:2px solid #d97706; border-radius:12px;
+    padding:22px 24px; text-align:center;
+  }
+  .intro-screen p { line-height:1.6; color:#5c4326; margin-bottom:10px; text-align:left; }
+  .intro-screen ul { text-align:left; color:#5c4326; margin:10px 0 16px 22px; line-height:1.6; }
+
+  .block {
+    background:#fffaf0; border:1px solid #e7dcc9; border-radius:12px;
+    padding:18px 20px; margin-bottom:16px;
+    animation: fadeIn .4s ease-out;
+  }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  .block h3 { color:#b45309; font-size:1.02rem; margin-bottom:8px; }
+  .block p { color:#5c4326; line-height:1.55; margin-bottom:8px; font-size:0.95rem; }
+  .block .diagram-caption { font-size:0.8rem; color:#8a6a3c; text-align:center; margin-top:4px; }
+
+  .btn {
+    padding:9px 22px; font-size:0.92rem; border:none; border-radius:8px;
+    cursor:pointer; font-weight:700; color:#fff;
+    background: linear-gradient(145deg, #f59e0b, #d97706);
+    box-shadow: 0 3px 8px rgba(180,83,9,0.25);
+    transition: transform .15s;
+  }
+  .btn:hover:not(:disabled) { transform: translateY(-1px); }
+  .btn:disabled { background:#cbb99f; cursor:not-allowed; box-shadow:none; }
+  .btn-green { background: linear-gradient(145deg, #4b8b3b, #35682a); }
+  .btn-row { display:flex; justify-content:center; margin-top:12px; }
+
+  /* MC questions */
+  .q-prompt { font-weight:600; color:#3a2f1e; margin-bottom:12px; font-size:0.97rem; }
+  .opt-list { display:flex; flex-direction:column; gap:8px; }
+  .opt-btn {
+    text-align:left; padding:10px 14px; border:2px solid #d9c3a3; border-radius:8px;
+    background:#fff; cursor:pointer; font-size:0.9rem; color:#3a2f1e; transition: all .15s;
+  }
+  .opt-btn:hover:not(:disabled) { background:#fff3e0; }
+  .opt-btn.correct { background:#e3f3e1; border-color:#2f7d32; color:#1f5a22; font-weight:700; }
+  .opt-btn.wrong { background:#fbe9e7; border-color:#c0392b; color:#8a2418; }
+  .opt-btn:disabled { cursor:not-allowed; }
+  .feedback { margin-top:10px; padding:9px 12px; border-radius:8px; font-size:0.86rem; display:none; }
+
+  .select-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .select-input {
+    padding:8px 12px; border:2px solid #d9c3a3; border-radius:8px; font-size:0.9rem;
+    color:#3a2f1e; background:#fff;
+  }
+  .select-input.correct { border-color:#2f7d32; background:#e3f3e1; color:#1f5a22; font-weight:700; }
+  .select-input.wrong { border-color:#c0392b; background:#fbe9e7; }
+  .feedback.wrong { display:block; background:#fbe9e7; color:#8a2418; border:1px solid #f0c4bd; }
+  .feedback.right { display:block; background:#e3f3e1; color:#1f5a22; border:1px solid #bfe0bb; }
+
+  /* Force-lab visuals */
+  .lab-stage {
+    background:#2c241a; border-radius:10px; padding:20px 16px;
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+    margin: 10px 0;
+  }
+  .lab-row { display:flex; align-items:center; gap:0; min-height:60px; }
+  .particle {
+    width:30px; height:30px; border-radius:50%; display:flex; align-items:center;
+    justify-content:center; font-weight:700; font-size:0.95rem; color:#fff; flex-shrink:0;
+  }
+  .particle.proton { background:#c0392b; }
+  .particle.electron { background:#2b6cb0; }
+  .force-line { background:#f59e0b; border-radius:2px; transition: all .12s; }
+  .lab-controls { display:flex; align-items:center; gap:10px; color:#f3e6d0; font-size:0.85rem; }
+  .lab-controls input[type=range] { width:220px; }
+  .proton-count-btns { display:flex; gap:8px; align-items:center; }
+  .proton-count-btns button {
+    width:34px; height:34px; border-radius:8px; border:none; background:#f59e0b;
+    color:#3a2f1e; font-weight:800; font-size:1.05rem; cursor:pointer;
+  }
+  .proton-count-btns button:disabled { background:#6b5d47; cursor:not-allowed; }
+  .lab-readout { color:#fbe9d0; font-size:0.82rem; }
+
+  /* Bohr diagrams */
+  .bohr-row { display:flex; justify-content:center; align-items:flex-end; gap:18px; flex-wrap:wrap; margin:12px 0; }
+  .bohr-card { text-align:center; }
+  .bohr-card .name { font-weight:700; color:#7c2d12; font-size:0.9rem; margin-top:2px; }
+  .bohr-card .config { font-size:0.78rem; color:#8a6a3c; }
+
+  .summary-final {
+    background:#fff7ec; border:2px solid #d97706; border-radius:12px;
+    padding:20px 22px; text-align:left; line-height:1.6; color:#3a2f1e; font-size:0.95rem;
+  }
+  .summary-final .rule { background:#fffaf0; border-left:4px solid #f59e0b; padding:10px 14px; margin:10px 0; border-radius:5px; }
+  .summary-final .bridge { margin-top:12px; font-weight:600; color:#7c2d12; }
+
+  .done-banner {
+    text-align:center; padding:14px; background:#e3f3e1; border:2px solid #2f7d32;
+    border-radius:10px; color:#1f5a22; font-weight:700; margin-top:14px;
+  }
+
+  #flow { display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Coulomb's Law &amp; Attraction</h1>
+    <p class="sub">How proton charge and distance control the pull on valence electrons</p>
+  </header>
+
+  <div class="intro-screen" id="introScreen">
+    <p>In every atom, electrons are held in place because opposite charges attract — the positive protons in the
+    nucleus pull on the negative electrons around them. That pull isn't the same strength in every atom, though.
+    In this activity you'll use two small interactive labs and a set of Bohr models to figure out exactly what
+    makes that attraction stronger or weaker, and answer questions about it as you go.</p>
+    <ul>
+      <li>Work through each part in order — a question has to be answered correctly before the next part unlocks.</li>
+      <li>If an answer isn't quite right, you'll get feedback to help you think it through again — try as many times as you need.</li>
+      <li>At the end you'll be asked to state the two big rules yourself before the summary appears.</li>
+    </ul>
+    <div class="btn-row"><button class="btn" onclick="beginActivity()">Begin</button></div>
+  </div>
+
+  <div class="top-bar" id="topBar" style="display:none;">
+    <span class="progress-label" id="progressLabel">Step 1</span>
+    <span>
+      <button class="save-btn" onclick="manualSave()">Save Progress</button>
+      <span class="save-note" id="saveNote">Saved</span>
+    </span>
+  </div>
+
+  <div id="flow"></div>
+</div>
+
+<script>
+/* ============================================================
+   Element data
+   ============================================================ */
+function bohrSVG(el, showArrow) {
+  if (showArrow === undefined) showArrow = true;
+  const n = el.shells.length;
+  // The whole diagram's size scales with shell count so an atom with more
+  // shells visibly draws as a bigger atom, not just the same-size picture with
+  // its rings squeezed closer together — e.g. K (4 shells) should visibly be a
+  // bigger circle than Na (3) or Li (2), not just have thinner ring spacing.
+  const size = 82 + n*24;
+  const cx = size/2, cy = size/2, maxR = size*0.4;
+  const rStep = maxR / (n + 0.6);
+  const nucleusR = 13;
+  const dotR = 3.3;
+  // The single valence electron used as the arrow's anchor always sits at this
+  // angle (independent of how many valence electrons there are), so the arrow
+  // can be drawn straight from that dot to the nucleus on every diagram.
+  const VAL_ANG = -Math.PI/2 + 0.6;
+  // Inner-shell electron pairs sit at these four cardinal, 90-degrees-apart
+  // positions (top/right/bottom/left) instead of being spread evenly — the
+  // classic Bohr-diagram look — and never coincide with VAL_ANG, so the arrow
+  // never crosses directly over a paired dot.
+  const QUAD = [-Math.PI/2, 0, Math.PI/2, Math.PI];
+
+  let s = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">`;
+
+  for (let i=0;i<n;i++) {
+    const r = rStep*(i+1);
+    const isVal = i===n-1;
+    s += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${isVal?'#f59e0b':'#d9c3a3'}" stroke-width="${isVal?2.4:1.2}"/>`;
+    const count = el.shells[i];
+    const color = isVal ? '#7c2d12' : '#8a7355';
+    if (!isVal && count % 2 === 0) {
+      // Inner shells: draw electrons paired up at 90-degree-apart positions.
+      const pairs = count / 2;
+      for (let k=0; k<pairs; k++) {
+        const ang = QUAD[k % QUAD.length];
+        const rx = cx + r*Math.cos(ang), ry = cy + r*Math.sin(ang);
+        const tx = -Math.sin(ang), ty = Math.cos(ang);
+        const off = 4.2;
+        s += `<circle cx="${(rx+tx*off).toFixed(1)}" cy="${(ry+ty*off).toFixed(1)}" r="${dotR}" fill="${color}"/>`;
+        s += `<circle cx="${(rx-tx*off).toFixed(1)}" cy="${(ry-ty*off).toFixed(1)}" r="${dotR}" fill="${color}"/>`;
+      }
+    } else {
+      // Valence shell: electrons drawn individually; the first one (d=0) sits
+      // at VAL_ANG and doubles as the force arrow's anchor point.
+      for (let d=0; d<count; d++) {
+        const ang = (2*Math.PI*d/count) + VAL_ANG;
+        const dx = cx + r*Math.cos(ang), dy = cy + r*Math.sin(ang);
+        s += `<circle cx="${dx.toFixed(1)}" cy="${dy.toFixed(1)}" r="${dotR}" fill="${color}"/>`;
+      }
+    }
+  }
+
+  // Force arrow: drawn straight from the reference valence electron (at VAL_ANG,
+  // on the outermost ring) to the nucleus, so it visibly originates at the
+  // electron it's pulling on and points directly at the nucleus. Optional —
+  // some diagrams (e.g. the group comparison) skip it and ask the student to
+  // reason out distance/strength themselves instead of reading it off the arrow.
+  if (showArrow) {
+    const valR = rStep*n;
+    const ex = cx + valR*Math.cos(VAL_ANG), ey = cy + valR*Math.sin(VAL_ANG);
+    const dist = Math.hypot(cx-ex, cy-ey);
+    const ux = (cx-ex)/dist, uy = (cy-ey)/dist;
+    const aw = el.force;
+    // The electron-to-nucleus gap is short (tens of px, not the full canvas), so
+    // the head/gap sizing has to scale down with it rather than with arrow
+    // thickness alone, or the head swallows the whole line on the smallest shells.
+    const gap = 4, headLen = Math.max(7, aw*0.7);
+    const t0 = dotR + 2;             // start just past the electron dot
+    const t1 = Math.max(t0 + 4, dist - nucleusR - gap); // end just before the nucleus
+    const shaftT = Math.max(t0, t1 - headLen);
+    const sx = ex + ux*t0, sy = ey + uy*t0;
+    const shaftEndX = ex + ux*shaftT, shaftEndY = ey + uy*shaftT;
+    const tipX = ex + ux*t1, tipY = ey + uy*t1;
+    const px = -uy, py = ux;
+    s += `<line x1="${sx.toFixed(1)}" y1="${sy.toFixed(1)}" x2="${shaftEndX.toFixed(1)}" y2="${shaftEndY.toFixed(1)}" stroke="#1a1a1a" stroke-width="${aw}" stroke-linecap="butt"/>`;
+    s += `<polygon points="${(shaftEndX+px*aw*0.9).toFixed(1)},${(shaftEndY+py*aw*0.9).toFixed(1)} ${(shaftEndX-px*aw*0.9).toFixed(1)},${(shaftEndY-py*aw*0.9).toFixed(1)} ${tipX.toFixed(1)},${tipY.toFixed(1)}" fill="#1a1a1a"/>`;
+  }
+
+  s += `<circle cx="${cx}" cy="${cy}" r="${nucleusR}" fill="#7c2d12"/>`;
+  s += `<text x="${cx}" y="${cy+4}" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">+${el.z}</text>`;
+  s += `</svg>`;
+  return s;
+}
+
+function bohrCard(el, showArrow) {
+  return `<div class="bohr-card">${bohrSVG(el, showArrow)}<div class="name">${el.name} (${el.sym})</div>
+    <div class="config">shells: ${el.shells.join(', ')}</div></div>`;
+}
+
+const GROUP_ELEMENTS = [
+  { sym:'Li', name:'Lithium', z:3, shells:[2,1], force:16 },
+  { sym:'Na', name:'Sodium', z:11, shells:[2,8,1], force:10 },
+  { sym:'K', name:'Potassium', z:19, shells:[2,8,8,1], force:5 }
+];
+const PERIOD_ELEMENTS = [
+  { sym:'Na', name:'Sodium', z:11, shells:[2,8,1], force:5 },
+  { sym:'Al', name:'Aluminum', z:13, shells:[2,8,3], force:9 },
+  { sym:'Cl', name:'Chlorine', z:17, shells:[2,8,7], force:16 }
+];
+
+/* ============================================================
+   FLOW definition
+   ============================================================ */
+const FLOW = [
+  { id:'particles-id', type:'mc',
+    render: (c) => c.innerHTML = `
+      <h3>Identify the particles</h3>
+      <div style="display:flex; justify-content:center; align-items:center; gap:60px; margin:14px 0;">
+        <div style="text-align:center;"><div class="particle proton" style="width:44px;height:44px;font-size:1.3rem;margin:auto;">+</div></div>
+        <div style="text-align:center;"><div class="particle electron" style="width:22px;height:22px;font-size:0.7rem;margin:auto;">&minus;</div></div>
+      </div>
+      <div class="q-prompt">Which correctly identifies the two symbols above (not drawn to scale)?</div>`,
+    options: [
+      { text:'+ is a proton, − is an electron', correct:true },
+      { text:'+ is an electron, − is a proton', correct:false },
+      { text:'+ is a neutron, − is a proton', correct:false },
+      { text:'+ is a proton, − is a neutron', correct:false }
+    ],
+    wrongMsg: 'Remember which charge each particle actually carries — one subatomic particle is positive, one is negative, and neutrons have no charge at all.',
+    rightMsg: 'Right — the proton’s positive charge and the electron’s negative charge are what create the attraction we’re about to explore.'
+  },
+
+  { id:'distance-lab', type:'content',
+    render: (c) => c.innerHTML = `
+      <h3>Lab 1: Does distance matter?</h3>
+      <p>Drag the slider to move the electron closer to or farther from the proton, and watch the connecting line.
+      Its thickness represents the strength of the force of attraction between them.</p>
+      <div class="lab-stage">
+        <div class="lab-row" id="distRow"></div>
+        <div class="lab-controls">
+          <span>0.05 nm</span>
+          <input type="range" id="distSlider" min="5" max="30" value="15">
+          <span>0.30 nm</span>
+        </div>
+        <div class="lab-readout" id="distReadout"></div>
+      </div>
+      <div class="diagram-caption">Try dragging the slider all the way left, then all the way right.</div>
+      <div class="btn-row"><button class="btn" onclick="advanceFlow()">Continue</button></div>`,
+    onShow: () => initDistanceLab()
+  },
+
+  { id:'distance-q1', type:'mc',
+    render: (c) => c.innerHTML = `
+      <h3>Check your understanding</h3>
+      <p>Pair A: proton and electron are 0.10 nm apart. Pair B: proton and electron are 0.20 nm apart.</p>
+      <div class="q-prompt">Which pair has the stronger force of attraction?</div>`,
+    options: [
+      { text:'Pair A (0.10 nm apart)', correct:true },
+      { text:'Pair B (0.20 nm apart)', correct:false },
+      { text:'They are equal', correct:false }
+    ],
+    wrongMsg: 'Go back and try the slider again — watch what happens to the line’s thickness as the electron gets closer to the proton.',
+    rightMsg: 'Correct — the closer pair experiences the stronger pull.'
+  },
+
+  { id:'distance-q2', type:'mc',
+    render: (c) => c.innerHTML = `<div class="q-prompt">Why does the closer pair have the stronger attraction?</div>`,
+    options: [
+      { text:'Its opposite charges are closer together', correct:true },
+      { text:'It has more protons', correct:false },
+      { text:'Its electron is moving faster', correct:false },
+      { text:'There’s no real reason — it’s random', correct:false }
+    ],
+    wrongMsg: 'Think about what’s actually different between Pair A and Pair B — the charges themselves haven’t changed, and speed isn’t part of this model.',
+    rightMsg: 'Exactly — the strength of attraction depends on how far apart the charges are.'
+  },
+
+  { id:'group-bohr', type:'content',
+    render: (c) => c.innerHTML = `
+      <h3>Lab 2: Down a group</h3>
+      <p>Lithium, sodium, and potassium are all in the same group (column). Each Bohr model below shows the
+      valence shell (outer ring, highlighted).</p>
+      <div class="bohr-row">${GROUP_ELEMENTS.map(el => bohrCard(el, false)).join('')}</div>
+      <div class="diagram-caption">Compare how many shells are between the nucleus and each valence electron.</div>
+      <div class="btn-row"><button class="btn" onclick="advanceFlow()">Continue</button></div>`
+  },
+
+  { id:'group-q-farthest', type:'select',
+    render: (c) => c.innerHTML = `<div class="q-prompt">Which element’s valence electron is farthest from the nucleus?</div>`,
+    choices: ['Li','Na','K'],
+    correct: 'K',
+    wrongMsg: 'Look back at the three models — count the shells between the nucleus and the valence electron for each element.',
+    rightMsg: 'Right — K’s valence electron is out in the 4th shell, farther than Li’s or Na’s.'
+  },
+  { id:'group-q-closest', type:'select',
+    render: (c) => c.innerHTML = `<div class="q-prompt">Which element’s valence electron is closest to the nucleus?</div>`,
+    choices: ['Li','Na','K'],
+    correct: 'Li',
+    wrongMsg: 'Compare shell counts again — which element has the fewest shells between its nucleus and its valence electron?',
+    rightMsg: 'Right — Li’s valence electron is only in the 2nd shell.'
+  },
+  { id:'group-q-strongest', type:'select',
+    render: (c) => c.innerHTML = `<div class="q-prompt">Which element’s valence electron feels the strongest attraction from the nucleus?</div>`,
+    choices: ['Li','Na','K'],
+    correct: 'Li',
+    wrongMsg: 'Think back to the distance lab — the closer the charges, the stronger the pull. Which element’s valence electron was closest?',
+    rightMsg: 'Right — the closer the valence electron sits, the stronger the pull on it.'
+  },
+  { id:'group-q-weakest', type:'select',
+    render: (c) => c.innerHTML = `<div class="q-prompt">Which element’s valence electron feels the weakest attraction from the nucleus?</div>`,
+    choices: ['Li','Na','K'],
+    correct: 'K',
+    wrongMsg: 'Same idea, other direction — which element’s valence electron is farthest away?',
+    rightMsg: 'Right — the farther the valence electron sits, the weaker the pull on it.'
+  },
+
+  { id:'charge-lab', type:'content',
+    render: (c) => c.innerHTML = `
+      <h3>Lab 3: Does charge matter?</h3>
+      <p>Now the distance is fixed. Use the buttons to add or remove protons from the nucleus and watch what
+      happens to the force line.</p>
+      <div class="lab-stage">
+        <div class="lab-row" id="chargeRow"></div>
+        <div class="proton-count-btns">
+          <button onclick="changeProtons(-1)">&minus;</button>
+          <span class="lab-readout" id="protonReadout"></span>
+          <button onclick="changeProtons(1)">+</button>
+        </div>
+      </div>
+      <div class="diagram-caption">Try going from 1 proton up to several.</div>
+      <div class="btn-row"><button class="btn" onclick="advanceFlow()">Continue</button></div>`,
+    onShow: () => initChargeLab()
+  },
+
+  { id:'charge-q1', type:'mc',
+    render: (c) => c.innerHTML = `<div class="q-prompt">With the distance held constant, which nucleus has the stronger pull on the electron:
+      one with 1 proton, or one with 2 protons?</div>`,
+    options: [
+      { text:'2 protons', correct:true },
+      { text:'1 proton', correct:false },
+      { text:'Same either way', correct:false }
+    ],
+    wrongMsg: 'Try the lab again — add a proton and watch the force line, with the electron staying the same distance away.',
+    rightMsg: 'Right — more protons means a stronger pull, even at the same distance.'
+  },
+
+  { id:'charge-q2', type:'mc',
+    render: (c) => c.innerHTML = `<div class="q-prompt">Why does adding protons increase the force of attraction?</div>`,
+    options: [
+      { text:'More protons means more positive charge pulling on the electron', correct:true },
+      { text:'More protons means the electron moves closer automatically', correct:false },
+      { text:'More protons makes the electron heavier', correct:false },
+      { text:'It doesn’t — the extra protons don’t matter', correct:false }
+    ],
+    wrongMsg: 'Think about what a proton actually contributes to the nucleus.',
+    rightMsg: 'Exactly — more positive charge in the nucleus means a stronger attraction.'
+  },
+
+  { id:'period-bohr', type:'content',
+    render: (c) => c.innerHTML = `
+      <h3>Lab 4: Across a period</h3>
+      <p>Sodium, aluminum, and chlorine are all in the same period (row). Compare their Bohr models below.</p>
+      <div class="bohr-row">${PERIOD_ELEMENTS.map(el => bohrCard(el, true)).join('')}</div>
+      <div class="diagram-caption">Notice the valence shell number stays the same — only the proton count changes.</div>
+      <div class="btn-row"><button class="btn" onclick="advanceFlow()">Continue</button></div>`
+  },
+
+  { id:'period-q1', type:'mc',
+    render: (c) => c.innerHTML = `<div class="q-prompt">Going across this period — Na &rarr; Al &rarr; Cl — the valence electrons stay in the same shell the
+      whole way, but the number of protons increases. What happens to the force of attraction on the valence electrons?</div>`,
+    options: [
+      { text:'It gets stronger', correct:true },
+      { text:'It gets weaker', correct:false },
+      { text:'It stays exactly the same', correct:false }
+    ],
+    wrongMsg: 'This is the same idea as Lab 3 — only the charge is changing here, not the distance.',
+    rightMsg: 'Right — more protons at the same distance means a stronger pull.'
+  },
+
+  { id:'period-q2', type:'mc',
+    render: (c) => c.innerHTML = `<div class="q-prompt">So, how is the force of attraction related to the number of protons when comparing atoms in the same row (period)?</div>`,
+    options: [
+      { text:'More protons in the same row means a stronger attraction on the valence electrons', correct:true },
+      { text:'More protons in the same row means a weaker attraction', correct:false },
+      { text:'The number of protons doesn’t affect atoms in the same row', correct:false }
+    ],
+    wrongMsg: 'Look at the arrows on the three models above — which element’s arrow is thickest, and how many protons does it have?',
+    rightMsg: 'Correct — across a period, more protons pull harder on valence electrons that are all in the same shell.'
+  },
+
+  { id:'practice1', type:'mc',
+    render: (c) => c.innerHTML = `<h3>Quick practice</h3><div class="q-prompt">Mg and Ca are in the same group. Which atom’s valence electron(s) feel the stronger pull from the nucleus?</div>`,
+    options: [ { text:'Mg', correct:true }, { text:'Ca', correct:false }, { text:'Equal', correct:false } ],
+    wrongMsg: 'Same group means think distance — which one’s valence shell is closer to the nucleus?',
+    rightMsg: 'Right — Mg’s valence electrons are in a lower, closer shell.'
+  },
+  { id:'practice2', type:'mc',
+    render: (c) => c.innerHTML = `<div class="q-prompt">Na and Cl are in the same period. Which atom’s valence electron(s) feel the stronger pull from the nucleus?</div>`,
+    options: [ { text:'Cl', correct:true }, { text:'Na', correct:false }, { text:'Equal', correct:false } ],
+    wrongMsg: 'Same period means think charge — which one has more protons pulling on a valence shell that’s the same distance out?',
+    rightMsg: 'Right — Cl has more protons pulling on the same shell.'
+  },
+  { id:'practice3', type:'mc',
+    render: (c) => c.innerHTML = `<div class="q-prompt">F and Cl are in the same group. Which atom’s valence electron(s) feel the stronger pull from the nucleus?</div>`,
+    options: [ { text:'F', correct:true }, { text:'Cl', correct:false }, { text:'Equal', correct:false } ],
+    wrongMsg: 'Same group again — which one’s valence electrons are in a lower, closer shell?',
+    rightMsg: 'Right — F’s valence electrons are closer to its nucleus.'
+  },
+
+  { id:'synthesis1', type:'mc',
+    render: (c) => c.innerHTML = `<h3>Put it together</h3>
+      <div class="q-prompt">Complete the rule: Moving DOWN a group, the force of attraction on valence electrons ___
+      because the valence electrons are ___ from the nucleus.</div>`,
+    options: [
+      { text:'gets weaker … farther', correct:true },
+      { text:'gets stronger … farther', correct:false },
+      { text:'gets weaker … closer', correct:false },
+      { text:'gets stronger … closer', correct:false }
+    ],
+    wrongMsg: 'Think back through the Li/Na/K models — as you go down the group, does the valence shell number go up or down, and what does that do to the force?',
+    rightMsg: 'That’s the rule.'
+  },
+  { id:'synthesis2', type:'mc',
+    render: (c) => c.innerHTML = `<div class="q-prompt">Complete the rule: Moving ACROSS a period (left to right), the force of attraction on valence electrons ___
+      because the number of protons ___.</div>`,
+    options: [
+      { text:'gets stronger … increases', correct:true },
+      { text:'gets weaker … increases', correct:false },
+      { text:'gets stronger … decreases', correct:false },
+      { text:'stays the same … increases', correct:false }
+    ],
+    wrongMsg: 'Think back through the Na/Al/Cl models — as you move across the period, does the proton count go up or down, and what does that do to the force?',
+    rightMsg: 'That’s the rule.'
+  },
+
+  { id:'summary', type:'final',
+    render: (c) => c.innerHTML = `
+      <h3>Summary</h3>
+      <div class="summary-final">
+        <p>You’ve just worked out the two big ideas behind Coulomb’s law in the atom:</p>
+        <div class="rule"><b>Down a group:</b> valence electrons sit in higher shells — farther from the nucleus —
+        so the attraction is weaker, and the electrons are easier to remove.</div>
+        <div class="rule"><b>Across a period:</b> valence electrons stay in the same shell, but more protons pull on
+        them — so the attraction is stronger, and the electrons are harder to remove.</div>
+        <p class="bridge">These two ideas — distance and nuclear charge — are exactly what drive the periodic trends
+        you’ll explore next: atomic radius and ionization energy both come down to how tightly (or loosely) each
+        atom holds onto its valence electrons.</p>
+      </div>
+      <div class="btn-row"><button class="btn btn-green" onclick="finishActivity()">Finish</button></div>
+      <div class="done-banner" id="doneBanner" style="display:none;">Activity complete — your completion has been submitted.</div>`
+  }
+];
+
+/* ============================================================
+   Interactive labs
+   ============================================================ */
+function distThickness(nm) {
+  return Math.max(3, Math.min(18, 18 * (0.10*0.10) / (nm*nm)));
+}
+function distLineLen(nm) {
+  return Math.max(50, Math.min(230, 40 + (nm - 0.05) * 760));
+}
+function renderDistRow(nm) {
+  const row = document.getElementById('distRow');
+  if (!row) return;
+  const len = distLineLen(nm);
+  const th = distThickness(nm);
+  const svgH = 40, midY = svgH / 2;
+  const headLen = Math.max(9, th * 1.3);
+  const headW = Math.max(7, th * 1.2);
+  const dash = Math.max(4, th * 1.5);
+  const gap = Math.max(3, th * 0.9);
+  row.innerHTML = `
+    <div class="particle proton">+</div>
+    <svg width="${len}" height="${svgH}" style="overflow:visible; flex-shrink:0;">
+      <line x1="${headLen}" y1="${midY}" x2="${len - headLen}" y2="${midY}"
+        stroke="#f59e0b" stroke-width="${th}" stroke-dasharray="${dash},${gap}" stroke-linecap="round"/>
+      <polygon points="0,${midY} ${headLen},${midY - headW/2} ${headLen},${midY + headW/2}" fill="#f59e0b"/>
+      <polygon points="${len},${midY} ${len - headLen},${midY - headW/2} ${len - headLen},${midY + headW/2}" fill="#f59e0b"/>
+    </svg>
+    <div class="particle electron">&minus;</div>`;
+  const readout = document.getElementById('distReadout');
+  if (readout) readout.textContent = `Distance: ${nm.toFixed(2)} nm`;
+}
+function initDistanceLab() {
+  const slider = document.getElementById('distSlider');
+  const update = () => renderDistRow(parseInt(slider.value,10) / 100);
+  slider.addEventListener('input', update);
+  update();
+}
+
+let protonCount = 1;
+function chargeThickness(n) { return Math.max(3, Math.min(18, 3 + n * 0.85)); }
+function renderChargeRow() {
+  const row = document.getElementById('chargeRow');
+  if (!row) return;
+  const th = chargeThickness(protonCount);
+  const nucleusSize = Math.min(60, 26 + protonCount * 1.6);
+  row.innerHTML = `
+    <div class="particle proton" style="width:${nucleusSize}px; height:${nucleusSize}px; font-size:${Math.min(1.2, 0.7+protonCount*0.03)}rem;">+${protonCount}</div>
+    <div class="force-line" style="width:120px; height:${th}px;"></div>
+    <div class="particle electron">&minus;</div>`;
+  const readout = document.getElementById('protonReadout');
+  if (readout) readout.textContent = `${protonCount} proton${protonCount===1?'':'s'}`;
+}
+function changeProtons(delta) {
+  protonCount = Math.max(1, Math.min(17, protonCount + delta));
+  renderChargeRow();
+}
+function initChargeLab() {
+  protonCount = 1;
+  renderChargeRow();
+}
+
+/* ============================================================
+   Flow engine
+   ============================================================ */
+let flowIndex = 0;
+let restoring = false;
+
+function beginActivity() {
+  document.getElementById('introScreen').style.display = 'none';
+  document.getElementById('topBar').style.display = 'flex';
+  document.getElementById('flow').style.display = 'block';
+  if (scormResumeData && typeof scormResumeData.p === 'number' && scormResumeData.p > 0) {
+    restoring = true;
+    for (let i = 0; i < scormResumeData.p && i < FLOW.length; i++) {
+      renderBlockAt(i, true);
+    }
+    restoring = false;
+    flowIndex = Math.min(scormResumeData.p, FLOW.length - 1);
+    if (scormResumeData.p >= FLOW.length) {
+      // already finished previously; just show final block completed
+    } else {
+      renderBlockAt(flowIndex, false);
+    }
+  } else {
+    flowIndex = 0;
+    renderBlockAt(0, false);
+  }
+  updateProgressLabel();
+}
+
+function updateProgressLabel() {
+  document.getElementById('progressLabel').textContent = `Step ${Math.min(flowIndex+1, FLOW.length)} of ${FLOW.length}`;
+}
+
+function renderBlockAt(i, isRestore) {
+  const block = FLOW[i];
+  const el = document.createElement('div');
+  el.className = 'block';
+  el.id = 'block-' + i;
+  document.getElementById('flow').appendChild(el);
+  block.render(el);
+
+  if (block.type === 'mc') {
+    setupMC(block, el, i, isRestore);
+  } else if (block.type === 'select') {
+    setupSelect(block, el, i, isRestore);
+  }
+  if (block.onShow && !isRestore) {
+    block.onShow();
+  }
+  if (!isRestore) {
+    el.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+}
+
+function shuffleArray(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function setupMC(block, el, i, isRestore) {
+  const list = document.createElement('div');
+  list.className = 'opt-list';
+  const feedback = document.createElement('div');
+  feedback.className = 'feedback';
+  feedback.id = 'fb-' + i;
+
+  // Shuffle option order so the correct choice isn't always in the same
+  // position (e.g. always first) — re-shuffled fresh each time this block renders.
+  const shuffled = shuffleArray(block.options);
+
+  shuffled.forEach((opt) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = opt.text;
+    btn.onclick = () => handleMCClick(block, i, opt, btn, el, feedback);
+    list.appendChild(btn);
+  });
+  el.appendChild(list);
+  el.appendChild(feedback);
+
+  if (isRestore) {
+    // Show as already completed: highlight the correct one, disable all.
+    const btns = list.querySelectorAll('.opt-btn');
+    shuffled.forEach((opt, oi) => {
+      if (opt.correct) btns[oi].classList.add('correct');
+      btns[oi].disabled = true;
+    });
+  }
+}
+
+function handleMCClick(block, i, opt, btn, el, feedback) {
+  const list = el.querySelector('.opt-list');
+  if (opt.correct) {
+    list.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+    btn.classList.add('correct');
+    feedback.textContent = block.rightMsg || 'Correct!';
+    feedback.className = 'feedback right';
+    markStepComplete(i);
+    setTimeout(() => advanceFlow(), 900);
+  } else {
+    list.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('wrong'));
+    btn.classList.add('wrong');
+    feedback.textContent = block.wrongMsg || 'Not quite — try again.';
+    feedback.className = 'feedback wrong';
+  }
+}
+
+function setupSelect(block, el, i, isRestore) {
+  const wrap = document.createElement('div');
+  wrap.className = 'select-row';
+
+  const select = document.createElement('select');
+  select.className = 'select-input';
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = 'Choose an element…';
+  select.appendChild(placeholder);
+  block.choices.forEach(choice => {
+    const o = document.createElement('option');
+    o.value = choice;
+    o.textContent = choice;
+    select.appendChild(o);
+  });
+
+  const checkBtn = document.createElement('button');
+  checkBtn.className = 'btn';
+  checkBtn.textContent = 'Check Answer';
+  checkBtn.disabled = true;
+
+  const feedback = document.createElement('div');
+  feedback.className = 'feedback';
+  feedback.id = 'fb-' + i;
+
+  select.addEventListener('change', () => {
+    checkBtn.disabled = !select.value;
+    select.classList.remove('wrong');
+  });
+  checkBtn.onclick = () => handleSelectCheck(block, i, select, checkBtn, feedback);
+
+  wrap.appendChild(select);
+  wrap.appendChild(checkBtn);
+  el.appendChild(wrap);
+  el.appendChild(feedback);
+
+  if (isRestore) {
+    select.value = block.correct;
+    select.classList.add('correct');
+    select.disabled = true;
+    checkBtn.style.display = 'none';
+  }
+}
+
+function handleSelectCheck(block, i, select, checkBtn, feedback) {
+  if (select.value === block.correct) {
+    select.classList.remove('wrong');
+    select.classList.add('correct');
+    select.disabled = true;
+    checkBtn.disabled = true;
+    feedback.textContent = block.rightMsg || 'Correct!';
+    feedback.className = 'feedback right';
+    markStepComplete(i);
+    setTimeout(() => advanceFlow(), 900);
+  } else {
+    select.classList.remove('correct');
+    select.classList.add('wrong');
+    feedback.textContent = block.wrongMsg || 'Not quite — try again.';
+    feedback.className = 'feedback wrong';
+  }
+}
+
+function markStepComplete(i) {
+  scormProgress = Math.max(scormProgress, i + 1);
+  scormCheckpoint();
+}
+
+function advanceFlow() {
+  const prevIndex = flowIndex;
+  markStepComplete(prevIndex);
+  flowIndex++;
+  updateProgressLabel();
+  if (flowIndex < FLOW.length) {
+    renderBlockAt(flowIndex, false);
+  }
+}
+
+function finishActivity() {
+  document.getElementById('doneBanner').style.display = 'block';
+  scormComplete();
+}
+
+/* ============================================================
+   SCORM 1.2 (completion-only)
+   ============================================================ */
+let scormAPI = null;
+let scormResumeData = null;
+let scormProgress = 0;
+let scormDone = false;
+const scormStartMs = Date.now();
+
+function findAPI(win) {
+  let n = 0, w = win;
+  while (w && n < 12) {
+    if (w.API) return w.API;
+    w = (w.parent && w.parent !== w) ? w.parent : w.opener;
+    n++;
+  }
+  return null;
+}
+
+function scormInit() {
+  try {
+    scormAPI = findAPI(window);
+    if (!scormAPI) return;
+    if (String(scormAPI.LMSInitialize("")) !== "true") { scormAPI = null; return; }
+    const st = scormAPI.LMSGetValue("cmi.core.lesson_status");
+    if (st === "" || st === "not attempted" || st === "unknown") {
+      scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+    }
+    if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+      const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+      if (raw) {
+        try {
+          const d = JSON.parse(raw);
+          if (d && typeof d === 'object' && typeof d.p === 'number') scormResumeData = d;
+        } catch (e) { /* ignore bad bookmark */ }
+      }
+    }
+    scormAPI.LMSCommit("");
+  } catch (e) { scormAPI = null; }
+}
+
+function scormTime() {
+  let s = Math.floor((Date.now() - scormStartMs) / 1000);
+  const h = String(Math.floor(s / 3600)).padStart(4, '0');
+  s %= 3600;
+  const m = String(Math.floor(s / 60)).padStart(2, '0');
+  const ss = String(s % 60).padStart(2, '0');
+  return h + ':' + m + ':' + ss;
+}
+
+function scormCheckpoint() {
+  if (!scormAPI || scormDone) return;
+  try {
+    scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({ p: scormProgress }));
+    scormAPI.LMSSetValue("cmi.core.lesson_location", String(scormProgress));
+    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+    scormAPI.LMSCommit("");
+  } catch (e) { /* ignore */ }
+}
+
+function scormComplete() {
+  if (!scormAPI || scormDone) { scormDone = true; return; }
+  try {
+    scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({ p: FLOW.length }));
+    scormAPI.LMSSetValue("cmi.core.score.min", "0");
+    scormAPI.LMSSetValue("cmi.core.score.max", "100");
+    scormAPI.LMSSetValue("cmi.core.score.raw", "100");
+    scormAPI.LMSSetValue("cmi.core.lesson_status", "completed");
+    scormAPI.LMSSetValue("cmi.core.session_time", scormTime());
+    scormAPI.LMSSetValue("cmi.core.exit", "");
+    scormAPI.LMSCommit("");
+    scormDone = true;
+  } catch (e) { /* ignore */ }
+}
+
+function scormTerminate() {
+  if (!scormAPI) return;
+  try {
+    if (!scormDone) scormCheckpoint();
+    scormAPI.LMSFinish("");
+  } catch (e) { /* ignore */ }
+}
+
+function manualSave() {
+  if (!scormAPI || scormDone) return;
+  scormCheckpoint();
+  const n = document.getElementById('saveNote');
+  if (n) {
+    n.classList.add('show');
+    clearTimeout(manualSave._t);
+    manualSave._t = setTimeout(() => n.classList.remove('show'), 2200);
+  }
+}
+
+function safetyCommit() {
+  if (!scormAPI || scormDone) return;
+  scormCheckpoint();
+}
+window.addEventListener('pagehide', safetyCommit);
+document.addEventListener('visibilitychange', () => { if (document.hidden) safetyCommit(); });
+window.addEventListener('beforeunload', scormTerminate);
+
+scormInit();
+</script>
+</body>
+</html>

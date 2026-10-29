@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binary Ionic Compound Builder</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        padding: 14px;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 15px;
+        padding: 16px 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 14px;
+        text-align: center;
+        border-radius: 10px;
+        margin-bottom: 12px;
+    }
+    .header h1 { font-size: 1.5em; font-weight: 300; margin-bottom: 4px; }
+    .header p { font-size: 0.95em; opacity: 0.9; }
+
+    /* ---------- Title screen ---------- */
+    #titleScreen { text-align: center; }
+    .instructions-box {
+        max-width: 720px;
+        margin: 16px auto;
+        background: #f8f9fa;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px 24px;
+        text-align: left;
+    }
+    .instructions-box h2 { font-size: 1.1em; color: #2b6cb0; margin-bottom: 10px; }
+    .instructions-box ol { padding-left: 20px; color: #495057; line-height: 1.7; }
+
+    .btn {
+        padding: 10px 22px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.95em;
+        transition: all 0.2s ease;
+        background: #4facfe;
+        color: white;
+    }
+    .btn:hover { background: #3b9cfd; transform: translateY(-1px); }
+    .btn:disabled { background: #cbd5e0; cursor: not-allowed; transform: none; }
+    .btn.secondary { background: #a0aec0; }
+    .btn.secondary:hover { background: #8896ab; }
+    .btn.success { background: #48bb78; }
+    .btn.success:hover { background: #38a169; }
+    .btn.start-btn { font-size: 1.1em; padding: 14px 36px; margin: 6px 0 18px; }
+
+    .save-status {
+        display: inline-block;
+        margin-left: 6px;
+        font-size: 0.9em;
+        font-weight: 700;
+        color: #48bb78;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        vertical-align: middle;
+    }
+    .save-status.visible { opacity: 1; }
+
+    /* ---------- Game screen ---------- */
+    #gameScreen { display: none; }
+
+    .game-info {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+    .stat-box {
+        padding: 6px 14px;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        min-width: 74px;
+        text-align: center;
+        font-size: 0.88em;
+        background: #4facfe;
+    }
+    .stat-box.correct-box { background: #48bb78; }
+
+    .target-banner {
+        background: #f0f9ff;
+        border: 2px solid #4facfe;
+        border-radius: 10px;
+        padding: 10px 16px;
+        text-align: center;
+        max-width: 480px;
+        margin: 0 auto 10px;
+    }
+    .target-banner .label { font-size: 0.72em; color: #999; text-transform: uppercase; letter-spacing: 0.05em; }
+    .target-banner .name { font-size: 1.3em; font-weight: bold; color: #2b6cb0; }
+
+    .table-container { display: flex; flex-direction: column; align-items: center; margin: 6px 0; }
+
+    .group-labels { display: grid; grid-template-columns: 26px repeat(18, 30px); gap: 2px; margin-bottom: 3px; }
+    .table-with-periods { display: grid; grid-template-columns: 26px repeat(18, 30px); grid-template-rows: repeat(7, 30px); gap: 2px; }
+    .group-label, .period-label {
+        display: flex; align-items: center; justify-content: center;
+        font-weight: bold; font-size: 0.62em; color: #4a5568;
+        background: #f8f9fa; border-radius: 3px; border: 1px solid #e2e8f0;
+    }
+    .group-label { height: 16px; }
+    .period-label { width: 26px; height: 30px; }
+    .empty-corner { background: transparent; }
+
+    .element {
+        height: 30px; width: 30px;
+        border: 1.5px solid #ddd; border-radius: 5px;
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        cursor: pointer; transition: all 0.15s ease; position: relative; background: #f9f9f9;
+    }
+    .element:hover { transform: scale(1.12); z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.25); }
+    .element.chosen-correct { background: #28a745 !important; color: white; border-color: #1e7e34; }
+    .element.flash-wrong { background: #dc3545 !important; color: white; border-color: #b02a37; }
+    .element.locked { cursor: default; }
+    .element-symbol { font-size: 11px; font-weight: bold; }
+    .element-number { font-size: 6px; position: absolute; top: 1px; left: 2px; }
+    .empty { background: transparent; border: none; cursor: default; }
+    .empty:hover { transform: none; box-shadow: none; }
+
+    .lanthanide-row, .actinide-row { display: grid; grid-template-columns: repeat(15, 30px); gap: 2px; margin: 4px auto; justify-content: center; }
+    .series-label { text-align: center; font-weight: bold; color: #666; margin-bottom: 2px; font-size: 0.72em; }
+
+    .click-prompt {
+        text-align: center; font-weight: 600; color: #2b6cb0; background: #f0f9ff;
+        border: 1px solid #cfe8ff; border-radius: 8px; padding: 7px 12px; max-width: 420px;
+        margin: 0 auto 10px; font-size: 0.9em;
+    }
+
+    #feedback { text-align: center; font-weight: 600; margin: 8px 0; padding: 8px; border-radius: 8px; min-height: 1.3em; }
+    #feedback.correct { background: #c6f6d5; color: #22543d; }
+    #feedback.incorrect { background: #fed7d7; color: #742a2a; }
+
+    .build-box {
+        max-width: 480px;
+        margin: 10px auto;
+        background: #f8f9ff;
+        border: 1px solid #d6e0ff;
+        border-radius: 10px;
+        padding: 12px 16px;
+        display: none;
+    }
+    .build-box.visible { display: block; }
+    .build-box h3 { font-size: 0.85em; color: #718096; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .build-row { display: flex; justify-content: space-between; font-size: 0.95em; padding: 3px 0; }
+    .build-row b { color: #2b6cb0; }
+
+    .main-controls { display: flex; justify-content: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+
+    /* ---------- Modals ---------- */
+    .modal-overlay {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+        align-items: center; justify-content: center; z-index: 200; padding: 16px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+        background: white; border-radius: 14px; padding: 24px 28px; max-width: 620px; width: 100%;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.3); max-height: 92vh; overflow-y: auto;
+    }
+    .modal-box h2 { text-align: center; color: #2b6cb0; margin-bottom: 4px; font-size: 1.3em; }
+    .modal-sub { text-align: center; color: #888; font-size: 0.85em; margin-bottom: 16px; }
+
+    .ion-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px; }
+    @media (max-width: 560px) { .ion-columns { grid-template-columns: 1fr; } }
+    .ion-col { background: #f8f9ff; border: 1px solid #e1e8ff; border-radius: 10px; padding: 12px; }
+    .ion-col h4 { text-align: center; font-size: 1em; color: #333; margin-bottom: 10px; }
+    .ion-col .choice-label { font-size: 0.78em; color: #718096; margin: 8px 0 5px; text-transform: uppercase; letter-spacing: 0.03em; }
+    .choice-row { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+    .choice-btn {
+        min-width: 42px; padding: 8px 10px; border: 2px solid #d0d7de; border-radius: 8px;
+        background: white; cursor: pointer; font-weight: 600; font-size: 0.9em; transition: all 0.15s ease;
+    }
+    .choice-btn:hover { border-color: #4facfe; }
+    .choice-btn.selected { background: #4facfe; color: white; border-color: #2b6cb0; }
+
+    .modal-actions { display: flex; justify-content: center; gap: 12px; margin-top: 16px; }
+
+    .formula-ion { display: inline-flex; flex-direction: column; align-items: center; margin: 0 10px; }
+    .formula-symbol { font-size: 2rem; font-weight: bold; color: #2c3e50; }
+    .subscript-badge {
+        margin-top: 2px; min-width: 30px; padding: 4px 8px; border: 2px dashed #4facfe; border-radius: 6px;
+        background: #f0f9ff; color: #2b6cb0; font-weight: bold; cursor: pointer; font-size: 0.95em;
+        transition: all 0.15s ease;
+    }
+    .subscript-badge:hover { background: #dbeeff; transform: scale(1.06); }
+    .formula-builder { display: flex; justify-content: center; align-items: center; margin: 14px 0; }
+    .formula-preview {
+        text-align: center; font-size: 1.6rem; font-weight: bold; color: #2b6cb0;
+        background: #f8f9ff; border-radius: 8px; padding: 10px; margin: 12px 0;
+    }
+    .modal-feedback { text-align: center; font-weight: 600; margin: 8px 0; padding: 8px; border-radius: 8px; min-height: 1.2em; }
+    .modal-feedback.correct { background: #c6f6d5; color: #22543d; }
+    .modal-feedback.incorrect { background: #fed7d7; color: #742a2a; }
+
+    .summary-block { background: #f8f9ff; border: 1px solid #e1e8ff; border-radius: 10px; padding: 12px 16px; margin-bottom: 6px; }
+    .summary-row { display: flex; justify-content: space-between; gap: 12px; font-size: 0.95em; padding: 5px 0; border-bottom: 1px solid #e9edfb; }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-row span { color: #718096; }
+    .summary-row b { color: #2b6cb0; text-align: right; }
+
+    @media (max-width: 480px) {
+        .group-labels { grid-template-columns: 20px repeat(18, 20px); }
+        .table-with-periods { grid-template-columns: 20px repeat(18, 20px); grid-template-rows: repeat(7, 20px); }
+        .period-label { width: 20px; height: 20px; }
+        .element { width: 20px; height: 20px; }
+        .element-symbol { font-size: 8px; }
+        .element-number { font-size: 5px; }
+        .lanthanide-row, .actinide-row { grid-template-columns: repeat(15, 20px); }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Binary Ionic Compound Builder</h1>
+        <p>You're given the name. Find the elements, work out the ions, then write the formula.</p>
+    </div>
+
+    <!-- ================= TITLE SCREEN ================= -->
+    <div id="titleScreen">
+        <div class="instructions-box">
+            <h2>How it works</h2>
+            <ol>
+                <li>You'll see the name of a binary ionic compound. Click its cation (metal) on the periodic table first, then click its anion (nonmetal). Any element on the table is fair game, not just the ones this activity happens to use.</li>
+                <li>Once you've clicked the correct cation and then the correct anion, a window pops up: pick each ion's charge and how many atoms of it the formula needs.</li>
+                <li>Click Check. If your ion setup is right, a second window lets you build the actual formula. Click the subscript under each symbol to cycle it to the correct number.</li>
+                <li>Check your formula, review the summary, and move on. Complete all 10 compounds to finish the activity. Your progress is saved if you're interrupted, and a completion grade is submitted to Schoology automatically when you finish.</li>
+                <li><strong>Before you close your Chromebook or exit Schoology,</strong> click the green "Save Progress" button so your work is saved and you can pick up where you left off next time.</li>
+            </ol>
+        </div>
+        <button class="btn start-btn" onclick="startGame()">Start</button>
+    </div>
+
+    <!-- ================= GAME SCREEN ================= -->
+    <div id="gameScreen">
+        <div class="game-info">
+            <div class="stat-box">Compound: <span id="progressDisplay">1</span>/<span id="totalDisplay">10</span></div>
+            <div class="stat-box">Streak: <span id="streakDisplay">0</span></div>
+            <div class="stat-box correct-box">Correct: <span id="correctDisplay">0</span></div>
+        </div>
+
+        <div class="target-banner">
+            <div class="label">Build this compound</div>
+            <div class="name" id="targetName">&nbsp;</div>
+        </div>
+
+        <div class="click-prompt" id="clickPrompt"></div>
+
+        <div id="feedback"></div>
+
+        <div class="table-container">
+            <div class="group-labels" id="groupLabels"></div>
+            <div class="table-with-periods" id="periodicTableContainer"></div>
+        </div>
+        <div class="series-label">Lanthanides</div>
+        <div class="lanthanide-row" id="lanthanideRow"></div>
+        <div class="series-label">Actinides</div>
+        <div class="actinide-row" id="actinideRow"></div>
+
+        <div class="build-box" id="buildBox">
+            <h3>Your ion setup</h3>
+            <div class="build-row"><span id="buildCationLabel"></span><b id="buildCationValue"></b></div>
+            <div class="build-row"><span id="buildAnionLabel"></span><b id="buildAnionValue"></b></div>
+        </div>
+
+        <div class="main-controls">
+            <button class="btn" id="checkSetupBtn" style="display:none;" onclick="checkModal1Answer()">Check Ion Setup</button>
+            <button class="btn" id="editSetupBtn" style="display:none;" onclick="openModal1(true)">Edit Setup</button>
+            <button class="btn success" id="saveProgressBtn" onclick="manualSaveProgress()">Save Progress</button>
+            <span class="save-status" id="saveStatus">Saved ✓</span>
+        </div>
+    </div>
+</div>
+
+<!-- ================= MODAL 1: ION SETUP ================= -->
+<div class="modal-overlay" id="modal1">
+    <div class="modal-box">
+        <h2 id="modal1Name">Compound</h2>
+        <div class="modal-sub">Choose each ion's charge and how many atoms of it the formula needs.</div>
+        <div class="ion-columns">
+            <div class="ion-col">
+                <h4 id="modal1CationTitle">Metal</h4>
+                <div class="choice-label">Charge</div>
+                <div class="choice-row" id="cationChargeRow"></div>
+                <div class="choice-label">Atoms needed</div>
+                <div class="choice-row" id="cationCountRow"></div>
+            </div>
+            <div class="ion-col">
+                <h4 id="modal1AnionTitle">Nonmetal</h4>
+                <div class="choice-label">Charge</div>
+                <div class="choice-row" id="anionChargeRow"></div>
+                <div class="choice-label">Atoms needed</div>
+                <div class="choice-row" id="anionCountRow"></div>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn" id="modal1OkBtn" onclick="confirmModal1()" disabled>OK</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================= MODAL 2: FORMULA BUILDER ================= -->
+<div class="modal-overlay" id="modal2">
+    <div class="modal-box">
+        <h2 id="modal2Name">Compound</h2>
+        <div class="modal-sub">Click each subscript to cycle it to the correct number.</div>
+        <div class="formula-builder">
+            <div class="formula-ion">
+                <div class="formula-symbol" id="modal2CationSymbol"></div>
+                <div class="subscript-badge" id="modal2CationSub" onclick="cycleSubscript('cation')">1</div>
+            </div>
+            <div class="formula-ion">
+                <div class="formula-symbol" id="modal2AnionSymbol"></div>
+                <div class="subscript-badge" id="modal2AnionSub" onclick="cycleSubscript('anion')">1</div>
+            </div>
+        </div>
+        <div class="formula-preview" id="formulaPreview"></div>
+        <div class="modal-feedback" id="modal2Feedback"></div>
+        <div class="modal-actions">
+            <button class="btn" id="modal2CheckBtn" onclick="checkModal2Answer()">Check Formula</button>
+            <button class="btn success" id="modal2DoneBtn" style="display:none;" onclick="finishQuestion()">Done</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================= MODAL 3: PROBLEM SUMMARY ================= -->
+<div class="modal-overlay" id="modal3">
+    <div class="modal-box">
+        <h2>Nicely done!</h2>
+        <div class="modal-sub" id="summaryName"></div>
+        <div class="summary-block">
+            <div class="summary-row"><span>Cation</span><b id="summaryCation"></b></div>
+            <div class="summary-row"><span>Anion</span><b id="summaryAnion"></b></div>
+            <div class="summary-row"><span>Charges balance</span><b id="summaryBalance"></b></div>
+            <div class="summary-row"><span>Formula</span><b id="summaryFormula"></b></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn success" id="summaryContinueBtn" onclick="continueAfterSummary()">Continue</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================= MODAL 4: ROUND COMPLETE ================= -->
+<div class="modal-overlay" id="modal4">
+    <div class="modal-box">
+        <h2>Round Complete!</h2>
+        <div class="modal-sub">Nice work. Here's how you did.</div>
+        <div class="summary-block">
+            <div class="summary-row"><span>Compounds completed</span><b id="completeCount"></b></div>
+            <div class="summary-row"><span>Mistakes along the way</span><b id="completeMistakes"></b></div>
+        </div>
+        <p style="text-align:center; color:#888; font-size:0.82em; margin:6px 0 4px;">Your completion grade has been submitted to Schoology.</p>
+        <div class="modal-actions">
+            <button class="btn success" onclick="playAgain()">Play Again</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ---------------- Ion data ---------------- */
+const cations = [
+    { symbol: 'Li', name: 'Lithium',   charge: 1 },
+    { symbol: 'Na', name: 'Sodium',    charge: 1 },
+    { symbol: 'K',  name: 'Potassium', charge: 1 },
+    { symbol: 'Rb', name: 'Rubidium',  charge: 1 },
+    { symbol: 'Cs', name: 'Cesium',    charge: 1 },
+    { symbol: 'Be', name: 'Beryllium', charge: 2 },
+    { symbol: 'Mg', name: 'Magnesium', charge: 2 },
+    { symbol: 'Ca', name: 'Calcium',   charge: 2 },
+    { symbol: 'Sr', name: 'Strontium', charge: 2 },
+    { symbol: 'Ba', name: 'Barium',    charge: 2 },
+    { symbol: 'Al', name: 'Aluminum',  charge: 3 }
+];
+
+const anions = [
+    { symbol: 'F',  name: 'Fluorine',  elementName: 'Fluorine',  charge: -1 },
+    { symbol: 'Cl', name: 'Chlorine',  elementName: 'Chlorine',  charge: -1 },
+    { symbol: 'Br', name: 'Bromine',   elementName: 'Bromine',   charge: -1 },
+    { symbol: 'I',  name: 'Iodine',    elementName: 'Iodine',    charge: -1 },
+    { symbol: 'O',  name: 'Oxygen',    elementName: 'Oxygen',    charge: -2 },
+    { symbol: 'S',  name: 'Sulfur',    elementName: 'Sulfur',    charge: -2 },
+    { symbol: 'Se', name: 'Selenium',  elementName: 'Selenium',  charge: -2 },
+    { symbol: 'N',  name: 'Nitrogen',  elementName: 'Nitrogen',  charge: -3 },
+    { symbol: 'P',  name: 'Phosphorus',elementName: 'Phosphorus',charge: -3 }
+];
+
+const cationBySymbol = {}; cations.forEach(c => cationBySymbol[c.symbol] = c);
+const anionBySymbol = {}; anions.forEach(a => anionBySymbol[a.symbol] = a);
+
+const compounds = [
+      { name: 'Lithium fluoride', ions: [{symbol:'Li',count:1},{symbol:'F',count:1}] },
+      { name: 'Lithium chloride', ions: [{symbol:'Li',count:1},{symbol:'Cl',count:1}] },
+      { name: 'Lithium bromide', ions: [{symbol:'Li',count:1},{symbol:'Br',count:1}] },
+      { name: 'Lithium iodide', ions: [{symbol:'Li',count:1},{symbol:'I',count:1}] },
+      { name: 'Lithium oxide', ions: [{symbol:'Li',count:2},{symbol:'O',count:1}] },
+      { name: 'Lithium sulfide', ions: [{symbol:'Li',count:2},{symbol:'S',count:1}] },
+      { name: 'Lithium selenide', ions: [{symbol:'Li',count:2},{symbol:'Se',count:1}] },
+      { name: 'Lithium nitride', ions: [{symbol:'Li',count:3},{symbol:'N',count:1}] },
+      { name: 'Lithium phosphide', ions: [{symbol:'Li',count:3},{symbol:'P',count:1}] },
+      { name: 'Sodium fluoride', ions: [{symbol:'Na',count:1},{symbol:'F',count:1}] },
+      { name: 'Sodium chloride', ions: [{symbol:'Na',count:1},{symbol:'Cl',count:1}] },
+      { name: 'Sodium bromide', ions: [{symbol:'Na',count:1},{symbol:'Br',count:1}] },
+      { name: 'Sodium iodide', ions: [{symbol:'Na',count:1},{symbol:'I',count:1}] },
+      { name: 'Sodium oxide', ions: [{symbol:'Na',count:2},{symbol:'O',count:1}] },
+      { name: 'Sodium sulfide', ions: [{symbol:'Na',count:2},{symbol:'S',count:1}] },
+      { name: 'Sodium selenide', ions: [{symbol:'Na',count:2},{symbol:'Se',count:1}] },
+      { name: 'Sodium nitride', ions: [{symbol:'Na',count:3},{symbol:'N',count:1}] },
+      { name: 'Sodium phosphide', ions: [{symbol:'Na',count:3},{symbol:'P',count:1}] },
+      { name: 'Potassium fluoride', ions: [{symbol:'K',count:1},{symbol:'F',count:1}] },
+      { name: 'Potassium chloride', ions: [{symbol:'K',count:1},{symbol:'Cl',count:1}] },
+      { name: 'Potassium bromide', ions: [{symbol:'K',count:1},{symbol:'Br',count:1}] },
+      { name: 'Potassium iodide', ions: [{symbol:'K',count:1},{symbol:'I',count:1}] },
+      { name: 'Potassium oxide', ions: [{symbol:'K',count:2},{symbol:'O',count:1}] },
+      { name: 'Potassium sulfide', ions: [{symbol:'K',count:2},{symbol:'S',count:1}] },
+      { name: 'Potassium selenide', ions: [{symbol:'K',count:2},{symbol:'Se',count:1}] },
+      { name: 'Potassium nitride', ions: [{symbol:'K',count:3},{symbol:'N',count:1}] },
+      { name: 'Potassium phosphide', ions: [{symbol:'K',count:3},{symbol:'P',count:1}] },
+      { name: 'Rubidium fluoride', ions: [{symbol:'Rb',count:1},{symbol:'F',count:1}] },
+      { name: 'Rubidium chloride', ions: [{symbol:'Rb',count:1},{symbol:'Cl',count:1}] },
+      { name: 'Rubidium bromide', ions: [{symbol:'Rb',count:1},{symbol:'Br',count:1}] },
+      { name: 'Rubidium iodide', ions: [{symbol:'Rb',count:1},{symbol:'I',count:1}] },
+      { name: 'Rubidium oxide', ions: [{symbol:'Rb',count:2},{symbol:'O',count:1}] },
+      { name: 'Rubidium sulfide', ions: [{symbol:'Rb',count:2},{symbol:'S',count:1}] },
+      { name: 'Rubidium selenide', ions: [{symbol:'Rb',count:2},{symbol:'Se',count:1}] },
+      { name: 'Rubidium nitride', ions: [{symbol:'Rb',count:3},{symbol:'N',count:1}] },
+      { name: 'Rubidium phosphide', ions: [{symbol:'Rb',count:3},{symbol:'P',count:1}] },
+      { name: 'Cesium fluoride', ions: [{symbol:'Cs',count:1},{symbol:'F',count:1}] },
+      { name: 'Cesium chloride', ions: [{symbol:'Cs',count:1},{symbol:'Cl',count:1}] },
+      { name: 'Cesium bromide', ions: [{symbol:'Cs',count:1},{symbol:'Br',count:1}] },
+      { name: 'Cesium iodide', ions: [{symbol:'Cs',count:1},{symbol:'I',count:1}] },
+      { name: 'Cesium oxide', ions: [{symbol:'Cs',count:2},{symbol:'O',count:1}] },
+      { name: 'Cesium sulfide', ions: [{symbol:'Cs',count:2},{symbol:'S',count:1}] },
+      { name: 'Cesium selenide', ions: [{symbol:'Cs',count:2},{symbol:'Se',count:1}] },
+      { name: 'Cesium nitride', ions: [{symbol:'Cs',count:3},{symbol:'N',count:1}] },
+      { name: 'Cesium phosphide', ions: [{symbol:'Cs',count:3},{symbol:'P',count:1}] },
+      { name: 'Beryllium fluoride', ions: [{symbol:'Be',count:1},{symbol:'F',count:2}] },
+      { name: 'Beryllium chloride', ions: [{symbol:'Be',count:1},{symbol:'Cl',count:2}] },
+      { name: 'Beryllium bromide', ions: [{symbol:'Be',count:1},{symbol:'Br',count:2}] },
+      { name: 'Beryllium iodide', ions: [{symbol:'Be',count:1},{symbol:'I',count:2}] },
+      { name: 'Beryllium oxide', ions: [{symbol:'Be',count:1},{symbol:'O',count:1}] },
+      { name: 'Beryllium sulfide', ions: [{symbol:'Be',count:1},{symbol:'S',count:1}] },
+      { name: 'Beryllium selenide', ions: [{symbol:'Be',count:1},{symbol:'Se',count:1}] },
+      { name: 'Beryllium nitride', ions: [{symbol:'Be',count:3},{symbol:'N',count:2}] },
+      { name: 'Beryllium phosphide', ions: [{symbol:'Be',count:3},{symbol:'P',count:2}] },
+      { name: 'Magnesium fluoride', ions: [{symbol:'Mg',count:1},{symbol:'F',count:2}] },
+      { name: 'Magnesium chloride', ions: [{symbol:'Mg',count:1},{symbol:'Cl',count:2}] },
+      { name: 'Magnesium bromide', ions: [{symbol:'Mg',count:1},{symbol:'Br',count:2}] },
+      { name: 'Magnesium iodide', ions: [{symbol:'Mg',count:1},{symbol:'I',count:2}] },
+      { name: 'Magnesium oxide', ions: [{symbol:'Mg',count:1},{symbol:'O',count:1}] },
+      { name: 'Magnesium sulfide', ions: [{symbol:'Mg',count:1},{symbol:'S',count:1}] },
+      { name: 'Magnesium selenide', ions: [{symbol:'Mg',count:1},{symbol:'Se',count:1}] },
+      { name: 'Magnesium nitride', ions: [{symbol:'Mg',count:3},{symbol:'N',count:2}] },
+      { name: 'Magnesium phosphide', ions: [{symbol:'Mg',count:3},{symbol:'P',count:2}] },
+      { name: 'Calcium fluoride', ions: [{symbol:'Ca',count:1},{symbol:'F',count:2}] },
+      { name: 'Calcium chloride', ions: [{symbol:'Ca',count:1},{symbol:'Cl',count:2}] },
+      { name: 'Calcium bromide', ions: [{symbol:'Ca',count:1},{symbol:'Br',count:2}] },
+      { name: 'Calcium iodide', ions: [{symbol:'Ca',count:1},{symbol:'I',count:2}] },
+      { name: 'Calcium oxide', ions: [{symbol:'Ca',count:1},{symbol:'O',count:1}] },
+      { name: 'Calcium sulfide', ions: [{symbol:'Ca',count:1},{symbol:'S',count:1}] },
+      { name: 'Calcium selenide', ions: [{symbol:'Ca',count:1},{symbol:'Se',count:1}] },
+      { name: 'Calcium nitride', ions: [{symbol:'Ca',count:3},{symbol:'N',count:2}] },
+      { name: 'Calcium phosphide', ions: [{symbol:'Ca',count:3},{symbol:'P',count:2}] },
+      { name: 'Strontium fluoride', ions: [{symbol:'Sr',count:1},{symbol:'F',count:2}] },
+      { name: 'Strontium chloride', ions: [{symbol:'Sr',count:1},{symbol:'Cl',count:2}] },
+      { name: 'Strontium bromide', ions: [{symbol:'Sr',count:1},{symbol:'Br',count:2}] },
+      { name: 'Strontium iodide', ions: [{symbol:'Sr',count:1},{symbol:'I',count:2}] },
+      { name: 'Strontium oxide', ions: [{symbol:'Sr',count:1},{symbol:'O',count:1}] },
+      { name: 'Strontium sulfide', ions: [{symbol:'Sr',count:1},{symbol:'S',count:1}] },
+      { name: 'Strontium selenide', ions: [{symbol:'Sr',count:1},{symbol:'Se',count:1}] },
+      { name: 'Strontium nitride', ions: [{symbol:'Sr',count:3},{symbol:'N',count:2}] },
+      { name: 'Strontium phosphide', ions: [{symbol:'Sr',count:3},{symbol:'P',count:2}] },
+      { name: 'Barium fluoride', ions: [{symbol:'Ba',count:1},{symbol:'F',count:2}] },
+      { name: 'Barium chloride', ions: [{symbol:'Ba',count:1},{symbol:'Cl',count:2}] },
+      { name: 'Barium bromide', ions: [{symbol:'Ba',count:1},{symbol:'Br',count:2}] },
+      { name: 'Barium iodide', ions: [{symbol:'Ba',count:1},{symbol:'I',count:2}] },
+      { name: 'Barium oxide', ions: [{symbol:'Ba',count:1},{symbol:'O',count:1}] },
+      { name: 'Barium sulfide', ions: [{symbol:'Ba',count:1},{symbol:'S',count:1}] },
+      { name: 'Barium selenide', ions: [{symbol:'Ba',count:1},{symbol:'Se',count:1}] },
+      { name: 'Barium nitride', ions: [{symbol:'Ba',count:3},{symbol:'N',count:2}] },
+      { name: 'Barium phosphide', ions: [{symbol:'Ba',count:3},{symbol:'P',count:2}] },
+      { name: 'Aluminum fluoride', ions: [{symbol:'Al',count:1},{symbol:'F',count:3}] },
+      { name: 'Aluminum chloride', ions: [{symbol:'Al',count:1},{symbol:'Cl',count:3}] },
+      { name: 'Aluminum bromide', ions: [{symbol:'Al',count:1},{symbol:'Br',count:3}] },
+      { name: 'Aluminum iodide', ions: [{symbol:'Al',count:1},{symbol:'I',count:3}] },
+      { name: 'Aluminum oxide', ions: [{symbol:'Al',count:2},{symbol:'O',count:3}] },
+      { name: 'Aluminum sulfide', ions: [{symbol:'Al',count:2},{symbol:'S',count:3}] },
+      { name: 'Aluminum selenide', ions: [{symbol:'Al',count:2},{symbol:'Se',count:3}] },
+      { name: 'Aluminum nitride', ions: [{symbol:'Al',count:1},{symbol:'N',count:1}] },
+      { name: 'Aluminum phosphide', ions: [{symbol:'Al',count:1},{symbol:'P',count:1}] }
+];
+
+/* ---------------- Periodic table data (full 118, only 22 are usable) ---------------- */
+const allElements = [
+    {symbol:'H',name:'Hydrogen',number:1,group:1,period:1},{symbol:'He',name:'Helium',number:2,group:18,period:1},
+    {symbol:'Li',name:'Lithium',number:3,group:1,period:2},{symbol:'Be',name:'Beryllium',number:4,group:2,period:2},
+    {symbol:'B',name:'Boron',number:5,group:13,period:2},{symbol:'C',name:'Carbon',number:6,group:14,period:2},
+    {symbol:'N',name:'Nitrogen',number:7,group:15,period:2},{symbol:'O',name:'Oxygen',number:8,group:16,period:2},
+    {symbol:'F',name:'Fluorine',number:9,group:17,period:2},{symbol:'Ne',name:'Neon',number:10,group:18,period:2},
+    {symbol:'Na',name:'Sodium',number:11,group:1,period:3},{symbol:'Mg',name:'Magnesium',number:12,group:2,period:3},
+    {symbol:'Al',name:'Aluminum',number:13,group:13,period:3},{symbol:'Si',name:'Silicon',number:14,group:14,period:3},
+    {symbol:'P',name:'Phosphorus',number:15,group:15,period:3},{symbol:'S',name:'Sulfur',number:16,group:16,period:3},
+    {symbol:'Cl',name:'Chlorine',number:17,group:17,period:3},{symbol:'Ar',name:'Argon',number:18,group:18,period:3},
+    {symbol:'K',name:'Potassium',number:19,group:1,period:4},{symbol:'Ca',name:'Calcium',number:20,group:2,period:4},
+    {symbol:'Sc',name:'Scandium',number:21,group:3,period:4},{symbol:'Ti',name:'Titanium',number:22,group:4,period:4},
+    {symbol:'V',name:'Vanadium',number:23,group:5,period:4},{symbol:'Cr',name:'Chromium',number:24,group:6,period:4},
+    {symbol:'Mn',name:'Manganese',number:25,group:7,period:4},{symbol:'Fe',name:'Iron',number:26,group:8,period:4},
+    {symbol:'Co',name:'Cobalt',number:27,group:9,period:4},{symbol:'Ni',name:'Nickel',number:28,group:10,period:4},
+    {symbol:'Cu',name:'Copper',number:29,group:11,period:4},{symbol:'Zn',name:'Zinc',number:30,group:12,period:4},
+    {symbol:'Ga',name:'Gallium',number:31,group:13,period:4},{symbol:'Ge',name:'Germanium',number:32,group:14,period:4},
+    {symbol:'As',name:'Arsenic',number:33,group:15,period:4},{symbol:'Se',name:'Selenium',number:34,group:16,period:4},
+    {symbol:'Br',name:'Bromine',number:35,group:17,period:4},{symbol:'Kr',name:'Krypton',number:36,group:18,period:4},
+    {symbol:'Rb',name:'Rubidium',number:37,group:1,period:5},{symbol:'Sr',name:'Strontium',number:38,group:2,period:5},
+    {symbol:'Y',name:'Yttrium',number:39,group:3,period:5},{symbol:'Zr',name:'Zirconium',number:40,group:4,period:5},
+    {symbol:'Nb',name:'Niobium',number:41,group:5,period:5},{symbol:'Mo',name:'Molybdenum',number:42,group:6,period:5},
+    {symbol:'Tc',name:'Technetium',number:43,group:7,period:5},{symbol:'Ru',name:'Ruthenium',number:44,group:8,period:5},
+    {symbol:'Rh',name:'Rhodium',number:45,group:9,period:5},{symbol:'Pd',name:'Palladium',number:46,group:10,period:5},
+    {symbol:'Ag',name:'Silver',number:47,group:11,period:5},{symbol:'Cd',name:'Cadmium',number:48,group:12,period:5},
+    {symbol:'In',name:'Indium',number:49,group:13,period:5},{symbol:'Sn',name:'Tin',number:50,group:14,period:5},
+    {symbol:'Sb',name:'Antimony',number:51,group:15,period:5},{symbol:'Te',name:'Tellurium',number:52,group:16,period:5},
+    {symbol:'I',name:'Iodine',number:53,group:17,period:5},{symbol:'Xe',name:'Xenon',number:54,group:18,period:5},
+    {symbol:'Cs',name:'Cesium',number:55,group:1,period:6},{symbol:'Ba',name:'Barium',number:56,group:2,period:6},
+    {symbol:'La',name:'Lanthanum',number:57,group:3,period:6,isLanthanide:true},
+    {symbol:'Ce',name:'Cerium',number:58,group:3,period:8,isLanthanide:true},
+    {symbol:'Pr',name:'Praseodymium',number:59,group:3,period:8,isLanthanide:true},
+    {symbol:'Nd',name:'Neodymium',number:60,group:3,period:8,isLanthanide:true},
+    {symbol:'Pm',name:'Promethium',number:61,group:3,period:8,isLanthanide:true},
+    {symbol:'Sm',name:'Samarium',number:62,group:3,period:8,isLanthanide:true},
+    {symbol:'Eu',name:'Europium',number:63,group:3,period:8,isLanthanide:true},
+    {symbol:'Gd',name:'Gadolinium',number:64,group:3,period:8,isLanthanide:true},
+    {symbol:'Tb',name:'Terbium',number:65,group:3,period:8,isLanthanide:true},
+    {symbol:'Dy',name:'Dysprosium',number:66,group:3,period:8,isLanthanide:true},
+    {symbol:'Ho',name:'Holmium',number:67,group:3,period:8,isLanthanide:true},
+    {symbol:'Er',name:'Erbium',number:68,group:3,period:8,isLanthanide:true},
+    {symbol:'Tm',name:'Thulium',number:69,group:3,period:8,isLanthanide:true},
+    {symbol:'Yb',name:'Ytterbium',number:70,group:3,period:8,isLanthanide:true},
+    {symbol:'Lu',name:'Lutetium',number:71,group:3,period:8,isLanthanide:true},
+    {symbol:'Hf',name:'Hafnium',number:72,group:4,period:6},{symbol:'Ta',name:'Tantalum',number:73,group:5,period:6},
+    {symbol:'W',name:'Tungsten',number:74,group:6,period:6},{symbol:'Re',name:'Rhenium',number:75,group:7,period:6},
+    {symbol:'Os',name:'Osmium',number:76,group:8,period:6},{symbol:'Ir',name:'Iridium',number:77,group:9,period:6},
+    {symbol:'Pt',name:'Platinum',number:78,group:10,period:6},{symbol:'Au',name:'Gold',number:79,group:11,period:6},
+    {symbol:'Hg',name:'Mercury',number:80,group:12,period:6},{symbol:'Tl',name:'Thallium',number:81,group:13,period:6},
+    {symbol:'Pb',name:'Lead',number:82,group:14,period:6},{symbol:'Bi',name:'Bismuth',number:83,group:15,period:6},
+    {symbol:'Po',name:'Polonium',number:84,group:16,period:6},{symbol:'At',name:'Astatine',number:85,group:17,period:6},
+    {symbol:'Rn',name:'Radon',number:86,group:18,period:6},{symbol:'Fr',name:'Francium',number:87,group:1,period:7},
+    {symbol:'Ra',name:'Radium',number:88,group:2,period:7},
+    {symbol:'Ac',name:'Actinium',number:89,group:3,period:7,isActinide:true},
+    {symbol:'Th',name:'Thorium',number:90,group:3,period:9,isActinide:true},
+    {symbol:'Pa',name:'Protactinium',number:91,group:3,period:9,isActinide:true},
+    {symbol:'U',name:'Uranium',number:92,group:3,period:9,isActinide:true},
+    {symbol:'Np',name:'Neptunium',number:93,group:3,period:9,isActinide:true},
+    {symbol:'Pu',name:'Plutonium',number:94,group:3,period:9,isActinide:true},
+    {symbol:'Am',name:'Americium',number:95,group:3,period:9,isActinide:true},
+    {symbol:'Cm',name:'Curium',number:96,group:3,period:9,isActinide:true},
+    {symbol:'Bk',name:'Berkelium',number:97,group:3,period:9,isActinide:true},
+    {symbol:'Cf',name:'Californium',number:98,group:3,period:9,isActinide:true},
+    {symbol:'Es',name:'Einsteinium',number:99,group:3,period:9,isActinide:true},
+    {symbol:'Fm',name:'Fermium',number:100,group:3,period:9,isActinide:true},
+    {symbol:'Md',name:'Mendelevium',number:101,group:3,period:9,isActinide:true},
+    {symbol:'No',name:'Nobelium',number:102,group:3,period:9,isActinide:true},
+    {symbol:'Lr',name:'Lawrencium',number:103,group:3,period:9,isActinide:true},
+    {symbol:'Rf',name:'Rutherfordium',number:104,group:4,period:7},{symbol:'Db',name:'Dubnium',number:105,group:5,period:7},
+    {symbol:'Sg',name:'Seaborgium',number:106,group:6,period:7},{symbol:'Bh',name:'Bohrium',number:107,group:7,period:7},
+    {symbol:'Hs',name:'Hassium',number:108,group:8,period:7},{symbol:'Mt',name:'Meitnerium',number:109,group:9,period:7},
+    {symbol:'Ds',name:'Darmstadtium',number:110,group:10,period:7},{symbol:'Rg',name:'Roentgenium',number:111,group:11,period:7},
+    {symbol:'Cn',name:'Copernicium',number:112,group:12,period:7},{symbol:'Nh',name:'Nihonium',number:113,group:13,period:7},
+    {symbol:'Fl',name:'Flerovium',number:114,group:14,period:7},{symbol:'Mc',name:'Moscovium',number:115,group:15,period:7},
+    {symbol:'Lv',name:'Livermorium',number:116,group:16,period:7},{symbol:'Ts',name:'Tennessine',number:117,group:17,period:7},
+    {symbol:'Og',name:'Oganesson',number:118,group:18,period:7}
+];
+
+/* ---------------- State ---------------- */
+let current = null;
+let cationSym = null, anionSym = null;
+let foundMetal = false, foundNonmetal = false;
+let streak = 0, correctCount = 0, mistakeCount = 0;
+const TOTAL_QUESTIONS = /*__REQUIRED_PROBLEMS__*/10;
+let questionsCompleted = 0;
+let roundQueue = [];
+let challengeFinished = false;
+let modal1Selection = { cationCharge: null, cationCount: null, anionCharge: null, anionCount: null };
+let modal2Selection = { cationSub: 1, anionSub: 1 };
+
+function formatSub(sym, count) {
+    return count > 1 ? `${sym}<sub>${count}</sub>` : sym;
+}
+
+/* ---------------- Periodic table rendering ---------------- */
+function createPeriodicTable() {
+    const groupLabels = document.getElementById('groupLabels');
+    const container = document.getElementById('periodicTableContainer');
+    const lanthanideRow = document.getElementById('lanthanideRow');
+    const actinideRow = document.getElementById('actinideRow');
+
+    groupLabels.innerHTML = '<div class="empty-corner"></div>' +
+        Array.from({length: 18}, (_, i) => `<div class="group-label">${i + 1}</div>`).join('');
+
+    container.innerHTML = '';
+    lanthanideRow.innerHTML = '';
+    actinideRow.innerHTML = '';
+
+    for (let period = 1; period <= 7; period++) {
+        const periodLabel = document.createElement('div');
+        periodLabel.className = 'period-label';
+        periodLabel.textContent = period;
+        container.appendChild(periodLabel);
+
+        for (let group = 1; group <= 18; group++) {
+            const element = allElements.find(el => el.period === period && el.group === group && !el.isLanthanide && !el.isActinide);
+            const cell = document.createElement('div');
+
+            if (element) {
+                cell.className = 'element';
+                cell.dataset.symbol = element.symbol;
+                cell.onclick = () => selectElement(element, cell);
+                cell.innerHTML = `<div class="element-number">${element.number}</div><div class="element-symbol">${element.symbol}</div>`;
+            } else {
+                cell.className = 'element empty';
+            }
+            container.appendChild(cell);
+        }
+    }
+
+    allElements.filter(el => el.isLanthanide).forEach(element => {
+        const cell = document.createElement('div');
+        cell.className = 'element';
+        cell.dataset.symbol = element.symbol;
+        cell.onclick = () => selectElement(element, cell);
+        cell.innerHTML = `<div class="element-number">${element.number}</div><div class="element-symbol">${element.symbol}</div>`;
+        lanthanideRow.appendChild(cell);
+    });
+    allElements.filter(el => el.isActinide).forEach(element => {
+        const cell = document.createElement('div');
+        cell.className = 'element';
+        cell.dataset.symbol = element.symbol;
+        cell.onclick = () => selectElement(element, cell);
+        cell.innerHTML = `<div class="element-number">${element.number}</div><div class="element-symbol">${element.symbol}</div>`;
+        actinideRow.appendChild(cell);
+    });
+}
+
+function resetTableHighlights() {
+    document.querySelectorAll('.element').forEach(cell => {
+        cell.classList.remove('chosen-correct', 'flash-wrong', 'locked');
+    });
+}
+
+/* ---------------- Question flow ---------------- */
+function buildRoundQueue() {
+    const indices = compounds.map((_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    return indices.slice(0, TOTAL_QUESTIONS);
+}
+
+function updateClickPrompt() {
+    const prompt = document.getElementById('clickPrompt');
+    if (!foundMetal) {
+        prompt.textContent = 'Click the cation (metal) for this compound.';
+    } else if (!foundNonmetal) {
+        prompt.textContent = 'Now click the anion (nonmetal).';
+    } else {
+        prompt.textContent = '';
+    }
+}
+
+function newQuestion() {
+    current = compounds[roundQueue[questionsCompleted]];
+    const cationIon = current.ions.find(i => cationBySymbol[i.symbol]);
+    const anionIon = current.ions.find(i => anionBySymbol[i.symbol]);
+    cationSym = cationIon.symbol;
+    anionSym = anionIon.symbol;
+    foundMetal = false;
+    foundNonmetal = false;
+
+    document.getElementById('targetName').textContent = current.name;
+    resetTableHighlights();
+    updateClickPrompt();
+
+    const fb = document.getElementById('feedback');
+    fb.textContent = '';
+    fb.className = '';
+
+    document.getElementById('buildBox').classList.remove('visible');
+    document.getElementById('checkSetupBtn').style.display = 'none';
+    document.getElementById('editSetupBtn').style.display = 'none';
+
+    modal1Selection = { cationCharge: null, cationCount: null, anionCharge: null, anionCount: null };
+    scormSaveProgress();
+}
+
+function selectElement(element, cell) {
+    if (cell.classList.contains('locked')) return;
+
+    if (!foundMetal) {
+        if (element.symbol === cationSym) {
+            foundMetal = true;
+            cell.classList.add('chosen-correct', 'locked');
+            updateClickPrompt();
+        } else {
+            streak = 0; mistakeCount++;
+            updateScoreDisplay();
+            cell.classList.add('flash-wrong');
+            setTimeout(() => cell.classList.remove('flash-wrong'), 500);
+        }
+        return;
+    }
+
+    if (!foundNonmetal) {
+        if (element.symbol === anionSym) {
+            foundNonmetal = true;
+            cell.classList.add('chosen-correct', 'locked');
+            updateClickPrompt();
+        } else {
+            streak = 0; mistakeCount++;
+            updateScoreDisplay();
+            cell.classList.add('flash-wrong');
+            setTimeout(() => cell.classList.remove('flash-wrong'), 500);
+            return;
+        }
+    }
+
+    if (foundMetal && foundNonmetal) {
+        setTimeout(openModal1, 400);
+    }
+}
+
+function updateScoreDisplay() {
+    document.getElementById('streakDisplay').textContent = streak;
+    document.getElementById('correctDisplay').textContent = correctCount;
+    document.getElementById('progressDisplay').textContent = Math.min(questionsCompleted + 1, TOTAL_QUESTIONS);
+    document.getElementById('totalDisplay').textContent = TOTAL_QUESTIONS;
+}
+
+/* ---------------- Modal 1: ion setup ---------------- */
+function openModal1(isEdit) {
+    const cation = cationBySymbol[cationSym];
+    const anion = anionBySymbol[anionSym];
+
+    document.getElementById('modal1Name').textContent = current.name;
+    document.getElementById('modal1CationTitle').textContent = `Metal: ${cation.name} (${cation.symbol})`;
+    document.getElementById('modal1AnionTitle').textContent = `Nonmetal: ${anion.elementName} (${anion.symbol})`;
+
+    buildChoiceRow('cationChargeRow', [1, 2, 3], (v) => `+${v}`, modal1Selection.cationCharge, (v) => {
+        modal1Selection.cationCharge = v; refreshModal1OkState();
+    });
+    buildChoiceRow('cationCountRow', [1, 2, 3, 4], (v) => `${v}`, modal1Selection.cationCount, (v) => {
+        modal1Selection.cationCount = v; refreshModal1OkState();
+    });
+    buildChoiceRow('anionChargeRow', [1, 2, 3], (v) => `−${v}`, modal1Selection.anionCharge, (v) => {
+        modal1Selection.anionCharge = v; refreshModal1OkState();
+    });
+    buildChoiceRow('anionCountRow', [1, 2, 3, 4], (v) => `${v}`, modal1Selection.anionCount, (v) => {
+        modal1Selection.anionCount = v; refreshModal1OkState();
+    });
+
+    refreshModal1OkState();
+    document.getElementById('modal1').classList.add('active');
+}
+
+function buildChoiceRow(containerId, values, label, selectedValue, onSelect) {
+    const row = document.getElementById(containerId);
+    row.innerHTML = '';
+    values.forEach(v => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'choice-btn' + (selectedValue === v ? ' selected' : '');
+        btn.textContent = label(v);
+        btn.addEventListener('click', () => {
+            row.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            onSelect(v);
+        });
+        row.appendChild(btn);
+    });
+}
+
+function refreshModal1OkState() {
+    const ready = modal1Selection.cationCharge !== null && modal1Selection.cationCount !== null &&
+                  modal1Selection.anionCharge !== null && modal1Selection.anionCount !== null;
+    document.getElementById('modal1OkBtn').disabled = !ready;
+}
+
+function confirmModal1() {
+    document.getElementById('modal1').classList.remove('active');
+
+    const cation = cationBySymbol[cationSym];
+    const anion = anionBySymbol[anionSym];
+
+    document.getElementById('buildCationLabel').textContent = `${cation.name} (${cation.symbol})`;
+    document.getElementById('buildCationValue').innerHTML = `+${modal1Selection.cationCharge} charge &times; ${modal1Selection.cationCount} atom(s)`;
+    document.getElementById('buildAnionLabel').textContent = `${anion.elementName} (${anion.symbol})`;
+    document.getElementById('buildAnionValue').innerHTML = `−${modal1Selection.anionCharge} charge &times; ${modal1Selection.anionCount} atom(s)`;
+    document.getElementById('buildBox').classList.add('visible');
+
+    document.getElementById('checkSetupBtn').style.display = 'inline-block';
+    document.getElementById('editSetupBtn').style.display = 'inline-block';
+
+    const fb = document.getElementById('feedback');
+    fb.textContent = '';
+    fb.className = '';
+}
+
+function checkModal1Answer() {
+    const cation = cationBySymbol[cationSym];
+    const anion = anionBySymbol[anionSym];
+    const correctCationCount = current.ions.find(i => i.symbol === cationSym).count;
+    const correctAnionCount = current.ions.find(i => i.symbol === anionSym).count;
+
+    const isRight = modal1Selection.cationCharge === cation.charge &&
+                    modal1Selection.anionCharge === Math.abs(anion.charge) &&
+                    modal1Selection.cationCount === correctCationCount &&
+                    modal1Selection.anionCount === correctAnionCount;
+
+    const fb = document.getElementById('feedback');
+    if (isRight) {
+        fb.textContent = 'Ion setup correct! Now write the formula.';
+        fb.className = 'correct';
+        document.getElementById('checkSetupBtn').style.display = 'none';
+        document.getElementById('editSetupBtn').style.display = 'none';
+        setTimeout(openModal2, 500);
+    } else {
+        streak = 0; mistakeCount++;
+        updateScoreDisplay();
+        fb.textContent = 'Not quite. Check your charges and atom counts, then try again.';
+        fb.className = 'incorrect';
+    }
+}
+
+/* ---------------- Modal 2: formula builder ---------------- */
+function openModal2() {
+    modal2Selection = { cationSub: 1, anionSub: 1 };
+    document.getElementById('modal2Name').textContent = current.name;
+    document.getElementById('modal2CationSymbol').textContent = cationSym;
+    document.getElementById('modal2AnionSymbol').textContent = anionSym;
+    document.getElementById('modal2CationSub').textContent = modal2Selection.cationSub;
+    document.getElementById('modal2AnionSub').textContent = modal2Selection.anionSub;
+    document.getElementById('modal2Feedback').textContent = '';
+    document.getElementById('modal2Feedback').className = 'modal-feedback';
+    document.getElementById('modal2CheckBtn').style.display = 'inline-block';
+    document.getElementById('modal2DoneBtn').style.display = 'none';
+    updateFormulaPreview();
+    document.getElementById('modal2').classList.add('active');
+}
+
+function cycleSubscript(which) {
+    const key = which === 'cation' ? 'cationSub' : 'anionSub';
+    modal2Selection[key] = (modal2Selection[key] % 4) + 1;
+    document.getElementById(which === 'cation' ? 'modal2CationSub' : 'modal2AnionSub').textContent = modal2Selection[key];
+    updateFormulaPreview();
+}
+
+function updateFormulaPreview() {
+    const html = formatSub(cationSym, modal2Selection.cationSub) + formatSub(anionSym, modal2Selection.anionSub);
+    document.getElementById('formulaPreview').innerHTML = html;
+}
+
+function checkModal2Answer() {
+    const correctCationCount = current.ions.find(i => i.symbol === cationSym).count;
+    const correctAnionCount = current.ions.find(i => i.symbol === anionSym).count;
+    const fb = document.getElementById('modal2Feedback');
+
+    if (modal2Selection.cationSub === correctCationCount && modal2Selection.anionSub === correctAnionCount) {
+        fb.textContent = 'Correct formula!';
+        fb.className = 'modal-feedback correct';
+        document.getElementById('modal2CheckBtn').style.display = 'none';
+        document.getElementById('modal2DoneBtn').style.display = 'inline-block';
+    } else {
+        streak = 0; mistakeCount++;
+        updateScoreDisplay();
+        fb.textContent = 'Not quite. Adjust the subscripts and check again.';
+        fb.className = 'modal-feedback incorrect';
+    }
+}
+
+function finishQuestion() {
+    document.getElementById('modal2').classList.remove('active');
+    streak++;
+    correctCount++;
+    questionsCompleted++;
+    updateScoreDisplay();
+
+    document.querySelectorAll('.element.chosen-correct').forEach(cell => cell.classList.add('locked'));
+
+    scormSaveProgress();
+    openSummaryModal();
+}
+
+/* ---------------- Problem summary & round completion ---------------- */
+function openSummaryModal() {
+    const cation = cationBySymbol[cationSym];
+    const anion = anionBySymbol[anionSym];
+    const cationCount = current.ions.find(i => i.symbol === cationSym).count;
+    const anionCount = current.ions.find(i => i.symbol === anionSym).count;
+    const totalPositive = cation.charge * cationCount;
+    const totalNegative = Math.abs(anion.charge) * anionCount;
+
+    document.getElementById('summaryName').textContent = current.name;
+    document.getElementById('summaryCation').innerHTML = `${cation.name} (${cation.symbol}), +${cation.charge} &times; ${cationCount}`;
+    document.getElementById('summaryAnion').innerHTML = `${anion.elementName} (${anion.symbol}), &minus;${Math.abs(anion.charge)} &times; ${anionCount}`;
+    document.getElementById('summaryBalance').textContent = `+${totalPositive} and −${totalNegative} cancel out`;
+    document.getElementById('summaryFormula').innerHTML = formatSub(cationSym, cationCount) + formatSub(anionSym, anionCount);
+
+    document.getElementById('modal3').classList.add('active');
+}
+
+function continueAfterSummary() {
+    document.getElementById('modal3').classList.remove('active');
+    if (questionsCompleted >= TOTAL_QUESTIONS) {
+        finishRound();
+    } else {
+        newQuestion();
+    }
+}
+
+function finishRound() {
+    challengeFinished = true;
+    document.getElementById('completeCount').textContent = `${correctCount}/${TOTAL_QUESTIONS}`;
+    document.getElementById('completeMistakes').textContent = mistakeCount;
+    document.getElementById('modal4').classList.add('active');
+
+    const totalAnswers = TOTAL_QUESTIONS + mistakeCount;
+    const score = totalAnswers > 0 ? Math.round((TOTAL_QUESTIONS / totalAnswers) * 100) : 100;
+    scormReport(score);
+}
+
+function playAgain() {
+    document.getElementById('modal4').classList.remove('active');
+    questionsCompleted = 0;
+    correctCount = 0;
+    streak = 0;
+    mistakeCount = 0;
+    challengeFinished = false;
+    roundQueue = buildRoundQueue();
+    updateScoreDisplay();
+    newQuestion();
+}
+
+/* ---------------- Game flow ---------------- */
+function startGame() {
+    document.getElementById('titleScreen').style.display = 'none';
+    document.getElementById('gameScreen').style.display = 'block';
+    streak = 0; correctCount = 0; questionsCompleted = 0; mistakeCount = 0;
+    challengeFinished = false;
+    roundQueue = buildRoundQueue();
+    updateScoreDisplay();
+    newQuestion();
+}
+
+/* ---------------- SCORM 1.2 wrapper ---------------- */
+let scormAPI = null;
+let resumeState = null;
+
+function findAPI(win) {
+    let attempts = 0;
+    let w = win;
+    while (w && attempts < 10) {
+        if (w.API) return w.API;
+        if (w.parent && w.parent !== w) {
+            w = w.parent;
+        } else if (w.opener) {
+            w = w.opener;
+        } else {
+            break;
+        }
+        attempts++;
+    }
+    return null;
+}
+
+function isValidResumePayload(parsed) {
+    if (!parsed || typeof parsed !== 'object') return false;
+    if (!Array.isArray(parsed.roundQueue)) return false;
+    if (!parsed.roundQueue.every(n => Number.isInteger(n) && n >= 0 && n < compounds.length)) return false;
+    if (new Set(parsed.roundQueue).size !== parsed.roundQueue.length) return false;
+    if (parsed.roundQueue.length !== TOTAL_QUESTIONS) return false;
+    if (typeof parsed.questionsCompleted !== 'number' || parsed.questionsCompleted < 0 || parsed.questionsCompleted >= TOTAL_QUESTIONS) return false;
+    if (typeof parsed.correctCount !== 'number' || parsed.correctCount !== parsed.questionsCompleted) return false;
+    if (typeof parsed.streak !== 'number' || parsed.streak !== parsed.questionsCompleted) return false;
+    if (typeof parsed.mistakeCount !== 'number' || parsed.mistakeCount < 0) return false;
+    return true;
+}
+
+function scormInit() {
+    try {
+        scormAPI = findAPI(window);
+        if (!scormAPI) return;
+        scormAPI.LMSInitialize("");
+        if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+            const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (isValidResumePayload(parsed)) {
+                    resumeState = parsed;
+                }
+            }
+        }
+    } catch (e) { /* No LMS present, or malformed bookmark — start fresh */ }
+}
+
+function scormSaveProgress() {
+    if (!scormAPI) return;
+    try {
+        scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+            roundQueue: roundQueue,
+            questionsCompleted: questionsCompleted,
+            correctCount: correctCount,
+            streak: streak,
+            mistakeCount: mistakeCount
+        }));
+        if (!challengeFinished) {
+            scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+            // Mark the exit reason as "suspend" on every save, not just on
+            // beforeunload/pagehide. Students on Chromebooks/iPads very often
+            // exit by closing the lid or leaving the Schoology tab, which does
+            // not reliably fire beforeunload/pagehide before the device sleeps
+            // and the network drops. Setting this on every commit means the LMS
+            // already has the correct "resume me" state as of the last save,
+            // instead of depending on a browser-close event to set it at the end.
+            scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+        }
+        scormAPI.LMSCommit("");
+    } catch (e) { /* ignore */ }
+}
+
+// Manually triggered by the "Save Progress" button. This is the primary,
+// reliable save path — students are instructed to click it before closing
+// their Chromebook, since automatic browser-unload events can't be trusted
+// to fire when a laptop lid is closed rather than the tab being navigated
+// away from. Falls back gracefully (shows nothing) if no LMS is present.
+function manualSaveProgress() {
+    if (!scormAPI) return;
+    scormSaveProgress();
+    const status = document.getElementById('saveStatus');
+    if (!status) return;
+    status.classList.add('visible');
+    clearTimeout(manualSaveProgress._hideTimer);
+    manualSaveProgress._hideTimer = setTimeout(() => {
+        status.classList.remove('visible');
+    }, 2500);
+}
+
+function scormReport(scorePercent) {
+    if (!scormAPI) return;
+    try {
+        scormAPI.LMSSetValue("cmi.core.score.min", "0");
+        scormAPI.LMSSetValue("cmi.core.score.max", "100");
+        scormAPI.LMSSetValue("cmi.core.score.raw", String(scorePercent));
+        scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+        scormAPI.LMSSetValue("cmi.core.exit", "");
+        scormAPI.LMSCommit("");
+    } catch (e) { /* ignore */ }
+}
+
+function scormFinish() {
+    if (!scormAPI) return;
+    try {
+        if (!challengeFinished && roundQueue.length) {
+            scormSaveProgress();
+            scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+            scormAPI.LMSCommit("");
+        }
+        scormAPI.LMSFinish("");
+    } catch (e) { /* ignore */ }
+}
+
+function resumeFromSavedState() {
+    document.getElementById('titleScreen').style.display = 'none';
+    document.getElementById('gameScreen').style.display = 'block';
+
+    roundQueue = resumeState.roundQueue;
+    questionsCompleted = resumeState.questionsCompleted;
+    correctCount = resumeState.correctCount;
+    streak = resumeState.streak;
+    mistakeCount = resumeState.mistakeCount;
+    challengeFinished = false;
+
+    updateScoreDisplay();
+    newQuestion();
+}
+
+// Best-effort safety net for the case where the student closes the
+// Chromebook lid or leaves the tab without clicking "Save Progress":
+// these events fire more reliably than beforeunload on that path, but
+// unlike beforeunload we deliberately do NOT call LMSFinish() here —
+// visibilitychange in particular fires on every tab switch, not just a
+// real exit, and terminating the SCORM session on a brief tab-switch
+// would break the ability to keep saving for the rest of that visit.
+// We just re-commit the current state so the LMS has it either way.
+function safetyCommit() {
+    if (!scormAPI || challengeFinished || !roundQueue.length) return;
+    scormSaveProgress();
+}
+window.addEventListener('pagehide', safetyCommit);
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) safetyCommit();
+});
+
+/* ---------------- Init ---------------- */
+createPeriodicTable();
+
+window.addEventListener('beforeunload', scormFinish);
+scormInit();
+if (resumeState) {
+    resumeFromSavedState();
+}
+</script>
+<style>
+.chemtinker-badge{position:fixed;bottom:10px;right:10px;display:flex;align-items:center;gap:6px;background:rgba(18,21,29,0.85);border:1px solid rgba(255,255,255,0.08);border-radius:999px;padding:5px 10px 5px 6px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:11px;font-weight:600;color:#f2f3f5;z-index:999999;pointer-events:none;}
+.chemtinker-badge img{width:16px;height:auto;display:block;}
+</style>
+<div class="chemtinker-badge"><img src="/img/chemtinker-icon.png" alt="">ChemTinker</div>
+<style>
+.chemtinker-badge{position:fixed;bottom:10px;right:10px;display:flex;align-items:center;gap:6px;background:rgba(18,21,29,0.85);border:1px solid rgba(255,255,255,0.08);border-radius:999px;padding:5px 10px 5px 6px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:11px;font-weight:600;color:#f2f3f5;z-index:999999;pointer-events:none;}
+.chemtinker-badge img{width:16px;height:auto;display:block;}
+</style>
+<div class="chemtinker-badge"><img src="data:image/png;base64,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" alt="">ChemTinker</div>
+</body>
+</html>

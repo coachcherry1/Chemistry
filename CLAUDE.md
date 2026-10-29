@@ -1,40 +1,51 @@
 # Chemistry SCORM activities
 
-SCORM 1.2 packages posted to Schoology for two high-school courses: **honors chemistry** and an **organic
-chemistry elective** (textbook: Klein, *Organic Chemistry*). Each package is a self-contained folder; fixes to
-shared code (saving, scoring, picker, 3D viewer, Lewis builder) usually belong in every folder that has a copy.
-Everything is on `main`; older work branches were merged in October 2026.
+SCORM 1.2 packages posted to Schoology for three high-school courses: **chemistry** (honors), **AP chemistry**
+and an **organic chemistry elective** (textbook: Klein, *Organic Chemistry*). Each package is a self-contained
+folder; fixes to shared code (saving, scoring, picker, 3D viewer, Lewis builder) usually belong in every folder
+that has a copy. Everything is on `main`; older work branches were merged in October 2026.
 
-**Honors chemistry**
+**Folder layout:** `class/topic/package/`, for example `chemistry/bonding/lewis-structures-scorm/`. The classes are
+`chemistry/`, `ap-chemistry/` and `organic-chemistry/`. Packages elsewhere in this file are named by their folder
+alone; find one with `find . -name <folder> -type d`. All commands run inside the package folder, wherever it sits.
+A new package goes in the topic folder that fits it (make the folder if none does), one level below the class.
+
+**Chemistry (honors)**
 
 | Folder | Activity |
 | --- | --- |
-| `ionization-energy-scorm/` | Successive ionization energies, the two-step rule (about 10 min) |
-| `ionic-naming-scorm/` | Naming ionic compounds and writing formulas |
-| `ionic-covalent-scorm/` | Ionic or covalent? Choosing the naming rules |
-| `acids-scorm/` | Binary acids and oxyacids, mixed with ionic and covalent |
-| `lewis-structures-scorm/` | Lewis structures by the teacher's 5 rules (builder, B/Be exceptions, expanded octets, AI-answer warnings in `snark.js`) |
-| `resonance-scorm/` | Resonance structures and the hybrid, same 5 rules and builder |
-| `lewis-drawing-tool/` | Teacher's drawing tool, same 5-rule engine, reports no score |
-| `acetone-kinetics-scorm/` | Virtual lab: iodination of acetone by initial rates |
-| `vsepr-polarity-scorm/` | VSEPR: build by the 5 rules beside a 3D window, molecular geometry for 2 to 6 domains, polarity by radial symmetry |
-| `intermolecular-forces-scorm/` | IMFs: heating stage with real mp/bp, LDF and polarizability, dipole-dipole, hydrogen bonds (follows VSEPR) |
+| `chemistry/electrons/ionization-energy-scorm/` | Successive ionization energies, the two-step rule (about 10 min) |
+| `chemistry/nomenclature/ionic-naming-scorm/` | Naming ionic compounds and writing formulas |
+| `chemistry/nomenclature/ionic-covalent-scorm/` | Ionic or covalent? Choosing the naming rules |
+| `chemistry/nomenclature/acids-scorm/` | Binary acids and oxyacids, mixed with ionic and covalent |
+| `chemistry/bonding/lewis-structures-scorm/` | Lewis structures by the teacher's 5 rules (builder, B/Be exceptions, expanded octets, AI-answer warnings in `snark.js`) |
+| `chemistry/bonding/lewis-drawing-tool/` | Teacher's drawing tool, same 5-rule engine, reports no score |
+| `chemistry/bonding/vsepr-polarity-scorm/` | VSEPR: build by the 5 rules beside a 3D window, molecular geometry for 2 to 6 domains, polarity by radial symmetry |
+| `chemistry/imfs/intermolecular-forces-scorm/` | IMFs: heating stage with real mp/bp, LDF and polarizability, dipole-dipole, hydrogen bonds (follows VSEPR) |
+| `chemistry/imfs/intermolecular-forces-liquids-scorm/` | The same IMF activity plus a part 6, properties of liquids: surface tension, viscosity, evaporation rate (about 40 min) |
+
+**AP chemistry**
+
+| Folder | Activity |
+| --- | --- |
+| `ap-chemistry/bonding/resonance-scorm/` | Resonance structures and the hybrid, same 5 rules and builder |
+| `ap-chemistry/kinetics/acetone-kinetics-scorm/` | Virtual lab: iodination of acetone by initial rates |
 
 **Organic chemistry elective (Klein)**
 
 | Folder | Activity |
 | --- | --- |
-| `ir-spectroscopy-scorm/` | IR diagnostic-region drag and drop |
-| `ms-spectrometry-scorm/` | Mass spectrometry: reading the fragments |
-| `ir-ms-combined-scorm/` | IR and mass spec together: two spectra, one compound |
-| `nmr-intro-scorm/` | Intro 1H NMR: equivalence, shift, integration, splitting |
-| `newman-projections-scorm/` | Newman projections, with calculations |
-| `newman-projections-qualitative-scorm/` | Same, qualitative (no calculations) |
-| `cyclohexane-chairs-scorm/` | Chairs, ring flips, 1,3-diaxial crowding (qualitative) |
-| `chirality-scorm/` | Chirality, R and S, enantiomers, diastereomers and meso compounds (qualitative) |
-| `chirality-no-meso-scorm/` | Same, without meso compounds, for a weaker group |
-| `arrow-pushing-scorm/` | Klein 6, before SN1/SN2: bond breaking and making, ΔG, energy diagrams, nucleophiles and electrophiles, drawing curved arrows, the four patterns (about 45 min) |
-| `substitution-elimination-scorm/` | SN1, SN2, E1 and E2: reagent function, mechanisms with curved arrows, regio- and stereochemistry, rings, predicting products (about 50 min) |
+| `organic-chemistry/spec-nmr/ir-spectroscopy-scorm/` | IR diagnostic-region drag and drop |
+| `organic-chemistry/spec-nmr/ms-spectrometry-scorm/` | Mass spectrometry: reading the fragments |
+| `organic-chemistry/spec-nmr/ir-ms-combined-scorm/` | IR and mass spec together: two spectra, one compound |
+| `organic-chemistry/spec-nmr/nmr-intro-scorm/` | Intro 1H NMR: equivalence, shift, integration, splitting |
+| `organic-chemistry/configurations-stereoisomerism/newman-projections-scorm/` | Newman projections, with calculations |
+| `organic-chemistry/configurations-stereoisomerism/newman-projections-qualitative-scorm/` | Same, qualitative (no calculations) |
+| `organic-chemistry/configurations-stereoisomerism/cyclohexane-chairs-scorm/` | Chairs, ring flips, 1,3-diaxial crowding (qualitative) |
+| `organic-chemistry/configurations-stereoisomerism/chirality-scorm/` | Chirality, R and S, enantiomers, diastereomers and meso compounds (qualitative) |
+| `organic-chemistry/configurations-stereoisomerism/chirality-no-meso-scorm/` | Same, without meso compounds, for a weaker group |
+| `organic-chemistry/reactivity-mechanisms/arrow-pushing-scorm/` | Klein 6, before SN1/SN2: bond breaking and making, ΔG, energy diagrams, nucleophiles and electrophiles, drawing curved arrows, the four patterns (about 45 min) |
+| `organic-chemistry/substitution-elimination/substitution-elimination-scorm/` | SN1, SN2, E1 and E2: reagent function, mechanisms with curved arrows, regio- and stereochemistry, rings, predicting products (about 50 min) |
 
 **Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions) and arrow pushing contains em
 dashes (the Lewis, resonance and drawing-tool validators allow them). The mass spec, IR + mass spec, NMR,
@@ -218,6 +229,25 @@ not the full page.
 - **Files:** `mol.js`, `name.js`, `layout.js`, `draw.js`, `react.js`, `build3d.js`, `viewer3d.js`, `anim.js`, `mech.js`,
   `arrows.js`, `chair.js` (from the chairs activity), `molecules.js`, `quiz.js`, `app.js`, `steps1.js` (Parts 1-2),
   `steps2.js` (Parts 3-4), `steps3.js` (Part 5).
+
+## intermolecular-forces-liquids-scorm (zip v1, SCHEMA 1)
+
+- A copy of `intermolecular-forces-scorm/` (left as it is; the teacher's base version) with part 6, **properties of
+  liquids** (10 to 15 min), and its own SCORM ids (`IMFL_*`) and storage key. Fixes to parts 1 to 5 belong in both copies.
+- 27 steps in 6 parts; 23 graded questions (4+4+5+5+5) from a pool of 77. The rule sits beside checkpoint 5.
+- **Teacher's rules for part 6:** at the same temperature, stronger IMFs mean higher surface tension, higher viscosity
+  and slower evaporation (direct, direct, inverse). No vapour pressure, molecular complexity or entanglement, and no
+  numbers on screen. A saturated hydrocarbon is nonpolar, LDF only. IUPAC names in the class's style (2-butanone,
+  1-butanol, 1,5-pentanediol), never the compounds of the paper prelab (ethanol, 2-propanone, hexane,
+  1,2,3-propanetriol, water, dimethyl ether).
+- **Liquids:** pentane, heptane, octane, decane, 2-butanone, 1-butanol, 1-hexanol, 1,5-pentanediol, built by
+  `straightChain()` in `data.js`. `LIQUID` holds real 20 °C surface tension, viscosity and vapour pressure, used only by
+  the validator and to pace `bench.js`. A property is asked only when `Chem.propWinner` and `Chem.propAgrees` (margins
+  5%, 30%, 50%) agree; rankings need the real bp to agree (mp is ignored here). 2-Butanone and 1-butanol tie on surface
+  tension, so that pair is never compared by it.
+- **Step kind `props`** (`RENDER.props`): IMF cards led by the name (and hydrogen-bond counts where `count`), rank
+  strongest first, predict each `[prop, most]`, then run the liquid bench (drop on plastic, pipet draining, drop left
+  out). Reduced motion shows a still partway through with the order in words.
 
 ## arrow-pushing-scorm (branch `claude/charming-gauss-ear0ac`, zip v1, SCHEMA 1)
 

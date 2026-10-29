@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="ISOTOPE_ATOMIC_MASS" version="1.0"
+  xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+  xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                      http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd
+                      http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+  </metadata>
+
+  <organizations default="ISOTOPE_ATOMIC_MASS_ORG">
+    <organization identifier="ISOTOPE_ATOMIC_MASS_ORG">
+      <title>Isotope Atomic Mass Practice</title>
+      <item identifier="ITEM_1" identifierref="RESOURCE_1">
+        <title>Isotope Atomic Mass Practice</title>
+      </item>
+    </organization>
+  </organizations>
+
+  <resources>
+    <resource identifier="RESOURCE_1" type="webcontent" adlcp:scormtype="sco"
+              href="isotope-atomic-mass.html">
+      <file href="isotope-atomic-mass.html"/>
+    </resource>
+  </resources>
+
+</manifest>

@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Electron Cloud Builder</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #2c2417;
+    background: linear-gradient(135deg, #f7f5f0 0%, #d9cfc0 100%);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1440px; margin: 0; padding: 10px 16px; }
+
+  /* ---- menu bar ---- */
+  .menubar {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
+    color: #fff; border-radius: 10px; padding: 7px 14px;
+    box-shadow: 0 2px 8px rgba(124,45,18,0.25);
+  }
+  .menubar .title { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.2px; }
+  .menubar .spacer { flex: 1 1 auto; }
+  .menubar .score-badge {
+    background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 999px; padding: 3px 12px; font-weight: 700; font-size: 0.85rem;
+  }
+  .btn {
+    background: #7c2d12; color: #fff; border: none; border-radius: 7px;
+    padding: 7px 14px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn:hover { background: #5c2410; }
+  .btn:disabled { background: #cdbfa8; color: #7a6b52; cursor: not-allowed; }
+  .btn-sm { padding: 5px 11px; font-size: 0.82rem; }
+  .btn-ghost { background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.45); }
+  .btn-ghost:hover { background: rgba(255,255,255,0.3); }
+  #save-note {
+    font-size: 0.8rem; color: #fff; opacity: 0; transition: opacity 0.2s;
+  }
+  #save-note.show { opacity: 1; }
+
+  /* ---- intro ---- */
+  .intro-card {
+    background: #fffdf9; border-radius: 12px; margin-top: 14px; padding: 30px 28px;
+    box-shadow: 0 3px 14px rgba(92,67,38,0.14); text-align: center;
+    max-width: 640px; margin-left: auto; margin-right: auto;
+  }
+  .intro-card h2 { color: #7c2d12; font-size: 1.4rem; margin-bottom: 14px; }
+  .intro-card p { font-size: 1rem; color: #4a3f30; margin-bottom: 8px; }
+  .intro-card p b { color: #7c2d12; }
+  .intro-hint { margin-top: 18px; font-size: 0.82rem; color: #9a8c72; font-style: italic; }
+  .intro-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 20px; }
+  .intro-dots { display: flex; gap: 6px; }
+  .intro-dots i {
+    width: 8px; height: 8px; border-radius: 50%; background: #e0d3bd; display: block;
+  }
+  .intro-dots i.on { background: #b45309; }
+
+  /* ---- app layout ---- */
+  #app { display: none; margin-top: 10px; }
+  .stage {
+    display: grid;
+    grid-template-columns: 244px minmax(340px, 1fr) 300px;
+    gap: 12px; align-items: start;
+  }
+  .left { min-width: 0; }
+  .right { min-width: 0; }
+  .info { min-width: 0; }
+  .panel {
+    background: #fffdf9; border-radius: 11px; padding: 11px 12px;
+    box-shadow: 0 2px 10px rgba(92,67,38,0.12); margin-bottom: 8px;
+  }
+  .panel h3 {
+    font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.6px;
+    color: #92400e; margin-bottom: 8px;
+  }
+  /* ---- info card ---- */
+  .infocard { background: #fffdf9; }
+  .infocard p { font-size: 0.84rem; color: #4a3f30; margin-bottom: 9px; }
+  .infocard p:last-child { margin-bottom: 0; }
+  .infocard b { color: #7c2d12; }
+  .infocard .ic-rule { border: none; border-top: 1px solid #ece0cc; margin: 10px 0; }
+  #infoNow {
+    background: #fffaf0; border-left: 4px solid #f59e0b; border-radius: 6px;
+    padding: 8px 10px; font-weight: 600; color: #7c2d12; font-size: 0.85rem;
+  }
+  @media (max-width: 1180px) {
+    .stage { grid-template-columns: 234px minmax(320px, 1fr); }
+    .info { grid-column: 1 / -1; }
+  }
+  @media (max-width: 780px) {
+    .stage { grid-template-columns: 1fr; }
+  }
+
+  /* ---- add electrons list ---- */
+  .add-row {
+    display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 0.92rem;
+  }
+  .add-row .tag { font-weight: 700; width: 26px; color: #5c4326; }
+  .add-done { color: #256b32; font-weight: 600; font-size: 0.86rem; }
+  .add-locked-note { color: #b3a488; font-size: 0.86rem; }
+  .add-btn {
+    background: #b45309; color: #fff; border: none; border-radius: 7px;
+    padding: 6px 12px; font-weight: 600; font-size: 0.86rem; cursor: pointer;
+  }
+  .add-btn:hover { background: #92400e; }
+  .add-btn:disabled { background: #cdbfa8; color: #7a6b52; cursor: not-allowed; }
+
+  /* ---- orbital filling diagram ---- */
+  .orb-axis { font-size: 0.72rem; color: #b3a488; font-weight: 600; letter-spacing: 0.3px; margin: 2px 0 2px 30px; }
+  .orb-row { display: flex; align-items: center; gap: 6px; margin: 5px 0; }
+  .orb-name { width: 24px; font-weight: 700; font-size: 0.85rem; color: #5c4326; }
+  .orb-box {
+    display: inline-flex; align-items: center; justify-content: center; gap: 1px;
+    width: 30px; height: 22px; border: 1.5px solid #cbbda2; border-radius: 3px;
+    font-size: 0.7rem; color: #b3a488;
+  }
+  .orb-box.fill { border-color: #7c2d12; color: #7c2d12; font-weight: 700; }
+
+  /* ---- legend ---- */
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 12px; }
+  .leg { display: flex; align-items: center; gap: 5px; font-size: 0.84rem; opacity: 0.35; }
+  .leg.lit { opacity: 1; font-weight: 600; }
+  .leg .sw { width: 13px; height: 13px; border-radius: 3px; display: inline-block; }
+
+  /* ---- viewport ---- */
+  .view-shell {
+    background: #0a0a0f; border-radius: 11px; padding: 7px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3); position: relative;
+    max-width: 400px; margin: 0;
+  }
+  #view { display: block; width: 100%; height: auto; border-radius: 6px; touch-action: none; }
+  .snap-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  #snapCount { font-variant-numeric: tabular-nums; color: #7c2d12; font-weight: 700; font-size: 0.85rem; }
+  .rerun { display: flex; align-items: center; gap: 6px; }
+  .rerun select { padding: 4px 6px; border-radius: 6px; border: 1px solid #cbbda2; font-size: 0.82rem; }
+
+  .view-controls { margin-top: 8px; display: none; }
+  .vc-line { display: flex; flex-wrap: wrap; gap: 7px 12px; align-items: center; margin: 6px 0; }
+  .vc-line label { font-size: 0.86rem; display: flex; align-items: center; gap: 5px; }
+  .vc-lab { font-size: 0.84rem; color: #7a6b52; font-weight: 600; }
+  #vcToggles { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+  .cloud-tog {
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+    border: 1.5px solid #cbbda2; background: #fff; color: #b3a488;
+    border-radius: 7px; padding: 5px 11px; font-size: 0.84rem; font-weight: 700;
+    text-decoration: line-through;
+  }
+  .cloud-tog .sw { width: 12px; height: 12px; border-radius: 3px; opacity: 0.3; }
+  .cloud-tog.on { border-color: #7c2d12; background: #fdf3e7; color: #5c4326; text-decoration: none; }
+  .cloud-tog.on .sw { opacity: 1; }
+  .caption {
+    margin-top: 8px; font-size: 0.85rem; color: #5c4326; background: #fffaf0;
+    border-left: 4px solid #f59e0b; border-radius: 6px; padding: 6px 10px;
+  }
+
+  /* ---- modal ---- */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(44,36,23,0.55);
+    display: none; align-items: center; justify-content: center; padding: 16px; z-index: 20;
+  }
+  .overlay .card {
+    background: #fffdf9; border-radius: 13px; padding: 24px 26px; max-width: 560px; width: 100%;
+    max-height: 86vh; overflow-y: auto; box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+  }
+  .overlay .card h2 { color: #7c2d12; margin-bottom: 10px; font-size: 1.2rem; }
+  .overlay .card h3 {
+    color: #92400e; font-size: 0.92rem; text-transform: none; letter-spacing: 0;
+    margin: 14px 0 4px;
+  }
+  .overlay .card p { font-size: 0.9rem; color: #3a3226; margin-bottom: 8px; }
+  .overlay .card p b { color: #7c2d12; }
+  .overlay .card .eqn {
+    text-align: center; font-size: 1.05rem; color: #5c4326; margin: 8px 0 10px;
+    font-family: "Cambria Math", Georgia, "Times New Roman", serif;
+  }
+  .overlay .card ol { margin: 4px 0 8px 20px; }
+  .overlay .card ol li { font-size: 0.9rem; color: #3a3226; margin-bottom: 5px; }
+  .how-open {
+    background: none; border: none; color: #92400e; font-weight: 700; font-size: 0.82rem;
+    cursor: pointer; padding: 0; margin-top: 10px; text-decoration: underline;
+  }
+  .how-open:hover { color: #7c2d12; }
+
+  @media (max-width: 880px) {
+    .stage { flex-direction: column; }
+    .left { flex-basis: auto; width: 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="menubar">
+    <span class="title">Electron Cloud Builder</span>
+    <span class="spacer"></span>
+    <span id="save-wrap" style="display:none; align-items:center; gap:8px;">
+      <button class="btn btn-sm btn-ghost" id="saveBtn">Save progress</button>
+      <span id="save-note">saved</span>
+    </span>
+  </div>
+
+  <!-- intro -->
+  <div class="intro-card" id="introCard">
+    <h2 id="introH">Where is the electron?</h2>
+    <p id="introP"></p>
+    <div class="intro-nav">
+      <button class="btn btn-sm" id="introBack" disabled>Back</button>
+      <span class="intro-dots" id="introDots"></span>
+      <button class="btn btn-sm" id="introNext">Next</button>
+    </div>
+    <div class="intro-hint">Tip: click anywhere on this card to move forward.</div>
+  </div>
+
+  <!-- app -->
+  <div id="app">
+    <div class="stage">
+      <div class="left">
+        <div class="panel">
+          <h3>Add electrons</h3>
+          <div id="addList"></div>
+        </div>
+        <div class="panel">
+          <h3>Orbital filling</h3>
+          <div id="diagram"></div>
+        </div>
+        <div class="panel">
+          <h3>Color key</h3>
+          <div class="legend" id="legend"></div>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="panel">
+          <div class="snap-bar" id="snapBar"></div>
+          <div class="view-shell">
+            <canvas id="view" width="520" height="520"></canvas>
+          </div>
+          <div class="view-controls" id="viewControls">
+            <div class="vc-line">
+              <span class="vc-lab">Show clouds:</span><span id="vcToggles"></span>
+            </div>
+            <div class="vc-line">
+              <button class="btn btn-sm" id="zoomIn">Zoom +</button>
+              <button class="btn btn-sm" id="zoomOut">Zoom &minus;</button>
+              <button class="btn btn-sm" id="zoomReset">Reset view</button>
+              <button class="btn btn-sm" id="clearDots">Clear dots</button>
+              <span style="font-size:0.8rem;color:#9a8c72;">drag to rotate, scroll to zoom</span>
+            </div>
+          </div>
+          <div class="caption" id="caption">Add the 1s electrons to begin.</div>
+        </div>
+      </div>
+
+      <div class="info">
+        <div class="panel infocard">
+          <h3>What am I looking at?</h3>
+          <p id="infoNow">Add the 1s electrons on the left to start.</p>
+          <hr class="ic-rule">
+          <p>Each dot is <b>one possible spot</b> for a single electron. It is not a path &mdash;
+            all we can do is describe where an electron is <b>likely</b> to be found around the
+            nucleus of the atom.</p>
+          <p>Where an electron can be found depends on its <b>energy</b>. Higher-energy electrons
+            are found <b>farther from the nucleus, in higher shells</b>.</p>
+          <p><b>s</b> subshell: 1 orbital, a sphere.<br>
+            <b>p</b> subshell: 3 orbitals (p<sub>x</sub>, p<sub>y</sub>, p<sub>z</sub>), a dumbbell
+            along each axis.<br>Every orbital holds 2 e&#8315;.</p>
+          <button type="button" class="how-open" id="howBtn">Curious? How were these dots decided?</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- "how it works" explainer -->
+<div class="overlay" id="howOverlay">
+  <div class="card">
+    <h2>How were these dots decided?</h2>
+    <p>Nobody drew these shapes. They come out of one equation.</p>
+
+    <h3>Start with the Schr&ouml;dinger equation</h3>
+    <p>It is the rule that describes an electron as a <b>wave</b> near a nucleus:</p>
+    <p class="eqn">H&#770;&psi; = E&psi;</p>
+
+    <h3>Plug in the setup, solve for &psi;</h3>
+    <p>We <b>plug in</b> one electron being pulled toward a positive nucleus, and <b>solve for
+      &psi;</b> (&ldquo;psi&rdquo;), the electron&rsquo;s wave. The equation only allows a few
+      clean answers, and <b>each answer is one orbital</b> &mdash; 1s, 2s, 2p, and so on.</p>
+
+    <h3>That gives us a probability map</h3>
+    <p>On its own &psi; is just math. But <b>&psi;&sup2; at a point = the chance of finding the
+      electron there.</b> Large &psi;&sup2; means the electron is often there; &psi;&sup2; = 0 means
+      never.</p>
+
+    <h3>Build the 3D shape from the map</h3>
+    <p>The program scatters points using that map: many where &psi;&sup2; is high, none where it is
+      zero. After thousands of points they pile up into the shape you see &mdash; a ball for an
+      <b>s</b> orbital, a dumbbell for each <b>p</b> orbital. The shape is not drawn; it is just
+      &psi;&sup2; made visible.</p>
+
+    <p style="font-size:0.8rem;color:#7a6b52;">(The p lobes here are drawn a little tighter than
+      real life so the three are easy to tell apart.)</p>
+
+    <div style="text-align:center; margin-top:14px;">
+      <button class="btn" id="howClose">Got it</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   Electron Cloud Builder  -  Honors Chemistry / Electrons
+   Monte-Carlo electron-density visualizer with aufbau front end.
+   ============================================================ */
+
+const $ = (s) => document.querySelector(s);
+
+const SUBS = [
+  { key: '1s', label: '1s', shell: 1, color: '#ffd24a', electrons: 2, boxes: 1 },
+  { key: '2s', label: '2s', shell: 2, color: '#5cc8ff', electrons: 2, boxes: 1 },
+  { key: '2p', label: '2p', shell: 2, color: '#ff7a59', electrons: 6, boxes: 3 },
+  { key: '3s', label: '3s', shell: 3, color: '#22c55e', electrons: 2, boxes: 1 },
+  { key: '3p', label: '3p', shell: 3, color: '#e0459e', electrons: 6, boxes: 3 },
+];
+const KEY_INDEX = {}; SUBS.forEach((s, i) => KEY_INDEX[s.key] = i);
+const isP = (k) => k[1] === 'p';
+
+// subshell colors as [r,g,b] for the additive pixel accumulator
+const COLOR_RGB = {};
+SUBS.forEach(s => {
+  COLOR_RGB[s.key] = [
+    parseInt(s.color.slice(1, 3), 16),
+    parseInt(s.color.slice(3, 5), 16),
+    parseInt(s.color.slice(5, 7), 16),
+  ];
+});
+
+const state = {
+  added: 0,                 // how many subshells have electrons (0..5)
+  sampled: new Set(),       // subshell keys whose cloud has been photographed
+  visible: new Set(),       // subshell keys currently drawn
+  clouds: {},               // key -> [{x,y,z} in Bohr radii]
+  animating: false,
+};
+
+/* ============================================================
+   Physics: hydrogenic radial functions (Z = 1, rho = r / a0)
+   ============================================================ */
+function Rfn(key, rho) {
+  switch (key) {
+    case '1s': return Math.exp(-rho);
+    case '2s': return (2 - rho) * Math.exp(-rho / 2);
+    case '3s': return (27 - 18 * rho + 2 * rho * rho) * Math.exp(-rho / 3);
+    case '2p': return rho * Math.exp(-rho / 2);
+    case '3p': return rho * (6 - rho) * Math.exp(-rho / 3);
+  }
+  return 0;
+}
+// radial probability weight  |R|^2 * r^2
+function weight(key, r) { const R = Rfn(key, r); return R * R * r * r; }
+
+const RMAX = { '1s': 14, '2s': 30, '2p': 30, '3s': 48, '3p': 52 };
+const PMAX = {};
+(function initPeaks() {
+  for (const k in RMAX) {
+    let mx = 0;
+    for (let i = 0; i <= 600; i++) {
+      const r = RMAX[k] * i / 600;
+      const w = weight(k, r);
+      if (w > mx) mx = w;
+    }
+    PMAX[k] = mx * 1.05;
+  }
+})();
+
+function sampleR(key) {
+  const rmax = RMAX[key], pmax = PMAX[key];
+  for (let t = 0; t < 800; t++) {
+    const r = Math.random() * rmax;
+    if (Math.random() * pmax <= weight(key, r)) return r;
+  }
+  return rmax * 0.3;
+}
+// uniform point on the unit sphere (Marsaglia)
+function unitVec() {
+  let x, y, s;
+  do { x = Math.random() * 2 - 1; y = Math.random() * 2 - 1; s = x * x + y * y; } while (s >= 1);
+  const f = 2 * Math.sqrt(1 - s);
+  return { x: x * f, y: y * f, z: 1 - 2 * s };
+}
+// one p orbital: dumbbell along axis 0=x, 1=y, 2=z. The exact angular part is cos^2(theta);
+// we use cos^6 so the two lobes read as a clean dumbbell instead of a fat peanut.
+function dirForP(axis) {
+  for (let t = 0; t < 200; t++) {
+    const u = unitVec();
+    const c = axis === 0 ? u.x : axis === 1 ? u.y : u.z;
+    const c2 = c * c;
+    if (Math.random() <= c2 * c2 * c2) return u;
+  }
+  return axis === 0 ? { x: 1, y: 0, z: 0 } : axis === 1 ? { x: 0, y: 1, z: 0 } : { x: 0, y: 0, z: 1 };
+}
+
+// points sampled per subshell (the "snapshots"). A p subshell's count is split evenly
+// across its three orbitals (px, py, pz).
+const SNAP_TARGET = 250000;
+
+// A cloud is stored as flat typed arrays (no per-point objects) so 100k+ points per
+// subshell do not create GC pressure: { xyz: Float32Array(3n), ax: Uint8Array(n)|null, n, p }.
+function buildCloud(key, count) {
+  const n = count || SNAP_TARGET;
+  const p = isP(key);
+  const xyz = new Float32Array(n * 3);
+  const ax = p ? new Uint8Array(n) : null;
+  for (let i = 0; i < n; i++) {
+    const r = sampleR(key);
+    // a filled p subshell is three orbitals (px, py, pz) - split points evenly among the axes
+    const axis = i % 3;
+    const u = p ? dirForP(axis) : unitVec();
+    const b = i * 3;
+    xyz[b] = r * u.x; xyz[b + 1] = r * u.y; xyz[b + 2] = r * u.z;
+    if (p) ax[i] = axis;
+  }
+  return { xyz, ax, n, p };
+}
+
+/* ============================================================
+   Canvas rendering
+   ============================================================ */
+let ctx, CW = 520, CH = 520, cx = 260, cy = 260;
+const PXA0 = 7.0;      // pixels per Bohr radius
+
+// orbiting camera: yaw around the vertical axis, pitch around the screen-horizontal axis
+const DEF_YAW = -0.6, DEF_PITCH = 0.32;
+const cam = { yaw: DEF_YAW, pitch: DEF_PITCH, scale: 1 };
+const MIN_ZOOM = 0.5, MAX_ZOOM = 6;
+let livePartial = null;    // set while a snapshot animation is revealing points
+let camDragging = false;
+
+// rotate a world point into camera space.
+// display convention: z is the vertical axis, y is the depth axis (swap of the sampling frame).
+function rot(p) {
+  const up = p.z, depth = p.y;          // flip y <-> z for display
+  const cyaw = Math.cos(cam.yaw), syaw = Math.sin(cam.yaw);
+  const cpit = Math.cos(cam.pitch), spit = Math.sin(cam.pitch);
+  const x1 = p.x * cyaw + depth * syaw;
+  const z1 = -p.x * syaw + depth * cyaw;
+  return { x: x1, y: up * cpit - z1 * spit, z: up * spit + z1 * cpit };
+}
+function zoomBy(factor) {
+  cam.scale = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, cam.scale * factor));
+  renderScene();
+}
+function resetView() { cam.yaw = DEF_YAW; cam.pitch = DEF_PITCH; cam.scale = 1; renderScene(); }
+
+let DPR = 1, DW = 520, DH = 520, accum = null, frameImg = null;
+
+function setupCanvas() {
+  const c = $('#view');
+  DPR = 1;   // the cloud is a fuzz of dots; retina backing store just quadruples the per-frame cost
+  DW = Math.round(CW * DPR);
+  DH = Math.round(CH * DPR);
+  c.width = DW;
+  c.height = DH;
+  ctx = c.getContext('2d');
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  accum = new Float32Array(DW * DH * 3);
+  frameImg = ctx.createImageData(DW, DH);
+
+  if (c.dataset.bound) return;   // bind interaction handlers once
+  c.dataset.bound = '1';
+  c.style.cursor = 'grab';
+  c.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    zoomBy(Math.exp(-e.deltaY * 0.0015));
+  }, { passive: false });
+  let lx = 0, ly = 0;
+  c.addEventListener('pointerdown', (e) => {
+    camDragging = true; lx = e.clientX; ly = e.clientY;
+    try { c.setPointerCapture(e.pointerId); } catch (_) {}
+    c.style.cursor = 'grabbing';
+  });
+  c.addEventListener('pointermove', (e) => {
+    if (!camDragging) return;
+    const r = c.getBoundingClientRect();
+    const s = (CW / r.width) * 0.011;
+    cam.yaw += (e.clientX - lx) * s;
+    cam.pitch = Math.max(-1.45, Math.min(1.45, cam.pitch + (e.clientY - ly) * s));
+    lx = e.clientX; ly = e.clientY;
+    renderScene();
+  });
+  const end = (e) => {
+    camDragging = false; c.style.cursor = 'grab';
+    try { c.releasePointerCapture(e.pointerId); } catch (_) {}
+    renderScene();   // redraw at full point density
+  };
+  c.addEventListener('pointerup', end);
+  c.addEventListener('pointercancel', end);
+  c.addEventListener('dblclick', resetView);
+}
+
+function drawAxes(sc) {
+  const L = 20;   // a0, half-length of each axis
+  const ends = [
+    { v: { x: L, y: 0, z: 0 }, label: 'x' },
+    { v: { x: 0, y: L, z: 0 }, label: 'y' },
+    { v: { x: 0, y: 0, z: L }, label: 'z' },
+  ];
+  ctx.lineCap = 'round';
+  for (const ax of ends) {
+    const pP = rot(ax.v);
+    const pN = rot({ x: -ax.v.x, y: -ax.v.y, z: -ax.v.z });
+    const x1 = cx + pN.x * sc, y1 = cy - pN.y * sc;
+    const x2 = cx + pP.x * sc, y2 = cy - pP.y * sc;
+    // full axis, faint
+    ctx.strokeStyle = 'rgba(255,255,255,0.28)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    // positive half, bright
+    ctx.strokeStyle = 'rgba(255,255,255,0.72)';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(x2, y2); ctx.stroke();
+    // arrowhead
+    const ang = Math.atan2(y2 - cy, x2 - cx);
+    const ah = 8;
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - ah * Math.cos(ang - 0.42), y2 - ah * Math.sin(ang - 0.42));
+    ctx.lineTo(x2 - ah * Math.cos(ang + 0.42), y2 - ah * Math.sin(ang + 0.42));
+    ctx.closePath(); ctx.fill();
+    // label, kept inside the canvas
+    const lxp = Math.max(13, Math.min(CW - 13, x2 + 12 * Math.cos(ang)));
+    const lyp = Math.max(16, Math.min(CH - 10, y2 + 12 * Math.sin(ang)));
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    ctx.font = 'bold 14px -apple-system, system-ui, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(ax.label, lxp, lyp);
+    ctx.textAlign = 'start'; ctx.textBaseline = 'alphabetic';
+  }
+}
+
+function renderScene(partial) {
+  partial = partial || livePartial;
+
+  const sc = PXA0 * cam.scale * DPR;   // device pixels per Bohr radius
+  const ox = cx * DPR, oy = cy * DPR;
+  // Each cloud can hold 100k points, drawn straight into a pixel buffer and blended
+  // additively (density -> brightness). To keep every frame fast no matter how many
+  // clouds are shown, only ~a fixed budget of points is drawn per frame: when more are
+  // visible we skip every Nth one and deposit that much more light per point, so the
+  // picture looks the same but costs the same.
+  let visN = 0;
+  for (const s of SUBS) {
+    const cloud = state.clouds[s.key];
+    if (!cloud) continue;
+    const total = (partial && partial.key === s.key) ? partial.n : cloud.n;
+    if (cloud.p) {
+      // count only the axes actually switched on, not the whole subshell
+      let axesOn = 0;
+      if (state.visible.has(s.key + 'x')) axesOn++;
+      if (state.visible.has(s.key + 'y')) axesOn++;
+      if (state.visible.has(s.key + 'z')) axesOn++;
+      visN += total * axesOn / 3;
+    } else if (state.visible.has(s.key)) {
+      visN += total;
+    }
+  }
+  // One budget for both states (not a lower one while dragging): a single visible cloud is
+  // SNAP_TARGET points, so the budget sits above that on purpose - one full cloud never
+  // needs thinning either way, and starting/ending a drag never pops the density. Only
+  // several full clouds shown at once trigger any thinning, and it stays the same amount
+  // whether or not you're dragging.
+  const BUDGET = 300000;
+  let stride = Math.max(1, Math.ceil(visN / BUDGET) || 1);
+  // a p subshell's points are stored interleaved px,py,pz,px,py,pz,... (ax = i % 3), so a
+  // stride that is itself a multiple of 3 would land on the same orbital every time and
+  // silently drop the other two - nudge off any multiple of 3 to keep all three sampled.
+  if (stride % 3 === 0) stride++;
+  const w = 11 * stride;
+  // camera rotation, inlined into the point loop below so it never allocates per point
+  const cyaw = Math.cos(cam.yaw), syaw = Math.sin(cam.yaw);
+  const cpit = Math.cos(cam.pitch), spit = Math.sin(cam.pitch);
+
+  accum.fill(0);
+  for (const s of SUBS) {
+    const cloud = state.clouds[s.key];
+    if (!cloud) continue;
+    const pOrb = cloud.p;
+    const axOn0 = pOrb && state.visible.has(s.key + 'x');
+    const axOn1 = pOrb && state.visible.has(s.key + 'y');
+    const axOn2 = pOrb && state.visible.has(s.key + 'z');
+    if (pOrb ? !(axOn0 || axOn1 || axOn2) : !state.visible.has(s.key)) continue;
+    const lim = (partial && partial.key === s.key) ? partial.n : cloud.n;
+    const xyz = cloud.xyz, axArr = cloud.ax;
+    const rgb = COLOR_RGB[s.key];
+    const cr = rgb[0] * w / 255, cg = rgb[1] * w / 255, cb = rgb[2] * w / 255;
+    for (let pi = 0; pi < lim; pi += stride) {
+      if (pOrb) {
+        const a = axArr[pi];
+        if (a === 0 ? !axOn0 : a === 1 ? !axOn1 : !axOn2) continue;
+      }
+      const b = pi * 3;
+      const x = xyz[b], y = xyz[b + 1], z = xyz[b + 2];
+      // rot(): yaw about the vertical, then pitch; z is "up", y is depth
+      const x1 = x * cyaw + y * syaw;
+      const z1 = y * cyaw - x * syaw;
+      const ry = z * cpit - z1 * spit;
+      const px = (ox + x1 * sc) | 0;
+      const py = (oy - ry * sc) | 0;
+      if (px < 0 || px >= DW || py < 0 || py >= DH) continue;
+      const o = (py * DW + px) * 3;
+      accum[o] += cr; accum[o + 1] += cg; accum[o + 2] += cb;
+    }
+  }
+  // Tone curve v -> 255*v/(v+K) lifts sparse regions (a single point is clearly visible)
+  // and rolls off a dense core instead of clipping it. Applying that curve to each color
+  // channel separately (as before) washes every bright, tightly-packed cloud - especially
+  // small ones like 1s - out to plain white, since all three channels saturate toward 255
+  // independently. Instead tone-map the brightness once and rescale the original color by
+  // it, so a cloud keeps its own color all the way up and only genuinely overlapping colors
+  // blend.
+  const data = frameImg.data;
+  const K = 22;
+  for (let i = 0, j = 0; i < accum.length; i += 3, j += 4) {
+    const r = accum[i], g = accum[i + 1], b = accum[i + 2];
+    const v = r > g ? (r > b ? r : b) : (g > b ? g : b);
+    if (v > 0) {
+      const scale = (255 * v / (v + K)) / v;
+      data[j] = r * scale; data[j + 1] = g * scale; data[j + 2] = b * scale;
+    } else {
+      data[j] = 0; data[j + 1] = 0; data[j + 2] = 0;
+    }
+    data[j + 3] = 255;
+  }
+  ctx.putImageData(frameImg, 0, 0);
+
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.globalAlpha = 1;
+  drawAxes(sc / DPR);
+
+  // nucleus (always at canvas center)
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 9);
+  g.addColorStop(0, '#ffffff');
+  g.addColorStop(0.5, '#ff6b4a');
+  g.addColorStop(1, 'rgba(255,107,74,0)');
+  ctx.fillStyle = g;
+  ctx.beginPath(); ctx.arc(cx, cy, 9, 0, Math.PI * 2); ctx.fill();
+
+  ctx.font = '11px -apple-system, system-ui, sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.fillText('drag to rotate  ·  scroll to zoom' +
+    (Math.abs(cam.scale - 1) > 0.01 ? '  ·  ' + Math.round(cam.scale * 100) + '%' : '') +
+    '  ·  double-click to reset', 12, CH - 12);
+}
+
+/* ============================================================
+   Snapshot animation
+   ============================================================ */
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// turn a subshell's cloud on by default (p subshells: all three axes)
+function markVisible(key) {
+  if (isP(key)) { state.visible.add(key + 'x'); state.visible.add(key + 'y'); state.visible.add(key + 'z'); }
+  else state.visible.add(key);
+}
+
+function photograph(key, done) {
+  state.clouds[key] = buildCloud(key, SNAP_TARGET);
+  markVisible(key);
+  state.animating = true;
+  renderAddList(); renderSnapBar(); renderInfo();
+
+  const finish = () => {
+    livePartial = null;
+    state.sampled.add(key);
+    state.animating = false;
+    const c2 = $('#snapCount'); if (c2) c2.textContent = '';
+    renderScene();
+    afterSample();
+    done && done();
+  };
+
+  if (reducedMotion) { finish(); return; }
+
+  const pts = state.clouds[key];
+  const DURATION_MS = 5600;              // the build plays out over ~5.6 seconds
+  const t0 = performance.now();
+  (function frame(now) {
+    const el = (now || performance.now()) - t0;
+    const n = Math.min(pts.length, Math.floor(pts.length * el / DURATION_MS));
+    livePartial = { key, n };
+    renderScene();
+    const cnt = $('#snapCount');
+    if (cnt) cnt.textContent = n.toLocaleString() + ' / ' + SNAP_TARGET.toLocaleString();
+    if (el < DURATION_MS && n < pts.length) requestAnimationFrame(frame);
+    else finish();
+  })();
+}
+
+// silent rebuild (used on resume)
+function photographInstant(key) {
+  state.clouds[key] = buildCloud(key, SNAP_TARGET);
+  state.sampled.add(key);
+  markVisible(key);
+}
+
+function afterSample() {
+  renderAll();
+  if (state.sampled.size === SUBS.length) scormComplete();
+  else scormCheckpoint();
+}
+
+/* ============================================================
+   Left panel rendering
+   ============================================================ */
+function canAddNext() {
+  if (state.added >= SUBS.length) return false;
+  if (state.added === 0) return true;
+  return state.sampled.has(SUBS[state.added - 1].key);
+}
+
+function renderAddList() {
+  const rows = SUBS.map((s, i) => {
+    if (i < state.added) {
+      if (state.animating && !state.sampled.has(s.key)) {
+        return `<div class="add-row"><span class="tag">${s.label}</span>
+                <span class="add-locked-note">photographing&hellip;</span></div>`;
+      }
+      return `<div class="add-row"><span class="tag">${s.label}</span>
+              <span class="add-done">&#10003; ${s.electrons} e&#8315; added</span></div>`;
+    }
+    if (i === state.added) {
+      if (canAddNext() && !state.animating) {
+        return `<div class="add-row"><span class="tag">${s.label}</span>
+                <button class="add-btn" id="addBtn">Add ${s.label} electrons</button></div>`;
+      }
+      return `<div class="add-row"><span class="tag">${s.label}</span>
+              <span class="add-locked-note">take snapshots first</span></div>`;
+    }
+    return `<div class="add-row"><span class="tag" style="opacity:.4">${s.label}</span>
+            <span class="add-locked-note" style="opacity:.5">locked</span></div>`;
+  }).join('');
+  $('#addList').innerHTML = rows;
+  const b = $('#addBtn');
+  if (b) b.addEventListener('click', onAdd);
+}
+
+function renderDiagram() {
+  // drawn bottom-up by energy: 1s at the bottom, 3p at the top
+  const rows = SUBS.map((s, i) => {
+    const on = i < state.added;
+    const boxes = Array.from({ length: s.boxes }, () =>
+      `<span class="orb-box${on ? ' fill' : ''}">${on ? '&uarr;&darr;' : ''}</span>`).join('');
+    return `<div class="orb-row"><span class="orb-name">${s.label}</span>${boxes}</div>`;
+  }).reverse().join('');
+  $('#diagram').innerHTML = '<div class="orb-axis">higher energy &uarr;</div>' + rows +
+    '<div class="orb-axis">lower energy &darr;</div>';
+}
+
+function renderLegend() {
+  $('#legend').innerHTML = SUBS.map(s =>
+    `<span class="leg${state.sampled.has(s.key) ? ' lit' : ''}">
+       <span class="sw" style="background:${s.color}"></span>${s.label}</span>`).join('');
+}
+
+/* ============================================================
+   Right panel rendering
+   ============================================================ */
+function pendingKey() {
+  for (let i = 0; i < state.added; i++) {
+    if (!state.sampled.has(SUBS[i].key)) return SUBS[i].key;
+  }
+  return null;
+}
+
+function renderSnapBar() {
+  const bar = $('#snapBar');
+  if (state.animating) {
+    bar.innerHTML = `<span style="font-weight:600;color:#7c2d12;">Taking snapshots&hellip;</span>
+                     <span id="snapCount"></span>`;
+    return;
+  }
+  const pk = pendingKey();
+  let html = '';
+  if (pk) {
+    const lbl = SUBS[KEY_INDEX[pk]].label;
+    html += `<button class="btn" id="snapBtn">Take ${SNAP_TARGET.toLocaleString()} snapshots of the ${lbl} electrons</button>`;
+  } else if (state.added === 0) {
+    html += `<span style="color:#9a8c72;font-size:0.88rem;">Add the 1s electrons on the left to start.</span>`;
+  }
+  if (state.sampled.size >= 1) {
+    const opts = SUBS.filter(s => state.sampled.has(s.key))
+      .map(s => `<option value="${s.key}">${s.label}</option>`).join('');
+    html += `<span class="rerun">
+               <select id="rerunSel">${opts}</select>
+               <button class="btn btn-sm" id="rerunBtn">Re-run</button>
+             </span>`;
+  }
+  bar.innerHTML = html;
+  const sb = $('#snapBtn'); if (sb) sb.addEventListener('click', () => runSnapshot(pendingKey()));
+  const rb = $('#rerunBtn'); if (rb) rb.addEventListener('click', () => runSnapshot($('#rerunSel').value));
+}
+
+// list of toggle items: one per s subshell, three (x/y/z) per p subshell, once photographed
+function toggleItems() {
+  const items = [];
+  SUBS.filter(s => state.sampled.has(s.key)).forEach(s => {
+    if (isP(s.key)) {
+      ['x', 'y', 'z'].forEach(a => items.push({
+        id: s.key + a, html: s.label + '<sub>' + a + '</sub>', color: s.color,
+      }));
+    } else {
+      items.push({ id: s.key, html: s.label, color: s.color });
+    }
+  });
+  return items;
+}
+
+function renderViewControls() {
+  const vc = $('#viewControls');
+  if (state.sampled.size < 1) { vc.style.display = 'none'; return; }
+  vc.style.display = 'block';
+  // one toggle per cloud (p subshells split into px, py, pz); on by default, click to hide/show
+  $('#vcToggles').innerHTML = toggleItems().map(it => {
+    const on = state.visible.has(it.id);
+    return `<button type="button" class="cloud-tog${on ? ' on' : ''}" data-k="${it.id}" aria-pressed="${on}">
+       <span class="sw" style="background:${it.color}"></span>${it.html}</button>`;
+  }).join('');
+  $('#vcToggles').querySelectorAll('.cloud-tog').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const k = btn.dataset.k;
+      if (state.visible.has(k)) state.visible.delete(k); else state.visible.add(k);
+      renderViewControls(); renderScene(); renderCaption();
+    });
+  });
+}
+
+// subshells with at least one cloud currently shown
+function visibleSubs() {
+  return SUBS.filter(s => {
+    if (!state.clouds[s.key]) return false;
+    if (isP(s.key)) return state.visible.has(s.key + 'x') || state.visible.has(s.key + 'y') || state.visible.has(s.key + 'z');
+    return state.visible.has(s.key);
+  });
+}
+
+function renderCaption() {
+  const vis = visibleSubs();
+  const labels = vis.map(s => s.label);
+  let msg;
+  if (labels.length === 0) {
+    msg = state.sampled.size
+      ? 'No clouds shown. Turn some subshells back on to compare them.'
+      : 'Add a subshell, then take snapshots to build its electron cloud.';
+  } else {
+    const sShells = vis.filter(s => !isP(s.key)).map(s => s.shell);
+    const pShells = vis.filter(s => isP(s.key)).map(s => s.shell);
+    const head = 'Showing ' + labels.join(', ') + '. ';
+    if (new Set(sShells).size >= 2) {
+      msg = head + 'Each higher shell number pushes the cloud farther from the nucleus.';
+    } else if (new Set(pShells).size >= 2) {
+      msg = head + 'Same dumbbell shapes, but the higher-shell p clouds reach farther out.';
+    } else if (pShells.length && sShells.length) {
+      msg = head + 'The s cloud is a ball; each p orbital is a dumbbell along its axis.';
+    } else if (pShells.length) {
+      msg = head + 'A p subshell is three dumbbells at right angles - one along x, one along y, one along z.';
+    } else {
+      msg = head + 'Drag to rotate and use the buttons to compare the clouds.';
+    }
+  }
+  $('#caption').textContent = msg;
+}
+
+// dynamic line at the top of the info card
+function renderInfo() {
+  const el = $('#infoNow');
+  if (!el) return;
+  let last = null;
+  for (let i = 0; i < SUBS.length; i++) if (state.sampled.has(SUBS[i].key)) last = SUBS[i];
+  const pend = pendingKey();
+  if (state.animating) {
+    const k = pend || (last && last.key) || '1s';
+    el.innerHTML = 'Building the cloud for the <b>' + SUBS[KEY_INDEX[k]].label +
+      '</b> electrons &mdash; each dot is one snapshot of where one of them could be.';
+  } else if (pend) {
+    el.innerHTML = 'Now take snapshots of the <b>' + SUBS[KEY_INDEX[pend]].label +
+      '</b> electrons to see where they are likely to be found.';
+  } else if (!last) {
+    el.textContent = 'Add the 1s electrons on the left to start.';
+  } else if (state.added === SUBS.length && state.sampled.size === SUBS.length) {
+    el.innerHTML = 'All five subshells are built. Rotate, zoom, and toggle the clouds on and off '
+      + 'to explore where each set of electrons is likely to be found.';
+  } else {
+    el.innerHTML = 'The plot shows where we are likely to find the <b>' + last.label +
+      '</b> electrons you just added. Their energy puts them in shell <b>n = ' + last.shell + '</b>.';
+  }
+}
+
+function renderAll() {
+  renderAddList(); renderDiagram(); renderLegend();
+  renderSnapBar(); renderViewControls(); renderCaption(); renderInfo();
+  renderScene();
+}
+
+/* ============================================================
+   Actions
+   ============================================================ */
+function onAdd() {
+  if (!canAddNext() || state.animating) return;
+  state.added++;
+  renderAll();
+  scormCheckpoint();
+}
+
+function runSnapshot(key) {
+  if (!key || state.animating) return;
+  photograph(key);
+}
+
+$('#clearDots').addEventListener('click', () => {
+  state.sampled.clear(); state.visible.clear(); state.clouds = {};
+  renderAll(); scormCheckpoint();
+});
+$('#zoomIn').addEventListener('click', () => zoomBy(1.3));
+$('#zoomOut').addEventListener('click', () => zoomBy(1 / 1.3));
+$('#zoomReset').addEventListener('click', resetView);
+
+// "how were these dots decided?" explainer modal
+const howOverlay = $('#howOverlay');
+const closeHow = () => { howOverlay.style.display = 'none'; };
+$('#howBtn').addEventListener('click', () => { howOverlay.style.display = 'flex'; });
+$('#howClose').addEventListener('click', closeHow);
+howOverlay.addEventListener('click', (e) => { if (e.target === howOverlay) closeHow(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeHow(); });
+
+/* ============================================================
+   Intro
+   ============================================================ */
+const INTRO = [
+  {
+    h: 'Where is the electron?',
+    p: 'An electron does not travel on a neat circular path. The best we can do is describe where it is <b>likely</b> to be found.',
+  },
+  {
+    h: 'Building an orbital',
+    p: 'Imagine photographing the electron thousands of times and marking every spot it shows up. The cloud of dots that builds up is called an <b>orbital</b>. Where the dots are dense, the electron spends more of its time.',
+  },
+  {
+    h: 'How this works',
+    p: 'You will fill a generic atom one subshell at a time: <b>1s, 2s, 2p, 3s, 3p</b>. After adding each one, take thousands of snapshots and watch its cloud appear in its own color. Then hide and show the clouds to see how higher shells spread farther from the nucleus.',
+  },
+];
+let introIdx = 0;
+
+function renderIntro() {
+  $('#introH').innerHTML = INTRO[introIdx].h;
+  $('#introP').innerHTML = INTRO[introIdx].p;
+  $('#introDots').innerHTML = INTRO.map((_, i) =>
+    `<i class="${i === introIdx ? 'on' : ''}"></i>`).join('');
+  $('#introBack').disabled = introIdx === 0;
+  $('#introNext').textContent = (introIdx === INTRO.length - 1) ? 'Start' : 'Next';
+}
+function introForward() {
+  if (introIdx < INTRO.length - 1) { introIdx++; renderIntro(); }
+  else finishIntro();
+}
+function introBack() { if (introIdx > 0) { introIdx--; renderIntro(); } }
+function finishIntro() {
+  $('#introCard').style.display = 'none';
+  beginActivity();
+}
+$('#introNext').addEventListener('click', (e) => { e.stopPropagation(); introForward(); });
+$('#introBack').addEventListener('click', (e) => { e.stopPropagation(); introBack(); });
+$('#introCard').addEventListener('click', (e) => {
+  if (e.target.closest('.intro-nav')) return;
+  introForward();
+});
+
+/* ============================================================
+   Activity start / resume
+   ============================================================ */
+function beginActivity() {
+  $('#app').style.display = 'block';
+  if (scormAPI) $('#save-wrap').style.display = 'inline-flex';
+  setupCanvas();
+
+  if (scormResumeEntry && scormResumeData) {
+    const d = scormResumeData;
+    state.added = Math.min(SUBS.length, Math.max(0, d.a | 0));
+    (Array.isArray(d.s) ? d.s : []).forEach(k => {
+      if (KEY_INDEX[k] != null && KEY_INDEX[k] < state.added) photographInstant(k);
+    });
+  }
+  renderAll();
+}
+
+$('#saveBtn').addEventListener('click', manualSave);
+
+/* ============================================================
+   SCORM 1.2
+   ============================================================ */
+let scormAPI = null;
+let scormResumeEntry = false;
+let scormResumeData = null;
+let scormDone = false;
+const scormStartMs = Date.now();
+
+function findAPI(win) {
+  let n = 0, w = win;
+  while (w && n < 12) {
+    if (w.API) return w.API;
+    w = (w.parent && w.parent !== w) ? w.parent : w.opener;
+    n++;
+  }
+  return null;
+}
+
+function scormInit() {
+  try {
+    scormAPI = findAPI(window);
+    if (!scormAPI) return;
+    if (String(scormAPI.LMSInitialize("")) !== "true") { scormAPI = null; return; }
+    const st = scormAPI.LMSGetValue("cmi.core.lesson_status");
+    if (st === "" || st === "not attempted" || st === "unknown") {
+      scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+    }
+    if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+      scormResumeEntry = true;
+      const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+      if (raw) {
+        try {
+          const d = JSON.parse(raw);
+          if (d && typeof d === 'object') scormResumeData = d;
+        } catch (e) { /* ignore bad bookmark */ }
+      }
+    }
+    scormAPI.LMSCommit("");
+  } catch (e) { scormAPI = null; }
+}
+
+function scormTime() {
+  let s = Math.floor((Date.now() - scormStartMs) / 1000);
+  const h = String(Math.floor(s / 3600)).padStart(4, '0');
+  s %= 3600;
+  const m = String(Math.floor(s / 60)).padStart(2, '0');
+  const ss = String(s % 60).padStart(2, '0');
+  return h + ':' + m + ':' + ss;
+}
+
+function scormCheckpoint() {
+  if (!scormAPI || scormDone) return;
+  try {
+    scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+      a: state.added,
+      s: Array.from(state.sampled),
+    }));
+    scormAPI.LMSSetValue("cmi.core.lesson_location", String(state.added));
+    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+    scormAPI.LMSCommit("");
+  } catch (e) { /* ignore */ }
+}
+
+// completion-only: mark complete once all five subshells have been photographed
+function scormComplete() {
+  if (!scormAPI || scormDone) return;
+  try {
+    scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+      a: state.added, s: Array.from(state.sampled),
+    }));
+    scormAPI.LMSSetValue("cmi.core.score.min", "0");
+    scormAPI.LMSSetValue("cmi.core.score.max", "100");
+    scormAPI.LMSSetValue("cmi.core.score.raw", "100");
+    scormAPI.LMSSetValue("cmi.core.lesson_status", "completed");
+    scormAPI.LMSSetValue("cmi.core.session_time", scormTime());
+    scormAPI.LMSSetValue("cmi.core.exit", "");
+    scormAPI.LMSCommit("");
+    scormDone = true;
+  } catch (e) { /* ignore */ }
+}
+
+function scormTerminate() {
+  if (!scormAPI) return;
+  try {
+    if (!scormDone) scormCheckpoint();
+    scormAPI.LMSFinish("");
+  } catch (e) { /* ignore */ }
+}
+
+function manualSave() {
+  if (!scormAPI || scormDone) return;
+  scormCheckpoint();
+  const n = $('#save-note');
+  if (n) {
+    n.classList.add('show');
+    clearTimeout(manualSave._t);
+    manualSave._t = setTimeout(() => n.classList.remove('show'), 2200);
+  }
+}
+
+window.addEventListener('beforeunload', scormTerminate);
+window.addEventListener('pagehide', function () { scormCheckpoint(); });
+document.addEventListener('visibilitychange', function () { if (document.hidden) scormCheckpoint(); });
+
+window.addEventListener('load', () => {
+  scormInit();
+  renderIntro();
+  if (scormResumeEntry && scormResumeData) {
+    $('#introCard').style.display = 'none';
+    beginActivity();
+  }
+});
+</script>
+</body>
+</html>

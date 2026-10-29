@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ideal Gas Law Practice</title>
+<style>
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        color: #2c3e50;
+    }
+
+    .app {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 14px;
+        padding: 28px 32px;
+        margin-bottom: 18px;
+    }
+
+    .title-header {
+        text-align: center;
+        margin-bottom: 6px;
+    }
+
+    .title-header h1 {
+        font-size: 1.8rem;
+        font-weight: 300;
+        color: #2c3e50;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        margin: 0 0 6px 0;
+    }
+
+    .title-header p {
+        margin: 0;
+        color: #5a6b7d;
+        font-size: 0.95rem;
+    }
+
+    ul.overview-list {
+        max-width: 580px;
+        margin: 14px auto;
+        padding-left: 20px;
+        color: #34495e;
+        line-height: 1.7;
+    }
+
+    .intro-actions {
+        text-align: center;
+        margin-top: 18px;
+    }
+
+    /* Progress dots */
+    .progress-dots {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin: 4px 0 6px 0;
+    }
+
+    .dot {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.9rem;
+        background: #e9ecef;
+        color: #5a6b7d;
+        border: 2px solid #cdd7e1;
+        transition: all 0.2s ease;
+    }
+
+    .dot.active {
+        background: linear-gradient(135deg, #2193b0, #6dd5ed);
+        color: white;
+        border-color: #2193b0;
+    }
+
+    .dot.solved {
+        background: linear-gradient(145deg, #28a745, #218838);
+        color: white;
+        border-color: #218838;
+    }
+
+    .dot.retry {
+        background: #fff3cd;
+        color: #8a6300;
+        border-color: #e0a800;
+    }
+
+    .progress-label {
+        text-align: center;
+        font-size: 0.85rem;
+        color: #5a6b7d;
+        margin-bottom: 16px;
+    }
+
+    /* Question area */
+    .type-label {
+        text-align: center;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #1c6e85;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 10px;
+    }
+
+    .title-box {
+        background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+        color: white;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: 600;
+        padding: 14px 18px;
+        border-radius: 8px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.25);
+        box-shadow: 0 3px 8px rgba(33, 147, 176, 0.3);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        margin-bottom: 16px;
+        letter-spacing: 0.5px;
+    }
+
+    .scenario-box {
+        background: #f8f9fa;
+        border-left: 4px solid #2193b0;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 18px;
+        line-height: 1.6;
+    }
+
+    .scenario-box p {
+        margin: 0;
+        color: #34495e;
+        font-size: 1rem;
+    }
+
+    .data-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .data-chip {
+        background: white;
+        border: 1px solid #d7e3ea;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 0.88rem;
+        color: #2c3e50;
+    }
+
+    .data-chip strong {
+        color: #1c6e85;
+    }
+
+    .answer-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+    }
+
+    .answer-row label {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 0.98rem;
+    }
+
+    .answer-input {
+        flex: 0 1 200px;
+        padding: 12px 14px;
+        font-size: 1.2rem;
+        border-radius: 8px;
+        border: 2px solid #cdd7e1;
+        font-family: inherit;
+        color: #2c3e50;
+    }
+
+    .answer-input:focus {
+        outline: none;
+        border-color: #4a90e2;
+    }
+
+    .answer-input:disabled {
+        background: #f0f0f0;
+        color: #888;
+    }
+
+    .unit-label {
+        font-size: 1rem;
+        color: #5a6b7d;
+        font-weight: 600;
+        min-width: 60px;
+    }
+
+    .answer-hint {
+        font-size: 0.85rem;
+        color: #5a6b7d;
+        margin: 0 0 16px 0;
+    }
+
+    .btn {
+        background: linear-gradient(145deg, #4a90e2, #357abd);
+        color: white;
+        border: none;
+        padding: 11px 24px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.98rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        background: linear-gradient(145deg, #357abd, #2c5aa0);
+    }
+
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .btn-row {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .btn-save {
+        background: linear-gradient(145deg, #28a745, #1e7e34);
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn-save:hover:not(:disabled) {
+        background: linear-gradient(145deg, #1e7e34, #19692c);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+    }
+
+    .save-progress-row {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 4px;
+        margin: 6px 0 0 0;
+    }
+
+    .save-status {
+        display: inline-block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #28a745;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .save-status.visible {
+        opacity: 1;
+    }
+
+    .feedback {
+        margin-top: 14px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        display: none;
+    }
+
+    .feedback.correct {
+        display: block;
+        background: #eafaf0;
+        color: #1e7e34;
+        border: 1px solid #28a745;
+    }
+
+    .feedback.incorrect {
+        display: block;
+        background: #fdecea;
+        color: #a52a2a;
+        border: 1px solid #dc3545;
+    }
+
+    /* Completion panel */
+    .complete-panel {
+        text-align: center;
+        padding: 24px;
+        background: #f0f9fb;
+        border-radius: 10px;
+        border: 1px solid #bfe3ec;
+    }
+
+    .complete-panel h3 {
+        margin: 0 0 10px 0;
+        color: #1c6e85;
+        font-size: 1.4rem;
+    }
+
+    .stats-panel {
+        margin: 20px auto;
+        max-width: 420px;
+        background: white;
+        padding: 16px 24px;
+        border-radius: 10px;
+        text-align: left;
+    }
+
+    .stat-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 8px 0;
+        font-size: 0.98rem;
+    }
+
+    .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+    <div class="card title-header">
+        <h1>Ideal Gas Law Practice</h1>
+        <p>Solve five lab-style gas law problems. Get all five correct to finish — missed problems come back later with new numbers.</p>
+    </div>
+
+    <!-- INTRO SCREEN -->
+    <div class="card" id="intro-screen">
+        <h2 style="text-align:center; color:#1c6e85; font-weight:600;">Before You Begin</h2>
+        <ul class="overview-list">
+            <li>You will solve <strong>5 gas law problems</strong>, each based on lab-style data, including one where you must determine an unknown gas's molar mass and one two-part problem where conditions change partway through.</li>
+            <li>No equations are provided except the gas constant, <strong>R = 0.08206 L·atm/(mol·K)</strong> — you'll need to recall and rearrange the appropriate gas law yourself.</li>
+            <li>Type your final numeric answer only (no units) using exactly <strong>3 significant figures</strong>.</li>
+            <li>If you miss a problem (or a part of one), it will come back later with different numbers — you must answer all 5 correctly to finish.</li>
+            <li>The numbers are randomized, so no two attempts are exactly the same.</li>
+            <li>Once you answer all 5 correctly, a completion grade is automatically submitted to Schoology.</li>
+            <li>If you're interrupted, your progress is saved — reopening the assignment picks up right where you left off.</li>
+            <li><strong>Before you close your Chromebook or exit Schoology,</strong> click the green "Save Progress" button so your work is saved and you can pick up where you left off next time.</li>
+        </ul>
+        <div class="intro-actions">
+            <button class="btn" id="begin-btn">Begin Practice</button>
+        </div>
+    </div>
+
+    <!-- MAIN QUIZ SCREEN -->
+    <div class="card hidden" id="quiz-screen">
+        <div class="progress-dots" id="progress-dots"></div>
+        <div class="progress-label" id="progress-label">Solved 0 of 5</div>
+        <div class="save-progress-row">
+            <button class="btn btn-save" id="save-progress-btn">Save Progress</button>
+            <span class="save-status" id="save-status">Saved ✓</span>
+        </div>
+
+        <div class="type-label" id="type-label"></div>
+        <div class="title-box" id="title-box"></div>
+
+        <div class="scenario-box">
+            <p id="question-text"></p>
+            <div class="data-chip-row" id="chips-row"></div>
+        </div>
+
+        <div class="answer-row">
+            <label for="answer-input">Your answer:</label>
+            <input type="text" inputmode="decimal" autocomplete="off" class="answer-input" id="answer-input" placeholder="e.g. 24.5">
+            <span class="unit-label" id="unit-label"></span>
+        </div>
+        <p class="answer-hint">Enter your answer to exactly 3 significant figures. Do not type units.</p>
+
+        <div class="btn-row">
+            <button class="btn" id="check-btn">Check Answer</button>
+            <button class="btn hidden" id="continue-btn">Continue</button>
+        </div>
+
+        <div class="feedback" id="feedback-box"></div>
+    </div>
+
+    <!-- COMPLETION SCREEN -->
+    <div class="card hidden" id="complete-screen">
+        <div class="complete-panel">
+            <h3>All 5 Problems Solved!</h3>
+            <p>Nice work — you correctly worked through every gas law problem. Your completion grade has been submitted to Schoology.</p>
+            <div class="stats-panel">
+                <div class="stat-row"><span><strong>Solved on first try:</strong></span><span id="stat-first-try"></span></div>
+                <div class="stat-row"><span><strong>Total attempts:</strong></span><span id="stat-attempts"></span></div>
+                <div class="stat-row"><span><strong>Time spent:</strong></span><span id="stat-time"></span></div>
+            </div>
+            <div class="btn-row" style="justify-content:center;">
+                <button class="btn" id="restart-btn">Practice Again</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+(function () {
+    "use strict";
+
+    const R = 0.08206; // L·atm/(mol·K)
+    const R_STR = "0.08206";
+    const M_C2H2 = 26.04; // g/mol, acetylene
+
+    // Vapor pressure of water (torr), embedded lookup — standard general-chemistry reference values
+    const VAPOR_PRESSURE_WATER = {
+        18: 15.5, 19: 16.5, 20: 17.5, 21: 18.7, 22: 19.8,
+        23: 21.1, 24: 22.4, 25: 23.8, 26: 25.2, 27: 26.7,
+        28: 28.3, 29: 30.0, 30: 31.8
+    };
+
+    function randNiceValue(min, max, decimals) {
+        const scale = Math.pow(10, decimals);
+        const lo = Math.round(min * scale);
+        const hi = Math.round(max * scale);
+        const r = lo + Math.floor(Math.random() * (hi - lo + 1));
+        return r / scale;
+    }
+
+    function roundToSigFigs(num, sig) {
+        if (num === 0) return 0;
+        const d = Math.ceil(Math.log10(Math.abs(num)));
+        const power = sig - d;
+        const magnitude = Math.pow(10, power);
+        return Math.round(num * magnitude) / magnitude;
+    }
+
+    function formatSigFigs(num, sig) {
+        const rounded = roundToSigFigs(num, sig);
+        const d = Math.floor(Math.log10(Math.abs(rounded))) + 1;
+        let decimals = sig - d;
+        if (decimals < 0) decimals = 0;
+        return rounded.toFixed(decimals);
+    }
+
+    function countSigFigs(input) {
+        let s = String(input).trim();
+        if (!s) return 0;
+        s = s.replace(/^[+-]/, '');
+        if (!/^\d*\.?\d*$/.test(s) || s === '' || s === '.') return 0;
+        if (s.includes('.')) {
+            let digits = s.replace('.', '');
+            digits = digits.replace(/^0+/, '');
+            if (digits === '') digits = '0';
+            return digits.length;
+        } else {
+            let digits = s.replace(/^0+/, '') || '0';
+            return digits.length;
+        }
+    }
+
+    let scormAPI = null;
+    let resumeState = null;
+
+    function findAPI(win) {
+        let attempts = 0;
+        let w = win;
+        while (w && attempts < 10) {
+            if (w.API) return w.API;
+            if (w.parent && w.parent !== w) {
+                w = w.parent;
+            } else if (w.opener) {
+                w = w.opener;
+            } else {
+                break;
+            }
+            attempts++;
+        }
+        return null;
+    }
+
+    function isValidResumePayload(parsed) {
+        if (!parsed || typeof parsed !== 'object') return false;
+        if (!Array.isArray(parsed.queue) || !Array.isArray(parsed.solved) || !Array.isArray(parsed.failedOnce)) return false;
+        const inRange = (n) => Number.isInteger(n) && n >= 0 && n < PROBLEM_TYPES.length;
+        if (!parsed.queue.every(inRange) || !parsed.solved.every(inRange) || !parsed.failedOnce.every(inRange)) return false;
+        if (typeof parsed.totalAttempts !== 'number' || typeof parsed.firstTryCount !== 'number') return false;
+        return true;
+    }
+
+    function scormInit() {
+        try {
+            scormAPI = findAPI(window);
+            if (!scormAPI) return;
+            scormAPI.LMSInitialize("");
+            if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (isValidResumePayload(parsed)) {
+                        resumeState = parsed;
+                    }
+                }
+            }
+        } catch (e) { /* No LMS present, or malformed bookmark — start fresh */ }
+    }
+
+    function scormSaveProgress() {
+        if (!scormAPI) return;
+        try {
+            scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                queue: state.queue,
+                solved: Array.from(state.solved),
+                failedOnce: Array.from(state.failedOnce),
+                totalAttempts: state.totalAttempts,
+                firstTryCount: state.firstTryCount
+            }));
+            if (!state.challengeFinished) {
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                // Mark the exit reason as "suspend" on every save, not just on
+                // beforeunload/pagehide. Students on Chromebooks/iPads very often
+                // exit by closing the lid or leaving the Schoology tab, which does
+                // not reliably fire beforeunload/pagehide before the device sleeps
+                // and the network drops. Setting this on every commit means the LMS
+                // already has the correct "resume me" state as of the last save,
+                // instead of depending on a browser-close event to set it at the end.
+                scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+            }
+            scormAPI.LMSCommit("");
+        } catch (e) { /* ignore */ }
+    }
+
+    // Manually triggered by the "Save Progress" button. This is the primary,
+    // reliable save path — students are instructed to click it before closing
+    // their Chromebook, since automatic browser-unload events can't be trusted
+    // to fire when a laptop lid is closed rather than the tab being navigated
+    // away from. Falls back gracefully (shows nothing) if no LMS is present.
+    function manualSaveProgress() {
+        if (!scormAPI) return;
+        scormSaveProgress();
+        const status = document.getElementById('save-status');
+        if (!status) return;
+        status.classList.add('visible');
+        clearTimeout(manualSaveProgress._hideTimer);
+        manualSaveProgress._hideTimer = setTimeout(() => {
+            status.classList.remove('visible');
+        }, 2500);
+    }
+
+    function scormReport(scorePercent) {
+        if (!scormAPI) return;
+        try {
+            scormAPI.LMSSetValue("cmi.core.score.min", "0");
+            scormAPI.LMSSetValue("cmi.core.score.max", "100");
+            scormAPI.LMSSetValue("cmi.core.score.raw", String(scorePercent));
+            scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+            scormAPI.LMSSetValue("cmi.core.exit", "");
+            scormAPI.LMSCommit("");
+        } catch (e) { /* ignore */ }
+    }
+
+    function scormFinish() {
+        if (!scormAPI) return;
+        try {
+            if (!state.challengeFinished) {
+                scormSaveProgress();
+                scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                scormAPI.LMSCommit("");
+            }
+            scormAPI.LMSFinish("");
+        } catch (e) { /* ignore */ }
+    }
+
+    function evaluateAnswer(raw, correctValue, unit) {
+        const trimmed = raw.trim();
+        const validFormat = /^-?\d*\.?\d+$/.test(trimmed);
+        if (!validFormat) {
+            return { numericOK: false, sigFigOK: false, num: null, sigFigs: 0 };
+        }
+        const num = parseFloat(trimmed);
+        const sigFigs = countSigFigs(trimmed);
+        let numericOK;
+        if (unit === '°C') {
+            // Temperature is the only unit that can legitimately be at or near zero,
+            // so relative tolerance breaks down here — use an absolute tolerance instead.
+            numericOK = Math.abs(num - correctValue) <= 3;
+        } else {
+            numericOK = Math.abs(num - correctValue) / Math.abs(correctValue) <= 0.02;
+        }
+        return { numericOK, sigFigOK: sigFigs === 3, num, sigFigs };
+    }
+
+    const PROBLEM_TYPES = [
+        {
+            title: "Sealed Gas Cylinder",
+            generate() {
+                const V = randNiceValue(1.00, 9.99, 2);
+                const P = randNiceValue(1.00, 9.99, 2);
+                const T = randNiceValue(5, 95, 0);
+                const TK = T + 273;
+                const n = (P * V) / (R * TK);
+                return {
+                    parts: [{
+                        prompt: "A rigid steel cylinder holds an unknown gas sample. The readings below were recorded from the cylinder's pressure gauge and thermometer. How many moles of gas are inside the cylinder?",
+                        chips: [
+                            `Volume = ${V.toFixed(2)} L`,
+                            `Pressure = ${P.toFixed(2)} atm`,
+                            `Temperature = ${T.toFixed(0)}°C`,
+                            `R = ${R_STR} L·atm/(mol·K)`
+                        ],
+                        correctValue: n,
+                        unit: "mol"
+                    }]
+                };
+            }
+        },
+        {
+            title: "Industrial Gas Storage",
+            generate() {
+                const mass = randNiceValue(100, 299, 0);
+                const P = randNiceValue(3.00, 9.99, 2);
+                const T = randNiceValue(5, 95, 0);
+                const TK = T + 273;
+                const n = mass / M_C2H2;
+                const V = (n * R * TK) / P;
+                return {
+                    parts: [{
+                        prompt: "A welding supply company needs to store a fixed mass of acetylene gas, C₂H₂, in a storage tank under the conditions listed below. What volume tank is required?",
+                        chips: [
+                            `Mass of C₂H₂ = ${mass.toFixed(0)} g`,
+                            `Molar mass of C₂H₂ = ${M_C2H2.toFixed(2)} g/mol`,
+                            `Pressure = ${P.toFixed(2)} atm`,
+                            `Temperature = ${T.toFixed(0)}°C`,
+                            `R = ${R_STR} L·atm/(mol·K)`
+                        ],
+                        correctValue: V,
+                        unit: "L"
+                    }]
+                };
+            }
+        },
+        {
+            title: "Dumas Bulb Method",
+            generate() {
+                const emptyFlask = randNiceValue(50.00, 90.00, 2);
+                const vaporMass = randNiceValue(0.35, 1.10, 2);
+                const flaskPlusVapor = Math.round((emptyFlask + vaporMass) * 100) / 100;
+                const flaskVolML = randNiceValue(150, 300, 0);
+                const flaskVolL = flaskVolML / 1000;
+                const waterBathC = randNiceValue(94, 100, 0);
+                const TK = waterBathC + 273;
+                const P = randNiceValue(0.960, 1.030, 3);
+                const n = (P * flaskVolL) / (R * TK);
+                const M = vaporMass / n;
+                return {
+                    parts: [{
+                        prompt: "A chemist vaporizes a small sample of an unknown volatile liquid completely inside a flask submerged in a boiling water bath, then condenses and weighs the resulting liquid. Using the data below, determine the molar mass of the unknown liquid.",
+                        chips: [
+                            `Mass of empty flask = ${emptyFlask.toFixed(2)} g`,
+                            `Mass of flask + condensed liquid = ${flaskPlusVapor.toFixed(2)} g`,
+                            `Volume of flask = ${flaskVolML.toFixed(0)} mL`,
+                            `Water bath temperature = ${waterBathC.toFixed(0)}°C`,
+                            `Atmospheric pressure = ${P.toFixed(3)} atm`,
+                            `R = ${R_STR} L·atm/(mol·K)`
+                        ],
+                        correctValue: M,
+                        unit: "g/mol"
+                    }]
+                };
+            }
+        },
+        {
+            title: "Piston Cylinder",
+            generate() {
+                const n1 = randNiceValue(0.100, 0.999, 3);
+                const V1 = randNiceValue(1.00, 9.99, 2);
+                const T1 = randNiceValue(5, 95, 0);
+                const T1K = T1 + 273;
+                const P1 = (n1 * R * T1K) / V1;
+
+                const compressionFactor = randNiceValue(0.30, 0.80, 2);
+                const V2 = Math.round(V1 * compressionFactor * 100) / 100;
+                const T2 = randNiceValue(-10, 150, 0);
+                const T2K = T2 + 273;
+                const P2 = (P1 * V1 * T2K) / (T1K * V2);
+
+                return {
+                    parts: [
+                        {
+                            prompt: "A fixed amount of gas is sealed inside a cylinder with a movable piston. Using the readings below, determine the pressure of the gas.",
+                            chips: [
+                                `Moles of gas = ${n1.toFixed(3)} mol`,
+                                `Volume = ${V1.toFixed(2)} L`,
+                                `Temperature = ${T1.toFixed(0)}°C`,
+                                `R = ${R_STR} L·atm/(mol·K)`
+                            ],
+                            correctValue: P1,
+                            unit: "atm"
+                        },
+                        {
+                            prompt: "The piston is pushed further into the cylinder while the gas is heated. The gas's new volume and pressure are shown below (the amount of gas has not changed). What is the new temperature of the gas?",
+                            chips: [
+                                `Initial pressure = ${formatSigFigs(P1, 3)} atm`,
+                                `Initial volume = ${V1.toFixed(2)} L`,
+                                `Initial temperature = ${T1.toFixed(0)}°C`,
+                                `New volume = ${V2.toFixed(2)} L`,
+                                `New pressure = ${formatSigFigs(P2, 3)} atm`
+                            ],
+                            correctValue: T2,
+                            unit: "°C"
+                        }
+                    ]
+                };
+            }
+        },
+        {
+            title: "Gas Collected Over Water",
+            generate() {
+                const temps = Object.keys(VAPOR_PRESSURE_WATER).map(Number);
+                const T = temps[Math.floor(Math.random() * temps.length)];
+                const vaporP = VAPOR_PRESSURE_WATER[T];
+                const totalP = randNiceValue(740, 770, 0);
+                const dryP_torr = totalP - vaporP;
+                const dryP_atm = dryP_torr / 760;
+                const V_mL = randNiceValue(50, 500, 0);
+                const V_L = V_mL / 1000;
+                const TK = T + 273;
+                const n = (dryP_atm * V_L) / (R * TK);
+                return {
+                    parts: [{
+                        prompt: "A student collects a sample of hydrogen gas by water displacement, trapping it inside an inverted graduated cylinder submerged in a water bath. Using the data below, determine the number of moles of hydrogen gas collected.",
+                        chips: [
+                            `Total (barometric) pressure = ${totalP.toFixed(0)} mmHg`,
+                            `Vapor pressure of water at ${T}°C = ${vaporP.toFixed(1)} mmHg`,
+                            `Volume of gas collected = ${V_mL.toFixed(0)} mL`,
+                            `Temperature = ${T}°C`,
+                            `R = ${R_STR} L·atm/(mol·K)`
+                        ],
+                        correctValue: n,
+                        unit: "mol"
+                    }]
+                };
+            }
+        }
+    ];
+
+    const state = {
+        queue: [],
+        solved: new Set(),
+        failedOnce: new Set(),
+        totalAttempts: 0,
+        firstTryCount: 0,
+        current: null,
+        startTime: null,
+        challengeFinished: false
+    };
+
+    const el = {
+        introScreen: document.getElementById('intro-screen'),
+        quizScreen: document.getElementById('quiz-screen'),
+        completeScreen: document.getElementById('complete-screen'),
+        beginBtn: document.getElementById('begin-btn'),
+        dotsRow: document.getElementById('progress-dots'),
+        progressLabel: document.getElementById('progress-label'),
+        typeLabel: document.getElementById('type-label'),
+        titleBox: document.getElementById('title-box'),
+        questionText: document.getElementById('question-text'),
+        chipsRow: document.getElementById('chips-row'),
+        answerInput: document.getElementById('answer-input'),
+        unitLabel: document.getElementById('unit-label'),
+        checkBtn: document.getElementById('check-btn'),
+        continueBtn: document.getElementById('continue-btn'),
+        feedbackBox: document.getElementById('feedback-box'),
+        restartBtn: document.getElementById('restart-btn')
+    };
+
+    function buildDots() {
+        el.dotsRow.innerHTML = '';
+        PROBLEM_TYPES.forEach((t, i) => {
+            const d = document.createElement('div');
+            d.className = 'dot';
+            d.id = 'dot-' + i;
+            d.textContent = (i + 1);
+            el.dotsRow.appendChild(d);
+        });
+    }
+
+    function updateDots() {
+        PROBLEM_TYPES.forEach((t, i) => {
+            const d = document.getElementById('dot-' + i);
+            d.className = 'dot';
+            if (state.solved.has(i)) {
+                d.classList.add('solved');
+            } else if (state.current && state.current.typeIndex === i) {
+                d.classList.add('active');
+            } else if (state.failedOnce.has(i)) {
+                d.classList.add('retry');
+            }
+        });
+    }
+
+    function nextProblem() {
+        if (state.queue.length === 0) {
+            showCompletion();
+            return;
+        }
+        const typeIndex = state.queue[0];
+        const type = PROBLEM_TYPES[typeIndex];
+        const data = type.generate();
+        state.current = {
+            typeIndex: typeIndex,
+            title: type.title,
+            parts: data.parts,
+            partIndex: 0,
+            partResults: []
+        };
+        renderPart();
+    }
+
+    function renderPart() {
+        const cur = state.current;
+        const part = cur.parts[cur.partIndex];
+        const multiPart = cur.parts.length > 1;
+
+        let label = 'Problem ' + (cur.typeIndex + 1);
+        if (multiPart) {
+            label += ' — Part ' + (cur.partIndex === 0 ? 'A' : 'B') + ' of ' + cur.parts.length;
+        }
+        el.typeLabel.textContent = label;
+        el.titleBox.textContent = cur.title;
+        el.questionText.textContent = part.prompt;
+
+        el.chipsRow.innerHTML = '';
+        part.chips.forEach(chip => {
+            const div = document.createElement('div');
+            div.className = 'data-chip';
+            div.innerHTML = chip.replace(/=(.*)$/, '=<strong>$1</strong>');
+            el.chipsRow.appendChild(div);
+        });
+
+        el.unitLabel.textContent = part.unit;
+        el.answerInput.value = '';
+        el.answerInput.disabled = false;
+        el.checkBtn.disabled = false;
+        el.checkBtn.classList.remove('hidden');
+        el.continueBtn.classList.add('hidden');
+        el.feedbackBox.className = 'feedback';
+        el.feedbackBox.textContent = '';
+
+        el.progressLabel.textContent = 'Solved ' + state.solved.size + ' of ' + PROBLEM_TYPES.length;
+        updateDots();
+        el.answerInput.focus();
+    }
+
+    function handleCheck() {
+        const cur = state.current;
+        const part = cur.parts[cur.partIndex];
+        const raw = el.answerInput.value;
+        if (!raw.trim()) return;
+
+        const result = evaluateAnswer(raw, part.correctValue, part.unit);
+        state.totalAttempts++;
+        const correctStr = formatSigFigs(part.correctValue, 3);
+        const isCorrect = result.numericOK && result.sigFigOK;
+        cur.partResults.push(isCorrect);
+
+        el.answerInput.disabled = true;
+        el.checkBtn.disabled = true;
+
+        const isLastPart = cur.partIndex === cur.parts.length - 1;
+
+        if (isCorrect) {
+            el.feedbackBox.className = 'feedback correct';
+            el.feedbackBox.textContent = 'Correct! ' + correctStr + ' ' + part.unit;
+        } else {
+            let reason;
+            if (!result.numericOK && !result.sigFigOK) {
+                reason = 'the value is not correct and the significant figures are off';
+            } else if (!result.numericOK) {
+                reason = 'the value is not correct';
+            } else {
+                reason = 'the value is correct, but it needs exactly 3 significant figures';
+            }
+            el.feedbackBox.className = 'feedback incorrect';
+            el.feedbackBox.textContent = 'Not quite — ' + reason + '. The correct answer was ' +
+                correctStr + ' ' + part.unit + (isLastPart ? '. You\'ll see this problem again later with new numbers.' : '.');
+        }
+
+        if (isLastPart) {
+            const typeIndex = cur.typeIndex;
+            const allCorrect = cur.partResults.every(r => r);
+            if (allCorrect) {
+                state.solved.add(typeIndex);
+                if (!state.failedOnce.has(typeIndex)) state.firstTryCount++;
+                state.queue.shift();
+            } else {
+                state.failedOnce.add(typeIndex);
+                state.queue.shift();
+                state.queue.push(typeIndex);
+            }
+            el.progressLabel.textContent = 'Solved ' + state.solved.size + ' of ' + PROBLEM_TYPES.length;
+            updateDots();
+            scormSaveProgress();
+        }
+
+        el.checkBtn.classList.add('hidden');
+        el.continueBtn.classList.remove('hidden');
+        el.continueBtn.focus();
+    }
+
+    function handleContinue() {
+        const cur = state.current;
+        if (cur.partIndex < cur.parts.length - 1) {
+            cur.partIndex++;
+            renderPart();
+        } else {
+            nextProblem();
+        }
+    }
+
+    function formatTime(ms) {
+        const totalSec = Math.floor(ms / 1000);
+        const min = Math.floor(totalSec / 60);
+        const sec = totalSec % 60;
+        return min + ' min ' + (sec < 10 ? '0' + sec : sec) + ' sec';
+    }
+
+    function showCompletion() {
+        el.quizScreen.classList.add('hidden');
+        el.completeScreen.classList.remove('hidden');
+        const elapsed = Date.now() - state.startTime;
+        document.getElementById('stat-first-try').textContent = state.firstTryCount + ' / ' + PROBLEM_TYPES.length;
+        document.getElementById('stat-attempts').textContent = state.totalAttempts;
+        document.getElementById('stat-time').textContent = formatTime(elapsed);
+
+        state.challengeFinished = true;
+        const scorePercent = Math.round((state.firstTryCount / PROBLEM_TYPES.length) * 100);
+        scormReport(scorePercent);
+    }
+
+    function startPractice() {
+        state.queue = [0, 1, 2, 3, 4];
+        state.solved = new Set();
+        state.failedOnce = new Set();
+        state.totalAttempts = 0;
+        state.firstTryCount = 0;
+        state.startTime = Date.now();
+        state.challengeFinished = false;
+
+        el.introScreen.classList.add('hidden');
+        el.completeScreen.classList.add('hidden');
+        el.quizScreen.classList.remove('hidden');
+
+        buildDots();
+        nextProblem();
+        scormSaveProgress();
+    }
+
+    el.beginBtn.addEventListener('click', startPractice);
+    el.checkBtn.addEventListener('click', handleCheck);
+    document.getElementById('save-progress-btn').addEventListener('click', manualSaveProgress);
+    el.continueBtn.addEventListener('click', handleContinue);
+    el.restartBtn.addEventListener('click', function () {
+        el.completeScreen.classList.add('hidden');
+        el.introScreen.classList.remove('hidden');
+    });
+
+    el.answerInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            if (!el.checkBtn.classList.contains('hidden')) {
+                handleCheck();
+            } else if (!el.continueBtn.classList.contains('hidden')) {
+                handleContinue();
+            }
+        }
+    });
+
+    // Best-effort safety net for the case where the student closes the
+    // Chromebook lid or leaves the tab without clicking "Save Progress":
+    // these events fire more reliably than beforeunload on that path, but
+    // unlike beforeunload we deliberately do NOT call LMSFinish() here —
+    // visibilitychange in particular fires on every tab switch, not just a
+    // real exit, and terminating the SCORM session on a brief tab-switch
+    // would break the ability to keep saving for the rest of that visit.
+    // We just re-commit the current state so the LMS has it either way.
+    function safetyCommit() {
+        if (!scormAPI || state.challengeFinished) return;
+        scormSaveProgress();
+    }
+    window.addEventListener('pagehide', safetyCommit);
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) safetyCommit();
+    });
+    window.addEventListener('beforeunload', scormFinish);
+    scormInit();
+
+    if (resumeState) {
+        state.queue = resumeState.queue.slice();
+        state.solved = new Set(resumeState.solved);
+        state.failedOnce = new Set(resumeState.failedOnce);
+        state.totalAttempts = resumeState.totalAttempts;
+        state.firstTryCount = resumeState.firstTryCount;
+        state.startTime = Date.now();
+        state.challengeFinished = false;
+
+        el.introScreen.classList.add('hidden');
+        el.quizScreen.classList.remove('hidden');
+
+        buildDots();
+        if (state.queue.length === 0) {
+            showCompletion();
+        } else {
+            nextProblem();
+        }
+    }
+
+})();
+</script>
+
+</body>
+</html>
