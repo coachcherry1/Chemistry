@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Collection Over Water Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* Title Screen Styles */
+        .title-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .title-overlay.active {
+            display: flex;
+        }
+
+        .title-modal {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 560px;
+            width: 92%;
+            text-align: center;
+        }
+
+        .title-modal h2 {
+            color: #2193b0;
+            margin-bottom: 12px;
+            font-size: 1.4rem;
+        }
+
+        .title-modal > p {
+            color: #666;
+            margin-bottom: 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .title-requirements {
+            background: #f0f9fb;
+            padding: 14px 18px;
+            border-radius: 8px;
+            border-left: 4px solid #2193b0;
+            text-align: left;
+            margin-bottom: 18px;
+        }
+
+        .title-requirements h3 {
+            color: #2193b0;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .title-requirements ul {
+            margin: 0 0 0 20px;
+            padding: 0;
+            color: #4a5568;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .title-requirements li {
+            margin-bottom: 5px;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 12px 20px;
+            background: linear-gradient(145deg, #4a90e2, #357abd);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .start-btn:hover {
+            background: linear-gradient(145deg, #357abd, #2c5aa0);
+        }
+
+        /* Success Screen Styles */
+        .success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+        }
+
+        .success-overlay.active {
+            display: flex;
+        }
+
+        .success-modal {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 480px;
+            width: 92%;
+            text-align: center;
+        }
+
+        .success-modal h2 {
+            color: #2193b0;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+
+        .success-modal p {
+            color: #666;
+            margin-bottom: 18px;
+            font-size: 0.95rem;
+        }
+
+        .success-close-btn {
+            width: 100%;
+            padding: 12px 20px;
+            background: linear-gradient(145deg, #4a90e2, #357abd);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .success-close-btn:hover {
+            background: linear-gradient(145deg, #357abd, #2c5aa0);
+        }
+
+        /* Progress Tracker Styles */
+        .progress-tracker {
+            position: fixed;
+            top: 14px;
+            right: 14px;
+            background: rgba(255,255,255,0.97);
+            padding: 12px 14px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            min-width: 180px;
+        }
+
+        .progress-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.85rem;
+        }
+
+        .reaction-status {
+            padding: 6px 8px;
+            margin: 4px 0;
+            border-radius: 5px;
+            font-size: 0.82rem;
+        }
+
+        .reaction-pending {
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+
+        .reaction-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .reaction-current {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 1.15rem;
+            margin: 0 0 2px 0;
+        }
+
+        .header p {
+            font-size: 0.75rem;
+            margin: 0;
+            opacity: 0.95;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .top-section {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .apparatus-container {
+            flex: 2;
+            position: relative;
+        }
+
+        .control-panel {
+            flex: 1;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #dee2e6;
+        }
+
+        .bottom-section {
+            display: flex;
+            gap: 10px;
+        }
+
+        .student-calculations {
+            flex: 1;
+            background: #f8f9fa;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 2px solid #dee2e6;
+        }
+
+        .calc-fields-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 18px;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .button-row .button {
+            margin: 6px 0;
+        }
+
+        .env-readout {
+            display: flex;
+            justify-content: space-between;
+            background: #f0f9fb;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .svg-container {
+            display: block;
+            width: 100%;
+            max-width: 620px;
+            height: auto;
+            margin: 0 auto;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: #f0f8ff;
+        }
+
+        .test-tube {
+            fill: none;
+            stroke: #333;
+            stroke-width: 3;
+        }
+
+        .test-tube-solution {
+            fill: #87ceeb;
+            opacity: 0.7;
+        }
+
+        .connecting-tube {
+            fill: none;
+            stroke: #666;
+            stroke-width: 4;
+        }
+
+        .water-container {
+            fill: none;
+            stroke: #333;
+            stroke-width: 3;
+        }
+
+        .water {
+            fill: #4a90e2;
+            opacity: 0.8;
+        }
+
+        .gas-collection-tube {
+            fill: none;
+            stroke: #333;
+            stroke-width: 3;
+        }
+
+        .gas {
+            fill: var(--gas-color, #e8f4fd);
+            opacity: 0.6;
+        }
+
+        .solution-fizzing {
+            animation: solution-shake 0.3s ease-in-out infinite;
+        }
+
+        .meniscus-line {
+            stroke: #333;
+            stroke-width: 2;
+            stroke-dasharray: 3,3;
+        }
+
+        @keyframes solution-shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-1px); }
+            75% { transform: translateX(1px); }
+        }
+
+        .measurement-text {
+            font-size: 10px;
+            fill: #333;
+            text-anchor: start;
+        }
+
+        .control-group {
+            margin-bottom: 8px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 3px;
+            font-weight: bold;
+            color: #333;
+            font-size: 0.88rem;
+        }
+
+        .control-group input, .control-group select {
+            width: 100%;
+            padding: 6px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .button {
+            background: linear-gradient(145deg, #4a90e2, #357abd);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background 0.2s ease;
+            width: 100%;
+            margin: 6px 0;
+        }
+
+        .button:hover {
+            background: linear-gradient(145deg, #357abd, #2c5aa0);
+        }
+
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .button-save {
+            background: linear-gradient(145deg, #28a745, #1e7e34);
+        }
+
+        .button-save:hover {
+            background: linear-gradient(145deg, #1e7e34, #19692c);
+        }
+
+        .save-status {
+            display: block;
+            margin-top: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #28a745;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .save-status.visible {
+            opacity: 1;
+        }
+
+        .reaction-equation {
+            background: #f0f9fb;
+            padding: 8px 10px;
+            border-radius: 8px;
+            margin: 6px 0;
+            border-left: 4px solid #2193b0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .zoomed-view, .popup-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 3px solid #333;
+            border-radius: 15px;
+            padding: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: none;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 999;
+            display: none;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: #7f8c8d;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .close-btn:hover {
+            background: #5f6a6a;
+        }
+
+        .status {
+            font-weight: bold;
+            padding: 6px;
+            border-radius: 5px;
+            margin: 6px 0;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .status.waiting {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.running {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.complete {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .reset-button {
+            background: linear-gradient(145deg, #95a5a6, #7f8c8d);
+        }
+
+        .reset-button:hover {
+            background: linear-gradient(145deg, #7f8c8d, #6c7778);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .data-table table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 7px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .data-table th {
+            background-color: #f0f9fb;
+            font-weight: bold;
+        }
+
+        .calc-field {
+            flex: 1;
+            min-width: 150px;
+            margin-bottom: 6px;
+        }
+
+        .calc-field label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+            line-height: 1.25;
+        }
+
+        .calc-field input {
+            padding: 6px 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 100px;
+        }
+
+        .calc-field .unit {
+            font-size: 0.85rem;
+            color: #555;
+            margin-left: 6px;
+        }
+
+        .feedback {
+            padding: 8px;
+            margin: 4px 0;
+            border-radius: 5px;
+            font-size: 0.88rem;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .feedback.close {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <!-- Title Screen -->
+    <div id="title-screen" class="title-overlay active">
+        <div class="title-modal">
+            <h2>Gas Collection Over Water</h2>
+            <p>You will perform two gas collection experiments: the decomposition of H&#8322;O&#8322; and the reaction of Zn with HCl. For each one, run the reaction, read the gas collection tube, and calculate the mass of reactant consumed.</p>
+            <div class="title-requirements">
+                <h3>Completion Requirements</h3>
+                <ul>
+                    <li>Complete <strong>both reactions</strong> to receive completion credit</li>
+                    <li>For each reaction, correctly enter the collected gas volume, the vapor pressure of water, and the mass of reactant that reacted</li>
+                    <li>Unlimited retries &mdash; recalculate and try again if a value is off</li>
+                    <li>Your progress is saved automatically &mdash; you can close this window and finish later</li>
+                    <li><strong>Before you close your Chromebook or exit Schoology,</strong> click the green "Save Progress" button so your work is saved and you can pick up where you left off next time.</li>
+                </ul>
+            </div>
+            <button id="start-assessment-btn" class="start-btn" onclick="startLab()">Start Lab</button>
+        </div>
+    </div>
+
+    <!-- Success Screen -->
+    <div id="success-screen" class="success-overlay">
+        <div class="success-modal">
+            <h2>Lab Complete!</h2>
+            <p>You have successfully completed both gas collection experiments.</p>
+            <p style="color:#666; font-size:0.9rem;">Your completion has been reported to your teacher. You may close this window or continue practicing.</p>
+            <button class="success-close-btn" onclick="closeSuccessScreen()">Continue Practicing</button>
+        </div>
+    </div>
+
+    <!-- Progress Tracker -->
+    <div id="progressTracker" class="progress-tracker" style="display: none;">
+        <div class="progress-title">Progress Tracker</div>
+        <div id="h2o2Status" class="reaction-status reaction-pending">
+            H&#8322;O&#8322; Decomposition
+        </div>
+        <div id="znStatus" class="reaction-status reaction-pending">
+            Zn + HCl Reaction
+        </div>
+        <button class="button button-save" id="save-progress-btn" onclick="manualSaveProgress()" style="margin-top: 10px;">Save Progress</button>
+        <div class="save-status" id="save-status">Saved ✓</div>
+    </div>
+
+    <div class="container" id="mainContainer" style="display: none;">
+        <div class="header">
+            <h1>Gas Collection Over Water Simulation</h1>
+            <p>Vapor pressure corrections and stoichiometric calculations</p>
+        </div>
+
+        <div class="main-content">
+            <div class="top-section">
+                <div class="apparatus-container">
+                    <svg viewBox="0 0 800 400" width="620" height="310" class="svg-container" id="apparatus">
+                        <!-- Test tube -->
+                        <rect x="50" y="50" width="40" height="120" rx="20" class="test-tube"/>
+
+                        <!-- Test tube solution -->
+                        <path d="M 52 130 L 88 130 L 88 150 Q 88 167 70 167 Q 52 167 52 150 Z"
+                              class="test-tube-solution" id="solution" fill="#87ceeb" opacity="0.7"/>
+
+                        <!-- MnO2 catalyst for H2O2 reaction -->
+                        <g id="mno2-catalyst">
+                            <ellipse cx="70" cy="160" rx="8" ry="3" fill="#4a4a4a"/>
+                            <ellipse cx="65" cy="158" rx="4" ry="2" fill="#666" opacity="0.8"/>
+                            <ellipse cx="75" cy="157" rx="3" ry="1.5" fill="#666" opacity="0.8"/>
+                            <ellipse cx="72" cy="155" rx="2" ry="1" fill="#666" opacity="0.8"/>
+                        </g>
+
+                        <!-- Zinc metal pieces for Zn + HCl reaction -->
+                        <g id="zinc-metal" style="display:none;">
+                            <rect x="62" y="155" width="4" height="6" fill="#c0c0c0" rx="1" id="zn-piece-1"/>
+                            <rect x="68" y="157" width="3" height="4" fill="#d3d3d3" rx="0.5" id="zn-piece-2"/>
+                            <rect x="72" y="156" width="5" height="5" fill="#c0c0c0" rx="1" id="zn-piece-3"/>
+                            <rect x="66" y="159" width="3" height="3" fill="#d3d3d3" rx="0.5" id="zn-piece-4"/>
+                            <rect x="74" y="159" width="4" height="4" fill="#c0c0c0" rx="0.5" id="zn-piece-5"/>
+                            <ellipse cx="64" cy="160" rx="2" ry="1" fill="#d3d3d3" id="zn-piece-6"/>
+                            <ellipse cx="76" cy="157" rx="1.5" ry="1.5" fill="#c0c0c0" id="zn-piece-7"/>
+                        </g>
+
+                        <!-- Connecting tube -->
+                        <path d="M 70 50 Q 150 30 300 70 L 300 180 L 300 240 L 365 240 L 365 248" class="connecting-tube"/>
+
+                        <!-- Water container -->
+                        <rect x="250" y="180" width="200" height="120" class="water-container"/>
+                        <rect x="255" y="250" width="190" height="45" class="water" id="water-level"/>
+
+                        <!-- Gas collection tube -->
+                        <rect x="350" y="100" width="30" height="150" class="gas-collection-tube"/>
+
+                        <!-- Gas collection tube measurements -->
+                        <g id="measurements"></g>
+
+                        <!-- Water in collection tube -->
+                        <rect x="352" y="102" width="26" height="146" class="water" id="tube-water"/>
+
+                        <!-- Gas in collection tube -->
+                        <rect x="352" y="102" width="26" height="0" class="gas" id="collected-gas"/>
+
+                        <!-- Bubbles -->
+                        <g id="bubbles"></g>
+                        <g id="reaction-bubbles"></g>
+                        <g id="rising-bubbles"></g>
+
+                        <!-- Labels -->
+                        <text x="70" y="40" text-anchor="middle" font-size="12" font-weight="bold">Test Tube</text>
+                        <text x="365" y="90" text-anchor="middle" font-size="12" font-weight="bold">Gas Collection</text>
+                        <text x="350" y="330" text-anchor="middle" font-size="10">Water Container</text>
+
+                        <!-- Zoom Button -->
+                        <foreignObject x="390" y="150" width="190" height="40" id="zoom-button-container" style="display:none;">
+                            <div xmlns="http://www.w3.org/1999/xhtml">
+                                <button class="button" onclick="showZoomedView()" style="padding: 7px 10px; font-size: 12px; margin: 0; white-space: nowrap;">
+                                    Read Gas Collection Tube
+                                </button>
+                            </div>
+                        </foreignObject>
+                    </svg>
+                </div>
+
+                <div class="control-panel">
+                    <div class="control-group">
+                        <label for="reaction-type">Select Reaction:</label>
+                        <select id="reaction-type" onchange="changeReaction()">
+                            <option value="h2o2">H&#8322;O&#8322; Decomposition (O&#8322; gas)</option>
+                            <option value="zn-hcl">Zn + HCl (H&#8322; gas)</option>
+                        </select>
+                    </div>
+
+                    <div class="env-readout">
+                        <span>Water Temp: <strong id="temp-readout">25</strong>&deg;C</span>
+                        <span>Pressure: <strong id="pressure-readout">101.3</strong> kPa</span>
+                    </div>
+                    <input type="hidden" id="temperature" value="25" min="10" max="30" step="5">
+                    <input type="hidden" id="pressure" value="101.3">
+
+                    <div class="reaction-equation" id="reaction-display">
+                        <strong>Balanced Reaction:</strong><br>
+                        <span id="reaction-equation">2 H&#8322;O&#8322;(aq) &rarr; 2 H&#8322;O(l) + O&#8322;(g)</span>
+                        <br><br>
+                        <small id="reaction-description">Hydrogen peroxide decomposes with MnO&#8322; catalyst to produce oxygen gas</small>
+                    </div>
+
+                    <button class="button" id="start-reaction" onclick="startReaction()">Start Reaction</button>
+                    <button class="button reset-button" id="reset-reaction" onclick="resetReaction()" style="display:none;">Reset Experiment</button>
+
+                    <div class="status waiting" id="status">Ready to start reaction</div>
+                </div>
+            </div>
+
+            <div class="bottom-section">
+                <div class="student-calculations">
+                    <strong style="font-size:0.92rem;">Student Calculations:</strong>
+
+                    <div class="calc-fields-row">
+                        <div class="calc-field">
+                            <label>Volume of <span id="gas-type">O&#8322;</span> collected:</label>
+                            <input type="number" id="student-volume" step="0.01" placeholder="0.00"><span class="unit">mL</span>
+                        </div>
+
+                        <div class="calc-field">
+                            <label>Vapor pressure of H&#8322;O at <span id="temp-display">25</span>&deg;C:</label>
+                            <input type="number" id="student-vapor-pressure" step="0.01" placeholder="0.00"><span class="unit">kPa</span>
+                        </div>
+
+                        <div class="calc-field">
+                            <label>Mass of <span id="reactant-type">H&#8322;O&#8322;</span> that reacted:</label>
+                            <input type="number" id="student-reactant-mass" step="0.001" placeholder="0.000"><span class="unit">g</span>
+                        </div>
+                    </div>
+
+                    <div class="button-row">
+                        <button class="button" onclick="checkStudentWork()">Check My Work</button>
+                        <button class="button reset-button" onclick="showVaporPressureTable()">Vapor Pressure Table</button>
+                    </div>
+                    <div id="student-feedback"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Zoomed view overlay -->
+    <div class="overlay" id="overlay" onclick="hideZoomedView()"></div>
+    <div class="zoomed-view" id="zoomed-view">
+        <button class="close-btn" onclick="hideZoomedView()">&times;</button>
+        <h3 style="margin-top:4px;">Gas Collection Tube Reading &mdash; Zoomed View</h3>
+        <div style="text-align: center; margin-bottom: 10px;">
+            <small>Read at the bottom of the meniscus (dashed line)</small>
+        </div>
+        <svg viewBox="0 0 400 600" width="300" height="450" style="border: 2px solid #333; background: #f0f8ff; display:block; margin:0 auto;">
+            <!-- Gas collection tube -->
+            <rect x="175" y="50" width="50" height="500" fill="none" stroke="#333" stroke-width="4"/>
+
+            <!-- Water in collection tube -->
+            <rect x="177" y="52" width="46" height="496" class="water" id="zoomed-water"/>
+
+            <!-- Gas in collection tube -->
+            <rect x="177" y="52" width="46" height="0" class="gas" id="zoomed-gas"/>
+
+            <!-- Meniscus line -->
+            <path d="M 177 52 Q 200 54 223 52" class="meniscus-line" id="meniscus-line" fill="none"/>
+
+            <!-- Detailed measurements -->
+            <g id="zoomed-measurements"></g>
+
+            <!-- Glass reflection effect -->
+            <rect x="178" y="52" width="8" height="496" fill="url(#glassGradient)" opacity="0.3"/>
+
+            <defs>
+                <linearGradient id="glassGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:white;stop-opacity:0.8" />
+                    <stop offset="100%" style="stop-color:white;stop-opacity:0" />
+                </linearGradient>
+            </defs>
+        </svg>
+
+        <div style="text-align: center; margin-top: 12px;">
+            <small>Enter your reading in the Student Calculations section</small>
+        </div>
+    </div>
+
+    <!-- Vapor pressure table popup -->
+    <div class="popup-modal" id="vapor-pressure-modal">
+        <button class="close-btn" onclick="hideVaporPressureTable()">&times;</button>
+        <div class="data-table" style="min-width:320px;">
+            <strong>Vapor Pressure of Water</strong>
+            <table>
+                <tr><th>Temp (&deg;C)</th><th>Pressure (kPa)</th><th>Temp (&deg;C)</th><th>Pressure (kPa)</th></tr>
+                <tr><td>0</td><td>0.61</td><td>50</td><td>12.34</td></tr>
+                <tr><td>5</td><td>0.87</td><td>55</td><td>15.75</td></tr>
+                <tr><td>10</td><td>1.23</td><td>60</td><td>19.93</td></tr>
+                <tr><td>15</td><td>1.71</td><td>65</td><td>25.03</td></tr>
+                <tr><td>20</td><td>2.34</td><td>70</td><td>31.19</td></tr>
+                <tr><td>25</td><td>3.17</td><td>75</td><td>38.58</td></tr>
+                <tr><td>30</td><td>4.25</td><td>80</td><td>47.39</td></tr>
+                <tr><td>35</td><td>5.63</td><td>85</td><td>57.83</td></tr>
+                <tr><td>40</td><td>7.38</td><td>90</td><td>70.14</td></tr>
+                <tr><td>45</td><td>9.59</td><td>95</td><td>84.55</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let reactionInProgress = false;
+        let gasVolume = 0;
+        let bubbleInterval, reactionBubbleInterval, risingBubbleInterval;
+        let expectedVolume = 0;
+        let actualReactantMass = 0;
+        let currentReaction = 'h2o2';
+        let completedReactions = {
+            'h2o2': false,
+            'zn-hcl': false
+        };
+
+        // Reaction configurations
+        const reactions = {
+            'h2o2': {
+                equation: '2 H₂O₂(aq) → 2 H₂O(l) + O₂(g)',
+                description: 'Hydrogen peroxide decomposes with MnO₂ catalyst to produce oxygen gas',
+                gasType: 'O₂',
+                reactantType: 'H₂O₂',
+                molarMass: 34.01,
+                stoichiometry: 2,
+                gasColor: '#e8f4fd',
+                reactionBubbleColor: '#ff6b6b'
+            },
+            'zn-hcl': {
+                equation: 'Zn(s) + 2 HCl(aq) → ZnCl₂(aq) + H₂(g)',
+                description: 'Zinc metal reacts with hydrochloric acid to produce hydrogen gas',
+                gasType: 'H₂',
+                reactantType: 'Zn',
+                molarMass: 65.38,
+                stoichiometry: 1,
+                gasColor: '#f0f8ff',
+                reactionBubbleColor: '#4fc3f7'
+            }
+        };
+
+        // Vapor pressure data
+        const vaporPressureData = {
+            0: 0.61, 5: 0.87, 10: 1.23, 15: 1.71, 20: 2.34,
+            25: 3.17, 30: 4.25, 35: 5.63, 40: 7.38, 45: 9.59,
+            50: 12.34, 55: 15.75, 60: 19.93, 65: 25.03, 70: 31.19,
+            75: 38.58, 80: 47.39, 85: 57.83, 90: 70.14, 95: 84.55, 100: 101.32
+        };
+
+        function changeReaction() {
+            currentReaction = document.getElementById('reaction-type').value;
+            const reaction = reactions[currentReaction];
+
+            // Update reaction display
+            document.getElementById('reaction-equation').textContent = reaction.equation;
+            document.getElementById('reaction-description').textContent = reaction.description;
+            document.getElementById('gas-type').textContent = reaction.gasType;
+            document.getElementById('reactant-type').textContent = reaction.reactantType;
+
+            // Show/hide appropriate reactants
+            if (currentReaction === 'h2o2') {
+                document.getElementById('mno2-catalyst').style.display = 'block';
+                document.getElementById('zinc-metal').style.display = 'none';
+            } else {
+                document.getElementById('mno2-catalyst').style.display = 'none';
+                document.getElementById('zinc-metal').style.display = 'block';
+                resetZincPieces();
+            }
+
+            updateGasColors();
+
+            // Clear inputs
+            document.getElementById('student-volume').value = '';
+            document.getElementById('student-vapor-pressure').value = '';
+            document.getElementById('student-reactant-mass').value = '';
+            document.getElementById('student-feedback').innerHTML = '';
+
+            resetReaction();
+            randomizeTemperature();
+            randomizeReactantMass();
+            updateProgressTracker();
+        }
+
+        function updateGasColors() {
+            const reaction = reactions[currentReaction];
+            document.documentElement.style.setProperty('--gas-color', reaction.gasColor);
+            document.documentElement.style.setProperty('--reaction-bubble-color', reaction.reactionBubbleColor);
+        }
+
+        function interpolateVaporPressure(temp) {
+            const temps = Object.keys(vaporPressureData).map(Number).sort((a, b) => a - b);
+
+            if (temp <= temps[0]) return vaporPressureData[temps[0]];
+            if (temp >= temps[temps.length - 1]) return vaporPressureData[temps[temps.length - 1]];
+
+            for (let i = 0; i < temps.length - 1; i++) {
+                if (temp >= temps[i] && temp <= temps[i + 1]) {
+                    const t1 = temps[i], t2 = temps[i + 1];
+                    const p1 = vaporPressureData[t1], p2 = vaporPressureData[t2];
+                    return p1 + (p2 - p1) * (temp - t1) / (t2 - t1);
+                }
+            }
+        }
+
+        function updateVaporPressure() {
+            const temp = parseFloat(document.getElementById('temperature').value);
+            document.getElementById('temp-display').textContent = temp;
+            document.getElementById('temp-readout').textContent = temp;
+            document.getElementById('pressure-readout').textContent = document.getElementById('pressure').value;
+            calculateExpectedVolume();
+        }
+
+        function randomizeTemperature() {
+            const availableTemps = [10, 15, 20, 25, 30];
+            const randomTemp = availableTemps[Math.floor(Math.random() * availableTemps.length)];
+            document.getElementById('temperature').value = randomTemp;
+            updateVaporPressure();
+        }
+
+        function calculateExpectedVolume() {
+            const temp = parseFloat(document.getElementById('temperature').value);
+            const pressure = parseFloat(document.getElementById('pressure').value);
+            const vaporPressure = interpolateVaporPressure(temp);
+            const reaction = reactions[currentReaction];
+
+            const moles_reactant = actualReactantMass / reaction.molarMass;
+            const moles_gas = moles_reactant / reaction.stoichiometry;
+            const partialPressure_gas = pressure - vaporPressure;
+
+            const R = 8.314; // kPa·L/mol·K (matches kPa pressure units)
+            const T = temp + 273.15;
+            const volume_L = (moles_gas * R * T) / partialPressure_gas;
+            const volume_mL = volume_L * 1000;
+
+            expectedVolume = Math.max(0, volume_mL);
+        }
+
+        function randomizeReactantMass() {
+            const targetVolume = 10 + Math.random() * 35; // 10-45 mL range
+            const temp = parseFloat(document.getElementById('temperature').value);
+            const pressure = parseFloat(document.getElementById('pressure').value);
+            const vaporPressure = interpolateVaporPressure(temp);
+            const reaction = reactions[currentReaction];
+
+            const partialPressure_gas = pressure - vaporPressure;
+            const R = 8.314;
+            const T = temp + 273.15;
+
+            const moles_gas = (partialPressure_gas * targetVolume / 1000) / (R * T);
+            const moles_reactant = moles_gas * reaction.stoichiometry;
+            actualReactantMass = moles_reactant * reaction.molarMass;
+
+            calculateExpectedVolume();
+        }
+
+        function resetZincPieces() {
+            for (let i = 1; i <= 7; i++) {
+                const piece = document.getElementById(`zn-piece-${i}`);
+                if (piece) piece.setAttribute('opacity', '1');
+            }
+        }
+
+        function dissolveZincPieces() {
+            if (currentReaction !== 'zn-hcl' || !reactionInProgress) return;
+
+            const reactionProgress = Math.min(gasVolume / expectedVolume, 1);
+
+            for (let i = 1; i <= 7; i++) {
+                const piece = document.getElementById(`zn-piece-${i}`);
+                if (piece) {
+                    const pieceThreshold = (i - 1) / 7;
+                    if (reactionProgress > pieceThreshold) {
+                        const fadeProgress = Math.min((reactionProgress - pieceThreshold) * 7, 1);
+                        const opacity = Math.max(0, 1 - fadeProgress);
+                        piece.setAttribute('opacity', opacity.toString());
+                    }
+                }
+            }
+        }
+
+        function createMeasurements() {
+            const measurementsGroup = document.getElementById('measurements');
+            measurementsGroup.innerHTML = '';
+
+            for (let i = 0; i <= 50; i += 1) {
+                const y = 100 + (i * 3); // 3 pixels per mL for 50 mL range
+
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', '350');
+                line.setAttribute('y1', y);
+                line.setAttribute('x2', '380');
+                line.setAttribute('y2', y);
+                line.setAttribute('stroke', '#333');
+
+                // Make marks at 5 mL intervals thicker
+                if (i % 5 === 0) {
+                    line.setAttribute('stroke-width', '2');
+                } else {
+                    line.setAttribute('stroke-width', '1');
+                }
+
+                measurementsGroup.appendChild(line);
+            }
+        }
+
+        function createZoomedMeasurements() {
+            const zoomedGroup = document.getElementById('zoomed-measurements');
+            zoomedGroup.innerHTML = '';
+
+            const currentVolume = Math.min(gasVolume, expectedVolume);
+            const centerVolume = Math.max(2, Math.min(48, Math.round(currentVolume * 10) / 10)); // Round to nearest 0.1
+            const startVolume = Math.max(0, centerVolume - 2); // ±2 mL range
+            const endVolume = Math.min(50, centerVolume + 2);
+
+            // Create measurements for every 0.1 mL in the visible range
+            for (let i = startVolume * 10; i <= endVolume * 10; i += 1) { // i represents 0.1 mL increments
+                const volume = i / 10; // Convert to actual mL value
+                const relativePosition = volume - startVolume;
+                const y = 50 + (relativePosition * 125); // 125 pixels per mL in zoomed view (4 mL range in 500px)
+
+                // Determine if this is a whole number (major) or decimal (minor) mark
+                const isWhole = (i % 10 === 0); // Every 10 increments = whole mL
+
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', '177'); // Start from left edge of tube
+                line.setAttribute('y1', y);
+                line.setAttribute('x2', '223'); // End at right edge of tube
+                line.setAttribute('y2', y);
+                line.setAttribute('stroke', '#333');
+
+                // Make whole number marks thicker
+                if (isWhole) {
+                    line.setAttribute('stroke-width', '2');
+
+                    // Add text labels for whole numbers
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', '230');
+                    text.setAttribute('y', y + 5);
+                    text.setAttribute('font-size', '14');
+                    text.setAttribute('font-weight', 'bold');
+                    text.setAttribute('fill', '#333');
+                    text.setAttribute('font-family', 'Arial, sans-serif');
+                    text.textContent = volume.toString();
+                    zoomedGroup.appendChild(text);
+                } else {
+                    line.setAttribute('stroke-width', '1');
+                }
+
+                zoomedGroup.appendChild(line);
+            }
+        }
+
+        function updateZoomedView(currentVolume) {
+            const zoomedGas = document.getElementById('zoomed-gas');
+            const zoomedWater = document.getElementById('zoomed-water');
+            const meniscusLine = document.getElementById('meniscus-line');
+
+            const centerVolume = Math.max(2, Math.min(48, Math.round(currentVolume * 10) / 10));
+            const startVolume = Math.max(0, centerVolume - 2);
+            const gasPositionInRange = Math.max(0, currentVolume - startVolume);
+            const gasHeightInView = (gasPositionInRange / 4) * 500; // 4 mL range in 500px
+
+            const gasY = 50;
+            const waterY = 50 + gasHeightInView;
+            const waterHeight = 500 - gasHeightInView;
+
+            zoomedGas.setAttribute('height', gasHeightInView);
+            zoomedGas.setAttribute('y', gasY);
+            zoomedWater.setAttribute('height', waterHeight);
+            zoomedWater.setAttribute('y', waterY);
+
+            const meniscusY = gasY + gasHeightInView;
+            const meniscusPath = `M 177 ${meniscusY} Q 200 ${meniscusY + 2} 223 ${meniscusY}`;
+            meniscusLine.setAttribute('d', meniscusPath);
+
+            createZoomedMeasurements();
+        }
+
+        function createBubble() {
+            if (!reactionInProgress) return;
+
+            const waterBottom = 102 + (gasVolume / 50) * 146;
+            const tubeBottom = 248;
+            const reaction = reactions[currentReaction];
+
+            const bubble = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            bubble.setAttribute('cx', 365 + Math.random() * 10 - 5);
+            bubble.setAttribute('cy', tubeBottom);
+            bubble.setAttribute('r', 2 + Math.random() * 3);
+            bubble.setAttribute('fill', reaction.gasColor);
+            bubble.setAttribute('opacity', '0.8');
+
+            document.getElementById('bubbles').appendChild(bubble);
+
+            let startY = tubeBottom;
+            let endY = waterBottom;
+            let duration = 2000;
+            let startTime = Date.now();
+
+            function animateBubble() {
+                let elapsed = Date.now() - startTime;
+                let progress = Math.min(elapsed / duration, 1);
+                let easedProgress = 1 - Math.pow(1 - progress, 2);
+                let currentY = startY - (startY - endY) * easedProgress;
+
+                bubble.setAttribute('cy', currentY);
+
+                let wobble = Math.sin(elapsed * 0.01) * 2;
+                bubble.setAttribute('cx', 365 + wobble + Math.random() * 6 - 3);
+
+                if (progress > 0.8) {
+                    bubble.setAttribute('opacity', 0.8 * (1 - (progress - 0.8) / 0.2));
+                }
+
+                if (progress < 1 && currentY > endY && reactionInProgress) {
+                    requestAnimationFrame(animateBubble);
+                } else {
+                    if (bubble.parentNode) {
+                        bubble.parentNode.removeChild(bubble);
+                    }
+                }
+            }
+
+            requestAnimationFrame(animateBubble);
+        }
+
+        function createReactionBubble() {
+            if (!reactionInProgress) return;
+
+            const reaction = reactions[currentReaction];
+            const bubble = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            bubble.setAttribute('cx', 65 + Math.random() * 10);
+            bubble.setAttribute('cy', 158 + Math.random() * 8);
+            bubble.setAttribute('r', 0.5 + Math.random() * 1);
+            bubble.setAttribute('fill', reaction.reactionBubbleColor);
+            bubble.setAttribute('opacity', '0.8');
+
+            document.getElementById('reaction-bubbles').appendChild(bubble);
+
+            setTimeout(() => {
+                if (bubble.parentNode) {
+                    bubble.parentNode.removeChild(bubble);
+                }
+            }, 400);
+        }
+
+        function createRisingBubble() {
+            if (!reactionInProgress) return;
+
+            const reaction = reactions[currentReaction];
+            const bubble = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            bubble.setAttribute('cx', 60 + Math.random() * 20);
+            bubble.setAttribute('cy', 155);
+            bubble.setAttribute('r', 1 + Math.random() * 1);
+            bubble.setAttribute('fill', reaction.gasColor);
+            bubble.setAttribute('opacity', '0.6');
+
+            document.getElementById('rising-bubbles').appendChild(bubble);
+
+            let startY = 155;
+            let endY = 130;
+            let duration = 2500;
+            let startTime = Date.now();
+            let startX = 60 + Math.random() * 20;
+
+            function animateRisingBubble() {
+                let elapsed = Date.now() - startTime;
+                let progress = Math.min(elapsed / duration, 1);
+                let easedProgress = progress * progress * (3 - 2 * progress);
+                let currentY = startY - (startY - endY) * easedProgress;
+
+                bubble.setAttribute('cy', currentY);
+
+                let wobble = Math.sin(elapsed * 0.003) * 2;
+                let currentX = Math.max(54, Math.min(86, startX + wobble));
+                bubble.setAttribute('cx', currentX);
+
+                let scale = 1 + progress * 0.2;
+                bubble.setAttribute('r', (1 + Math.random() * 1) * scale);
+
+                if (progress > 0.8) {
+                    bubble.setAttribute('opacity', 0.6 * (1 - (progress - 0.8) / 0.2));
+                }
+
+                if (progress < 1 && reactionInProgress) {
+                    requestAnimationFrame(animateRisingBubble);
+                } else {
+                    if (bubble.parentNode) {
+                        bubble.parentNode.removeChild(bubble);
+                    }
+                }
+            }
+
+            requestAnimationFrame(animateRisingBubble);
+        }
+
+        function updateGasLevel() {
+            if (!reactionInProgress) return;
+
+            gasVolume += 0.4;
+            const maxVolume = Math.min(gasVolume, expectedVolume);
+
+            const gasHeight = (maxVolume / 50) * 146; // 50 mL maximum
+            const gasRect = document.getElementById('collected-gas');
+            const waterRect = document.getElementById('tube-water');
+
+            gasRect.setAttribute('height', gasHeight);
+            gasRect.setAttribute('y', 102);
+
+            const remainingWaterHeight = Math.max(0, 146 - gasHeight);
+            waterRect.setAttribute('height', remainingWaterHeight);
+            waterRect.setAttribute('y', 102 + gasHeight);
+
+            updateZoomedView(maxVolume);
+
+            if (currentReaction === 'zn-hcl') {
+                dissolveZincPieces();
+            }
+
+            if (maxVolume >= expectedVolume) {
+                reactionInProgress = false;
+                clearInterval(bubbleInterval);
+                clearInterval(reactionBubbleInterval);
+                clearInterval(risingBubbleInterval);
+
+                document.getElementById('solution').classList.remove('solution-fizzing');
+                document.getElementById('status').textContent = 'Reaction Complete!';
+                document.getElementById('status').className = 'status complete';
+                document.getElementById('zoom-button-container').style.display = 'block';
+                document.getElementById('reset-reaction').style.display = 'block';
+            }
+        }
+
+        function startReaction() {
+            if (reactionInProgress) return;
+
+            randomizeTemperature();
+            randomizeReactantMass();
+
+            reactionInProgress = true;
+            gasVolume = 0;
+
+            document.getElementById('status').textContent = 'Reaction in Progress...';
+            document.getElementById('status').className = 'status running';
+            document.getElementById('start-reaction').disabled = true;
+            document.getElementById('zoom-button-container').style.display = 'none';
+            document.getElementById('reset-reaction').style.display = 'none';
+
+            document.getElementById('student-volume').value = '';
+            document.getElementById('student-vapor-pressure').value = '';
+            document.getElementById('student-reactant-mass').value = '';
+            document.getElementById('student-feedback').innerHTML = '';
+
+            document.getElementById('solution').classList.add('solution-fizzing');
+
+            const reaction = reactions[currentReaction];
+            document.getElementById('collected-gas').setAttribute('fill', reaction.gasColor);
+            document.getElementById('zoomed-gas').setAttribute('fill', reaction.gasColor);
+
+            document.getElementById('collected-gas').setAttribute('height', '0');
+            document.getElementById('collected-gas').setAttribute('y', '102');
+            document.getElementById('tube-water').setAttribute('height', '146');
+            document.getElementById('tube-water').setAttribute('y', '102');
+
+            updateZoomedView(0);
+
+            bubbleInterval = setInterval(createBubble, 200);
+            reactionBubbleInterval = setInterval(createReactionBubble, 120);
+            risingBubbleInterval = setInterval(createRisingBubble, 500);
+
+            const gasInterval = setInterval(() => {
+                updateGasLevel();
+                if (!reactionInProgress) {
+                    clearInterval(gasInterval);
+                    document.getElementById('start-reaction').disabled = false;
+                }
+            }, 100);
+        }
+
+        function resetReaction() {
+            reactionInProgress = false;
+            gasVolume = 0;
+
+            clearInterval(bubbleInterval);
+            clearInterval(reactionBubbleInterval);
+            clearInterval(risingBubbleInterval);
+
+            document.getElementById('solution').classList.remove('solution-fizzing');
+
+            document.getElementById('bubbles').innerHTML = '';
+            document.getElementById('reaction-bubbles').innerHTML = '';
+            document.getElementById('rising-bubbles').innerHTML = '';
+
+            document.getElementById('collected-gas').setAttribute('height', '0');
+            document.getElementById('collected-gas').setAttribute('y', '102');
+            document.getElementById('tube-water').setAttribute('height', '146');
+            document.getElementById('tube-water').setAttribute('y', '102');
+
+            if (currentReaction === 'zn-hcl') {
+                resetZincPieces();
+            }
+
+            updateZoomedView(0);
+
+            document.getElementById('status').textContent = 'Ready to start reaction';
+            document.getElementById('status').className = 'status waiting';
+            document.getElementById('start-reaction').disabled = false;
+            document.getElementById('zoom-button-container').style.display = 'none';
+            document.getElementById('reset-reaction').style.display = 'none';
+        }
+
+        function showZoomedView() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('zoomed-view').style.display = 'block';
+
+            const currentVolume = Math.min(gasVolume, expectedVolume);
+            updateZoomedView(currentVolume);
+        }
+
+        function hideZoomedView() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('zoomed-view').style.display = 'none';
+        }
+
+        function showVaporPressureTable() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('vapor-pressure-modal').style.display = 'block';
+        }
+
+        function hideVaporPressureTable() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('vapor-pressure-modal').style.display = 'none';
+        }
+
+        function calculateReactantMassWithKelvin(volume_mL, pressure_kPa, vaporPressure_kPa, temp_C, reaction, kelvinConversion) {
+            const volume_L = volume_mL / 1000;
+            const partialPressure_gas = pressure_kPa - vaporPressure_kPa;
+            const R = 8.314; // kPa·L/mol·K
+            const T = temp_C + kelvinConversion; // Either +273 or +273.15
+
+            const moles_gas = (partialPressure_gas * volume_L) / (R * T);
+            const moles_reactant = moles_gas * reaction.stoichiometry;
+            const mass_reactant = moles_reactant * reaction.molarMass;
+
+            return mass_reactant;
+        }
+
+        function checkStudentWork() {
+            const studentVolume = parseFloat(document.getElementById('student-volume').value);
+            const studentVaporPressure = parseFloat(document.getElementById('student-vapor-pressure').value);
+            const studentReactantMass = parseFloat(document.getElementById('student-reactant-mass').value);
+
+            const feedback = document.getElementById('student-feedback');
+            feedback.innerHTML = '';
+
+            if (!reactionInProgress && gasVolume < expectedVolume) {
+                feedback.innerHTML = '<div class="feedback incorrect">Please wait for the reaction to complete first!</div>';
+                return;
+            }
+
+            const actualVolume = Math.min(gasVolume, expectedVolume);
+            const temp = parseFloat(document.getElementById('temperature').value);
+            const pressure = parseFloat(document.getElementById('pressure').value);
+            const actualVaporPressure = interpolateVaporPressure(temp);
+            const reaction = reactions[currentReaction];
+
+            let results = [];
+            let volumeCorrect = false;
+            let vaporCorrect = false;
+            let massCorrect = false;
+
+            if (isNaN(studentVolume)) {
+                results.push('<div class="feedback incorrect">Volume reading is required.</div>');
+            } else {
+                const volumeDiff = Math.abs(studentVolume - actualVolume);
+                volumeCorrect = volumeDiff <= 0.02;
+                if (volumeCorrect) {
+                    results.push('<div class="feedback correct">✓ Volume reading: Correct!</div>');
+                } else {
+                    results.push('<div class="feedback incorrect">✗ Volume reading: Not correct, please try again.</div>');
+                }
+            }
+
+            if (isNaN(studentVaporPressure)) {
+                results.push('<div class="feedback incorrect">Vapor pressure value is required.</div>');
+            } else {
+                const vaporDiff = Math.abs(studentVaporPressure - actualVaporPressure);
+                vaporCorrect = vaporDiff <= 0.05;
+                if (vaporCorrect) {
+                    results.push('<div class="feedback correct">✓ Vapor pressure: Correct!</div>');
+                } else {
+                    results.push('<div class="feedback incorrect">✗ Vapor pressure: Not correct. Check the table for ' + temp + '°C.</div>');
+                }
+            }
+
+            if (isNaN(studentReactantMass)) {
+                results.push('<div class="feedback incorrect">' + reaction.reactantType + ' mass calculation is required.</div>');
+            } else {
+                // Calculate expected mass using both Kelvin conversion methods
+                const expectedMass273 = calculateReactantMassWithKelvin(actualVolume, pressure, actualVaporPressure, temp, reaction, 273);
+                const expectedMass27315 = calculateReactantMassWithKelvin(actualVolume, pressure, actualVaporPressure, temp, reaction, 273.15);
+
+                const diff273 = Math.abs(studentReactantMass - expectedMass273);
+                const diff27315 = Math.abs(studentReactantMass - expectedMass27315);
+                const percentError273 = (diff273 / expectedMass273) * 100;
+                const percentError27315 = (diff27315 / expectedMass27315) * 100;
+
+                const bestPercentError = Math.min(percentError273, percentError27315);
+
+                if (bestPercentError <= 5) {
+                    massCorrect = true;
+                    results.push('<div class="feedback correct">✓ ' + reaction.reactantType + ' mass: Correct!</div>');
+                } else if (bestPercentError <= 10) {
+                    results.push('<div class="feedback close">~ ' + reaction.reactantType + ' mass: Close, but not quite right. Please recalculate.</div>');
+                } else {
+                    results.push('<div class="feedback incorrect">✗ ' + reaction.reactantType + ' mass: Not correct. Check your calculation using the ideal gas law.</div>');
+                }
+            }
+
+            if (volumeCorrect && vaporCorrect && massCorrect) {
+                markReactionComplete(currentReaction);
+            }
+
+            feedback.innerHTML = results.join('');
+        }
+
+        function markReactionComplete(reactionType) {
+            if (completedReactions[reactionType]) return; // Already completed
+
+            completedReactions[reactionType] = true;
+
+            // Update progress tracker
+            if (reactionType === 'h2o2') {
+                document.getElementById('h2o2Status').className = 'reaction-status reaction-completed';
+            } else {
+                document.getElementById('znStatus').className = 'reaction-status reaction-completed';
+            }
+
+            scormSaveProgress();
+
+            // Check if both reactions are complete
+            if (completedReactions['h2o2'] && completedReactions['zn-hcl']) {
+                setTimeout(showSuccessScreen, 1000);
+            } else {
+                // Switch to the other reaction
+                setTimeout(() => {
+                    if (reactionType === 'h2o2') {
+                        document.getElementById('student-feedback').innerHTML +=
+                            '<div class="feedback correct">Nice work! Switching to the Zn + HCl reaction...</div>';
+                        document.getElementById('reaction-type').value = 'zn-hcl';
+                        changeReaction();
+                    }
+                }, 1000);
+            }
+        }
+
+        function showSuccessScreen() {
+            document.getElementById('success-screen').classList.add('active');
+            state.challengeFinished = true;
+            scormReport(100);
+        }
+
+        function closeSuccessScreen() {
+            document.getElementById('success-screen').classList.remove('active');
+        }
+
+        function startLab() {
+            document.getElementById('title-screen').classList.remove('active');
+            document.getElementById('mainContainer').style.display = 'block';
+            document.getElementById('progressTracker').style.display = 'block';
+        }
+
+        function updateProgressTracker() {
+            // Update current reaction highlight
+            if (currentReaction === 'h2o2' && !completedReactions['h2o2']) {
+                document.getElementById('h2o2Status').className = 'reaction-status reaction-current';
+                document.getElementById('znStatus').className = completedReactions['zn-hcl'] ? 'reaction-status reaction-completed' : 'reaction-status reaction-pending';
+            } else if (currentReaction === 'zn-hcl' && !completedReactions['zn-hcl']) {
+                document.getElementById('znStatus').className = 'reaction-status reaction-current';
+                document.getElementById('h2o2Status').className = completedReactions['h2o2'] ? 'reaction-status reaction-completed' : 'reaction-status reaction-pending';
+            }
+        }
+
+        // ---- SCORM 1.2 wrapper ----
+        const state = { challengeFinished: false };
+        let scormAPI = null;
+        let resumeState = null;
+
+        function findAPI(win) {
+            let attempts = 0;
+            let w = win;
+            while (w && attempts < 10) {
+                if (w.API) return w.API;
+                if (w.parent && w.parent !== w) {
+                    w = w.parent;
+                } else if (w.opener) {
+                    w = w.opener;
+                } else {
+                    break;
+                }
+                attempts++;
+            }
+            return null;
+        }
+
+        function isValidResumePayload(parsed) {
+            if (!parsed || typeof parsed !== 'object') return false;
+            if (typeof parsed.h2o2 !== 'boolean' || typeof parsed.znHcl !== 'boolean') return false;
+            if (parsed.currentReaction !== 'h2o2' && parsed.currentReaction !== 'zn-hcl') return false;
+            return true;
+        }
+
+        function scormInit() {
+            try {
+                scormAPI = findAPI(window);
+                if (!scormAPI) return;
+                scormAPI.LMSInitialize("");
+                if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                    const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (isValidResumePayload(parsed)) {
+                            resumeState = parsed;
+                        }
+                    }
+                }
+            } catch (e) { /* No LMS present, or malformed bookmark — start fresh */ }
+        }
+
+        function scormSaveProgress() {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                    h2o2: completedReactions['h2o2'],
+                    znHcl: completedReactions['zn-hcl'],
+                    currentReaction: currentReaction
+                }));
+                if (!state.challengeFinished) {
+                    scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                    // Mark the exit reason as "suspend" on every save, not just on
+                    // beforeunload/pagehide. Students on Chromebooks/iPads very often
+                    // exit by closing the lid or leaving the Schoology tab, which does
+                    // not reliably fire beforeunload/pagehide before the device sleeps
+                    // and the network drops. Setting this on every commit means the LMS
+                    // already has the correct "resume me" state as of the last save,
+                    // instead of depending on a browser-close event to set it at the end.
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                }
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        // Manually triggered by the "Save Progress" button. This is the primary,
+        // reliable save path — students are instructed to click it before closing
+        // their Chromebook, since automatic browser-unload events can't be trusted
+        // to fire when a laptop lid is closed rather than the tab being navigated
+        // away from. Falls back gracefully (shows nothing) if no LMS is present.
+        function manualSaveProgress() {
+            if (!scormAPI) return;
+            scormSaveProgress();
+            const status = document.getElementById('save-status');
+            if (!status) return;
+            status.classList.add('visible');
+            clearTimeout(manualSaveProgress._hideTimer);
+            manualSaveProgress._hideTimer = setTimeout(() => {
+                status.classList.remove('visible');
+            }, 2500);
+        }
+
+        function scormReport(scorePercent) {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.core.score.min", "0");
+                scormAPI.LMSSetValue("cmi.core.score.max", "100");
+                scormAPI.LMSSetValue("cmi.core.score.raw", String(scorePercent));
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+                scormAPI.LMSSetValue("cmi.core.exit", "");
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function scormFinish() {
+            if (!scormAPI) return;
+            try {
+                if (!state.challengeFinished) {
+                    scormSaveProgress();
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                    scormAPI.LMSCommit("");
+                }
+                scormAPI.LMSFinish("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function resumeFromSavedState() {
+            completedReactions['h2o2'] = resumeState.h2o2;
+            completedReactions['zn-hcl'] = resumeState.znHcl;
+
+            document.getElementById('reaction-type').value = resumeState.currentReaction;
+            changeReaction();
+
+            if (completedReactions['h2o2']) {
+                document.getElementById('h2o2Status').className = 'reaction-status reaction-completed';
+            }
+            if (completedReactions['zn-hcl']) {
+                document.getElementById('znStatus').className = 'reaction-status reaction-completed';
+            }
+
+            document.getElementById('start-assessment-btn').textContent = 'Continue Lab';
+
+            if (completedReactions['h2o2'] && completedReactions['zn-hcl']) {
+                showSuccessScreen();
+            }
+        }
+
+        // Best-effort safety net for the case where the student closes the
+        // Chromebook lid or leaves the tab without clicking "Save Progress":
+        // these events fire more reliably than beforeunload on that path, but
+        // unlike beforeunload we deliberately do NOT call LMSFinish() here —
+        // visibilitychange in particular fires on every tab switch, not just a
+        // real exit, and terminating the SCORM session on a brief tab-switch
+        // would break the ability to keep saving for the rest of that visit.
+        // We just re-commit the current state so the LMS has it either way.
+        function safetyCommit() {
+            if (!scormAPI || state.challengeFinished) return;
+            scormSaveProgress();
+        }
+        window.addEventListener('pagehide', safetyCommit);
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) safetyCommit();
+        });
+        window.addEventListener('beforeunload', scormFinish);
+
+        // Initialize the simulation
+        document.addEventListener('DOMContentLoaded', function() {
+            createMeasurements();
+            randomizeTemperature();
+            changeReaction();
+
+            document.getElementById('temperature').addEventListener('input', updateVaporPressure);
+            document.getElementById('pressure').addEventListener('input', calculateExpectedVolume);
+
+            randomizeReactantMass();
+            createZoomedMeasurements();
+
+            document.getElementById('reaction-type').addEventListener('change', updateProgressTracker);
+
+            scormInit();
+            if (resumeState) {
+                resumeFromSavedState();
+            }
+        });
+    </script>
+</body>
+</html>

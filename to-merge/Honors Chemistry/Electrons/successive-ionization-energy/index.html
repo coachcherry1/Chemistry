@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Successive Ionization Energy</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f7f5f0 0%, #d9cfc0 100%);
+        min-height: 100vh;
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    .container {
+        max-width: 880px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        overflow: hidden;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
+        color: #fff;
+        padding: 8px 16px;
+        text-align: center;
+        position: relative;
+    }
+    .header h1 { font-size: 1.2em; margin-bottom: 1px; }
+    .header p { font-size: 0.8em; opacity: 0.92; }
+
+    .score-badge {
+        position: absolute;
+        top: 8px; right: 10px;
+        background: #fffaf0;
+        color: #7c2d12;
+        font-weight: 700;
+        font-size: 12px;
+        padding: 2px 9px;
+        border-radius: 11px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .main-content { padding: 10px 14px 12px; }
+
+    .save-row { margin: 10px 0 0; padding-top: 8px; border-top: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
+    .save-btn {
+        background: linear-gradient(145deg, #b45309, #92400e);
+        color: #fff; border: none; border-radius: 6px;
+        padding: 5px 13px; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .save-btn:hover { background: linear-gradient(145deg, #92400e, #7c2d12); }
+    .save-note { color: #28a745; font-weight: 600; font-size: 12px; opacity: 0; transition: opacity .3s ease; }
+    .save-note.show { opacity: 1; }
+
+    .score-display {
+        text-align: center;
+        margin-bottom: 4px;
+        font-size: 0.95em;
+        font-weight: 700;
+        color: #7c2d12;
+    }
+    .progress-bar-track {
+        width: 100%; height: 6px; background: #e9ecef;
+        border-radius: 3px; overflow: hidden; margin-bottom: 8px;
+    }
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #b45309, #f59e0b);
+        transition: width 0.4s ease;
+    }
+
+    .problem-title {
+        font-size: 0.95em; font-weight: 700; color: #5c4326; margin-bottom: 5px;
+    }
+
+    .prompt-box {
+        background: #fffaf0; border-left: 4px solid #f59e0b;
+        border-radius: 6px; padding: 7px 10px; margin-bottom: 7px;
+        font-size: 0.84rem; color: #5c4326; line-height: 1.4;
+    }
+
+    .ie-table-wrap { overflow-x: auto; margin-bottom: 4px; }
+    .ie-table {
+        width: 100%; border-collapse: collapse; background: #fff;
+        border-radius: 6px; overflow: hidden; font-size: 0.8em;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .ie-table th {
+        background: #5c4326; color: #fff; padding: 5px 3px;
+        text-align: center; font-size: 0.76em; white-space: nowrap;
+    }
+    .ie-table td {
+        padding: 5px 5px; text-align: center; border-bottom: 1px solid #eee;
+        white-space: nowrap;
+    }
+    .ie-table tr:nth-child(even) td { background: #fbf7ef; }
+
+    .energy-cell {
+        cursor: pointer; user-select: none;
+        border: 2px solid transparent; border-radius: 4px;
+        transition: all 0.15s ease;
+    }
+    .energy-cell:hover { background: #fff3e2 !important; border-color: #f0c98a; }
+    .energy-cell.highlighted-valence {
+        background: #fde9c8 !important; border: 2px solid #b45309 !important;
+        color: #7c2d12; font-weight: 700;
+    }
+    .energy-cell.locked { cursor: default; pointer-events: none; }
+
+    .valence-summary {
+        text-align: center; font-size: 0.85em; font-weight: 600;
+        color: #7c2d12; margin: 5px 0 7px;
+    }
+
+    .question-section {
+        margin-top: 6px;
+    }
+    .answer-group { margin: 7px 0; }
+    .answer-group label {
+        display: block; font-weight: 700; color: #5c4326;
+        margin-bottom: 3px; font-size: 0.85em;
+    }
+    .answer-group .hint {
+        font-size: 0.76em; color: #a98c66; margin-bottom: 4px;
+    }
+
+    .dropdown {
+        width: 100%; max-width: 420px;
+        padding: 6px 8px; border: 2px solid #e4d7bd; border-radius: 6px;
+        font-size: 0.85em; background: #fff; color: #5c4326;
+        transition: border-color 0.2s ease;
+    }
+    .dropdown:focus { outline: none; border-color: #b45309; }
+    .dropdown.error { border-color: #dc3545 !important; background: #fdeeee; }
+
+    .submit-btn {
+        background: #28a745; color: #fff; border: none;
+        padding: 9px 22px; border-radius: 20px; font-size: 0.88em; font-weight: 700;
+        cursor: pointer; display: block; margin: 10px auto 0;
+        transition: background 0.2s ease;
+    }
+    .submit-btn:hover:not(:disabled) { background: #218838; }
+    .submit-btn:disabled { background: #cbb896; cursor: not-allowed; }
+
+    .next-btn {
+        background: #b45309; color: #fff; border: none;
+        padding: 10px 24px; border-radius: 20px; font-size: 0.9em; font-weight: 700;
+        cursor: pointer; display: block; margin: 4px auto 0;
+        transition: background 0.2s ease;
+    }
+    .next-btn:hover { background: #92400e; }
+
+    /* ---------------- Start screen ---------------- */
+    .start-screen {
+        position: fixed; inset: 0;
+        background: linear-gradient(135deg, #f7f5f0 0%, #d9cfc0 100%);
+        display: flex; align-items: center; justify-content: center;
+        z-index: 1000; padding: 20px;
+    }
+    .start-card {
+        background: #fff; border-radius: 14px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        max-width: 560px; width: 100%; padding: 32px; text-align: center;
+    }
+    .start-card h2 { color: #7c2d12; margin-bottom: 14px; font-size: 1.6rem; }
+    .start-card ul {
+        text-align: left; margin: 0 auto 22px; max-width: 460px;
+        color: #5c4326; line-height: 1.6; padding-left: 20px;
+    }
+    .start-card .reqbox {
+        background: #fffaf0; border-left: 4px solid #f59e0b;
+        border-radius: 6px; padding: 12px 14px; text-align: left;
+        color: #5c4326; margin: 0 auto 22px; max-width: 460px;
+    }
+    .start-btn {
+        background: linear-gradient(145deg, #b45309, #92400e);
+        color: #fff; border: none; border-radius: 8px;
+        padding: 13px 32px; font-size: 17px; font-weight: 600; cursor: pointer;
+    }
+    .start-btn:hover { background: linear-gradient(145deg, #92400e, #7c2d12); }
+
+    /* ---------------- Completion overlay ---------------- */
+    .complete-screen {
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,0.7);
+        align-items: center; justify-content: center; z-index: 2000; padding: 20px;
+    }
+    .complete-card {
+        background: #fff; border-radius: 14px; padding: 34px;
+        max-width: 460px; width: 100%; text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .complete-card h2 { color: #7c2d12; margin-bottom: 12px; }
+    .complete-card p { color: #495057; line-height: 1.6; margin-bottom: 8px; }
+    .complete-card .close-button {
+        margin-top: 20px; background: #b45309; color: #fff;
+        border: none; border-radius: 6px; padding: 11px 26px; font-size: 15px; cursor: pointer;
+    }
+    .complete-card .close-button:hover { background: #92400e; }
+
+    /* ================= Intro walkthrough ================= */
+    .intro-card {
+        background: #fff; border-radius: 14px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        max-width: 860px; width: 100%; max-height: 92vh;
+        padding: 20px 26px 12px; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .intro-heading { color: #7c2d12; font-size: 1.3rem; margin-bottom: 10px; }
+    .intro-stage {
+        flex: 1 1 auto; overflow-y: auto; cursor: pointer;
+        padding: 2px 4px 4px 2px; display: flex; flex-wrap: wrap;
+        gap: 14px 20px; align-content: flex-start;
+    }
+    .intro-stage > .beat-note,
+    .intro-stage > .callout,
+    .intro-stage > .beat-chart,
+    .intro-stage > .check-box { flex-basis: 100%; }
+
+    .beat-note p { color: #4a3722; line-height: 1.55; font-size: 0.97rem; margin-bottom: 6px; }
+    .beat-note ul, .beat-note ol { margin: 4px 0 4px 22px; }
+    .beat-note li { color: #4a3722; line-height: 1.5; font-size: 0.96rem; margin: 5px 0; }
+
+    .chat {
+        position: relative; margin: 10px auto 0; max-width: 420px;
+        background: #fffaf0; border: 1px solid #f0d9a8; border-radius: 12px;
+        padding: 8px 11px; font-size: 0.85rem; line-height: 1.4;
+        color: #5c4326; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .pop { animation: beatPop .2s ease; }
+    @keyframes beatPop { from { opacity: 0; transform: translateY(6px) scale(.97); } to { opacity: 1; transform: none; } }
+
+    .click-hint { text-align: center; color: #a98c66; font-size: 0.8rem; padding: 8px 0 2px; letter-spacing: .02em; }
+
+    .callout {
+        background: #fffaf0; border-left: 4px solid #f59e0b;
+        border-radius: 6px; padding: 10px 12px; margin: 2px 0;
+        color: #5c4326; font-size: 0.93rem; line-height: 1.5;
+    }
+
+    /* chip visualization used in intro beats */
+    .beat-chart { text-align: center; }
+    .ie-chips { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; }
+    .ie-chip {
+        padding: 8px 11px; border-radius: 8px; background: #fbf7ef;
+        border: 1px solid #e4d7bd; font-weight: 700; color: #5c4326; font-size: 13px;
+    }
+    .ie-chip.valence { background: #fde9c8; border-color: #b45309; color: #7c2d12; }
+    .ie-chip.core { background: #efe6da; border-color: #cdbfa8; color: #6b5a41; opacity: .9; }
+    .ie-jump {
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        color: #b45309; font-weight: 700; font-size: 11px; padding: 0 3px; line-height: 1.2;
+    }
+    .ie-jump .arrow { font-size: 16px; }
+
+    .check-box {
+        border: 2px solid #f0d9a8; background: #fffdf8;
+        border-radius: 10px; padding: 14px; margin-top: 6px;
+    }
+    .check-q { font-weight: 700; color: #5c4326; margin-bottom: 10px; font-size: 0.98rem; }
+    .choice-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 4px; }
+    .choice-btn {
+        border: 2px solid #b45309; background: #fff; color: #7c2d12;
+        border-radius: 8px; padding: 9px 16px; font-size: 0.93rem; font-weight: 600; cursor: pointer;
+    }
+    .choice-btn:hover { background: #fff3e2; }
+    .choice-btn:disabled { cursor: default; }
+    .choice-btn.pick-right { background: #28a745; border-color: #28a745; color: #fff; }
+    .choice-btn.pick-wrong { background: #dc3545; border-color: #dc3545; color: #fff; }
+    .check-fb { margin-top: 10px; font-weight: 600; font-size: 0.9rem; display: none; line-height: 1.45; }
+    .check-fb.ok { color: #1e7e34; display: block; }
+    .check-fb.no { color: #b3261e; display: block; }
+
+    .intro-nav {
+        display: flex; align-items: center; gap: 12px;
+        padding-top: 12px; margin-top: 6px; border-top: 1px solid #eee;
+    }
+    .intro-nav .spacer { flex: 1 1 auto; }
+    .intro-dots { display: flex; gap: 6px; }
+    .intro-dots i { width: 8px; height: 8px; border-radius: 50%; background: #e0d3bd; display: block; }
+    .intro-dots i.on { background: #b45309; }
+    .intro-btn { border: none; border-radius: 8px; padding: 9px 20px; font-size: 0.94rem; font-weight: 600; cursor: pointer; }
+    .intro-btn.prev { background: #efe6d6; color: #7c2d12; }
+    .intro-btn.prev:disabled { opacity: .45; cursor: not-allowed; }
+    .intro-btn.next { background: linear-gradient(145deg, #b45309, #92400e); color: #fff; }
+    .intro-btn.next:disabled { opacity: .5; cursor: not-allowed; }
+
+    @media (max-width: 640px) {
+        .ie-table th, .ie-table td { padding: 6px 4px; font-size: 0.8em; }
+    }
+
+    /* ---------------- Element choice button + periodic table modal ---------------- */
+    .element-choice-btn {
+        display: block; width: 100%; max-width: 420px;
+        padding: 6px 8px; border: 2px solid #e4d7bd; border-radius: 6px;
+        font-size: 0.85em; background: #fff; color: #5c4326; text-align: left;
+        cursor: pointer; transition: border-color 0.2s ease;
+    }
+    .element-choice-btn:hover { border-color: #b45309; }
+    .element-choice-btn.chosen { border-color: #b45309; background: #fffaf0; color: #7c2d12; font-weight: 700; }
+    .element-choice-btn.error { border-color: #dc3545 !important; background: #fdeeee; }
+    .element-choice-btn:disabled { cursor: default; opacity: 0.75; }
+
+    .element-modal {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+        z-index: 3000; align-items: center; justify-content: center; padding: 16px;
+    }
+    .element-modal.open { display: flex; }
+    .element-modal-card {
+        background: #fff; border-radius: 14px; padding: 20px 22px;
+        max-width: 780px; width: 100%; max-height: 90vh; overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .element-modal-card h3 { color: #7c2d12; font-size: 1.15rem; margin-bottom: 8px; }
+    .element-modal-info {
+        background: #fffaf0; border-left: 4px solid #f59e0b; border-radius: 6px;
+        padding: 9px 12px; font-size: 0.9rem; color: #5c4326; margin-bottom: 14px; line-height: 1.5;
+    }
+    .element-modal-table-wrap { overflow-x: auto; }
+    .element-modal-grid {
+        display: grid; grid-template-columns: repeat(18, 32px); gap: 2px;
+        width: max-content; margin: 0 auto;
+    }
+    .elmod-cell {
+        width: 32px; height: 32px; border-radius: 3px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 11px; font-weight: 700; background: #fbf7ef;
+        border: 1px solid #e4d7bd; color: #5c4326;
+        cursor: pointer; transition: all 0.12s ease;
+    }
+    .elmod-cell.empty { background: transparent; border: none; cursor: default; }
+    .elmod-cell:not(.empty):hover { background: #fde9c8; border-color: #b45309; color: #7c2d12; transform: scale(1.08); }
+    .elmod-cell.chosen-el { background: #b45309 !important; color: #fff !important; border-color: #7c2d12 !important; }
+    .element-modal-close {
+        display: block; margin: 14px auto 0; background: #efe6d6; color: #7c2d12;
+        border: none; border-radius: 8px; padding: 9px 20px; font-size: 0.92rem; font-weight: 600; cursor: pointer;
+    }
+    .element-modal-close:hover { background: #e4d7bd; }
+
+    /* ---------------- Per-problem feedback modal ---------------- */
+    .valence-summary.error-text { color: #a12a2a; }
+
+    .problem-modal {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+        z-index: 2500; align-items: center; justify-content: center; padding: 16px;
+    }
+    .problem-modal.open { display: flex; }
+    .problem-modal-card {
+        background: #fff; border-radius: 14px; padding: 22px 24px;
+        max-width: 460px; width: 100%; max-height: 88vh; overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4); text-align: center;
+    }
+    .problem-modal-card h3 { margin-bottom: 10px; font-size: 1.2rem; }
+    .problem-modal-card.correct h3 { color: #1e7e34; }
+    .problem-modal-card.incorrect h3 { color: #a12a2a; }
+    .problem-modal-body { text-align: left; font-size: 0.9rem; color: #4a3722; line-height: 1.5; }
+    .problem-modal-body .recap {
+        background: #eafaef; border-left: 4px solid #28a745; border-radius: 6px;
+        padding: 9px 11px; font-size: 0.87rem; color: #1e7e34; text-align: center;
+    }
+    .problem-modal-body ul { margin: 0 0 0 20px; padding: 0; }
+    .problem-modal-body li { margin: 6px 0; }
+    .problem-modal-actions { margin-top: 6px; }
+</style>
+</head>
+<body>
+    <!-- Intro walkthrough -->
+    <div class="start-screen" id="startScreen">
+        <div class="intro-card">
+            <h2 class="intro-heading" id="introHeading"></h2>
+            <div class="intro-stage" id="introStage"></div>
+            <div class="click-hint" id="introHint">click anywhere to continue</div>
+            <div class="intro-nav">
+                <button class="intro-btn prev" id="introBack" type="button">Back</button>
+                <span class="spacer"></span>
+                <div class="intro-dots" id="introDots"></div>
+                <span class="spacer"></span>
+                <button class="intro-btn next" id="introNext" type="button">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="mainSimulation" style="display: none;">
+        <div class="header">
+            <h1>Successive Ionization Energy</h1>
+            <p>Use the ionization energy pattern to find valence electrons and identify the element</p>
+            <span class="score-badge" id="score-badge">Score 100%</span>
+        </div>
+
+        <div class="main-content">
+            <div class="score-display">
+                Correct: <span id="score">0</span> / 10 &nbsp;|&nbsp; Problem <span id="problem-number">1</span>
+            </div>
+            <div class="progress-bar-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <div id="problem-area"><!-- filled by JS --></div>
+
+            <div class="save-row" id="save-row" style="display: none;">
+                <button type="button" class="save-btn" onclick="manualSave()">Save progress</button>
+                <span class="save-note" id="save-note">saved</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completion Screen -->
+    <div class="complete-screen" id="completeScreen">
+        <div class="complete-card">
+            <h2>Activity complete</h2>
+            <p>You correctly identified the valence electrons and the element in 10 problems.</p>
+            <p id="complete-score">Final score: 100%</p>
+            <p>Your grade has been submitted to Schoology.</p>
+            <button class="close-button" onclick="closeComplete()">Close</button>
+        </div>
+    </div>
+
+    <!-- Element identification modal -->
+    <div class="element-modal" id="elementModal">
+        <div class="element-modal-card">
+            <h3>Identify the element</h3>
+            <div class="element-modal-info" id="elementModalInfo"></div>
+            <div class="element-modal-table-wrap">
+                <div class="element-modal-grid" id="elementModalGrid"></div>
+            </div>
+            <button type="button" class="element-modal-close" onclick="closeElementModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Per-problem feedback modal -->
+    <div class="problem-modal" id="problemModal">
+        <div class="problem-modal-card" id="problemModalCard">
+            <h3 id="problemModalTitle"></h3>
+            <div class="problem-modal-body" id="problemModalBody"></div>
+            <div class="problem-modal-actions" id="problemModalActions"></div>
+        </div>
+    </div>
+
+<script>
+    // ---------------- Ionization energy data ----------------
+    const IONIZATION_DATA = [
+        { name: "Sodium",     symbol: "Na", period: 3, energies: [496, 4562, 6910, 9543, 13354, 16613, 20117, 25496, 28932, 141362, 159076], valenceElectrons: 1, jumpAfter: 1 },
+        { name: "Magnesium",  symbol: "Mg", period: 3, energies: [738, 1451, 7733, 10543, 13630, 18020, 21711, 25661, 31653, 35458, 169988], valenceElectrons: 2, jumpAfter: 2 },
+        { name: "Aluminum",   symbol: "Al", period: 3, energies: [578, 1817, 2745, 11577, 14842, 18379, 23326, 27465, 31853, 38473, 42647], valenceElectrons: 3, jumpAfter: 3 },
+        { name: "Silicon",    symbol: "Si", period: 3, energies: [786, 1577, 3232, 4356, 16091, 19805, 23780, 29287, 33878, 38726, 45962], valenceElectrons: 4, jumpAfter: 4 },
+        { name: "Phosphorus", symbol: "P",  period: 3, energies: [1012, 1907, 2914, 4964, 6274, 21267, 25431, 29872, 35905, 40950, 46261], valenceElectrons: 5, jumpAfter: 5 },
+        { name: "Sulfur",     symbol: "S",  period: 3, energies: [1000, 2252, 3357, 4556, 7004, 8496, 27107, 31719, 36621, 43177, 48710], valenceElectrons: 6, jumpAfter: 6 },
+        { name: "Chlorine",   symbol: "Cl", period: 3, energies: [1251, 2298, 3822, 5159, 6542, 9362, 11018, 33604, 38600, 43961, 51068], valenceElectrons: 7, jumpAfter: 7 },
+        { name: "Potassium",  symbol: "K",  period: 4, energies: [419, 3052, 4420, 5877, 7975, 9590, 11343, 14944, 16964, 48610, 54490], valenceElectrons: 1, jumpAfter: 1 },
+        { name: "Calcium",    symbol: "Ca", period: 4, energies: [590, 1145, 4912, 6491, 8153, 10496, 12270, 14206, 18191, 20385, 57110], valenceElectrons: 2, jumpAfter: 2 },
+        { name: "Boron",      symbol: "B",  period: 2, energies: [801, 2427, 3660, 25026, 32827, 37831, 47278, 52026, 57533, 65251, 69605], valenceElectrons: 3, jumpAfter: 3 }
+    ];
+
+    function getOrdinal(n) {
+        const j = n % 10, k = n % 100;
+        if (j === 1 && k !== 11) return n + 'st';
+        if (j === 2 && k !== 12) return n + 'nd';
+        if (j === 3 && k !== 13) return n + 'rd';
+        return n + 'th';
+    }
+
+    // ---------------- Element identification modal (clickable periodic table) ----------------
+    // Main-group + transition-metal symbols keyed directly by atomic number (Z), matching the
+    // layout grid below. Lanthanides (58-71) and actinides (90-103) are collapsed into the
+    // La (57) / Ac (89) boxes on the grid, same as other periodic-table sims in this project.
+    const SYMBOL_BY_Z = {
+        1:'H', 2:'He',
+        3:'Li', 4:'Be', 5:'B', 6:'C', 7:'N', 8:'O', 9:'F', 10:'Ne',
+        11:'Na', 12:'Mg', 13:'Al', 14:'Si', 15:'P', 16:'S', 17:'Cl', 18:'Ar',
+        19:'K', 20:'Ca', 21:'Sc', 22:'Ti', 23:'V', 24:'Cr', 25:'Mn', 26:'Fe', 27:'Co',
+        28:'Ni', 29:'Cu', 30:'Zn', 31:'Ga', 32:'Ge', 33:'As', 34:'Se', 35:'Br', 36:'Kr',
+        37:'Rb', 38:'Sr', 39:'Y', 40:'Zr', 41:'Nb', 42:'Mo', 43:'Tc', 44:'Ru', 45:'Rh',
+        46:'Pd', 47:'Ag', 48:'Cd', 49:'In', 50:'Sn', 51:'Sb', 52:'Te', 53:'I', 54:'Xe',
+        55:'Cs', 56:'Ba', 57:'La', 72:'Hf', 73:'Ta', 74:'W', 75:'Re', 76:'Os', 77:'Ir',
+        78:'Pt', 79:'Au', 80:'Hg', 81:'Tl', 82:'Pb', 83:'Bi', 84:'Po', 85:'At', 86:'Rn',
+        87:'Fr', 88:'Ra', 89:'Ac', 104:'Rf', 105:'Db', 106:'Sg', 107:'Bh', 108:'Hs', 109:'Mt',
+        110:'Ds', 111:'Rg', 112:'Cn', 113:'Nh', 114:'Fl', 115:'Mc', 116:'Lv', 117:'Ts', 118:'Og'
+    };
+
+    // 18-wide grid layout, one row per period (lanthanide/actinide slots collapsed into the La/Ac box).
+    const PERIODIC_LAYOUT = [
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
+        [3,4,0,0,0,0,0,0,0,0,0,0,5,6,7,8,9,10],
+        [11,12,0,0,0,0,0,0,0,0,0,0,13,14,15,16,17,18],
+        [19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36],
+        [37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54],
+        [55,56,57,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86],
+        [87,88,89,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118]
+    ];
+
+    let elementModalGridBuilt = false;
+    function buildElementModalGrid() {
+        const grid = document.getElementById('elementModalGrid');
+        grid.innerHTML = '';
+        PERIODIC_LAYOUT.forEach(function (row) {
+            row.forEach(function (z) {
+                const cell = document.createElement('div');
+                if (z === 0) {
+                    cell.className = 'elmod-cell empty';
+                } else {
+                    const symbol = SYMBOL_BY_Z[z];
+                    cell.className = 'elmod-cell';
+                    cell.textContent = symbol;
+                    cell.dataset.symbol = symbol;
+                    cell.addEventListener('click', function () { selectElementFromModal(symbol); });
+                }
+                grid.appendChild(cell);
+            });
+        });
+        elementModalGridBuilt = true;
+    }
+
+    function openElementModal() {
+        if (document.getElementById('element-choice-btn').disabled) return;
+        if (!elementModalGridBuilt) buildElementModalGrid();
+
+        const el = currentElement;
+
+        document.getElementById('elementModalInfo').innerHTML =
+            'You selected <strong>' + highlightedElectrons.length + '</strong> valence electron' +
+            (highlightedElectrons.length === 1 ? '' : 's') + '. This element is in <strong>Period ' + el.period +
+            '</strong>. Find its row, then click its box on the periodic table below.';
+
+        document.querySelectorAll('#elementModalGrid .elmod-cell').forEach(function (cell) {
+            if (cell.classList.contains('empty')) return;
+            cell.classList.toggle('chosen-el', cell.dataset.symbol === selectedElement);
+        });
+
+        document.getElementById('elementModal').classList.add('open');
+    }
+
+    function closeElementModal() {
+        document.getElementById('elementModal').classList.remove('open');
+    }
+
+    document.getElementById('elementModal').addEventListener('click', function (e) {
+        if (e.target.id === 'elementModal') closeElementModal();
+    });
+
+    function selectElementFromModal(symbol) {
+        selectedElement = symbol;
+        const btn = document.getElementById('element-choice-btn');
+        btn.textContent = symbol;
+        btn.classList.add('chosen');
+        btn.classList.remove('error');
+        closeElementModal();
+        updateSubmitEnabled();
+        // Make sure Submit Answer is in view once the last step is filled in.
+        setTimeout(function () {
+            const submitBtn = document.getElementById('submit-btn');
+            if (submitBtn && typeof submitBtn.scrollIntoView === 'function') {
+                submitBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 60);
+    }
+
+    // ---------------- Game state ----------------
+    var currentQuestion = 0;
+    var correctAnswersCount = 0;
+    var usedElements = [];
+    var currentElement = null;
+    var highlightedElectrons = [];
+    var selectedJumpAfter = null;
+    var selectedElectronType = null;
+    var selectedElement = null;
+    var gameStartTime = null;
+
+    // Miss-penalty scoring: start at 100%, lose 3% per wrong submission, floor 60%
+    var missCount = 0;
+    const SCORE_FLOOR = 60;
+    const MISS_PENALTY = 3;
+    function currentPct() { return Math.max(SCORE_FLOOR, 100 - MISS_PENALTY * missCount); }
+    function updateScoreBadge() {
+        const b = document.getElementById('score-badge');
+        if (b) b.textContent = 'Score ' + currentPct() + '%';
+    }
+
+    function updateProgress() {
+        document.getElementById('score').textContent = correctAnswersCount;
+        document.getElementById('problem-number').textContent = currentQuestion + 1;
+        document.getElementById('progress-fill').style.width = (correctAnswersCount / 10 * 100) + '%';
+    }
+
+    function pickElement() {
+        let pool = IONIZATION_DATA.filter(function (e) { return usedElements.indexOf(e.symbol) === -1; });
+        if (pool.length === 0) {
+            // Every element has been shown at least once; start a new cycle.
+            usedElements = [];
+            pool = IONIZATION_DATA;
+            // Avoid immediately repeating the element that was just shown.
+            if (currentElement) {
+                const filtered = pool.filter(function (e) { return e.symbol !== currentElement.symbol; });
+                if (filtered.length > 0) pool = filtered;
+            }
+        }
+        const el = pool[Math.floor(Math.random() * pool.length)];
+        usedElements.push(el.symbol);
+        return el;
+    }
+
+    function generateProblem() {
+        if (correctAnswersCount >= 10) { showCompletion(); return; }
+
+        currentElement = pickElement();
+        highlightedElectrons = [];
+        selectedJumpAfter = null;
+        selectedElectronType = null;
+        selectedElement = null;
+
+        const el = currentElement;
+        const area = document.getElementById('problem-area');
+        area.innerHTML =
+            '<div class="problem-title">Problem ' + (currentQuestion + 1) + '</div>' +
+            '<div class="ie-table-wrap"><table class="ie-table">' +
+            '<thead><tr><th>Electron removed</th>' +
+                el.energies.map(function (_, i) { return '<th>' + getOrdinal(i + 1) + '</th>'; }).join('') +
+            '</tr></thead>' +
+            '<tbody><tr><td><strong>IE (kJ/mol)</strong></td>' +
+                el.energies.map(function (energy, i) {
+                    return '<td class="energy-cell" data-i="' + i + '" id="energy-' + i + '">' + energy.toLocaleString() + '</td>';
+                }).join('') +
+            '</tr></tbody></table></div>' +
+            '<p class="prompt-box"><strong>Step 1:</strong> Click the <strong>last</strong> energy value above that is a valence electron ' +
+            '(the one right before the big jump to much higher energies) &mdash; every value before it will be selected too.</p>' +
+            '<div class="valence-summary" id="valence-summary">Valence electrons selected: 0</div>' +
+            '<div class="question-section">' +
+                '<div class="answer-group">' +
+                    '<label>Step 2: The large jump in ionization energy happens right after removing the:</label>' +
+                    '<select class="dropdown" id="jump-after"><option value="">Select electron number...</option>' +
+                        el.energies.slice(0, el.energies.length - 1).map(function (_, i) {
+                            return '<option value="' + (i + 1) + '">' + getOrdinal(i + 1) + ' electron</option>';
+                        }).join('') +
+                    '</select>' +
+                '</div>' +
+                '<div class="answer-group">' +
+                    '<label>Step 3: So the next electron removed must be:</label>' +
+                    '<select class="dropdown" id="electron-type"><option value="">Select electron type...</option>' +
+                        '<option value="core">A core electron (closer to the nucleus)</option>' +
+                        '<option value="valence">A valence electron (same energy level)</option>' +
+                    '</select>' +
+                '</div>' +
+                '<div class="answer-group">' +
+                    '<label>Step 4: This element is in period ' + el.period + '. Which element is it?</label>' +
+                    '<button type="button" class="element-choice-btn" id="element-choice-btn" onclick="openElementModal()">Choose element on periodic table...</button>' +
+                '</div>' +
+                '<button class="submit-btn" id="submit-btn" disabled onclick="checkAnswer()">Submit Answer</button>' +
+            '</div>';
+
+        area.querySelectorAll('.energy-cell').forEach(function (cell) {
+            cell.addEventListener('click', function () { toggleHighlight(Number(cell.dataset.i)); });
+        });
+        document.getElementById('jump-after').addEventListener('change', function (e) {
+            selectedJumpAfter = e.target.value ? Number(e.target.value) : null;
+            e.target.classList.remove('error');
+            updateSubmitEnabled();
+        });
+        document.getElementById('electron-type').addEventListener('change', function (e) {
+            selectedElectronType = e.target.value || null;
+            e.target.classList.remove('error');
+            updateSubmitEnabled();
+        });
+
+        updateProgress();
+        updateScoreBadge();
+        scormCheckpoint();
+    }
+
+    // Valence electrons are always the first N energies in a row (before the big jump), so
+    // clicking the last one in that stretch selects the whole contiguous block up to it —
+    // the student does not have to click every single electron before it.
+    function toggleHighlight(i) {
+        const currentMax = highlightedElectrons.length ? Math.max.apply(null, highlightedElectrons) : -1;
+        if (currentMax === i) {
+            // clicking the current boundary again clears the selection
+            highlightedElectrons = [];
+        } else {
+            highlightedElectrons = [];
+            for (let k = 0; k <= i; k++) highlightedElectrons.push(k);
+        }
+        document.querySelectorAll('.energy-cell').forEach(function (cell) {
+            const idx = Number(cell.dataset.i);
+            cell.classList.toggle('highlighted-valence', highlightedElectrons.indexOf(idx) !== -1);
+        });
+        const summary = document.getElementById('valence-summary');
+        summary.textContent = 'Valence electrons selected: ' + highlightedElectrons.length;
+        summary.classList.remove('error-text');
+        updateSubmitEnabled();
+    }
+
+    function updateSubmitEnabled() {
+        const submitBtn = document.getElementById('submit-btn');
+        if (!submitBtn) return;
+        submitBtn.disabled = !(highlightedElectrons.length > 0 && selectedJumpAfter && selectedElectronType && selectedElement);
+    }
+
+    function checkAnswer() {
+        const el = currentElement;
+        const sortedHighlights = highlightedElectrons.slice().sort(function (a, b) { return a - b; });
+        const correctHighlights = sortedHighlights.length === el.valenceElectrons &&
+            sortedHighlights.every(function (v, i) { return v === i; });
+        const jumpCorrect = selectedJumpAfter === el.jumpAfter;
+        const typeCorrect = selectedElectronType === 'core';
+        const elementCorrect = selectedElement === el.symbol;
+        const allCorrect = correctHighlights && jumpCorrect && typeCorrect && elementCorrect;
+
+        const modal = document.getElementById('problemModal');
+        const card = document.getElementById('problemModalCard');
+        const title = document.getElementById('problemModalTitle');
+        const body = document.getElementById('problemModalBody');
+        const actions = document.getElementById('problemModalActions');
+
+        if (allCorrect) {
+            correctAnswersCount++;
+            card.className = 'problem-modal-card correct';
+            title.textContent = 'Correct!';
+            body.innerHTML = '<div class="recap">' + el.name + ' (' + el.symbol + ') has ' + el.valenceElectrons +
+                ' valence electron' + (el.valenceElectrons > 1 ? 's' : '') + '. The big jump happens right after the ' +
+                getOrdinal(el.jumpAfter) + ' electron, which marks the switch to core electrons.</div>';
+            actions.innerHTML = '<button type="button" class="next-btn" onclick="advanceFromModal()">Next Problem</button>';
+
+            document.querySelectorAll('.energy-cell').forEach(function (c) { c.classList.add('locked'); });
+            document.getElementById('jump-after').disabled = true;
+            document.getElementById('electron-type').disabled = true;
+            document.getElementById('element-choice-btn').disabled = true;
+            document.getElementById('submit-btn').style.display = 'none';
+        } else {
+            missCount++;
+            card.className = 'problem-modal-card incorrect';
+            title.textContent = 'Not quite yet';
+            const issues = [];
+            if (!correctHighlights) {
+                issues.push('You chose the wrong number of valence electrons. Start there &mdash; recheck which energy value is the last one before the big jump.');
+                document.getElementById('valence-summary').classList.add('error-text');
+            }
+            if (!jumpCorrect) {
+                issues.push('The electron number you picked for the big jump is not right. Look again at where the energy suddenly jumps much higher.');
+                document.getElementById('jump-after').classList.add('error');
+            }
+            if (!typeCorrect) {
+                issues.push('The type of the next electron removed is not right. Think about whether it is closer to the nucleus (core) or in the same energy level (valence).');
+                document.getElementById('electron-type').classList.add('error');
+            }
+            if (!elementCorrect) {
+                issues.push('The element you chose is not right for this period and valence electron count. Take another look at the periodic table.');
+                document.getElementById('element-choice-btn').classList.add('error');
+            }
+            body.innerHTML = '<ul>' + issues.map(function (i) { return '<li>' + i + '</li>'; }).join('') + '</ul>';
+            actions.innerHTML = '<button type="button" class="element-modal-close" onclick="closeProblemModal()">Go back to problem</button>';
+        }
+
+        modal.classList.add('open');
+        updateProgress();
+        updateScoreBadge();
+        scormCheckpoint();
+    }
+
+    function closeProblemModal() {
+        document.getElementById('problemModal').classList.remove('open');
+    }
+
+    function advanceFromModal() {
+        closeProblemModal();
+        nextProblem();
+    }
+
+    function nextProblem() {
+        currentQuestion++;
+        generateProblem();
+    }
+
+    function showCompletion() {
+        if (window._ieCompleted) return;
+        window._ieCompleted = true;
+        scormReport();
+        document.getElementById('complete-score').textContent = 'Final score: ' + currentPct() + '%';
+        document.getElementById('completeScreen').style.display = 'flex';
+    }
+
+    function closeComplete() {
+        document.getElementById('completeScreen').style.display = 'none';
+    }
+
+    function beginActivity() {
+        gameStartTime = new Date();
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('mainSimulation').style.display = 'block';
+        if (scormAPI) document.getElementById('save-row').style.display = '';
+
+        if (scormResumeData) {
+            currentQuestion = Number.isInteger(scormResumeData.q) ? scormResumeData.q : 0;
+            correctAnswersCount = Math.min(Math.max(0, Number(scormResumeData.correct) || 0), 10);
+            missCount = Math.max(0, Number(scormResumeData.miss) || 0);
+            usedElements = Array.isArray(scormResumeData.used) ? scormResumeData.used : [];
+        }
+
+        updateProgress();
+        updateScoreBadge();
+        if (correctAnswersCount >= 10) {
+            showCompletion();
+        } else {
+            generateProblem();
+        }
+        scormCheckpoint();
+    }
+
+    // ================= Intro slideshow =================
+    function chipsHTML(energies, opt) {
+        opt = opt || {};
+        const jumpAfter = opt.jumpAfter || null;
+        const revealed = !!opt.revealed;
+        let html = '<div class="ie-chips">';
+        energies.forEach(function (v, i) {
+            const isValence = jumpAfter ? (i < jumpAfter) : false;
+            const cls = revealed ? ('ie-chip ' + (isValence ? 'valence' : 'core')) : 'ie-chip';
+            html += '<div class="' + cls + '">' + v.toLocaleString() + '</div>';
+            if (jumpAfter && i === jumpAfter - 1) {
+                html += '<div class="ie-jump"><span class="arrow">&#8599;</span><span>big jump</span></div>';
+            }
+        });
+        html += '</div>';
+        return html;
+    }
+
+    const INTRO = [
+        {
+            h: 'Before the 10 problems',
+            beats: [
+                { note: '<p>This walkthrough shows you how to read a table of <b>successive ionization energies</b> and use the pattern to find an element\'s valence electrons &mdash; and the element itself.</p>' },
+                { note: '<p>Then you will get 10 problems where you do this yourself.</p>' }
+            ]
+        },
+        {
+            h: 'One electron at a time',
+            beats: [
+                { note: '<p><b>Ionization energy</b> is the energy needed to remove one electron from an atom. <b>Successive</b> ionization energies (1st, 2nd, 3rd...) are what it costs to remove the 1st electron, then the 2nd, then the 3rd, all from the same atom.</p>' },
+                { chart: { energies: [578, 1817, 2745], jumpAfter: null, revealed: false }, to: 'c1',
+                  say: 'Removing each electron takes a bit more energy than the one before it. The atom now has one more net positive charge, so it holds on to what is left a little tighter.' }
+            ]
+        },
+        {
+            h: 'Watch for the big jump',
+            beats: [
+                { note: '<p>But at some point, removing the <b>next</b> electron takes a huge jump in energy &mdash; far bigger than the steady increases before it.</p>' },
+                { chart: { energies: [578, 1817, 2745, 11577], jumpAfter: 3, revealed: false }, to: 'c2',
+                  say: 'Energies climb gently through the 1st, 2nd, and 3rd electron. Then the 4th electron jumps to more than 4 times the energy of the 3rd. That jump is the signal to look for.' },
+                { callout: 'A <b>big jump</b> in ionization energy means the next electron removed is no longer a valence electron.' }
+            ]
+        },
+        {
+            h: 'Valence electrons vs. core electrons',
+            beats: [
+                { note: '<p>The electrons removed <b>before</b> the jump are <b>valence electrons</b>: the outer electrons, held loosely in the highest energy level.</p>' },
+                { note: '<p>The electrons removed <b>after</b> the jump are <b>core electrons</b>: electrons from a full inner shell, sitting much closer to the nucleus with far less shielding. That is why they take so much more energy to remove.</p>' },
+                { chart: { energies: [578, 1817, 2745, 11577], jumpAfter: 3, revealed: true }, to: 'c3',
+                  say: '3 valence electrons, then a jump into the core. This element (Aluminum) has 3 valence electrons.' },
+                { callout: 'The number of electrons removed <b>before</b> the jump is the element\'s number of valence electrons.' }
+            ]
+        },
+        {
+            h: 'From the pattern to the element',
+            beats: [
+                { note: '<p>Once you know the valence electron count and the period the element is in, you can identify the exact element &mdash; main-group elements in the same period line up in order by their number of valence electrons.</p>' },
+                { note: '<p>For example: 3 valence electrons in period 3 &rarr; Aluminum. 3 valence electrons in period 2 &rarr; Boron.</p>' }
+            ]
+        },
+        {
+            h: 'How you will answer each problem',
+            beats: [
+                { note: '<p>For each of the 10 problems:</p><ol>' +
+                        '<li>Click the last energy value that is a valence electron (right before the jump) &mdash; everything before it gets selected too.</li>' +
+                        '<li>Select which electron number the jump happens after.</li>' +
+                        '<li>Select whether the next electron removed is core or valence.</li>' +
+                        '<li>Identify the element.</li></ol>' },
+                { note: '<p>Submit checks all four parts at once. If something is off, you will see the correct answer so you can learn the pattern before the next problem.</p>' }
+            ]
+        },
+        {
+            h: 'Quick check',
+            beats: [
+                { chart: { energies: [738, 1451, 7733, 10543], jumpAfter: null, revealed: false }, to: 'q1',
+                  say: 'This element\'s first four ionization energies are 738, 1451, 7733, 10543 (kJ/mol).' },
+                { check: {
+                    kind: 'btn',
+                    q: 'After which electron does the big jump happen?',
+                    options: ['1st electron', '2nd electron', '3rd electron'],
+                    correct: 1,
+                    ok: 'Correct. The jump from 1451 to 7733 (about 5 times higher) happens right after the 2nd electron. This element has 2 valence electrons — it is Magnesium.',
+                    no: 'Not quite. Look for where the energy suddenly jumps to several times the previous value: between 1451 and 7733, right after the 2nd electron.'
+                } }
+            ]
+        },
+        {
+            h: 'Putting it together',
+            beats: [
+                { note: '<ol>' +
+                        '<li>Click the energies before the big jump &mdash; those are the valence electrons.</li>' +
+                        '<li>Identify which electron number the jump happens after.</li>' +
+                        '<li>The next electron removed is always a core electron.</li>' +
+                        '<li>Use the valence count and the period to identify the element.</li>' +
+                        '</ol>' },
+                { callout: 'The activity has 10 problems. Wrong answers lower the score in the corner but you can keep going, and you can use Save progress to stop and come back.' }
+            ]
+        }
+    ];
+
+    var slideIdx = 0;
+    var beatIdx = 0;
+    const introPassed = new Set();
+    const introAttempts = {};
+
+    function curSlide() { return INTRO[slideIdx]; }
+    function curBeat() { return curSlide().beats[beatIdx]; }
+    function isLastBeatOfIntro() { return slideIdx === INTRO.length - 1 && beatIdx === curSlide().beats.length - 1; }
+    function checkPending() {
+        const b = curBeat();
+        return !!(b && b.check && !introPassed.has(slideIdx));
+    }
+    function slideCheck(i) {
+        const b = INTRO[i].beats.find(function (x) { return x.check; });
+        return b ? b.check : null;
+    }
+
+    function initIntro() {
+        document.getElementById('introDots').innerHTML =
+            INTRO.map(function (_, i) { return '<i data-i="' + i + '"></i>'; }).join('');
+
+        document.getElementById('introBack').addEventListener('click', function (e) { e.stopPropagation(); beatBack(); });
+        document.getElementById('introNext').addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (isLastBeatOfIntro()) finishIntro(); else beatForward();
+        });
+        document.querySelector('#startScreen .intro-card').addEventListener('click', function (e) {
+            if (e.target.closest('.intro-nav')) return;
+            if (e.target.closest('.check-box')) return;
+            if (isLastBeatOfIntro()) return;
+            beatForward();
+        });
+        document.getElementById('introStage').addEventListener('click', onIntroCheckClick);
+
+        slideIdx = 0; beatIdx = 0;
+        renderIntro();
+    }
+
+    function beatForward() {
+        if (checkPending()) return;
+        if (beatIdx < curSlide().beats.length - 1) {
+            beatIdx++;
+        } else if (slideIdx < INTRO.length - 1) {
+            slideIdx++; beatIdx = 0;
+        } else { return; }
+        renderIntro();
+    }
+
+    function beatBack() {
+        if (beatIdx > 0) { beatIdx--; }
+        else if (slideIdx > 0) { slideIdx--; beatIdx = curSlide().beats.length - 1; }
+        else { return; }
+        renderIntro();
+    }
+
+    function finishIntro() {
+        document.getElementById('startScreen').style.display = 'none';
+        beginActivity();
+    }
+
+    function beatToHTML(b, newest) {
+        const pop = newest ? ' pop' : '';
+        if (b.note) return '<div class="beat-note' + pop + '">' + b.note + '</div>';
+        if (b.callout) return '<div class="callout' + pop + '">' + b.callout + '</div>';
+        if (b.chart) {
+            return '<div class="beat-chart' + pop + '" data-tag="' + b.to + '">' + chipsHTML(b.chart.energies, b.chart) +
+                (b.say ? '<div class="chat">' + b.say + '</div>' : '') + '</div>';
+        }
+        if (b.check) {
+            const c = b.check;
+            const inner = '<div class="choice-row">' +
+                c.options.map(function (o, oi) { return '<button type="button" class="choice-btn" data-idx="' + oi + '">' + o + '</button>'; }).join('') +
+                '</div>';
+            return '<div class="check-box' + pop + '" data-slide="' + slideIdx + '"><div class="check-q">' + c.q + '</div>' +
+                inner + '<div class="check-fb" id="ifb-' + slideIdx + '"></div></div>';
+        }
+        return '';
+    }
+
+    function renderIntro() {
+        document.getElementById('introHeading').textContent = curSlide().h;
+
+        const stage = document.getElementById('introStage');
+        stage.innerHTML = '';
+        const beats = curSlide().beats;
+        for (let i = 0; i <= beatIdx; i++) {
+            stage.insertAdjacentHTML('beforeend', beatToHTML(beats[i], i === beatIdx));
+        }
+
+        if (introPassed.has(slideIdx)) {
+            const box = stage.querySelector('.check-box');
+            const chk = slideCheck(slideIdx);
+            if (box && chk) {
+                const btns = box.querySelectorAll('button');
+                btns.forEach(function (bn) { bn.disabled = true; });
+                if (btns[chk.correct]) btns[chk.correct].classList.add('pick-right');
+                const fb = box.querySelector('.check-fb');
+                fb.className = 'check-fb ok';
+                fb.textContent = chk.ok;
+            }
+        }
+
+        document.querySelectorAll('#introDots i').forEach(function (el) {
+            el.classList.toggle('on', Number(el.dataset.i) === slideIdx);
+        });
+
+        document.getElementById('introBack').disabled = (slideIdx === 0 && beatIdx === 0);
+
+        const nextBtn = document.getElementById('introNext');
+        if (isLastBeatOfIntro()) {
+            nextBtn.textContent = 'Start the 10 problems';
+            nextBtn.disabled = false;
+        } else {
+            nextBtn.textContent = 'Next';
+            nextBtn.disabled = checkPending();
+        }
+
+        const hint = document.getElementById('introHint');
+        if (isLastBeatOfIntro()) {
+            hint.textContent = 'use the button when you are ready';
+        } else if (checkPending()) {
+            hint.textContent = 'answer above to continue';
+        } else {
+            hint.textContent = 'click anywhere to continue   (' + (beatIdx + 1) + ' / ' + beats.length + ')';
+        }
+
+        const newest = stage.lastElementChild;
+        if (newest && newest.scrollIntoView) newest.scrollIntoView({ block: 'nearest' });
+        stage.scrollTop = stage.scrollHeight;
+    }
+
+    function onIntroCheckClick(e) {
+        const btn = e.target.closest('.choice-btn');
+        if (!btn) return;
+        e.stopPropagation();
+        const box = btn.closest('.check-box');
+        const slide = Number(box.dataset.slide);
+        if (introPassed.has(slide)) return;
+
+        const chk = slideCheck(slide);
+        const idx = Number(btn.dataset.idx);
+        const fb = document.getElementById('ifb-' + slide);
+        introAttempts[slide] = (introAttempts[slide] || 0) + 1;
+
+        const finish = function () {
+            introPassed.add(slide);
+            box.querySelectorAll('button').forEach(function (b) { b.disabled = true; });
+            document.getElementById('introNext').disabled = isLastBeatOfIntro() ? false : checkPending();
+            document.getElementById('introHint').textContent = 'click anywhere to continue';
+        };
+
+        if (idx === chk.correct) {
+            btn.classList.add('pick-right');
+            fb.className = 'check-fb ok';
+            fb.textContent = chk.ok;
+            finish();
+        } else {
+            btn.classList.add('pick-wrong');
+            fb.className = 'check-fb no';
+            fb.textContent = chk.no;
+            if (introAttempts[slide] >= 2) {
+                const right = box.querySelectorAll('button')[chk.correct];
+                if (right) right.classList.add('pick-right');
+                fb.textContent = chk.no + ' ' + chk.ok;
+                finish();
+            } else {
+                setTimeout(function () { btn.classList.remove('pick-wrong'); }, 900);
+            }
+        }
+    }
+
+    // ---- SCORM 1.2 ----
+    var scormAPI = null;
+    var scormResumeEntry = false;
+    var scormResumeData = null;
+    var scormDone = false;
+    const scormStartMs = Date.now();
+
+    function findAPI(win) {
+        let n = 0, w = win;
+        while (w && n < 12) {
+            if (w.API) return w.API;
+            w = (w.parent && w.parent !== w) ? w.parent : w.opener;
+            n++;
+        }
+        return null;
+    }
+
+    function scormInit() {
+        try {
+            scormAPI = findAPI(window);
+            if (!scormAPI) return;
+            if (String(scormAPI.LMSInitialize("")) !== "true") { scormAPI = null; return; }
+            const st = scormAPI.LMSGetValue("cmi.core.lesson_status");
+            if (st === "" || st === "not attempted" || st === "unknown") {
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+            }
+            if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                scormResumeEntry = true;
+                const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                if (raw) {
+                    try {
+                        const d = JSON.parse(raw);
+                        if (d && typeof d === 'object') scormResumeData = d;
+                    } catch (e) { /* ignore bad bookmark */ }
+                }
+            }
+            scormAPI.LMSCommit("");
+        } catch (e) { scormAPI = null; }
+    }
+
+    function scormTime() {
+        let s = Math.floor((Date.now() - scormStartMs) / 1000);
+        const h = String(Math.floor(s / 3600)).padStart(4, '0');
+        s %= 3600;
+        const m = String(Math.floor(s / 60)).padStart(2, '0');
+        const ss = String(s % 60).padStart(2, '0');
+        return h + ':' + m + ':' + ss;
+    }
+
+    function scormCheckpoint() {
+        if (!scormAPI || scormDone) return;
+        try {
+            scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                q: currentQuestion,
+                correct: correctAnswersCount,
+                miss: missCount,
+                used: usedElements
+            }));
+            scormAPI.LMSSetValue("cmi.core.lesson_location", String(currentQuestion));
+            scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+            scormAPI.LMSCommit("");
+        } catch (e) { /* ignore */ }
+    }
+
+    function scormReport() {
+        if (!scormAPI || scormDone) return;
+        try {
+            scormAPI.LMSSetValue("cmi.core.score.min", "0");
+            scormAPI.LMSSetValue("cmi.core.score.max", "100");
+            scormAPI.LMSSetValue("cmi.core.score.raw", String(currentPct()));
+            scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+            scormAPI.LMSSetValue("cmi.core.session_time", scormTime());
+            scormAPI.LMSSetValue("cmi.core.exit", "");
+            scormAPI.LMSCommit("");
+            scormDone = true;
+        } catch (e) { /* ignore */ }
+    }
+
+    function scormTerminate() {
+        if (!scormAPI) return;
+        try {
+            if (!scormDone) scormCheckpoint();
+            scormAPI.LMSFinish("");
+        } catch (e) { /* ignore */ }
+    }
+
+    function manualSave() {
+        if (!scormAPI || scormDone) return;
+        scormCheckpoint();
+        const n = document.getElementById('save-note');
+        if (n) {
+            n.classList.add('show');
+            clearTimeout(manualSave._t);
+            manualSave._t = setTimeout(function () { n.classList.remove('show'); }, 2200);
+        }
+    }
+
+    window.addEventListener('beforeunload', scormTerminate);
+    window.addEventListener('pagehide', function () { scormCheckpoint(); });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) scormCheckpoint(); });
+
+    window.addEventListener('load', function () {
+        scormInit();
+        if (scormResumeEntry && scormResumeData) {
+            beginActivity();
+        } else {
+            initIntro();
+        }
+    });
+</script>
+</body>
+</html>

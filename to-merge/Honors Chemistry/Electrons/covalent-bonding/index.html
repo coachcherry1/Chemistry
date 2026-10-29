@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Covalent Bonding</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f7f5f0 0%, #d9cfc0 100%);
+        min-height: 100vh;
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    .container {
+        max-width: 920px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        overflow: hidden;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
+        color: #fff;
+        padding: 8px 16px;
+        text-align: center;
+        position: relative;
+    }
+    .header h1 { font-size: 1.2em; margin-bottom: 1px; }
+    .header p { font-size: 0.8em; opacity: 0.92; }
+
+    .score-badge {
+        position: absolute;
+        top: 8px; right: 10px;
+        background: #fffaf0;
+        color: #7c2d12;
+        font-weight: 700;
+        font-size: 12px;
+        padding: 2px 9px;
+        border-radius: 11px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .main-content { padding: 10px 14px 12px; }
+
+    .score-display {
+        text-align: center; margin-bottom: 4px; font-size: 0.95em; font-weight: 700; color: #7c2d12;
+    }
+    .progress-bar-track {
+        width: 100%; height: 6px; background: #e9ecef;
+        border-radius: 3px; overflow: hidden; margin-bottom: 8px;
+    }
+    .progress-fill {
+        height: 100%; background: linear-gradient(90deg, #b45309, #f59e0b); transition: width 0.4s ease;
+    }
+
+    .problem-title { font-size: 1em; font-weight: 700; color: #5c4326; margin-bottom: 3px; }
+    .problem-sub { font-size: 0.82em; color: #a98c66; margin-bottom: 8px; }
+
+    .prompt-box {
+        background: #fffaf0; border-left: 4px solid #f59e0b;
+        border-radius: 6px; padding: 7px 10px; margin-bottom: 10px;
+        font-size: 0.84rem; color: #5c4326; line-height: 1.45;
+    }
+
+    /* ---------------- Atom diagrams ---------------- */
+    .atom-pair, .compare-pair {
+        display: flex; gap: 32px; justify-content: center; align-items: flex-end;
+        flex-wrap: wrap; margin: 6px 0;
+    }
+    .atom-card { text-align: center; }
+    .atom-card svg { display: block; margin: 0 auto; }
+    .atom-label { font-size: 0.85em; font-weight: 700; color: #5c4326; margin-top: 4px; }
+    .atom-sub { font-size: 0.76em; color: #a98c66; }
+
+    #atomPair {
+        background: #fbf7ef; border: 2px dashed #e4d7bd; border-radius: 8px;
+        padding: 14px 10px; margin-bottom: 12px;
+    }
+
+    /* ---------------- Wizard steps ---------------- */
+    .wiz-step {
+        border: 2px solid #f0d9a8; background: #fffdf8; border-radius: 10px;
+        padding: 12px 14px; margin-top: 10px;
+    }
+    .wiz-step.locked { opacity: 0.82; }
+    .wiz-q { font-weight: 700; color: #5c4326; margin-bottom: 8px; font-size: 0.95rem; }
+    .wiz-fb { margin-top: 8px; font-weight: 600; font-size: 0.87rem; min-height: 1.2em; line-height: 1.4; }
+    .wiz-fb.no { color: #b3261e; }
+    .wiz-fb.ok { color: #1e7e34; }
+
+    .choice-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .choice-btn {
+        border: 2px solid #b45309; background: #fff; color: #7c2d12;
+        border-radius: 8px; padding: 9px 16px; font-size: 0.93rem; font-weight: 600; cursor: pointer;
+        line-height: 1.4;
+    }
+    .choice-btn:hover:not(:disabled) { background: #fff3e2; }
+    .choice-btn:disabled { cursor: default; }
+    .choice-btn.pick-right { background: #28a745; border-color: #28a745; color: #fff; }
+    .choice-btn.pick-wrong { background: #dc3545; border-color: #dc3545; color: #fff; }
+
+    .save-row { margin: 14px 0 0; padding-top: 8px; border-top: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
+    .save-btn {
+        background: linear-gradient(145deg, #b45309, #92400e); color: #fff; border: none; border-radius: 6px;
+        padding: 5px 13px; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .save-btn:hover { background: linear-gradient(145deg, #92400e, #7c2d12); }
+    .save-note { color: #28a745; font-weight: 600; font-size: 12px; opacity: 0; transition: opacity .3s ease; }
+    .save-note.show { opacity: 1; }
+
+    /* ---------------- Start screen ---------------- */
+    .start-screen {
+        position: fixed; inset: 0;
+        background: linear-gradient(135deg, #f7f5f0 0%, #d9cfc0 100%);
+        display: flex; align-items: center; justify-content: center;
+        z-index: 1000; padding: 20px;
+    }
+
+    /* ---------------- Completion overlay ---------------- */
+    .complete-screen {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+        align-items: center; justify-content: center; z-index: 2000; padding: 20px;
+    }
+    .complete-card {
+        background: #fff; border-radius: 14px; padding: 34px;
+        max-width: 460px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .complete-card h2 { color: #7c2d12; margin-bottom: 12px; }
+    .complete-card p { color: #495057; line-height: 1.6; margin-bottom: 8px; }
+    .complete-card .close-button {
+        margin-top: 20px; background: #b45309; color: #fff;
+        border: none; border-radius: 6px; padding: 11px 26px; font-size: 15px; cursor: pointer;
+    }
+    .complete-card .close-button:hover { background: #92400e; }
+
+    /* ---------------- Per-problem completion modal ---------------- */
+    .problem-modal {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+        z-index: 2500; align-items: center; justify-content: center; padding: 16px;
+    }
+    .problem-modal.open { display: flex; }
+    .problem-modal-card {
+        background: #fff; border-radius: 14px; padding: 22px 24px;
+        max-width: 460px; width: 100%; max-height: 88vh; overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4); text-align: center;
+    }
+    .problem-modal-card h3 { margin-bottom: 10px; font-size: 1.2rem; }
+    .problem-modal-card.correct h3 { color: #1e7e34; }
+    .problem-modal-body { text-align: left; font-size: 0.9rem; color: #4a3722; line-height: 1.5; }
+    .problem-modal-body .recap {
+        background: #eafaef; border-left: 4px solid #28a745; border-radius: 6px;
+        padding: 9px 11px; font-size: 0.87rem; color: #1e7e34; text-align: center;
+    }
+    .problem-modal-actions { margin-top: 12px; }
+    .next-btn {
+        background: #b45309; color: #fff; border: none;
+        padding: 10px 24px; border-radius: 20px; font-size: 0.9em; font-weight: 700;
+        cursor: pointer; margin: 0 auto; display: block;
+        transition: background 0.2s ease;
+    }
+    .next-btn:hover { background: #92400e; }
+
+    /* ================= Intro walkthrough ================= */
+    .intro-card {
+        background: #fff; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        max-width: 860px; width: 100%; max-height: 92vh;
+        padding: 20px 26px 12px; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .intro-heading { color: #7c2d12; font-size: 1.3rem; margin-bottom: 10px; }
+    .intro-stage {
+        flex: 1 1 auto; overflow-y: auto; cursor: pointer;
+        padding: 2px 4px 4px 2px; display: flex; flex-wrap: wrap;
+        gap: 14px 20px; align-content: flex-start;
+    }
+    .intro-stage > .beat-note,
+    .intro-stage > .callout,
+    .intro-stage > .beat-diagram,
+    .intro-stage > .check-box { flex-basis: 100%; }
+
+    .beat-note p { color: #4a3722; line-height: 1.55; font-size: 0.97rem; margin-bottom: 6px; }
+    .beat-note ul, .beat-note ol { margin: 4px 0 4px 22px; }
+    .beat-note li { color: #4a3722; line-height: 1.5; font-size: 0.96rem; margin: 5px 0; }
+
+    .pop { animation: beatPop .2s ease; }
+    @keyframes beatPop { from { opacity: 0; transform: translateY(6px) scale(.97); } to { opacity: 1; transform: none; } }
+
+    .click-hint { text-align: center; color: #a98c66; font-size: 0.8rem; padding: 8px 0 2px; letter-spacing: .02em; }
+
+    .callout {
+        background: #fffaf0; border-left: 4px solid #f59e0b;
+        border-radius: 6px; padding: 10px 12px; margin: 2px 0;
+        color: #5c4326; font-size: 0.93rem; line-height: 1.5;
+    }
+
+    .beat-diagram { text-align: center; }
+    .diagram-caption { font-size: 0.82em; color: #a98c66; text-align: center; margin-top: 6px; }
+
+    /* ---- electronegativity heat-map grid ---- */
+    .en-grid { display: inline-flex; flex-direction: column; gap: 4px; margin: 8px auto; }
+    .en-row { display: flex; gap: 4px; justify-content: center; }
+    .en-cell {
+        width: 54px; height: 46px; border-radius: 6px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        font-weight: 700;
+    }
+    .en-sym { font-size: 13px; }
+    .en-val { font-size: 10px; font-weight: 600; opacity: .9; }
+    .en-highlight { box-shadow: 0 0 0 3px #b45309; }
+    .en-arrows { display: flex; justify-content: center; gap: 18px; margin-top: 6px; font-size: 0.8em; color: #a98c66; }
+
+    /* ---- shared-electron overlap demo ---- */
+    .demo-wrap { text-align: center; }
+    .demo-stage {
+        display: flex; align-items: center; justify-content: center; gap: 56px;
+        position: relative; padding: 8px 0 4px; min-height: 150px;
+    }
+    .demo-atom { text-align: center; transition: none; }
+    .demo-label { font-weight: 700; color: #5c4326; margin-top: 4px; font-size: 0.9em; }
+    .demo-note { color: #5c4326; font-size: 0.86em; margin-top: 4px; min-height: 1.4em; }
+    .cov-share-overlay {
+        position: absolute; inset: 0; width: 100%; height: 100%;
+        opacity: 0; transition: opacity .4s ease; pointer-events: none; overflow: visible;
+    }
+    .demo-replay {
+        background: #efe6d6; color: #7c2d12; border: none; border-radius: 8px;
+        padding: 7px 16px; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 8px;
+    }
+    .demo-replay:hover { background: #e4d7bd; }
+
+    /* ---- tug-of-war illustration ---- */
+    .tug-wrap { display: flex; align-items: center; justify-content: center; gap: 0; margin: 10px 0; }
+    .tug-side { display: flex; flex-direction: column; align-items: center; gap: 5px; width: 90px; }
+    .tug-nucleus {
+        width: 46px; height: 46px; border-radius: 50%; background: #b45309; color: #fff;
+        display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px;
+    }
+    .tug-force { font-size: 0.76em; color: #7c2d12; font-weight: 700; }
+    .tug-rope { width: 150px; height: 4px; background: #c9a876; position: relative; }
+    .tug-electrons {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        display: flex; gap: 6px;
+    }
+    .tug-e { width: 13px; height: 13px; border-radius: 50%; background: #7c2d12; box-shadow: 0 0 5px rgba(124,45,18,.6); }
+
+    .check-box {
+        border: 2px solid #f0d9a8; background: #fffdf8;
+        border-radius: 10px; padding: 14px; margin-top: 6px;
+    }
+    .check-q { font-weight: 700; color: #5c4326; margin-bottom: 10px; font-size: 0.98rem; }
+    .model-choice {
+        border: 3px solid transparent; border-radius: 12px;
+        background: #fff; padding: 8px 10px 4px; cursor: pointer;
+        transition: border-color .15s ease, background .15s ease;
+    }
+    .model-choice:hover:not(:disabled) { border-color: #f59e0b; }
+    .model-choice:disabled { cursor: default; }
+    .model-choice.pick-right { border-color: #28a745; background: #eafaef; }
+    .model-choice.pick-wrong { border-color: #dc3545; background: #fdeeee; }
+    .model-caption { font-size: 0.8em; font-weight: 700; color: #5c4326; margin-top: 4px; }
+    .check-fb { margin-top: 10px; font-weight: 600; font-size: 0.9rem; display: none; line-height: 1.45; }
+    .check-fb.ok { color: #1e7e34; display: block; }
+    .check-fb.no { color: #b3261e; display: block; }
+
+    .intro-nav {
+        display: flex; align-items: center; gap: 12px;
+        padding-top: 12px; margin-top: 6px; border-top: 1px solid #eee;
+    }
+    .intro-nav .spacer { flex: 1 1 auto; }
+    .intro-dots { display: flex; gap: 6px; }
+    .intro-dots i { width: 8px; height: 8px; border-radius: 50%; background: #e0d3bd; display: block; }
+    .intro-dots i.on { background: #b45309; }
+    .intro-btn { border: none; border-radius: 8px; padding: 9px 20px; font-size: 0.94rem; font-weight: 600; cursor: pointer; }
+    .intro-btn.prev { background: #efe6d6; color: #7c2d12; }
+    .intro-btn.prev:disabled { opacity: .45; cursor: not-allowed; }
+    .intro-btn.next { background: linear-gradient(145deg, #b45309, #92400e); color: #fff; }
+    .intro-btn.next:disabled { opacity: .5; cursor: not-allowed; }
+</style>
+</head>
+<body>
+    <!-- Intro walkthrough -->
+    <div class="start-screen" id="startScreen">
+        <div class="intro-card">
+            <h2 class="intro-heading" id="introHeading"></h2>
+            <div class="intro-stage" id="introStage"></div>
+            <div class="click-hint" id="introHint">click anywhere to continue</div>
+            <div class="intro-nav">
+                <button class="intro-btn prev" id="introBack" type="button">Back</button>
+                <span class="spacer"></span>
+                <div class="intro-dots" id="introDots"></div>
+                <span class="spacer"></span>
+                <button class="intro-btn next" id="introNext" type="button">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="mainSimulation" style="display: none;">
+        <div class="header">
+            <h1>Covalent Bonding</h1>
+            <p>Sharing electrons instead of transferring them</p>
+            <span class="score-badge" id="score-badge">Score 100%</span>
+        </div>
+
+        <div class="main-content">
+            <div class="score-display">
+                Correct: <span id="score">0</span> / 5 &nbsp;|&nbsp; Problem <span id="problem-number">1</span>
+            </div>
+            <div class="progress-bar-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <div class="problem-title" id="problem-title"></div>
+            <div class="problem-sub" id="problem-sub"></div>
+            <p class="prompt-box">Work through both steps below in order. Each step unlocks the next once you get it
+                right. Wrong answers won't tell you the correct answer directly &mdash; use the hint and try again.</p>
+
+            <div id="atomPair"></div>
+            <div id="wizardArea"></div>
+
+            <div class="save-row" id="save-row" style="display: none;">
+                <button type="button" class="save-btn" onclick="manualSave()">Save progress</button>
+                <span class="save-note" id="save-note">saved</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completion Screen -->
+    <div class="complete-screen" id="completeScreen">
+        <div class="complete-card">
+            <h2>Activity complete</h2>
+            <p>You correctly classified the bond type for all 5 element pairs.</p>
+            <p id="complete-score">Final score: 100%</p>
+            <p>Your grade has been submitted to Schoology.</p>
+            <button class="close-button" onclick="closeComplete()">Close</button>
+        </div>
+    </div>
+
+    <!-- Per-problem completion modal -->
+    <div class="problem-modal" id="problemModal">
+        <div class="problem-modal-card" id="problemModalCard">
+            <h3 id="problemModalTitle"></h3>
+            <div class="problem-modal-body" id="problemModalBody"></div>
+            <div class="problem-modal-actions" id="problemModalActions"></div>
+        </div>
+    </div>
+
+<script>
+    // ---------------- Element data ----------------
+    var ELEMENT_INFO = {
+        H:  { shells: [1],     name: 'Hydrogen'  },
+        C:  { shells: [2,4],   name: 'Carbon'    },
+        N:  { shells: [2,5],   name: 'Nitrogen'  },
+        O:  { shells: [2,6],   name: 'Oxygen'    },
+        Na: { shells: [2,8,1], name: 'Sodium'    },
+        Mg: { shells: [2,8,2], name: 'Magnesium' },
+        Cl: { shells: [2,8,7], name: 'Chlorine'  }
+    };
+    var ELECTRONEGATIVITY = { H: 2.20, C: 2.55, N: 3.04, O: 3.44, Na: 0.93, Mg: 1.31, Cl: 3.16 };
+
+    var PROBLEMS = [
+        { a: 'Na', b: 'Cl', type: 'ionic'    },
+        { a: 'Mg', b: 'O',  type: 'ionic'    },
+        { a: 'H',  b: 'H',  type: 'covalent' },
+        { a: 'N',  b: 'Cl', type: 'covalent' },
+        { a: 'C',  b: 'O',  type: 'covalent' }
+    ];
+
+    function enDiff(p) { return Math.abs(ELECTRONEGATIVITY[p.a] - ELECTRONEGATIVITY[p.b]); }
+
+    function reasoningOptions(p) {
+        var enA = ELECTRONEGATIVITY[p.a].toFixed(2), enB = ELECTRONEGATIVITY[p.b].toFixed(2);
+        var diff = enDiff(p).toFixed(2);
+        var ionicText = ELEMENT_INFO[p.a].name + ' (EN ≈ ' + enA + ') and ' + ELEMENT_INFO[p.b].name + ' (EN ≈ ' + enB +
+            ') have a large electronegativity difference (≈' + diff + '), so one atom pulls the electron(s) away from the other completely.';
+        var covalentText = ELEMENT_INFO[p.a].name + ' (EN ≈ ' + enA + ') and ' + ELEMENT_INFO[p.b].name + ' (EN ≈ ' + enB +
+            ') have a small electronegativity difference (≈' + diff + '), so neither atom can pull the electrons away from the other — they share them instead.';
+        return [
+            { label: ionicText, correct: p.type === 'ionic' },
+            { label: covalentText, correct: p.type === 'covalent' }
+        ];
+    }
+
+    function bondRecapText(p) {
+        var diff = enDiff(p).toFixed(2);
+        if (p.type === 'ionic') {
+            return ELEMENT_INFO[p.a].name + ' and ' + ELEMENT_INFO[p.b].name + ' differ in electronegativity by about ' + diff +
+                ' — a large gap, so one atom transfers its electron(s) to the other completely. This is an <b>ionic bond</b>.';
+        }
+        return ELEMENT_INFO[p.a].name + ' and ' + ELEMENT_INFO[p.b].name + ' differ in electronegativity by only about ' + diff +
+            ' — too small a gap for either atom to pull the electrons away. They share them instead. This is a <b>covalent bond</b>.';
+    }
+
+    function shuffle(arr) {
+        for (var i = arr.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+        }
+        return arr;
+    }
+
+    // ---------------- Bohr diagram renderer ----------------
+    // Accurate paired-electron Bohr models: inner shells (always full: 2 or 8)
+    // are drawn as pairs at four 90-degree-apart positions (top/right/bottom/left).
+    // The outer (valence) shell follows the standard Lewis-dot convention: one
+    // electron is placed at each of the four positions before any of them pair up.
+    // A custom fillOrder lets a specific atom's single unpaired electron end up
+    // pointing toward a neighboring atom (used by the shared-electron demo).
+    var QUAD = [-Math.PI / 2, 0, Math.PI / 2, Math.PI];
+
+    function outerSlots(count, fillOrder) {
+        fillOrder = fillOrder || [0, 1, 2, 3];
+        var slots = [0, 0, 0, 0];
+        var remaining = count;
+        for (var p = 0; p < 4 && remaining > 0; p++) { slots[fillOrder[p]] = 1; remaining--; }
+        for (var p2 = 0; p2 < 4 && remaining > 0; p2++) { slots[fillOrder[p2]] += 1; remaining--; }
+        return slots;
+    }
+
+    function shellSVG(shells, opts) {
+        opts = opts || {};
+        var n = shells.length;
+        var size = 78 + n * 24;
+        var cx = size / 2, cy = size / 2, maxR = size * 0.4;
+        var rStep = maxR / (n + 0.6);
+        var nucleusR = 12;
+        var dotR = 3.4;
+        var s = '<svg viewBox="0 0 ' + size + ' ' + size + '" width="' + size + '" height="' + size + '">';
+
+        for (var i = 0; i < n; i++) {
+            var r = rStep * (i + 1);
+            var isOuter = i === n - 1;
+            s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' +
+                (isOuter ? '#f59e0b' : '#d9c3a3') + '" stroke-width="' + (isOuter ? 2.3 : 1.15) + '"/>';
+            var count = shells[i];
+            var color = isOuter ? '#7c2d12' : '#8a7355';
+
+            if (isOuter) {
+                var slots = outerSlots(count, opts.fillOrder);
+                var unpairedIdx = -1;
+                for (var u = 0; u < 4; u++) { if (slots[u] === 1) { unpairedIdx = u; break; } }
+                for (var qi = 0; qi < 4; qi++) {
+                    var cnt = slots[qi];
+                    if (cnt === 0) continue;
+                    var ang = QUAD[qi];
+                    var rx = cx + r * Math.cos(ang), ry = cy + r * Math.sin(ang);
+                    if (cnt === 1) {
+                        var id1 = '', dyOff = 0, tagged = false;
+                        if (opts.tag && opts.tag.kind === 'single' && count === 1) { id1 = opts.tag.id; dyOff = opts.tag.dy || 0; tagged = true; }
+                        else if (opts.tag && opts.tag.kind === 'unpaired' && qi === unpairedIdx) { id1 = opts.tag.id; dyOff = opts.tag.dy || 0; tagged = true; }
+                        // Tagged dots (used by the shared-electron demo) get an
+                        // inline style with a fill transition instead of a plain
+                        // fill attribute, so JS can smoothly recolor them later
+                        // to show they're now shared between both atoms.
+                        var fillAttr = tagged ? ' style="fill:' + color + '; transition: fill .5s ease;"' : ' fill="' + color + '"';
+                        s += '<circle' + (id1 ? ' id="' + id1 + '"' : '') + fillAttr + ' cx="' + rx.toFixed(1) + '" cy="' +
+                            (ry + dyOff).toFixed(1) + '" r="' + dotR + '"/>';
+                    } else {
+                        var tx = -Math.sin(ang), ty = Math.cos(ang), off = 4.2;
+                        s += '<circle cx="' + (rx + tx * off).toFixed(1) + '" cy="' + (ry + ty * off).toFixed(1) + '" r="' + dotR + '" fill="' + color + '"/>';
+                        s += '<circle cx="' + (rx - tx * off).toFixed(1) + '" cy="' + (ry - ty * off).toFixed(1) + '" r="' + dotR + '" fill="' + color + '"/>';
+                    }
+                }
+            } else {
+                var pairs = count / 2;
+                for (var k = 0; k < pairs; k++) {
+                    var angI = QUAD[k % 4];
+                    var rxi = cx + r * Math.cos(angI), ryi = cy + r * Math.sin(angI);
+                    var txi = -Math.sin(angI), tyi = Math.cos(angI), offI = 4.0;
+                    s += '<circle cx="' + (rxi + txi * offI).toFixed(1) + '" cy="' + (ryi + tyi * offI).toFixed(1) + '" r="' + dotR + '" fill="' + color + '"/>';
+                    s += '<circle cx="' + (rxi - txi * offI).toFixed(1) + '" cy="' + (ryi - tyi * offI).toFixed(1) + '" r="' + dotR + '" fill="' + color + '"/>';
+                }
+            }
+        }
+
+        s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + nucleusR + '" fill="#b45309"/>';
+        if (opts.label) {
+            s += '<text x="' + cx + '" y="' + (cy + 4) + '" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">' + opts.label + '</text>';
+        }
+        s += '</svg>';
+        return s;
+    }
+
+    // Ring radii in on-screen pixels, computed with the exact same formula
+    // shellSVG uses internally — kept in sync so the shared-electron demo can
+    // solve for a slide distance that overlaps only the intended ring.
+    function ringRadius(shells, shellIndex) {
+        var n = shells.length;
+        var maxR = (78 + n * 24) * 0.4;
+        var rStep = maxR / (n + 0.6);
+        return rStep * (shellIndex + 1);
+    }
+    function outerRadiusFor(shells) { return ringRadius(shells, shells.length - 1); }
+    function innerRadiusFor(shells) { return ringRadius(shells, Math.max(0, shells.length - 2)); }
+
+    // ---------------- Game state ----------------
+    var currentQuestion = 0;
+    var correctAnswersCount = 0;
+    var currentProblem = null;
+    var wiz = null;
+
+    var missCount = 0;
+    var SCORE_FLOOR = 60;
+    var MISS_PENALTY = 3;
+    function currentPct() { return Math.max(SCORE_FLOOR, 100 - MISS_PENALTY * missCount); }
+    function updateScoreBadge() {
+        var b = document.getElementById('score-badge');
+        if (b) b.textContent = 'Score ' + currentPct() + '%';
+    }
+    function updateProgress() {
+        document.getElementById('score').textContent = correctAnswersCount;
+        document.getElementById('problem-number').textContent = currentQuestion + 1;
+        document.getElementById('progress-fill').style.width = (correctAnswersCount / 5 * 100) + '%';
+    }
+
+    // ---------------- Problem setup ----------------
+    function generateProblem() {
+        if (correctAnswersCount >= 5) { showCompletion(); return; }
+
+        currentProblem = PROBLEMS[currentQuestion];
+        var p = currentProblem;
+
+        var typeOptions = [
+            { label: 'Ionic bond', correct: p.type === 'ionic' },
+            { label: 'Covalent bond', correct: p.type === 'covalent' }
+        ];
+        if (Math.random() < 0.5) typeOptions.reverse();
+
+        wiz = {
+            step: 1,
+            typeOptions: typeOptions,
+            reasonOptions: shuffle(reasoningOptions(p))
+        };
+
+        document.getElementById('problem-title').textContent =
+            'Problem ' + (currentQuestion + 1) + ': ' + ELEMENT_INFO[p.a].name + ' and ' + ELEMENT_INFO[p.b].name;
+        document.getElementById('problem-sub').textContent =
+            'Will these two neutral atoms form an ionic bond or a covalent bond?';
+
+        renderAtomPair();
+        renderWizard();
+        updateProgress();
+        updateScoreBadge();
+        scormCheckpoint();
+    }
+
+    function renderAtomPair() {
+        var p = currentProblem;
+        document.getElementById('atomPair').innerHTML =
+            '<div class="atom-pair">' +
+            '<div class="atom-card">' + shellSVG(ELEMENT_INFO[p.a].shells, { label: p.a }) +
+            '<div class="atom-label">' + ELEMENT_INFO[p.a].name + ' (' + p.a + ')</div>' +
+            '<div class="atom-sub">valence electrons: ' + ELEMENT_INFO[p.a].shells[ELEMENT_INFO[p.a].shells.length - 1] + '</div></div>' +
+            '<div class="atom-card">' + shellSVG(ELEMENT_INFO[p.b].shells, { label: p.b }) +
+            '<div class="atom-label">' + ELEMENT_INFO[p.b].name + ' (' + p.b + ')</div>' +
+            '<div class="atom-sub">valence electrons: ' + ELEMENT_INFO[p.b].shells[ELEMENT_INFO[p.b].shells.length - 1] + '</div></div>' +
+            '</div>';
+    }
+
+    // ---------------- Wizard ----------------
+    function renderWizard() {
+        var area = document.getElementById('wizardArea');
+        var html = wizStep1HTML();
+        if (wiz.step >= 2) html += wizStep2HTML();
+        area.innerHTML = html;
+        var last = area.lastElementChild;
+        if (last && last.scrollIntoView) last.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
+    function wizStep1HTML() {
+        var locked = wiz.step > 1;
+        var btns = wiz.typeOptions.map(function (o, i) {
+            var cls = 'choice-btn' + (locked && o.correct ? ' pick-right' : '');
+            return '<button type="button" class="' + cls + '"' + (locked ? ' disabled' : ' onclick="wizStep1Pick(' + i + ')"') + '>' + o.label + '</button>';
+        }).join('');
+        return '<div class="wiz-step' + (locked ? ' locked' : '') + '">' +
+            '<div class="wiz-q">Step 1 &mdash; Ionic bond or covalent bond?</div>' +
+            '<div class="choice-row">' + btns + '</div>' +
+            '<div class="wiz-fb" id="wizFb1"></div></div>';
+    }
+    function wizStep1Pick(i) {
+        if (wiz.step > 1) return;
+        var fb = document.getElementById('wizFb1');
+        if (wiz.typeOptions[i].correct) {
+            wiz.step = 2;
+            renderWizard();
+        } else {
+            missCount++; updateScoreBadge(); scormCheckpoint();
+            fb.className = 'wiz-fb no';
+            fb.textContent = 'Not quite — think about how strongly each atom pulls on electrons, and how different those pulls are between the two atoms. Try again.';
+        }
+    }
+
+    function wizStep2HTML() {
+        var locked = wiz.step > 2;
+        var btns = wiz.reasonOptions.map(function (o, i) {
+            var cls = 'choice-btn' + (locked && o.correct ? ' pick-right' : '');
+            return '<button type="button" class="' + cls + '" style="text-align:left;"' + (locked ? ' disabled' : ' onclick="wizStep2Pick(' + i + ')"') + '>' + o.label + '</button>';
+        }).join('');
+        return '<div class="wiz-step' + (locked ? ' locked' : '') + '">' +
+            '<div class="wiz-q">Step 2 &mdash; Why?</div>' +
+            '<div class="choice-row" style="flex-direction:column; align-items:stretch;">' + btns + '</div>' +
+            '<div class="wiz-fb" id="wizFb2"></div></div>';
+    }
+    function wizStep2Pick(i) {
+        if (wiz.step > 2) return;
+        var fb = document.getElementById('wizFb2');
+        if (wiz.reasonOptions[i].correct) {
+            correctAnswersCount++;
+            showProblemCorrectModal();
+        } else {
+            missCount++; updateScoreBadge(); scormCheckpoint();
+            fb.className = 'wiz-fb no';
+            fb.textContent = 'Not quite — think about how big or small the electronegativity difference is between these two atoms, and try again.';
+        }
+    }
+
+    function showProblemCorrectModal() {
+        var card = document.getElementById('problemModalCard');
+        var title = document.getElementById('problemModalTitle');
+        var body = document.getElementById('problemModalBody');
+        var actions = document.getElementById('problemModalActions');
+        card.className = 'problem-modal-card correct';
+        title.textContent = 'Correct!';
+        body.innerHTML = '<div class="recap">' + bondRecapText(currentProblem) + '</div>';
+        actions.innerHTML = '<button type="button" class="next-btn" onclick="advanceFromModal()">Next Problem</button>';
+        document.getElementById('problemModal').classList.add('open');
+        updateProgress(); updateScoreBadge(); scormCheckpoint();
+    }
+    function closeProblemModal() { document.getElementById('problemModal').classList.remove('open'); }
+    function advanceFromModal() { closeProblemModal(); nextProblem(); }
+    function nextProblem() { currentQuestion++; generateProblem(); }
+
+    function showCompletion() {
+        if (window._cbCompleted) return;
+        window._cbCompleted = true;
+        scormReport();
+        document.getElementById('complete-score').textContent = 'Final score: ' + currentPct() + '%';
+        document.getElementById('completeScreen').style.display = 'flex';
+    }
+    function closeComplete() { document.getElementById('completeScreen').style.display = 'none'; }
+
+    function beginActivity() {
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('mainSimulation').style.display = 'block';
+        if (scormAPI) document.getElementById('save-row').style.display = '';
+
+        if (scormResumeData) {
+            currentQuestion = Number.isInteger(scormResumeData.q) ? scormResumeData.q : 0;
+            correctAnswersCount = Math.min(Math.max(0, Number(scormResumeData.correct) || 0), 5);
+            missCount = Math.max(0, Number(scormResumeData.miss) || 0);
+        }
+
+        updateProgress();
+        updateScoreBadge();
+        if (correctAnswersCount >= 5) showCompletion(); else generateProblem();
+        scormCheckpoint();
+    }
+
+    // ================= Intro slideshow =================
+    function twoAtomsRaw(symA, symB, subA, subB) {
+        return '<div class="beat-diagram"><div class="atom-pair">' +
+            '<div class="atom-card">' + shellSVG(ELEMENT_INFO[symA].shells, { label: symA }) +
+            '<div class="atom-label">' + ELEMENT_INFO[symA].name + ' (' + symA + ')</div><div class="atom-sub">' + subA + '</div></div>' +
+            '<div class="atom-card">' + shellSVG(ELEMENT_INFO[symB].shells, { label: symB }) +
+            '<div class="atom-label">' + ELEMENT_INFO[symB].name + ' (' + symB + ')</div><div class="atom-sub">' + subB + '</div></div>' +
+            '</div></div>';
+    }
+
+    function enColor(val) {
+        var t = (val - 0.9) / (4.0 - 0.9);
+        t = Math.max(0, Math.min(1, t));
+        var c1 = [253, 240, 217], c2 = [124, 45, 18];
+        var r = Math.round(c1[0] + (c2[0] - c1[0]) * t);
+        var g = Math.round(c1[1] + (c2[1] - c1[1]) * t);
+        var b = Math.round(c1[2] + (c2[2] - c1[2]) * t);
+        return 'rgb(' + r + ',' + g + ',' + b + ')';
+    }
+    function enTextColor(val) { return val > 2.4 ? '#fff' : '#5c4326'; }
+
+    var EN_TABLE = [
+        { cells: [ { sym: 'Li', val: 0.98 }, { sym: 'Be', val: 1.57 }, { sym: 'B', val: 2.04 }, { sym: 'C', val: 2.55 },
+                   { sym: 'N', val: 3.04 }, { sym: 'O', val: 3.44 }, { sym: 'F', val: 3.98 } ] },
+        { cells: [ { sym: 'Na', val: 0.93 }, { sym: 'Mg', val: 1.31 }, { sym: 'Al', val: 1.61 }, { sym: 'Si', val: 1.90 },
+                   { sym: 'P', val: 2.19 }, { sym: 'S', val: 2.58 }, { sym: 'Cl', val: 3.16 } ] }
+    ];
+
+    function enGridHTML() {
+        var rows = EN_TABLE.map(function (row) {
+            var cells = row.cells.map(function (c) {
+                var isF = c.sym === 'F';
+                return '<div class="en-cell' + (isF ? ' en-highlight' : '') + '" style="background:' + enColor(c.val) +
+                    '; color:' + enTextColor(c.val) + ';"><div class="en-sym">' + c.sym + '</div><div class="en-val">' + c.val.toFixed(2) + '</div></div>';
+            }).join('');
+            return '<div class="en-row">' + cells + '</div>';
+        }).join('');
+        return '<div class="beat-diagram"><div class="en-grid">' + rows + '</div>' +
+            '<div class="en-arrows"><span>&uarr; increases up a group</span><span>&rarr; increases across a period</span></div>' +
+            '<div class="diagram-caption">Electronegativity (Pauling scale) increases up and to the right across the periodic table (the noble gases are left out). A <b>large difference</b> between two atoms means one can pull electrons away from the other; a <b>small difference</b> means neither can — so they share instead.</div></div>';
+    }
+
+    // ---- Tug-of-war illustration ----
+    function tugOfWarHTML() {
+        return '<div class="beat-diagram"><div class="tug-wrap">' +
+            '<div class="tug-side"><div class="tug-nucleus">+</div><div class="tug-force">pulling &rarr;</div></div>' +
+            '<div class="tug-rope"><div class="tug-electrons"><span class="tug-e"></span><span class="tug-e"></span></div></div>' +
+            '<div class="tug-side"><div class="tug-force">&larr; pulling</div><div class="tug-nucleus">+</div></div>' +
+            '</div>' +
+            '<div class="diagram-caption">Both nuclei pull on the shared pair of electrons, like two people pulling on the same rope from either end.</div></div>';
+    }
+
+    // ---- Shared-electron overlap demo (Cl + Cl), JS-driven via
+    // requestAnimationFrame rather than CSS @keyframes, so it plays reliably
+    // even under browser/OS settings that suppress CSS animations. ----
+    var covalentRAF = null;
+    // Final center-to-center distance between the two atoms once the slide
+    // finishes, dialed in visually via a temporary fine-tune slider and
+    // locked in at this value: the outer (valence) rings overlap by ~1px
+    // while the inner shell-2 rings stay safely apart.
+    var covalentTargetDistance = 99;
+
+    function demoHTML(pop) {
+        return '<div class="beat-diagram demo-wrap' + pop + '">' +
+            '<div class="demo-stage" id="covalentStage"></div>' +
+            '<div class="demo-note" id="covalentNote">Watch the valence shells move together and overlap.</div>' +
+            '<button type="button" class="demo-replay" id="covalentReplay">Replay animation</button></div>';
+    }
+
+    function renderCovalentStage() {
+        var stage = document.getElementById('covalentStage');
+        if (!stage) return;
+        stage.innerHTML =
+            '<div class="demo-atom" id="covLeftBox">' +
+            shellSVG(ELEMENT_INFO.Cl.shells, { label: 'Cl', fillOrder: [0, 3, 2, 1], tag: { id: 'covLeftDot', kind: 'unpaired', dy: 9 } }) +
+            '<div class="demo-label">Chlorine (Cl)</div></div>' +
+            '<div class="demo-atom" id="covRightBox">' +
+            shellSVG(ELEMENT_INFO.Cl.shells, { label: 'Cl', tag: { id: 'covRightDot', kind: 'unpaired', dy: -9 } }) +
+            '<div class="demo-label">Chlorine (Cl)</div></div>' +
+            '<svg class="cov-share-overlay" id="covShareOverlay">' +
+            '<defs><marker id="covArrowHead" markerWidth="8" markerHeight="8" refX="3.5" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#b45309"/></marker></defs>' +
+            '</svg>';
+        var note = document.getElementById('covalentNote');
+        if (note) note.textContent = 'Watch the valence shells move together and overlap.';
+    }
+
+    function startCovalentDemo() {
+        if (covalentRAF) { cancelAnimationFrame(covalentRAF); covalentRAF = null; }
+        var host = document.getElementById('covalentStage');
+        if (!host) return;
+        renderCovalentStage();
+
+        var replayBtn = document.getElementById('covalentReplay');
+        if (replayBtn) replayBtn.onclick = function () { startCovalentDemo(); };
+
+        setTimeout(function () {
+            var leftBox = document.getElementById('covLeftBox');
+            var rightBox = document.getElementById('covRightBox');
+            if (!leftBox || !rightBox) return;
+            var lRect = leftBox.getBoundingClientRect();
+            var rRect = rightBox.getBoundingClientRect();
+            var initialDistance = (rRect.left + rRect.width / 2) - (lRect.left + lRect.width / 2);
+            var slideDist = Math.max(0, (initialDistance - covalentTargetDistance) / 2);
+
+            var duration = 1400, start = null;
+            function step(ts) {
+                if (!start) start = ts;
+                var t = Math.min(1, (ts - start) / duration);
+                var d = slideDist * t;
+                leftBox.style.transform = 'translateX(' + d + 'px)';
+                rightBox.style.transform = 'translateX(' + (-d) + 'px)';
+                if (t < 1) {
+                    covalentRAF = requestAnimationFrame(step);
+                } else {
+                    covalentRAF = null;
+                    finishCovalentDemo();
+                }
+            }
+            covalentRAF = requestAnimationFrame(step);
+        }, 500);
+    }
+
+    function finishCovalentDemo() {
+        var stage = document.getElementById('covalentStage');
+        var leftDot = document.getElementById('covLeftDot');
+        var rightDot = document.getElementById('covRightDot');
+        var overlay = document.getElementById('covShareOverlay');
+        var note = document.getElementById('covalentNote');
+        if (!stage || !leftDot || !rightDot || !overlay) return;
+
+        // Recolor the two shared electrons to a highlight color, distinct from
+        // ordinary valence-electron dots, only once the valence rings actually
+        // overlap (target distance under 2x the outer-ring radius, 100px).
+        // Their inline style already carries a fill transition.
+        var overlapping = covalentTargetDistance < 100;
+        leftDot.style.fill = overlapping ? '#f59e0b' : '#7c2d12';
+        rightDot.style.fill = overlapping ? '#f59e0b' : '#7c2d12';
+        overlay.style.opacity = overlapping ? '1' : '0';
+        if (!overlapping) {
+            if (note) note.textContent = 'Watch the valence shells move together and overlap.';
+            return;
+        }
+
+        var stageBox = stage.getBoundingClientRect();
+        var l = leftDot.getBoundingClientRect();
+        var r = rightDot.getBoundingClientRect();
+        var midX = (l.left + l.width / 2 + r.left + r.width / 2) / 2 - stageBox.left;
+        var midY = (l.top + l.height / 2 + r.top + r.height / 2) / 2 - stageBox.top;
+
+        // Draw an arrow pointing down into the overlap zone at the two shared
+        // electrons, with a label, instead of just marking the spot.
+        var tailX = midX, tailY = midY - 75;
+        var headX = midX, headY = midY - 29;
+        overlay.innerHTML =
+            '<defs><marker id="covArrowHead" markerWidth="8" markerHeight="8" refX="3.5" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#b45309"/></marker></defs>' +
+            '<line x1="' + tailX + '" y1="' + tailY + '" x2="' + headX + '" y2="' + headY + '" stroke="#b45309" stroke-width="2.4" marker-end="url(#covArrowHead)"/>' +
+            '<text x="' + tailX + '" y="' + (tailY - 8) + '" text-anchor="middle" font-size="12" font-weight="700" fill="#7c2d12">shared pair</text>';
+        overlay.style.opacity = '1';
+        if (note) note.textContent = 'The valence shells now overlap, and the two unpaired electrons pair up in that overlap zone — that shared pair belongs to both atoms at once. This mutual attraction is the covalent bond.';
+    }
+
+    var INTRO = [
+        {
+            h: 'Two nonmetals, two strong pulls',
+            beats: [
+                { note: '<p>In ionic bonding, a metal gives electrons to a nonmetal. But what happens when <b>both</b> atoms are nonmetals? Both have high electronegativity — both pull hard on electrons — so neither one can fully take electrons away from the other.</p><p>Instead of transferring electrons, the two atoms <b>share</b> them.</p>' },
+                { note: '<p>Look at two hydrogen atoms. Each has 1 valence electron and needs 1 more to fill its shell (a full outer shell for hydrogen is just 2 electrons). Neither atom can pull the other\'s electron away completely — so instead, they share both electrons between them.</p>',
+                  raw: twoAtomsRaw('H', 'H', 'valence electrons: 1', 'valence electrons: 1') }
+            ]
+        },
+        {
+            h: 'Electronegativity decides the outcome',
+            beats: [
+                { note: '<p>Recall that <b>electronegativity</b> measures how strongly an atom pulls on nearby electrons. The size of the electronegativity <i>difference</i> between two atoms decides what kind of bond forms.</p>' },
+                { raw: enGridHTML() },
+                { note: '<p>Nitrogen (electronegativity ≈ 3.04) and chlorine (≈ 3.16) differ by only about 0.12 — nearly nothing. Neither atom pulls noticeably harder than the other, so instead of one taking electrons from the other, they share them.</p>' },
+                { check: { kind: 'btn',
+                    q: 'Two atoms have an electronegativity difference of about 0.1. What kind of bond will they most likely form?',
+                    options: ['Covalent bond — they will share electrons', 'Ionic bond — one atom will take the other\'s electrons'], correct: 0,
+                    ok: 'Correct — a tiny electronegativity difference means neither atom can pull electrons away from the other, so they share them in a covalent bond.',
+                    no: 'Not quite — a large difference is needed for one atom to fully take electrons from the other. A difference this small means the electrons get shared instead.'
+                } }
+            ]
+        },
+        {
+            h: 'Watch the electrons overlap and share',
+            beats: [
+                { note: '<p>Now watch two chlorine atoms come together. Each has 7 valence electrons — including one unpaired electron that is available to share.</p>' },
+                { anim: 'covalent-demo' },
+                { callout: 'As the atoms move close enough, their valence shells overlap, and the two unpaired electrons pair up in that overlap zone. That shared pair now belongs to <b>both</b> atoms at once — this is a <b>covalent bond</b>.' }
+            ]
+        },
+        {
+            h: 'A tug-of-war over the shared electrons',
+            beats: [
+                { note: '<p>Why do the two atoms stay stuck together? Both nuclei are still positively charged, and both keep attracting electrons — including the shared pair sitting between them. It is like a <b>tug-of-war</b>: both sides pull on the very same rope.</p>',
+                  raw: tugOfWarHTML() },
+                { callout: 'Because both chlorine atoms are identical, they pull on the shared pair about equally hard — neither side wins. The electrons stay roughly in the middle, held there by both nuclei at once. That mutual attraction <b>is</b> the covalent bond.' }
+            ]
+        },
+        {
+            h: 'How the activity works',
+            beats: [
+                { note: '<p>For each of 5 element pairs, you will work through two steps: (1) decide whether the pair forms an <b>ionic</b> or <b>covalent</b> bond, and (2) pick the reasoning that explains why, based on the electronegativity difference. Each step unlocks the next once you get it right.</p>' },
+                { callout: 'Wrong answers won’t reveal the correct one — you’ll get a hint and can try again. Each miss lowers the score badge slightly but never blocks you from finishing. Use Save progress if you need to stop and come back.' }
+            ]
+        }
+    ];
+
+    var slideIdx = 0;
+    var beatIdx = 0;
+    var introPassed = new Set();
+    var introAttempts = {};
+
+    function curSlide() { return INTRO[slideIdx]; }
+    function curBeat() { return curSlide().beats[beatIdx]; }
+    function isLastBeatOfIntro() { return slideIdx === INTRO.length - 1 && beatIdx === curSlide().beats.length - 1; }
+    function checkPending() {
+        var b = curBeat();
+        return !!(b && b.check && !introPassed.has(slideIdx));
+    }
+    function slideCheck(i) {
+        var b = INTRO[i].beats.filter(function (x) { return x.check; })[0];
+        return b ? b.check : null;
+    }
+
+    function initIntro() {
+        document.getElementById('introDots').innerHTML =
+            INTRO.map(function (_, i) { return '<i data-i="' + i + '"></i>'; }).join('');
+
+        document.getElementById('introBack').addEventListener('click', function (e) { e.stopPropagation(); beatBack(); });
+        document.getElementById('introNext').addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (isLastBeatOfIntro()) finishIntro(); else beatForward();
+        });
+        document.querySelector('#startScreen .intro-card').addEventListener('click', function (e) {
+            if (e.target.closest('.intro-nav')) return;
+            if (e.target.closest('.check-box')) return;
+            if (e.target.closest('.demo-replay')) return;
+            if (isLastBeatOfIntro()) return;
+            beatForward();
+        });
+        document.getElementById('introStage').addEventListener('click', onIntroCheckClick);
+
+        slideIdx = 0; beatIdx = 0;
+        renderIntro();
+    }
+
+    function beatForward() {
+        if (checkPending()) return;
+        if (beatIdx < curSlide().beats.length - 1) { beatIdx++; }
+        else if (slideIdx < INTRO.length - 1) { slideIdx++; beatIdx = 0; }
+        else { return; }
+        renderIntro();
+    }
+    function beatBack() {
+        if (beatIdx > 0) { beatIdx--; }
+        else if (slideIdx > 0) { slideIdx--; beatIdx = curSlide().beats.length - 1; }
+        else { return; }
+        renderIntro();
+    }
+    function finishIntro() {
+        if (covalentRAF) { cancelAnimationFrame(covalentRAF); covalentRAF = null; }
+        document.getElementById('startScreen').style.display = 'none';
+        beginActivity();
+    }
+
+    function beatToHTML(b, newest) {
+        var pop = newest ? ' pop' : '';
+        var html = '';
+        if (b.note) html += '<div class="beat-note' + pop + '">' + b.note + '</div>';
+        if (b.raw) html += b.raw;
+        if (b.anim === 'covalent-demo') html += demoHTML(pop);
+        if (b.callout) html += '<div class="callout' + pop + '">' + b.callout + '</div>';
+        if (b.check) {
+            var c = b.check;
+            var inner;
+            if (c.kind === 'model') {
+                inner = '<div class="compare-pair">' +
+                    c.models.map(function (m, oi) {
+                        return '<button type="button" class="model-choice" data-idx="' + oi + '">' +
+                            m.raw + (m.caption ? '<div class="model-caption">' + m.caption + '</div>' : '') + '</button>';
+                    }).join('') + '</div>';
+            } else {
+                inner = '<div class="choice-row" style="justify-content:center;">' +
+                    c.options.map(function (o, oi) { return '<button type="button" class="choice-btn" data-idx="' + oi + '">' + o + '</button>'; }).join('') +
+                    '</div>';
+            }
+            html += '<div class="check-box' + pop + '" data-slide="' + slideIdx + '"><div class="check-q">' + c.q + '</div>' +
+                inner + '<div class="check-fb" id="ifb-' + slideIdx + '"></div></div>';
+        }
+        return html;
+    }
+
+    function renderIntro() {
+        if (covalentRAF) { cancelAnimationFrame(covalentRAF); covalentRAF = null; }
+
+        document.getElementById('introHeading').textContent = curSlide().h;
+
+        var stage = document.getElementById('introStage');
+        stage.innerHTML = '';
+        var beats = curSlide().beats;
+        for (var i = 0; i <= beatIdx; i++) {
+            stage.insertAdjacentHTML('beforeend', beatToHTML(beats[i], i === beatIdx));
+        }
+
+        if (curBeat() && curBeat().anim === 'covalent-demo') startCovalentDemo();
+
+        if (introPassed.has(slideIdx)) {
+            var box = stage.querySelector('.check-box');
+            var chk = slideCheck(slideIdx);
+            if (box && chk) {
+                var btns = box.querySelectorAll('button');
+                btns.forEach(function (bn) { bn.disabled = true; });
+                if (btns[chk.correct]) btns[chk.correct].classList.add('pick-right');
+                var fb = box.querySelector('.check-fb');
+                fb.className = 'check-fb ok';
+                fb.textContent = chk.ok;
+            }
+        }
+
+        document.querySelectorAll('#introDots i').forEach(function (el) {
+            el.classList.toggle('on', Number(el.dataset.i) === slideIdx);
+        });
+
+        document.getElementById('introBack').disabled = (slideIdx === 0 && beatIdx === 0);
+
+        var nextBtn = document.getElementById('introNext');
+        if (isLastBeatOfIntro()) {
+            nextBtn.textContent = 'Start the 5 problems';
+            nextBtn.disabled = false;
+        } else {
+            nextBtn.textContent = 'Next';
+            nextBtn.disabled = checkPending();
+        }
+
+        var hint = document.getElementById('introHint');
+        if (isLastBeatOfIntro()) {
+            hint.textContent = 'use the button when you are ready';
+        } else if (checkPending()) {
+            hint.textContent = 'answer above to continue';
+        } else {
+            hint.textContent = 'click anywhere to continue   (' + (beatIdx + 1) + ' / ' + beats.length + ')';
+        }
+
+        var newest = stage.lastElementChild;
+        if (newest && newest.scrollIntoView) newest.scrollIntoView({ block: 'nearest' });
+        stage.scrollTop = stage.scrollHeight;
+    }
+
+    function onIntroCheckClick(e) {
+        var btn = e.target.closest('.model-choice, .choice-btn');
+        if (!btn) return;
+        e.stopPropagation();
+        var box = btn.closest('.check-box');
+        var slide = Number(box.dataset.slide);
+        if (introPassed.has(slide)) return;
+
+        var chk = slideCheck(slide);
+        var idx = Number(btn.dataset.idx);
+        var fb = document.getElementById('ifb-' + slide);
+        introAttempts[slide] = (introAttempts[slide] || 0) + 1;
+
+        var finish = function () {
+            introPassed.add(slide);
+            box.querySelectorAll('button').forEach(function (b) { b.disabled = true; });
+            document.getElementById('introNext').disabled = isLastBeatOfIntro() ? false : checkPending();
+            document.getElementById('introHint').textContent = 'click anywhere to continue';
+        };
+
+        if (idx === chk.correct) {
+            btn.classList.add('pick-right');
+            fb.className = 'check-fb ok';
+            fb.textContent = chk.ok;
+            finish();
+        } else {
+            btn.classList.add('pick-wrong');
+            fb.className = 'check-fb no';
+            fb.textContent = chk.no;
+            if (introAttempts[slide] >= 2) {
+                var right = box.querySelectorAll('button')[chk.correct];
+                if (right) right.classList.add('pick-right');
+                fb.textContent = chk.no + ' ' + chk.ok;
+                finish();
+            } else {
+                setTimeout(function () { btn.classList.remove('pick-wrong'); }, 900);
+            }
+        }
+    }
+
+    // ---- SCORM 1.2 ----
+    var scormAPI = null;
+    var scormResumeEntry = false;
+    var scormResumeData = null;
+    var scormDone = false;
+    var scormStartMs = Date.now();
+
+    function findAPI(win) {
+        var n = 0, w = win;
+        while (w && n < 12) {
+            if (w.API) return w.API;
+            w = (w.parent && w.parent !== w) ? w.parent : w.opener;
+            n++;
+        }
+        return null;
+    }
+
+    function scormInit() {
+        try {
+            scormAPI = findAPI(window);
+            if (!scormAPI) return;
+            if (String(scormAPI.LMSInitialize("")) !== "true") { scormAPI = null; return; }
+            var st = scormAPI.LMSGetValue("cmi.core.lesson_status");
+            if (st === "" || st === "not attempted" || st === "unknown") {
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+            }
+            if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                scormResumeEntry = true;
+                var raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                if (raw) {
+                    try {
+                        var d = JSON.parse(raw);
+                        if (d && typeof d === 'object') scormResumeData = d;
+                    } catch (e) { /* ignore bad bookmark */ }
+                }
+            }
+            scormAPI.LMSCommit("");
+        } catch (e) { scormAPI = null; }
+    }
+
+    function scormTime() {
+        var s = Math.floor((Date.now() - scormStartMs) / 1000);
+        var h = String(Math.floor(s / 3600)).padStart(4, '0');
+        s %= 3600;
+        var m = String(Math.floor(s / 60)).padStart(2, '0');
+        var ss = String(s % 60).padStart(2, '0');
+        return h + ':' + m + ':' + ss;
+    }
+
+    function scormCheckpoint() {
+        if (!scormAPI || scormDone) return;
+        try {
+            scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                q: currentQuestion, correct: correctAnswersCount, miss: missCount
+            }));
+            scormAPI.LMSSetValue("cmi.core.lesson_location", String(currentQuestion));
+            scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+            scormAPI.LMSCommit("");
+        } catch (e) { /* ignore */ }
+    }
+
+    function scormReport() {
+        if (!scormAPI || scormDone) return;
+        try {
+            scormAPI.LMSSetValue("cmi.core.score.min", "0");
+            scormAPI.LMSSetValue("cmi.core.score.max", "100");
+            scormAPI.LMSSetValue("cmi.core.score.raw", String(currentPct()));
+            scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+            scormAPI.LMSSetValue("cmi.core.session_time", scormTime());
+            scormAPI.LMSSetValue("cmi.core.exit", "");
+            scormAPI.LMSCommit("");
+            scormDone = true;
+        } catch (e) { /* ignore */ }
+    }
+
+    function scormTerminate() {
+        if (!scormAPI) return;
+        try {
+            if (!scormDone) scormCheckpoint();
+            scormAPI.LMSFinish("");
+        } catch (e) { /* ignore */ }
+    }
+
+    function manualSave() {
+        if (!scormAPI || scormDone) return;
+        scormCheckpoint();
+        var n = document.getElementById('save-note');
+        if (n) {
+            n.classList.add('show');
+            clearTimeout(manualSave._t);
+            manualSave._t = setTimeout(function () { n.classList.remove('show'); }, 2200);
+        }
+    }
+
+    window.addEventListener('beforeunload', scormTerminate);
+    window.addEventListener('pagehide', function () { scormCheckpoint(); });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) scormCheckpoint(); });
+
+    window.addEventListener('load', function () {
+        scormInit();
+        if (scormResumeEntry && scormResumeData) {
+            beginActivity();
+        } else {
+            initIntro();
+        }
+    });
+</script>
+</body>
+</html>

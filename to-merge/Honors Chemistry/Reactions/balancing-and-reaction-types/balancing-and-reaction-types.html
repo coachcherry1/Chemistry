@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balancing and Reaction Types: Potion Lab</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg1:#1c1030;--bg2:#0b0612;--card:#2a1a42;--card2:#35205a;--orange:#ff8a1f;--orange2:#ffb04d;--purple:#a78bfa;--slime:#86e05a;--red:#ff5c7a;--text:#f3ecff;--muted:#b9a8d9}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:radial-gradient(ellipse at top,var(--bg1) 0%,var(--bg2) 75%) fixed;color:var(--text);min-height:100vh;padding:20px;display:flex;justify-content:center}
+.container{width:100%;max-width:900px;background:var(--card);border:1px solid #4b2f7a;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,.6);padding:28px;position:relative;overflow:hidden}
+.hidden{display:none!important}
+.header{text-align:center;margin-bottom:22px;position:relative}
+.header svg{display:block;margin:0 auto 4px}
+h1{font-family:Georgia,'Palatino Linotype',serif;font-style:italic;color:var(--orange);font-size:2em;text-shadow:0 0 14px rgba(255,138,31,.45)}
+.subtitle{color:var(--muted);margin-top:4px}
+.stats{display:flex;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.stat{flex:1;min-width:140px;background:var(--card2);border:1px solid #4b2f7a;border-radius:10px;padding:12px;text-align:center}
+.stat .l{color:var(--muted);font-size:.85em}
+.stat .v{font-size:1.5em;font-weight:700;color:var(--orange2)}
+.bar{height:8px;background:#1b1030;border-radius:8px;margin-top:8px;overflow:hidden}
+.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--orange),var(--slime));transition:width .4s}
+.part{background:var(--card2);border:1px solid #4b2f7a;border-radius:12px;padding:22px;margin-bottom:22px}
+.part h2{font-family:Georgia,serif;color:var(--purple);margin-bottom:6px}
+.part .note{color:var(--muted);margin-bottom:16px;font-size:.95em}
+.eq{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 6px;font-size:1.35em;padding:18px 8px;background:#170d28;border-radius:10px;margin-bottom:14px}
+.eq .plus,.eq .arrow{color:var(--orange);padding:0 6px;font-weight:700}
+.sp{display:inline-flex;align-items:center;gap:6px}
+.coef{display:inline-flex;align-items:center;gap:2px}
+.coef input{width:56px;text-align:center;font-size:1em;font-weight:700;padding:8px 2px;background:#241440;color:var(--orange2);border:2px solid #6b46b0;border-radius:8px;-moz-appearance:textfield}
+.coef input::-webkit-outer-spin-button,.coef input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.coef input:focus{outline:none;border-color:var(--orange)}
+.coef .ar{display:flex;flex-direction:column;gap:2px}
+.coef .ar button{width:26px;height:21px;line-height:1;font-size:.7em;background:#4b2f7a;color:var(--text);border:none;border-radius:5px;cursor:pointer}
+.coef .ar button:hover{background:var(--orange);color:#1c1030}
+.coef.ok input{border-color:var(--slime);color:var(--slime)}
+button.main{background:var(--orange);color:#1c1030;font-weight:700;border:none;border-radius:8px;padding:12px 26px;font-size:1em;cursor:pointer}
+button.main:hover{background:var(--orange2)}
+button.main:disabled{opacity:.4;cursor:default}
+.actions{text-align:center}
+.feedback{margin-top:14px;padding:12px 14px;border-radius:8px;display:none;line-height:1.45}
+.feedback.show{display:block}
+.feedback.good{background:rgba(134,224,90,.12);border:1px solid var(--slime)}
+.feedback.bad{background:rgba(255,92,122,.12);border:1px solid var(--red)}
+.feedback.info{background:rgba(167,139,250,.14);border:1px solid var(--purple)}
+.rx{font-size:1.4em;text-align:center;padding:20px 10px;background:#170d28;border-radius:10px;margin-bottom:14px;line-height:1.5}
+.tally{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-bottom:10px}.tally span{font-size:.85em;padding:4px 10px;border-radius:20px;background:#170d28;border:1px solid #4b2f7a;color:var(--muted)}.tally span.full{border-color:var(--slime);color:var(--slime)}
+.tries{text-align:center;color:var(--muted);margin-bottom:12px}
+.types{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:6px}
+.types button{padding:14px 8px;font-size:1em;font-weight:600;background:#43287a;color:var(--text);border:2px solid #6b46b0;border-radius:10px;cursor:pointer}
+.types button:hover:not(:disabled){border-color:var(--orange);background:#55329a}
+.types button:disabled{cursor:default}
+.types button.wrong{background:rgba(255,92,122,.2);border-color:var(--red);color:var(--red);text-decoration:line-through}
+.types button.right{background:rgba(134,224,90,.2);border-color:var(--slime);color:var(--slime)}
+.overlay{position:fixed;inset:0;background:rgba(5,2,10,.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
+.modal{background:var(--card);border:2px solid var(--orange);border-radius:14px;max-width:560px;width:100%;padding:30px;text-align:center;box-shadow:0 0 40px rgba(255,138,31,.3)}
+.modal h2{font-family:Georgia,serif;font-style:italic;color:var(--orange);margin-bottom:10px;font-size:1.7em}
+.modal p{color:var(--muted);margin-bottom:12px;line-height:1.5}
+.modal ul{text-align:left;margin:12px 0 18px 22px;line-height:1.7}
+.modal li{margin-bottom:2px}
+</style>
+</head>
+<body>
+<div class="overlay" id="titleOverlay">
+ <div class="modal">
+  <svg width="60" height="70" viewBox="0 0 60 70" aria-hidden="true"><defs><filter id="gg60"><feGaussianBlur stdDeviation="2.5"/></filter></defs><path d="M30 4C16 4 8 14 8 28v34l7-6 7 6 8-6 8 6 7-6 7 6V28C52 14 44 4 30 4z" fill="#b9a8ff" opacity=".45" filter="url(#gg60)"/><path d="M30 4C16 4 8 14 8 28v34l7-6 7 6 8-6 8 6 7-6 7 6V28C52 14 44 4 30 4z" fill="#f6f1ff" stroke="#d9ccff" stroke-width="1"/><ellipse cx="22" cy="27" rx="4" ry="5.5" fill="#1c1030"/><ellipse cx="38" cy="27" rx="4" ry="5.5" fill="#1c1030"/><ellipse cx="30" cy="40" rx="4" ry="5" fill="#1c1030"/></svg>
+  <h2>Potion Lab: Balancing and Reaction Types</h2>
+  <p>Brew your way through two spooky challenges. Work out the balancing on paper or in your notebook, then enter your answers here.</p>
+  <ul>
+   <li><b>Part 1:</b> Balance <b>8</b> equations. Type each coefficient or use the arrows. Unlimited tries.</li>
+   <li><b>Part 2:</b> Classify reactions by type until you get <b>18 correct</b>: <b>3 of each</b> of the 6 reaction types. You get <b>2 tries</b> per reaction. If you miss both, the reaction is explained, it does <b>not</b> count, and you will see that type again later.</li>
+   <li>You earn a completion grade when both parts are finished. Progress saves automatically.</li>
+  </ul>
+  <button class="main" id="startBtn" onclick="startLab()">Start</button>
+ </div>
+</div>
+
+<div class="container">
+ <div class="header">
+  <svg width="54" height="63" viewBox="0 0 60 70" aria-hidden="true"><defs><filter id="gg54"><feGaussianBlur stdDeviation="2.5"/></filter></defs><path d="M30 4C16 4 8 14 8 28v34l7-6 7 6 8-6 8 6 7-6 7 6V28C52 14 44 4 30 4z" fill="#b9a8ff" opacity=".45" filter="url(#gg54)"/><path d="M30 4C16 4 8 14 8 28v34l7-6 7 6 8-6 8 6 7-6 7 6V28C52 14 44 4 30 4z" fill="#f6f1ff" stroke="#d9ccff" stroke-width="1"/><ellipse cx="22" cy="27" rx="4" ry="5.5" fill="#1c1030"/><ellipse cx="38" cy="27" rx="4" ry="5.5" fill="#1c1030"/><ellipse cx="30" cy="40" rx="4" ry="5" fill="#1c1030"/></svg>
+  <h1>Potion Lab: Balancing and Reaction Types</h1>
+  <div class="subtitle">Balance 8 equations, then identify 18 reactions (3 of each type)</div>
+ </div>
+ <div class="stats">
+  <div class="stat"><div class="l">Part 1: Balanced</div><div class="v"><span id="balCount">0</span> / 8</div><div class="bar"><i id="balBar"></i></div></div>
+  <div class="stat"><div class="l">Part 2: Correct</div><div class="v"><span id="corCount">0</span> / 18</div><div class="bar"><i id="corBar"></i></div></div>
+  <div class="stat"><div class="l">Reactions missed</div><div class="v" id="missCount">0</div></div>
+ </div>
+
+ <div class="part" id="part1">
+  <h2>Part 1: Balance the Equation <span id="balNum"></span></h2>
+  <div class="note">Do the work on paper, then enter the coefficients. Use the smallest whole numbers.</div>
+  <div class="eq" id="balEq"></div>
+  <div class="actions"><button class="main" id="balCheck" onclick="checkBalance()">Check Balance</button> <button class="main hidden" id="balNext" onclick="nextBalance()">Next Equation</button></div>
+  <div class="feedback" id="balFb"></div>
+ </div>
+
+ <div class="part hidden" id="part2">
+  <h2>Part 2: Identify the Reaction Type</h2>
+  <div class="note">Click the type that best describes the reaction. Two tries per reaction.</div>
+  <div class="rx" id="rxText"></div>
+  <div class="tally" id="tally"></div>
+  <div class="tries" id="tries"></div>
+  <div class="types" id="typeBtns"></div>
+  <div class="feedback" id="rxFb"></div>
+  <div class="actions" style="margin-top:14px"><button class="main hidden" id="rxNext" onclick="nextReaction()">Next Reaction</button></div>
+ </div>
+
+ <div class="part hidden" id="doneCard" style="text-align:center;border-color:var(--orange)">
+  <h2 style="color:var(--orange)">The potion is complete!</h2>
+  <p style="margin-top:10px">You balanced all 8 equations and correctly identified 3 of each reaction type. Your completion has been recorded.</p>
+ </div>
+</div>
+
+<script>
+const BAL_TOTAL = 8, COR_TOTAL = 18, PER_TYPE = 3;
+const TYPE_LABELS = {synthesis:"Synthesis",decomposition:"Decomposition",combustion:"Combustion",single_replacement:"Single Replacement",double_replacement:"Double Replacement",neutralization:"Neutralization"};
+const reactionTypeKeyPoints = {
+  synthesis:"Look at how many reactants and products there are. Are substances combining or separating?",
+  decomposition:"Count the number of reactants versus products. Is something being built up or broken down?",
+  combustion:"What element is reacting with the organic compound? What are the products formed?",
+  single_replacement:"Is an element swapping places with another element in a compound? How many reactants are there?",
+  double_replacement:"Are two compounds swapping partners? Look at the ions exchanging between the compounds.",
+  neutralization:"What kind of reactants are present? Look for an acid reacting with a base containing hydroxide (OH⁻)."
+};
+
+// Part 1 equations, easiest to hardest. sol = a correct set of coefficients.
+const BAL = [
+ {r:["N2","H2"],p:["NH3"],sol:[1,3,2]},
+ {r:["KClO3"],p:["KCl","O2"],sol:[2,2,3]},
+ {r:["Al","O2"],p:["Al2O3"],sol:[4,3,2]},
+ {r:["C3H8","O2"],p:["CO2","H2O"],sol:[1,5,3,4]},
+ {r:["Fe2O3","CO"],p:["Fe","CO2"],sol:[1,3,2,3]},
+ {r:["Na3PO4","CaCl2"],p:["Ca3(PO4)2","NaCl"],sol:[2,3,1,6]},
+ {r:["Ca(OH)2","H3PO4"],p:["Ca3(PO4)2","H2O"],sol:[3,2,1,6]},
+ {r:["C2H6","O2"],p:["CO2","H2O"],sol:[2,7,4,6]}
+];
+
+// Part 2 bank
+const reactions = [
+            // SYNTHESIS REACTIONS (17 problems)
+            {
+                id: 1,
+                equation: "2 H₂(g) + O₂(g) → 2 H₂O(l)",
+                type: "synthesis",
+                explanation: "Two elements (hydrogen and oxygen) combine to form a single compound (water).",
+                hint: "Two or more substances → One product"
+            },
+            {
+                id: 2,
+                equation: "2 Mg(s) + O₂(g) → 2 MgO(s)",
+                type: "synthesis",
+                explanation: "Magnesium metal combines with oxygen to form magnesium oxide.",
+                hint: "Element + Element → Compound"
+            },
+            {
+                id: 3,
+                equation: "CaO(s) + H₂O(l) → Ca(OH)₂(aq)",
+                type: "synthesis",
+                explanation: "Calcium oxide and water combine to form calcium hydroxide.",
+                hint: "Two substances combine into one"
+            },
+            {
+                id: 4,
+                equation: "2 Na(s) + Cl₂(g) → 2 NaCl(s)",
+                type: "synthesis",
+                explanation: "Sodium metal combines with chlorine gas to form table salt (sodium chloride).",
+                hint: "Metal + Nonmetal → Ionic compound"
+            },
+            {
+                id: 5,
+                equation: "N₂(g) + 3 H₂(g) → 2 NH₃(g)",
+                type: "synthesis",
+                explanation: "Nitrogen and hydrogen gases combine to form ammonia (Haber process).",
+                hint: "Elements combining to form a compound"
+            },
+            {
+                id: 6,
+                equation: "SO₃(g) + H₂O(l) → H₂SO₄(aq)",
+                type: "synthesis",
+                explanation: "Sulfur trioxide reacts with water to form sulfuric acid.",
+                hint: "Nonmetal oxide + Water → Acid"
+            },
+            {
+                id: 7,
+                equation: "4 Fe(s) + 3 O₂(g) → 2 Fe₂O₃(s)",
+                type: "synthesis",
+                explanation: "Iron rusts by combining with oxygen to form iron(III) oxide.",
+                hint: "Metal + Oxygen → Metal oxide"
+            },
+            {
+                id: 8,
+                equation: "C(s) + O₂(g) → CO₂(g)",
+                type: "synthesis",
+                explanation: "Carbon combines with oxygen to form carbon dioxide.",
+                hint: "Two elements forming one compound"
+            },
+            {
+                id: 9,
+                equation: "2 Al(s) + 3 Br₂(l) → 2 AlBr₃(s)",
+                type: "synthesis",
+                explanation: "Aluminum metal combines with bromine to form aluminum bromide.",
+                hint: "Metal + Halogen → Metal halide"
+            },
+            {
+                id: 10,
+                equation: "P₄(s) + 5 O₂(g) → P₄O₁₀(s)",
+                type: "synthesis",
+                explanation: "Phosphorus combines with oxygen to form tetraphosphorus decoxide.",
+                hint: "Element + Element → Compound"
+            },
+            {
+                id: 11,
+                equation: "2 K(s) + S(s) → K₂S(s)",
+                type: "synthesis",
+                explanation: "Potassium and sulfur combine to form potassium sulfide.",
+                hint: "Metal + Nonmetal → Compound"
+            },
+            {
+                id: 12,
+                equation: "Ca(s) + Cl₂(g) → CaCl₂(s)",
+                type: "synthesis",
+                explanation: "Calcium metal combines with chlorine gas to form calcium chloride.",
+                hint: "Two elements → One compound"
+            },
+            {
+                id: 13,
+                equation: "CO₂(g) + H₂O(l) → H₂CO₃(aq)",
+                type: "synthesis",
+                explanation: "Carbon dioxide dissolves in water to form carbonic acid.",
+                hint: "Nonmetal oxide + Water → Acid"
+            },
+            {
+                id: 14,
+                equation: "H₂(g) + S(s) → H₂S(g)",
+                type: "synthesis",
+                explanation: "Hydrogen gas combines with sulfur to form hydrogen sulfide.",
+                hint: "Elements combining into compound"
+            },
+            {
+                id: 15,
+                equation: "Li₂O(s) + H₂O(l) → 2 LiOH(aq)",
+                type: "synthesis",
+                explanation: "Lithium oxide reacts with water to form lithium hydroxide.",
+                hint: "Metal oxide + Water → Base"
+            },
+            {
+                id: 16,
+                equation: "2 Cu(s) + S(s) → Cu₂S(s)",
+                type: "synthesis",
+                explanation: "Copper combines with sulfur to form copper(I) sulfide.",
+                hint: "Metal + Nonmetal → Ionic compound"
+            },
+            {
+                id: 17,
+                equation: "BaO(s) + H₂O(l) → Ba(OH)₂(aq)",
+                type: "synthesis",
+                explanation: "Barium oxide and water combine to form barium hydroxide.",
+                hint: "Metal oxide + Water → Base"
+            },
+
+            // DECOMPOSITION REACTIONS (17 problems)
+            {
+                id: 18,
+                equation: "2 H₂O(l) → 2 H₂(g) + O₂(g)",
+                type: "decomposition",
+                explanation: "Water breaks down into hydrogen and oxygen gases through electrolysis.",
+                hint: "One compound → Two or more products"
+            },
+            {
+                id: 19,
+                equation: "2 KClO₃(s) → 2 KCl(s) + 3 O₂(g)",
+                type: "decomposition",
+                explanation: "Potassium chlorate decomposes into potassium chloride and oxygen gas when heated.",
+                hint: "One compound breaks apart"
+            },
+            {
+                id: 20,
+                equation: "CaCO₃(s) → CaO(s) + CO₂(g)",
+                type: "decomposition",
+                explanation: "Calcium carbonate (limestone) breaks down into calcium oxide and carbon dioxide when heated.",
+                hint: "Carbonate → Oxide + CO₂"
+            },
+            {
+                id: 21,
+                equation: "2 HgO(s) → 2 Hg(l) + O₂(g)",
+                type: "decomposition",
+                explanation: "Mercury(II) oxide decomposes into liquid mercury and oxygen gas when heated.",
+                hint: "Metal oxide → Metal + Oxygen"
+            },
+            {
+                id: 22,
+                equation: "2 NaCl(l) → 2 Na(l) + Cl₂(g)",
+                type: "decomposition",
+                explanation: "Molten sodium chloride decomposes into sodium and chlorine through electrolysis.",
+                hint: "Binary compound → Elements"
+            },
+            {
+                id: 23,
+                equation: "2 H₂O₂(l) → 2 H₂O(l) + O₂(g)",
+                type: "decomposition",
+                explanation: "Hydrogen peroxide breaks down into water and oxygen gas.",
+                hint: "Peroxide decomposes to release oxygen"
+            },
+            {
+                id: 24,
+                equation: "NH₄NO₃(s) → N₂O(g) + 2 H₂O(g)",
+                type: "decomposition",
+                explanation: "Ammonium nitrate decomposes when heated to form nitrous oxide and water vapor.",
+                hint: "One compound → Multiple products"
+            },
+            {
+                id: 25,
+                equation: "2 Al₂O₃(s) → 4 Al(s) + 3 O₂(g)",
+                type: "decomposition",
+                explanation: "Aluminum oxide decomposes through electrolysis to produce aluminum metal.",
+                hint: "Metal oxide → Metal + Oxygen"
+            },
+            {
+                id: 26,
+                equation: "H₂CO₃(aq) → H₂O(l) + CO₂(g)",
+                type: "decomposition",
+                explanation: "Carbonic acid is unstable and decomposes into water and carbon dioxide.",
+                hint: "Acid breaks down"
+            },
+            {
+                id: 27,
+                equation: "2 KNO₃(s) → 2 KNO₂(s) + O₂(g)",
+                type: "decomposition",
+                explanation: "Potassium nitrate decomposes when heated to form potassium nitrite and oxygen.",
+                hint: "Nitrate → Nitrite + O₂"
+            },
+            {
+                id: 28,
+                equation: "CuCO₃(s) → CuO(s) + CO₂(g)",
+                type: "decomposition",
+                explanation: "Copper(II) carbonate decomposes when heated to form copper(II) oxide and carbon dioxide.",
+                hint: "Metal carbonate → Metal oxide + CO₂"
+            },
+            {
+                id: 29,
+                equation: "2 Pb(NO₃)₂(s) → 2 PbO(s) + 4 NO₂(g) + O₂(g)",
+                type: "decomposition",
+                explanation: "Lead(II) nitrate decomposes when heated to form lead(II) oxide, nitrogen dioxide, and oxygen.",
+                hint: "One compound breaks into multiple products"
+            },
+            {
+                id: 30,
+                equation: "2 NaHCO₃(s) → Na₂CO₃(s) + H₂O(g) + CO₂(g)",
+                type: "decomposition",
+                explanation: "Sodium bicarbonate (baking soda) decomposes when heated to form sodium carbonate, water, and carbon dioxide.",
+                hint: "Bicarbonate → Carbonate + H₂O + CO₂"
+            },
+            {
+                id: 31,
+                equation: "MgCO₃(s) → MgO(s) + CO₂(g)",
+                type: "decomposition",
+                explanation: "Magnesium carbonate decomposes when heated to form magnesium oxide and carbon dioxide.",
+                hint: "Carbonate → Oxide + CO₂"
+            },
+            {
+                id: 32,
+                equation: "2 Ag₂O(s) → 4 Ag(s) + O₂(g)",
+                type: "decomposition",
+                explanation: "Silver oxide decomposes when heated to form silver metal and oxygen gas.",
+                hint: "Metal oxide → Metal + O₂"
+            },
+            {
+                id: 33,
+                equation: "Ca(OH)₂(s) → CaO(s) + H₂O(g)",
+                type: "decomposition",
+                explanation: "Calcium hydroxide decomposes when strongly heated to form calcium oxide and water vapor.",
+                hint: "Hydroxide → Oxide + Water"
+            },
+            {
+                id: 34,
+                equation: "2 Fe(OH)₃(s) → Fe₂O₃(s) + 3 H₂O(g)",
+                type: "decomposition",
+                explanation: "Iron(III) hydroxide decomposes when heated to form iron(III) oxide and water vapor.",
+                hint: "Hydroxide → Oxide + Water"
+            },
+
+            // COMBUSTION REACTIONS (17 problems)
+            {
+                id: 35,
+                equation: "CH₄(g) + 2 O₂(g) → CO₂(g) + 2 H₂O(g)",
+                type: "combustion",
+                explanation: "Methane (natural gas) burns in oxygen to produce carbon dioxide and water.",
+                hint: "Hydrocarbon + O₂ → CO₂ + H₂O"
+            },
+            {
+                id: 36,
+                equation: "2 C₈H₁₈(l) + 25 O₂(g) → 16 CO₂(g) + 18 H₂O(g)",
+                type: "combustion",
+                explanation: "Octane (gasoline) burns in oxygen to produce carbon dioxide and water.",
+                hint: "Fuel + Oxygen → CO₂ + H₂O"
+            },
+            {
+                id: 37,
+                equation: "C₃H₈(g) + 5 O₂(g) → 3 CO₂(g) + 4 H₂O(g)",
+                type: "combustion",
+                explanation: "Propane burns in oxygen to produce carbon dioxide and water.",
+                hint: "Hydrocarbon combustion produces CO₂ and H₂O"
+            },
+            {
+                id: 38,
+                equation: "2 C₂H₆(g) + 7 O₂(g) → 4 CO₂(g) + 6 H₂O(g)",
+                type: "combustion",
+                explanation: "Ethane burns in oxygen to produce carbon dioxide and water.",
+                hint: "Complete combustion with oxygen"
+            },
+            {
+                id: 39,
+                equation: "C₂H₅OH(l) + 3 O₂(g) → 2 CO₂(g) + 3 H₂O(g)",
+                type: "combustion",
+                explanation: "Ethanol (alcohol) burns in oxygen to produce carbon dioxide and water.",
+                hint: "Organic compound + O₂ → CO₂ + H₂O"
+            },
+            {
+                id: 40,
+                equation: "C₆H₁₂O₆(s) + 6 O₂(g) → 6 CO₂(g) + 6 H₂O(g)",
+                type: "combustion",
+                explanation: "Glucose burns in oxygen to produce carbon dioxide and water (also represents cellular respiration).",
+                hint: "Sugar + Oxygen → CO₂ + H₂O"
+            },
+            {
+                id: 41,
+                equation: "2 C₄H₁₀(g) + 13 O₂(g) → 8 CO₂(g) + 10 H₂O(g)",
+                type: "combustion",
+                explanation: "Butane (lighter fluid) burns in oxygen to produce carbon dioxide and water.",
+                hint: "Hydrocarbon fuel combustion"
+            },
+            {
+                id: 42,
+                equation: "C₂H₄(g) + 3 O₂(g) → 2 CO₂(g) + 2 H₂O(g)",
+                type: "combustion",
+                explanation: "Ethene (ethylene) burns in oxygen to produce carbon dioxide and water.",
+                hint: "Alkene + O₂ → CO₂ + H₂O"
+            },
+            {
+                id: 43,
+                equation: "2 C₃H₆(g) + 9 O₂(g) → 6 CO₂(g) + 6 H₂O(g)",
+                type: "combustion",
+                explanation: "Propene burns in oxygen to produce carbon dioxide and water.",
+                hint: "Hydrocarbon combustion"
+            },
+            {
+                id: 44,
+                equation: "C₁₂H₂₂O₁₁(s) + 12 O₂(g) → 12 CO₂(g) + 11 H₂O(g)",
+                type: "combustion",
+                explanation: "Sucrose (table sugar) burns in oxygen to produce carbon dioxide and water.",
+                hint: "Organic compound combustion"
+            },
+            {
+                id: 45,
+                equation: "2 C₂H₂(g) + 5 O₂(g) → 4 CO₂(g) + 2 H₂O(g)",
+                type: "combustion",
+                explanation: "Acetylene burns in oxygen to produce carbon dioxide and water (used in welding torches).",
+                hint: "Alkyne + O₂ → CO₂ + H₂O"
+            },
+            {
+                id: 46,
+                equation: "2 CH₃OH(l) + 3 O₂(g) → 2 CO₂(g) + 4 H₂O(g)",
+                type: "combustion",
+                explanation: "Methanol burns in oxygen to produce carbon dioxide and water.",
+                hint: "Alcohol combustion"
+            },
+            {
+                id: 47,
+                equation: "C₅H₁₂(l) + 8 O₂(g) → 5 CO₂(g) + 6 H₂O(g)",
+                type: "combustion",
+                explanation: "Pentane burns in oxygen to produce carbon dioxide and water.",
+                hint: "Alkane + O₂ → CO₂ + H₂O"
+            },
+            {
+                id: 48,
+                equation: "2 C₆H₆(l) + 15 O₂(g) → 12 CO₂(g) + 6 H₂O(g)",
+                type: "combustion",
+                explanation: "Benzene burns in oxygen to produce carbon dioxide and water.",
+                hint: "Aromatic compound combustion"
+            },
+            {
+                id: 49,
+                equation: "C₇H₁₆(l) + 11 O₂(g) → 7 CO₂(g) + 8 H₂O(g)",
+                type: "combustion",
+                explanation: "Heptane burns in oxygen to produce carbon dioxide and water.",
+                hint: "Hydrocarbon fuel combustion"
+            },
+            {
+                id: 50,
+                equation: "2 C₆H₁₄(l) + 19 O₂(g) → 12 CO₂(g) + 14 H₂O(g)",
+                type: "combustion",
+                explanation: "Hexane burns in oxygen to produce carbon dioxide and water.",
+                hint: "Complete combustion reaction"
+            },
+            {
+                id: 51,
+                equation: "C₁₀H₈(s) + 12 O₂(g) → 10 CO₂(g) + 4 H₂O(g)",
+                type: "combustion",
+                explanation: "Naphthalene (mothballs) burns in oxygen to produce carbon dioxide and water.",
+                hint: "Aromatic hydrocarbon combustion"
+            },
+
+            // SINGLE REPLACEMENT REACTIONS (17 problems)
+            {
+                id: 52,
+                equation: "Zn(s) + 2 HCl(aq) → ZnCl₂(aq) + H₂(g)",
+                type: "single_replacement",
+                explanation: "Zinc replaces hydrogen in hydrochloric acid, producing zinc chloride and hydrogen gas.",
+                hint: "Metal + Acid → Salt + H₂"
+            },
+            {
+                id: 53,
+                equation: "2 Na(s) + 2 H₂O(l) → 2 NaOH(aq) + H₂(g)",
+                type: "single_replacement",
+                explanation: "Sodium is so reactive it displaces hydrogen from water, forming sodium hydroxide and hydrogen gas.",
+                hint: "Active metal + Water → Base + H₂"
+            },
+            {
+                id: 54,
+                equation: "Cl₂(g) + 2 NaBr(aq) → 2 NaCl(aq) + Br₂(l)",
+                type: "single_replacement",
+                explanation: "Chlorine is more reactive than bromine, so it displaces bromine from sodium bromide.",
+                hint: "More reactive halogen displaces less reactive"
+            },
+            {
+                id: 55,
+                equation: "Cu(s) + 2 AgNO₃(aq) → Cu(NO₃)₂(aq) + 2 Ag(s)",
+                type: "single_replacement",
+                explanation: "Copper replaces silver in silver nitrate because copper is more active than silver.",
+                hint: "More active metal replaces less active"
+            },
+            {
+                id: 56,
+                equation: "Mg(s) + 2 HCl(aq) → MgCl₂(aq) + H₂(g)",
+                type: "single_replacement",
+                explanation: "Magnesium replaces hydrogen in hydrochloric acid, producing magnesium chloride and hydrogen gas.",
+                hint: "Metal + Acid → Salt + H₂"
+            },
+            {
+                id: 57,
+                equation: "Fe(s) + CuSO₄(aq) → FeSO₄(aq) + Cu(s)",
+                type: "single_replacement",
+                explanation: "Iron replaces copper in copper(II) sulfate because iron is more reactive than copper.",
+                hint: "More reactive metal displaces less reactive"
+            },
+            {
+                id: 58,
+                equation: "2 Al(s) + 3 H₂SO₄(aq) → Al₂(SO₄)₃(aq) + 3 H₂(g)",
+                type: "single_replacement",
+                explanation: "Aluminum replaces hydrogen in sulfuric acid, producing aluminum sulfate and hydrogen gas.",
+                hint: "Metal + Acid → Salt + H₂"
+            },
+            {
+                id: 59,
+                equation: "Br₂(l) + 2 KI(aq) → 2 KBr(aq) + I₂(s)",
+                type: "single_replacement",
+                explanation: "Bromine is more reactive than iodine, so it displaces iodine from potassium iodide.",
+                hint: "Halogen activity series: F > Cl > Br > I"
+            },
+            {
+                id: 60,
+                equation: "Zn(s) + CuCl₂(aq) → ZnCl₂(aq) + Cu(s)",
+                type: "single_replacement",
+                explanation: "Zinc is more active than copper, so it displaces copper from copper(II) chloride.",
+                hint: "More active metal replaces less active"
+            },
+            {
+                id: 61,
+                equation: "2 K(s) + 2 H₂O(l) → 2 KOH(aq) + H₂(g)",
+                type: "single_replacement",
+                explanation: "Potassium is highly reactive and displaces hydrogen from water, forming potassium hydroxide.",
+                hint: "Alkali metal + Water → Base + H₂"
+            },
+            {
+                id: 62,
+                equation: "Ca(s) + 2 H₂O(l) → Ca(OH)₂(aq) + H₂(g)",
+                type: "single_replacement",
+                explanation: "Calcium reacts with water, displacing hydrogen to form calcium hydroxide.",
+                hint: "Active metal + Water → Base + H₂"
+            },
+            {
+                id: 63,
+                equation: "Pb(s) + 2 HNO₃(aq) → Pb(NO₃)₂(aq) + H₂(g)",
+                type: "single_replacement",
+                explanation: "Lead replaces hydrogen in nitric acid, producing lead(II) nitrate and hydrogen gas.",
+                hint: "Metal + Acid → Salt + H₂"
+            },
+            {
+                id: 64,
+                equation: "F₂(g) + 2 NaCl(aq) → 2 NaF(aq) + Cl₂(g)",
+                type: "single_replacement",
+                explanation: "Fluorine is the most reactive halogen, so it displaces chlorine from sodium chloride.",
+                hint: "Most reactive halogen displaces others"
+            },
+            {
+                id: 65,
+                equation: "Ni(s) + Pb(NO₃)₂(aq) → Ni(NO₃)₂(aq) + Pb(s)",
+                type: "single_replacement",
+                explanation: "Nickel is more active than lead, so it displaces lead from lead(II) nitrate.",
+                hint: "More active metal replaces less active"
+            },
+            {
+                id: 66,
+                equation: "2 Li(s) + 2 H₂O(l) → 2 LiOH(aq) + H₂(g)",
+                type: "single_replacement",
+                explanation: "Lithium is very reactive and displaces hydrogen from water, forming lithium hydroxide.",
+                hint: "Alkali metal + Water → Base + H₂"
+            },
+            {
+                id: 67,
+                equation: "Al(s) + 3 AgNO₃(aq) → Al(NO₃)₃(aq) + 3 Ag(s)",
+                type: "single_replacement",
+                explanation: "Aluminum is more active than silver, so it displaces silver from silver nitrate.",
+                hint: "More reactive metal replaces less reactive"
+            },
+            {
+                id: 68,
+                equation: "Sn(s) + 2 HCl(aq) → SnCl₂(aq) + H₂(g)",
+                type: "single_replacement",
+                explanation: "Tin replaces hydrogen in hydrochloric acid, producing tin(II) chloride and hydrogen gas.",
+                hint: "Metal + Acid → Salt + H₂"
+            },
+
+            // DOUBLE REPLACEMENT REACTIONS (16 problems)
+            {
+                id: 69,
+                equation: "AgNO₃(aq) + NaCl(aq) → AgCl(s) + NaNO₃(aq)",
+                type: "double_replacement",
+                explanation: "Silver nitrate and sodium chloride exchange partners, forming a precipitate of silver chloride.",
+                hint: "Two compounds swap partners (AB + CD → AD + CB)"
+            },
+            {
+                id: 70,
+                equation: "BaCl₂(aq) + Na₂SO₄(aq) → BaSO₄(s) + 2 NaCl(aq)",
+                type: "double_replacement",
+                explanation: "Barium chloride and sodium sulfate exchange ions, forming insoluble barium sulfate precipitate.",
+                hint: "Precipitation reaction - ions switch partners"
+            },
+            {
+                id: 71,
+                equation: "Pb(NO₃)₂(aq) + 2 KI(aq) → PbI₂(s) + 2 KNO₃(aq)",
+                type: "double_replacement",
+                explanation: "Lead(II) nitrate and potassium iodide exchange ions, forming bright yellow lead(II) iodide precipitate.",
+                hint: "Double displacement forming precipitate"
+            },
+            {
+                id: 72,
+                equation: "CaCl₂(aq) + Na₂CO₃(aq) → CaCO₃(s) + 2 NaCl(aq)",
+                type: "double_replacement",
+                explanation: "Calcium chloride and sodium carbonate swap partners, forming calcium carbonate precipitate.",
+                hint: "Ions exchange partners"
+            },
+            {
+                id: 73,
+                equation: "NiCl₂(aq) + Na₂CO₃(aq) → NiCO₃(s) + 2 NaCl(aq)",
+                type: "double_replacement",
+                explanation: "Nickel(II) chloride and sodium carbonate exchange ions, forming nickel(II) carbonate precipitate.",
+                hint: "Metal salt + Carbonate → Precipitate + Salt"
+            },
+            {
+                id: 74,
+                equation: "CuSO₄(aq) + BaCl₂(aq) → CuCl₂(aq) + BaSO₄(s)",
+                type: "double_replacement",
+                explanation: "Copper(II) sulfate and barium chloride swap partners, forming barium sulfate precipitate.",
+                hint: "Two ionic compounds exchange ions"
+            },
+            {
+                id: 75,
+                equation: "FeCl₂(aq) + Na₂S(aq) → FeS(s) + 2 NaCl(aq)",
+                type: "double_replacement",
+                explanation: "Iron(II) chloride and sodium sulfide exchange ions, forming iron(II) sulfide precipitate.",
+                hint: "Metal salt + Sulfide → Metal sulfide precipitate"
+            },
+            {
+                id: 76,
+                equation: "K₂CO₃(aq) + CaCl₂(aq) → 2 KCl(aq) + CaCO₃(s)",
+                type: "double_replacement",
+                explanation: "Potassium carbonate and calcium chloride swap partners, forming calcium carbonate precipitate.",
+                hint: "Carbonate + Metal salt → Precipitate"
+            },
+            {
+                id: 77,
+                equation: "AgNO₃(aq) + KBr(aq) → AgBr(s) + KNO₃(aq)",
+                type: "double_replacement",
+                explanation: "Silver nitrate and potassium bromide exchange ions, forming silver bromide precipitate.",
+                hint: "Double displacement forming precipitate"
+            },
+            {
+                id: 78,
+                equation: "CoCl₂(aq) + (NH₄)₂S(aq) → CoS(s) + 2 NH₄Cl(aq)",
+                type: "double_replacement",
+                explanation: "Cobalt(II) chloride and ammonium sulfide exchange ions, forming cobalt(II) sulfide precipitate.",
+                hint: "Two ionic compounds exchange partners"
+            },
+            {
+                id: 79,
+                equation: "MnCl₂(aq) + K₂CO₃(aq) → MnCO₃(s) + 2 KCl(aq)",
+                type: "double_replacement",
+                explanation: "Manganese(II) chloride and potassium carbonate exchange ions, forming manganese(II) carbonate precipitate.",
+                hint: "Two ionic compounds exchange partners"
+            },
+            {
+                id: 80,
+                equation: "CuCl₂(aq) + Na₂S(aq) → CuS(s) + 2 NaCl(aq)",
+                type: "double_replacement",
+                explanation: "Copper(II) chloride and sodium sulfide exchange ions, forming copper(II) sulfide precipitate.",
+                hint: "Metal ion + Sulfide → Metal sulfide precipitate"
+            },
+            {
+                id: 81,
+                equation: "ZnSO₄(aq) + Na₂CO₃(aq) → ZnCO₃(s) + Na₂SO₄(aq)",
+                type: "double_replacement",
+                explanation: "Zinc sulfate and sodium carbonate swap partners, forming zinc carbonate precipitate.",
+                hint: "Double displacement forming precipitate"
+            },
+            {
+                id: 82,
+                equation: "Pb(NO₃)₂(aq) + Na₂SO₄(aq) → PbSO₄(s) + 2 NaNO₃(aq)",
+                type: "double_replacement",
+                explanation: "Lead(II) nitrate and sodium sulfate exchange ions, forming lead(II) sulfate precipitate.",
+                hint: "Ions swap partners forming precipitate"
+            },
+            {
+                id: 83,
+                equation: "NiSO₄(aq) + BaCl₂(aq) → NiCl₂(aq) + BaSO₄(s)",
+                type: "double_replacement",
+                explanation: "Nickel(II) sulfate and barium chloride exchange ions, forming barium sulfate precipitate.",
+                hint: "Ions swap partners forming precipitate"
+            },
+            {
+                id: 84,
+                equation: "FeSO₄(aq) + (NH₄)₂S(aq) → FeS(s) + (NH₄)₂SO₄(aq)",
+                type: "double_replacement",
+                explanation: "Iron(II) sulfate and ammonium sulfide exchange ions, forming iron(II) sulfide precipitate.",
+                hint: "Double displacement forming precipitate"
+            },
+
+            // NEUTRALIZATION REACTIONS (16 problems - acid + hydroxide base only)
+            {
+                id: 85,
+                equation: "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
+                type: "neutralization",
+                explanation: "Hydrochloric acid reacts with sodium hydroxide to form salt (sodium chloride) and water.",
+                hint: "Acid + Hydroxide Base → Salt + Water"
+            },
+            {
+                id: 86,
+                equation: "H₂SO₄(aq) + 2 KOH(aq) → K₂SO₄(aq) + 2 H₂O(l)",
+                type: "neutralization",
+                explanation: "Sulfuric acid neutralizes potassium hydroxide to form potassium sulfate and water.",
+                hint: "Acid + Hydroxide Base → Salt + Water"
+            },
+            {
+                id: 87,
+                equation: "2 HNO₃(aq) + Ca(OH)₂(aq) → Ca(NO₃)₂(aq) + 2 H₂O(l)",
+                type: "neutralization",
+                explanation: "Nitric acid reacts with calcium hydroxide to form calcium nitrate and water.",
+                hint: "Acid + Hydroxide Base → Salt + Water"
+            },
+            {
+                id: 88,
+                equation: "HBr(aq) + KOH(aq) → KBr(aq) + H₂O(l)",
+                type: "neutralization",
+                explanation: "Hydrobromic acid neutralizes potassium hydroxide to form potassium bromide and water.",
+                hint: "Strong acid + Strong hydroxide base → Salt + Water"
+            },
+            {
+                id: 89,
+                equation: "3 HCl(aq) + Al(OH)₃(s) → AlCl₃(aq) + 3 H₂O(l)",
+                type: "neutralization",
+                explanation: "Hydrochloric acid neutralizes aluminum hydroxide (antacid) to form aluminum chloride and water.",
+                hint: "Acid + Hydroxide Base → Salt + Water"
+            },
+            {
+                id: 90,
+                equation: "H₂SO₄(aq) + Ba(OH)₂(aq) → BaSO₄(s) + 2 H₂O(l)",
+                type: "neutralization",
+                explanation: "Sulfuric acid neutralizes barium hydroxide to form insoluble barium sulfate and water.",
+                hint: "Acid + Hydroxide Base → Salt (precipitate) + Water"
+            },
+            {
+                id: 91,
+                equation: "HNO₃(aq) + LiOH(aq) → LiNO₃(aq) + H₂O(l)",
+                type: "neutralization",
+                explanation: "Nitric acid neutralizes lithium hydroxide to form lithium nitrate and water.",
+                hint: "Acid + Hydroxide Base → Salt + Water"
+            },
+            {
+                id: 92,
+                equation: "2 HCl(aq) + Mg(OH)₂(s) → MgCl₂(aq) + 2 H₂O(l)",
+                type: "neutralization",
+                explanation: "Hydrochloric acid neutralizes magnesium hydroxide (milk of magnesia antacid) to form magnesium chloride and water.",
+                hint: "Acid + Hydroxide Base → Salt + Water"
+            },
+            {
+                id: 93,
+                equation: "H₃PO₄(aq) + 3 NaOH(aq) → Na₃PO₄(aq) + 3 H₂O(l)",
+                type: "neutralization",
+                explanation: "Phosphoric acid neutralizes sodium hydroxide to form sodium phosphate and water.",
+                hint: "Polyprotic acid + Hydroxide Base → Salt + Water"
+            },
+            {
+                id: 94,
+                equation: "HClO₄(aq) + NaOH(aq) → NaClO₄(aq) + H₂O(l)",
+                type: "neutralization",
+                explanation: "Perchloric acid neutralizes sodium hydroxide to form sodium perchlorate and water.",
+                hint: "Acid + Hydroxide Base → Salt + Water"
+            },
+            {
+                id: 95,
+                equation: "HC₂H₃O₂(aq) + NaOH(aq) → NaC₂H₃O₂(aq) + H₂O(l)",
+                type: "neutralization",
+                explanation: "Acetic acid (vinegar) neutralizes sodium hydroxide to form sodium acetate and water.",
+                hint: "Weak acid + Strong hydroxide base → Salt + Water"
+            },
+            {
+                id: 96,
+                equation: "2 HCl(aq) + Ca(OH)₂(aq) → CaCl₂(aq) + 2 H₂O(l)",
+                type: "neutralization",
+                explanation: "Hydrochloric acid neutralizes calcium hydroxide to form calcium chloride and water.",
+                hint: "Acid + Hydroxide Base → Salt + Water"
+            },
+            {
+                id: 97,
+                equation: "HI(aq) + KOH(aq) → KI(aq) + H₂O(l)",
+                type: "neutralization",
+                explanation: "Hydroiodic acid neutralizes potassium hydroxide to form potassium iodide and water.",
+                hint: "Acid + Hydroxide Base → Salt + Water"
+            },
+            {
+                id: 98,
+                equation: "H₂SO₃(aq) + 2 NaOH(aq) → Na₂SO₃(aq) + 2 H₂O(l)",
+                type: "neutralization",
+                explanation: "Sulfurous acid neutralizes sodium hydroxide to form sodium sulfite and water.",
+                hint: "Weak acid + Hydroxide Base → Salt + Water"
+            },
+            {
+                id: 99,
+                equation: "HF(aq) + NaOH(aq) → NaF(aq) + H₂O(l)",
+                type: "neutralization",
+                explanation: "Hydrofluoric acid neutralizes sodium hydroxide to form sodium fluoride and water.",
+                hint: "Acid + Hydroxide Base → Salt + Water"
+            },
+            {
+                id: 100,
+                equation: "2 HNO₃(aq) + Sr(OH)₂(aq) → Sr(NO₃)₂(aq) + 2 H₂O(l)",
+                type: "neutralization",
+                explanation: "Nitric acid neutralizes strontium hydroxide to form strontium nitrate and water.",
+                hint: "Acid + Hydroxide Base → Salt + Water"
+            }
+
+];
+
+let balDone = 0, correct = 0, missed = 0, usedProblems = [], queue = [], typeCorrect = {};
+let cur = null, tries = 0, wrongPicks = [], rxLocked = false;
+let started = false, finished = false;
+
+function pretty(f){return f.replace(/(\d+)/g,'<sub>$1</sub>');}
+function parseFormula(f){
+  const stack=[{}];let i=0;
+  while(i<f.length){
+    const c=f[i];
+    if(c==='('){stack.push({});i++;}
+    else if(c===')'){i++;let n='';while(/\d/.test(f[i]||'')){n+=f[i++];}n=n?+n:1;const top=stack.pop();for(const k in top){stack[stack.length-1][k]=(stack[stack.length-1][k]||0)+top[k]*n;}}
+    else{let el=c;i++;while(/[a-z]/.test(f[i]||'')){el+=f[i++];}let n='';while(/\d/.test(f[i]||'')){n+=f[i++];}n=n?+n:1;stack[stack.length-1][el]=(stack[stack.length-1][el]||0)+n;}
+  }
+  return stack[0];
+}
+function gcd(a,b){return b?gcd(b,a%b):a;}
+function sideCounts(formulas,coefs){const t={};formulas.forEach((f,i)=>{const a=parseFormula(f);for(const k in a)t[k]=(t[k]||0)+a[k]*coefs[i];});return t;}
+
+function scrollTo_(el,block){try{el.scrollIntoView({behavior:'smooth',block:block||'center'});}catch(e){}}
+
+/* ---------- Part 1 ---------- */
+function renderBalance(){
+  const q=BAL[balDone];
+  document.getElementById('balNum').textContent='(' + (balDone+1) + ' of ' + BAL_TOTAL + ')';
+  const all=q.r.concat(q.p);let html='';
+  all.forEach((f,i)=>{
+    if(i===q.r.length) html+='<span class="arrow">→</span>';
+    else if(i>0) html+='<span class="plus">+</span>';
+    html+='<span class="sp"><span class="coef" id="cf'+i+'"><input type="number" inputmode="numeric" min="1" max="30" value="1" id="c'+i+'" aria-label="coefficient for '+f+'" oninput="balInput()"><span class="ar"><button type="button" aria-label="increase" onclick="bump('+i+',1)">▲</button><button type="button" aria-label="decrease" onclick="bump('+i+',-1)">▼</button></span></span><span>'+pretty(f)+'</span></span>';
+  });
+  document.getElementById('balEq').innerHTML=html;
+  document.getElementById('balCheck').classList.remove('hidden');
+  document.getElementById('balNext').classList.add('hidden');
+  hideFb('balFb');
+}
+function bump(i,d){const el=document.getElementById('c'+i);let v=parseInt(el.value,10);if(isNaN(v))v=1;el.value=Math.min(30,Math.max(1,v+d));balInput();}
+function balInput(){hideFb('balFb');}
+function showFb(id,cls,html){const e=document.getElementById(id);e.className='feedback show '+cls;e.innerHTML=html;}
+function hideFb(id){document.getElementById(id).className='feedback';}
+function checkBalance(){
+  const q=BAL[balDone];const all=q.r.concat(q.p);const co=[];
+  for(let i=0;i<all.length;i++){const v=parseInt(document.getElementById('c'+i).value,10);if(!(v>=1)){showFb('balFb','bad','❌ Every coefficient must be a whole number of 1 or more.');return;}co.push(v);}
+  const L=sideCounts(q.r,co.slice(0,q.r.length)),R=sideCounts(q.p,co.slice(q.r.length));
+  const bad=[...new Set(Object.keys(L).concat(Object.keys(R)))].filter(k=>(L[k]||0)!==(R[k]||0));
+  if(bad.length){showFb('balFb','bad','❌ Not balanced yet. The number of atoms does not match for: <b>'+bad.join(', ')+'</b>. Check your work and try again.');return;}
+  if(co.reduce(gcd)>1){showFb('balFb','info','Almost! The equation is balanced, but the coefficients can be reduced. Use the smallest whole-number ratio.');return;}
+  all.forEach((f,i)=>document.getElementById('cf'+i).classList.add('ok'));
+  document.querySelectorAll('#balEq input').forEach(x=>x.readOnly=true);
+  balDone++;saveProgress();updateStats();
+  document.getElementById('balCheck').classList.add('hidden');
+  const last=balDone>=BAL_TOTAL;
+  showFb('balFb','good','✅ Balanced! Both sides have the same number of each atom.'+(last?' Part 1 is complete.':''));
+  const nb=document.getElementById('balNext');nb.textContent=last?'Continue to Part 2':'Next Equation';nb.classList.remove('hidden');
+  scrollTo_(document.getElementById('balFb'));
+}
+function nextBalance(){
+  if(balDone>=BAL_TOTAL){startPart2();return;}
+  renderBalance();scrollTo_(document.getElementById('part1'),'start');
+}
+
+/* ---------- Part 2 ---------- */
+function startPart2(){
+  document.getElementById('part1').classList.add('hidden');
+  document.getElementById('part2').classList.remove('hidden');
+  if(!document.getElementById('typeBtns').children.length){
+    document.getElementById('typeBtns').innerHTML=Object.keys(TYPE_LABELS).map(t=>'<button type="button" data-type="'+t+'" onclick="pickType(\''+t+'\')">'+TYPE_LABELS[t]+'</button>').join('');
+  }
+  loadReaction();window.scrollTo({top:0,behavior:'smooth'});
+}
+function loadReaction(){
+  if(!queue.length)buildQueue();
+  const want=queue.shift();
+  let pool=reactions.filter(r=>r.type===want&&!usedProblems.includes(r.id));
+  if(!pool.length){usedProblems=usedProblems.filter(id=>{const r=reactions.find(x=>x.id===id);return r&&r.type!==want;});pool=reactions.filter(r=>r.type===want);}
+  cur=pool[Math.floor(Math.random()*pool.length)];usedProblems.push(cur.id);
+  tries=0;wrongPicks=[];rxLocked=false;
+  document.getElementById('rxText').textContent=cur.equation;
+  document.querySelectorAll('#typeBtns button').forEach(b=>{b.disabled=false;b.className='';});
+  document.getElementById('rxNext').classList.add('hidden');
+  hideFb('rxFb');updateTries();saveProgress();
+}
+function buildQueue(){
+  const types=Object.keys(TYPE_LABELS);let slots=[];
+  types.forEach(t=>{for(let i=typeCorrect[t]||0;i<PER_TYPE;i++)slots.push(t);});
+  let best=slots;
+  for(let n=0;n<300;n++){
+    for(let i=slots.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[slots[i],slots[j]]=[slots[j],slots[i]];}
+    if(slots.every((s,i)=>i===0||s!==slots[i-1])){best=slots;break;}
+  }
+  queue=best.slice();
+}
+function updateTally(){
+  document.getElementById('tally').innerHTML=Object.keys(TYPE_LABELS).map(t=>{const c=typeCorrect[t]||0;return '<span class="'+(c>=PER_TYPE?'full':'')+'">'+TYPE_LABELS[t]+' '+c+'/'+PER_TYPE+'</span>';}).join('');
+}
+function updateTries(){document.getElementById('tries').textContent=rxLocked?'':'Attempt '+(tries+1)+' of 2';}
+function pickType(t){
+  if(rxLocked||wrongPicks.includes(t))return;
+  const btn=document.querySelector('#typeBtns button[data-type="'+t+'"]');
+  if(t===cur.type){
+    btn.classList.add('right');lockButtons();
+    correct++;typeCorrect[cur.type]=(typeCorrect[cur.type]||0)+1;rxLocked=true;updateTries();updateStats();saveProgress();
+    const fin=correct>=COR_TOTAL;
+    showFb('rxFb','good','✅ Correct! '+cur.explanation);
+    finishOrNext(fin);return;
+  }
+  tries++;wrongPicks.push(t);btn.classList.add('wrong');btn.disabled=true;
+  if(tries===1){
+    updateTries();
+    showFb('rxFb','bad','❌ Not quite. You have one more try. Hint: '+reactionTypeKeyPoints[cur.type]);
+    return;
+  }
+  rxLocked=true;missed++;requeue(cur.type);lockButtons();
+  document.querySelector('#typeBtns button[data-type="'+cur.type+'"]').classList.add('right');
+  updateTries();updateStats();saveProgress();
+  showFb('rxFb','bad','❌ Not this time. This is a <b>'+TYPE_LABELS[cur.type]+'</b> reaction. '+cur.explanation+' This one does not count, so you will see this type again later. Here comes a new reaction.');
+  finishOrNext(false);
+}
+function requeue(type){
+  // the missed type comes back a few reactions later (or at the end if few remain)
+  const pos=Math.min(queue.length,3+Math.floor(Math.random()*3));
+  queue.splice(pos,0,type);
+}
+function lockButtons(){document.querySelectorAll('#typeBtns button').forEach(b=>b.disabled=true);}
+function finishOrNext(fin){
+  if(fin){completeLab();return;}
+  document.getElementById('rxNext').classList.remove('hidden');
+  scrollTo_(document.getElementById('rxNext'));
+}
+function nextReaction(){loadReaction();scrollTo_(document.getElementById('part2'),'start');}
+
+function updateStats(){
+  updateTally();
+  document.getElementById('balCount').textContent=Math.min(balDone,BAL_TOTAL);
+  document.getElementById('balBar').style.width=(Math.min(balDone,BAL_TOTAL)/BAL_TOTAL*100)+'%';
+  document.getElementById('corCount').textContent=Math.min(correct,COR_TOTAL);
+  document.getElementById('corBar').style.width=(Math.min(correct,COR_TOTAL)/COR_TOTAL*100)+'%';
+  document.getElementById('missCount').textContent=missed;
+}
+function completeLab(){
+  finished=true;scormComplete();
+  document.getElementById('doneCard').classList.remove('hidden');
+  scrollTo_(document.getElementById('doneCard'));
+  document.getElementById('rxNext').classList.add('hidden');
+}
+
+/* ---------- Title screen ---------- */
+function startLab(){
+  document.getElementById('titleOverlay').classList.add('hidden');
+  if(started)return;started=true;
+  if(balDone>=BAL_TOTAL)startPart2();else renderBalance();
+}
+
+/* ---------- SCORM 1.2 (completion only, no score) ---------- */
+let scormAPI=null,resumeState=null;
+function findAPI(win){let n=0,w=win;while(w&&n<10){if(w.API)return w.API;if(w.parent&&w.parent!==w)w=w.parent;else if(w.opener)w=w.opener;else break;n++;}return null;}
+function validResume(p){
+  return p&&typeof p==='object'&&Number.isInteger(p.balDone)&&p.balDone>=0&&p.balDone<=BAL_TOTAL&&
+    Array.isArray(p.usedProblems)&&p.usedProblems.every(i=>typeof i==='number')&&
+    Number.isInteger(p.correct)&&p.correct>=0&&p.correct<COR_TOTAL&&Number.isInteger(p.missed)&&p.missed>=0&&
+    p.typeCorrect&&typeof p.typeCorrect==='object'&&Object.keys(p.typeCorrect).every(k=>TYPE_LABELS[k]&&Number.isInteger(p.typeCorrect[k])&&p.typeCorrect[k]>=0&&p.typeCorrect[k]<=PER_TYPE)&&
+    Array.isArray(p.queue)&&p.queue.every(k=>TYPE_LABELS[k]);
+}
+function scormInit(){
+  try{
+    scormAPI=findAPI(window);if(!scormAPI)return;
+    scormAPI.LMSInitialize("");
+    if(scormAPI.LMSGetValue("cmi.core.entry")==="resume"){
+      const raw=scormAPI.LMSGetValue("cmi.suspend_data");
+      if(raw){const p=JSON.parse(raw);if(validResume(p))resumeState=p;}
+    }
+  }catch(e){}
+}
+function saveProgress(){
+  if(!scormAPI||finished)return;
+  try{
+    // the reaction currently on screen is not counted as seen, so a resume can draw it again
+    const seen=cur&&!rxLocked?usedProblems.filter(i=>i!==cur.id):usedProblems;
+    scormAPI.LMSSetValue("cmi.suspend_data",JSON.stringify({balDone:balDone,usedProblems:seen,correct:correct,missed:missed,typeCorrect:typeCorrect,queue:(cur&&!rxLocked)?[cur.type].concat(queue):queue}));
+    scormAPI.LMSSetValue("cmi.core.lesson_status","incomplete");
+    scormAPI.LMSSetValue("cmi.core.exit","suspend");
+    scormAPI.LMSCommit("");
+  }catch(e){}
+}
+function scormComplete(){
+  if(!scormAPI)return;
+  try{
+    scormAPI.LMSSetValue("cmi.core.lesson_status","completed");
+    scormAPI.LMSSetValue("cmi.core.exit","");
+    scormAPI.LMSCommit("");
+  }catch(e){}
+}
+function scormFinish(){
+  if(!scormAPI)return;
+  try{if(!finished)saveProgress();scormAPI.LMSFinish("");}catch(e){}
+}
+window.addEventListener('pagehide',saveProgress);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)saveProgress();});
+window.addEventListener('beforeunload',scormFinish);
+scormInit();
+if(resumeState){
+  balDone=resumeState.balDone;correct=resumeState.correct;missed=resumeState.missed;usedProblems=resumeState.usedProblems;typeCorrect=resumeState.typeCorrect;queue=resumeState.queue;
+  document.getElementById('startBtn').textContent='Continue';
+}
+updateStats();
+</script>
+</body>
+</html>

@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dimensional Analysis 3 - Two Steps</title>
+<style>
+  :root{
+    /* Page sits noticeably darker than the cards so the working area reads as
+       raised rather than washing into the background. */
+    --bg:#dfe5ee; --card:#ffffff; --ink:#0d131c; --muted:#445061; --line:#b6c1d1;
+    --accent:#1250cc; --accent-soft:#dae8ff;
+    --good:#0a6b3b; --good-soft:#dcf3e6;
+    --bad:#a8291b; --bad-soft:#fbe4e1;
+    --warn:#7d5000; --warn-soft:#ffeec4;
+    --tile:#ffffff; --tile-line:#93a2b8;
+    --mark:#ffd94d; --mark-ink:#2b1f00; --mark-line:#c08f00;
+    --radius:9px;
+    --shadow:0 1px 2px rgba(13,22,38,.14), 0 4px 14px rgba(13,22,38,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--bg); color:var(--ink); font-size:16px; line-height:1.45;
+    -webkit-text-size-adjust:100%;
+    touch-action:manipulation;
+  }
+  /* Everything below is tuned to fit a Schoology package frame without the
+     student scrolling between the problem and the factor tiles. */
+  .wrap{max-width:1120px;margin:0 auto;padding:9px}
+
+  /* ---------- header ---------- */
+  header.bar{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:7px 12px;margin-bottom:8px;
+    display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+  }
+  .title{font-size:16px;font-weight:700;letter-spacing:-.01em;margin:0}
+  .title small{display:block;font-weight:500;font-size:12px;color:var(--muted);letter-spacing:0}
+  .ctrls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  label.fld{display:flex;flex-direction:column;font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;gap:3px}
+  select,input[type=text]{
+    font:inherit;font-size:14px;padding:7px 9px;border:1px solid var(--line);
+    border-radius:8px;background:#fff;color:var(--ink);min-height:38px;
+  }
+  select:focus,input:focus,button:focus-visible{outline:3px solid rgba(31,111,235,.35);outline-offset:1px}
+  .stats{display:flex;gap:8px;flex-wrap:wrap}
+  .stat{background:var(--accent-soft);border:1px solid #a9c8f5;border-radius:7px;padding:4px 9px;text-align:center;min-width:66px}
+  .stat b{display:block;font-size:15px;line-height:1.15;color:var(--ink)}
+  .stat span{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+
+  /* ---------- cards ---------- */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:10px 12px;margin-bottom:8px}
+  .card h2{margin:0 0 3px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .exact-note{margin:0 0 9px;font-size:12.5px;color:var(--muted)}
+  .hint-line{font-size:12px;color:var(--muted);margin:0 0 7px}
+
+  .prompt{font-size:19px;font-weight:600;margin:0 0 8px}
+  /* Strong solid chip: the old pale-yellow wash on white was hard to pick out */
+  .prompt .q{
+    background:var(--mark); color:var(--mark-ink); border:1px solid var(--mark-line);
+    padding:1px 7px; border-radius:5px; font-weight:700; white-space:nowrap;
+  }
+  .badge{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+    background:#e7ecf4;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:2px 8px;margin-left:5px;vertical-align:2px}
+
+  /* ---------- work chain ---------- */
+  /* chain-scroll and the answer box share one row so "=" sits right after
+     the last factor the student has placed; the chain itself still scrolls
+     on its own if it grows long, but the answer box stays put and visible */
+  .chain-scroll{overflow-x:auto;overflow-y:hidden;padding:4px 2px 6px}
+  .chain{display:flex;align-items:stretch;gap:5px;min-height:92px;min-width:min-content}
+  .chain.drop-active{background:var(--accent-soft);border-radius:10px;outline:2px dashed var(--accent);outline-offset:4px}
+  .op{display:flex;align-items:center;font-size:20px;color:var(--muted);padding:0 2px;user-select:none}
+
+  .cell{
+    background:var(--tile);border:1.5px solid var(--tile-line);border-radius:8px;
+    padding:6px 10px;min-width:88px;display:flex;flex-direction:column;justify-content:center;
+    position:relative;text-align:center;
+  }
+  .cell.start{background:var(--accent-soft);border-color:var(--accent);border-width:2px}
+  .cell .num,.cell .den{padding:2px;white-space:nowrap;font-size:15px}
+  .cell .bar{height:1.5px;background:var(--ink);margin:2px 0;opacity:.75}
+  .cell .val{font-weight:700}
+  .cell .tools{position:absolute;top:-11px;right:-9px;display:flex;gap:3px}
+  .cell .tools button{
+    width:22px;height:22px;border-radius:50%;border:1px solid var(--tile-line);background:var(--card);
+    color:var(--ink);font-size:12px;line-height:1;cursor:pointer;padding:0;box-shadow:var(--shadow);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .cell .tools button:hover{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+  .cell .tools .rm:hover{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+
+  .tok{display:inline-block;padding:0 1px;position:relative;transition:color .12s}
+  .tok.cx{color:var(--muted);opacity:.7;text-decoration:line-through;text-decoration-color:var(--bad);text-decoration-thickness:2px}
+
+  .slot-empty{
+    border:2px dashed var(--tile-line);border-radius:8px;min-width:120px;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    color:var(--muted);font-size:12px;padding:6px;background:#f2f5fa;
+  }
+  .ins-bar{width:4px;border-radius:3px;background:var(--accent);align-self:stretch;margin:2px 0}
+
+  /* answer box: sits immediately right of the chain, in its own flex column
+     so the sci-notation checkbox lands directly underneath the input */
+  .eq-inline{display:flex;flex-direction:column;justify-content:center;gap:5px;flex-shrink:0;padding-left:6px}
+  .eq-top{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
+  .eq-top .sign{font-size:20px;color:var(--muted)}
+  #ansInput{width:132px;font-size:16px;font-weight:700;text-align:right;min-height:40px}
+  .eq-top .units{font-size:16px;font-weight:700;white-space:nowrap}
+
+  .sci-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;user-select:none}
+  .sci-toggle input{cursor:pointer}
+
+  .sci-group{display:none;align-items:center;gap:3px}
+  .sci-group.visible{display:inline-flex}
+  .mantissa-input{width:80px;font-size:16px;font-weight:700;text-align:right;min-height:40px}
+  .sci-times{font-size:16px;font-weight:700;color:var(--ink);white-space:nowrap}
+  /* sized and nudged up-right so it reads as the exponent on "10", not a
+     separate labeled field */
+  .exponent-input{
+    width:30px;height:15px;min-height:0;padding:0 2px;font-size:11px;font-weight:700;
+    text-align:center;border-radius:5px;align-self:flex-start;position:relative;
+    top:-10px;left:-2px;
+  }
+
+  /* ---------- live units readout ---------- */
+  .readout{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px;margin:8px 0 0 2px}
+  .pill{border-radius:99px;padding:3px 10px;font-weight:700;border:1px solid var(--line);background:#eef2f8}
+  .pill.ok{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+  .pill.no{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+
+  /* ---------- buttons ---------- */
+  .btnrow{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+  button.b{
+    font:inherit;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:8px;
+    border:1px solid var(--tile-line);background:#fff;color:var(--ink);cursor:pointer;min-height:40px;
+  }
+  button.b:hover:not(:disabled){background:#eef2f8}
+  button.b.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  button.b.primary:hover{background:#1a5fd0}
+  button.b.ghost{background:transparent;border-color:transparent;color:var(--muted);text-decoration:underline}
+  button.b:disabled{opacity:.45;cursor:not-allowed}
+  button.b.save{background:var(--good);border-color:var(--good);color:#fff}
+  button.b.save:hover:not(:disabled){background:var(--good);opacity:.85}
+  .save-status{
+    display:inline-flex;align-items:center;margin-left:2px;font-size:12.5px;font-weight:700;
+    color:var(--good);opacity:0;transition:opacity .3s ease;
+  }
+  .save-status.show{opacity:1}
+
+  /* ---------- feedback ---------- */
+  .fb{margin-top:8px;padding:9px 11px;border-radius:8px;font-size:13.5px;display:none;border:1px solid}
+  .fb.show{display:block}
+  /* text colours must come from the variables, or they stay dark-on-dark */
+  .fb.ok{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+  .fb.no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+  .fb.tip{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+  .fb b{font-weight:700}
+  .fb .work{margin-top:8px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;background:rgba(255,255,255,.65);border-radius:6px;padding:8px;overflow-x:auto;white-space:pre}
+
+  /* ---------- pool ---------- */
+  .pool-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px}
+  .pool-tab{
+    font:inherit;font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:99px;
+    border:1px solid var(--line);background:#eef2f8;color:var(--muted);cursor:pointer;
+  }
+  .pool-tab:hover{background:#e2e9f5}
+  .pool-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  .pool{display:flex;flex-wrap:wrap;gap:7px}
+  .tile{
+    background:var(--tile);border:1.5px solid var(--tile-line);border-radius:8px;padding:5px 10px;
+    cursor:grab;user-select:none;text-align:center;min-width:82px;touch-action:none;
+    transition:transform .1s, box-shadow .1s, border-color .1s;
+  }
+  .tile:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(18,80,204,.22);transform:translateY(-1px)}
+  .tile:active{cursor:grabbing}
+  .tile .num,.tile .den{padding:1px;white-space:nowrap;font-size:14px}
+  .tile .bar{height:1.5px;background:var(--ink);margin:2px 0;opacity:.75}
+  .tile.used{border-color:var(--good);background:var(--good-soft)}
+  #ghost{position:fixed;z-index:9999;pointer-events:none;opacity:.92;transform:rotate(-2deg);box-shadow:0 10px 24px rgba(0,0,0,.25)}
+
+  /* ---------- modal ---------- */
+  .scrim{position:fixed;inset:0;background:rgba(15,22,35,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:100}
+  .scrim.show{display:flex}
+  .modal{background:#fff;border-radius:14px;max-width:520px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:92vh;overflow:auto}
+  .modal h3{margin:0 0 6px;font-size:21px}
+  .big-score{font-size:42px;font-weight:800;text-align:center;margin:10px 0 0;letter-spacing:-.02em}
+  .big-score span{font-size:18px;color:var(--muted);font-weight:600}
+
+  @media (max-width:640px){
+    .wrap{padding:9px}
+    .title{font-size:17px}
+    .prompt{font-size:17px}
+    .stat{min-width:64px;padding:5px 8px}
+    .stat b{font-size:15px}
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0c1015; --card:#1b222c; --ink:#f0f4fa; --muted:#a9b6c7; --line:#3a4553;
+      --accent:#6aa6ff; --accent-soft:#1d3252;
+      --good:#6fdca6; --good-soft:#123526; --bad:#ff9a8c; --bad-soft:#3d1d19;
+      --warn:#f0c97e; --warn-soft:#3a2f14;
+      --tile:#232c38; --tile-line:#4c5a6c;
+      --mark:#6b5200; --mark-ink:#ffe9a3; --mark-line:#a37f00;
+    }
+    select,input[type=text],button.b{background:#2a3542;color:var(--ink)}
+    .cell.start{background:#1d3252;border-color:var(--accent)}
+    .slot-empty{background:#161d26}
+    .pill,.badge,.pool-tab{background:#2a3542}
+    .pool-tab.active{background:var(--accent)}
+    .fb .work{background:rgba(0,0,0,.3)}
+    .modal{background:#1b222c}
+    button.b:hover:not(:disabled){background:#33404f}
+  }
+
+  /* ---------- start / summary screen ---------- */
+  .modal h3{margin:0 0 4px}
+  .lede{color:var(--muted);font-size:13.5px;margin:0 0 12px}
+  .reqs{list-style:none;padding:0;margin:0 0 14px}
+  .reqs li{
+    display:flex;gap:9px;align-items:flex-start;padding:7px 0;
+    border-top:1px solid var(--line);font-size:13.5px;
+  }
+  .reqs li:last-child{border-bottom:1px solid var(--line)}
+  .reqs .ic{
+    flex:0 0 22px;height:22px;border-radius:50%;background:var(--accent-soft);
+    color:var(--accent);display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:800;
+  }
+  .reqs b{display:block}
+  .reqs span{color:var(--muted);font-size:12.5px}
+  .goal{
+    background:var(--accent-soft);border:1px solid var(--accent);border-radius:8px;
+    padding:10px 12px;margin:0 0 12px;font-size:14px;
+  }
+  .goal b{display:block;font-size:15px;margin-bottom:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="bar">
+    <h1 class="title">Dimensional Analysis <small>Build the chain so every unit cancels</small></h1>
+    <div class="ctrls">
+      <label class="fld" id="fldLevel">Difficulty
+        <select id="levelSel"></select>
+      </label>
+      <div class="stats">
+        <div class="stat"><b id="stProb">1 / 10</b><span>Problem</span></div>
+        <div class="stat"><b id="stScore">0</b><span>Correct</span></div>
+        <div class="stat"><b id="stFirst">0</b><span>First try</span></div>
+        <div class="stat"><b id="stScorePct">100%</b><span>Score</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ STUDENT APP ============ -->
+  <div id="app">
+    <div class="fb" id="dueBar" style="display:none;margin-top:0;margin-bottom:12px"></div>
+
+    <div class="card">
+      <p class="prompt" id="prompt">Loading…</p>
+      <div class="chain-scroll">
+        <div class="chain" id="chain"></div>
+      </div>
+      <div class="eq-inline" id="eqInline">
+        <div class="eq-top">
+          <span class="sign">=</span>
+          <input type="text" id="ansInput" inputmode="decimal" placeholder="answer" autocomplete="off" spellcheck="false">
+          <span class="sci-group" id="sciGroup">
+            <input type="text" id="mantissaInput" inputmode="decimal" placeholder="" autocomplete="off" spellcheck="false" class="mantissa-input">
+            <span class="sci-times">&times; 10</span>
+            <input type="text" id="exponentInput" inputmode="numeric" placeholder="" autocomplete="off" spellcheck="false" class="exponent-input">
+          </span>
+          <span class="units" id="ansUnits">—</span>
+        </div>
+        <label class="sci-toggle" for="sciToggle">
+          <input type="checkbox" id="sciToggle"> Use scientific notation
+        </label>
+      </div>
+      <div class="readout">
+        <span style="color:var(--muted)">Left over:</span>
+        <span class="pill" id="leftPill">nothing placed yet</span>
+        <span style="color:var(--muted)">Target:</span>
+        <span class="pill" id="targetPill">—</span>
+      </div>
+      <div class="btnrow">
+        <button class="b primary" id="btnCheck">Check answer</button>
+        <button class="b" id="btnClear">Clear factors</button>
+        <button class="b" id="btnHint">Hint</button>
+        <button class="b" id="btnSolve">Show solution</button>
+        <button class="b" id="btnNext">Next problem →</button>
+        <button class="b save" id="btnSaveProgress">Save Progress</button>
+        <span class="save-status" id="saveStatus">Saved ✓</span>
+      </div>
+      <div class="fb" id="fb"></div>
+    </div>
+
+    <div class="card">
+      <h2>Conversion factors — each one appears both ways up · drag or tap to add · reusable</h2>
+      <p class="exact-note">Assume every conversion factor below is an exact number for this activity — base your significant figures on your starting measurement only.</p>
+      <div class="pool-tabs" id="poolTabs"></div>
+      <div class="pool" id="pool"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ START / SUMMARY SCREEN ============ -->
+<div class="scrim show" id="startScrim">
+  <div class="modal">
+    <h3 id="sTitle">Dimensional Analysis</h3>
+    <p class="lede" id="sLede"></p>
+
+    <div class="goal" id="sGoal"></div>
+
+    <ul class="reqs">
+      <li><span class="ic">1</span><div><b>Build the chain</b><span>Drag a conversion factor in, or just tap it. Put the unit you want to get rid of on the opposite level so the two cancel diagonally.</span></div></li>
+      <li><span class="ic">2</span><div><b>Watch the units cancel</b><span>Cancelled units are struck through in red. When only the target units are left, the readout turns green.</span></div></li>
+      <li><span class="ic">3</span><div><b>Work out the number</b><span>Multiply everything on top, divide by everything on the bottom, and write your answer with the correct number of significant figures. Scientific notation is accepted whenever you need it.</span></div></li>
+      <li><span class="ic">4</span><div><b>Check your answer</b><span>You have to get it fully right before you can move on. <b>Show solution</b> is always there if you're stuck — it just doesn't earn credit.</span></div></li>
+      <li><span class="ic">5</span><div><b>Save before you go</b><span>Before you close your Chromebook or exit Schoology, click the green "Save Progress" button so your work is saved and you can pick up where you left off next time.</span></div></li>
+    </ul>
+
+    <div class="btnrow"><button class="b primary" id="btnStart" style="flex:1;justify-content:center">Start</button></div>
+  </div>
+</div>
+
+<!-- ============ SHOW SOLUTION CONFIRMATION ============ -->
+<div class="scrim" id="solveScrim">
+  <div class="modal">
+    <h3>Show the solution?</h3>
+    <p style="color:var(--muted);margin:8px 0 16px">
+      This reveals the worked answer for this problem. It won't count toward your required
+      correct answers, and it costs points off your score — same as any other wrong attempt.
+    </p>
+    <div class="btnrow">
+      <button class="b ghost" id="btnSolveCancel">Cancel</button>
+      <button class="b primary" id="btnSolveConfirm" style="flex:1;justify-content:center">Yes, show it</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ END OF SET MODAL ============ -->
+<div class="scrim" id="scrim">
+  <div class="modal">
+    <h3>Set complete</h3>
+    <p class="big-score"><span id="mScore">0 / 10</span></p>
+    <p style="text-align:center;color:var(--muted);margin:2px 0 14px" id="mDetail"></p>
+
+    <div id="scormBox" style="display:none">
+      <div class="fb ok show" id="scormMsg"></div>
+      <div class="btnrow"><button class="b primary" id="btnAgain2">New set</button></div>
+    </div>
+
+    <div id="noLmsBox" style="display:none">
+      <div class="fb tip show">This activity isn’t connected to Schoology right now, so your score wasn’t submitted. Make sure you open it from inside your Schoology assignment, then try again.</div>
+      <div class="btnrow"><button class="b primary" id="btnAgain">Try again</button></div>
+    </div>
+    <div class="btnrow" id="closeRow"><button class="b ghost" id="btnClose">Close</button></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ==========================================================================
+   0. TEACHER SETTINGS  —  the only part you normally need to edit
+   ==========================================================================
+
+   DUE_DATE
+   Schoology will not let a SCORM package carry a due date; that field simply
+   does not exist on a package (only assignments have it). Setting a date here
+   is the next best thing: the activity shows the deadline in its own header,
+   and anything finished afterwards is stamped LATE in the gradebook comment
+   and in the completion code.
+
+   Format 'YYYY-MM-DDTHH:MM' in the student's own local time. Leave it as ''
+   for no deadline. Editing this means re-zipping and re-uploading the package,
+   so if your sections have different due dates you'd want one upload each —
+   or leave it blank and let a companion assignment carry the date instead.
+
+   Example:  const DUE_DATE = '2026-08-21T23:59';
+*/
+const DUE_DATE = "";
+
+/*
+   FIXED_LEVEL / SET_LENGTH
+   Set FIXED_LEVEL to one of 'l1'...'l6' and the difficulty and set-length
+   dropdowns disappear: students just get that level, no choices to make and
+   nothing to set wrong. Leave it as '' and they pick for themselves.
+
+   build-packages.js writes one zip per level using this, so you normally
+   don't edit these by hand — run `node build-packages.js` instead.
+*/
+const FIXED_LEVEL = "l3";
+const SET_LENGTH = 10;
+
+/*
+   SCORING
+   A student can't skip a problem — the same one comes back until it's
+   actually solved (right setup, right value, right sig figs), so "percent
+   correct" isn't meaningful here; every finished set has SET_LENGTH correct
+   by definition. What varies is how many wrong attempts it took along the
+   way. Each wrong attempt (bad setup or bad number) costs SCORE_PENALTY_PER_MISS
+   points off a 100 start, down to SCORE_FLOOR. A sig-figs-only mistake — the
+   value is right but not expressed to the right precision — is NOT scored as
+   a miss; it just blocks Next until it's fixed.
+*/
+const SCORE_PENALTY_PER_MISS = 3;
+const SCORE_FLOOR = 60;
+
+/* Below this line is the activity itself. */
+
+/* ==========================================================================
+   1. UNITS
+   Each unit knows how to reduce to SI base dimensions {m,g,s}. Volume units
+   reduce to m^3 so that mL <-> cm^3 works out honestly.
+   ========================================================================== */
+const U = {
+  km  :{d:'len', disp:'km',    base:{m:1}, f:1000},
+  m   :{d:'len', disp:'m',     base:{m:1}, f:1},
+  cm  :{d:'len', disp:'cm',    base:{m:1}, f:0.01},
+  mm  :{d:'len', disp:'mm',    base:{m:1}, f:0.001},
+  um  :{d:'len', disp:'μm',base:{m:1}, f:1e-6},
+  mi  :{d:'len', disp:'mi',    base:{m:1}, f:1609.344},
+  yd  :{d:'len', disp:'yd',    base:{m:1}, f:0.9144},
+  ft  :{d:'len', disp:'ft',    base:{m:1}, f:0.3048},
+  inch:{d:'len', disp:'in',    base:{m:1}, f:0.0254},
+
+  kg  :{d:'mass',disp:'kg',    base:{g:1}, f:1000},
+  g   :{d:'mass',disp:'g',     base:{g:1}, f:1},
+  mg  :{d:'mass',disp:'mg',    base:{g:1}, f:0.001},
+  ug  :{d:'mass',disp:'μg',base:{g:1},f:1e-6},
+  ton :{d:'mass',disp:'ton',   base:{g:1}, f:907184.74},
+  lb  :{d:'mass',disp:'lb',    base:{g:1}, f:453.59237},
+  oz  :{d:'mass',disp:'oz',    base:{g:1}, f:28.349523125},
+
+  kL  :{d:'vol', disp:'kL',    base:{m:3}, f:1},
+  L   :{d:'vol', disp:'L',     base:{m:3}, f:1e-3},
+  mL  :{d:'vol', disp:'mL',    base:{m:3}, f:1e-6},
+  gal :{d:'vol', disp:'gal',   base:{m:3}, f:3.785411784e-3},
+  qt  :{d:'vol', disp:'qt',    base:{m:3}, f:9.46352946e-4},
+  floz:{d:'vol', disp:'fl oz', base:{m:3}, f:2.95735295625e-5},
+
+  day :{d:'time',disp:'day',   base:{s:1}, f:86400},
+  hr  :{d:'time',disp:'hr',    base:{s:1}, f:3600},
+  min :{d:'time',disp:'min',   base:{s:1}, f:60},
+  s   :{d:'time',disp:'s',     base:{s:1}, f:1},
+  ms  :{d:'time',disp:'ms',    base:{s:1}, f:1e-3}
+};
+
+/* Which units belong to the customary/imperial system. Problems never run
+   imperial -> imperial: those conversions (5280 ft to a mile, 16 oz to a pound)
+   are memorised trivia that students schooled outside the US have no reason to
+   know, and they teach nothing about cancelling units. Every imperial unit
+   instead bridges straight to metric. */
+const IMPERIAL = ['mi','yd','ft','inch','ton','lb','oz','gal','qt','floz'];
+const isImp = u => IMPERIAL.indexOf(u) >= 0;
+
+/* Conversion relationships: na of A equals nb of B.
+   Metric prefixes are connected DIRECTLY to each other, not in a ladder — a
+   student should reach for "1 kg = 1 000 000 mg" as one equality rather than
+   being forced through grams. The only metric pairs left out are the ones
+   spanning more than 10^6 (km<->um, kg<->ug, hr<->ms), which nobody quotes as
+   a single equality; those genuinely take two factors. */
+const EDGES = [
+  // ---- metric length, every pair within 10^6 ----
+  {id:'km_m',   a:'km', b:'m',   na:1, nb:1000,    g:'len'},
+  {id:'km_cm',  a:'km', b:'cm',  na:1, nb:100000,  g:'len'},
+  {id:'km_mm',  a:'km', b:'mm',  na:1, nb:1000000, g:'len'},
+  {id:'m_cm',   a:'m',  b:'cm',  na:1, nb:100,     g:'len'},
+  {id:'m_mm',   a:'m',  b:'mm',  na:1, nb:1000,    g:'len'},
+  {id:'m_um',   a:'m',  b:'um',  na:1, nb:1000000, g:'len'},
+  {id:'cm_mm',  a:'cm', b:'mm',  na:1, nb:10,      g:'len'},
+  {id:'cm_um',  a:'cm', b:'um',  na:1, nb:10000,   g:'len'},
+  {id:'mm_um',  a:'mm', b:'um',  na:1, nb:1000,    g:'len'},
+
+  // ---- metric mass ----
+  {id:'kg_g',   a:'kg', b:'g',   na:1, nb:1000,    g:'mass'},
+  {id:'kg_mg',  a:'kg', b:'mg',  na:1, nb:1000000, g:'mass'},
+  {id:'g_mg',   a:'g',  b:'mg',  na:1, nb:1000,    g:'mass'},
+  {id:'g_ug',   a:'g',  b:'ug',  na:1, nb:1000000, g:'mass'},
+  {id:'mg_ug',  a:'mg', b:'ug',  na:1, nb:1000,    g:'mass'},
+
+  // ---- metric volume ----
+  {id:'kL_L',   a:'kL', b:'L',   na:1, nb:1000,    g:'vol'},
+  {id:'kL_mL',  a:'kL', b:'mL',  na:1, nb:1000000, g:'vol'},
+  {id:'L_mL',   a:'L',  b:'mL',  na:1, nb:1000,    g:'vol'},
+
+  // ---- time ----
+  {id:'day_hr', a:'day',b:'hr',  na:1, nb:24,      g:'time'},
+  {id:'day_min',a:'day',b:'min', na:1, nb:1440,    g:'time'},
+  {id:'day_s',  a:'day',b:'s',   na:1, nb:86400,   g:'time'},
+  {id:'hr_min', a:'hr', b:'min', na:1, nb:60,      g:'time'},
+  {id:'hr_s',   a:'hr', b:'s',   na:1, nb:3600,    g:'time'},
+  {id:'min_s',  a:'min',b:'s',   na:1, nb:60,      g:'time'},
+  {id:'min_ms', a:'min',b:'ms',  na:1, nb:60000,   g:'time'},
+  {id:'s_ms',   a:'s',  b:'ms',  na:1, nb:1000,    g:'time'},
+
+  // ---- the only imperial conversions: straight across to metric ----
+  {id:'in_cm',  a:'inch',b:'cm', na:1, nb:2.54,    g:'len'},
+  {id:'ft_cm',  a:'ft', b:'cm',  na:1, nb:30.48,   g:'len'},
+  {id:'yd_cm',  a:'yd', b:'cm',  na:1, nb:91.44,   g:'len'},
+  {id:'mi_km',  a:'mi', b:'km',  na:1, nb:1.609,   g:'len'},
+  {id:'oz_g',   a:'oz', b:'g',   na:1, nb:28.35,   g:'mass'},
+  {id:'lb_g',   a:'lb', b:'g',   na:1, nb:453.6,   g:'mass'},
+  {id:'ton_kg', a:'ton',b:'kg',  na:1, nb:907.2,   g:'mass'},
+  {id:'floz_mL',a:'floz',b:'mL', na:1, nb:29.57,   g:'vol'},
+  {id:'qt_L',   a:'qt', b:'L',   na:1, nb:0.9464,  g:'vol'},
+  {id:'gal_L',  a:'gal',b:'L',   na:1, nb:3.785,   g:'vol'}
+];
+const EDGE_BY_ID = {}; EDGES.forEach(e=>EDGE_BY_ID[e.id]=e);
+
+/* ---- adjacency + all-pairs shortest paths ----
+   With direct equalities in the graph, "how many steps is this problem?" is no
+   longer the length of whatever path the generator happened to walk — it's the
+   true shortest route. Difficulty is set from that, so a level-2 problem really
+   is one that cannot be done in a single factor. */
+const ADJ = {};
+EDGES.forEach(e=>{
+  (ADJ[e.a] = ADJ[e.a] || []).push({e, to:e.b});
+  (ADJ[e.b] = ADJ[e.b] || []).push({e, to:e.a});
+});
+
+const SP = {};
+Object.keys(ADJ).forEach(src=>{
+  const seen = {}; seen[src] = {dist:0, path:[]};
+  const queue = [src];
+  while(queue.length){
+    const cur = queue.shift();
+    (ADJ[cur] || []).forEach(o=>{
+      if(seen[o.to]) return;
+      seen[o.to] = {dist:seen[cur].dist + 1,
+                    path:seen[cur].path.concat([{edge:o.e, from:cur, to:o.to}])};
+      queue.push(o.to);
+    });
+  }
+  SP[src] = seen;
+});
+
+/** All (from,to) pairs whose shortest route is exactly `n` factors. */
+function pairsAtDistance(n, ok){
+  const out = [];
+  Object.keys(SP).forEach(a=>{
+    Object.keys(SP[a]).forEach(b=>{
+      if(a === b || SP[a][b].dist !== n) return;
+      if(isImp(a) && isImp(b)) return;          // never imperial -> imperial
+      if(ok && !ok(a,b)) return;
+      out.push([a,b]);
+    });
+  });
+  return out;
+}
+
+/* ==========================================================================
+   2. SMALL HELPERS
+   ========================================================================== */
+const $ = id => document.getElementById(id);
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+const randInt = (lo,hi) => lo + Math.floor(Math.random()*(hi-lo+1));
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+const SUPS = {'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+const sup = n => String(n).split('').map(c=>SUPS[c]||c).join('');
+
+function trimZeros(s){ return s.indexOf('.')>=0 ? s.replace(/0+$/,'').replace(/\.$/,'') : s; }
+
+/** Format the literal numbers printed inside a conversion factor. */
+const fmtTile = v => trimZeros(String(v));
+
+/** Accepts 12500, 1.25e4, "1.25 x 10^4", "1.25 × 10^4", "12,500". */
+function parseNum(str){
+  if(str==null) return NaN;
+  let s = String(str).trim().toLowerCase().replace(/,/g,'').replace(/\s+/g,'');
+  if(!s) return NaN;
+  s = s.replace(/(×|x|\*)10\^?/g,'e');
+  s = s.replace(/e\+/,'e');
+  return parseFloat(s);
+}
+
+/* ==========================================================================
+   SIGNIFICANT FIGURES
+   Every problem has exactly one measured starting value; every conversion
+   factor is treated as an exact number (per the assignment's own rules), so
+   the required sig figs for the answer is just the sig figs of that one
+   starting value, carried straight through regardless of how many steps
+   the conversion takes.
+   ========================================================================== */
+
+/** Round `value` to `sig` significant figures (magnitude only — display
+    formatting, including whether scientific notation is needed, is a
+    separate question handled by fmtSig/needsScientific below). */
+function roundToSigFigs(value, sig){
+  if(value === 0) return 0;
+  const exp = Math.floor(Math.log10(Math.abs(value)));
+  const factor = Math.pow(10, sig - 1 - exp);
+  return Math.round(value * factor) / factor;
+}
+
+/** True when a plain (non-scientific) rendering of `roundedValue` cannot
+    show exactly `sig` sig figs without ambiguity — i.e. it would need
+    trailing zeros in a whole number with no decimal point to carry
+    significance, which plain notation can't express. */
+function needsScientific(roundedValue, sig){
+  if(roundedValue === 0) return false;
+  const a = Math.abs(roundedValue);
+  const exp = Math.floor(Math.log10(a));
+  const decimalPlaces = sig - 1 - exp;
+  if(decimalPlaces > 0) return false;           // a decimal point will show, no ambiguity
+  if(decimalPlaces === 0) return Math.round(a) % 10 === 0;  // whole number ending in 0 is ambiguous
+  return true;                                    // more digits than sig figs — must use scientific notation
+}
+
+/** Format a value to exactly `sig` significant figures for display,
+    switching to scientific notation whenever plain notation can't show
+    that precision unambiguously (or the magnitude is extreme). Unlike
+    fmtTile(), this never strips a trailing zero that's carrying real
+    precision. */
+function fmtSig(value, sig){
+  if(value === 0) return (0).toFixed(Math.max(sig - 1, 0));
+  const rounded = roundToSigFigs(value, sig);
+  const a = Math.abs(rounded);
+  const exp = Math.floor(Math.log10(a));
+  if(needsScientific(rounded, sig) || a >= 1e6 || a < 1e-4){
+    let mant = rounded / Math.pow(10, exp);
+    let mantStr = mant.toFixed(Math.max(sig - 1, 0));
+    if(Math.abs(parseFloat(mantStr)) >= 10){
+      mant = mant / 10;
+      mantStr = mant.toFixed(Math.max(sig - 1, 0));
+      return mantStr + ' × 10' + sup(exp + 1);
+    }
+    return mantStr + ' × 10' + sup(exp);
+  }
+  const decimalPlaces = Math.max(0, sig - 1 - exp);
+  return rounded.toFixed(decimalPlaces);
+}
+
+/** Sig figs in a plain decimal string (no exponent). Leading zeros never
+    count; trailing zeros only count once a decimal point is present. */
+function sigFigsOfPlainString(str){
+  let s = String(str).trim();
+  if(s.startsWith('-')) s = s.slice(1);
+  if(!/^\d*\.?\d*$/.test(s) || s === '' || s === '.') return null;
+  if(s.indexOf('.') === -1){
+    const noLeading = s.replace(/^0+/, '');
+    if(noLeading === '') return 1;
+    const noTrailing = noLeading.replace(/0+$/, '');
+    return noTrailing.length > 0 ? noTrailing.length : 1;
+  }
+  const digitsOnly = s.replace('.', '');
+  const noLeading = digitsOnly.replace(/^0+/, '');
+  return noLeading.length > 0 ? noLeading.length : 1;
+}
+
+/** Sig figs in a scientific-notation mantissa — every digit counts, since
+    the exponent (not trailing zeros) carries the magnitude. */
+function sigFigsOfMantissa(str){
+  let s = String(str).trim();
+  if(s.startsWith('-')) s = s.slice(1);
+  if(!/^\d*\.?\d*$/.test(s) || s === '' || s === '.') return null;
+  const digits = s.replace('.', '').replace(/^0+/, '');
+  return digits.length > 0 ? digits.length : 1;
+}
+
+/** Sig figs of whatever the student actually typed. Mirrors parseNum's own
+    normalization so grading agrees with whatever it accepts as a number. */
+function sigFigsOfInput(raw){
+  if(raw == null) return null;
+  let s = String(raw).trim().toLowerCase().replace(/,/g,'').replace(/\s+/g,'');
+  if(!s) return null;
+  s = s.replace(/(×|x|\*)10\^?/g,'e');
+  s = s.replace(/e\+/,'e');
+  const eIdx = s.indexOf('e');
+  if(eIdx === -1) return sigFigsOfPlainString(s);
+  const mantissa = s.slice(0, eIdx);
+  const expPart = s.slice(eIdx + 1);
+  if(!/^-?\d+$/.test(expPart)) return null;
+  return sigFigsOfMantissa(mantissa);
+}
+
+/* ---- unit maps: {unitKey: exponent} ---- */
+function mapAdd(map, u, n){ map[u] = (map[u]||0) + n; if(map[u]===0) delete map[u]; return map; }
+function mapFromTokens(tokens){ const m={}; tokens.forEach(t=>mapAdd(m,t,1)); return m; }
+function tokensFromMap(map){ const out=[]; for(const u in map){ for(let i=0;i<map[u];i++) out.push(u); } return out; }
+function mapStr(map){
+  const keys = Object.keys(map);
+  if(!keys.length) return '';
+  return keys.map(u => U[u].disp + (map[u]>1 ? sup(map[u]) : '')).join('·');
+}
+function unitStr(num, den){
+  const n = mapStr(num) || '1';
+  const d = mapStr(den);
+  return d ? n + '/' + d : n;
+}
+function mapsEqual(a,b){
+  const ka=Object.keys(a), kb=Object.keys(b);
+  if(ka.length!==kb.length) return false;
+  return ka.every(k => a[k]===b[k]);
+}
+
+/* ==========================================================================
+   3. CONVERSION-FACTOR TILES
+   A tile is {edgeId, from} meaning "this factor cancels `from`".
+   ========================================================================== */
+function tileFor(edge, fromUnit){
+  if(fromUnit === edge.a) return {edgeId:edge.id, from:edge.a, numV:edge.nb, numU:edge.b, denV:edge.na, denU:edge.a};
+  return                        {edgeId:edge.id, from:edge.b, numV:edge.na, numU:edge.a, denV:edge.nb, denU:edge.b};
+}
+const tileKey = t => t.edgeId + '|' + t.from;
+const tileFlip = t => tileFor(EDGE_BY_ID[t.edgeId], t.numU);
+
+/* ==========================================================================
+   4. PROBLEM GENERATION
+   ========================================================================== */
+/** Pick a random (from,to) pair needing exactly `steps` factors. */
+function pickPair(steps, dims, extra){
+  const cands = pairsAtDistance(steps, (a,b)=>
+      dims.indexOf(U[a].d) >= 0 && (!extra || extra(a,b)));
+  return cands.length ? pick(cands) : null;
+}
+
+/** Tiles needed to convert a NUMERATOR unit along a path. */
+const pathTilesNum = path => path.map(st => tileFor(st.edge, st.from));
+/** Tiles needed to convert a DENOMINATOR unit along a path (inverted). */
+const pathTilesDen = path => path.map(st => tileFor(st.edge, st.to));
+
+/** The one measured value every problem starts from. Returns {value, sigFigs,
+    display} rather than a bare number: JavaScript silently drops trailing
+    zeros from a float (5.00 and 5 are the same number), so the intended
+    precision has to be tracked and rendered explicitly, not re-derived from
+    the number later. Whole numbers are generated with a guaranteed nonzero
+    last digit so their sig-fig count is never ambiguous (a bare "50" could
+    be 1 or 2 sig figs — this never produces that case). */
+function generateMeasuredValue(){
+  const r = Math.random();
+  if(r < 0.35){
+    // whole number, 1-3 sig figs
+    const sigFigs = randInt(1, 3);
+    let n;
+    do{
+      let s = String(randInt(1,9));
+      for(let i=1;i<sigFigs;i++) s += String(randInt(0,9));
+      n = parseInt(s, 10);
+    }while(sigFigs > 1 && n % 10 === 0);
+    return {value:n, sigFigs, display:String(n)};
+  }
+  if(r < 0.75){
+    // one decimal place — 2 or 3 sig figs depending on the whole part
+    const whole = randInt(1, 99);
+    const tenth = randInt(0, 9);
+    const value = Math.round(whole*10 + tenth) / 10;
+    return {value, sigFigs: String(whole).length + 1, display: value.toFixed(1)};
+  }
+  // two decimal places, single-digit whole part — always 3 sig figs
+  const whole = randInt(1, 9);
+  const hundredths = randInt(0, 99);
+  const value = Math.round(whole*100 + hundredths) / 100;
+  return {value, sigFigs: 3, display: value.toFixed(2)};
+}
+
+/** Pool of edges: everything the route needs, plus nearby distractors. */
+function buildPool(requiredEdgeIds, touchedUnits, maxEdges){
+  const req = Array.from(new Set(requiredEdgeIds));
+  const near = EDGES.filter(e =>
+      req.indexOf(e.id) < 0 &&
+      (touchedUnits.has(e.a) || touchedUnits.has(e.b)));
+  const extras = shuffle(near).slice(0, Math.max(0, (maxEdges||7) - req.length));
+  return shuffle(req.concat(extras.map(e=>e.id)));
+}
+
+function makeProblem(levelId){
+  const L = LEVELS.find(l => l.id === levelId) || LEVELS[0];
+  const kinds = L.kinds;
+  const kind = pick(kinds);
+  let p = null;
+  for(let tries=0; tries<40 && !p; tries++){
+    if(kind === 'simple') p = genSimple(L);
+    else if(kind === 'power') p = genPower(L);
+    else if(kind === 'rate') p = genRate(L);
+  }
+  return p || genSimple(LEVELS[0]);
+}
+
+function genSimple(L){
+  const steps = randInt(L.minSteps, L.maxSteps);
+  // levels can insist on a cross-system problem (where the interesting work is
+  // now that imperial->imperial is gone) or on staying purely metric
+  let extra = null;
+  if(L.cross)           extra = (a,b) => isImp(a) || isImp(b);
+  else if(L.metricOnly) extra = (a,b) => !isImp(a) && !isImp(b);
+  const pair = pickPair(steps, L.dims, extra);
+  if(!pair) return null;
+  const path = SP[pair[0]][pair[1]].path;
+  const tiles = pathTilesNum(path);
+  const mv = generateMeasuredValue();
+  const touched = new Set(); path.forEach(st=>{touched.add(st.from);touched.add(st.to);});
+  return finalize({
+    kind:'simple', value:mv.value, sigFigs:mv.sigFigs, display:mv.display,
+    startNum:{[pair[0]]:1}, startDen:{},
+    targetNum:{[pair[1]]:1}, targetDen:{},
+    tiles, path,
+    poolEdges: buildPool(path.map(st=>st.edge.id), touched, steps + 4)
+  });
+}
+
+function genPower(L){
+  // only lengths get squared or cubed — mL² or hr³ would be meaningless
+  const power = pick(L.powers);
+  const steps = power === 3 ? 1 : randInt(1, 2);
+  const pair = pickPair(steps, ['len']);
+  if(!pair) return null;
+  const path = SP[pair[0]][pair[1]].path;
+  // the same factor gets used `power` times
+  const tiles = [];
+  pathTilesNum(path).forEach(t => { for(let i=0;i<power;i++) tiles.push(t); });
+  const mv = generateMeasuredValue();
+  const touched = new Set(); path.forEach(st=>{touched.add(st.from);touched.add(st.to);});
+  return finalize({
+    kind:'power', power, value:mv.value, sigFigs:mv.sigFigs, display:mv.display,
+    startNum:{[pair[0]]:power}, startDen:{},
+    targetNum:{[pair[1]]:power}, targetDen:{},
+    tiles, path,
+    poolEdges: buildPool(path.map(st=>st.edge.id), touched, steps + 3)
+  }, 8);
+}
+
+/* Rates are drawn from real quantities only — speed, flow rate, mass flow and
+   density. Picking the top and bottom dimensions independently would happily
+   produce nonsense like ft/mL, or a self-cancelling L/kL. Repeats weight the
+   draw, so speed comes up most often. */
+const RATE_PAIRS = [
+  ['len','time'], ['len','time'], ['len','time'],   // speed
+  ['vol','time'],                                   // flow rate
+  ['mass','time'],                                  // mass flow
+  ['mass','vol']                                    // density
+];
+
+function genRate(L){
+  const dims = pick(L.ratePairs || RATE_PAIRS);
+  const total = randInt(Math.max(2, L.minSteps), L.maxSteps);
+  const nSteps = randInt(1, total - 1);
+  const dSteps = total - nSteps;
+  const nPair = pickPair(nSteps, [dims[0]]);
+  // milliseconds make a fine duration but a ridiculous rate denominator
+  // ("2 oz/ms"), so keep the bottom of a rate to s / min / hr / day
+  const dPair = pickPair(dSteps, [dims[1]],
+      dims[1] === 'time' ? ((a,b) => a !== 'ms' && b !== 'ms') : null);
+  if(!nPair || !dPair) return null;
+  const nPath = SP[nPair[0]][nPair[1]].path;
+  const dPath = SP[dPair[0]][dPair[1]].path;
+  const tiles = pathTilesNum(nPath).concat(pathTilesDen(dPath));
+  const mv = generateMeasuredValue();
+  const touched = new Set();
+  nPath.forEach(st=>{touched.add(st.from);touched.add(st.to);});
+  dPath.forEach(st=>{touched.add(st.from);touched.add(st.to);});
+  return finalize({
+    kind:'rate', value:mv.value, sigFigs:mv.sigFigs, display:mv.display,
+    startNum:{[nPair[0]]:1}, startDen:{[dPair[0]]:1},
+    targetNum:{[nPair[1]]:1}, targetDen:{[dPair[1]]:1},
+    tiles, path:nPath.concat(dPath),
+    poolEdges: buildPool(
+      nPath.map(st=>st.edge.id).concat(dPath.map(st=>st.edge.id)),
+      touched, total + 3)
+  });
+}
+
+/** Compute the exact target value from the intended tile chain.
+    Returns null — so the caller retries — when the conversion spans so many
+    orders of magnitude that the problem stops teaching anything (μm² to km²
+    is a factor of 10^18; nobody learns unit cancelling from that). */
+function finalize(p, maxDecades){
+  let v = p.value;
+  p.tiles.forEach(t => { v = v * (t.numV / t.denV); });
+  if(Math.abs(Math.log10(Math.abs(v / p.value))) > (maxDecades || 9)) return null;
+  p.target = v;
+  p.roundedTarget = roundToSigFigs(v, p.sigFigs);
+  p.targetDisplay = fmtSig(v, p.sigFigs);
+  p.minSteps = p.tiles.length;
+  p.promptFrom = unitStr(p.startNum, p.startDen);
+  p.promptTo   = unitStr(p.targetNum, p.targetDen);
+  return p;
+}
+
+/* ==========================================================================
+   5. DIFFICULTY LEVELS
+   ========================================================================== */
+const LEVELS = [
+  {id:'l1', name:'1 — One step (metric)',    kinds:['simple'], dims:['len','mass','vol','time'], metricOnly:true, minSteps:1, maxSteps:1},
+  {id:'l2', name:'2 — Metric ↔ US customary',kinds:['simple'], dims:['len','mass','vol'], cross:true, minSteps:1, maxSteps:2},
+  {id:'l3', name:'3 — Two steps',            kinds:['simple'], dims:['len','mass','vol','time'], minSteps:2, maxSteps:2},
+  {id:'l4', name:'4 — Squared & cubic',      kinds:['power'],  powers:[2,2,3], minSteps:1, maxSteps:2},
+  {id:'l5', name:'5 — Rates (km/hr → m/s)',  kinds:['rate'],   minSteps:2, maxSteps:3},
+  {id:'l6', name:'6 — Mixed challenge',      kinds:['simple','simple','power','rate','rate'],
+                                             dims:['len','mass','vol','time'], powers:[2,3], minSteps:2, maxSteps:3}
+];
+
+/* ==========================================================================
+   6. CANCELLATION ENGINE
+   The chain is: [start cell] × [factor cells...]. Every unit written anywhere
+   is a separate token, so cm² shows up as two cancellable cm's — which is
+   exactly why you need the factor twice.
+   ========================================================================== */
+function chainCells(){
+  const cells = [{
+    kind:'start',
+    numV: problem.value, numT: tokensFromMap(problem.startNum),
+    denV: null,          denT: tokensFromMap(problem.startDen)
+  }];
+  chain.forEach(t => cells.push({
+    kind:'factor', tile:t,
+    numV:t.numV, numT:[t.numU],
+    denV:t.denV, denT:[t.denU]
+  }));
+  return cells;
+}
+
+/** Greedy diagonal cancelling across the whole chain. */
+function cancelAnalysis(cells){
+  const nums = [], dens = [];
+  cells.forEach((c,ci)=>{
+    c.numT.forEach((u,ti)=> nums.push({ci,side:'num',ti,u,x:false}));
+    c.denT.forEach((u,ti)=> dens.push({ci,side:'den',ti,u,x:false}));
+  });
+  nums.forEach(n=>{
+    const d = dens.find(d => !d.x && d.u === n.u);
+    if(d){ d.x = true; n.x = true; }
+  });
+  const struck = new Set();
+  nums.concat(dens).forEach(r => { if(r.x) struck.add(r.ci+':'+r.side+':'+r.ti); });
+  const leftNum = mapFromTokens(nums.filter(r=>!r.x).map(r=>r.u));
+  const leftDen = mapFromTokens(dens.filter(r=>!r.x).map(r=>r.u));
+  return {struck, leftNum, leftDen};
+}
+
+function chainValue(){
+  let v = problem.value;
+  chain.forEach(t => { v = v * (t.numV / t.denV); });
+  return v;
+}
+
+/* ==========================================================================
+   6b. DUE DATE
+   ========================================================================== */
+function dueAt(){
+  if(!DUE_DATE) return null;
+  const d = new Date(DUE_DATE);
+  return isNaN(d.getTime()) ? null : d;
+}
+function isLate(){
+  const d = dueAt();
+  return d ? Date.now() > d.getTime() : false;
+}
+function dueText(){
+  const d = dueAt();
+  if(!d) return '';
+  return d.toLocaleString(undefined,
+    {weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'});
+}
+function renderDue(){
+  const bar = $('dueBar');
+  const d = dueAt();
+  if(!d){ bar.style.display = 'none'; return; }
+  bar.style.display = 'block';
+  if(isLate()){
+    bar.className = 'fb no show';
+    bar.innerHTML = '<b>Past due</b> — this was due ' + dueText() +
+      '. You can still work through it, and your score is still recorded, but it will be marked late.';
+  }else{
+    bar.className = 'fb tip show';
+    bar.innerHTML = '<b>Due ' + dueText() + '</b>';
+  }
+}
+
+/* ==========================================================================
+   7. STATE
+   ========================================================================== */
+let problem = null;
+let chain = [];            // array of tiles
+let poolTiles = [];
+let scientificMode = false; // is the student using the mantissa/exponent inputs?
+let session = {level:'l1', total:10, index:0, correct:0, firstTry:0, attempts:0, missCount:0, revealed:false, solvedThis:false, log:[]};
+
+function setScientificMode(on){
+  scientificMode = on;
+  $('sciToggle').checked = on;
+  $('ansInput').style.display = on ? 'none' : '';
+  $('sciGroup').classList.toggle('visible', on);
+}
+
+/* ==========================================================================
+   8. RENDERING
+   ========================================================================== */
+function tokenHtml(u, ci, side, ti, struck){
+  const key = ci+':'+side+':'+ti;
+  return '<span class="tok'+(struck.has(key)?' cx':'')+'">'+U[u].disp+'</span>';
+}
+function sideHtml(val, toks, ci, side, struck){
+  const t = toks.map((u,ti)=>tokenHtml(u,ci,side,ti,struck)).join('<span style="opacity:.4">·</span>');
+  const v = (val===null || val===undefined) ? '' : '<span class="val">'+ (ci===0 && side==='num' ? problem.display : fmtTile(val)) +'</span> ';
+  if(!t && !v) return '';
+  return v + t;
+}
+
+function renderChain(){
+  const cells = chainCells();
+  const an = cancelAnalysis(cells);
+  const host = $('chain');
+  // Grab the persistent answer box before wiping the chain — innerHTML=''
+  // would otherwise destroy it (and its typed value/listeners) along with
+  // the cells being rebuilt below.
+  const eqNode = $('eqInline');
+  host.innerHTML = '';
+
+  cells.forEach((c, ci)=>{
+    if(ci > 0){
+      const op = document.createElement('div');
+      op.className = 'op'; op.textContent = '×';
+      host.appendChild(op);
+    }
+    const el = document.createElement('div');
+    el.className = 'cell' + (c.kind==='start' ? ' start' : '');
+    el.dataset.cell = ci;
+    const hasDen = c.denT.length > 0;
+    const numHtml = sideHtml(c.numV, c.numT, ci, 'num', an.struck);
+    const denHtml = hasDen ? sideHtml(c.denV, c.denT, ci, 'den', an.struck) : '';
+    el.innerHTML = hasDen
+      ? '<div class="num">'+numHtml+'</div><div class="bar"></div><div class="den">'+denHtml+'</div>'
+      : '<div class="num">'+numHtml+'</div>';
+    if(c.kind === 'factor'){
+      el.classList.add('tile');
+      el.dataset.src = 'chain';
+      el.dataset.index = String(ci-1);
+      const tools = document.createElement('div');
+      tools.className = 'tools';
+      tools.innerHTML =
+        '<button class="fl" title="Flip this factor over" aria-label="Flip factor">⇅</button>' +
+        '<button class="rm" title="Remove this factor" aria-label="Remove factor">×</button>';
+      tools.querySelector('.fl').onclick = ev => { ev.stopPropagation(); chain[ci-1] = tileFlip(chain[ci-1]); afterChange(); };
+      tools.querySelector('.rm').onclick = ev => { ev.stopPropagation(); chain.splice(ci-1,1); afterChange(); };
+      el.appendChild(tools);
+    }
+    host.appendChild(el);
+  });
+
+  const op = document.createElement('div');
+  op.className = 'op'; op.textContent = '×';
+  host.appendChild(op);
+  const empty = document.createElement('div');
+  empty.className = 'slot-empty';
+  empty.id = 'emptySlot';
+  empty.textContent = chain.length ? 'drop another factor' : 'drag or tap a factor from below';
+  host.appendChild(empty);
+
+  // The answer box always sits right after the last placed factor (the drop
+  // slot), moving further right as the chain grows — same scrollable row.
+  host.appendChild(eqNode);
+
+  // live readout
+  const leftStr = unitStr(an.leftNum, an.leftDen);
+  const match = mapsEqual(an.leftNum, problem.targetNum) && mapsEqual(an.leftDen, problem.targetDen);
+  const pill = $('leftPill');
+  pill.textContent = chain.length===0 && !leftStr ? 'nothing placed yet' : (leftStr || '1');
+  pill.className = 'pill ' + (chain.length===0 ? '' : (match ? 'ok' : 'no'));
+  $('targetPill').textContent = problem.promptTo;
+  $('targetPill').className = 'pill' + (match ? ' ok' : '');
+  return an;
+}
+
+/** Which unit the pool is currently filtered to, or null for "show all".
+    Rebuilt fresh (and reset to null) every time a new problem loads, since
+    the set of units on offer changes with the problem. */
+let poolFilter = null;
+
+/** Tabs above the factor pool, one per unit that appears in this problem's
+    tile set, so a student can jump straight to (say) every mile-related
+    factor instead of scanning the whole pool. */
+function renderPoolTabs(){
+  const host = $('poolTabs');
+  const units = new Set();
+  poolTiles.forEach(t => { units.add(t.numU); units.add(t.denU); });
+  if(poolFilter && !units.has(poolFilter)) poolFilter = null;
+  const sorted = Array.from(units).sort((a,b) => U[a].disp.localeCompare(U[b].disp));
+  host.innerHTML = '';
+  const makeTab = (label, unit) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pool-tab' + (poolFilter === unit ? ' active' : '');
+    btn.textContent = label;
+    btn.addEventListener('click', () => {
+      poolFilter = (poolFilter === unit) ? null : unit;
+      renderPoolTabs();
+      renderPool();
+    });
+    host.appendChild(btn);
+  };
+  makeTab('All', null);
+  sorted.forEach(u => makeTab(U[u].disp, u));
+}
+
+function renderPool(){
+  const host = $('pool');
+  host.innerHTML = '';
+  const inUse = new Set(chain.map(tileKey));
+  poolTiles.forEach((t, i)=>{
+    if(poolFilter && t.numU !== poolFilter && t.denU !== poolFilter) return;
+    const el = document.createElement('div');
+    el.className = 'tile' + (inUse.has(tileKey(t)) ? ' used' : '');
+    el.dataset.src = 'pool';
+    el.dataset.index = String(i);
+    el.tabIndex = 0;
+    el.setAttribute('role','button');
+    el.setAttribute('aria-label', fmtTile(t.numV)+' '+U[t.numU].disp+' per '+fmtTile(t.denV)+' '+U[t.denU].disp);
+    el.innerHTML =
+      '<div class="num"><span class="val">'+fmtTile(t.numV)+'</span> '+U[t.numU].disp+'</div>'+
+      '<div class="bar"></div>'+
+      '<div class="den"><span class="val">'+fmtTile(t.denV)+'</span> '+U[t.denU].disp+'</div>';
+    el.addEventListener('keydown', ev=>{
+      if(ev.key==='Enter' || ev.key===' '){ ev.preventDefault(); chain.push(poolTiles[i]); afterChange(); }
+    });
+    host.appendChild(el);
+  });
+  if(poolFilter && !host.children.length){
+    const none = document.createElement('div');
+    none.style.cssText = 'color:var(--muted);font-size:13px;padding:6px 2px';
+    none.textContent = 'No factors involving ' + U[poolFilter].disp + ' in this pool — try All.';
+    host.appendChild(none);
+  }
+}
+
+function afterChange(){
+  renderChain();
+  renderPool();
+}
+
+/* ==========================================================================
+   9. DRAG & DROP  (pointer events: mouse, touch and pen all work)
+   ========================================================================== */
+let drag = null;
+
+document.addEventListener('pointerdown', ev=>{
+  const tile = ev.target.closest('.tile');
+  if(!tile || ev.target.closest('button')) return;
+  if(ev.button !== undefined && ev.button !== 0) return;
+  const r = tile.getBoundingClientRect();
+  drag = {
+    el:tile, src:tile.dataset.src, index:parseInt(tile.dataset.index,10),
+    sx:ev.clientX, sy:ev.clientY, ox:ev.clientX-r.left, oy:ev.clientY-r.top,
+    w:r.width, h:r.height, moved:false, ghost:null, insertAt:null
+  };
+  document.addEventListener('pointermove', onDragMove);
+  document.addEventListener('pointerup', onDragUp);
+  document.addEventListener('pointercancel', onDragUp);
+});
+
+function onDragMove(ev){
+  if(!drag) return;
+  if(!drag.moved){
+    if(Math.hypot(ev.clientX-drag.sx, ev.clientY-drag.sy) < 6) return;
+    drag.moved = true;
+    const g = drag.el.cloneNode(true);
+    g.id = 'ghost';
+    g.classList.remove('used');
+    const tools = g.querySelector('.tools'); if(tools) tools.remove();
+    g.style.width = drag.w+'px';
+    document.body.appendChild(g);
+    drag.ghost = g;
+    document.body.style.userSelect = 'none';
+  }
+  ev.preventDefault();
+  drag.ghost.style.left = (ev.clientX - drag.ox)+'px';
+  drag.ghost.style.top  = (ev.clientY - drag.oy)+'px';
+
+  const chainEl = $('chain');
+  const box = chainEl.getBoundingClientRect();
+  const over = ev.clientX >= box.left-40 && ev.clientX <= box.right+40 &&
+               ev.clientY >= box.top-40  && ev.clientY <= box.bottom+40;
+  chainEl.classList.toggle('drop-active', over);
+  drag.insertAt = over ? insertIndexAt(ev.clientX) : null;
+  showInsertBar(drag.insertAt);
+}
+
+function insertIndexAt(x){
+  const cells = Array.from($('chain').querySelectorAll('.cell[data-src="chain"]'));
+  let i = 0;
+  cells.forEach(c=>{ const r=c.getBoundingClientRect(); if(x > r.left + r.width/2) i++; });
+  return i;
+}
+
+function showInsertBar(idx){
+  const old = document.querySelector('.ins-bar'); if(old) old.remove();
+  if(idx === null || idx === undefined) return;
+  const chainEl = $('chain');
+  const cells = Array.from(chainEl.querySelectorAll('.cell[data-src="chain"]'));
+  const bar = document.createElement('div'); bar.className = 'ins-bar';
+  if(idx < cells.length) chainEl.insertBefore(bar, cells[idx].previousElementSibling || cells[idx]);
+  else chainEl.insertBefore(bar, $('emptySlot'));
+}
+
+function onDragUp(ev){
+  document.removeEventListener('pointermove', onDragMove);
+  document.removeEventListener('pointerup', onDragUp);
+  document.removeEventListener('pointercancel', onDragUp);
+  if(!drag) return;
+  const d = drag; drag = null;
+  document.body.style.userSelect = '';
+  if(d.ghost) d.ghost.remove();
+  $('chain').classList.remove('drop-active');
+  const bar = document.querySelector('.ins-bar'); if(bar) bar.remove();
+
+  if(!d.moved){
+    // a plain tap on a pool tile appends it — the touch-friendly path
+    if(d.src === 'pool'){ chain.push(poolTiles[d.index]); afterChange(); }
+    return;
+  }
+  if(d.src === 'pool'){
+    if(d.insertAt !== null) chain.splice(d.insertAt, 0, poolTiles[d.index]);
+  }else{
+    const moving = chain[d.index];
+    chain.splice(d.index, 1);
+    if(d.insertAt !== null){
+      const at = d.insertAt > d.index ? d.insertAt - 1 : d.insertAt;
+      chain.splice(Math.max(0, Math.min(chain.length, at)), 0, moving);
+    }
+    // dropped outside the chain => removed
+  }
+  afterChange();
+}
+
+/* ==========================================================================
+   10. CHECKING
+   ========================================================================== */
+function say(kind, html){
+  const fb = $('fb');
+  fb.className = 'fb show ' + kind;
+  fb.innerHTML = html;
+}
+function clearSay(){ $('fb').className = 'fb'; $('fb').innerHTML=''; }
+
+function workLines(){
+  const parts = [problem.display+' '+problem.promptFrom];
+  chain.forEach(t => parts.push('('+fmtTile(t.numV)+' '+U[t.numU].disp+' / '+fmtTile(t.denV)+' '+U[t.denU].disp+')'));
+  return parts.join('  ×  ') + '\n= ' + problem.targetDisplay + ' ' + problem.promptTo;
+}
+
+/** Would flipping exactly one placed factor make the units come out right? */
+function flipWouldFix(){
+  for(let i=0;i<chain.length;i++){
+    const save = chain[i];
+    chain[i] = tileFlip(save);
+    const an = cancelAnalysis(chainCells());
+    const ok = mapsEqual(an.leftNum, problem.targetNum) && mapsEqual(an.leftDen, problem.targetDen);
+    chain[i] = save;
+    if(ok) return i+1;
+  }
+  return 0;
+}
+
+function checkAnswer(){
+  if(session.revealed){ say('tip','You already used <b>Show solution</b> on this one — press <b>Next problem</b> to keep going.'); return; }
+  if(!chain.length){ say('no','Nothing placed yet. Drag at least one conversion factor into the setup.'); return; }
+
+  const an = cancelAnalysis(chainCells());
+  const unitsOK = mapsEqual(an.leftNum, problem.targetNum) && mapsEqual(an.leftDen, problem.targetDen);
+  session.attempts++;
+
+  if(!unitsOK){
+    const left = unitStr(an.leftNum, an.leftDen) || '1';
+    const flipAt = flipWouldFix();
+    let msg = '<b>Not yet — the units don’t come out right.</b><br>' +
+              'After cancelling you are left with <b>'+left+'</b>, but you need <b>'+problem.promptTo+'</b>.';
+    if(flipAt){
+      msg += '<br>You have the right relationships. <b>Factor #'+flipAt+' is upside down</b> — flip it with the ⇅ button so its units land on the opposite level.';
+    }else{
+      const stray = Object.keys(an.leftNum).filter(u => !problem.targetNum[u]);
+      const strayD = Object.keys(an.leftDen).filter(u => !problem.targetDen[u]);
+      if(stray.length)  msg += '<br><b>'+U[stray[0]].disp+'</b> is still on top with nothing underneath to cancel it.';
+      else if(strayD.length) msg += '<br><b>'+U[strayD[0]].disp+'</b> is still on the bottom with nothing on top to cancel it.';
+      else if(problem.kind==='power') msg += '<br>Remember: <b>'+problem.promptFrom+'</b> means the unit appears '+problem.power+' times, so the factor has to be used '+problem.power+' times.';
+    }
+    // A botched setup counts against the score, same as a wrong number —
+    // but it does NOT unlock Next. This problem has to be fixed and solved
+    // before moving on; there's no way to bank a wrong setup and skip it.
+    session.missCount++;
+    updateStats();
+    say('no', msg);
+    return;
+  }
+
+  let val, gotSig;
+  if(scientificMode){
+    const mantissaStr = $('mantissaInput').value.trim();
+    const exponentStr = $('exponentInput').value.trim();
+    if(!mantissaStr && !exponentStr){
+      say('tip','<b>Your units cancel perfectly.</b> That’s the hard part. Now multiply the tops, divide by the bottoms, and type the mantissa and exponent.');
+      return;
+    }
+    const mantissaVal = parseFloat(mantissaStr);
+    if(!mantissaStr || !Number.isFinite(mantissaVal)){ say('no','Enter a numeric mantissa (e.g. 3.58).'); return; }
+    if(!exponentStr || !/^-?\d+$/.test(exponentStr)){ say('no','Enter a whole-number exponent (e.g. 4 or -2).'); return; }
+    val = mantissaVal * Math.pow(10, parseInt(exponentStr, 10));
+    gotSig = sigFigsOfMantissa(mantissaStr);
+  }else{
+    const raw = $('ansInput').value;
+    if(!raw.trim()){
+      say('tip','<b>Your units cancel perfectly.</b> That’s the hard part. Now multiply the tops, divide by the bottoms, and type the number in the answer box.');
+      return;
+    }
+    val = parseNum(raw);
+    if(isNaN(val)){ say('no','I couldn’t read “'+raw+'” as a number. Try 12500, 1.25e4, or 1.25 x 10^4.'); return; }
+    gotSig = sigFigsOfInput(raw);
+  }
+
+  // Compare against the answer already rounded to the required sig figs —
+  // NOT the raw target with a loose tolerance band, which would happily
+  // accept a value that's simply wrong. Only float noise gets any slack.
+  const rel = Math.abs(val - problem.roundedTarget) / Math.max(Math.abs(problem.roundedTarget), 1e-12);
+  const valueOK = rel < 1e-6;
+
+  if(valueOK){
+    if(gotSig !== problem.sigFigs){
+      // Right value, wrong precision. This blocks Next — the student has to
+      // fix the formatting and resubmit — but it's NOT scored as a miss,
+      // since the calculation itself was correct.
+      let msg = '<b>Your value is right, but it isn’t written with the correct number of significant figures.</b><br>' +
+        'The starting value has <b>'+problem.sigFigs+' sig fig'+(problem.sigFigs===1?'':'s')+'</b>, and since every conversion factor here is exact, your answer needs exactly <b>'+problem.sigFigs+' sig fig'+(problem.sigFigs===1?'':'s')+'</b> too' +
+        (gotSig==null ? '.' : ' — right now what you typed reads as '+gotSig+'.');
+      if(needsScientific(problem.roundedTarget, problem.sigFigs)){
+        msg += '<br>This value can’t be written that precisely as a plain number without implying extra sig figs — try scientific notation, e.g. <b>'+fmtSig(problem.roundedTarget, problem.sigFigs)+'</b>.';
+      }
+      say('no', msg);
+      return;
+    }
+
+    // Right setup, right value, right sig figs.
+    session.solvedThis = true;
+    session.correct++;
+    if(session.attempts === 1) session.firstTry++;
+    session.log.push({ok:true, first:session.attempts===1});
+    unlockNext();
+    say('ok','<b>Correct.</b> '+problem.targetDisplay+' '+problem.promptTo+
+        (chain.length > problem.minSteps ? ' &mdash; and you got there in '+chain.length+' factors; the shortest route is '+problem.minSteps+'.' : '')+
+        '<div class="work">'+workLines()+'</div>');
+    lockProblem();
+    updateStats();
+    return;
+  }
+
+  // units right, number wrong. Counts against the score, and Next stays
+  // locked until this is actually fixed.
+  session.missCount++;
+  updateStats();
+  say('no', '<b>Your setup is correct, but your answer is wrong.</b> Please check that you multiplied ' +
+    'and divided correctly in your calculator, or that you rounded your answer to the correct number of ' +
+    'significant figures.');
+}
+
+function lockProblem(){
+  $('btnCheck').disabled = true;
+  $('btnHint').disabled = true;
+  $('btnSolve').disabled = true;
+  $('ansInput').disabled = true;
+  $('mantissaInput').disabled = true;
+  $('exponentInput').disabled = true;
+  $('sciToggle').disabled = true;
+}
+
+function giveHint(){
+  const an = cancelAnalysis(chainCells());
+  const leftNum = Object.keys(an.leftNum).filter(u => (problem.targetNum[u]||0) !== an.leftNum[u]);
+  const leftDen = Object.keys(an.leftDen).filter(u => (problem.targetDen[u]||0) !== an.leftDen[u]);
+  if(!chain.length){
+    const first = problem.tiles[0];
+    say('tip','Start by getting rid of <b>'+U[first.denU].disp+'</b>. Since it is on top right now, you need a factor with <b>'+U[first.denU].disp+' on the bottom</b>.');
+  }else if(leftNum.length){
+    say('tip','<b>'+U[leftNum[0]].disp+'</b> is still on top. Add a factor that has <b>'+U[leftNum[0]].disp+' on the bottom</b> so the two cancel diagonally.');
+  }else if(leftDen.length){
+    say('tip','<b>'+U[leftDen[0]].disp+'</b> is still on the bottom. Add a factor that has <b>'+U[leftDen[0]].disp+' on top</b>.');
+  }else{
+    say('tip','Your units are already correct. Multiply the top numbers, divide by the bottom numbers, and type the result.');
+  }
+}
+
+function showSolution(){
+  chain = problem.tiles.slice();
+  session.revealed = true;
+  session.log.push({ok:false, first:false});
+  session.missCount++;
+  unlockNext();
+  afterChange();
+  setScientificMode(false);
+  $('ansInput').value = problem.targetDisplay;
+  say('tip','<b>Worked solution.</b> Every unit cancels except '+problem.promptTo+'.<div class="work">'+workLines()+'</div>This one doesn’t count toward your required correct answers.');
+  lockProblem();
+  updateStats();
+}
+
+/* ==========================================================================
+   11. SESSION FLOW
+   ========================================================================== */
+/** Next stays locked until the student has actually solved the problem
+    correctly (right setup, right value, right sig figs) or asked to see
+    the solution. There's no way to bank a wrong attempt and move on. */
+function unlockNext(){
+  session.resolved = true;
+  $('btnNext').disabled = false;
+}
+
+function currentScorePct(){
+  return Math.max(SCORE_FLOOR, 100 - session.missCount * SCORE_PENALTY_PER_MISS);
+}
+
+function newProblem(){
+  problem = makeProblem(session.level);
+  chain = [];
+  session.attempts = 0;
+  session.revealed = false;
+  session.solvedThis = false;
+  session.resolved = false;
+  $('btnNext').disabled = true;
+
+  const tileSet = new Map();
+  problem.poolEdges.forEach(id=>{
+    const e = EDGE_BY_ID[id];
+    [tileFor(e, e.a), tileFor(e, e.b)].forEach(t => tileSet.set(tileKey(t), t));
+  });
+  poolTiles = shuffle(Array.from(tileSet.values()));
+  poolFilter = null;
+  renderPoolTabs();
+
+  const kindBadge = problem.kind === 'power'
+      ? (problem.power === 3 ? 'cubic units' : 'squared units')
+      : problem.kind === 'rate' ? 'compound rate' : problem.minSteps + '-step';
+  $('prompt').innerHTML =
+      'Convert <span class="q">'+problem.display+' '+problem.promptFrom+'</span> to <span class="q">'+problem.promptTo+'</span>'+
+      '<span class="badge">'+kindBadge+'</span>';
+  $('ansUnits').textContent = problem.promptTo;
+  $('ansInput').value = '';
+  $('ansInput').disabled = false;
+  $('mantissaInput').value = '';
+  $('mantissaInput').disabled = false;
+  $('exponentInput').value = '';
+  $('exponentInput').disabled = false;
+  $('sciToggle').disabled = false;
+  setScientificMode(false);
+  $('btnCheck').disabled = false;
+  $('btnHint').disabled = false;
+  $('btnSolve').disabled = false;
+  clearSay();
+  afterChange();
+  updateStats();
+}
+
+function nextProblem(){
+  if(!session.resolved) return;              // button is disabled anyway; belt and braces
+  if(!session.solvedThis) session.log.push({ok:false, first:false});
+  session.index++;
+  // The set runs until session.required of them are actually solved —
+  // however many attempts (and however many revealed problems) that takes.
+  if(session.correct >= session.required){ finishSet(); return; }
+  scormCheckpoint();
+  newProblem();
+}
+
+function updateStats(){
+  $('stProb').textContent  = session.correct + ' / ' + session.required;
+  $('stScore').textContent = session.index + (session.resolved ? 1 : 0);
+  $('stFirst').textContent = session.firstTry;
+  $('stScorePct').textContent = currentScorePct() + '%';
+}
+
+function labelStats(){
+  const l = document.querySelectorAll('.stat span');
+  l[0].textContent='Correct'; l[1].textContent='Attempted'; l[2].textContent='First try';
+}
+
+function startSet(){
+  session.level = FIXED_LEVEL || $('levelSel').value;
+  const n = FIXED_LEVEL ? SET_LENGTH : parseInt($('lenSel').value,10);
+  session.total = n;
+  session.required = n;
+  session.index = 0; session.correct = 0; session.firstTry = 0; session.missCount = 0; session.log = [];
+  session.finished = false;
+  labelStats();
+  newProblem();
+}
+
+function finishSet(){
+  const pct = currentScorePct();
+  const lvl = LEVELS.find(l=>l.id===session.level);
+  $('mScore').textContent = session.required + ' / ' + session.required + ' correct';
+  $('mDetail').textContent = lvl.name + '  ·  ' + session.index + ' problems attempted  ·  ' +
+      session.firstTry + ' right first time  ·  ' + pct + '% score';
+  session.finished = true;
+  $('scrim').classList.add('show');
+
+  // If we're running as a SCORM package the grade goes straight to Schoology
+  // and nobody types anything.
+  const sent = scormReport(pct);
+  $('scormBox').style.display = sent ? 'block' : 'none';
+  $('noLmsBox').style.display = sent ? 'none' : 'block';
+  if(sent){
+    $('scormMsg').innerHTML = '<b>Score sent to Schoology.</b> ' + pct +
+      '% has been recorded in the gradebook for ' +
+      (scorm.student ? esc(scorm.student) : 'you') + '. Nothing else to submit.';
+  }
+}
+
+function esc(s){ return String(s).replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
+
+/* ==========================================================================
+   12. SCORM 1.2
+   Schoology serves uploaded packages through SCORM Cloud in an iframe. A
+   "Web Content" package launches with tracking off, but a real SCORM package
+   gets a live API object we can write a score into — which lands in the
+   Schoology gradebook with no server and no LTI key.
+
+   Every call is optional: if there's no API (opened from S3, a plain file, or
+   as Web Content) the activity runs exactly as before, no score is sent, and
+   the end screen says so instead of failing quietly.
+   ========================================================================== */
+const scorm = {api:null, ready:false, student:'', resumeEntry:false};
+
+function findAPI(win){
+  let depth = 0;
+  while(win && depth++ < 12){
+    if(win.API) return win.API;
+    if(win.parent === win) break;
+    win = win.parent;
+  }
+  return null;
+}
+function scormInit(){
+  try{
+    scorm.api = findAPI(window) || (window.opener ? findAPI(window.opener) : null);
+    if(!scorm.api) return false;
+    if(scorm.api.LMSInitialize('') === 'false') return false;
+    scorm.ready = true;
+    // SCORM gives us the roster name, so nobody has to type it
+    const raw = scorm.api.LMSGetValue('cmi.core.student_name') || '';
+    scorm.student = String(raw).trim();
+    // "resume" means the student left mid-set last time and this is a
+    // relaunch, not a fresh start — see scormTryResume() below
+    scorm.resumeEntry = scorm.api.LMSGetValue('cmi.core.entry') === 'resume';
+    const st = scorm.api.LMSGetValue('cmi.core.lesson_status');
+    if(st === 'not attempted' || st === '') {
+      scorm.api.LMSSetValue('cmi.core.lesson_status','incomplete');
+      scorm.api.LMSCommit('');
+    }
+    return true;
+  }catch(e){ return false; }
+}
+function scormReport(pct){
+  if(!scorm.ready) return false;
+  try{
+    scorm.api.LMSSetValue('cmi.core.score.min','0');
+    scorm.api.LMSSetValue('cmi.core.score.max','100');
+    scorm.api.LMSSetValue('cmi.core.score.raw', String(pct));
+    // Finishing the set always means every required problem was genuinely
+    // solved (there's no way to skip one), so completion always means passed.
+    scorm.api.LMSSetValue('cmi.core.lesson_status', 'passed');
+    scorm.api.LMSSetValue('cmi.core.session_time', scormTime());
+    const lvl = LEVELS.find(l => l.id === session.level);
+    const summary = session.correct+' correct in '+session.index+' problems, '+pct+'% score';
+    scorm.api.LMSSetValue('cmi.suspend_data',
+      summary+' on '+(lvl?lvl.name:session.level)+', '+session.firstTry+' first try'+
+      (isLate() ? ' — LATE (due '+dueText()+')' : ''));
+    // the set is done, so the *next* launch should start fresh, not resume
+    scorm.api.LMSSetValue('cmi.core.exit', '');
+    const ok = scorm.api.LMSCommit('') !== 'false';
+    return ok;
+  }catch(e){ return false; }
+}
+/** Checkpoint after every problem so a closed tab/browser can pick back up
+    where the student left off. Only the counters are saved (not the
+    in-flight problem itself) — problems are generated fresh each time, so
+    on resume the student gets a new problem, not a reconstructed old one;
+    only completed progress carries over. */
+function scormCheckpoint(){
+  if(!scorm.ready) return;
+  try{
+    scorm.api.LMSSetValue('cmi.suspend_data', JSON.stringify({
+      level: session.level, index: session.index,
+      correct: session.correct, firstTry: session.firstTry, total: session.total,
+      missCount: session.missCount
+    }));
+    scorm.api.LMSSetValue('cmi.core.lesson_location', String(session.index));
+    // marks this as an in-progress session, so a relaunch is treated as resume
+    scorm.api.LMSSetValue('cmi.core.exit', 'suspend');
+    scorm.api.LMSCommit('');
+  }catch(e){}
+}
+/** Called once at load. Restores the set in progress if there is one;
+    returns false (and changes nothing) for a genuinely fresh launch, an
+    already-finished set, or a checkpoint that doesn't parse/fit this build. */
+function scormTryResume(){
+  if(!scorm.ready || !scorm.resumeEntry) return false;
+  try{
+    const raw = scorm.api.LMSGetValue('cmi.suspend_data');
+    if(!raw) return false;
+    const d = JSON.parse(raw);
+    const lvl = LEVELS.find(l => l.id === d.level);
+    if(!lvl) return false;
+    if(!(Number.isInteger(d.index) && Number.isInteger(d.total) && d.index >= 0 && d.index < d.total)) return false;
+    session.level = d.level;
+    session.total = d.total;
+    session.required = d.total;
+    session.index = d.index;
+    session.correct = Math.min(d.correct || 0, d.index);
+    session.firstTry = Math.min(d.firstTry || 0, d.index);
+    session.missCount = (Number.isInteger(d.missCount) && d.missCount >= 0) ? d.missCount : 0;
+    session.log = [];
+    session.finished = false;
+    if(!FIXED_LEVEL){
+      const selLevel = $('levelSel'); if(selLevel) selLevel.value = d.level;
+      const selLen = $('lenSel'); if(selLen && ['5','10','15','20'].includes(String(d.total))) selLen.value = String(d.total);
+    }
+    labelStats();
+    newProblem();
+    return true;
+  }catch(e){ return false; }
+}
+function sessionFinished(){
+  return session.finished === true;
+}
+/** Manually triggered by the "Save Progress" button. This is the primary,
+    student-driven save path — students are instructed to click it before
+    closing their Chromebook, since automatic browser-unload events can't be
+    trusted to fire when a laptop lid is closed rather than the tab being
+    navigated away from. No-op (and hides nothing) if there's no LMS. */
+function manualSaveProgress(){
+  if(!scorm.ready || sessionFinished()) return;
+  scormCheckpoint();
+  const status = $('saveStatus');
+  if(!status) return;
+  status.classList.add('show');
+  clearTimeout(manualSaveProgress._hideTimer);
+  manualSaveProgress._hideTimer = setTimeout(()=>{ status.classList.remove('show'); }, 2500);
+}
+const started = Date.now();
+function scormTime(){
+  let s = Math.floor((Date.now() - started)/1000);
+  const h = Math.floor(s/3600); s -= h*3600;
+  const m = Math.floor(s/60);   s -= m*60;
+  return String(h).padStart(4,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+// safety net: a tab close/refresh mid-set still leaves a checkpoint behind,
+// even if the student never clicks anything between problems
+window.addEventListener('beforeunload', function(){
+  if(scorm.ready && !sessionFinished() && problem) scormCheckpoint();
+});
+window.addEventListener('unload', function(){
+  if(scorm.ready){ try{ scorm.api.LMSFinish(''); }catch(e){} }
+});
+// Best-effort safety net for the case where the student closes the
+// Chromebook lid or leaves the tab without clicking "Save Progress": these
+// events fire more reliably than beforeunload on that path. Unlike
+// beforeunload/unload we deliberately do NOT call LMSFinish() here —
+// visibilitychange in particular fires on every tab switch, not just a real
+// exit, and terminating the SCORM session there would break the ability to
+// keep saving for the rest of that visit. Just re-checkpoint either way.
+function safetyCheckpoint(){
+  if(scorm.ready && !sessionFinished() && problem) scormCheckpoint();
+}
+window.addEventListener('pagehide', safetyCheckpoint);
+document.addEventListener('visibilitychange', function(){
+  if(document.hidden) safetyCheckpoint();
+});
+
+/* ==========================================================================
+   13. WIRING
+   ========================================================================== */
+LEVELS.forEach(l=>{
+  const o = document.createElement('option');
+  o.value = l.id; o.textContent = l.name;
+  $('levelSel').appendChild(o);
+});
+
+$('levelSel').addEventListener('change', ()=>{ startSet(); buildStartScreen(); });
+if($('lenSel')) $('lenSel').addEventListener('change', ()=>{ startSet(); buildStartScreen(); });
+$('btnCheck').addEventListener('click', checkAnswer);
+$('btnClear').addEventListener('click', ()=>{ chain = []; clearSay(); afterChange(); });
+$('btnHint').addEventListener('click', giveHint);
+$('btnSolve').addEventListener('click', ()=>{ $('solveScrim').classList.add('show'); });
+$('btnSolveCancel').addEventListener('click', ()=>{ $('solveScrim').classList.remove('show'); });
+$('btnSolveConfirm').addEventListener('click', ()=>{ $('solveScrim').classList.remove('show'); showSolution(); });
+$('btnNext').addEventListener('click', nextProblem);
+$('ansInput').addEventListener('keydown', ev=>{ if(ev.key === 'Enter') checkAnswer(); });
+$('mantissaInput').addEventListener('keydown', ev=>{ if(ev.key === 'Enter') checkAnswer(); });
+$('exponentInput').addEventListener('keydown', ev=>{ if(ev.key === 'Enter') checkAnswer(); });
+$('sciToggle').addEventListener('change', ()=>{ setScientificMode($('sciToggle').checked); });
+
+$('btnAgain').addEventListener('click', ()=>{ $('scrim').classList.remove('show'); startSet(); });
+$('btnAgain2').addEventListener('click', ()=>{ $('scrim').classList.remove('show'); startSet(); });
+$('btnClose').addEventListener('click', ()=>{ $('scrim').classList.remove('show'); });
+$('btnSaveProgress').addEventListener('click', manualSaveProgress);
+
+const params = new URLSearchParams(location.search);
+
+if(FIXED_LEVEL){
+  // This build is one level only: take the choices off the screen entirely
+  // rather than leaving controls that can only be set wrong.
+  const lvl = LEVELS.find(l => l.id === FIXED_LEVEL);
+  $('levelSel').value = FIXED_LEVEL;
+  $('fldLevel').style.display = 'none';
+  const fldLen = $('fldLen'); if(fldLen) fldLen.style.display = 'none';
+  if(lvl) document.querySelector('.title small').textContent =
+    lvl.name.replace(/^\d+\s*—\s*/,'') + ' · ' + SET_LENGTH + ' problems';
+}else{
+  if(params.get('level') && LEVELS.some(l=>l.id===params.get('level'))) $('levelSel').value = params.get('level');
+  if($('lenSel') && params.get('n') && ['5','10','15','20'].includes(params.get('n')))  $('lenSel').value = params.get('n');
+  if(params.get('lock') === '1'){ $('levelSel').disabled = true; if($('lenSel')) $('lenSel').disabled = true; }
+}
+/* ---- start screen: what this is and what counts as finished ---- */
+function buildStartScreen(){
+  const lvl  = LEVELS.find(l => l.id === (FIXED_LEVEL || $('levelSel').value)) || LEVELS[0];
+  const n    = FIXED_LEVEL ? SET_LENGTH : parseInt($('lenSel').value, 10);
+  const name = lvl.name.replace(/^\d+\s*—\s*/, '');
+
+  $('sTitle').textContent = 'Dimensional Analysis — ' + name;
+  $('sLede').textContent =
+    'Convert between units by building a chain of conversion factors and cancelling ' +
+    'the units you don’t want. Nothing here is multiple choice — you set the problem ' +
+    'up the way you would on paper.';
+
+  const bits = [];
+  bits.push('<b>Solve ' + n + ' problems correctly.</b>');
+  bits.push('Each one has to be right — setup, value, and significant figures — before you can move on.');
+  if(scorm.ready) bits.push('Your score goes to Schoology automatically when you finish.');
+  if(!scorm.ready) bits.push('This device isn’t connected to Schoology right now, so your score won’t be submitted — open this from inside your Schoology assignment.');
+  if(scorm.ready) bits.push('If you leave partway through, reopening this assignment picks up right where you left off.');
+  if(dueAt()) bits.push((isLate() ? 'This was due ' : 'Due ') + '<b>' + dueText() + '</b>.' +
+                        (isLate() ? ' You can still do it — it’ll be marked late.' : ''));
+  $('sGoal').innerHTML = bits.join(' ');
+}
+
+renderDue();
+scormInit();
+const resumed = scormTryResume();
+if(!resumed) startSet();
+buildStartScreen();
+
+if(resumed){
+  $('startScrim').classList.remove('show');    // pick up mid-set, skip the intro
+}
+$('btnStart').addEventListener('click', ()=>{
+  $('startScrim').classList.remove('show');
+  if(!resumed) startSet();                     // fresh set once they're actually ready
+});
+</script>
+</body>
+</html>

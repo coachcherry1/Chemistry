@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Empirical &amp; Molecular Formula Lab Challenge</title>
+<style>
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        color: #2c3e50;
+    }
+
+    .app {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 14px;
+        padding: 28px 32px;
+        margin-bottom: 18px;
+    }
+
+    .title-header {
+        text-align: center;
+        margin-bottom: 6px;
+    }
+
+    .title-header h1 {
+        font-size: 1.8rem;
+        font-weight: 300;
+        color: #2c3e50;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        margin: 0 0 6px 0;
+    }
+
+    .title-header p {
+        margin: 0;
+        color: #5a6b7d;
+        font-size: 0.95rem;
+    }
+
+    /* Progress bar */
+    .progress-track {
+        display: flex;
+        gap: 8px;
+        margin: 18px 0 4px 0;
+    }
+
+    .progress-seg {
+        flex: 1;
+        height: 8px;
+        border-radius: 4px;
+        background: #e9ecef;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .progress-seg .fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #2193b0, #6dd5ed);
+        transition: width 0.3s ease;
+    }
+
+    .progress-label {
+        text-align: center;
+        font-size: 0.85rem;
+        color: #5a6b7d;
+        margin-top: 6px;
+    }
+
+    /* Scenario card */
+    .scenario-box {
+        background: #f8f9fa;
+        border-left: 4px solid #2193b0;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 18px;
+        line-height: 1.6;
+    }
+
+    .scenario-box h2 {
+        margin: 0 0 8px 0;
+        font-size: 1.15rem;
+        color: #1c6e85;
+        font-weight: 600;
+    }
+
+    .scenario-box p {
+        margin: 0;
+        color: #34495e;
+        font-size: 0.98rem;
+    }
+
+    .data-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .data-chip {
+        background: white;
+        border: 1px solid #d7e3ea;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 0.88rem;
+        color: #2c3e50;
+    }
+
+    .data-chip strong {
+        color: #1c6e85;
+    }
+
+    /* Step / question prompt */
+    .prompt-box {
+        background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+        color: white;
+        padding: 14px 18px;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.25);
+        box-shadow: 0 3px 8px rgba(33, 147, 176, 0.3);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        margin-bottom: 16px;
+    }
+
+    .step-counter {
+        font-size: 0.8rem;
+        font-weight: 400;
+        opacity: 0.9;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    select.answer-select {
+        width: 100%;
+        padding: 14px 16px;
+        font-size: 1.3rem;
+        border-radius: 8px;
+        border: 2px solid #cdd7e1;
+        background: white;
+        color: #2c3e50;
+        font-family: inherit;
+        margin-bottom: 14px;
+    }
+
+    select.answer-select option {
+        font-size: 1.3rem;
+    }
+
+    select.answer-select:focus {
+        outline: none;
+        border-color: #4a90e2;
+    }
+
+    select.answer-select option:disabled {
+        color: #bbb;
+    }
+
+    .btn {
+        background: linear-gradient(145deg, #4a90e2, #357abd);
+        color: white;
+        border: none;
+        padding: 11px 24px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.98rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        background: linear-gradient(145deg, #357abd, #2c5aa0);
+    }
+
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .btn-row {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .btn-save {
+        background: linear-gradient(145deg, #28a745, #1e7e34);
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn-save:hover:not(:disabled) {
+        background: linear-gradient(145deg, #1e7e34, #19692c);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+    }
+
+    .save-progress-row {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 4px;
+        margin: 6px 0 0 0;
+    }
+
+    .save-status {
+        display: inline-block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #28a745;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .save-status.visible {
+        opacity: 1;
+    }
+
+    .feedback {
+        margin-top: 14px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        display: none;
+    }
+
+    .feedback.correct {
+        display: block;
+        background: #eafaf0;
+        color: #1e7e34;
+        border: 1px solid #28a745;
+    }
+
+    .feedback.incorrect {
+        display: block;
+        background: #fdecea;
+        color: #a52a2a;
+        border: 1px solid #dc3545;
+    }
+
+    /* Question complete panel */
+    .complete-panel {
+        text-align: center;
+        padding: 20px;
+        background: #f0f9fb;
+        border-radius: 10px;
+        border: 1px solid #bfe3ec;
+    }
+
+    .complete-panel h3 {
+        margin: 0 0 10px 0;
+        color: #1c6e85;
+    }
+
+    .retry-panel {
+        text-align: center;
+        padding: 20px;
+        background: #fdf3f3;
+        border-radius: 10px;
+        border: 1px solid #f1c0c0;
+    }
+
+    .retry-panel h3 {
+        margin: 0 0 10px 0;
+        color: #a52a2a;
+    }
+
+    .retry-panel p {
+        color: #5a4040;
+        line-height: 1.6;
+    }
+
+    .formula-reveal {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #2c3e50;
+        background: white;
+        display: inline-block;
+        padding: 10px 24px;
+        border-radius: 8px;
+        border: 2px solid #2193b0;
+        margin: 10px 0 16px 0;
+    }
+
+    sub { font-size: 0.7em; }
+
+    /* Intro screen */
+    .intro-actions {
+        text-align: center;
+        margin-top: 18px;
+    }
+
+    ul.overview-list {
+        max-width: 520px;
+        margin: 14px auto;
+        padding-left: 20px;
+        color: #34495e;
+        line-height: 1.7;
+    }
+
+    .success-panel {
+        text-align: center;
+        padding: 24px;
+        background: #f0f9fb;
+        border-radius: 10px;
+        border: 1px solid #bfe3ec;
+    }
+
+    .success-panel h3 {
+        margin: 0 0 10px 0;
+        color: #1c6e85;
+        font-size: 1.4rem;
+    }
+
+    .success-panel p {
+        color: #34495e;
+        line-height: 1.6;
+    }
+
+    .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+    <div class="card title-header no-print">
+        <h1>Empirical &amp; Molecular Formula Lab Challenge</h1>
+        <p>Work through four laboratory scenarios to determine unknown chemical formulas from experimental data.</p>
+    </div>
+
+    <!-- INTRO SCREEN -->
+    <div class="card" id="intro-screen">
+        <h2 style="text-align:center; color:#1c6e85; font-weight:600;">Before You Begin</h2>
+        <ul class="overview-list">
+            <li>You will analyze data from <strong>4 laboratory scenarios</strong>: one synthesis reaction, one composition analysis, one hydrate dehydration, and one combustion analysis.</li>
+            <li>Each scenario is broken into small steps. Answer each step using the dropdown menu provided.</li>
+            <li>If a step is incorrect, you'll get a chance to reconsider and try again.</li>
+            <li>Complete all four labs — your score is submitted automatically as your grade for this assignment.</li>
+            <li>A first-attempt score of <strong>70% or higher</strong> is required to complete this as a graded assignment. If you score below that, you'll retry the full set.</li>
+            <li>If you get interrupted partway through, your progress is saved — reopening the assignment will pick up right where you left off.</li>
+            <li><strong>Before you close your Chromebook or exit Schoology,</strong> click the green "Save Progress" button so your work is saved and you can pick up where you left off next time.</li>
+        </ul>
+        <div class="intro-actions">
+            <button class="btn" id="begin-btn">Begin Lab Challenge</button>
+        </div>
+    </div>
+
+    <!-- MAIN QUIZ SCREEN -->
+    <div class="card hidden" id="quiz-screen">
+        <div class="progress-track" id="progress-track"></div>
+        <div class="progress-label" id="progress-label">Question 1 of 4</div>
+        <div class="save-progress-row">
+            <button class="btn btn-save" id="save-progress-btn">Save Progress</button>
+            <span class="save-status" id="save-status">Saved ✓</span>
+        </div>
+
+        <div class="scenario-box">
+            <h2 id="scenario-title"></h2>
+            <p id="scenario-text"></p>
+            <div class="data-chip-row" id="scenario-chips"></div>
+        </div>
+
+        <div id="step-area">
+            <div class="prompt-box">
+                <span class="step-counter" id="step-counter"></span>
+                <span id="step-prompt"></span>
+            </div>
+            <select class="answer-select" id="answer-select">
+                <option value="" selected disabled>-- Select an answer --</option>
+            </select>
+            <div class="btn-row">
+                <button class="btn" id="submit-answer-btn">Submit Answer</button>
+            </div>
+            <div class="feedback" id="feedback-box"></div>
+        </div>
+
+        <div class="complete-panel hidden" id="question-complete-panel">
+            <h3 id="question-complete-title">Lab Complete!</h3>
+            <p id="question-complete-text"></p>
+            <div class="formula-reveal" id="question-complete-formula"></div>
+            <div class="btn-row" style="justify-content:center;">
+                <button class="btn" id="continue-btn">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUCCESS SCREEN -->
+    <div class="card hidden" id="success-screen">
+        <div class="success-panel">
+            <h3>Lab Challenge Complete</h3>
+            <p>You completed the Empirical &amp; Molecular Formula Lab Challenge with a first-attempt score of <strong id="success-score"></strong>.</p>
+            <p>Your grade has been submitted to Schoology.</p>
+            <div class="compound-list" style="text-align:left; max-width:420px; margin:16px auto 0 auto;">
+                <strong>Compounds Identified:</strong>
+                <ol id="success-compound-list"></ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- RETRY SCREEN -->
+    <div class="card hidden" id="retry-screen">
+        <div class="retry-panel">
+            <h3>Additional Practice Needed</h3>
+            <p>You scored <strong id="retry-score"></strong> on this attempt. A first-attempt score of <strong id="retry-threshold"></strong> or higher is required to complete this assignment.</p>
+            <p>Review the concepts and work through the full lab set again.</p>
+            <div class="btn-row" style="justify-content:center;">
+                <button class="btn" id="retry-challenge-btn">Retry Lab Challenge</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+(function () {
+    "use strict";
+
+    const QUESTIONS = [
+        {
+            title: "Lab 1: Metal-Oxygen Synthesis",
+            scenarioTitle: "Magnesium Oxide Synthesis",
+            scenarioText: "A student heats a 1.45 g strip of magnesium ribbon in a crucible until it reacts completely with oxygen in the air. After the reaction, the crucible contains 2.41 g of magnesium oxide.",
+            chips: ["Mass of Mg = 1.45 g", "Mass of MgO (after) = 2.41 g", "Molar mass Mg = 24.31 g/mol", "Molar mass O = 16.00 g/mol"],
+            compoundResult: "Magnesium Oxide (MgO)",
+            steps: [
+                {
+                    prompt: "What is the first quantity you need to determine from this data?",
+                    options: ["the mass of oxygen that reacted", "the percent composition of magnesium", "the molar mass of magnesium oxide", "the total number of atoms in the sample"],
+                    correct: "the mass of oxygen that reacted"
+                },
+                {
+                    prompt: "How do you calculate the mass of oxygen that reacted with the magnesium?",
+                    options: ["mass of MgO − mass of Mg", "mass of MgO + mass of Mg", "mass of Mg ÷ mass of MgO", "mass of MgO ÷ 2"],
+                    correct: "mass of MgO − mass of Mg"
+                },
+                {
+                    prompt: "What is the mass of oxygen that reacted?",
+                    options: ["0.96 g", "3.86 g", "1.45 g", "2.41 g"],
+                    correct: "0.96 g"
+                },
+                {
+                    prompt: "How many moles of Mg were used?",
+                    options: ["0.0596 mol", "0.0400 mol", "1.45 mol", "35.25 mol"],
+                    correct: "0.0596 mol"
+                },
+                {
+                    prompt: "How many moles of O reacted?",
+                    options: ["0.0600 mol", "0.0300 mol", "15.36 mol", "0.1200 mol"],
+                    correct: "0.0600 mol"
+                },
+                {
+                    prompt: "To find the simplest whole-number ratio, you divide both mole values by:",
+                    options: ["the smaller of the two mole values", "the larger of the two mole values", "the sum of both mole values", "the molar mass of magnesium oxide"],
+                    correct: "the smaller of the two mole values"
+                },
+                {
+                    prompt: "What is the mole ratio of Mg : O after dividing?",
+                    options: ["1 : 1", "1 : 2", "2 : 1", "1 : 1.5"],
+                    correct: "1 : 1"
+                },
+                {
+                    prompt: "What is the empirical formula of the compound formed?",
+                    options: ["MgO", "Mg₂O", "MgO₂", "Mg₂O₂"],
+                    correct: "MgO"
+                }
+            ]
+        },
+        {
+            title: "Lab 2: Composition Analysis",
+            scenarioTitle: "Aluminum Oxide Composition Analysis",
+            scenarioText: "A chemist analyzes a pure sample of a metal oxide and determines that it is composed of 52.9% aluminum and 47.1% oxygen by mass.",
+            chips: ["% Aluminum = 52.9%", "% Oxygen = 47.1%", "Molar mass Al = 26.98 g/mol", "Molar mass O = 16.00 g/mol"],
+            compoundResult: "Aluminum Oxide (Al₂O₃)",
+            steps: [
+                {
+                    prompt: "What must you assume in order to convert these percentages into grams?",
+                    options: ["that you have a 100 g sample", "that you have a 1 mole sample", "that the compound is a gas at STP", "that the percentages represent moles, not mass"],
+                    correct: "that you have a 100 g sample"
+                },
+                {
+                    prompt: "Assuming a 100 g sample, how many grams of aluminum are present?",
+                    options: ["52.9 g", "47.1 g", "100 g", "5.29 g"],
+                    correct: "52.9 g"
+                },
+                {
+                    prompt: "How many grams of oxygen are present in the 100 g sample?",
+                    options: ["47.1 g", "52.9 g", "100 g", "4.71 g"],
+                    correct: "47.1 g"
+                },
+                {
+                    prompt: "How many moles of Al are present?",
+                    options: ["1.961 mol", "2.944 mol", "1427 mol", "0.980 mol"],
+                    correct: "1.961 mol"
+                },
+                {
+                    prompt: "How many moles of O are present?",
+                    options: ["2.944 mol", "1.961 mol", "753.6 mol", "1.472 mol"],
+                    correct: "2.944 mol"
+                },
+                {
+                    prompt: "Divide both mole values by the smaller value. What ratio do you get for Al : O?",
+                    options: ["1 : 1.50", "1 : 1", "2 : 3", "1 : 3"],
+                    correct: "1 : 1.50"
+                },
+                {
+                    prompt: "The ratio 1 : 1.50 is not a whole number. What should you multiply both values by to clear the decimal?",
+                    options: ["×2", "×3", "×4", "×1.5"],
+                    correct: "×2"
+                },
+                {
+                    prompt: "What is the empirical formula of the compound?",
+                    options: ["Al₂O₃", "AlO₃", "Al₃O₂", "Al₂O"],
+                    correct: "Al₂O₃"
+                }
+            ]
+        },
+        {
+            title: "Lab 3: Hydrate Dehydration",
+            scenarioTitle: "Copper(II) Sulfate Hydrate",
+            scenarioText: "A student weighs an empty crucible, then adds a sample of hydrated copper(II) sulfate, CuSO₄·xH₂O, and records the combined mass. After heating the crucible until all water of crystallization has been driven off, the student weighs the crucible and its residue one final time.",
+            chips: ["Mass of empty crucible = 15.20 g", "Mass of crucible + hydrate (before heating) = 17.70 g", "Mass of crucible + residue (after heating) = 16.80 g", "Molar mass CuSO₄ = 159.62 g/mol", "Molar mass H₂O = 18.02 g/mol"],
+            compoundResult: "Copper(II) Sulfate Pentahydrate (CuSO₄·5H₂O)",
+            steps: [
+                {
+                    prompt: "How do you determine the actual mass of the hydrate sample, excluding the crucible?",
+                    options: ["mass of (crucible + hydrate) − mass of empty crucible", "mass of (crucible + hydrate) + mass of empty crucible", "mass of empty crucible alone", "mass of (crucible + hydrate) ÷ 2"],
+                    correct: "mass of (crucible + hydrate) − mass of empty crucible"
+                },
+                {
+                    prompt: "What is the mass of the hydrate sample alone?",
+                    options: ["2.50 g", "17.70 g", "15.20 g", "32.90 g"],
+                    correct: "2.50 g"
+                },
+                {
+                    prompt: "How do you determine the actual mass of the anhydrous residue, excluding the crucible?",
+                    options: ["mass of (crucible + residue) − mass of empty crucible", "mass of (crucible + residue) + mass of empty crucible", "mass of empty crucible alone", "mass of (crucible + residue) ÷ 2"],
+                    correct: "mass of (crucible + residue) − mass of empty crucible"
+                },
+                {
+                    prompt: "What is the mass of the anhydrous residue alone?",
+                    options: ["1.60 g", "16.80 g", "15.20 g", "32.00 g"],
+                    correct: "1.60 g"
+                },
+                {
+                    prompt: "What is the next quantity you need to determine?",
+                    options: ["the mass of water driven off", "the molar mass of copper", "the percent composition of sulfur", "the density of the hydrate"],
+                    correct: "the mass of water driven off"
+                },
+                {
+                    prompt: "How do you calculate the mass of water lost during heating?",
+                    options: ["mass of hydrate sample − mass of anhydrous residue", "mass of anhydrous residue − mass of hydrate sample", "mass of hydrate sample + mass of anhydrous residue", "mass of anhydrous residue ÷ mass of hydrate sample"],
+                    correct: "mass of hydrate sample − mass of anhydrous residue"
+                },
+                {
+                    prompt: "What is the mass of water lost?",
+                    options: ["0.90 g", "4.10 g", "1.60 g", "2.50 g"],
+                    correct: "0.90 g"
+                },
+                {
+                    prompt: "How many moles of anhydrous CuSO₄ remain?",
+                    options: ["0.0100 mol", "0.0500 mol", "159.62 mol", "0.0200 mol"],
+                    correct: "0.0100 mol"
+                },
+                {
+                    prompt: "How many moles of water were lost?",
+                    options: ["0.0500 mol", "0.0100 mol", "16.22 mol", "0.0250 mol"],
+                    correct: "0.0500 mol"
+                },
+                {
+                    prompt: "To find x in CuSO₄·xH₂O, what do you divide the moles of water by?",
+                    options: ["the moles of anhydrous CuSO₄", "the moles of water itself", "the total sample mass", "the molar mass of water"],
+                    correct: "the moles of anhydrous CuSO₄"
+                },
+                {
+                    prompt: "What is the value of x?",
+                    options: ["5", "4", "10", "2"],
+                    correct: "5"
+                },
+                {
+                    prompt: "What is the correct formula for the hydrate?",
+                    options: ["CuSO₄·5H₂O", "CuSO₄·10H₂O", "Cu₅SO₄·H₂O", "CuSO₄·4H₂O"],
+                    correct: "CuSO₄·5H₂O"
+                }
+            ]
+        },
+        {
+            title: "Lab 4: Combustion Analysis",
+            scenarioTitle: "Unknown Combustion Sample",
+            scenarioText: "A 0.4403 g sample of an unknown compound containing only carbon, hydrogen, and oxygen is burned completely in a combustion chamber. The reaction produces 0.6602 g of CO₂ and 0.1802 g of H₂O. A separate molar mass determination finds the compound's molar mass to be 176.12 g/mol.",
+            chips: ["Sample mass = 0.4403 g", "CO₂ produced = 0.6602 g", "H₂O produced = 0.1802 g", "Molar mass (measured) = 176.12 g/mol"],
+            compoundResult: "Ascorbic Acid / Vitamin C (C₆H₈O₆)",
+            hasMolecular: true,
+            steps: [
+                {
+                    prompt: "What is the first quantity you should calculate from the CO₂ collected?",
+                    options: ["the moles of carbon in the original sample", "the moles of oxygen gas used in combustion", "the mass of hydrogen in the sample", "the empirical formula directly"],
+                    correct: "the moles of carbon in the original sample"
+                },
+                {
+                    prompt: "How do you calculate moles of carbon from the mass of CO₂ produced?",
+                    options: ["mass of CO₂ ÷ molar mass of CO₂", "mass of CO₂ × molar mass of CO₂", "mass of CO₂ ÷ 2", "mass of CO₂ ÷ molar mass of carbon"],
+                    correct: "mass of CO₂ ÷ molar mass of CO₂"
+                },
+                {
+                    prompt: "What is the moles of carbon?",
+                    options: ["0.0150 mol", "0.0300 mol", "29.06 mol", "0.0075 mol"],
+                    correct: "0.0150 mol"
+                },
+                {
+                    prompt: "How do you calculate moles of hydrogen from the mass of H₂O produced?",
+                    options: ["(mass of H₂O ÷ molar mass of H₂O) × 2", "mass of H₂O ÷ molar mass of H₂O", "mass of H₂O × 2", "(mass of H₂O ÷ molar mass of H₂O) ÷ 2"],
+                    correct: "(mass of H₂O ÷ molar mass of H₂O) × 2"
+                },
+                {
+                    prompt: "What is the moles of hydrogen?",
+                    options: ["0.0200 mol", "0.0100 mol", "0.0050 mol", "3.25 mol"],
+                    correct: "0.0200 mol"
+                },
+                {
+                    prompt: "How do you find the mass of oxygen in the original sample?",
+                    options: ["sample mass − (mass of C + mass of H)", "mass of CO₂ + mass of H₂O − sample mass", "sample mass ÷ 2", "mass of CO₂ − mass of H₂O"],
+                    correct: "sample mass − (mass of C + mass of H)"
+                },
+                {
+                    prompt: "What is the mass of oxygen in the sample?",
+                    options: ["0.2400 g", "0.6602 g", "0.1802 g", "0.4403 g"],
+                    correct: "0.2400 g"
+                },
+                {
+                    prompt: "What is the moles of oxygen?",
+                    options: ["0.0150 mol", "0.0300 mol", "0.0075 mol", "3.84 mol"],
+                    correct: "0.0150 mol"
+                },
+                {
+                    prompt: "Divide all three mole values by the smallest one. What is the mole ratio of C : H : O?",
+                    options: ["1 : 1.33 : 1", "1 : 2 : 1", "3 : 4 : 3", "1 : 1 : 1"],
+                    correct: "1 : 1.33 : 1"
+                },
+                {
+                    prompt: "This ratio isn't whole numbers. What should you multiply all three values by?",
+                    options: ["×3", "×2", "×4", "×1.33"],
+                    correct: "×3"
+                },
+                {
+                    prompt: "What is the empirical formula?",
+                    options: ["C₃H₄O₃", "CH₂O", "C₂H₃O₂", "C₆H₈O₆"],
+                    correct: "C₃H₄O₃"
+                },
+                {
+                    prompt: "What is the molar mass of the empirical formula, C₃H₄O₃?",
+                    options: ["88.06 g/mol", "176.12 g/mol", "60.05 g/mol", "44.03 g/mol"],
+                    correct: "88.06 g/mol"
+                },
+                {
+                    prompt: "The compound's actual molar mass was measured to be 176.12 g/mol. How do you find the multiplier, n?",
+                    options: ["actual molar mass ÷ empirical formula mass", "empirical formula mass ÷ actual molar mass", "actual molar mass − empirical formula mass", "actual molar mass × empirical formula mass"],
+                    correct: "actual molar mass ÷ empirical formula mass"
+                },
+                {
+                    prompt: "What is the value of n?",
+                    options: ["2", "3", "4", "0.5"],
+                    correct: "2"
+                },
+                {
+                    prompt: "What is the molecular formula of the compound?",
+                    options: ["C₆H₈O₆", "C₃H₄O₃", "C₉H₁₂O₉", "C₆H₈O₃"],
+                    correct: "C₆H₈O₆"
+                }
+            ]
+        }
+    ];
+
+    const TOTAL_STEPS = QUESTIONS.reduce((sum, q) => sum + q.steps.length, 0);
+    const PASS_THRESHOLD = 70;
+
+    // --- SCORM 1.2 wrapper ---------------------------------------------
+    // Looks for the LMS-provided API object in the frame/opener ancestry.
+    // If none is found (e.g. opened as a plain file/link), every call
+    // below is a no-op and the simulation behaves exactly as standalone.
+    let scormAPI = null;
+    let resumeState = null;
+
+    function findAPI(win) {
+        let attempts = 0;
+        while (win && attempts < 10) {
+            if (win.API) return win.API;
+            if (win.parent && win.parent !== win) { win = win.parent; attempts++; continue; }
+            break;
+        }
+        if (window.opener && window.opener !== window) {
+            let ow = window.opener;
+            attempts = 0;
+            while (ow && attempts < 10) {
+                if (ow.API) return ow.API;
+                if (ow.parent && ow.parent !== ow) { ow = ow.parent; attempts++; continue; }
+                break;
+            }
+        }
+        return null;
+    }
+
+    function scormInit() {
+        try {
+            scormAPI = findAPI(window);
+            if (!scormAPI) return;
+            scormAPI.LMSInitialize("");
+
+            if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    const q = QUESTIONS[parsed.qIndex];
+                    if (q && typeof parsed.stepIndex === 'number' && parsed.stepIndex < q.steps.length &&
+                        typeof parsed.firstTryCorrect === 'number') {
+                        resumeState = parsed;
+                    }
+                }
+            }
+        } catch (e) {
+            /* No LMS present, or a malformed/unreadable bookmark — start fresh either way */
+        }
+    }
+
+    function scormSaveProgress() {
+        if (!scormAPI) return;
+        try {
+            scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                qIndex: state.qIndex,
+                stepIndex: state.stepIndex,
+                firstTryCorrect: state.firstTryCorrect
+            }));
+            if (!state.challengeFinished) {
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                // Mark the exit reason as "suspend" on every save, not just on
+                // beforeunload/pagehide. Students on Chromebooks/iPads very often
+                // exit by closing the lid or leaving the Schoology tab, which does
+                // not reliably fire beforeunload/pagehide before the device sleeps
+                // and the network drops. Setting this on every commit means the LMS
+                // already has the correct "resume me" state as of the last save,
+                // instead of depending on a browser-close event to set it at the end.
+                scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+            }
+            scormAPI.LMSCommit("");
+        } catch (e) { /* ignore */ }
+    }
+
+    // Manually triggered by the "Save Progress" button. This is the primary,
+    // reliable save path — students are instructed to click it before closing
+    // their Chromebook, since automatic browser-unload events can't be trusted
+    // to fire when a laptop lid is closed rather than the tab being navigated
+    // away from. Falls back gracefully (shows nothing) if no LMS is present.
+    function manualSaveProgress() {
+        if (!scormAPI) return;
+        scormSaveProgress();
+        const status = document.getElementById('save-status');
+        if (!status) return;
+        status.classList.add('visible');
+        clearTimeout(manualSaveProgress._hideTimer);
+        manualSaveProgress._hideTimer = setTimeout(() => {
+            status.classList.remove('visible');
+        }, 2500);
+    }
+
+    function scormReport(scorePercent, passed) {
+        if (!scormAPI) return;
+        try {
+            scormAPI.LMSSetValue("cmi.core.score.min", "0");
+            scormAPI.LMSSetValue("cmi.core.score.max", "100");
+            scormAPI.LMSSetValue("cmi.core.score.raw", String(scorePercent));
+            scormAPI.LMSSetValue("cmi.core.lesson_status", passed ? "passed" : "failed");
+            scormAPI.LMSSetValue("cmi.core.exit", "");
+            scormAPI.LMSCommit("");
+        } catch (e) { /* LMS not available or call failed; standalone use is unaffected */ }
+    }
+
+    function scormFinish() {
+        if (!scormAPI) return;
+        try {
+            if (!state.challengeFinished) {
+                scormSaveProgress();
+                scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                scormAPI.LMSCommit("");
+            }
+            scormAPI.LMSFinish("");
+        } catch (e) { /* ignore */ }
+    }
+
+    const state = {
+        qIndex: 0,
+        stepIndex: 0,
+        firstTryCorrect: 0,
+        stepAttempted: false,
+        startTime: null,
+        challengeFinished: false,
+        disabledOptions: new Set()
+    };
+
+    const el = {
+        introScreen: document.getElementById('intro-screen'),
+        quizScreen: document.getElementById('quiz-screen'),
+        successScreen: document.getElementById('success-screen'),
+        retryScreen: document.getElementById('retry-screen'),
+        beginBtn: document.getElementById('begin-btn'),
+        progressTrack: document.getElementById('progress-track'),
+        progressLabel: document.getElementById('progress-label'),
+        scenarioTitle: document.getElementById('scenario-title'),
+        scenarioText: document.getElementById('scenario-text'),
+        scenarioChips: document.getElementById('scenario-chips'),
+        stepArea: document.getElementById('step-area'),
+        stepCounter: document.getElementById('step-counter'),
+        stepPrompt: document.getElementById('step-prompt'),
+        answerSelect: document.getElementById('answer-select'),
+        submitBtn: document.getElementById('submit-answer-btn'),
+        feedbackBox: document.getElementById('feedback-box'),
+        completePanel: document.getElementById('question-complete-panel'),
+        completeTitle: document.getElementById('question-complete-title'),
+        completeText: document.getElementById('question-complete-text'),
+        completeFormula: document.getElementById('question-complete-formula'),
+        continueBtn: document.getElementById('continue-btn')
+    };
+
+    function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function buildProgressTrack() {
+        el.progressTrack.innerHTML = "";
+        QUESTIONS.forEach(() => {
+            const seg = document.createElement('div');
+            seg.className = 'progress-seg';
+            const fill = document.createElement('div');
+            fill.className = 'fill';
+            seg.appendChild(fill);
+            el.progressTrack.appendChild(seg);
+        });
+    }
+
+    function updateProgress() {
+        const segs = el.progressTrack.querySelectorAll('.progress-seg .fill');
+        const q = QUESTIONS[state.qIndex];
+        segs.forEach((fill, i) => {
+            if (i < state.qIndex) {
+                fill.style.width = '100%';
+            } else if (i === state.qIndex) {
+                const pct = Math.round((state.stepIndex / q.steps.length) * 100);
+                fill.style.width = pct + '%';
+            } else {
+                fill.style.width = '0%';
+            }
+        });
+        el.progressLabel.textContent = 'Question ' + (state.qIndex + 1) + ' of ' + QUESTIONS.length +
+            ' — Step ' + (state.stepIndex + 1) + ' of ' + q.steps.length;
+    }
+
+    function renderScenario() {
+        const q = QUESTIONS[state.qIndex];
+        el.scenarioTitle.textContent = q.scenarioTitle;
+        el.scenarioText.textContent = q.scenarioText;
+        el.scenarioChips.innerHTML = "";
+        q.chips.forEach(chip => {
+            const div = document.createElement('div');
+            div.className = 'data-chip';
+            div.innerHTML = chip.replace(/=(.*)$/, '=<strong>$1</strong>');
+            el.scenarioChips.appendChild(div);
+        });
+    }
+
+    function renderStep() {
+        const q = QUESTIONS[state.qIndex];
+        const step = q.steps[state.stepIndex];
+        state.stepAttempted = false;
+        state.disabledOptions = new Set();
+
+        el.stepArea.classList.remove('hidden');
+        el.completePanel.classList.add('hidden');
+
+        el.stepCounter.textContent = 'Step ' + (state.stepIndex + 1) + ' of ' + q.steps.length;
+        el.stepPrompt.textContent = step.prompt;
+
+        const shuffled = shuffle(step.options);
+        el.answerSelect.innerHTML = '<option value="" selected disabled>-- Select an answer --</option>';
+        shuffled.forEach(opt => {
+            const o = document.createElement('option');
+            o.value = opt;
+            o.textContent = opt;
+            el.answerSelect.appendChild(o);
+        });
+        el.answerSelect.disabled = false;
+        el.answerSelect.value = "";
+
+        el.feedbackBox.className = 'feedback';
+        el.feedbackBox.textContent = '';
+        el.submitBtn.disabled = false;
+
+        updateProgress();
+    }
+
+    function handleSubmit() {
+        const q = QUESTIONS[state.qIndex];
+        const step = q.steps[state.stepIndex];
+        const selected = el.answerSelect.value;
+
+        if (!selected) return;
+
+        if (selected === step.correct) {
+            if (!state.stepAttempted) {
+                state.firstTryCorrect++;
+            }
+            el.feedbackBox.className = 'feedback correct';
+            el.feedbackBox.textContent = 'Correct! ' + step.correct;
+            el.answerSelect.disabled = true;
+            el.submitBtn.disabled = true;
+
+            setTimeout(() => {
+                state.stepIndex++;
+                scormSaveProgress();
+                if (state.stepIndex >= q.steps.length) {
+                    showQuestionComplete();
+                } else {
+                    renderStep();
+                }
+            }, 850);
+        } else {
+            state.stepAttempted = true;
+            el.feedbackBox.className = 'feedback incorrect';
+            el.feedbackBox.textContent = 'Not quite. Reconsider the data and try again.';
+            state.disabledOptions.add(selected);
+            Array.from(el.answerSelect.options).forEach(o => {
+                if (o.value === selected) o.disabled = true;
+            });
+            el.answerSelect.value = "";
+        }
+    }
+
+    function showQuestionComplete() {
+        const q = QUESTIONS[state.qIndex];
+        el.stepArea.classList.add('hidden');
+        el.completePanel.classList.remove('hidden');
+        el.completeTitle.textContent = q.title + ' — Complete!';
+        el.completeText.textContent = 'You determined the formula for:';
+        el.completeFormula.textContent = q.compoundResult;
+        el.continueBtn.textContent = (state.qIndex === QUESTIONS.length - 1) ? 'View Certificate' : 'Continue to Next Lab';
+        updateProgress();
+    }
+
+    function handleContinue() {
+        if (state.qIndex >= QUESTIONS.length - 1) {
+            finishChallenge();
+            return;
+        }
+        state.qIndex++;
+        state.stepIndex = 0;
+        scormSaveProgress();
+        renderScenario();
+        renderStep();
+    }
+
+    function finishChallenge() {
+        const accuracy = Math.round((state.firstTryCorrect / TOTAL_STEPS) * 100);
+        const passed = accuracy >= PASS_THRESHOLD;
+
+        state.challengeFinished = true;
+        scormReport(accuracy, passed);
+
+        el.quizScreen.classList.add('hidden');
+
+        if (passed) {
+            showSuccessScreen(accuracy);
+        } else {
+            showRetryScreen(accuracy);
+        }
+    }
+
+    function showSuccessScreen(accuracy) {
+        el.successScreen.classList.remove('hidden');
+        document.getElementById('success-score').textContent = accuracy + '%';
+
+        const list = document.getElementById('success-compound-list');
+        list.innerHTML = '';
+        QUESTIONS.forEach(q => {
+            const li = document.createElement('li');
+            li.textContent = q.compoundResult;
+            list.appendChild(li);
+        });
+    }
+
+    function showRetryScreen(accuracy) {
+        el.retryScreen.classList.remove('hidden');
+        document.getElementById('retry-score').textContent = accuracy + '%';
+        document.getElementById('retry-threshold').textContent = PASS_THRESHOLD + '%';
+    }
+
+    function retryChallenge() {
+        state.qIndex = 0;
+        state.stepIndex = 0;
+        state.firstTryCorrect = 0;
+        state.stepAttempted = false;
+        state.startTime = Date.now();
+        state.challengeFinished = false;
+        el.retryScreen.classList.add('hidden');
+        el.quizScreen.classList.remove('hidden');
+        buildProgressTrack();
+        renderScenario();
+        renderStep();
+        scormSaveProgress();
+    }
+
+    el.beginBtn.addEventListener('click', function () {
+        state.startTime = Date.now();
+        el.introScreen.classList.add('hidden');
+        el.quizScreen.classList.remove('hidden');
+        buildProgressTrack();
+        renderScenario();
+        renderStep();
+        scormSaveProgress();
+    });
+
+    el.submitBtn.addEventListener('click', handleSubmit);
+    el.continueBtn.addEventListener('click', handleContinue);
+    document.getElementById('retry-challenge-btn').addEventListener('click', retryChallenge);
+    document.getElementById('save-progress-btn').addEventListener('click', manualSaveProgress);
+
+    el.answerSelect.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') handleSubmit();
+    });
+
+    // Best-effort safety net for the case where the student closes the
+    // Chromebook lid or leaves the tab without clicking "Save Progress":
+    // these events fire more reliably than beforeunload on that path, but
+    // unlike beforeunload we deliberately do NOT call LMSFinish() here —
+    // visibilitychange in particular fires on every tab switch, not just a
+    // real exit, and terminating the SCORM session on a brief tab-switch
+    // would break the ability to keep saving for the rest of that visit.
+    // We just re-commit the current state so the LMS has it either way.
+    function safetyCommit() {
+        if (!scormAPI || state.challengeFinished) return;
+        scormSaveProgress();
+    }
+    window.addEventListener('pagehide', safetyCommit);
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) safetyCommit();
+    });
+    window.addEventListener('beforeunload', scormFinish);
+    scormInit();
+
+    if (resumeState) {
+        state.qIndex = resumeState.qIndex;
+        state.stepIndex = resumeState.stepIndex;
+        state.firstTryCorrect = resumeState.firstTryCorrect;
+        state.startTime = Date.now();
+        el.introScreen.classList.add('hidden');
+        el.quizScreen.classList.remove('hidden');
+        buildProgressTrack();
+        renderScenario();
+        renderStep();
+    }
+
+})();
+</script>
+
+</body>
+</html>

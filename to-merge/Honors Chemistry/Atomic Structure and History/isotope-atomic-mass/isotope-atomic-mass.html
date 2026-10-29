@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Isotope Atomic Mass Practice</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 14px;
+  }
+
+  .container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    max-width: 760px;
+    width: 100%;
+    padding: 18px 22px;
+  }
+
+  .header { text-align: center; margin-bottom: 10px; }
+  h1 { color: #2c3e50; font-size: 1.6em; font-weight: 600; }
+
+  .title-screen {
+    max-width: 640px;
+    margin: 30px auto;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 32px;
+    text-align: center;
+  }
+  .title-screen h2 { color: #2c3e50; margin-top: 0; margin-bottom: 14px; }
+  .title-screen p { color: #495057; line-height: 1.6; text-align: left; margin-bottom: 10px; }
+  .title-screen button {
+    background: linear-gradient(145deg, #4a90e2, #357abd);
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  .title-screen button:hover { background: linear-gradient(145deg, #357abd, #2c5aa0); }
+
+  .top-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .instructions-toggle {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+
+  .instructions-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  /* Instructions modal */
+  .info-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .info-modal-overlay.active { display: flex; }
+
+  .info-modal {
+    background: white;
+    border-radius: 12px;
+    padding: 22px 26px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 88vh;
+    overflow: auto;
+  }
+
+  .info-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .info-modal-header h3 { color: #2c3e50; font-size: 1.2em; }
+
+  .info-section { margin-bottom: 16px; }
+  .info-section:last-child { margin-bottom: 0; }
+  .info-section h4 {
+    color: #007bff;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+  }
+  .info-section p, .info-section li { color: #495057; font-size: 14px; line-height: 1.55; }
+  .info-section ul, .info-section ol { padding-left: 20px; }
+  .info-section li { margin-bottom: 4px; }
+
+  .score-board { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .score-item {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #2c3e50;
+    padding: 5px 12px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 78px;
+  }
+
+  .score-item h4 { font-size: 1.05rem; color: #007bff; }
+  .score-item span { font-size: 0.7rem; color: #6c757d; }
+
+  .progress-bar {
+    flex: 1;
+    min-width: 160px;
+    background: #e9ecef;
+    height: 22px;
+    border-radius: 11px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid #dee2e6;
+  }
+
+  .progress-fill {
+    background: linear-gradient(90deg, #495057, #6c757d);
+    height: 100%;
+    border-radius: 11px;
+    transition: width 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 500;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .problem-panel {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-top: 8px;
+  }
+
+  .problem-title { color: #2c3e50; font-size: 1.05em; font-weight: 600; margin-bottom: 10px; }
+
+  .isotope-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; background: white; }
+  .isotope-table th, .isotope-table td { border: 1px solid #dee2e6; padding: 9px 12px; text-align: center; }
+  .isotope-table th { background: #eef2f7; color: #495057; font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.03em; }
+  .isotope-table td { font-size: 1em; color: #2c3e50; font-weight: 600; }
+
+  .answer-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+
+  .answer-field { display: flex; align-items: center; gap: 8px; }
+  .answer-field label { font-size: 0.85em; color: #495057; font-weight: 600; }
+
+  #massInput {
+    padding: 9px 12px;
+    border: 2px solid #d0d7de;
+    border-radius: 8px;
+    font-size: 1em;
+    width: 140px;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  #massInput:focus { outline: none; border-color: #007bff; }
+
+  .selected-element-label { font-size: 0.9em; color: #495057; font-weight: 600; }
+  .selected-element-label.chosen { color: #2c3e50; }
+
+  .precision-note {
+    font-size: 0.82em;
+    color: #6c757d;
+    margin: -4px 0 12px 0;
+  }
+
+  .action-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  .action {
+    padding: 10px 22px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  #chooseElementBtn { background: #6c757d; color: white; }
+  #chooseElementBtn:hover { background: #5a6268; }
+
+  #checkBtn { background: #007bff; color: white; }
+  #checkBtn:hover:not(:disabled) { background: #0069d9; }
+  #checkBtn:disabled { background: #adb5bd; cursor: not-allowed; }
+
+  #saveProgressBtn { background: #28a745; color: white; }
+  #saveProgressBtn:hover { background: #218838; }
+
+  .save-status {
+    display: inline-block;
+    margin-left: 4px;
+    font-size: 0.85em;
+    font-weight: 600;
+    color: #28a745;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    vertical-align: middle;
+  }
+  .save-status.visible { opacity: 1; }
+
+  .feedback {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.92em;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+  .feedback.incorrect { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+  .feedback.notice { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+
+  /* Periodic table modal */
+  .pt-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .pt-modal-overlay.active { display: flex; }
+
+  .pt-modal {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    max-width: 900px;
+    width: 100%;
+    max-height: 92vh;
+    overflow: auto;
+  }
+
+  .pt-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .pt-modal-header h3 { color: #2c3e50; font-size: 1.1em; }
+
+  .pt-close-btn {
+    background: #e9ecef;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #495057;
+  }
+  .pt-close-btn:hover { background: #dee2e6; }
+
+  .pt-scroll { overflow-x: auto; }
+
+  .pt-group-labels, .pt-table {
+    display: grid;
+    grid-template-columns: 34px repeat(18, 38px);
+    gap: 2px;
+    width: max-content;
+  }
+  .pt-group-labels { margin-bottom: 4px; }
+
+  .pt-group-label, .pt-period-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.62em;
+    font-weight: 700;
+    color: #6c757d;
+    background: #f8f9fa;
+    border-radius: 3px;
+  }
+  .pt-period-label { height: 38px; }
+  .pt-group-label { height: 18px; }
+  .pt-empty-corner { background: transparent; }
+
+  .pt-element {
+    height: 38px;
+    width: 38px;
+    border: 1.5px solid #dee2e6;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: white;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .pt-element:hover { background: #e7f1ff; border-color: #007bff; transform: scale(1.1); z-index: 2; }
+  .pt-element.empty { border: none; cursor: default; background: transparent; }
+  .pt-element.empty:hover { transform: none; background: transparent; }
+
+  .pt-element.placeholder { cursor: default; background: #f1f3f5; }
+  .pt-element.placeholder:hover { transform: none; background: #f1f3f5; border-color: #dee2e6; }
+  .pt-element.placeholder .pt-sym { font-size: 0.5em; font-weight: 600; color: #868e96; }
+
+  .pt-num { font-size: 0.42em; color: #adb5bd; position: absolute; top: 1px; left: 2px; }
+  .pt-sym { font-size: 0.8em; font-weight: 700; color: #2c3e50; }
+
+  .pt-lant-act-row {
+    display: grid;
+    grid-template-columns: repeat(15, 38px);
+    gap: 2px;
+    margin-top: 4px;
+    margin-left: 36px;
+    width: max-content;
+  }
+
+  #ptLanthanideRow { margin-top: 16px; }
+
+  /* Success modal */
+  .success-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+  }
+  .success-modal.active { display: flex; }
+
+  .success-container {
+    width: 100%;
+    max-width: 480px;
+    background: white;
+    padding: 40px;
+    margin: 20px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+  .success-container h2 { color: #2c3e50; margin-bottom: 12px; }
+  .success-container p { color: #495057; line-height: 1.6; }
+  .success-container .close-button {
+    margin-top: 24px;
+    padding: 12px 30px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #007bff;
+    color: white;
+  }
+  .success-container .close-button:hover { background: #0056b3; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Isotope Atomic Mass Practice</h1>
+  </div>
+
+  <div class="title-screen" id="titleScreen">
+    <h2>Isotope Atomic Mass Practice</h2>
+    <p>You'll see an unknown element ("X") along with the exact mass and percent abundance of each of its
+    naturally occurring isotopes. Calculate the weighted-average atomic mass, then identify X on the periodic
+    table.</p>
+    <p>Correctly solve <strong>5 problems</strong> to complete this activity. Your progress is saved if you're
+    interrupted, and your completion grade and score are submitted to Schoology automatically when you finish.</p>
+    <button onclick="startActivity()">Begin Activity</button>
+  </div>
+
+  <div id="mainContent" style="display: none;">
+    <div class="top-bar">
+      <button class="instructions-toggle" onclick="openInstructions()">Show Instructions</button>
+      <div class="score-board">
+        <div class="score-item"><h4 id="correctCountDisplay">0/5</h4><span>Correct</span></div>
+        <div class="score-item"><h4 id="scoreDisplay">100%</h4><span>Score</span></div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill">0 / 5 Complete</div></div>
+    </div>
+
+    <div class="problem-panel">
+      <div class="problem-title" id="problemTitle">Element X has the following isotopes:</div>
+      <table class="isotope-table">
+        <thead><tr><th>Isotope</th><th>Mass (amu)</th><th>Abundance (%)</th></tr></thead>
+        <tbody id="isotopeTableBody"></tbody>
+      </table>
+
+      <div class="answer-row">
+        <div class="answer-field">
+          <label for="massInput">Atomic mass (amu):</label>
+          <input type="text" id="massInput" inputmode="decimal" placeholder="" autocomplete="off">
+        </div>
+        <div class="answer-field">
+          <button class="action" id="chooseElementBtn" type="button">Choose Element</button>
+          <span class="selected-element-label" id="selectedElementLabel">No element selected</span>
+        </div>
+      </div>
+      <div class="precision-note">Round your calculated atomic mass to the hundredths place (2 decimal places).</div>
+
+      <div class="action-row">
+        <button class="action" id="checkBtn">Check Answer</button>
+        <button class="action" id="saveProgressBtn" type="button" onclick="manualSaveProgress()">Save Progress</button>
+        <span class="save-status" id="saveStatus">Saved ✓</span>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </div>
+</div>
+
+<div class="info-modal-overlay" id="instructionsModalOverlay">
+  <div class="info-modal">
+    <div class="info-modal-header">
+      <h3>How This Activity Works</h3>
+      <button class="pt-close-btn" type="button" onclick="closeInstructions()">Close</button>
+    </div>
+
+    <div class="info-section">
+      <h4>Your Task</h4>
+      <p>Each problem shows an unknown element "X" with the mass and percent abundance of 2&ndash;3 of its
+      naturally occurring isotopes. Calculate the weighted-average atomic mass, then use that value to identify
+      which real element X is.</p>
+    </div>
+
+    <div class="info-section">
+      <h4>Submitting an Answer</h4>
+      <ol>
+        <li>Enter your calculated atomic mass, rounded to the hundredths place (2 decimal places).</li>
+        <li>Click <strong>Choose Element</strong> and select the matching element from the periodic table.</li>
+        <li>Click <strong>Check Answer</strong> to submit both together. Nothing is graded automatically.</li>
+      </ol>
+    </div>
+
+    <div class="info-section">
+      <h4>Scoring</h4>
+      <ul>
+        <li>Complete <strong>5 problems</strong> correctly to finish the activity.</li>
+        <li>Each incorrect attempt lowers your score by <strong>3%</strong>, down to a floor of <strong>60%</strong>.</li>
+        <li>You can retry the same problem as many times as you need &mdash; there's no attempt limit.</li>
+      </ul>
+    </div>
+
+    <div class="info-section">
+      <h4>Saving &amp; Submission</h4>
+      <p>Your progress is saved automatically if you're interrupted. Your completion grade and score are
+      submitted to Schoology automatically when you finish.</p>
+      <ul>
+        <li><strong>Before you close your Chromebook or exit Schoology,</strong> click the green "Save Progress" button so your work is saved and you can pick up where you left off next time.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="pt-modal-overlay" id="ptModalOverlay">
+  <div class="pt-modal">
+    <div class="pt-modal-header">
+      <h3>Select the Element</h3>
+      <button class="pt-close-btn" type="button" onclick="closePeriodicTable()">Close</button>
+    </div>
+    <div class="pt-scroll">
+      <div class="pt-group-labels" id="ptGroupLabels"></div>
+      <div class="pt-table" id="ptTable"></div>
+      <div class="pt-lant-act-row" id="ptLanthanideRow"></div>
+      <div class="pt-lant-act-row" id="ptActinideRow"></div>
+    </div>
+  </div>
+</div>
+
+<div class="success-modal" id="successModal">
+  <div class="success-container">
+    <h2>Activity Complete!</h2>
+    <p>You correctly solved 5 isotope atomic mass problems.</p>
+    <p>Your completion grade and score have been submitted to Schoology.</p>
+    <button class="close-button" onclick="closeSuccessScreen()">Close</button>
+  </div>
+</div>
+
+<script>
+  // Isotope data: real NIST/IUPAC isotope masses and natural abundances.
+  // Hidden from the student as "X" — they calculate the weighted average
+  // and identify the element by matching its atomic mass on the periodic table.
+  const elementPool = [
+    { name: 'Boron', symbol: 'B', atomicNumber: 5, isotopes: [
+        { massNumber: 10, mass: 10.0129, abundance: 19.90 },
+        { massNumber: 11, mass: 11.0093, abundance: 80.10 }
+    ]},
+    { name: 'Lithium', symbol: 'Li', atomicNumber: 3, isotopes: [
+        { massNumber: 6, mass: 6.0151, abundance: 7.59 },
+        { massNumber: 7, mass: 7.0160, abundance: 92.41 }
+    ]},
+    { name: 'Chlorine', symbol: 'Cl', atomicNumber: 17, isotopes: [
+        { massNumber: 35, mass: 34.9689, abundance: 75.76 },
+        { massNumber: 37, mass: 36.9659, abundance: 24.24 }
+    ]},
+    { name: 'Copper', symbol: 'Cu', atomicNumber: 29, isotopes: [
+        { massNumber: 63, mass: 62.9296, abundance: 69.15 },
+        { massNumber: 65, mass: 64.9278, abundance: 30.85 }
+    ]},
+    { name: 'Gallium', symbol: 'Ga', atomicNumber: 31, isotopes: [
+        { massNumber: 69, mass: 68.9256, abundance: 60.11 },
+        { massNumber: 71, mass: 70.9247, abundance: 39.89 }
+    ]},
+    { name: 'Bromine', symbol: 'Br', atomicNumber: 35, isotopes: [
+        { massNumber: 79, mass: 78.9183, abundance: 50.69 },
+        { massNumber: 81, mass: 80.9163, abundance: 49.31 }
+    ]},
+    { name: 'Rubidium', symbol: 'Rb', atomicNumber: 37, isotopes: [
+        { massNumber: 85, mass: 84.9118, abundance: 72.17 },
+        { massNumber: 87, mass: 86.9092, abundance: 27.83 }
+    ]},
+    { name: 'Silver', symbol: 'Ag', atomicNumber: 47, isotopes: [
+        { massNumber: 107, mass: 106.9051, abundance: 51.84 },
+        { massNumber: 109, mass: 108.9048, abundance: 48.16 }
+    ]},
+    { name: 'Antimony', symbol: 'Sb', atomicNumber: 51, isotopes: [
+        { massNumber: 121, mass: 120.9038, abundance: 57.21 },
+        { massNumber: 123, mass: 122.9042, abundance: 42.79 }
+    ]},
+    { name: 'Thallium', symbol: 'Tl', atomicNumber: 81, isotopes: [
+        { massNumber: 203, mass: 202.9723, abundance: 29.52 },
+        { massNumber: 205, mass: 204.9744, abundance: 70.48 }
+    ]},
+    { name: 'Neon', symbol: 'Ne', atomicNumber: 10, isotopes: [
+        { massNumber: 20, mass: 19.9924, abundance: 90.48 },
+        { massNumber: 21, mass: 20.9938, abundance: 0.27 },
+        { massNumber: 22, mass: 21.9914, abundance: 9.25 }
+    ]},
+    { name: 'Magnesium', symbol: 'Mg', atomicNumber: 12, isotopes: [
+        { massNumber: 24, mass: 23.9850, abundance: 78.99 },
+        { massNumber: 25, mass: 24.9858, abundance: 10.00 },
+        { massNumber: 26, mass: 25.9826, abundance: 11.01 }
+    ]},
+    { name: 'Silicon', symbol: 'Si', atomicNumber: 14, isotopes: [
+        { massNumber: 28, mass: 27.9769, abundance: 92.23 },
+        { massNumber: 29, mass: 28.9765, abundance: 4.68 },
+        { massNumber: 30, mass: 29.9738, abundance: 3.09 }
+    ]},
+    { name: 'Potassium', symbol: 'K', atomicNumber: 19, isotopes: [
+        { massNumber: 39, mass: 38.9637, abundance: 93.26 },
+        { massNumber: 40, mass: 39.9640, abundance: 0.01 },
+        { massNumber: 41, mass: 40.9618, abundance: 6.73 }
+    ]}
+  ];
+
+  function roundTo2(num) {
+    return Math.round((num + Number.EPSILON) * 100) / 100;
+  }
+
+  elementPool.forEach(el => {
+    const weighted = el.isotopes.reduce((sum, iso) => sum + iso.mass * (iso.abundance / 100), 0);
+    el.target = roundTo2(weighted);
+  });
+
+  // Full periodic table for the selection modal (main groups + transition metals + f-block)
+  const allElements = [
+    {symbol: 'H', name: 'Hydrogen', number: 1, group: 1, period: 1},
+    {symbol: 'He', name: 'Helium', number: 2, group: 18, period: 1},
+    {symbol: 'Li', name: 'Lithium', number: 3, group: 1, period: 2},
+    {symbol: 'Be', name: 'Beryllium', number: 4, group: 2, period: 2},
+    {symbol: 'B', name: 'Boron', number: 5, group: 13, period: 2},
+    {symbol: 'C', name: 'Carbon', number: 6, group: 14, period: 2},
+    {symbol: 'N', name: 'Nitrogen', number: 7, group: 15, period: 2},
+    {symbol: 'O', name: 'Oxygen', number: 8, group: 16, period: 2},
+    {symbol: 'F', name: 'Fluorine', number: 9, group: 17, period: 2},
+    {symbol: 'Ne', name: 'Neon', number: 10, group: 18, period: 2},
+    {symbol: 'Na', name: 'Sodium', number: 11, group: 1, period: 3},
+    {symbol: 'Mg', name: 'Magnesium', number: 12, group: 2, period: 3},
+    {symbol: 'Al', name: 'Aluminum', number: 13, group: 13, period: 3},
+    {symbol: 'Si', name: 'Silicon', number: 14, group: 14, period: 3},
+    {symbol: 'P', name: 'Phosphorus', number: 15, group: 15, period: 3},
+    {symbol: 'S', name: 'Sulfur', number: 16, group: 16, period: 3},
+    {symbol: 'Cl', name: 'Chlorine', number: 17, group: 17, period: 3},
+    {symbol: 'Ar', name: 'Argon', number: 18, group: 18, period: 3},
+    {symbol: 'K', name: 'Potassium', number: 19, group: 1, period: 4},
+    {symbol: 'Ca', name: 'Calcium', number: 20, group: 2, period: 4},
+    {symbol: 'Sc', name: 'Scandium', number: 21, group: 3, period: 4},
+    {symbol: 'Ti', name: 'Titanium', number: 22, group: 4, period: 4},
+    {symbol: 'V', name: 'Vanadium', number: 23, group: 5, period: 4},
+    {symbol: 'Cr', name: 'Chromium', number: 24, group: 6, period: 4},
+    {symbol: 'Mn', name: 'Manganese', number: 25, group: 7, period: 4},
+    {symbol: 'Fe', name: 'Iron', number: 26, group: 8, period: 4},
+    {symbol: 'Co', name: 'Cobalt', number: 27, group: 9, period: 4},
+    {symbol: 'Ni', name: 'Nickel', number: 28, group: 10, period: 4},
+    {symbol: 'Cu', name: 'Copper', number: 29, group: 11, period: 4},
+    {symbol: 'Zn', name: 'Zinc', number: 30, group: 12, period: 4},
+    {symbol: 'Ga', name: 'Gallium', number: 31, group: 13, period: 4},
+    {symbol: 'Ge', name: 'Germanium', number: 32, group: 14, period: 4},
+    {symbol: 'As', name: 'Arsenic', number: 33, group: 15, period: 4},
+    {symbol: 'Se', name: 'Selenium', number: 34, group: 16, period: 4},
+    {symbol: 'Br', name: 'Bromine', number: 35, group: 17, period: 4},
+    {symbol: 'Kr', name: 'Krypton', number: 36, group: 18, period: 4},
+    {symbol: 'Rb', name: 'Rubidium', number: 37, group: 1, period: 5},
+    {symbol: 'Sr', name: 'Strontium', number: 38, group: 2, period: 5},
+    {symbol: 'Y', name: 'Yttrium', number: 39, group: 3, period: 5},
+    {symbol: 'Zr', name: 'Zirconium', number: 40, group: 4, period: 5},
+    {symbol: 'Nb', name: 'Niobium', number: 41, group: 5, period: 5},
+    {symbol: 'Mo', name: 'Molybdenum', number: 42, group: 6, period: 5},
+    {symbol: 'Tc', name: 'Technetium', number: 43, group: 7, period: 5},
+    {symbol: 'Ru', name: 'Ruthenium', number: 44, group: 8, period: 5},
+    {symbol: 'Rh', name: 'Rhodium', number: 45, group: 9, period: 5},
+    {symbol: 'Pd', name: 'Palladium', number: 46, group: 10, period: 5},
+    {symbol: 'Ag', name: 'Silver', number: 47, group: 11, period: 5},
+    {symbol: 'Cd', name: 'Cadmium', number: 48, group: 12, period: 5},
+    {symbol: 'In', name: 'Indium', number: 49, group: 13, period: 5},
+    {symbol: 'Sn', name: 'Tin', number: 50, group: 14, period: 5},
+    {symbol: 'Sb', name: 'Antimony', number: 51, group: 15, period: 5},
+    {symbol: 'Te', name: 'Tellurium', number: 52, group: 16, period: 5},
+    {symbol: 'I', name: 'Iodine', number: 53, group: 17, period: 5},
+    {symbol: 'Xe', name: 'Xenon', number: 54, group: 18, period: 5},
+    {symbol: 'Cs', name: 'Cesium', number: 55, group: 1, period: 6},
+    {symbol: 'Ba', name: 'Barium', number: 56, group: 2, period: 6},
+    {symbol: 'La', name: 'Lanthanum', number: 57, group: 3, period: 6, isLanthanide: true},
+    {symbol: 'Ce', name: 'Cerium', number: 58, isLanthanide: true},
+    {symbol: 'Pr', name: 'Praseodymium', number: 59, isLanthanide: true},
+    {symbol: 'Nd', name: 'Neodymium', number: 60, isLanthanide: true},
+    {symbol: 'Pm', name: 'Promethium', number: 61, isLanthanide: true},
+    {symbol: 'Sm', name: 'Samarium', number: 62, isLanthanide: true},
+    {symbol: 'Eu', name: 'Europium', number: 63, isLanthanide: true},
+    {symbol: 'Gd', name: 'Gadolinium', number: 64, isLanthanide: true},
+    {symbol: 'Tb', name: 'Terbium', number: 65, isLanthanide: true},
+    {symbol: 'Dy', name: 'Dysprosium', number: 66, isLanthanide: true},
+    {symbol: 'Ho', name: 'Holmium', number: 67, isLanthanide: true},
+    {symbol: 'Er', name: 'Erbium', number: 68, isLanthanide: true},
+    {symbol: 'Tm', name: 'Thulium', number: 69, isLanthanide: true},
+    {symbol: 'Yb', name: 'Ytterbium', number: 70, isLanthanide: true},
+    {symbol: 'Lu', name: 'Lutetium', number: 71, isLanthanide: true},
+    {symbol: 'Hf', name: 'Hafnium', number: 72, group: 4, period: 6},
+    {symbol: 'Ta', name: 'Tantalum', number: 73, group: 5, period: 6},
+    {symbol: 'W', name: 'Tungsten', number: 74, group: 6, period: 6},
+    {symbol: 'Re', name: 'Rhenium', number: 75, group: 7, period: 6},
+    {symbol: 'Os', name: 'Osmium', number: 76, group: 8, period: 6},
+    {symbol: 'Ir', name: 'Iridium', number: 77, group: 9, period: 6},
+    {symbol: 'Pt', name: 'Platinum', number: 78, group: 10, period: 6},
+    {symbol: 'Au', name: 'Gold', number: 79, group: 11, period: 6},
+    {symbol: 'Hg', name: 'Mercury', number: 80, group: 12, period: 6},
+    {symbol: 'Tl', name: 'Thallium', number: 81, group: 13, period: 6},
+    {symbol: 'Pb', name: 'Lead', number: 82, group: 14, period: 6},
+    {symbol: 'Bi', name: 'Bismuth', number: 83, group: 15, period: 6},
+    {symbol: 'Po', name: 'Polonium', number: 84, group: 16, period: 6},
+    {symbol: 'At', name: 'Astatine', number: 85, group: 17, period: 6},
+    {symbol: 'Rn', name: 'Radon', number: 86, group: 18, period: 6},
+    {symbol: 'Fr', name: 'Francium', number: 87, group: 1, period: 7},
+    {symbol: 'Ra', name: 'Radium', number: 88, group: 2, period: 7},
+    {symbol: 'Ac', name: 'Actinium', number: 89, group: 3, period: 7, isActinide: true},
+    {symbol: 'Th', name: 'Thorium', number: 90, isActinide: true},
+    {symbol: 'Pa', name: 'Protactinium', number: 91, isActinide: true},
+    {symbol: 'U', name: 'Uranium', number: 92, isActinide: true},
+    {symbol: 'Np', name: 'Neptunium', number: 93, isActinide: true},
+    {symbol: 'Pu', name: 'Plutonium', number: 94, isActinide: true},
+    {symbol: 'Am', name: 'Americium', number: 95, isActinide: true},
+    {symbol: 'Cm', name: 'Curium', number: 96, isActinide: true},
+    {symbol: 'Bk', name: 'Berkelium', number: 97, isActinide: true},
+    {symbol: 'Cf', name: 'Californium', number: 98, isActinide: true},
+    {symbol: 'Es', name: 'Einsteinium', number: 99, isActinide: true},
+    {symbol: 'Fm', name: 'Fermium', number: 100, isActinide: true},
+    {symbol: 'Md', name: 'Mendelevium', number: 101, isActinide: true},
+    {symbol: 'No', name: 'Nobelium', number: 102, isActinide: true},
+    {symbol: 'Lr', name: 'Lawrencium', number: 103, isActinide: true},
+    {symbol: 'Rf', name: 'Rutherfordium', number: 104, group: 4, period: 7},
+    {symbol: 'Db', name: 'Dubnium', number: 105, group: 5, period: 7},
+    {symbol: 'Sg', name: 'Seaborgium', number: 106, group: 6, period: 7},
+    {symbol: 'Bh', name: 'Bohrium', number: 107, group: 7, period: 7},
+    {symbol: 'Hs', name: 'Hassium', number: 108, group: 8, period: 7},
+    {symbol: 'Mt', name: 'Meitnerium', number: 109, group: 9, period: 7},
+    {symbol: 'Ds', name: 'Darmstadtium', number: 110, group: 10, period: 7},
+    {symbol: 'Rg', name: 'Roentgenium', number: 111, group: 11, period: 7},
+    {symbol: 'Cn', name: 'Copernicium', number: 112, group: 12, period: 7},
+    {symbol: 'Nh', name: 'Nihonium', number: 113, group: 13, period: 7},
+    {symbol: 'Fl', name: 'Flerovium', number: 114, group: 14, period: 7},
+    {symbol: 'Mc', name: 'Moscovium', number: 115, group: 15, period: 7},
+    {symbol: 'Lv', name: 'Livermorium', number: 116, group: 16, period: 7},
+    {symbol: 'Ts', name: 'Tennessine', number: 117, group: 17, period: 7},
+    {symbol: 'Og', name: 'Oganesson', number: 118, group: 18, period: 7}
+  ];
+
+  const PROBLEMS_REQUIRED = 5;
+  const SCORE_PENALTY_PER_MISS = 3;
+  const SCORE_FLOOR = 60;
+
+  let correctCount = 0;
+  let missCount = 0;
+  let currentProblem = null;
+  let selectedElement = null;
+  let problemLocked = false;
+  let shuffledPool = [];
+
+  function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
+
+  function buildPeriodicTable() {
+    const groupLabels = document.getElementById('ptGroupLabels');
+    const table = document.getElementById('ptTable');
+    const lanthanideRow = document.getElementById('ptLanthanideRow');
+    const actinideRow = document.getElementById('ptActinideRow');
+
+    groupLabels.innerHTML = '<div class="pt-empty-corner"></div>' +
+      Array.from({length: 18}, (_, i) => `<div class="pt-group-label">${i + 1}</div>`).join('');
+
+    table.innerHTML = '';
+    for (let period = 1; period <= 7; period++) {
+      const periodLabel = document.createElement('div');
+      periodLabel.className = 'pt-period-label';
+      periodLabel.textContent = period;
+      table.appendChild(periodLabel);
+
+      for (let group = 1; group <= 18; group++) {
+        const element = allElements.find(el => el.period === period && el.group === group);
+        const cell = document.createElement('div');
+        if (element && element.isLanthanide) {
+          // La sits in this slot on a real table, but its full series (La included)
+          // is selectable below — placeholder here avoids two clickable cells for La.
+          cell.className = 'pt-element placeholder';
+          cell.innerHTML = `<div class="pt-sym">57-71</div>`;
+        } else if (element && element.isActinide) {
+          cell.className = 'pt-element placeholder';
+          cell.innerHTML = `<div class="pt-sym">89-103</div>`;
+        } else if (element) {
+          cell.className = 'pt-element';
+          cell.innerHTML = `<div class="pt-num">${element.number}</div><div class="pt-sym">${element.symbol}</div>`;
+          cell.addEventListener('click', () => chooseElement(element));
+        } else {
+          cell.className = 'pt-element empty';
+        }
+        table.appendChild(cell);
+      }
+    }
+
+    lanthanideRow.innerHTML = '';
+    allElements.filter(el => el.isLanthanide).forEach(element => {
+      const cell = document.createElement('div');
+      cell.className = 'pt-element';
+      cell.innerHTML = `<div class="pt-num">${element.number}</div><div class="pt-sym">${element.symbol}</div>`;
+      cell.addEventListener('click', () => chooseElement(element));
+      lanthanideRow.appendChild(cell);
+    });
+
+    actinideRow.innerHTML = '';
+    allElements.filter(el => el.isActinide).forEach(element => {
+      const cell = document.createElement('div');
+      cell.className = 'pt-element';
+      cell.innerHTML = `<div class="pt-num">${element.number}</div><div class="pt-sym">${element.symbol}</div>`;
+      cell.addEventListener('click', () => chooseElement(element));
+      actinideRow.appendChild(cell);
+    });
+  }
+
+  function openPeriodicTable() {
+    document.getElementById('ptModalOverlay').classList.add('active');
+  }
+
+  function closePeriodicTable() {
+    document.getElementById('ptModalOverlay').classList.remove('active');
+  }
+
+  function chooseElement(element) {
+    selectedElement = element;
+    const label = document.getElementById('selectedElementLabel');
+    label.textContent = `Selected: ${element.name} (${element.symbol})`;
+    label.classList.add('chosen');
+    closePeriodicTable();
+  }
+
+  document.getElementById('ptModalOverlay').addEventListener('click', (e) => {
+    if (e.target.id === 'ptModalOverlay') closePeriodicTable();
+  });
+
+  function nextProblem() {
+    if (shuffledPool.length === 0) {
+      shuffledPool = shuffleArray(elementPool);
+    }
+    currentProblem = shuffledPool.pop();
+    selectedElement = null;
+    problemLocked = false;
+
+    const label = document.getElementById('selectedElementLabel');
+    label.textContent = 'No element selected';
+    label.classList.remove('chosen');
+
+    document.getElementById('massInput').value = '';
+    document.getElementById('massInput').disabled = false;
+    document.getElementById('chooseElementBtn').disabled = false;
+    document.getElementById('checkBtn').disabled = false;
+
+    const tbody = document.getElementById('isotopeTableBody');
+    tbody.innerHTML = currentProblem.isotopes.map(iso =>
+      `<tr><td>X-${iso.massNumber}</td><td>${iso.mass.toFixed(4)}</td><td>${iso.abundance.toFixed(2)}%</td></tr>`
+    ).join('');
+
+    const feedback = document.getElementById('feedback');
+    feedback.textContent = '';
+    feedback.className = 'feedback';
+  }
+
+  function checkAnswer() {
+    if (problemLocked) return;
+
+    const feedback = document.getElementById('feedback');
+    const massStr = document.getElementById('massInput').value.trim();
+    const massVal = parseFloat(massStr);
+
+    if (!massStr || !Number.isFinite(massVal)) {
+      feedback.textContent = 'Enter a numeric atomic mass.';
+      feedback.className = 'feedback notice show';
+      return;
+    }
+    if (!selectedElement) {
+      feedback.textContent = 'Choose an element from the periodic table.';
+      feedback.className = 'feedback notice show';
+      return;
+    }
+
+    const massOk = Math.abs(roundTo2(massVal) - currentProblem.target) < 1e-9;
+    const elementOk = selectedElement.number === currentProblem.atomicNumber;
+
+    if (massOk && elementOk) {
+      // Lock immediately so a repeat click on a correct answer can never
+      // double-count this problem or re-trigger completion.
+      problemLocked = true;
+      document.getElementById('checkBtn').disabled = true;
+      document.getElementById('chooseElementBtn').disabled = true;
+      document.getElementById('massInput').disabled = true;
+
+      correctCount++;
+      updateScore();
+      scormSaveProgress();
+
+      feedback.textContent = `Correct! X was ${currentProblem.name} (${currentProblem.symbol}), atomic mass ${currentProblem.target.toFixed(2)} amu.`;
+      feedback.className = 'feedback correct show';
+
+      if (correctCount >= PROBLEMS_REQUIRED) {
+        showSuccessScreen();
+      } else {
+        setTimeout(() => nextProblem(), 1800);
+      }
+      return;
+    }
+
+    missCount++;
+    updateScore();
+    scormSaveProgress();
+
+    if (massOk && !elementOk) {
+      feedback.textContent = 'Your atomic mass looks right, but that\'s not the correct element. Recheck your identification.';
+    } else if (!massOk && elementOk) {
+      feedback.textContent = 'You picked the right element, but your atomic mass value is off. Recheck your calculation.';
+    } else {
+      feedback.textContent = 'Not quite. Recheck your weighted-average calculation and your element identification, then try again.';
+    }
+    feedback.className = 'feedback incorrect show';
+  }
+
+  function updateScore() {
+    document.getElementById('correctCountDisplay').textContent = `${correctCount}/${PROBLEMS_REQUIRED}`;
+    const score = Math.max(SCORE_FLOOR, 100 - (missCount * SCORE_PENALTY_PER_MISS));
+    document.getElementById('scoreDisplay').textContent = score + '%';
+
+    const percentage = (correctCount / PROBLEMS_REQUIRED) * 100;
+    const progressFill = document.getElementById('progressFill');
+    progressFill.style.width = `${percentage}%`;
+    progressFill.textContent = `${correctCount} / ${PROBLEMS_REQUIRED} Complete`;
+  }
+
+  function openInstructions() {
+    document.getElementById('instructionsModalOverlay').classList.add('active');
+  }
+
+  function closeInstructions() {
+    document.getElementById('instructionsModalOverlay').classList.remove('active');
+  }
+
+  document.getElementById('instructionsModalOverlay').addEventListener('click', (e) => {
+    if (e.target.id === 'instructionsModalOverlay') closeInstructions();
+  });
+
+  function startActivity() {
+    document.getElementById('titleScreen').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    shuffledPool = shuffleArray(elementPool);
+    nextProblem();
+  }
+
+  function showSuccessScreen() {
+    document.getElementById('successModal').classList.add('active');
+    state.challengeFinished = true;
+    const score = Math.max(SCORE_FLOOR, 100 - (missCount * SCORE_PENALTY_PER_MISS));
+    scormReport(score);
+  }
+
+  function closeSuccessScreen() {
+    document.getElementById('successModal').classList.remove('active');
+  }
+
+  // ---- SCORM 1.2 wrapper ----
+  const state = { challengeFinished: false };
+  let scormAPI = null;
+  let resumeState = null;
+
+  function findAPI(win) {
+    let attempts = 0;
+    let w = win;
+    while (w && attempts < 10) {
+      if (w.API) return w.API;
+      if (w.parent && w.parent !== w) {
+        w = w.parent;
+      } else if (w.opener) {
+        w = w.opener;
+      } else {
+        break;
+      }
+      attempts++;
+    }
+    return null;
+  }
+
+  function isValidResumePayload(parsed) {
+    if (!parsed || typeof parsed !== 'object') return false;
+    if (typeof parsed.correctCount !== 'number' || parsed.correctCount < 0 || parsed.correctCount > PROBLEMS_REQUIRED) return false;
+    if (typeof parsed.missCount !== 'number' || parsed.missCount < 0 || parsed.missCount > 10000) return false;
+    return true;
+  }
+
+  function scormInit() {
+    try {
+      scormAPI = findAPI(window);
+      if (!scormAPI) return;
+      scormAPI.LMSInitialize("");
+      if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+        const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (isValidResumePayload(parsed)) {
+            resumeState = parsed;
+          }
+        }
+      }
+    } catch (e) { /* No LMS present, or malformed bookmark — start fresh */ }
+  }
+
+  function scormSaveProgress() {
+    if (!scormAPI) return;
+    try {
+      scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+        correctCount: correctCount,
+        missCount: missCount
+      }));
+      if (!state.challengeFinished) {
+        scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+        // Mark the exit reason as "suspend" on every save, not just on
+        // beforeunload/pagehide. Students on Chromebooks/iPads very often
+        // exit by closing the lid or leaving the Schoology tab, which does
+        // not reliably fire beforeunload/pagehide before the device sleeps
+        // and the network drops. Setting this on every commit means the LMS
+        // already has the correct "resume me" state as of the last save,
+        // instead of depending on a browser-close event to set it at the end.
+        scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+      }
+      scormAPI.LMSCommit("");
+    } catch (e) { /* ignore */ }
+  }
+
+  // Manually triggered by the "Save Progress" button. This is the primary,
+  // reliable save path — students are instructed to click it before closing
+  // their Chromebook, since automatic browser-unload events can't be trusted
+  // to fire when a laptop lid is closed rather than the tab being navigated
+  // away from. Falls back gracefully (shows nothing) if no LMS is present.
+  function manualSaveProgress() {
+    if (!scormAPI) return;
+    scormSaveProgress();
+    const status = document.getElementById('saveStatus');
+    if (!status) return;
+    status.classList.add('visible');
+    clearTimeout(manualSaveProgress._hideTimer);
+    manualSaveProgress._hideTimer = setTimeout(() => {
+      status.classList.remove('visible');
+    }, 2500);
+  }
+
+  function scormReport(scorePercent) {
+    if (!scormAPI) return;
+    try {
+      scormAPI.LMSSetValue("cmi.core.score.min", "0");
+      scormAPI.LMSSetValue("cmi.core.score.max", "100");
+      scormAPI.LMSSetValue("cmi.core.score.raw", String(scorePercent));
+      scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+      scormAPI.LMSSetValue("cmi.core.exit", "");
+      scormAPI.LMSCommit("");
+    } catch (e) { /* ignore */ }
+  }
+
+  function scormFinish() {
+    if (!scormAPI) return;
+    try {
+      if (!state.challengeFinished) {
+        scormSaveProgress();
+        scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+        scormAPI.LMSCommit("");
+      }
+      scormAPI.LMSFinish("");
+    } catch (e) { /* ignore */ }
+  }
+
+  function resumeFromSavedState() {
+    correctCount = resumeState.correctCount;
+    missCount = resumeState.missCount;
+
+    document.getElementById('titleScreen').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+
+    shuffledPool = shuffleArray(elementPool);
+    updateScore();
+
+    if (correctCount >= PROBLEMS_REQUIRED) {
+      showSuccessScreen();
+    } else {
+      nextProblem();
+    }
+  }
+
+  document.getElementById('checkBtn').addEventListener('click', checkAnswer);
+  document.getElementById('chooseElementBtn').addEventListener('click', openPeriodicTable);
+  document.getElementById('massInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') checkAnswer();
+  });
+
+  // Best-effort safety net for the case where the student closes the
+  // Chromebook lid or leaves the tab without clicking "Save Progress":
+  // these events fire more reliably than beforeunload on that path, but
+  // unlike beforeunload we deliberately do NOT call LMSFinish() here —
+  // visibilitychange in particular fires on every tab switch, not just a
+  // real exit, and terminating the SCORM session on a brief tab-switch
+  // would break the ability to keep saving for the rest of that visit.
+  // We just re-commit the current state so the LMS has it either way.
+  function safetyCommit() {
+    if (!scormAPI || state.challengeFinished) return;
+    scormSaveProgress();
+  }
+  window.addEventListener('pagehide', safetyCommit);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) safetyCommit();
+  });
+  window.addEventListener('beforeunload', scormFinish);
+
+  buildPeriodicTable();
+  scormInit();
+  if (resumeState) {
+    resumeFromSavedState();
+  }
+</script>
+</body>
+</html>

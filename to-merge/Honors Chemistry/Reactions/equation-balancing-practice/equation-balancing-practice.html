@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemical Equation Balancing Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #2c3e50;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            padding: 6px 15px;
+            border-radius: 6px;
+            border: 2px solid #dee2e6;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background: #e9ecef;
+            border-radius: 8px;
+            height: 20px;
+            margin-top: 10px;
+            overflow: hidden;
+            border: 2px solid #2c3e50;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #007bff 0%, #28a745 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        /* Student Entry Screen */
+        .student-entry {
+            text-align: center;
+        }
+
+        .student-entry h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .student-entry input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .student-entry button {
+            padding: 12px 30px;
+            font-size: 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .student-entry button:hover {
+            background: #0056b3;
+        }
+
+        /* Main Content */
+        .hidden {
+            display: none !important;
+        }
+
+        .problem-container {
+            margin: 10px 0;
+        }
+
+        .problem-number {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .instruction {
+            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .equation-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .compound-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .arrow-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .arrow-btn:hover {
+            background: #0056b3;
+        }
+
+        .arrow-btn:active {
+            transform: scale(0.95);
+        }
+
+        .compound-display {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 18px;
+            color: #2c3e50;
+        }
+
+        .coefficient {
+            font-size: 16px;
+            font-weight: bold;
+            color: #007bff;
+            min-width: 25px;
+            text-align: center;
+        }
+
+        .formula {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .operator {
+            font-size: 20px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .check-btn {
+            display: block;
+            margin: 15px auto;
+            padding: 10px 30px;
+            font-size: 16px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .check-btn:hover {
+            background: #218838;
+        }
+
+        .check-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .btn-save {
+            display: inline-block;
+            margin: 15px auto 0 auto;
+            padding: 10px 30px;
+            font-size: 16px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-save:hover {
+            background: #218838;
+        }
+
+        .save-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .save-status {
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #28a745;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .save-status.visible {
+            opacity: 1;
+        }
+
+        /* Atom Count Table */
+        .atom-count-container {
+            margin: 15px 0;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+        }
+
+        .atom-count-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .atom-count-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .atom-count-table th {
+            background: #2c3e50;
+            color: white;
+            padding: 6px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .atom-count-table td {
+            padding: 6px;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 14px;
+        }
+
+        .atom-count-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .balanced {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .unbalanced {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        /* Settings */
+        .settings-container {
+            margin: 10px 0;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 6px;
+            border: 2px solid #dee2e6;
+        }
+
+        .settings-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .settings-options {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .setting-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #2c3e50;
+        }
+
+        .setting-option input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        .setting-option label {
+            cursor: pointer;
+        }
+
+        .atom-breakdown {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Feedback Modal */
+        .feedback-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feedback-modal.active {
+            display: flex;
+        }
+
+        .feedback-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .feedback-content.correct {
+            border: 5px solid #28a745;
+        }
+
+        .feedback-content.incorrect {
+            border: 5px solid #dc3545;
+        }
+
+        .feedback-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .feedback-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .feedback-body {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .feedback-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .feedback-btn {
+            padding: 12px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .next-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .next-btn:hover {
+            background: #218838;
+        }
+
+        .try-again-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .try-again-btn:hover {
+            background: #c82333;
+        }
+
+        /* Success screen (replaces certificate in the SCORM copy) */
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-modal.active {
+            display: flex;
+        }
+
+        .success-container {
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            padding: 40px;
+            margin: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .success-container h2 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+        }
+
+        .success-container p {
+            color: #495057;
+            line-height: 1.6;
+        }
+
+        .success-container .close-button {
+            margin-top: 24px;
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+        }
+
+        .success-container .close-button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="studentEntry" class="student-entry">
+            <h2>Chemical Equation Balancing Practice</h2>
+            <p style="margin-bottom: 10px; color: #666;">Balance 10 chemical equations to complete this activity.</p>
+            <p style="margin-bottom: 20px; color: #666;">Before you close your Chromebook or exit Schoology, click the green "Save Progress" button so your work is saved and you can pick up where you left off next time.</p>
+            <button onclick="startSimulation()">Start Practice</button>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" class="hidden">
+            <div class="header">
+                <h1>Chemical Equation Balancing Practice</h1>
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <div class="stat-label">Correct</div>
+                        <div class="stat-value" id="correctCount">0/10</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Attempts</div>
+                        <div class="stat-value" id="attemptsCount">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Accuracy</div>
+                        <div class="stat-value" id="accuracyPercent">0%</div>
+                    </div>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar">0/10</div>
+                </div>
+            </div>
+
+            <div class="problem-container">
+                <div class="problem-number" id="problemNumber">Problem #1</div>
+                <div class="instruction">Balance the following equation:</div>
+
+                <div class="equation-container" id="equationDisplay">
+                    <!-- Equation will be dynamically generated here -->
+                </div>
+
+                <button class="check-btn" id="checkBtn" onclick="checkAnswer()">Check Answer</button>
+
+                <div class="save-controls">
+                    <button class="btn-save" id="saveProgressBtn" onclick="manualSaveProgress()">Save Progress</button>
+                    <span class="save-status" id="saveStatus">Saved ✓</span>
+                </div>
+
+                <div class="settings-container">
+                    <div class="settings-title">Display Options</div>
+                    <div class="settings-options">
+                        <div class="setting-option">
+                            <input type="checkbox" id="groupPolyatomic" onchange="updateAtomCount()">
+                            <label for="groupPolyatomic">Group Polyatomic Ions</label>
+                        </div>
+                        <div class="setting-option">
+                            <input type="checkbox" id="splitCompounds" onchange="updateAtomCount()">
+                            <label for="splitCompounds">Split Compounds</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="atom-count-container">
+                    <div class="atom-count-title">Atom Count</div>
+                    <table class="atom-count-table">
+                        <thead>
+                            <tr>
+                                <th>Reactants</th>
+                                <th>Element</th>
+                                <th>Products</th>
+                            </tr>
+                        </thead>
+                        <tbody id="atomCountBody">
+                            <!-- Atom counts will be dynamically generated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="feedback-modal" id="feedbackModal">
+        <div class="feedback-content" id="feedbackContent">
+            <div class="feedback-icon" id="feedbackIcon"></div>
+            <div class="feedback-title" id="feedbackTitle"></div>
+            <div class="feedback-body" id="feedbackBody"></div>
+            <div class="feedback-buttons" id="feedbackButtons">
+                <!-- Buttons dynamically added -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Screen -->
+    <div class="success-modal" id="successModal">
+        <div class="success-container">
+            <h2>Practice Complete!</h2>
+            <p>You balanced 10 chemical equations correctly.</p>
+            <p>Your completion grade has been submitted to Schoology.</p>
+            <button class="close-button" onclick="closeSuccessScreen()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let correctAnswers = 0;
+        let totalAttempts = 0;
+        let currentProblem = null;
+        let problemPool = [];
+        let usedProblems = [];
+        let currentCoefficients = [];
+
+        // Common polyatomic ions
+        const polyatomicIons = {
+            'NO₃': { N: 1, O: 3 },
+            'SO₄': { S: 1, O: 4 },
+            'PO₄': { P: 1, O: 4 },
+            'CO₃': { C: 1, O: 3 },
+            'OH': { O: 1, H: 1 },
+            'ClO₃': { Cl: 1, O: 3 },
+            'NH₄': { N: 1, H: 4 }
+        };
+
+        // Equation database organized by difficulty
+        const equations = {
+            easy: [
+                // Easy: Simple diatomic and binary compounds
+                {
+                id: 1,
+                reactants: [
+                    { formula: "H₂", elements: { H: 2 } },
+                    { formula: "O₂", elements: { O: 2 } }
+                ],
+                products: [
+                    { formula: "H₂O", elements: { H: 2, O: 1 } }
+                ],
+                type: "synthesis",
+                explanation: "Hydrogen combines with oxygen to form water. The balanced equation shows 4 H atoms and 2 O atoms on each side."
+            },
+            {
+                id: 2,
+                reactants: [
+                    { formula: "Mg", elements: { Mg: 1 } },
+                    { formula: "O₂", elements: { O: 2 } }
+                ],
+                products: [
+                    { formula: "MgO", elements: { Mg: 1, O: 1 } }
+                ],
+                type: "synthesis",
+                explanation: "Magnesium reacts with oxygen to form magnesium oxide."
+            },
+            {
+                id: 3,
+                reactants: [
+                    { formula: "N₂", elements: { N: 2 } },
+                    { formula: "H₂", elements: { H: 2 } }
+                ],
+                products: [
+                    { formula: "NH₃", elements: { N: 1, H: 3 } }
+                ],
+                type: "synthesis",
+                explanation: "Nitrogen combines with hydrogen to form ammonia (Haber process)."
+            },
+            {
+                id: 4,
+                reactants: [
+                    { formula: "Al", elements: { Al: 1 } },
+                    { formula: "O₂", elements: { O: 2 } }
+                ],
+                products: [
+                    { formula: "Al₂O₃", elements: { Al: 2, O: 3 } }
+                ],
+                type: "synthesis",
+                explanation: "Aluminum combines with oxygen to form aluminum oxide."
+            },
+            // Decomposition (4)
+            {
+                id: 5,
+                reactants: [
+                    { formula: "H₂O", elements: { H: 2, O: 1 } }
+                ],
+                products: [
+                    { formula: "H₂", elements: { H: 2 } },
+                    { formula: "O₂", elements: { O: 2 } }
+                ],
+                type: "decomposition",
+                explanation: "Water decomposes into hydrogen and oxygen gases through electrolysis."
+            },
+            {
+                id: 6,
+                reactants: [
+                    { formula: "KClO₃", elements: { K: 1, Cl: 1, O: 3 } }
+                ],
+                products: [
+                    { formula: "KCl", elements: { K: 1, Cl: 1 } },
+                    { formula: "O₂", elements: { O: 2 } }
+                ],
+                type: "decomposition",
+                explanation: "Potassium chlorate decomposes into potassium chloride and oxygen gas when heated."
+            },
+            {
+                id: 7,
+                reactants: [
+                    { formula: "CaCO₃", elements: { Ca: 1, C: 1, O: 3 } }
+                ],
+                products: [
+                    { formula: "CaO", elements: { Ca: 1, O: 1 } },
+                    { formula: "CO₂", elements: { C: 1, O: 2 } }
+                ],
+                type: "decomposition",
+                explanation: "Calcium carbonate decomposes into calcium oxide and carbon dioxide when heated."
+            },
+            {
+                id: 8,
+                reactants: [
+                    { formula: "NH₄NO₃", elements: { N: 2, H: 4, O: 3 } }
+                ],
+                products: [
+                    { formula: "N₂O", elements: { N: 2, O: 1 } },
+                    { formula: "H₂O", elements: { H: 2, O: 1 } }
+                ],
+                type: "decomposition",
+                explanation: "Ammonium nitrate decomposes into nitrous oxide and water."
+            },
+            // Combustion (4)
+            {
+                id: 9,
+                reactants: [
+                    { formula: "CH₄", elements: { C: 1, H: 4 } },
+                    { formula: "O₂", elements: { O: 2 } }
+                ],
+                products: [
+                    { formula: "CO₂", elements: { C: 1, O: 2 } },
+                    { formula: "H₂O", elements: { H: 2, O: 1 } }
+                ],
+                type: "combustion",
+                explanation: "Methane burns in oxygen to produce carbon dioxide and water."
+            },
+            {
+                id: 10,
+                reactants: [
+                    { formula: "C₃H₈", elements: { C: 3, H: 8 } },
+                    { formula: "O₂", elements: { O: 2 } }
+                ],
+                products: [
+                    { formula: "CO₂", elements: { C: 1, O: 2 } },
+                    { formula: "H₂O", elements: { H: 2, O: 1 } }
+                ],
+                type: "combustion",
+                explanation: "Propane combusts completely to form carbon dioxide and water."
+            },
+            {
+                id: 11,
+                reactants: [
+                    { formula: "C₂H₆", elements: { C: 2, H: 6 } },
+                    { formula: "O₂", elements: { O: 2 } }
+                ],
+                products: [
+                    { formula: "CO₂", elements: { C: 1, O: 2 } },
+                    { formula: "H₂O", elements: { H: 2, O: 1 } }
+                ],
+                type: "combustion",
+                explanation: "Ethane burns in oxygen producing carbon dioxide and water."
+            },
+            {
+                id: 12,
+                reactants: [
+                    { formula: "C₄H₁₀", elements: { C: 4, H: 10 } },
+                    { formula: "O₂", elements: { O: 2 } }
+                ],
+                products: [
+                    { formula: "CO₂", elements: { C: 1, O: 2 } },
+                    { formula: "H₂O", elements: { H: 2, O: 1 } }
+                ],
+                type: "combustion",
+                explanation: "Butane undergoes complete combustion to produce carbon dioxide and water."
+            },
+            // Single Replacement (4)
+            {
+                id: 13,
+                reactants: [
+                    { formula: "Zn", elements: { Zn: 1 } },
+                    { formula: "HCl", elements: { H: 1, Cl: 1 } }
+                ],
+                products: [
+                    { formula: "ZnCl₂", elements: { Zn: 1, Cl: 2 } },
+                    { formula: "H₂", elements: { H: 2 } }
+                ],
+                type: "single_replacement",
+                explanation: "Zinc displaces hydrogen from hydrochloric acid, forming zinc chloride and hydrogen gas."
+            },
+            {
+                id: 14,
+                reactants: [
+                    { formula: "Mg", elements: { Mg: 1 } },
+                    { formula: "HCl", elements: { H: 1, Cl: 1 } }
+                ],
+                products: [
+                    { formula: "MgCl₂", elements: { Mg: 1, Cl: 2 } },
+                    { formula: "H₂", elements: { H: 2 } }
+                ],
+                type: "single_replacement",
+                explanation: "Magnesium replaces hydrogen in hydrochloric acid."
+            },
+            {
+                id: 15,
+                reactants: [
+                    { formula: "Al", elements: { Al: 1 } },
+                    { formula: "H₂SO₄", elements: { H: 2, S: 1, O: 4 } }
+                ],
+                products: [
+                    { formula: "Al₂(SO₄)₃", elements: { Al: 2, S: 3, O: 12 } },
+                    { formula: "H₂", elements: { H: 2 } }
+                ],
+                type: "single_replacement",
+                explanation: "Aluminum displaces hydrogen from sulfuric acid."
+            },
+            {
+                id: 16,
+                reactants: [
+                    { formula: "Fe", elements: { Fe: 1 } },
+                    { formula: "CuSO₄", elements: { Cu: 1, S: 1, O: 4 } }
+                ],
+                products: [
+                    { formula: "FeSO₄", elements: { Fe: 1, S: 1, O: 4 } },
+                    { formula: "Cu", elements: { Cu: 1 } }
+                ],
+                type: "single_replacement",
+                explanation: "Iron displaces copper from copper sulfate solution."
+            },
+            // Double Replacement (5)
+            {
+                id: 17,
+                reactants: [
+                    { formula: "AgNO₃", elements: { Ag: 1, N: 1, O: 3 } },
+                    { formula: "NaCl", elements: { Na: 1, Cl: 1 } }
+                ],
+                products: [
+                    { formula: "AgCl", elements: { Ag: 1, Cl: 1 } },
+                    { formula: "NaNO₃", elements: { Na: 1, N: 1, O: 3 } }
+                ],
+                type: "double_replacement",
+                explanation: "Silver nitrate and sodium chloride exchange ions to form silver chloride precipitate."
+            },
+            {
+                id: 18,
+                reactants: [
+                    { formula: "BaCl₂", elements: { Ba: 1, Cl: 2 } },
+                    { formula: "Na₂SO₄", elements: { Na: 2, S: 1, O: 4 } }
+                ],
+                products: [
+                    { formula: "BaSO₄", elements: { Ba: 1, S: 1, O: 4 } },
+                    { formula: "NaCl", elements: { Na: 1, Cl: 1 } }
+                ],
+                type: "double_replacement",
+                explanation: "Barium chloride and sodium sulfate form barium sulfate precipitate."
+            },
+            {
+                id: 19,
+                reactants: [
+                    { formula: "Pb(NO₃)₂", elements: { Pb: 1, N: 2, O: 6 } },
+                    { formula: "KI", elements: { K: 1, I: 1 } }
+                ],
+                products: [
+                    { formula: "PbI₂", elements: { Pb: 1, I: 2 } },
+                    { formula: "KNO₃", elements: { K: 1, N: 1, O: 3 } }
+                ],
+                type: "double_replacement",
+                explanation: "Lead nitrate and potassium iodide exchange partners to form lead iodide."
+            },
+            {
+                id: 20,
+                reactants: [
+                    { formula: "CaCl₂", elements: { Ca: 1, Cl: 2 } },
+                    { formula: "Na₃PO₄", elements: { Na: 3, P: 1, O: 4 } }
+                ],
+                products: [
+                    { formula: "Ca₃(PO₄)₂", elements: { Ca: 3, P: 2, O: 8 } },
+                    { formula: "NaCl", elements: { Na: 1, Cl: 1 } }
+                ],
+                type: "double_replacement",
+                explanation: "Calcium chloride and sodium phosphate form calcium phosphate."
+            },
+            {
+                id: 21,
+                reactants: [
+                    { formula: "FeCl₃", elements: { Fe: 1, Cl: 3 } },
+                    { formula: "Na₂CO₃", elements: { Na: 2, C: 1, O: 3 } }
+                ],
+                products: [
+                    { formula: "Fe₂(CO₃)₃", elements: { Fe: 2, C: 3, O: 9 } },
+                    { formula: "NaCl", elements: { Na: 1, Cl: 1 } }
+                ],
+                type: "double_replacement",
+                explanation: "Iron(III) chloride and sodium carbonate exchange ions."
+            },
+            // Neutralization (4)
+            {
+                id: 22,
+                reactants: [
+                    { formula: "HCl", elements: { H: 1, Cl: 1 } },
+                    { formula: "NaOH", elements: { Na: 1, O: 1, H: 1 } }
+                ],
+                products: [
+                    { formula: "NaCl", elements: { Na: 1, Cl: 1 } },
+                    { formula: "H₂O", elements: { H: 2, O: 1 } }
+                ],
+                type: "neutralization",
+                explanation: "Hydrochloric acid neutralizes sodium hydroxide to form salt and water."
+            },
+            {
+                id: 23,
+                reactants: [
+                    { formula: "H₂SO₄", elements: { H: 2, S: 1, O: 4 } },
+                    { formula: "KOH", elements: { K: 1, O: 1, H: 1 } }
+                ],
+                products: [
+                    { formula: "K₂SO₄", elements: { K: 2, S: 1, O: 4 } },
+                    { formula: "H₂O", elements: { H: 2, O: 1 } }
+                ],
+                type: "neutralization",
+                explanation: "Sulfuric acid neutralizes potassium hydroxide."
+            },
+            {
+                id: 24,
+                reactants: [
+                    { formula: "HNO₃", elements: { H: 1, N: 1, O: 3 } },
+                    { formula: "Ca(OH)₂", elements: { Ca: 1, O: 2, H: 2 } }
+                ],
+                products: [
+                    { formula: "Ca(NO₃)₂", elements: { Ca: 1, N: 2, O: 6 } },
+                    { formula: "H₂O", elements: { H: 2, O: 1 } }
+                ],
+                type: "neutralization",
+                explanation: "Nitric acid neutralizes calcium hydroxide to form calcium nitrate and water."
+            },
+            {
+                id: 25,
+                reactants: [
+                    { formula: "H₃PO₄", elements: { H: 3, P: 1, O: 4 } },
+                    { formula: "NaOH", elements: { Na: 1, O: 1, H: 1 } }
+                ],
+                products: [
+                    { formula: "Na₃PO₄", elements: { Na: 3, P: 1, O: 4 } },
+                    { formula: "H₂O", elements: { H: 2, O: 1 } }
+                ],
+                type: "neutralization",
+                explanation: "Phosphoric acid neutralizes sodium hydroxide."
+            }
+            ],
+            medium: [
+                // Medium: Combustion and polyatomic ions
+                {
+                    id: 26,
+                    reactants: [
+                        { formula: "C₃H₈", elements: { C: 3, H: 8 } },
+                        { formula: "O₂", elements: { O: 2 } }
+                    ],
+                    products: [
+                        { formula: "CO₂", elements: { C: 1, O: 2 } },
+                        { formula: "H₂O", elements: { H: 2, O: 1 } }
+                    ],
+                    type: "combustion",
+                    explanation: "Propane combusts to form carbon dioxide and water."
+                },
+                {
+                    id: 27,
+                    reactants: [
+                        { formula: "C₄H₁₀", elements: { C: 4, H: 10 } },
+                        { formula: "O₂", elements: { O: 2 } }
+                    ],
+                    products: [
+                        { formula: "CO₂", elements: { C: 1, O: 2 } },
+                        { formula: "H₂O", elements: { H: 2, O: 1 } }
+                    ],
+                    type: "combustion",
+                    explanation: "Butane undergoes complete combustion."
+                },
+                {
+                    id: 28,
+                    reactants: [
+                        { formula: "Al", elements: { Al: 1 } },
+                        { formula: "H₂SO₄", elements: { H: 2, S: 1, O: 4 } }
+                    ],
+                    products: [
+                        { formula: "Al₂(SO₄)₃", elements: { Al: 2, S: 3, O: 12 } },
+                        { formula: "H₂", elements: { H: 2 } }
+                    ],
+                    type: "single_replacement",
+                    explanation: "Aluminum displaces hydrogen from sulfuric acid."
+                },
+                {
+                    id: 29,
+                    reactants: [
+                        { formula: "BaCl₂", elements: { Ba: 1, Cl: 2 } },
+                        { formula: "Na₂SO₄", elements: { Na: 2, S: 1, O: 4 } }
+                    ],
+                    products: [
+                        { formula: "BaSO₄", elements: { Ba: 1, S: 1, O: 4 } },
+                        { formula: "NaCl", elements: { Na: 1, Cl: 1 } }
+                    ],
+                    type: "double_replacement",
+                    explanation: "Barium chloride and sodium sulfate form barium sulfate precipitate."
+                },
+                {
+                    id: 30,
+                    reactants: [
+                        { formula: "Pb(NO₃)₂", elements: { Pb: 1, N: 2, O: 6 } },
+                        { formula: "KI", elements: { K: 1, I: 1 } }
+                    ],
+                    products: [
+                        { formula: "PbI₂", elements: { Pb: 1, I: 2 } },
+                        { formula: "KNO₃", elements: { K: 1, N: 1, O: 3 } }
+                    ],
+                    type: "double_replacement",
+                    explanation: "Lead nitrate and potassium iodide exchange partners."
+                },
+                {
+                    id: 31,
+                    reactants: [
+                        { formula: "H₂SO₄", elements: { H: 2, S: 1, O: 4 } },
+                        { formula: "KOH", elements: { K: 1, O: 1, H: 1 } }
+                    ],
+                    products: [
+                        { formula: "K₂SO₄", elements: { K: 2, S: 1, O: 4 } },
+                        { formula: "H₂O", elements: { H: 2, O: 1 } }
+                    ],
+                    type: "neutralization",
+                    explanation: "Sulfuric acid neutralizes potassium hydroxide."
+                }
+            ],
+            hard: [
+                // Hard: Complex polyatomic ions and difficult coefficients
+                {
+                    id: 32,
+                    reactants: [
+                        { formula: "C₅H₁₂", elements: { C: 5, H: 12 } },
+                        { formula: "O₂", elements: { O: 2 } }
+                    ],
+                    products: [
+                        { formula: "CO₂", elements: { C: 1, O: 2 } },
+                        { formula: "H₂O", elements: { H: 2, O: 1 } }
+                    ],
+                    type: "combustion",
+                    explanation: "Pentane combustion produces carbon dioxide and water."
+                },
+                {
+                    id: 33,
+                    reactants: [
+                        { formula: "C₆H₁₄", elements: { C: 6, H: 14 } },
+                        { formula: "O₂", elements: { O: 2 } }
+                    ],
+                    products: [
+                        { formula: "CO₂", elements: { C: 1, O: 2 } },
+                        { formula: "H₂O", elements: { H: 2, O: 1 } }
+                    ],
+                    type: "combustion",
+                    explanation: "Hexane undergoes complete combustion."
+                },
+                {
+                    id: 34,
+                    reactants: [
+                        { formula: "CaCl₂", elements: { Ca: 1, Cl: 2 } },
+                        { formula: "Na₃PO₄", elements: { Na: 3, P: 1, O: 4 } }
+                    ],
+                    products: [
+                        { formula: "Ca₃(PO₄)₂", elements: { Ca: 3, P: 2, O: 8 } },
+                        { formula: "NaCl", elements: { Na: 1, Cl: 1 } }
+                    ],
+                    type: "double_replacement",
+                    explanation: "Calcium chloride and sodium phosphate form calcium phosphate."
+                },
+                {
+                    id: 35,
+                    reactants: [
+                        { formula: "FeCl₃", elements: { Fe: 1, Cl: 3 } },
+                        { formula: "Na₂CO₃", elements: { Na: 2, C: 1, O: 3 } }
+                    ],
+                    products: [
+                        { formula: "Fe₂(CO₃)₃", elements: { Fe: 2, C: 3, O: 9 } },
+                        { formula: "NaCl", elements: { Na: 1, Cl: 1 } }
+                    ],
+                    type: "double_replacement",
+                    explanation: "Iron(III) chloride and sodium carbonate exchange ions."
+                },
+                {
+                    id: 36,
+                    reactants: [
+                        { formula: "Al(NO₃)₃", elements: { Al: 1, N: 3, O: 9 } },
+                        { formula: "Na₃PO₄", elements: { Na: 3, P: 1, O: 4 } }
+                    ],
+                    products: [
+                        { formula: "AlPO₄", elements: { Al: 1, P: 1, O: 4 } },
+                        { formula: "NaNO₃", elements: { Na: 1, N: 1, O: 3 } }
+                    ],
+                    type: "double_replacement",
+                    explanation: "Aluminum nitrate and sodium phosphate exchange ions."
+                },
+                {
+                    id: 37,
+                    reactants: [
+                        { formula: "Cr₂(SO₄)₃", elements: { Cr: 2, S: 3, O: 12 } },
+                        { formula: "K₃PO₄", elements: { K: 3, P: 1, O: 4 } }
+                    ],
+                    products: [
+                        { formula: "CrPO₄", elements: { Cr: 1, P: 1, O: 4 } },
+                        { formula: "K₂SO₄", elements: { K: 2, S: 1, O: 4 } }
+                    ],
+                    type: "double_replacement",
+                    explanation: "Chromium(III) sulfate and potassium phosphate exchange ions."
+                },
+                {
+                    id: 38,
+                    reactants: [
+                        { formula: "Fe(NO₃)₃", elements: { Fe: 1, N: 3, O: 9 } },
+                        { formula: "Na₃PO₄", elements: { Na: 3, P: 1, O: 4 } }
+                    ],
+                    products: [
+                        { formula: "FePO₄", elements: { Fe: 1, P: 1, O: 4 } },
+                        { formula: "NaNO₃", elements: { Na: 1, N: 1, O: 3 } }
+                    ],
+                    type: "double_replacement",
+                    explanation: "Iron(III) nitrate and sodium phosphate form iron(III) phosphate."
+                },
+                {
+                    id: 39,
+                    reactants: [
+                        { formula: "Al", elements: { Al: 1 } },
+                        { formula: "H₃PO₄", elements: { H: 3, P: 1, O: 4 } }
+                    ],
+                    products: [
+                        { formula: "AlPO₄", elements: { Al: 1, P: 1, O: 4 } },
+                        { formula: "H₂", elements: { H: 2 } }
+                    ],
+                    type: "single_replacement",
+                    explanation: "Aluminum displaces hydrogen from phosphoric acid."
+                },
+                {
+                    id: 40,
+                    reactants: [
+                        { formula: "H₃PO₄", elements: { H: 3, P: 1, O: 4 } },
+                        { formula: "Ca(OH)₂", elements: { Ca: 1, O: 2, H: 2 } }
+                    ],
+                    products: [
+                        { formula: "Ca₃(PO₄)₂", elements: { Ca: 3, P: 2, O: 8 } },
+                        { formula: "H₂O", elements: { H: 2, O: 1 } }
+                    ],
+                    type: "neutralization",
+                    explanation: "Phosphoric acid neutralizes calcium hydroxide."
+                }
+            ]
+        };
+
+        // Start simulation
+        function startSimulation() {
+            document.getElementById('studentEntry').classList.add('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+
+            // Initialize problem pool: 3 easy, 3 medium, 4 hard
+            problemPool = [
+                ...selectRandomProblems(equations.easy, 3),
+                ...selectRandomProblems(equations.medium, 3),
+                ...selectRandomProblems(equations.hard, 4)
+            ];
+            // Shuffle the pool
+            problemPool = shuffleArray(problemPool);
+
+            loadNextProblem();
+        }
+
+        // Helper: Select random problems from an array
+        function selectRandomProblems(arr, count) {
+            const shuffled = shuffleArray([...arr]);
+            return shuffled.slice(0, count);
+        }
+
+        // Helper: Shuffle array
+        function shuffleArray(arr) {
+            const result = [...arr];
+            for (let i = result.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [result[i], result[j]] = [result[j], result[i]];
+            }
+            return result;
+        }
+
+
+        // Load next problem
+        function loadNextProblem() {
+            if (problemPool.length === 0) {
+                // No more problems - shouldn't happen with 10 problem pool
+                return;
+            }
+
+            // Take next problem from pool (already shuffled)
+            currentProblem = problemPool.shift();
+
+            // Initialize coefficients to 1
+            currentCoefficients = [];
+            for (let i = 0; i < currentProblem.reactants.length + currentProblem.products.length; i++) {
+                currentCoefficients.push(1);
+            }
+
+            // Display problem
+            document.getElementById('problemNumber').textContent = `Problem #${totalAttempts + 1}`;
+            renderEquation();
+            updateSettingsVisibility();
+            updateAtomCount();
+        }
+
+        // Check if problem has polyatomic ions on both sides
+        function hasMatchingPolyatomicIons() {
+            const leftIons = new Set();
+            const rightIons = new Set();
+
+            // Check reactants for polyatomic ions
+            currentProblem.reactants.forEach(compound => {
+                for (let ion of Object.keys(polyatomicIons)) {
+                    if (compound.formula.includes(ion)) {
+                        leftIons.add(ion);
+                    }
+                }
+            });
+
+            // Check products for polyatomic ions
+            currentProblem.products.forEach(compound => {
+                for (let ion of Object.keys(polyatomicIons)) {
+                    if (compound.formula.includes(ion)) {
+                        rightIons.add(ion);
+                    }
+                }
+            });
+
+            // Check if any ion appears on both sides
+            for (let ion of leftIons) {
+                if (rightIons.has(ion)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Update settings visibility based on problem
+        function updateSettingsVisibility() {
+            const groupPolyatomicOption = document.querySelector('.setting-option:has(#groupPolyatomic)');
+
+            if (hasMatchingPolyatomicIons()) {
+                groupPolyatomicOption.style.display = 'flex';
+            } else {
+                groupPolyatomicOption.style.display = 'none';
+                document.getElementById('groupPolyatomic').checked = false;
+            }
+        }
+
+        // Render equation with arrow buttons
+        function renderEquation() {
+            const container = document.getElementById('equationDisplay');
+            container.innerHTML = '';
+
+            let coeffIndex = 0;
+
+            // Render reactants
+            currentProblem.reactants.forEach((compound, index) => {
+                const group = createCompoundGroup(compound, coeffIndex);
+                container.appendChild(group);
+                coeffIndex++;
+
+                if (index < currentProblem.reactants.length - 1) {
+                    const plus = document.createElement('span');
+                    plus.className = 'operator';
+                    plus.textContent = '+';
+                    container.appendChild(plus);
+                }
+            });
+
+            // Arrow
+            const arrow = document.createElement('span');
+            arrow.className = 'operator';
+            arrow.textContent = '→';
+            container.appendChild(arrow);
+
+            // Render products
+            currentProblem.products.forEach((compound, index) => {
+                const group = createCompoundGroup(compound, coeffIndex);
+                container.appendChild(group);
+                coeffIndex++;
+
+                if (index < currentProblem.products.length - 1) {
+                    const plus = document.createElement('span');
+                    plus.className = 'operator';
+                    plus.textContent = '+';
+                    container.appendChild(plus);
+                }
+            });
+        }
+
+        // Create compound group with arrows
+        function createCompoundGroup(compound, coeffIndex) {
+            const group = document.createElement('div');
+            group.className = 'compound-group';
+
+            // Up arrow
+            const upBtn = document.createElement('button');
+            upBtn.className = 'arrow-btn';
+            upBtn.textContent = '↑';
+            upBtn.onclick = () => changeCoefficient(coeffIndex, 1);
+            group.appendChild(upBtn);
+
+            // Compound display
+            const display = document.createElement('div');
+            display.className = 'compound-display';
+
+            const coeff = document.createElement('span');
+            coeff.className = 'coefficient';
+            coeff.id = `coeff-${coeffIndex}`;
+            coeff.textContent = currentCoefficients[coeffIndex];
+
+            const formula = document.createElement('span');
+            formula.className = 'formula';
+            formula.innerHTML = compound.formula;
+
+            display.appendChild(coeff);
+            display.appendChild(formula);
+            group.appendChild(display);
+
+            // Down arrow
+            const downBtn = document.createElement('button');
+            downBtn.className = 'arrow-btn';
+            downBtn.textContent = '↓';
+            downBtn.onclick = () => changeCoefficient(coeffIndex, -1);
+            group.appendChild(downBtn);
+
+            return group;
+        }
+
+        // Change coefficient
+        function changeCoefficient(index, delta) {
+            currentCoefficients[index] += delta;
+            if (currentCoefficients[index] < 1) currentCoefficients[index] = 1;
+            if (currentCoefficients[index] > 20) currentCoefficients[index] = 20;
+
+            document.getElementById(`coeff-${index}`).textContent = currentCoefficients[index];
+            updateAtomCount();
+        }
+
+        // Update atom count table
+        function updateAtomCount() {
+            const groupPolyatomic = document.getElementById('groupPolyatomic').checked;
+            const splitCompounds = document.getElementById('splitCompounds').checked;
+
+            // Handle water display in neutralization reactions when grouping polyatomic ions
+            if (currentProblem && currentProblem.type === 'neutralization') {
+                if (groupPolyatomic) {
+                    // Convert H₂O to HOH for neutralization reactions
+                    currentProblem.reactants.forEach(compound => {
+                        if (compound.formula === 'H₂O') {
+                            compound.formula = 'HOH';
+                        }
+                    });
+                    currentProblem.products.forEach(compound => {
+                        if (compound.formula === 'H₂O') {
+                            compound.formula = 'HOH';
+                        }
+                    });
+                } else {
+                    // Convert HOH back to H₂O
+                    currentProblem.reactants.forEach(compound => {
+                        if (compound.formula === 'HOH') {
+                            compound.formula = 'H₂O';
+                        }
+                    });
+                    currentProblem.products.forEach(compound => {
+                        if (compound.formula === 'HOH') {
+                            compound.formula = 'H₂O';
+                        }
+                    });
+                }
+                // Re-render equation to show updated formulas
+                renderEquation();
+            }
+
+            const tbody = document.getElementById('atomCountBody');
+            tbody.innerHTML = '';
+
+            if (groupPolyatomic) {
+                // Check for polyatomic ions
+                const leftPolyatomic = {};
+                const rightPolyatomic = {};
+                const leftElements = {};
+                const rightElements = {};
+
+                // Count polyatomic ions and remaining atoms on reactant side
+                currentProblem.reactants.forEach((compound, index) => {
+                    const coeff = currentCoefficients[index];
+                    const formula = compound.formula;
+                    let foundPolyatomic = false;
+
+                    // Special case: HOH should group OH
+                    if (formula === 'HOH') {
+                        leftPolyatomic['OH'] = (leftPolyatomic['OH'] || 0) + coeff;
+                        leftElements['H'] = (leftElements['H'] || 0) + coeff;
+                        foundPolyatomic = true;
+                    }
+                    // Special case: In neutralization reactions, treat H₂O as HOH for polyatomic grouping
+                    else if (formula === 'H₂O' && currentProblem.type === 'neutralization') {
+                        leftPolyatomic['OH'] = (leftPolyatomic['OH'] || 0) + coeff;
+                        leftElements['H'] = (leftElements['H'] || 0) + coeff;
+                        foundPolyatomic = true;
+                    } else {
+                        // Check if this compound contains a polyatomic ion
+                        for (let [ion, ionElements] of Object.entries(polyatomicIons)) {
+                            if (formula.includes(ion)) {
+                                foundPolyatomic = true;
+                                // Extract multiplier if present (e.g., Ca₃(PO₄)₂ has 2 PO₄)
+                                const match = formula.match(new RegExp(`\\(${ion}\\)([₀-₉]+)`));
+                                const multiplier = match ? parseSubscript(match[1]) : 1;
+                                leftPolyatomic[ion] = (leftPolyatomic[ion] || 0) + (coeff * multiplier);
+
+                                // Add remaining elements that aren't in the polyatomic
+                                for (let [element, count] of Object.entries(compound.elements)) {
+                                    if (!ionElements[element]) {
+                                        leftElements[element] = (leftElements[element] || 0) + (count * coeff);
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!foundPolyatomic) {
+                        // No polyatomic, count all atoms
+                        for (let [element, count] of Object.entries(compound.elements)) {
+                            leftElements[element] = (leftElements[element] || 0) + (count * coeff);
+                        }
+                    }
+                });
+
+                // Count polyatomic ions and remaining atoms on product side
+                const productStartIndex = currentProblem.reactants.length;
+                currentProblem.products.forEach((compound, index) => {
+                    const coeff = currentCoefficients[productStartIndex + index];
+                    const formula = compound.formula;
+                    let foundPolyatomic = false;
+
+                    // Special case: HOH should group OH
+                    if (formula === 'HOH') {
+                        rightPolyatomic['OH'] = (rightPolyatomic['OH'] || 0) + coeff;
+                        rightElements['H'] = (rightElements['H'] || 0) + coeff;
+                        foundPolyatomic = true;
+                    }
+                    // Special case: In neutralization reactions, treat H₂O as HOH for polyatomic grouping
+                    else if (formula === 'H₂O' && currentProblem.type === 'neutralization') {
+                        rightPolyatomic['OH'] = (rightPolyatomic['OH'] || 0) + coeff;
+                        rightElements['H'] = (rightElements['H'] || 0) + coeff;
+                        foundPolyatomic = true;
+                    } else {
+                        for (let [ion, ionElements] of Object.entries(polyatomicIons)) {
+                            if (formula.includes(ion)) {
+                                foundPolyatomic = true;
+                                const match = formula.match(new RegExp(`\\(${ion}\\)([₀-₉]+)`));
+                                const multiplier = match ? parseSubscript(match[1]) : 1;
+                                rightPolyatomic[ion] = (rightPolyatomic[ion] || 0) + (coeff * multiplier);
+
+                                for (let [element, count] of Object.entries(compound.elements)) {
+                                    if (!ionElements[element]) {
+                                        rightElements[element] = (rightElements[element] || 0) + (count * coeff);
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!foundPolyatomic) {
+                        for (let [element, count] of Object.entries(compound.elements)) {
+                            rightElements[element] = (rightElements[element] || 0) + (count * coeff);
+                        }
+                    }
+                });
+
+                // Display polyatomic ions first
+                const allPolyatomic = new Set([...Object.keys(leftPolyatomic), ...Object.keys(rightPolyatomic)]);
+                for (let ion of allPolyatomic) {
+                    const row = document.createElement('tr');
+
+                    const leftCell = document.createElement('td');
+                    leftCell.textContent = leftPolyatomic[ion] || 0;
+                    row.appendChild(leftCell);
+
+                    const elemCell = document.createElement('td');
+                    elemCell.textContent = ion;
+                    elemCell.style.fontWeight = 'bold';
+                    row.appendChild(elemCell);
+
+                    const rightCell = document.createElement('td');
+                    rightCell.textContent = rightPolyatomic[ion] || 0;
+                    row.appendChild(rightCell);
+
+                    tbody.appendChild(row);
+                }
+
+                // Display remaining elements
+                const allElements = new Set([...Object.keys(leftElements), ...Object.keys(rightElements)]);
+                for (let element of allElements) {
+                    const row = document.createElement('tr');
+
+                    const leftCell = document.createElement('td');
+                    leftCell.textContent = leftElements[element] || 0;
+                    row.appendChild(leftCell);
+
+                    const elemCell = document.createElement('td');
+                    elemCell.textContent = element;
+                    elemCell.style.fontWeight = 'bold';
+                    row.appendChild(elemCell);
+
+                    const rightCell = document.createElement('td');
+                    rightCell.textContent = rightElements[element] || 0;
+                    row.appendChild(rightCell);
+
+                    tbody.appendChild(row);
+                }
+            } else if (splitCompounds) {
+                // Split by compound - show breakdown per compound
+                const leftByCompound = [];
+                const rightByCompound = [];
+
+                // Collect counts per compound on reactant side
+                currentProblem.reactants.forEach((compound, index) => {
+                    const coeff = currentCoefficients[index];
+                    const counts = {};
+                    for (let [element, count] of Object.entries(compound.elements)) {
+                        counts[element] = count * coeff;
+                    }
+                    leftByCompound.push({ formula: compound.formula, counts });
+                });
+
+                // Collect counts per compound on product side
+                const productStartIndex = currentProblem.reactants.length;
+                currentProblem.products.forEach((compound, index) => {
+                    const coeff = currentCoefficients[productStartIndex + index];
+                    const counts = {};
+                    for (let [element, count] of Object.entries(compound.elements)) {
+                        counts[element] = count * coeff;
+                    }
+                    rightByCompound.push({ formula: compound.formula, counts });
+                });
+
+                // Get all unique elements
+                const allElements = new Set();
+                [...currentProblem.reactants, ...currentProblem.products].forEach(compound => {
+                    Object.keys(compound.elements).forEach(el => allElements.add(el));
+                });
+
+                // Display each element with breakdown
+                for (let element of allElements) {
+                    const row = document.createElement('tr');
+
+                    // Left side breakdown
+                    const leftCell = document.createElement('td');
+                    const leftParts = leftByCompound
+                        .map(c => c.counts[element] || 0)
+                        .filter(n => n > 0);
+                    if (leftParts.length > 1) {
+                        leftCell.innerHTML = leftParts.join(' + ') + ' <span class="atom-breakdown">= ' + leftParts.reduce((a,b) => a+b, 0) + '</span>';
+                    } else {
+                        leftCell.textContent = leftParts.reduce((a,b) => a+b, 0) || 0;
+                    }
+                    row.appendChild(leftCell);
+
+                    // Element
+                    const elemCell = document.createElement('td');
+                    elemCell.textContent = element;
+                    elemCell.style.fontWeight = 'bold';
+                    row.appendChild(elemCell);
+
+                    // Right side breakdown
+                    const rightCell = document.createElement('td');
+                    const rightParts = rightByCompound
+                        .map(c => c.counts[element] || 0)
+                        .filter(n => n > 0);
+                    if (rightParts.length > 1) {
+                        rightCell.innerHTML = rightParts.join(' + ') + ' <span class="atom-breakdown">= ' + rightParts.reduce((a,b) => a+b, 0) + '</span>';
+                    } else {
+                        rightCell.textContent = rightParts.reduce((a,b) => a+b, 0) || 0;
+                    }
+                    row.appendChild(rightCell);
+
+                    tbody.appendChild(row);
+                }
+            } else {
+                // Default: simple totals
+                const leftCounts = {};
+                const rightCounts = {};
+
+                // Count reactant atoms
+                currentProblem.reactants.forEach((compound, index) => {
+                    const coeff = currentCoefficients[index];
+                    for (let [element, count] of Object.entries(compound.elements)) {
+                        leftCounts[element] = (leftCounts[element] || 0) + (count * coeff);
+                    }
+                });
+
+                // Count product atoms
+                const productStartIndex = currentProblem.reactants.length;
+                currentProblem.products.forEach((compound, index) => {
+                    const coeff = currentCoefficients[productStartIndex + index];
+                    for (let [element, count] of Object.entries(compound.elements)) {
+                        rightCounts[element] = (rightCounts[element] || 0) + (count * coeff);
+                    }
+                });
+
+                const allElements = new Set([...Object.keys(leftCounts), ...Object.keys(rightCounts)]);
+                for (let element of allElements) {
+                    const row = document.createElement('tr');
+
+                    const leftCell = document.createElement('td');
+                    leftCell.textContent = leftCounts[element] || 0;
+                    row.appendChild(leftCell);
+
+                    const elemCell = document.createElement('td');
+                    elemCell.textContent = element;
+                    elemCell.style.fontWeight = 'bold';
+                    row.appendChild(elemCell);
+
+                    const rightCell = document.createElement('td');
+                    rightCell.textContent = rightCounts[element] || 0;
+                    row.appendChild(rightCell);
+
+                    tbody.appendChild(row);
+                }
+            }
+        }
+
+        // Helper function to parse subscript numbers
+        function parseSubscript(sub) {
+            const map = {'₀':0,'₁':1,'₂':2,'₃':3,'₄':4,'₅':5,'₆':6,'₇':7,'₈':8,'₉':9};
+            return parseInt(sub.split('').map(c => map[c] ?? c).join(''));
+        }
+
+        // Check answer
+        function checkAnswer() {
+            totalAttempts++;
+
+            const leftCounts = {};
+            const rightCounts = {};
+
+            // Count reactant atoms
+            currentProblem.reactants.forEach((compound, index) => {
+                const coeff = currentCoefficients[index];
+                for (let [element, count] of Object.entries(compound.elements)) {
+                    leftCounts[element] = (leftCounts[element] || 0) + (count * coeff);
+                }
+            });
+
+            // Count product atoms
+            const productStartIndex = currentProblem.reactants.length;
+            currentProblem.products.forEach((compound, index) => {
+                const coeff = currentCoefficients[productStartIndex + index];
+                for (let [element, count] of Object.entries(compound.elements)) {
+                    rightCounts[element] = (rightCounts[element] || 0) + (count * coeff);
+                }
+            });
+
+            // Check if balanced
+            const allElements = new Set([...Object.keys(leftCounts), ...Object.keys(rightCounts)]);
+            let isBalanced = true;
+            let unbalancedElement = '';
+
+            for (let element of allElements) {
+                if ((leftCounts[element] || 0) !== (rightCounts[element] || 0)) {
+                    isBalanced = false;
+                    unbalancedElement = element;
+                    break;
+                }
+            }
+
+            // Update attempts counter immediately
+            document.getElementById('attemptsCount').textContent = totalAttempts;
+
+            // Update accuracy (without incrementing correct yet if correct)
+            const accuracy = totalAttempts > 0 ? Math.round((correctAnswers / totalAttempts) * 100) : 0;
+            document.getElementById('accuracyPercent').textContent = accuracy + '%';
+
+            // Show feedback modal
+            showFeedbackModal(isBalanced, unbalancedElement);
+        }
+
+        // Show feedback modal
+        function showFeedbackModal(isCorrect, unbalancedElement) {
+            const modal = document.getElementById('feedbackModal');
+            const content = document.getElementById('feedbackContent');
+            const icon = document.getElementById('feedbackIcon');
+            const title = document.getElementById('feedbackTitle');
+            const body = document.getElementById('feedbackBody');
+            const buttons = document.getElementById('feedbackButtons');
+
+            if (isCorrect) {
+                content.className = 'feedback-content correct';
+                icon.textContent = '✓';
+                icon.style.color = '#28a745';
+                title.textContent = 'Correct!';
+                title.style.color = '#28a745';
+                body.textContent = currentProblem.explanation;
+
+                buttons.innerHTML = '<button class="feedback-btn next-btn" onclick="nextProblemFromModal()">Next Problem</button>';
+            } else {
+                content.className = 'feedback-content incorrect';
+                icon.textContent = '✗';
+                icon.style.color = '#dc3545';
+                title.textContent = 'Not Quite';
+                title.style.color = '#dc3545';
+                body.textContent = unbalancedElement
+                    ? `Check your ${unbalancedElement} atoms - they are not balanced yet.`
+                    : 'The equation is not balanced. Review your coefficients.';
+
+                buttons.innerHTML = '<button class="feedback-btn try-again-btn" onclick="closeFeedbackModal()">Try Again</button>';
+            }
+
+            modal.classList.add('active');
+        }
+
+        // Close feedback modal
+        function closeFeedbackModal() {
+            document.getElementById('feedbackModal').classList.remove('active');
+        }
+
+        // Next problem from modal
+        function nextProblemFromModal() {
+            correctAnswers++;
+
+            // Update progress
+            updateStats();
+
+            closeFeedbackModal();
+            scormSaveProgress();
+
+            // Check if completed
+            if (correctAnswers >= 10) {
+                showSuccessScreen();
+            } else {
+                loadNextProblem();
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('correctCount').textContent = `${correctAnswers}/10`;
+
+            const accuracy = totalAttempts > 0 ? Math.round((correctAnswers / totalAttempts) * 100) : 0;
+            document.getElementById('accuracyPercent').textContent = accuracy + '%';
+
+            const progressBar = document.getElementById('progressBar');
+            const progressPercent = (correctAnswers / 10) * 100;
+            progressBar.style.width = progressPercent + '%';
+            progressBar.textContent = `${correctAnswers}/10`;
+        }
+
+        // Show success screen (replaces certificate)
+        function showSuccessScreen() {
+            document.getElementById('successModal').classList.add('active');
+            state.challengeFinished = true;
+            const accuracy = totalAttempts > 0 ? Math.round((correctAnswers / totalAttempts) * 100) : 100;
+            scormReport(accuracy);
+        }
+
+        function closeSuccessScreen() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        // Look up an equation by its globally-unique id (used for SCORM resume)
+        function findEquationById(id) {
+            const all = [...equations.easy, ...equations.medium, ...equations.hard];
+            return all.find(e => e.id === id);
+        }
+
+        // ---- SCORM 1.2 wrapper ----
+        const state = { challengeFinished: false };
+        let scormAPI = null;
+        let resumeState = null;
+
+        function findAPI(win) {
+            let attempts = 0;
+            let w = win;
+            while (w && attempts < 10) {
+                if (w.API) return w.API;
+                if (w.parent && w.parent !== w) {
+                    w = w.parent;
+                } else if (w.opener) {
+                    w = w.opener;
+                } else {
+                    break;
+                }
+                attempts++;
+            }
+            return null;
+        }
+
+        function isValidResumePayload(parsed) {
+            if (!parsed || typeof parsed !== 'object') return false;
+            if (!Array.isArray(parsed.remainingIds)) return false;
+            if (!parsed.remainingIds.every(id => typeof id === 'number' && id >= 1 && id <= 40)) return false;
+            if (typeof parsed.correctAnswers !== 'number' || parsed.correctAnswers < 0 || parsed.correctAnswers > 10) return false;
+            if (typeof parsed.totalAttempts !== 'number' || parsed.totalAttempts < 0) return false;
+            return true;
+        }
+
+        function scormInit() {
+            try {
+                scormAPI = findAPI(window);
+                if (!scormAPI) return;
+                scormAPI.LMSInitialize("");
+                if (scormAPI.LMSGetValue("cmi.core.entry") === "resume") {
+                    const raw = scormAPI.LMSGetValue("cmi.suspend_data");
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (isValidResumePayload(parsed)) {
+                            resumeState = parsed;
+                        }
+                    }
+                }
+            } catch (e) { /* No LMS present, or malformed bookmark — start fresh */ }
+        }
+
+        function scormSaveProgress() {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.suspend_data", JSON.stringify({
+                    remainingIds: problemPool.map(p => p.id),
+                    correctAnswers: correctAnswers,
+                    totalAttempts: totalAttempts
+                }));
+                if (!state.challengeFinished) {
+                    scormAPI.LMSSetValue("cmi.core.lesson_status", "incomplete");
+                    // Mark the exit reason as "suspend" on every save, not just on
+                    // beforeunload/pagehide. Students on Chromebooks/iPads very often
+                    // exit by closing the lid or leaving the Schoology tab, which does
+                    // not reliably fire beforeunload/pagehide before the device sleeps
+                    // and the network drops. Setting this on every commit means the LMS
+                    // already has the correct "resume me" state as of the last save,
+                    // instead of depending on a browser-close event to set it at the end.
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                }
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        // Manually triggered by the "Save Progress" button. This is the primary,
+        // reliable save path — students are instructed to click it before closing
+        // their Chromebook, since automatic browser-unload events can't be trusted
+        // to fire when a laptop lid is closed rather than the tab being navigated
+        // away from. Falls back gracefully (shows nothing) if no LMS is present.
+        function manualSaveProgress() {
+            if (!scormAPI) return;
+            scormSaveProgress();
+            const status = document.getElementById('saveStatus');
+            if (!status) return;
+            status.classList.add('visible');
+            clearTimeout(manualSaveProgress._hideTimer);
+            manualSaveProgress._hideTimer = setTimeout(() => {
+                status.classList.remove('visible');
+            }, 2500);
+        }
+
+        function scormReport(scorePercent) {
+            if (!scormAPI) return;
+            try {
+                scormAPI.LMSSetValue("cmi.core.score.min", "0");
+                scormAPI.LMSSetValue("cmi.core.score.max", "100");
+                scormAPI.LMSSetValue("cmi.core.score.raw", String(scorePercent));
+                scormAPI.LMSSetValue("cmi.core.lesson_status", "passed");
+                scormAPI.LMSSetValue("cmi.core.exit", "");
+                scormAPI.LMSCommit("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function scormFinish() {
+            if (!scormAPI) return;
+            try {
+                if (!state.challengeFinished) {
+                    scormSaveProgress();
+                    scormAPI.LMSSetValue("cmi.core.exit", "suspend");
+                    scormAPI.LMSCommit("");
+                }
+                scormAPI.LMSFinish("");
+            } catch (e) { /* ignore */ }
+        }
+
+        function resumeFromSavedState() {
+            correctAnswers = resumeState.correctAnswers;
+            totalAttempts = resumeState.totalAttempts;
+            problemPool = resumeState.remainingIds
+                .map(id => findEquationById(id))
+                .filter(Boolean);
+
+            document.getElementById('studentEntry').classList.add('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+
+            updateStats();
+            loadNextProblem();
+        }
+
+        // Best-effort safety net for the case where the student closes the
+        // Chromebook lid or leaves the tab without clicking "Save Progress":
+        // these events fire more reliably than beforeunload on that path, but
+        // unlike beforeunload we deliberately do NOT call LMSFinish() here —
+        // visibilitychange in particular fires on every tab switch, not just a
+        // real exit, and terminating the SCORM session on a brief tab-switch
+        // would break the ability to keep saving for the rest of that visit.
+        // We just re-commit the current state so the LMS has it either way.
+        function safetyCommit() {
+            if (!scormAPI || state.challengeFinished) return;
+            scormSaveProgress();
+        }
+        window.addEventListener('pagehide', safetyCommit);
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) safetyCommit();
+        });
+        window.addEventListener('beforeunload', scormFinish);
+        scormInit();
+        if (resumeState) {
+            resumeFromSavedState();
+        }
+    </script>
+</body>
+</html>
