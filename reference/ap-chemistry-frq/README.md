@@ -9,7 +9,7 @@ uploaded to Schoology.
 | Exam | Questions | Scoring guidelines |
 | --- | --- | --- |
 | 2015 | `ap15-frq-chemistry.pdf` | not available |
-| 2016 | `ap16-frq-chemistry.pdf` | not available |
+| 2016 | `ap16-frq-chemistry.pdf` | `ap16-sg-chemistry.pdf` |
 | 2023 | `ap23-frq-chemistry.pdf` | `ap23-sg-chemistry.pdf` |
 | 2024 | `ap24-frq-chemistry.pdf` | `ap24-sg-chemistry.pdf` |
 | 2025 | `ap25-frq-chemistry.pdf` | `ap25-sg-chemistry.pdf` |
@@ -21,7 +21,7 @@ Official source of each file: `https://apcentral.collegeboard.org/media/pdf/ap<y
 Downloaded unchanged in October 2026.
 
 **2015 and 2016 came from copies the teacher supplied**, not from the College Board's site: they are the College Board's 2015 and 2016 exams (each
-file's title and copyright line say so), hosted by a tutoring site and a teacher's website, and they have the questions only, no scoring guidelines.
+file's title and copyright line say so), hosted by a tutoring site and a teacher's website, and 2015 has the questions only. 2016 has the scoring guidelines as well.
 
 **2017 to 2022 are not here.** The College Board no longer serves those files: their addresses now redirect to a general past-questions page.
 If you have them (for example from your AP Classroom or an old download), add them in the same naming, `ap<yy>-frq-chemistry.pdf` and
