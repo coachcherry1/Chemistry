@@ -9,7 +9,7 @@ that has a copy. Everything is on `main`; older work branches were merged in Oct
 `chemistry/`, `ap-chemistry/` and `organic-chemistry/`. Packages elsewhere in this file are named by their folder
 alone; find one with `find . -name <folder> -type d`. All commands run inside the package folder, wherever it sits.
 A new package goes in the topic folder that fits it (make the folder if none does), one level below the class.
-`reference/ap-chemistry-frq/` holds the released AP free-response questions and scoring guidelines (2023 to 2026, © College Board)
+`reference/ap-chemistry-frq/` holds the released AP free-response questions and scoring guidelines (2015 to 2026 except 2020, © College Board)
 for checking each AP activity against how the exam asks; it is not an activity and has its own README.
 
 **Chemistry (honors)**
@@ -24,6 +24,7 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `chemistry/bonding/lewis-drawing-tool/` | Teacher's drawing tool, same 5-rule engine, reports no score |
 | `chemistry/bonding/vsepr-polarity-scorm/` | VSEPR: build by the 5 rules beside a 3D window, molecular geometry for 2 to 6 domains, polarity by radial symmetry |
 | `chemistry/imfs/intermolecular-forces-scorm/` | IMFs: heating stage with real mp/bp, LDF and polarizability, dipole-dipole, hydrogen bonds (follows VSEPR) |
+| `chemistry/imfs/intermolecular-forces-liquids-scorm/` | The same IMF activity plus a part 6, properties of liquids: surface tension, viscosity, evaporation rate (about 40 min) |
 
 **AP chemistry**
 
@@ -46,13 +47,14 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `organic-chemistry/configurations-stereoisomerism/cyclohexane-chairs-scorm/` | Chairs, ring flips, 1,3-diaxial crowding (qualitative) |
 | `organic-chemistry/configurations-stereoisomerism/chirality-scorm/` | Chirality, R and S, enantiomers, diastereomers and meso compounds (qualitative) |
 | `organic-chemistry/configurations-stereoisomerism/chirality-no-meso-scorm/` | Same, without meso compounds, for a weaker group |
+| `organic-chemistry/reactivity-mechanisms/arrow-pushing-scorm/` | Klein 6, before SN1/SN2: bond breaking and making, ΔG, energy diagrams, nucleophiles and electrophiles, drawing curved arrows, the four patterns (about 45 min) |
 | `organic-chemistry/substitution-elimination/substitution-elimination-scorm/` | SN1, SN2, E1 and E2: reagent function, mechanisms with curved arrows, regio- and stereochemistry, rings, predicting products (about 50 min) |
 
-**Older packages predate some house rules.** Everything except Newman, chairs and chirality (both versions) contains em
+**Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions) and arrow pushing contains em
 dashes (the Lewis, resonance and drawing-tool validators allow them). The mass spec, IR + mass spec, NMR,
 naming, acids and ionization energy packages still load a browser save inside an LMS when
 `cmi.suspend_data` is empty (fixed in IR, Newman, chairs, chirality, Lewis and resonance). Only Newman,
-chairs and chirality have `tools/layout.js`. Bring a package up to the rules when you next change it.
+chairs, chirality, SN1/SN2 and arrow pushing have `tools/layout.js`. Bring a package up to the rules when you next change it.
 
 ## House rules
 
@@ -230,6 +232,52 @@ not the full page.
 - **Files:** `mol.js`, `name.js`, `layout.js`, `draw.js`, `react.js`, `build3d.js`, `viewer3d.js`, `anim.js`, `mech.js`,
   `arrows.js`, `chair.js` (from the chairs activity), `molecules.js`, `quiz.js`, `app.js`, `steps1.js` (Parts 1-2),
   `steps2.js` (Parts 3-4), `steps3.js` (Part 5).
+
+## intermolecular-forces-liquids-scorm (zip v1, SCHEMA 1)
+
+- A copy of `intermolecular-forces-scorm/` (left as it is; the teacher's base version) with part 6, **properties of
+  liquids** (10 to 15 min), and its own SCORM ids (`IMFL_*`) and storage key. Fixes to parts 1 to 5 belong in both copies.
+- 27 steps in 6 parts; 23 graded questions (4+4+5+5+5) from a pool of 77. The rule sits beside checkpoint 5.
+- **Teacher's rules for part 6:** at the same temperature, stronger IMFs mean higher surface tension, higher viscosity
+  and slower evaporation (direct, direct, inverse). No vapour pressure, molecular complexity or entanglement, and no
+  numbers on screen. A saturated hydrocarbon is nonpolar, LDF only. IUPAC names in the class's style (2-butanone,
+  1-butanol, 1,5-pentanediol), never the compounds of the paper prelab (ethanol, 2-propanone, hexane,
+  1,2,3-propanetriol, water, dimethyl ether).
+- **Liquids:** pentane, heptane, octane, decane, 2-butanone, 1-butanol, 1-hexanol, 1,5-pentanediol, built by
+  `straightChain()` in `data.js`. `LIQUID` holds real 20 °C surface tension, viscosity and vapour pressure, used only by
+  the validator and to pace `bench.js`. A property is asked only when `Chem.propWinner` and `Chem.propAgrees` (margins
+  5%, 30%, 50%) agree; rankings need the real bp to agree (mp is ignored here). 2-Butanone and 1-butanol tie on surface
+  tension, so that pair is never compared by it.
+- **Step kind `props`** (`RENDER.props`): IMF cards led by the name (and hydrogen-bond counts where `count`), rank
+  strongest first, predict each `[prop, most]`, then run the liquid bench (drop on plastic, pipet draining, drop left
+  out). Reduced motion shows a still partway through with the order in words.
+
+## arrow-pushing-scorm (branch `claude/charming-gauss-ear0ac`, zip v1, SCHEMA 2)
+
+- **Key objective:** recognise and draw Klein's four patterns (6.8): nucleophilic attack, loss of a leaving group,
+  proton transfer, carbocation rearrangement; vocabulary adoption. Comes before `substitution-elimination-scorm/`.
+- 24 steps in 4 parts; 18 graded questions (4+4+5+5) from a pool of 57. Energy words beside checkpoint 1, Klein Table
+  6.3 (and the four patterns) beside 2 to 4. Every checkpoint's core has a vocabulary question; checkpoints 3 and 4
+  each have a **graded arrow drawing** (first Check counts; Check with nothing drawn is not an answer) and a
+  pattern or sequence question (pick groups in `quiz.js`).
+- **Teacher's wording:** AP Chemistry trained. Never "spontaneous": ΔG < 0 is thermodynamically favorable, ΔG > 0 not
+  thermodynamically favorable; ΔG kept; exergonic and endergonic used. No ΔH calculated, but "bond breaking is
+  endothermic, bond making is exothermic" everywhere (energy ledger beside every animation). Kinetics left out except
+  Eₐ as a hill and peaks/valleys: no rate equations, orders, rate constants, catalysts, Hammond. No reversible or
+  irreversible arrows (Klein 6.12 was removed at the teacher's request). The validator bans those words and ⇌ in `src/`. Table 6.1 values only as bar heights, never added up.
+- **One model:** `chem.js` states (atoms with hidden H and lone pairs, bonds; charges computed) and `apply()` moving one
+  pair per arrow with Klein's rules (6.10); `classify()` names a step from the bonds that change. `scenes.js` writes each
+  step once (Klein's drawing, coordinates, arrows); the product is what the arrows make, checked against SMILES and
+  Klein's pattern by the validator. Chains (`f623`, `f631`, `ester`) start each step where the last ended. Every drawn
+  bond, before and after each step, must be 0.7 to 1.35 bond lengths (a ring an arrow closes is redrawn as a ring).
+  Klein's Figure 6.31 is drawn inside the `sequence` step so students never need the textbook; animations always start
+  from the arrows and play by themselves after a right answer.
+- **Arrows:** the SN1/SN2 tap, drag or Tab/Enter tool, judged by `judge.js` by what each arrow does with its pair (order and
+  equivalent heads don't matter); Klein's reasons computed from the model; wrong-but-legal arrows show what they make;
+  Show me after three misses. A right drawing plays (`Render.Player`: electrons ride the arrows, bonds fade or grow,
+  atoms glide), fills the energy ledger, then a word-tile sentence (`SAY` in `steps2.js`).
+- **Files:** `chem.js`, `scenes.js`, `judge.js`, `render.js`, `arrows.js`, `energy.js`, `picker.js`, `quiz.js`, `scorm.js`,
+  `app.js`, `steps1.js` (Parts 1-2), `steps2.js` (Parts 3-4).
 
 ## titration-curves-scorm (zip v1, SCHEMA 1)
 
