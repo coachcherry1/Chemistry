@@ -122,8 +122,6 @@ w('**Carbocation stability.** Methyl < 1° < 2° < 3° (hyperconjugation).');
 w();
 w('**Will it rearrange?** ' + App.STEPS.find((s) => s.id === 'rearrange').mols.map((id) => `${S[id].title}: ${['a hydride shift', 'a methyl shift', 'no'][App.shiftAnswer(id)]}`).join('; ') + '.');
 w();
-w('**⇌ or →** (Klein 6.12). ' + SCENES.REVERSE.map((c) => `${c.text} ${App.arrowFor(c) === 'eq' ? '⇌' : '→'}`).join(' '));
-w();
 w('**Say it in words.** ' + Object.keys(App.SAY).map((k) => {
   const sp = App.SAY[k], words = sp[sp.length - 1];
   return sp.slice(0, -1).map((x) => typeof x === 'number' ? '**' + words[x] + '**' : x).join('');

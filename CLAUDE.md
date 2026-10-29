@@ -249,23 +249,26 @@ not the full page.
   strongest first, predict each `[prop, most]`, then run the liquid bench (drop on plastic, pipet draining, drop left
   out). Reduced motion shows a still partway through with the order in words.
 
-## arrow-pushing-scorm (branch `claude/charming-gauss-ear0ac`, zip v1, SCHEMA 1)
+## arrow-pushing-scorm (branch `claude/charming-gauss-ear0ac`, zip v1, SCHEMA 2)
 
 - **Key objective:** recognise and draw Klein's four patterns (6.8): nucleophilic attack, loss of a leaving group,
   proton transfer, carbocation rearrangement; vocabulary adoption. Comes before `substitution-elimination-scorm/`.
-- 25 steps in 4 parts; 18 graded questions (4+4+5+5) from a pool of 60. Energy words beside checkpoint 1, Klein Table
+- 24 steps in 4 parts; 18 graded questions (4+4+5+5) from a pool of 57. Energy words beside checkpoint 1, Klein Table
   6.3 (and the four patterns) beside 2 to 4. Every checkpoint's core has a vocabulary question; checkpoints 3 and 4
   each have a **graded arrow drawing** (first Check counts; Check with nothing drawn is not an answer) and a
   pattern or sequence question (pick groups in `quiz.js`).
 - **Teacher's wording:** AP Chemistry trained. Never "spontaneous": ΔG < 0 is thermodynamically favorable, ΔG > 0 not
   thermodynamically favorable; ΔG kept; exergonic and endergonic used. No ΔH calculated, but "bond breaking is
   endothermic, bond making is exothermic" everywhere (energy ledger beside every animation). Kinetics left out except
-  Eₐ as a hill and peaks/valleys: no rate equations, orders, rate constants, catalysts, Hammond. The validator bans
-  those words in `src/`. Table 6.1 values only as bar heights, never added up.
+  Eₐ as a hill and peaks/valleys: no rate equations, orders, rate constants, catalysts, Hammond. No reversible or
+  irreversible arrows (Klein 6.12 was removed at the teacher's request). The validator bans those words and ⇌ in `src/`. Table 6.1 values only as bar heights, never added up.
 - **One model:** `chem.js` states (atoms with hidden H and lone pairs, bonds; charges computed) and `apply()` moving one
   pair per arrow with Klein's rules (6.10); `classify()` names a step from the bonds that change. `scenes.js` writes each
   step once (Klein's drawing, coordinates, arrows); the product is what the arrows make, checked against SMILES and
-  Klein's pattern by the validator. Chains (`f623`, `f631`, `ester`) start each step where the last ended.
+  Klein's pattern by the validator. Chains (`f623`, `f631`, `ester`) start each step where the last ended. Every drawn
+  bond, before and after each step, must be 0.7 to 1.35 bond lengths (a ring an arrow closes is redrawn as a ring).
+  Klein's Figure 6.31 is drawn inside the `sequence` step so students never need the textbook; animations always start
+  from the arrows and play by themselves after a right answer.
 - **Arrows:** the SN1/SN2 tap, drag or Tab/Enter tool, judged by `judge.js` by what each arrow does with its pair (order and
   equivalent heads don't matter); Klein's reasons computed from the model; wrong-but-legal arrows show what they make;
   Show me after three misses. A right drawing plays (`Render.Player`: electrons ride the arrows, bonds fade or grow,

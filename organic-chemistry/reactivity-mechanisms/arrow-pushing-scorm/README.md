@@ -10,7 +10,7 @@ SN1/SN2/E1/E2 activity, and the same way of drawing arrows.
 *thermodynamically favorable*, ΔG > 0 *not thermodynamically favorable*; exergonic and endergonic are used. No ΔH is
 ever calculated, but **bond breaking is endothermic and bond making is exothermic** is said in Part 1, shown beside
 every animation, and asked in Checkpoints 1 and 4. Most of the kinetics is left out: no rate equations, orders, rate
-constants, temperature curves, catalysts or Hammond postulate. Eₐ appears only as the height of the hill, and peaks
+constants, temperature curves, catalysts or Hammond postulate, and no reversible or irreversible reaction arrows (the teacher's choice). Eₐ appears only as the height of the hill, and peaks
 and valleys as transition states and intermediates. `tools/validate.js` fails on any of the left-out words, and on an
 em dash.
 
@@ -23,7 +23,7 @@ em dash.
 | 1 Energy and bonds | 6 + checkpoint | **Breaking a bond takes energy:** predict, then pull H and Cl apart with a slider beside the energy curve (energy in), and let them bond again (energy out). **Homolytic or heterolytic:** two animations, fish-hooks to radicals and a curved arrow to ions. **Bonds broken, bonds formed:** click every bond broken and formed in Klein's SkillBuilder 6.1 and Practice 6.1(b); energy bars drawn to scale from Table 6.1 (never added up) decide exo- or endothermic. **Entropy:** a gas spreading into two flasks; sort five reactions by the sign of ΔS. **Thermodynamically favorable:** exergonic and endergonic diagrams; ΔG = ΔH − TΔS for every combination of signs. **Reading an energy diagram:** Klein Figures 6.23 and 6.22 play beside their diagrams; click every transition state and intermediate. **Checkpoint 1** (4). |
 | 2 Nucleophiles and electrophiles | 3 + checkpoint | CH₃Cl and CH₃Li with δ+ and δ− and a pulsing electron cloud; sort fourteen compounds and ions (Klein 6.8 and Table 6.3); click every nucleophilic and electrophilic centre in three molecules (SkillBuilder 6.2, Problem 6.9). **Checkpoint 2** (4). |
 | 3 The four patterns | 8 + checkpoint | **Reading a curved arrow:** one played, then five drawings judged by Klein's rules (6.10). **Patterns 1 to 3:** draw the arrows of seven steps (Br⁻ and a carbocation, methanol and acetyl chloride, losses, proton transfers including an alkene and H₃O⁺). **Carbocation stability** with hyperconjugation. **Pattern 4:** Klein's hole analogy, then a hydride shift and a methyl shift. **Will it rearrange?** six carbocations by Klein's SkillBuilder 6.6 steps. **Name the pattern:** eight steps from Klein 6.11 and 6.27. **Checkpoint 3** (5). |
-| 4 Putting them together | 3 + checkpoint | **Klein Figure 6.31:** name, then draw, each of its four steps while the energy diagram grows a hill per step; then play the whole mechanism. **Two patterns at once:** 1-chlorobutane and hydroxide, concerted; then name the three-step sequence of SkillBuilder 6.4. **⇌ or →:** six steps sorted by Klein's rules (6.12). **Checkpoint 4** (5). |
+| 4 Putting them together | 2 + checkpoint | **Klein Figure 6.31**, drawn in the step (no textbook needed): name, then draw, each of its four steps; the figure fills in each step's arrows and pattern name, and the energy diagram grows a hill per step; then play the whole mechanism. **Two patterns at once:** 1-chlorobutane and hydroxide, concerted; then name the three-step sequence of SkillBuilder 6.4. **Checkpoint 4** (5). |
 
 ### Drawing arrows
 
@@ -54,7 +54,7 @@ three wrong checks.
 
 ## Grading
 
-**A score, from the four checkpoints only.** 18 questions per attempt (4 + 4 + 5 + 5) from a pool of 60; the
+**A score, from the four checkpoints only.** 18 questions per attempt (4 + 4 + 5 + 5) from a pool of 57; the
 **first answer** to each counts, and a **graded drawing counts on its first Check** (pressing Check with nothing
 drawn is not an answer). Every checkpoint's core has a vocabulary question; Checkpoints 3 and 4 always have one
 graded arrow drawing and one question naming a pattern or a sequence of patterns. Klein Table 6.3 and the four

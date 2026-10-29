@@ -10,7 +10,6 @@
  *   sequence    Klein Figure 6.31: name and draw each of four steps while
  *               the energy diagram grows, then play the whole mechanism
  *   concerted   two patterns in one step; a three-step sequence read
- *   reverse     ⇌ or → (Klein 6.12)
  */
 
 (function () {
@@ -200,7 +199,6 @@
       live.push(say);
       right.appendChild(U.panel('Watch it happen', Chem.PATTERN[sc.patterns[0]] + (sc.patterns.length > 1 ? ' + ' + Chem.PATTERN[sc.patterns[1]].toLowerCase() : ''), [pb.node, say]));
       if (fresh && !U.reduceMotion) setTimeout(function () { pb.slider.play.click(); }, 300);
-      else pb.slider.set(1);
     }
     paint();
     return { destroy: function () { live.forEach(function (x) { if (x.stop) x.stop(); if (x.destroy) x.destroy(); }); } };
@@ -284,7 +282,7 @@
     var k = pr.k || 0;
     var area = h('div');
     stage().appendChild(area);
-    var live = null;
+    var live = null, playNow = false;
     function S(i) { pr['m' + i] = pr['m' + i] || { nb: [], ans: null }; return pr['m' + i]; }
     function plusOf(st) { return st.atoms.filter(function (a) { return Chem.isCation(st, a.id); })[0].id; }
     function nbs(i) { var st = SC[ids[i]].before; return Chem.neighbours(st, plusOf(st)).map(function (n) { return n.id; }); }
@@ -337,6 +335,7 @@
                               : (ans === 0 ? 'A hydride shift: the H moves with its pair and the ' + deg + '° carbocation becomes 3°.'
                                            : 'A methyl shift: the CH₃ moves with its pair and the ' + deg + '° carbocation becomes 3°.');
           if (c === ans) {
+            playNow = ans !== 2;
             if (ids.every(function (x, i) { return isDone(i); })) U.complete(why + ' All six decided.');
             else U.say(why, 'good');
           } else U.say('For each neighbour: if its H (or CH₃) moved to the C⁺, the neighbour would become the new C⁺. How many carbons would it carry?', 'bad');
@@ -350,8 +349,10 @@
         live = U.slider(pl.set, { ms: 2600 });
         anim.appendChild(h('div', { class: 'mol-wrap anim' }, [pl.node]));
         anim.appendChild(live.node);
-        live.set(1);
+        /* it starts from the cation; it plays by itself right after a right answer */
+        if (playNow && !U.reduceMotion) { var go = live.play; setTimeout(function () { go.click(); }, 300); }
       }
+      playNow = false;
       area.appendChild(U.panel(sc.title, 'Klein SkillBuilder 6.6', [chips, h('div', { class: 'work' }, [h('div', { class: 'mol-wrap big' }, [svg]), h('div', null, [side, anim])])]));
     }
     paint();
@@ -394,11 +395,28 @@
     var steps = SC[s.chain];
     var k = 0;
     while (k < steps.length - 1 && pr['a' + k]) k++;
-    var left = h('div'), right = h('div'), bottom = h('div');
+    var fig = h('div'), left = h('div'), right = h('div'), bottom = h('div');
+    stage().appendChild(fig);
     stage().appendChild(h('div', { class: 'work work-wide' }, [left, right]));
     stage().appendChild(bottom);
     var live = [];
     function doneCount() { var n = 0; steps.forEach(function (x, i) { if (pr['a' + i]) n++; }); return n; }
+    /* Klein's Figure 6.31: every structure in a row; each step's curved arrows and
+       the name of its pattern appear once the student has drawn it */
+    function paintFigure() {
+      fig.innerHTML = '';
+      var row = h('div', { class: 'fig-row' });
+      steps.forEach(function (x, i) {
+        var done = !!pr['a' + i];
+        row.appendChild(h('div', { class: 'fig-mol' }, [Render.draw(x.before, { scale: 24, arrows: done ? x.arrows : null,
+          label: i ? 'Intermediate ' + i : '3,3-Dimethylbutan-2-ol and HBr' })]));
+        row.appendChild(h('div', { class: 'fig-step' + (done ? ' done' : '') }, [h('span', { class: 'fig-name', text: done ? PN[x.patterns[0]] : 'Step ' + (i + 1) }),
+          h('span', { class: 'fig-arrow', 'aria-hidden': 'true', text: '⟶' })]));
+      });
+      row.appendChild(h('div', { class: 'fig-mol' }, [Render.draw(steps[steps.length - 1].after, { scale: 24, label: '2-Bromo-2,3-dimethylbutane and water' })]));
+      fig.appendChild(U.panel('Klein Figure 6.31', 'all four patterns in one mechanism', [row,
+        h('p', { class: 'muted', text: 'The overall reaction: 3,3-dimethylbutan-2-ol and HBr give 2-bromo-2,3-dimethylbutane. Each curved arrow and pattern name appears here once you have drawn that step.' })]));
+    }
     function paint() {
       left.innerHTML = '';
       live.forEach(function (x) { x.stop(); }); live = [];
@@ -417,13 +435,15 @@
       }));
       if (pr['n' + k] === ans) {
         var ab = U.arrowBox(sc, pr, 'a' + k, function (fresh) {
+          paintFigure();
           paintRight();
           if (doneCount() === steps.length) { if (!U.isDone(s.id)) U.complete('All four patterns in one mechanism. Play the whole thing below.'); paintBottom(); }
           else if (fresh) { k++; paint(); U.say(PN[sc.patterns[0]] + ': done. On to step ' + (k + 1) + '.', 'good'); }
         });
         body.push(ab.node);
       }
-      left.appendChild(U.panel('Klein Figure 6.31', '3,3-dimethylbutan-2-ol and HBr', body));
+      left.appendChild(U.panel('Step ' + (k + 1) + ' of 4', '3,3-dimethylbutan-2-ol and HBr', body));
+      paintFigure();
       paintRight();
       if (doneCount() === steps.length) paintBottom();
     }
@@ -469,7 +489,7 @@
       var say = sayIt('sn2', pr, function () { pr.wsn = 1; U.persist(); check(); paintSeq(); });
       live.push(say);
       right.appendChild(U.panel('One step, two patterns', 'concerted', [pb.node, e, say]));
-      if (fresh && !U.reduceMotion) setTimeout(function () { pb.slider.play.click(); }, 300); else pb.slider.set(1);
+      if (fresh && !U.reduceMotion) setTimeout(function () { pb.slider.play.click(); }, 300);
     });
     left.appendChild(U.panel(SC.sn2.title, 'draw both arrows', [ab.node]));
     if (!pr.a0) right.appendChild(U.panel('Concerted', null, [h('p', { class: 'muted', text: 'Hydroxide attacks the carbon as chloride leaves. Draw both arrows: one for each pattern.' })]));
@@ -491,56 +511,6 @@
     return { destroy: function () { live.forEach(function (x) { if (x.stop) x.stop(); if (x.destroy) x.destroy(); }); } };
   };
 
-  /* =========================================================== reverse */
-
-  /* Klein 6.12: which reaction arrow a step gets */
-  function arrowFor(card) {
-    var p = SC[card.scene].patterns[0];
-    if (p === 'nuc') return card.poorLG ? 'one' : 'eq';
-    if (p === 'lg') return card.gas ? 'one' : 'eq';
-    if (p === 'pt') return card.bigGap ? 'one' : 'eq';
-    return 'one';
-  }
-  var ARROW_WHY = {
-    nuc: { eq: 'Nucleophilic attack by a nucleophile that is also a good leaving group (water): it can leave again, so ⇌.', one: 'The nucleophile (CH₃⁻) is a very poor leaving group: once it attacks, it stays. →.' },
-    lg: { eq: 'Loss of a leaving group: the leaving group (Br⁻) is a good nucleophile and can attack again, so ⇌.', one: '' },
-    pt: { eq: 'A proton transfer between partners of similar strength: both sides are present at equilibrium, so ⇌.', one: 'A proton transfer from a much stronger acid (water) to a much stronger base (a carbanion): the reverse hardly happens. →.' },
-    shift: { one: 'A carbocation rearrangement gives a much more stable carbocation; the reverse is negligible. →.' }
-  };
-
-  R.reverse = function (s) {
-    var pr = U.progress(s.id);
-    pr.c = pr.c || {};
-    var cards = SCENES.REVERSE;
-    var box = h('div', { class: 'cards wide' });
-    stage().appendChild(h('div', { class: 'work work-wide' }, [U.panel('⇌ or →?', 'Klein 6.12', [box]),
-      U.panel('Klein’s rules', null, [h('ul', { class: 'keylist' }, [
-        h('li', { text: 'Nucleophilic attack: ⇌ if the nucleophile is also a good leaving group; → if it is a poor one.' }),
-        h('li', { text: 'Loss of a leaving group: almost always ⇌, because leaving groups are also nucleophiles.' }),
-        h('li', { text: 'Proton transfer: → when the two acids differ hugely in strength; ⇌ when they are similar.' }),
-        h('li', { text: 'Carbocation rearrangement: →.' })
-      ])])]));
-    function paint() {
-      box.innerHTML = '';
-      U.shuffle(cards, U.rng(U.seed() ^ 41)).forEach(function (c) {
-        var sc = SC[c.scene], ans = arrowFor(c) === 'eq' ? 0 : 1;
-        var row = U.choiceRow(['⇌ reversible', '→ irreversible'], ans, pr.c[c.id], function (i) {
-          pr.c[c.id] = i; U.persist();
-          var why = ARROW_WHY[sc.patterns[0]][arrowFor(c)];
-          if (i === ans) {
-            if (cards.every(function (x) { return pr.c[x.id] === (arrowFor(x) === 'eq' ? 0 : 1); })) U.complete(why + ' All sorted.');
-            else U.say(why, 'good');
-          } else U.say('Name the pattern first (' + PN[sc.patterns[0]].toLowerCase() + '), then use Klein’s rule for it.', 'bad');
-          paint();
-        });
-        box.appendChild(h('div', { class: 'card' }, [h('div', { class: 'mol-wrap' }, [Arrows.figure(sc, sc.arrows, { scale: 30 })]),
-          h('p', { class: 'muted', text: c.text }), row]));
-      });
-    }
-    paint();
-  };
-
   App.SAY = SAY;
-  App.arrowFor = arrowFor;
   App.shiftAnswer = shiftAnswer;
 })();
