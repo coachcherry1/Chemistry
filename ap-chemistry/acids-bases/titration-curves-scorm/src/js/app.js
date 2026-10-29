@@ -266,6 +266,10 @@ var App = (function () {
     if (pt.id === 'after') {
       return c.OH + ' extra OH⁻: the NaOH has gone past what the acid needs, and the extra has nothing to react with.';
     }
+    if (!S.weak && pt.id === 'half') {
+      return c.Na + ' units of NaOH have used up ' + c.Na + ' H⁺ (H⁺ + OH⁻ → H₂O). ' + c.H + ' H⁺ are left. ' +
+        'For a strong acid nothing special happens at this point. It is a reference to compare with the weak acid.';
+    }
     return S.weak
       ? c.Na + ' units of NaOH have turned ' + c.Na + ' ' + S.sym + ' into ' + S.asym + ' (' + S.sym + ' + OH⁻ → ' + S.asym + ' + H₂O). ' +
         c.HA + ' ' + S.sym + ' and ' + c.A + ' ' + S.asym + ' are left.'
@@ -848,11 +852,11 @@ var App = (function () {
     var rows = [['HCl', 'strong', 'very large', '-'],
                 ['HF', 'weak', fmtKa(T.KA_HF), T.PKA_HF.toFixed(2)]];
     if (withAcetic) rows.push(['CH₃COOH', 'weak', fmtKa(T.KA_AC), T.PKA_AC.toFixed(2)]);
-    return h('table', { class: 'ref-table', 'aria-label': 'The acids in this activity' }, [
+    return h('div', null, [h('table', { class: 'ref-table', 'aria-label': 'The acids in this activity' }, [
       h('tr', null, ['Acid', 'Type', 'Ka', 'pKa'].map(function (t) { return h('th', { text: t }); }))
     ].concat(rows.map(function (r) {
       return h('tr', null, r.map(function (t, i) { return h('td', { class: i > 1 ? 'num' : '', text: t }); }));
-    })));
+    }))), h('p', { class: 'ref-foot', text: 'All pH values are at 25 °C. H⁺ stands for H₃O⁺.' })]);
   }
 
   function particleKey() {
@@ -1009,12 +1013,13 @@ var App = (function () {
     var dl = h('dl', { class: 'vocab' });
     [
       ['Titration', 'Adding a solution of known concentration (here NaOH, from a buret) a little at a time to a flask of another until they have reacted completely.'],
+      ['Titrant and analyte', 'The titrant is the solution added from the buret (NaOH here). The analyte is the solution in the flask (the acid).'],
       ['Equivalence point', 'The point where the moles of base added equal the moles of acid in the flask. Its pH depends on which ions are left.'],
       ['Half-equivalence point', 'Half of the NaOH needed for the equivalence point has been added. For a weak acid, HA and A⁻ are equal in number here, so pH = pKa.'],
       ['Strong acid', 'An acid that ionizes completely in water. HCl is all H⁺ and Cl⁻.'],
       ['Weak acid', 'An acid that ionizes only a little in water. Most HF stays as whole HF molecules.'],
       ['Conjugate base', 'What is left when an acid gives away an H⁺. F⁻ is the conjugate base of HF. The conjugate base of a weak acid reacts with water and makes OH⁻.'],
-      ['Buffer', 'A mix of a weak acid and its conjugate base. It resists a change in pH when a little acid or base is added.'],
+      ['Buffer', 'A solution with a large amount of both a weak acid and its conjugate base. The acid reacts with added base and the conjugate base reacts with added acid, so the pH changes only a little.'],
       ['Spectator ion', 'An ion that is in the flask the whole time and takes no part in the reaction, such as Na⁺ and Cl⁻.'],
       ['pKa', 'A number that measures how weak an acid is: the larger the pKa, the weaker the acid. When a weak acid is titrated, the pH at the half-equivalence point is about the pKa.']
     ].forEach(function (p) { dl.appendChild(h('dt', { text: p[0] })); dl.appendChild(h('dd', { text: p[1] })); });

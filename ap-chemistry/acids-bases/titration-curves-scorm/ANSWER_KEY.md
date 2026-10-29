@@ -33,8 +33,8 @@ The five points: 1. Start (0 units, 0.00 mL); 2. Half-equivalence point (12 unit
 | Point | HF | H⁺ | F⁻ | Na⁺ | OH⁻ | What decides the pH |
 | --- | --- | --- | --- | --- | --- | --- |
 | Start | 22 | 2 | 2 | 0 | 0 | The few H⁺ from HF molecules that ionized |
-| Half-equivalence point | 12 | 0 | 12 | 12 | 0 | The HF and F⁻ buffer: F⁻ takes up H⁺ and HF gives it back |
-| Before the equivalence point | 6 | 0 | 18 | 18 | 0 | The HF and F⁻ buffer: F⁻ takes up H⁺ and HF gives it back |
+| Half-equivalence point | 12 | 0 | 12 | 12 | 0 | The HF and F⁻ buffer: HF reacts with added OH⁻ and F⁻ reacts with added H⁺ |
+| Before the equivalence point | 6 | 0 | 18 | 18 | 0 | The HF and F⁻ buffer: HF reacts with added OH⁻ and F⁻ reacts with added H⁺ |
 | Equivalence point | 0 | 0 | 24 | 24 | 0 | The F⁻ reacting with water to make OH⁻ |
 | After the equivalence point | 0 | 0 | 24 | 30 | 6 | The extra OH⁻ from the NaOH |
 
@@ -43,8 +43,8 @@ The five points: 1. Start (0 units, 0.00 mL); 2. Half-equivalence point (12 unit
 | Point | HAc | H⁺ | Ac⁻ | Na⁺ | OH⁻ | What decides the pH |
 | --- | --- | --- | --- | --- | --- | --- |
 | Start | 24 | 0 | 0 | 0 | 0 | The few H⁺ from CH₃COOH molecules that ionized |
-| Half-equivalence point | 12 | 0 | 12 | 12 | 0 | The CH₃COOH and CH₃COO⁻ buffer: CH₃COO⁻ takes up H⁺ and CH₃COOH gives it back |
-| Before the equivalence point | 6 | 0 | 18 | 18 | 0 | The CH₃COOH and CH₃COO⁻ buffer: CH₃COO⁻ takes up H⁺ and CH₃COOH gives it back |
+| Half-equivalence point | 12 | 0 | 12 | 12 | 0 | The CH₃COOH and CH₃COO⁻ buffer: CH₃COOH reacts with added OH⁻ and CH₃COO⁻ reacts with added H⁺ |
+| Before the equivalence point | 6 | 0 | 18 | 18 | 0 | The CH₃COOH and CH₃COO⁻ buffer: CH₃COOH reacts with added OH⁻ and CH₃COO⁻ reacts with added H⁺ |
 | Equivalence point | 0 | 0 | 24 | 24 | 0 | The CH₃COO⁻ reacting with water to make OH⁻ |
 | After the equivalence point | 0 | 0 | 24 | 30 | 6 | The extra OH⁻ from the NaOH |
 
@@ -65,8 +65,8 @@ Notes: only about 8% of 0.100 M HF ionizes (2 of 24 units drawn); only about 1 i
    - Predict: the HCl flask has more H⁺ (24, against 2 in the HF flask). pH 1.00 against 2.10.
 5. **Weak acid, strong base: five points** (`ws-walk`)
    - Point 1, Start: flask **22 HF, 2 H⁺, 2 F⁻**; the pH is decided by **The few H⁺ from HF molecules that ionized** (pH 2.10).
-   - Point 2, Half-equivalence point: flask **12 HF, 12 F⁻, 12 Na⁺**; the pH is decided by **The HF and F⁻ buffer: F⁻ takes up H⁺ and HF gives it back** (pH 3.18).
-   - Point 3, Before the equivalence point: flask **6 HF, 18 F⁻, 18 Na⁺**; the pH is decided by **The HF and F⁻ buffer: F⁻ takes up H⁺ and HF gives it back** (pH 3.65).
+   - Point 2, Half-equivalence point: flask **12 HF, 12 F⁻, 12 Na⁺**; the pH is decided by **The HF and F⁻ buffer: HF reacts with added OH⁻ and F⁻ reacts with added H⁺** (pH 3.18).
+   - Point 3, Before the equivalence point: flask **6 HF, 18 F⁻, 18 Na⁺**; the pH is decided by **The HF and F⁻ buffer: HF reacts with added OH⁻ and F⁻ reacts with added H⁺** (pH 3.65).
    - Point 4, Equivalence point: flask **24 F⁻, 24 Na⁺**; the pH is decided by **The F⁻ reacting with water to make OH⁻** (pH 7.94).
    - Point 5, After the equivalence point: flask **24 F⁻, 30 Na⁺, 6 OH⁻**; the pH is decided by **The extra OH⁻ from the NaOH** (pH 12.05).
 6. **Side by side** (`side`)
@@ -210,11 +210,11 @@ Notes: only about 8% of 0.100 M HF ionizes (2 of 24 units drawn); only about 1 i
   - d. Equal numbers of Na⁺ and OH⁻ are in the flask, so the two cancel
   - Why: The pKa is the pH at which a weak acid and its conjugate base are present in equal amounts.
 - `b-buffer` Before the equivalence point the flask holds HF and F⁻ together. What does this mixture do? *(diagram: HF flask, 18 units of NaOH)*
-  - **a. It is a buffer: F⁻ takes up H⁺ and HF gives it back, so the pH changes slowly**
-  - b. It makes the pH change much faster, because both HF and F⁻ keep adding H⁺ to the flask
-  - c. It keeps the pH at exactly 7 until the equivalence point is reached
-  - d. It has no effect, because HF and F⁻ do not react with H⁺ or OH⁻
-  - Why: A weak acid and its conjugate base together resist a change in pH. That is the gently sloping part of the curve.
+  - **a. It is a buffer: HF reacts with added OH⁻ and F⁻ reacts with added H⁺, so the pH changes slowly**
+  - b. It makes the pH change much faster, because both HF and F⁻ keep adding more H⁺ to the flask over time
+  - c. It holds the pH at exactly 7 for the whole time until the equivalence point is finally reached
+  - d. It has no effect on the pH, because neither HF nor F⁻ can react with any added H⁺ or OH⁻
+  - Why: A weak acid and its conjugate base together resist a change in pH: the acid reacts with added base, the conjugate base with added acid. That is the gently sloping part of the curve.
 - ★ `b-ws-eq-side` HF is titrated with NaOH. The pH at the equivalence point is…
   - **a. Above 7**
   - b. Exactly 7
@@ -364,11 +364,11 @@ Notes: only about 8% of 0.100 M HF ionizes (2 of 24 units drawn); only about 1 i
   - d. 37.50 mL
   - Why: The curve rises steeply at 25.00 mL, where the moles of NaOH equal the moles of HCl in the 25.00 mL flask.
 - `d-buffer-region` Which part of the HF curve is the buffer region? *(curve: HF)*
-  - **a. Between the start and the equivalence point, where the curve slopes gently**
+  - **a. Before the equivalence point, once some NaOH is added, where the curve slopes gently**
   - b. At the equivalence point, where the curve is almost vertical and the pH changes fastest
   - c. After the equivalence point, where the curve flattens out again
   - d. At the start only, before any NaOH has been added to the flask
-  - Why: HF and F⁻ are both present until the equivalence point. They resist a change in pH, so the curve rises slowly.
+  - Why: Once some NaOH has been added, HF and F⁻ are both present until the equivalence point. They resist a change in pH, so the curve rises slowly.
 - `d-half-mark` The dot marks the half-equivalence point of the HF titration. What does the pH there equal? *(curve: HF, dot at 12 units)*
   - **a. The pKa of HF, 3.17**
   - b. Exactly 7

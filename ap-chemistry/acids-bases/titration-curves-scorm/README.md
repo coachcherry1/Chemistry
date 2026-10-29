@@ -51,6 +51,27 @@ points and the curve of the match; the graph and the task; a checkpoint question
   capacity, indicators, polyprotic acids and weak base titrations (a good second activity). A **reference table**
   (Ka and pKa of the acids, with the particle key) sits beside every checkpoint instead.
 
+## Alignment with the AP Chemistry CED
+
+Checked against the AP Chemistry Course and Exam Description (2024, Course Framework V.1, Unit 8, pp. 143 to 158).
+
+| CED | What the activity does |
+| --- | --- |
+| 8.5.A.1 titration curve, pH against volume of titrant | Every curve; Part 4 reads them (suggested skill 5.D, graphical information) |
+| 8.5.A.2 at equivalence, moles of titrant equal moles of analyte, for strong and weak | Setup step; `a-equiv-def`, `b-same-volume`, `d-eq-vol` |
+| 8.5.A.3 half-equivalence point: [HA] = [A⁻], so pH = pKa | HF walk, point 2; `b-half-count`, `b-half-pka`, `b-half-why`, `d-half-mark`, `e-half` |
+| 8.5.A.4 pH at equivalence is set by the major species: neutral for strong/strong; for a weak acid the conjugate base reacts with water and makes the solution basic | Part 3; `a-ss-eq-*`, `b-ws-eq-*`, `c-*`, Checkpoint 5 |
+| 8.4.A.1 and 8.4.A.2 H⁺ + OH⁻ and HA + OH⁻ → A⁻ + H₂O; buffer while the acid is in excess; excess OH⁻ sets the pH after; A⁻ + H₂O ⇌ HA + OH⁻ at equimolar | The two walks; `a-react`, `a-after-ph`, `b-buffer`, `c-react-eq`, `e-after` |
+| 8.3.A.1 a weak acid ionizes only a little | Compare step; `b-hf-ionize`, `b-count-start`, `b-start-higher` |
+| 8.8.A.1 a buffer holds both members of a conjugate pair; the acid reacts with added base, the conjugate base with added acid | Buffer wording throughout, `b-buffer`, vocabulary |
+| 6.C particulate representations (the CED recommends them with the half-equivalence point) | The particle diagram at every point |
+
+Not covered, on purpose (conceptual activity about strong against weak acids): weak base with strong acid (8.4.A.3, the second half of
+8.5.A.4), polyprotic acids (8.5.A.5), indicators and their pKa (8.7.A.2 and 8.7.A.3), pH, pKa and percent ionization calculations (8.1 to
+8.3, the pH of a titration point in 8.4, 8.9), buffer capacity (8.10). The CED notes that students often confuse the half-equivalence point,
+the equivalence point and the end point; this activity teaches the first two and leaves out the end point with the indicators.
+The CED accepts both H⁺ and H₃O⁺; the activity uses H⁺ and says so under the acid table, along with 25 °C.
+
 ## How it is built
 
 One model makes every number a student sees.

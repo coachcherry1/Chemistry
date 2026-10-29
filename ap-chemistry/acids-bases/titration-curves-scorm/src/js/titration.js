@@ -142,7 +142,7 @@ var Titration = (function () {
   var SETTER_TEXT = {
     'strong-h': 'The H⁺ that is left. A strong acid is all H⁺ and {A}, so the pH is set by how much H⁺ the NaOH has not yet used up.',
     'weak-acid': 'The few H⁺ that came from {HA} molecules ionizing. Most {HA} stays whole, so the pH is higher than a strong acid of the same amount.',
-    'buffer': 'The mix of {HA} and {A}. This is a buffer: the {A} takes up H⁺ and the {HA} gives it back, so the pH changes slowly.',
+    'buffer': 'The mix of {HA} and {A}. This is a buffer: the {HA} reacts with the added OH⁻ and the {A} reacts with any added H⁺, so the pH changes slowly.',
     'conjugate-base': 'The {A}. It is the conjugate base of a weak acid, so a tiny amount of it takes H⁺ from water and makes OH⁻: {A} + H₂O → {HA} + OH⁻.',
     'neutral': 'Nothing. Na⁺ and {A} do not react with water, so only water’s own H⁺ and OH⁻ are left: pH 7.',
     'excess-oh': 'The extra OH⁻ from the NaOH that has no acid left to react with.'
@@ -163,7 +163,7 @@ var Titration = (function () {
   var SETTER_CHOICE = {
     'strong-h': 'The H⁺ that the NaOH has not used up yet',
     'weak-acid': 'The few H⁺ from {HA} molecules that ionized',
-    'buffer': 'The {HA} and {A} buffer: {A} takes up H⁺ and {HA} gives it back',
+    'buffer': 'The {HA} and {A} buffer: {HA} reacts with added OH⁻ and {A} reacts with added H⁺',
     'conjugate-base': 'The {A} reacting with water to make OH⁻',
     'neutral': 'Nothing: Na⁺ and {A} do not react with water',
     'excess-oh': 'The extra OH⁻ from the NaOH'
