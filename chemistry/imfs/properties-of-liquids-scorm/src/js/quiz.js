@@ -39,7 +39,7 @@ var QUIZZES = {
 
   E: {
     title: 'Checkpoint: properties of liquids',
-    draw: 5,
+    draw: 8,
     core: ['e-rule', 'e-decane-imf', 'e-42-rank'],
     pool: [
       { id: 'e-rule',

@@ -14,7 +14,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a substance changes: a save
      from an older release is then discarded and the student starts fresh. */
-  var SCHEMA = 1;
+  var SCHEMA = 2;
 
   var h = UI.h;
 

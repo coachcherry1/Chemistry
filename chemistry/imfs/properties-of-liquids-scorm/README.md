@@ -21,7 +21,7 @@ entanglement, and no numbers on screen.
 | Bigger hydrocarbons | pentane, heptane, octane, decane | LDF only, compared by electrons |
 | About 40 electrons, three forces | pentane (42), 2-butanone (40), 1-butanol (42) | LDF < dipole-dipole < hydrogen bonding |
 | 58 electrons each | heptane, 1-hexanol, 1,5-pentanediol | 0, 1 and 2 hydrogen bonds (counted) |
-| Checkpoint | 5 questions from a pool of 19, the rule beside it | graded |
+| Checkpoint | 8 questions from a pool of 19, the rule beside it | graded |
 
 Each step: name the IMFs of each liquid from its Lewis structure (a wrong set gets the specific reason), count
 hydrogen bonds where asked, rank the liquids strongest first, predict which has the highest (or lowest) surface
@@ -39,7 +39,7 @@ have the same surface tension, so that pair is never compared by it, and their d
 
 ## Grading
 
-5 questions per attempt (3 core, ★ in `ANSWER_KEY.md`, and 2 at random); the **first answer** to each counts.
+8 questions per attempt (3 core, ★ in `ANSWER_KEY.md`, and 5 at random); the **first answer** to each counts.
 `cmi.core.score.raw` (0 to 100) after every answer, `completed` on the results screen, no `masteryscore`, one
 `cmi.interactions` record per answer. Retakes draw new questions and the gradebook keeps the best. Progress is
 saved only in `cmi.suspend_data` (`localStorage` only without an LMS). Bump `SCHEMA` in `src/js/app.js` whenever
@@ -50,12 +50,12 @@ the steps, the pool or a liquid changes.
 ```bash
 node tools/validate.js                    # must pass
 node tools/answer-key.js > ANSWER_KEY.md
-./build.sh                                # dist/properties-of-liquids-v1.zip
+./build.sh                                # dist/properties-of-liquids-v2.zip
 node tools/walkthrough.js                 # Playwright: plays the whole activity against a fake LMS
 node tools/layout.js                      # Playwright: fits a Chromebook, 1366x650 and 1366x520
 ```
 
-Upload `dist/properties-of-liquids-v1.zip` in Schoology with **Add Materials → Add File/Link/External Tool → Add
+Upload `dist/properties-of-liquids-v2.zip` in Schoology with **Add Materials → Add File/Link/External Tool → Add
 File** (or **Package**). `src/index.html?step=hydrocarbons` jumps to a step (ids in `ANSWER_KEY.md`, or numbers 1
 to 6) without saving anything.
 

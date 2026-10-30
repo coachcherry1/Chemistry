@@ -298,10 +298,10 @@ not the full page.
 - **Files:** `chem.js`, `scenes.js`, `judge.js`, `render.js`, `arrows.js`, `energy.js`, `picker.js`, `quiz.js`, `scorm.js`,
   `app.js`, `steps1.js` (Parts 1-2), `steps2.js` (Parts 3-4).
 
-## properties-of-liquids-scorm (zip v1, SCHEMA 1)
+## properties-of-liquids-scorm (zip v2, SCHEMA 2)
 
 - Part 6 of `intermolecular-forces-liquids-scorm/` on its own: the same 4 `props` steps, `bench.js` and checkpoint E
-  (5 from 19, core 3), with parts 1 to 5, the heating stage, clouds, picker and explore mode removed. Its own SCORM ids
+  (8 from 19, core 3), with parts 1 to 5, the heating stage, clouds, picker and explore mode removed. Its own SCORM ids
   (`POL_*`), save key (`properties-of-liquids-state`) and zip. `SUBSTANCES` holds only the eight liquids.
   A fix to part 6 in either package usually belongs in the other.
 
