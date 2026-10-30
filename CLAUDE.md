@@ -23,6 +23,7 @@ A new package goes in the topic folder that fits it (make the folder if none doe
 | `chemistry/bonding/vsepr-polarity-scorm/` | VSEPR: build by the 5 rules beside a 3D window, molecular geometry for 2 to 6 domains, polarity by radial symmetry |
 | `chemistry/imfs/intermolecular-forces-scorm/` | IMFs: heating stage with real mp/bp, LDF and polarizability, dipole-dipole, hydrogen bonds (follows VSEPR) |
 | `chemistry/imfs/intermolecular-forces-liquids-scorm/` | The same IMF activity plus a part 6, properties of liquids: surface tension, viscosity, evaporation rate (about 40 min) |
+| `chemistry/imfs/properties-of-liquids-scorm/` | That part 6 on its own: surface tension, viscosity, evaporation rate of bigger molecules (about 15 min) |
 
 **AP chemistry**
 
@@ -296,3 +297,11 @@ not the full page.
   atoms glide), fills the energy ledger, then a word-tile sentence (`SAY` in `steps2.js`).
 - **Files:** `chem.js`, `scenes.js`, `judge.js`, `render.js`, `arrows.js`, `energy.js`, `picker.js`, `quiz.js`, `scorm.js`,
   `app.js`, `steps1.js` (Parts 1-2), `steps2.js` (Parts 3-4).
+
+## properties-of-liquids-scorm (zip v1, SCHEMA 1)
+
+- Part 6 of `intermolecular-forces-liquids-scorm/` on its own: the same 4 `props` steps, `bench.js` and checkpoint E
+  (5 from 19, core 3), with parts 1 to 5, the heating stage, clouds, picker and explore mode removed. Its own SCORM ids
+  (`POL_*`), save key (`properties-of-liquids-state`) and zip. `SUBSTANCES` holds only the eight liquids.
+  A fix to part 6 in either package usually belongs in the other.
+
