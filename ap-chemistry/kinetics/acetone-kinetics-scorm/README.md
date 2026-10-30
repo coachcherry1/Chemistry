@@ -1,5 +1,7 @@
 # Kinetics of the Iodination of Acetone — Virtual Lab
 
+**Web version** (runs without Schoology; progress is not saved, here or in Schoology): <https://coachcherry1.github.io/Chemistry/ap-chemistry/kinetics/acetone-kinetics-scorm/src/index.html>
+
 A SCORM 1.2 virtual lab for Schoology. Students run the acid-catalysed iodination of
 acetone by the **method of initial rates**, design their own single-variable trials,
 read the three orders off their own data, and then match the rate law they measured to

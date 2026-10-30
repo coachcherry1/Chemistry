@@ -1,5 +1,7 @@
 # IR Spectroscopy — The Diagnostic Region
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/organic-chemistry/spec-nmr/ir-spectroscopy-scorm/src/index.html>
+
 A click-and-drag SCORM 1.2 activity for Schoology. Students label the peaks in the
 diagnostic region of an IR spectrum with the functional group that produced them.
 

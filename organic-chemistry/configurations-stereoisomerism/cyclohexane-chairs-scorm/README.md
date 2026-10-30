@@ -1,5 +1,7 @@
 # Cyclohexane Chairs: Ring Flips and Axial Crowding
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/organic-chemistry/configurations-stereoisomerism/cyclohexane-chairs-scorm/src/index.html>
+
 A SCORM 1.2 activity for Schoology. Students turn cyclohexane rings in 3D, label axial and equatorial
 positions, flip rings from one chair to the other (in chair drawings and in Klein-style Newman
 projections of the chair), find the H atoms an axial group crowds, and use A-values to pick the more

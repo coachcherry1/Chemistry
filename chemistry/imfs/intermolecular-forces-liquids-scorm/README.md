@@ -1,5 +1,7 @@
 # Intermolecular Forces and Properties of Liquids
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/chemistry/imfs/intermolecular-forces-liquids-scorm/src/index.html>
+
 A SCORM 1.2 activity for Schoology, for honors chemistry. It is **Intermolecular Forces**
 (`../intermolecular-forces-scorm/`, which stays as it is) with a sixth part added: **properties of liquids**.
 Students warm real substances on a heating stage and watch them melt and boil at their real temperatures, see

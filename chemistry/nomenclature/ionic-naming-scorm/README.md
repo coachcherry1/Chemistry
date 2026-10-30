@@ -1,5 +1,7 @@
 # Naming Ionic Compounds — Names & Formulas
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/chemistry/nomenclature/ionic-naming-scorm/src/index.html>
+
 A SCORM 1.2 activity for Schoology. Students name ionic compounds and write their formulas,
 with and without transition metals and with polyatomic ions. The whole activity is built around
 one conditional:
