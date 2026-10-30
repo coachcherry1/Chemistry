@@ -1,5 +1,7 @@
 # Intermolecular Forces: LDF, Dipole-Dipole and Hydrogen Bonding
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/chemistry/imfs/intermolecular-forces-scorm/src/index.html>
+
 A SCORM 1.2 activity for Schoology, for honors chemistry. Students warm real substances on a heating stage and
 watch them melt and boil at their real temperatures, see where London dispersion forces come from, compare
 molecules with the same number of electrons, and draw and count hydrogen bonds. About 25 minutes. It follows

@@ -1,5 +1,7 @@
 # Reactivity and Arrow Pushing: the four patterns
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/organic-chemistry/reactivity-mechanisms/arrow-pushing-scorm/src/index.html>
+
 A SCORM 1.2 activity for Schoology, for the organic chemistry elective (Klein, *Organic Chemistry*, chapter 6), meant
 to come before the SN1, SN2, E1 and E2 activity. The emphasis is vocabulary and drawing curved arrows; the biggest
 objective is recognising Klein's four patterns of arrow pushing (6.8): nucleophilic attack, loss of a leaving group,

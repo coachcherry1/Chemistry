@@ -1,5 +1,7 @@
 # Newman Projections: Conformations and Strain (with calculations)
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/organic-chemistry/configurations-stereoisomerism/newman-projections-scorm/src/index.html>
+
 A SCORM 1.2 activity for Schoology. Students build Newman projections from wedge/dash drawings,
 turn the molecules in 3D, watch the energy curve draw itself as they rotate, and answer graded
 checkpoint questions on torsional strain, gauche interactions and the best staggered conformation.

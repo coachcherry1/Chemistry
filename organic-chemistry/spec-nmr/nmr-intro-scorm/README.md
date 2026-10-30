@@ -1,5 +1,7 @@
 # ¹H NMR — An Introduction
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/organic-chemistry/spec-nmr/nmr-intro-scorm/src/index.html>
+
 A click-and-drag SCORM 1.2 activity for Schoology that introduces proton NMR one idea at
 a time: chemically equivalent hydrogens, chemical shift, integration and splitting, then
 all four together.

@@ -1,5 +1,7 @@
 # Chirality: R and S, Enantiomers, Diastereomers and Meso Compounds
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/organic-chemistry/configurations-stereoisomerism/chirality-scorm/src/index.html>
+
 A SCORM 1.2 activity for Schoology. Students hold a molecule up to a mirror in 3D and try to make its reflection
 fit, find chirality centres in bond-line drawings, rank groups by the priority rules, rotate molecules until 4 is
 on the dash and read R or S, and sort pairs of stereoisomers into enantiomers and diastereomers, finishing with

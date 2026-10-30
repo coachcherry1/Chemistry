@@ -1,5 +1,7 @@
 # Mass Spectrometry — Reading the Fragments
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/organic-chemistry/spec-nmr/ms-spectrometry-scorm/src/index.html>
+
 A click-and-drag SCORM 1.2 activity for Schoology. Students work out what an EI mass
 spectrum's molecular ion has lost to make each peak — −15, −18, −29, −43 — then use those
 losses to identify the compound, and finally predict which peak will be tallest from the

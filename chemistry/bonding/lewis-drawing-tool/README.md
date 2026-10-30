@@ -1,5 +1,7 @@
 # Lewis Structure Drawing Tool
 
+**Web version** (runs without Schoology; reports no score): <https://coachcherry1.github.io/Chemistry/chemistry/bonding/lewis-drawing-tool/src/index.html>
+
 A teacher's tool, packaged as SCORM 1.2 for Schoology (it also runs straight from the files): build any 2-D
 Lewis structure and get a clean picture of it for slides, worksheets and keys. It is separate from the
 Lewis structures and resonance activities and **reports no score** — opened from the LMS it simply marks

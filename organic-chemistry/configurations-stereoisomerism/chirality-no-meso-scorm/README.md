@@ -1,5 +1,7 @@
 # Chirality: R and S, Enantiomers and Diastereomers
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/organic-chemistry/configurations-stereoisomerism/chirality-no-meso-scorm/src/index.html>
+
 **The version without meso compounds**, for years when the group needs more time on R and S. It is a copy of
 `chirality-scorm/` with the meso tutorial, the Molecules A and B step, cis-1,3-dimethylcyclohexane and every meso
 question taken out, and its own SCORM identifiers, save key and zip, so both can be posted in Schoology. A fix to

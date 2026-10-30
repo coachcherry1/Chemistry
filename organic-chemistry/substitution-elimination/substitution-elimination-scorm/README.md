@@ -1,5 +1,7 @@
 # Substitution and Elimination: SN1, SN2, E1 and E2
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/organic-chemistry/substitution-elimination/substitution-elimination-scorm/src/index.html>
+
 A SCORM 1.2 activity for Schoology, for the organic chemistry elective (Klein, *Organic Chemistry*, chapter 7).
 Students decide what a reagent can do, watch SN2's back-side attack invert a chirality centre in 3D, draw the
 curved arrows of every mechanism, turn Newman projections until an H is anti-coplanar to the leaving group,
