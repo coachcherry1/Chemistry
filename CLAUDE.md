@@ -66,7 +66,28 @@ chairs, chirality, SN1/SN2 and arrow pushing have `tools/layout.js`. Bring a pac
   identifiers and storage key.
 - Offline only: no CDN, web fonts or WebGL. Keyboard, touch and drag for every action; dark mode; reduced motion.
 - Answers are computed from the model, never typed twice, and the validator checks them.
+- Every package also runs as a plain web page (see **Web version** below).
 - Built zips are committed in `dist/`. Branch for new work; don't open a PR unless asked.
+
+## Web version (GitHub Pages)
+
+Every new package must also run as an ordinary web page, outside Schoology, from GitHub Pages. The address is
+the site address plus the path to the file on GitHub:
+
+```
+https://coachcherry1.github.io/Chemistry/ + <class>/<topic>/<package>/src/index.html
+```
+
+For example `https://coachcherry1.github.io/Chemistry/chemistry/bonding/vsepr-polarity-scorm/src/index.html`.
+
+- `src/index.html` must work opened straight from that address with no LMS: no error when the SCORM API is missing,
+  saves go to localStorage, and the score and results still show.
+- Relative paths only (`app.js`, `./img/x.svg`), never a leading `/` or a path outside the package folder, so the
+  page works under `/Chemistry/` on Pages, inside the zip and from a local file.
+- Put the Pages address in the package's `README.md`, and give it to the teacher when the package is done.
+- Pages shows only `main`: a package on a branch gives 404 until it is merged.
+- Folder names with spaces (the `to-merge/` folders) need `%20` for each space, and the teacher's own simulations
+  in `to-merge/` keep `index.html` directly in the activity folder, with no `src/` in the address.
 
 ## Before every commit (in the package folder)
 
