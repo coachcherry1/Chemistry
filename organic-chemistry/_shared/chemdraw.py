@@ -255,6 +255,27 @@ class Struct:
             return self._anchor(spec)
         return self.p(spec[1])
 
+    def _along_bond(self, frm, to):
+        """(i, j, atom_end) when an arrow runs along one bond: from that bond to one of its atoms, or from an atom's electrons to that bond"""
+        if frm[0] == "bond" and to[0] == "atom" and to[1] in (frm[1], frm[2]):
+            return self.idx[frm[1]], self.idx[frm[2]], True
+        if frm[0] in ("lp", "lpa", "atom") and to[0] in ("bond", "bondf") and frm[1] in (to[1], to[2]):
+            return self.idx[to[1]], self.idx[to[2]], False
+        return None
+
+    def _outward(self, i, j):
+        """unit normal of bond i-j pointing away from the rest of the molecule"""
+        (x1, y1), (x2, y2) = self.pos[i], self.pos[j]
+        L = math.hypot(x2 - x1, y2 - y1) or 1
+        n = (-(y2 - y1) / L, (x2 - x1) / L)
+        pts = [self.pos[k.GetIdx()] for a in (i, j) for k in self.dm.GetAtomWithIdx(a).GetNeighbors() if k.GetIdx() not in (i, j)]
+        if pts:
+            cx = sum(p[0] for p in pts) / len(pts)
+            cy = sum(p[1] for p in pts) / len(pts)
+            if n[0] * ((x1 + x2) / 2 - cx) + n[1] * ((y1 + y2) / 2 - cy) < 0:
+                n = (-n[0], -n[1])
+        return n
+
     def arrow(self, frm, to, bend=0.35, s_off=0.0, e_off=0.0):
         """s_off shifts the tail sideways off a bond (use for pi-bond arrows);
         e_off shifts the head sideways when it lands on an atom."""
@@ -275,6 +296,27 @@ class Struct:
             E = (tx - dx / D * r, ty - dy / D * r)
         else:
             E = self._anchor(to, toward=S, is_head=True)
+        ab = self._along_bond(frm, to)
+        if ab:
+            # an arrow between a bond and its own atom must go around the bond, never through it
+            i, j, from_bond = ab
+            n = self._outward(i, j)
+            (x1, y1), (x2, y2) = self.pos[i], self.pos[j]
+            M = ((x1 + x2) / 2, (y1 + y2) / 2)
+            if from_bond:
+                S = (M[0] + n[0] * 4, M[1] + n[1] * 4)
+                cx, cy = self.p(to[1])
+                tx, ty = cx + n[0] * 6, cy + n[1] * 6
+                dx, dy = tx - S[0], ty - S[1]
+                D = math.hypot(dx, dy) or 1
+                r = 9 if self._label_atom(self.idx[to[1]]) else 5
+                E = (tx - dx / D * r, ty - dy / D * r)
+            else:
+                E = (M[0] + n[0] * 3, M[1] + n[1] * 3)
+            dx, dy = E[0] - S[0], E[1] - S[1]
+            L = math.hypot(dx, dy) or 1
+            sign = 1 if (-dy / L) * n[0] + (dx / L) * n[1] >= 0 else -1
+            bend = sign * max(abs(bend), 0.55)
         self.arrows.append((S, E, bend))
         return self
 
