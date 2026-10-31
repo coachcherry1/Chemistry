@@ -240,8 +240,11 @@ def main():
     unplaced = [d['id'] for d in data if d['c'] == 'organic' and not d['s'] and d['k'] != 'sim']
     tpl = open(os.path.join(ROOT, 'tools', 'index_template.html'), encoding='utf-8').read()
     payload = lambda o: json.dumps(o, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+    ws_js = open(os.path.join(ROOT, 'tools', 'worksheet.js'), encoding='utf-8').read()
     out = (tpl.replace('__DATA__', payload(data)).replace('__TAX__', payload(tax)).replace('__DOCS__', payload(docs_))
-              .replace('__SECLABEL__', payload(SEC_LABEL)).replace('__COURSES__', payload(COURSE_LABEL)))
+              .replace('__SECLABEL__', payload(SEC_LABEL))
+              .replace('/*__WS_CSS__*/', open(os.path.join(ROOT, 'tools', 'worksheet.css'), encoding='utf-8').read())
+              .replace('//__WS_JS__', ws_js).replace('__COURSES__', payload(COURSE_LABEL)))
     assert '\u2014' not in out, 'em dash in generated page'
     open(os.path.join(ROOT, 'index.html'), 'w', encoding='utf-8').write(out)
     print(f'{len(data)} items, {len(out) // 1024} KB;', dict(Counter(d['k'] for d in data)), '| missing targets:', len(missing), missing[:3],

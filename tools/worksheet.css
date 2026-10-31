@@ -1,0 +1,71 @@
+/* worksheet builder */
+.btn.on{background:var(--soft);border-color:var(--acc)}
+#wsmeasure{position:absolute;left:-10000px;top:0;visibility:hidden;width:900px}
+#wsprint{position:absolute;left:-10000px;top:0;width:816px;visibility:hidden;pointer-events:none}
+body.wsopen{overflow:hidden}
+#ws{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column}
+#ws[hidden]{display:none}
+.wsbar{display:flex;gap:14px;align-items:center;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line)}
+.wsz{margin-left:auto;display:flex;gap:6px;align-items:center}
+.wsbody{flex:1;display:flex;min-height:0}
+.wsside{width:310px;flex:none;overflow:auto;padding:14px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.wsside input[type=text]{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.wsl{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--mute)}
+.wsl select{width:100%}
+.wsc{font-size:14px;display:flex;gap:7px;align-items:center}.wsind{margin-left:22px}
+.wsh{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mute);margin-top:8px}
+.wsrow2{display:flex;gap:6px;flex-wrap:wrap}
+.wsnote{font-size:12.5px;color:var(--mute);margin:2px 0}
+#wslist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px;max-height:30vh;min-height:70px;overflow:auto;flex:none}
+#wslist li{display:flex;align-items:center;gap:6px;padding:4px 6px;border:1px solid var(--line);border-radius:8px;cursor:pointer;font-size:13px;background:var(--bg)}
+#wslist li.sel{border-color:var(--acc);background:var(--soft)}
+#wslist li.wsempty{cursor:default;border:0;background:none;color:var(--mute);display:block}
+#wslist .wslab{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#wslist .wsgrab{cursor:grab;color:var(--mute)}
+#wslist button{border:0;background:none;cursor:pointer;color:var(--mute);padding:0 3px;font-size:11px}
+.wsmain{flex:1;overflow:auto;padding:18px;background:#8a93a0}
+@media(prefers-color-scheme:dark){.wsmain{background:#0b0e13}}
+#wsscale{margin:0 auto;position:relative}
+#wssheet{position:absolute;left:0;top:0;transform-origin:0 0}
+.wspage{position:absolute;left:0;width:816px;height:1056px;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.35)}
+.wspn{position:absolute;right:10px;bottom:6px;font:11px system-ui;color:#aaa}
+.wsbox,.wscontent,.ppbox{color:#111;font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wsbox{position:absolute;outline:1px dashed transparent;background:transparent}
+.wsbox:hover{outline-color:#8aa4c8}
+.wsbox.sel{outline:2px solid #1d5fb4;z-index:5}
+.wsbox.warn{outline:2px solid #c0392b}
+.wsbox.over{outline:2px solid #d98200}
+.wsbox.warn .wswarnmsg,.wsbox.over .wswarnmsg{display:block}
+.wsbox.over .wswarnmsg{background:#d98200}
+.wswarnmsg{display:none;position:absolute;left:0;bottom:-20px;background:#c0392b;color:#fff;font:11px system-ui;padding:1px 6px;border-radius:4px;white-space:nowrap}
+.wsgrip{position:absolute;left:0;top:-26px;height:26px;display:none;align-items:center;justify-content:space-between;gap:8px;min-width:150px;padding:0 6px;background:#1d5fb4;color:#fff;border-radius:6px 6px 0 0;font:12px system-ui;cursor:grab;touch-action:none;user-select:none;white-space:nowrap}
+.wsbox:hover .wsgrip,.wsbox.sel .wsgrip,.wsbox:focus-within .wsgrip{display:flex}
+.wstools{display:flex;gap:3px}
+.wstools button{border:0;background:rgba(255,255,255,.2);color:#fff;border-radius:4px;min-width:22px;height:20px;cursor:pointer;font:13px system-ui;padding:0 5px}
+.wstools button:hover{background:rgba(255,255,255,.4)}
+.wsresize{position:absolute;right:-8px;bottom:-8px;width:16px;height:16px;background:#1d5fb4;border:2px solid #fff;border-radius:50%;cursor:nwse-resize;touch-action:none;display:none}
+.wsbox:hover .wsresize,.wsbox.sel .wsresize{display:block}
+.wscontent{transform-origin:0 0;position:relative}
+.wsrow{display:flex;gap:8px;align-items:flex-start}
+.wsnum{font-weight:700;min-width:1.6em}
+.wsstem,.wstext{white-space:pre-wrap;flex:1;min-height:1.4em;outline:none}
+.wsstem:focus,.wstext:focus,.wsopt span:focus{background:#eef4fc;outline:1px solid #8aa4c8}
+.wsimg{display:block;margin:8px 0}
+.wsopts{margin-top:6px}.wsopts.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px}
+.wsopt{margin:2px 0 2px 24px}.wsoi{margin-left:0}.wsopt span{white-space:pre-wrap;outline:none}.wsopt img{vertical-align:top;display:inline-block}
+.wslines div{height:30px;border-bottom:1px solid #777}
+/* print: the worksheet pages only */
+.pp{width:816px;height:1056px;position:relative;overflow:hidden;background:#fff;color:#111;break-after:page;page-break-after:always}
+.pp:last-child{break-after:auto;page-break-after:auto}
+.ppkey{padding:48px;font:14px/1.4 system-ui,sans-serif}
+.ppkey h2{margin:0 0 14px}
+.wskeyi{margin:0 0 8px}.wskid{color:#888;font-size:11px}.wskw{margin-left:22px;color:#444;font-style:italic;font-size:13px}
+.ppbox{position:absolute}
+@media print{
+  @page{size:8.5in 11in;margin:0}
+  html,body{background:#fff!important;margin:0!important;padding:0!important}
+  body>*:not(#wsprint){display:none!important}
+  body>#wsprint{display:block!important;position:static!important;visibility:visible!important;width:auto!important;pointer-events:auto}
+  #wsprint .pp{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media(max-width:900px){.wsbody{flex-direction:column}.wsside{width:auto;max-height:42vh;border-right:0;border-bottom:1px solid var(--line)}}

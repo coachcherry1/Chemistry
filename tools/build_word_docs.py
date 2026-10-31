@@ -73,8 +73,7 @@ def options(d, it):
         t = d.add_table(rows=2, cols=2)
         for k, o in enumerate(it['o']):
             cell = t.cell(k // 2, k % 2)
-            cell.paragraphs[0].add_run('ABCD'[k] + ')').bold = True
-            pic(cell, o['v'], 2.8)
+            pic(cell, o['v'], 2.8)      # the picture already has its letter drawn in
     else:
         for k, o in enumerate(it['o']):
             p = d.add_paragraph()
