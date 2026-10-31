@@ -14,6 +14,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
 MOL = 'organic-chemistry/nomenclature/molecule-database/'
 SNE = 'organic-chemistry/substitution-elimination/problem-bank/'
 QZ = 'organic-chemistry/acids-bases/acids-bases-quiz/'
+BANK = 'organic-chemistry/question-bank/'
 TAX = json.load(open(os.path.join(ROOT, 'content', 'taxonomy.json'), encoding='utf-8'))['organic']
 SEC_LABEL = {s['id']: s['label'] for t in TAX for s in t['sections']}
 COURSE_LABEL = {'organic': 'Organic Chemistry', 'honors': 'Honors Chemistry', 'ap': 'AP Chemistry'}
@@ -33,7 +34,7 @@ def make_item(**kw):
     secs = kw.pop('secs', [])
     bad = [s for s in secs if s not in SEC_LABEL]
     assert not bad, f"unknown section ids {bad} in {kw.get('id')}"
-    it = dict(id='', k='', f='', c='organic', s=secs, n='', sub='', b='', a='', w='', o=None, oa='', im='', am='', l='', z='', m={}, x='', ed=None, fl=None)
+    it = dict(dl=0, id='', k='', f='', c='organic', s=secs, n='', sub='', b='', a='', w='', o=None, oa='', im='', am='', l='', z='', m={}, x='', ed=None, fl=None)
     it.update(kw)
     if not it.get('tp'):
         it['tp'] = sorted({s.split('.')[0] for s in secs}, key=lambda v: (v == 'X', int(v) if v.isdigit() else 99))
@@ -97,7 +98,7 @@ def molecules():
 
 def problems():
     for p in load(SNE + 'problems.json'):
-        yield make_item(id=p['id'], k='question', f='Free response', secs=problem_secs(p), n=p['type'], sub=f"{p['mechanism']} · difficulty {p['difficulty']}",
+        yield make_item(id=p['id'], k='question', f='Free response', secs=problem_secs(p), n=p['type'], sub=p['mechanism'], dl=int(p['difficulty']),
                         b=p['question'], a=p['answer'], w=p['explanation'], im=SNE + p['question_image'] if p['question_image'] else '',
                         am=SNE + p['answer_image'] if p['answer_image'] else '', m={'Source': p['source']},
                         ed={'question': p['question'], 'answer': p['answer'], 'explanation': p['explanation']},
@@ -111,7 +112,7 @@ def quiz():
         opts = [dict(t=o['type'], v=(QZ + o['value']) if o['type'] == 'img' else o['value']) for o in q['options']]
         texts = [o['value'] if o['type'] == 'text' else None for o in q['options']]
         yield make_item(id=q['id'], k='question', f='Multiple choice', secs=secs, n=f"{q['topic']} · {q['level']}", b=q['stem'],
-                        o=opts, oa=q['answer'], w=q['why'], im=(QZ + q['stem_image']) if q['stem_image'] else '',
+                        o=opts, oa=q['answer'], w=q['why'], dl=int(q.get('difficulty', 2)), im=(QZ + q['stem_image']) if q['stem_image'] else '',
                         ed={'stem': q['stem'], 'options': texts, 'why': q['why']},
                         fl=[['stem', 'Question'], ['options', 'Choices'], ['why', 'Explanation']],
                         x=' '.join([q['id'], q['topic'], q['level'], q['stem'], q['why']] + [t for t in texts if t]))
@@ -163,7 +164,28 @@ def simulations():
                         x=' '.join([act, title, topic, course_name]))
 
 
-LOADERS = [problems, quiz, molecules, simulations]
+def bank():
+    path = os.path.join(ROOT, BANK, 'questions.json')
+    if not os.path.exists(path):
+        return
+    for q in json.load(open(path, encoding='utf-8')):
+        mc = q['fmt'] == 'MC'
+        base = dict(id=q['id'], k='question', f='Multiple choice' if mc else 'Free response', secs=q['s'], dl=int(q['d']),
+                    n=SEC_LABEL[q['s'][0]], im=BANK + q['im'] if q.get('im') else '')
+        if mc:
+            opts = [dict(t=o['t'], v=BANK + o['v'] if o['t'] == 'img' else o['v']) for o in q['o']]
+            texts = [o['v'] if o['t'] == 'text' else None for o in q['o']]
+            yield make_item(**base, b=q['stem'], o=opts, oa=q['a'], w=q['why'], ed={'stem': q['stem'], 'options': texts, 'why': q['why']},
+                            fl=[['stem', 'Question'], ['options', 'Choices'], ['why', 'Explanation']],
+                            x=' '.join([q['id'], q['stem'], q['why']] + [t for t in texts if t]))
+        else:
+            yield make_item(**base, b=q['stem'], a=q['a'], w=q['why'], am=BANK + q['am'] if q.get('am') else '',
+                            ed={'question': q['stem'], 'answer': q['a'], 'explanation': q['why']},
+                            fl=[['question', 'Question'], ['answer', 'Answer'], ['explanation', 'Explanation']],
+                            x=' '.join([q['id'], q['stem'], q['a'], q['why']]))
+
+
+LOADERS = [problems, quiz, bank, molecules, simulations]
 DOCS = [('Acid/base + nomenclature question set (Word)', QZ + 'Acids_Bases_Nomenclature_Quiz.docx'),
         ('Question set answer key', QZ + 'Acids_Bases_Nomenclature_Quiz_Answer_Key.docx'),
         ('Sub/elim problems (Word)', SNE + 'SN_E_Problems.docx'), ('Sub/elim answer key', SNE + 'SN_E_Answer_Key.docx'),

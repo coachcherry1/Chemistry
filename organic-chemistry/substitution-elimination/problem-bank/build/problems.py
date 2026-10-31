@@ -318,4 +318,6 @@ for _p in P:
     for _k, _v in _ov.load().get(_p['id'], {}).items():
         if _k in ('question', 'answer', 'explanation'):
             _p[_k] = _v
+        elif _k == 'difficulty':
+            _p['difficulty'] = int(_v)
 assert len(P) == 100, len(P)

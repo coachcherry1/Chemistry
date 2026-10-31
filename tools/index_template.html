@@ -87,6 +87,9 @@ dialog h2{margin:0 0 6px;font-size:18px}
 .editrow{border:1px solid var(--line);border-radius:9px;padding:8px 10px;margin:6px 0;font-size:13.5px}
 .editrow b{margin-right:6px}
 .mobile{display:none}
+select.diff{border:1px solid var(--line);border-radius:6px;padding:1px 4px;font-size:12px;background:var(--bg);cursor:pointer}
+select.diff.d1{color:#14703f}select.diff.d2{color:#2a6f97}select.diff.d3{color:#a37300}select.diff.d4{color:#a34a07}select.diff.d5{color:#a3262a}
+.filters .src{align-self:center}
 @media(max-width:900px){.layout{grid-template-columns:1fr}#side{display:none;position:static;max-height:60vh}#side.open{display:block}.mobile{display:inline-block}.card.wide{grid-column:auto}.bar{flex-wrap:wrap;gap:8px}.brand{width:100%}.search{order:2;flex:1 1 100%}.bar .btn,.bar .menu{order:3}.seg{max-width:100%;overflow-x:auto}.seg button{padding:7px 10px;font-size:13px}.filters{gap:8px}html{scroll-padding-top:200px}}
 @media(prefers-reduced-motion:no-preference){.card{transition:border-color .15s}.card:hover{border-color:var(--acc)}}
 </style>
@@ -103,6 +106,9 @@ dialog h2{margin:0 0 6px;font-size:18px}
   <div class="filters">
     <div class="seg" id="courses" role="group" aria-label="Course"></div>
     <div class="tabs" id="kinds" role="group" aria-label="Type"></div>
+    <div class="tabs" id="diffs" role="group" aria-label="Difficulty"></div>
+    <div class="tabs" id="fmts" role="group" aria-label="Question format"></div>
+    <select id="sort" class="btn" aria-label="Sort"><option value="">Sort: default</option><option value="up">Easiest first</option><option value="down">Hardest first</option></select>
   </div>
 </div></header>
 
@@ -125,23 +131,27 @@ dialog h2{margin:0 0 6px;font-size:18px}
 const DATA=__DATA__,TAX=__TAX__,DOCS=__DOCS__,SEC=__SECLABEL__,COURSES=__COURSES__;
 const KINDS={question:'Questions',molecule:'Molecules',sim:'Simulations'},PAGE=36,KEY='chem-index-edits-v1';
 const $=s=>document.querySelector(s),esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let S={course:'organic',kind:'',topic:'',sec:'',q:'',ans:false,n:PAGE},edits={},shown=new Set(),editing=new Set();
+let S={course:'organic',kind:'',topic:'',sec:'',q:'',d:'',fmt:'',sort:'',ans:false,n:PAGE},edits={},shown=new Set(),editing=new Set();
 try{edits=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
 const saveEdits=()=>{try{localStorage.setItem(KEY,JSON.stringify(edits))}catch(e){}};
 const IDX=DATA.map(d=>(d.x+' '+d.n+' '+d.sub+' '+d.s.map(s=>SEC[s]).join(' ')+' '+d.tp.join(' ')).toLowerCase());
+const LVL={1:'Easy',2:'Basic',3:'Moderate',4:'Hard',5:'Very hard'};
+const diffOf=d=>(edits[d.id]&&edits[d.id].difficulty!==undefined)?+edits[d.id].difficulty:d.dl;
 const inSec=(d,s)=>d.s.some(x=>x===s||x.startsWith(s+'.'));
 function match(d,i,skip){
   const sk=skip||[];
   if(S.course&&!sk.includes('course')&&d.c!==S.course)return false;
   if(S.kind&&!sk.includes('kind')&&d.k!==S.kind)return false;
+  if(S.d&&!sk.includes('d')&&diffOf(d)!==+S.d)return false;
+  if(S.fmt&&!sk.includes('fmt')&&d.f!==S.fmt)return false;
   if(S.topic&&!sk.includes('topic')&&!d.tp.includes(S.topic))return false;
   if(S.sec&&!sk.includes('sec')&&!inSec(d,S.sec))return false;
   for(const w of S.q.toLowerCase().split(/\s+/).filter(Boolean))if(!IDX[i].includes(w))return false;
   return true}
 const count=(skip,extra)=>DATA.reduce((n,d,i)=>n+(match(d,i,skip)&&(!extra||extra(d))?1:0),0);
 /* ---------- state in the address bar so views can be bookmarked and shared ---------- */
-function readHash(){const p=new URLSearchParams(location.hash.slice(1));S.course=p.has('course')?p.get('course'):'organic';S.kind=p.get('kind')||'';S.topic=p.get('topic')||'';S.sec=p.get('sec')||'';S.q=p.get('q')||'';S.ans=p.get('ans')==='1';$('#q').value=S.q;$('#showAns').checked=S.ans}
-function writeHash(){const p=new URLSearchParams();if(S.course!=='organic')p.set('course',S.course);['kind','topic','sec','q'].forEach(k=>S[k]&&p.set(k,S[k]));if(S.ans)p.set('ans','1');history.replaceState(null,'','#'+p)}
+function readHash(){const p=new URLSearchParams(location.hash.slice(1));S.course=p.has('course')?p.get('course'):'organic';S.kind=p.get('kind')||'';S.d=p.get('d')||'';S.fmt=p.get('fmt')||'';S.sort=p.get('sort')||'';$('#sort').value=S.sort;S.topic=p.get('topic')||'';S.sec=p.get('sec')||'';S.q=p.get('q')||'';S.ans=p.get('ans')==='1';$('#q').value=S.q;$('#showAns').checked=S.ans}
+function writeHash(){const p=new URLSearchParams();if(S.course!=='organic')p.set('course',S.course);['kind','topic','sec','q','d','fmt','sort'].forEach(k=>S[k]&&p.set(k,S[k]));if(S.ans)p.set('ans','1');history.replaceState(null,'','#'+p)}
 /* ---------- navigation ---------- */
 function nav(){
   const st=$('#side').scrollTop;
@@ -160,18 +170,22 @@ function nav(){
           h+=`<button class="t ${deep?'deep':''} ${m?'':'zero'}" data-sec="${s.id}" aria-pressed="${S.sec===s.id}"><span>${esc(s.label)}</span><span class="c">${m}</span></button>`}
         h+='</div>'}}}
   $('#side').innerHTML=h;$('#side').scrollTop=st}
+function nav2(){
+  $('#diffs').innerHTML='<span class="src">Difficulty</span>'+[['','All'],[1,'1 Easy'],[2,'2 Basic'],[3,'3 Moderate'],[4,'4 Hard'],[5,'5 Very hard']].map(([k,l])=>`<button data-d="${k}" aria-pressed="${S.d===String(k)}">${l}<b>${count(['d'],d=>!k||diffOf(d)===k)}</b></button>`).join('');
+  $('#fmts').innerHTML='<span class="src">Format</span>'+[['','All'],['Multiple choice','Multiple choice'],['Free response','Free response']].map(([k,l])=>`<button data-fmt="${k}" aria-pressed="${S.fmt===k}">${l}<b>${count(['fmt'],d=>!k||d.f===k)}</b></button>`).join('')}
 function pills(){
   const out=[];const tp=S.topic&&Object.values(TAX).flat().find(t=>t.id===S.topic);
-  if(S.topic)out.push(['topic',tp?tp.short:S.topic]);if(S.sec)out.push(['sec',SEC[S.sec]||S.sec]);if(S.q)out.push(['q','"'+S.q+'"']);
+  if(S.topic)out.push(['topic',tp?tp.short:S.topic]);if(S.sec)out.push(['sec',SEC[S.sec]||S.sec]);if(S.d)out.push(['d','Difficulty '+S.d+' '+LVL[S.d]]);if(S.fmt)out.push(['fmt',S.fmt]);if(S.q)out.push(['q','"'+S.q+'"']);
   $('#pills').innerHTML=out.map(([k,l])=>`<span class="pill">${esc(l)}<button data-clear="${k}" aria-label="Remove filter">&times;</button></span>`).join('')}
 /* ---------- cards ---------- */
 const val=(d,k)=>(edits[d.id]&&edits[d.id][k]!==undefined)?edits[d.id][k]:d.ed[k];
 const bodyKey=d=>d.f==='Multiple choice'?'stem':'question';
 function secChips(d){if(!d.s.length)return '';const L=d.s.slice(0,3).map(s=>`<button class="chip" data-gosec="${s}" title="${esc(SEC[s])}">${esc(s)} ${esc((SEC[s]||'').replace(/^[\d.]+\s*/,'').slice(0,34))}</button>`).join('');
   return `<div class="chips">${L}${d.s.length>3?`<span class="src">+${d.s.length-3}</span>`:''}</div>`}
+function diffSel(d){if(d.k!=='question'||!d.dl)return '';const v=diffOf(d);return `<select class="diff d${v}" data-diff="${esc(d.id)}" aria-label="Difficulty">${[1,2,3,4,5].map(n=>`<option value="${n}"${n===v?' selected':''}>${n} ${LVL[n]}</option>`).join('')}</select>`}
 function card(d){
   const ed=!!edits[d.id],show=S.ans||shown.has(d.id),isEd=editing.has(d.id);
-  const head=`<div class="head"><span class="id">${esc(d.id)}</span><span class="badge ${d.k}">${esc(d.f)}</span>${ed?'<span class="badge ed">edited</span>':''}</div>`;
+  const head=`<div class="head"><span class="id">${esc(d.id)}</span><span class="badge ${d.k}">${esc(d.f)}</span>${diffSel(d)}${ed?'<span class="badge ed">edited</span>':''}</div>`;
   let h='',wide=false;
   if(d.k==='question'){
     const mc=d.f==='Multiple choice';
@@ -200,20 +214,23 @@ function editForm(d){
   return h+`<div class="actions"><button class="btn primary small" data-save="${d.id}">Save edit</button><button class="btn small" data-cancel="${d.id}">Cancel</button><button class="btn small" data-reset="${d.id}">Reset to original</button></div></div>`}
 function render(){
   const list=DATA.filter((d,i)=>match(d,i));
+  if(S.sort)list.sort((a,b)=>(S.sort==='up'?1:-1)*(diffOf(a)-diffOf(b)));
   $('#info').textContent=list.length+(list.length===1?' item':' items');
   $('#grid').innerHTML=list.length?list.slice(0,S.n).map(card).join(''):`<div class="empty"><b>No matches.</b><br>Try a different search or clear a filter.<br><br><button class="btn" data-clearall="1">Clear filters</button></div>`;
   $('#more').hidden=list.length<=S.n;$('#more').textContent=`Show more (${list.length-S.n} left)`;
-  nav();pills();writeHash();$('#clearQ').style.display=S.q?'block':'none';
+  nav();nav2();pills();writeHash();$('#clearQ').style.display=S.q?'block':'none';
   const n=Object.keys(edits).length;$('#editsN').hidden=!n;$('#editsN').textContent=n}
 /* ---------- events ---------- */
 document.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;const D=b.dataset;
   if('course' in D){S.course=D.course;S.topic='';S.sec='';S.n=PAGE}
   else if('kind' in D){S.kind=D.kind;S.n=PAGE}
+  else if('d' in D){S.d=D.d;S.n=PAGE}
+  else if('fmt' in D){S.fmt=D.fmt;S.n=PAGE}
   else if('topic' in D){S.topic=S.topic===D.topic?'':D.topic;S.sec='';S.n=PAGE}
   else if('sec' in D){S.sec=S.sec===D.sec?'':D.sec;S.n=PAGE}
   else if(D.clear){if(D.clear==='topic'){S.topic='';S.sec=''}else S[D.clear]='';if(D.clear==='q')$('#q').value=''}
-  else if(D.clearall){S.topic=S.sec=S.q='';S.kind='';$('#q').value=''}
+  else if(D.clearall){S.topic=S.sec=S.q=S.d=S.fmt='';S.kind='';$('#q').value=''}
   else if(D.gosec){S.course='organic';S.topic=D.gosec.split('.')[0];S.sec=D.gosec;S.n=PAGE;scrollTo({top:0,behavior:'smooth'})}
   else if(D.ans){shown.has(D.ans)?shown.delete(D.ans):shown.add(D.ans)}
   else if(D.edit){editing.add(D.edit)}
@@ -227,6 +244,9 @@ document.addEventListener('click',e=>{
   else if(b.id==='clearQ'){S.q='';$('#q').value=''}
   else return;
   render()});
+document.addEventListener('change',e=>{const el=e.target;if(el.dataset&&el.dataset.diff){const d=DATA.find(x=>x.id===el.dataset.diff),v=+el.value;
+  if(v===d.dl){if(edits[d.id]){delete edits[d.id].difficulty;if(!Object.keys(edits[d.id]).length)delete edits[d.id]}}else{(edits[d.id]=edits[d.id]||{}).difficulty=v}
+  saveEdits();render()}else if(el.id==='sort'){S.sort=el.value;render()}});
 $('#q').addEventListener('input',e=>{S.q=e.target.value;S.n=PAGE;render()});
 $('#showAns').addEventListener('change',e=>{S.ans=e.target.checked;render()});
 document.addEventListener('keydown',e=>{if(e.key==='/'&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();$('#q').focus()}});

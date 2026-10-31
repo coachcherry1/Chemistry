@@ -129,7 +129,8 @@ class Struct:
     def _compute_lone_pairs(self):
         self.lp_pts = {}
         self.charge_pt = {}
-        for i, n in self.lp_count.items():
+        for i in sorted(set(self.lp_count) | set(self.charge)):
+            n = self.lp_count.get(i, 0)      # carbocations have a charge but no lone pairs
             px, py = self.pos[i]
             nb = []
             for nbr in self.dm.GetAtomWithIdx(i).GetNeighbors():
