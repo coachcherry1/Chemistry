@@ -1,0 +1,482 @@
+ 2018
+
+
+
+
+AP Chemistry
+Free-Response Questions
+
+
+
+
+© 2018 The College Board. College Board, Advanced Placement Program, AP, AP Central, and the acorn logo
+are registered trademarks of the College Board. Visit the College Board on the Web: www.collegeboard.org.
+AP Central is the official online home for the AP Program: apcentral.collegeboard.org.
+-2-
+                                     AP® CHEMISTRY EQUATIONS AND CONSTANTS
+
+Throughout the exam the following symbols have the definitions specified unless otherwise noted.
+                     L, mL =           liter(s), milliliter(s)          mm Hg    =   millimeters of mercury
+                     g     =           gram(s)                          J, kJ    =   joule(s), kilojoule(s)
+                     nm    =           nanometer(s)                     V        =   volt(s)
+                     atm   =           atmosphere(s)                    mol      =   mole(s)
+
+ATOMIC STRUCTURE
+                                                                                   E = energy
+   E = hν                                                                          ν = frequency
+   c = λν                                                                          λ = wavelength
+                                                                       Planck’s constant, h = 6.626 × 10−34 J s
+                                                                          Speed of light, c = 2.998 × 108 m s−1
+                                                                       Avogadro’s number = 6.022 × 1023 mol−1
+                                                                         Electron charge, e = −1.602 × 10−19 coulomb
+
+
+EQUILIBRIUM
+
+        [C]c [D]d
+ Kc =             , where a A + b B R c C + d D                                Equilibrium Constants
+        [A]a [B]b
+                                                                               Kc (molar concentrations)
+        (PC )c (PD )d
+ Kp =                                                                          Kp (gas pressures)
+        (PA )a (PB )b                                                          Ka (weak acid)
+                     
+ Ka = [H ][A ]                                                                 Kb (weak base)
+             [HA]                                                              Kw (water)
+                           
+ Kb = [OH ][HB ]
+                 [B]
+ Kw = [H ][OH−] = 1.0 × 10−14 at 25°C
+             +
+
+    = Ka × K b
+ pH = −log[H+] , pOH = −log[OH−]
+  14 = pH + pOH
+                                 
+ pH = pKa + log [A ]
+                           [HA]
+ pKa = −logKa , pKb = −logKb
+
+
+KINETICS
+
+   ln[A] t − ln[A] 0 = − kt                                                       k = rate constant
+                                                                                   t = time
+        1  1                   = kt                                            t ½ = half-life
+     >A @t       >A @0
+                          t ½ = 0.693
+                                       k
+
+
+
+
+                                                                 -3-
+GASES, LIQUIDS, AND SOLUTIONS
+                                                                            P = pressure
+                                                                            V = volume
+               PV = nRT
+                                                                            T = temperature
+                                                moles A                     n = number of moles
+               PA = Ptotal × XA, where XA =
+                                              total moles                   m = mass
+             Ptotal = PA + PB + PC + . . .                                  M = molar mass
+                                                                            D = density
+                n = m                                                      KE = kinetic energy
+                      M
+                                                                             v = velocity
+                K = °C + 273
+                                                                            A = absorbance
+                D= m                                                        a = molar absorptivity
+                      V
+                                                                            b = path length
+KE per molecule = 1 mv 2                                                    c = concentration
+                      2
+    Molarity, M = moles of solute per liter of solution        Gas constant, R = 8.314 J mol−1 K−1
+
+                A = abc                                                        = 0.08206 L atm mol−1 K−1
+                                                                               = 62.36 L torr mol−1 K−1
+                                                                        1 atm = 760 mm Hg = 760 torr
+                                                                          STP = 273.15 K and 1.0 atm
+                                                               Ideal gas at STP = 22.4 L molí1
+
+THERMODYNAMICS / ELECTROCHEMISTRY
+                                                                                q = heat
+   q = mc∆T                                                                    m = mass
+                                                                                c = specific heat capacity
+ ∆S° = Ç SD products  Ç SD reactants                                           T = temperature
+                                                                               S° = standard entropy
+ ∆H° =   Ç DHfD products  Ç DHfD reactants                                    H° = standard enthalpy
+                                                                               G° = standard Gibbs free energy
+ ∆G° =   Ç DGfD products  Ç DGfD reactants                                     n = number of moles
+                                                                               E° = standard reduction potential
+ ∆G° = ∆H° − T∆S°                                                               I = current (amperes)
+     = −RT ln K                                                                 q = charge (coulombs)
+     = − n E°                                                                    t = time (seconds)
+         q                                                    Faraday’s constant,  = 96,485 coulombs per mole
+   I =
+         t                                                                                    of electrons
+                                                                                        1 joule
+                                                                             1 volt =
+                                                                                      1 coulomb
+
+
+
+
+                                                        -4-
+                      2018 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+                                                   CHEMISTRY
+                                                  Section II
+                                          Time - 1 hour and 45 minutes
+                                                 7 Questions
+
+                        YOU MAY USE YOUR CALCULATOR FOR THIS SECTION.
+
+Directions: Questions 1–3 are long free-response questions that require about 23 minutes each to answer and are
+worth 10 points each. Questions 4–7 are short free-response questions that require about 9 minutes each to answer
+and are worth 4 points each.
+
+Write your response in the space provided following each question. Examples and equations may be included in
+your responses where appropriate. For calculations, clearly show the method used and the steps involved in arriving
+at your answers. You must show your work to receive credit for your answer. Pay attention to significant figures.
+
+
+
+                   Na2S2O3(aq) + 4 NaOCl(aq) + 2 NaOH(aq) → 2 Na2SO4(aq) + 4 NaCl(aq) + H2O(l)
+
+                                                                                     D , for the
+1. A student performs an experiment to determine the value of the enthalpy change, DHrxn
+   oxidation-reduction reaction represented by the balanced equation above.
+
+    (a) Determine the oxidation number of Cl in NaOCl.
+    (b) Calculate the number of grams of Na2S2O3 needed to prepare 100.00 mL of 0.500 M Na2S2O3(aq) .
+
+   In the experiment, the student uses the solutions shown in the table below.
+
+                                                       Concentration        Volume
+                                      Solution
+                                                           (M)               (mL)
+                                    Na2S2O3(aq)             0.500             5.00
+                                     NaOCl(aq)              0.500             5.00
+                                     NaOH(aq)               0.500             5.00
+
+    (c) Using the balanced equation for the oxidation-reduction reaction and the information in the table above,
+        determine which reactant is the limiting reactant. Justify your answer.
+
+
+
+
+                                                  © 2018 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                                           -5-
+                   2018 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+The solutions, all originally at 20.0°C, are combined in an insulated calorimeter. The temperature of the reaction
+mixture is monitored, as shown in the graph below.
+
+
+
+
+(d) According to the graph, what is the temperature change of the reaction mixture?
+
+(e) The mass of the reaction mixture inside the calorimeter is 15.21 g.
+
+      (i) Calculate the magnitude of the heat energy, in joules, that is released during the reaction. Assume that
+          the specific heat of the reaction mixture is 3.94 J/(g·°C) and that the heat absorbed by the calorimeter is
+          negligible.
+     (ii) Using the balanced equation for the oxidation-reduction reaction and your answer to part (c), calculate
+          the value of the enthalpy change of the reaction, DH D , in kJ/mol . Include the appropriate algebraic
+                                                                   rxn             rxn
+         sign with your answer.
+
+The student repeats the experiment, but this time doubling the volume of each of the reactants, as shown in the
+table below.
+                                                     Concentration        Volume
+                                    Solution
+                                                         (M)               (mL)
+                                  Na2S2O3(aq)             0.500             10.0
+                                   NaOCl(aq)              0.500             10.0
+                                   NaOH(aq)               0.500             10.0
+
+
+(f) The magnitude of the enthalpy change, DHrxn D , in kJ/mol , calculated from the results of the second
+                                                                rxn
+    experiment is the same as the result calculated in part (e)(ii). Explain this result.
+
+(g) Write the balanced net ionic equation for the given reaction.
+
+
+
+
+                                                © 2018 The College Board.
+                               Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                         GO ON TO THE NEXT PAGE.
+                                                         -6-
+                      2018 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+                                            2 NO(g) + O2(g) → 2 NO2(g)
+
+2. A student investigates the reactions of nitrogen oxides. One of the reactions in the investigation requires an
+   equimolar mixture of NO(g) and NO2(g), which the student produces by using the reaction represented above.
+   (a) The particle-level representation of the equimolar mixture of NO(g) and NO2(g) in the flask at the
+       completion of the reaction between NO(g) and O2(g) is shown below in the box on the right. In the box
+       below on the left, draw the particle-level representation of the reactant mixture of NO(g) and O2(g) that
+       would yield the product mixture shown in the box on the right. In your drawing, represent oxygen atoms
+       and nitrogen atoms as indicated below.
+
+
+
+
+   The student reads in a reference text that NO(g) and NO2(g) will react as represented by the equation below.
+   Thermodynamic data for the reaction are given in the table below the equation.
+
+                                            NO(g) + NO2(g) R N2O3(g)
+
+                                    D
+                                  DH                     D
+                                                          DS                     D
+                                                                                  DG
+
+                             −40.4 kJ/molrxn −138.5 J/(K ⋅ molrxn)          0.87 kJ/molrxn
+
+
+   (b) The student begins with an equimolar mixture of NO(g) and NO2(g) in a rigid reaction vessel and the
+       mixture reaches equilibrium at 298 K.
+         (i) Calculate the value of the equilibrium constant, K, for the reaction at 298 K.
+        (ii) If both PNO and PNO 2 in the vessel are initially 1.0 atm, will PN 2O 3 at equilibrium be equal to
+            1.0 atm? Justify your answer.
+
+   (c) The student hypothesizes that increasing the temperature will increase the amount of N2O3(g) in the
+       equilibrium mixture. Indicate whether you agree or disagree with the hypothesis. Justify your answer.
+
+
+
+
+                                                  © 2018 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                                           -7-
+                   2018 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+N2O3(g) reacts with water to form nitrous acid, HNO2 (aq), a compound involved in the production of acid rain.
+The reaction is represented below.
+                                      N2O3(g) + H2O(l) → 2 HNO2(aq)
+
+(d) The skeletal structure of the HNO2 molecule is shown in the box below.
+      (i) Complete the Lewis electron-dot diagram of the HNO2 molecule in the box below, including any lone
+          pairs of electrons.
+
+
+
+                                           H O N O
+
+     (ii) Based on your completed diagram above, identify the hybridization of the nitrogen atom in the HNO2
+          molecule.
+
+To produce an aqueous solution of HNO2 , the student bubbles N2O3(g) into distilled water. Assume that the
+reaction goes to completion and that HNO2 is the only species produced. To determine the concentration of
+HNO2(aq) in the resulting solution, the student titrates a 100. mL sample of the solution with 0.100 M KOH(aq).
+The neutralization reaction is represented below.
+                               HNO2(aq) + OH − (aq) → NO2−(aq) + H2O(l)
+
+The following titration curve shows the change in pH of the solution during the titration.
+
+
+
+
+(e) Use the titration curve and the information above to
+      (i) determine the initial concentration of the HNO2(aq) solution
+     (ii) estimate the value of pKa for HNO2(aq)
+
+(f) During the titration, after a volume of 15 mL of 0.100 M KOH(aq) has been added, which species,
+    HNO2(aq) or NO2−(aq), is present at a higher concentration in the solution? Justify your answer.
+
+
+                                               © 2018 The College Board.
+                              Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                     GO ON TO THE NEXT PAGE.
+                                                        -8-
+                       2018 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+3. Answer the following questions relating to Fe and its ions, Fe2+ and Fe3+.
+
+   (a) Write the ground-state electron configuration of the Fe2+ ion.
+
+
+                                               Ion     Ionic Radius (pm)
+                                              Fe2+               92
+                                              Fe3+               79
+
+   (b) The radii of the ions are given in the table above. Using principles of atomic structure, explain why
+       the radius of the Fe2+ ion is larger than the radius of the Fe3+ ion.
+   (c) Fe3+ ions interact more strongly with water molecules in aqueous solution than Fe2+ ions do.
+       Give one reason for this stronger interaction, and justify your answer using Coulomb’s law.
+   A student obtains a solution that contains an unknown concentration of Fe2+(aq). To determine the concentration
+   of Fe2+(aq) in the solution, the student titrates a sample of the solution with MnO4−(aq), which converts
+   Fe2+(aq) to Fe3+(aq), as represented by the following equation.
+
+               5 Fe2+(aq) + MnO4−(aq) + 8 H+(aq) → 5 Fe3+(aq) + Mn2+(aq) + 4 H2O(l)
+
+   (d) Write the balanced equation for the half-reaction for the oxidation of Fe2+(aq) to Fe3+(aq).
+
+   (e) The student titrates a 10.0 mL sample of the Fe2+(aq) solution. Calculate the value of [Fe2+] in the solution
+       if it takes 17.48 mL of added 0.0350 M KMnO4(aq) to reach the equivalence point of the titration.
+
+   To deliver the 10.0 mL sample of the Fe2+(aq) solution in part (e), the student has the choice of using one of the
+   pieces of glassware listed below.
+                   •    25 mL buret                               •   25 mL beaker
+                   •    25 mL graduated cylinder                  •   25 mL volumetric flask
+
+   (f) Explain why the 25 mL volumetric flask would be a poor choice to use for delivering the required volume of
+       the Fe2+(aq) solution.
+
+   In a separate experiment, the student is given a sample of powdered Fe(s) that contains an inert impurity. The
+   student uses a procedure to oxidize the Fe(s) in the sample to Fe2O3(s). The student collects the following data
+   during the experiment.
+
+                                 Mass of Fe(s) with inert impurity           6.724 g
+                                    Mass of Fe2O3(s) produced                7.531 g
+
+   (g) Calculate the number of moles of Fe in the Fe2O3(s) produced.
+   (h) Calculate the percent by mass of Fe in the original sample of powdered Fe(s) with the inert impurity.
+   (i) If the oxidation of the Fe(s) in the original sample was incomplete so that some of the 7.531 g of product
+       was FeO(s) instead of Fe2O3(s), would the calculated mass percent of Fe(s) in the original sample be
+       higher, lower, or the same as the actual mass percent of Fe(s)? Justify your answer.
+
+
+
+                                                  © 2018 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                                           -9-
+                      2018 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+
+
+
+                                                                           Boiling Point at 1 atm
+                        Compound            Molecular Structure
+                                                                                    (K)
+
+                            CS2                                                      319
+
+                           COS                                                       223
+
+
+
+4. The table above gives the molecular structures and boiling points for the compounds CS2 and COS.
+
+   (a) In terms of the types and relative strengths of all the intermolecular forces in each compound, explain why
+       the boiling point of CS2(l) is higher than that of COS(l).
+
+   (b) A 10.0 g sample of CS2(l) is put in an evacuated 5.0 L rigid container. The container is sealed and heated to
+       325 K, at which temperature all of the CS2(l) has vaporized. What is the pressure in the container once all of
+       the CS2(l) has vaporized?
+
+
+
+
+                                                   © 2018 The College Board.
+                                  Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                         GO ON TO THE NEXT PAGE.
+                                                           -10-
+                     2018 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+                                    HF(aq) + H2O(l) R F − (aq) + H3O+(aq)
+
+5. The ionization of HF(aq) in water is represented by the equation above. In a 0.0350 M HF(aq) solution, the
+   percent ionization of HF is 13.0 percent.
+
+   (a) Two particulate representations of the ionization of HF molecules in the 0.0350 M HF(aq) solution are
+       shown below in Figure 1 and Figure 2. Water molecules are not shown. Explain why the representation of
+       the ionization of HF molecules in water in Figure 1 is more accurate than the representation in Figure 2.
+       (The key below identifies the particles in the representations.)
+
+
+
+
+   (b) Use the percent ionization data above to calculate the value of Ka for HF.
+
+   (c) If 50.0 mL of distilled water is added to 50.0 mL of 0.035 M HF(aq), will the percent ionization of HF(aq)
+       in the solution increase, decrease, or remain the same? Justify your answer with an explanation or
+       calculation.
+
+
+
+
+                                                 © 2018 The College Board.
+                                Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                       GO ON TO THE NEXT PAGE.
+                                                         -11-
+                      2018 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+
+
+
+6. A student sets up a galvanic cell at 298 K that has an electrode of Ag(s) immersed in a 1.0 M solution of
+   Ag+(aq) and an electrode of Cr(s) immersed in a 1.0 M solution of Cr3+(aq), as shown in the diagram above.
+
+   (a) The student measures the voltage of the cell shown above and discovers that it is zero. Identify the missing
+       component of the cell, and explain its importance for obtaining a nonzero voltage.
+
+                                              Half-Reaction                 E° (V)
+                                       Ag+(aq) + e − → Ag(s)                + 0.80
+                                         3+            −                       ?
+                                      Cr (aq) + 3 e → Cr(s)
+
+                                                                           D to be +1.54 V. As the cell operates,
+   (b) The student adds the missing component to the cell and measures Ecell
+       Ag+ ions are reduced. Use this information and the information in the table above to do the following.
+
+        (i) Calculate the value of E° for the half-reaction Cr3+(aq) + 3 e − → Cr(s).
+        (ii) Write the balanced net-ionic equation for the overall reaction that occurs as the cell operates.
+       (iii) Calculate the value of ΔG° for the overall cell reaction in J/molrxn .
+
+
+
+
+                                                  © 2018 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                                           -12-
+                      2018 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+
+
+
+7. The complete photoelectron spectrum of an element is represented above.
+   (a) Identify the element.
+
+   A radioactive isotope of the element decays with a half-life of 10. minutes.
+
+   (b) Calculate the value of the rate constant, k, for the radioactive decay. Include units with your answer.
+
+   (c) If 64 atoms of the radioactive isotope are originally present in a sample, what is the expected amount of time
+       that will pass until only one atom of the isotope remains? Show how you arrived at your answer.
+
+
+
+
+                                                         STOP
+
+                                                   END OF EXAM
+
+
+
+
+                                                  © 2018 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+
+
+                                                          -13-
+

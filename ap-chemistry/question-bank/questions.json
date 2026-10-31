@@ -1,0 +1,1220 @@
+[
+ {
+  "id": "AP2015F1",
+  "year": 2015,
+  "q": 1,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 9: Applications of Thermodynamics",
+   "Unit 1: Atomic Structure and Properties"
+  ],
+  "title": "2015 AP Chemistry free-response question 1 (long, 10 points)",
+  "text": "1. Metal-air cells are a relatively new type of portable energy source consisting of a metal anode, an alkaline\nelectrolyte paste that contains water, and a porous cathode membrane that lets in oxygen from the air. A\nschematic of the cell is shown above. Reduction potentials for the cathode and three possible metal anodes are\ngiven in the table below.\nHalf Reaction\nE at pH 11 and 298 K (V)\nO 2 (g) + 2 H 2 O(l) + 4 e − → 4 OH − (aq)\n+0.34\nZnO(s) + H 2 O(l) + 2 e − → Zn(s) + 2 OH − (aq)\n–1.31\nNa 2 O(s) + H 2 O(l) + 2 e − → 2 Na(s) + 2 OH − (aq)\n–1.60\nCaO(s) + H 2 O(l) + 2 e − → Ca(s) + 2 OH − (aq)\n–2.78\n(a) Early forms of metal-air cells used zinc as the anode. Zinc oxide is produced as the cell operates according\nto the overall equation below.\n2 Zn(s) + O 2 (g) → 2 ZnO(s)\n(i) Using the data in the table above, calculate the cell potential for the zinc-air cell.\n(ii) The electrolyte paste contains OH − ions. On the diagram of the cell above, draw an arrow to indicate\nthe direction of migration of OH − ions through the electrolyte as the cell operates.\n(b) A fresh zinc-air cell is weighed on an analytical balance before being placed in a hearing aid for use.\n(i) As the cell operates, does the mass of the cell increase, decrease, or remain the same?\n(ii) Justify your answer to part (b)(i) in terms of the equation for the overall cell reaction.\n(c) The zinc-air cell is taken to the top of a mountain where the air pressure is lower.\n(i) Will the cell potential be higher, lower, or the same as the cell potential at the lower elevation?\n(ii) Justify your answer to part (c)(i) based on the equation for the overall cell reaction and the information\nabove.\n(d) Metal-air cells need to be lightweight for many applications. In order to transfer more electrons with a\nsmaller mass, Na and Ca are investigated as potential anodes. A 1.0 g anode of which of these metals\nwould transfer more electrons, assuming that the anode is totally consumed during the lifetime of a cell?\nJustify your answer with calculations.\n(e) The only common oxide of zinc has the formula ZnO.\n(i) Write the electron configuration for a Zn atom in the ground state.\n(ii) From which sublevel are electrons removed when a Zn atom in the ground state is oxidized?",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2015F1.png"
+ },
+ {
+  "id": "AP2015F2",
+  "year": 2015,
+  "q": 2,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 3: Intermolecular Forces and Properties",
+   "Unit 9: Applications of Thermodynamics"
+  ],
+  "title": "2015 AP Chemistry free-response question 2 (long, 10 points)",
+  "text": "2. Ethene, C 2 H 4 (g) (molar mass 28.1 g/mol), may be prepared by the dehydration of ethanol, C 2 H 5 OH(g) (molar\nmass 46.1 g/mol), using a solid catalyst. A setup for the lab synthesis is shown in the diagram above. The\nequation for the dehydration reaction is given below.\nC 2 H 5 OH( g ) \ncatalyst\n→ C 2 H 4 ( g ) + H 2 O( g )\nD = 45.5 kJ/mol ; D S D = 126 J/(K < mol )\nD H 298\nrxn\nrxn\nethanol\nethene\nwater\nA student added a 0.200 g sample of C 2 H 5 OH(l) to a test tube using the setup shown above. The student heated\nthe test tube gently with a Bunsen burner until all of the C 2 H 5 OH(l) evaporated and gas generation stopped.\nWhen the reaction stopped, the volume of collected gas was 0.0854 L at 0.822 atm and 305 K. (The vapor\npressure of water at 305 K is 35.7 torr.)\n(a) Calculate the number of moles of C 2 H 4 (g)\n(i) that are actually produced in the experiment and measured in the gas collection tube and\n(ii) that would be produced if the dehydration reaction went to completion.\n(b) Calculate the percent yield of C 2 H 4 (g) in the experiment.\nBecause the dehydration reaction is not observed to occur at 298 K, the student claims that the reaction has an\nequilibrium constant less than 1.00 at 298 K.\n(c) Do the thermodynamic data for the reaction support the student’s claim? Justify your answer, including a\ncalculation of D G 298\nD for the reaction.\n(d) The Lewis electron-dot diagram for C 2 H 4 is shown below in the box on the left. In the box on the right,\ncomplete the Lewis electron-dot diagram for C 2 H 5 OH by drawing in all of the electron pairs.\n(e) What is the approximate value of the C–O–H bond angle in the ethanol molecule?\n(f) During the dehydration experiment, C 2 H 4 (g) and unreacted C 2 H 5 OH(g) passed through the tube into the\nwater. The C 2 H 4 was quantitatively collected as a gas, but the unreacted C 2 H 5 OH was not. Explain this\nobservation in terms of the intermolecular forces between water and each of the two gases.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2015F2.png"
+ },
+ {
+  "id": "AP2015F3",
+  "year": 2015,
+  "q": 3,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 4: Chemical Reactions",
+   "Unit 8: Acids and Bases"
+  ],
+  "title": "2015 AP Chemistry free-response question 3 (long, 10 points)",
+  "text": "3. Potassium sorbate, KC 6 H 7 O 2 (molar mass 150. g/mol) is commonly added to diet soft drinks as a preservative.\nA stock solution of KC 6 H 7 O 2 (aq) of known concentration must be prepared. A student titrates 45.00 mL of the\nstock solution with 1.25 M HCl(aq) using both an indicator and a pH meter. The value of K a for sorbic acid,\nHC 6 H 7 O 2 , is 1.7 × 10 −5 .\n(a) Write the net-ionic equation for the reaction between KC 6 H 7 O 2 (aq) and HCl(aq).\n(b) A total of 29.95 mL of 1.25 M HCl(aq) is required to reach the equivalence point. Calculate [KC 6 H 7 O 2 ] in\nthe stock solution.\n(c) The pH at the equivalence point of the titration is measured to be 2.54 Which of the following indicators\nwould be the best choice for determining the end point of the titration? Justify your answer.\npK a\nIndicator\nPhenolphthalein\n9.3\nBromothymol blue\n7.0\nMethyl red\n5.0\nThymol blue\n2.0\nMethyl violet\n0.80\n(d) Calculate the pH at the half-equivalence point.\n(e) The initial pH and the equivalence point are plotted on the graph below. Accurately sketch the titration curve\non the graph below. Mark the position of the half-equivalence point on the curve with an X.\n(f) The pH of the soft drink is 3.37 after the addition of the KC 6 H 7 O 2 (aq). Which species, HC 6 H 7 O 2 or\nC 6 H 7 O 2 − , has a higher concentration in the soft drink? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2015F3.png"
+ },
+ {
+  "id": "AP2015F4",
+  "year": 2015,
+  "q": 4,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 7: Equilibrium"
+  ],
+  "title": "2015 AP Chemistry free-response question 4 (short, 4 points)",
+  "text": "4. Answer the following questions about the solubility of Ca(OH) 2 ( K sp = 1.3  10 \u0010 6 ) .\n(a) Write a balanced chemical equation for the dissolution of Ca(OH) 2 (s) in pure water.\n(b) Calculate the molar solubility of Ca(OH) 2 in 0.10 M Ca(NO 3 ) 2 .\n(c) In the box below, complete a particle representation diagram that includes four water molecules with proper\norientation around the Ca 2+ ion.\nRepresent water molecules as\n.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2015F4.png"
+ },
+ {
+  "id": "AP2015F5",
+  "year": 2015,
+  "q": 5,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 5: Kinetics"
+  ],
+  "title": "2015 AP Chemistry free-response question 5 (short, 4 points)",
+  "text": "Na 2 C 37 H 34 N 2 S 3 O 9 + OCl − → products\nblue\ncolorless\n5. Blue food coloring can be oxidized by household bleach (which contains OCl − ) to form colorless products, as\nrepresented by the equation above. A student used a spectrophotometer set at a wavelength of 635 nm to study\nthe absorbance of the food coloring over time during the bleaching process. In the study, bleach is present in\nlarge excess so that the concentration of OCl − is essentially constant throughout the reaction. The student used\ndata from the study to generate the graphs below.\n(a) Based on the graphs above, what is the order of the reaction with respect to the blue food coloring?\n(b) The reaction is known to be first order with respect to bleach. In a second experiment, the student prepares\nsolutions of food coloring and bleach with concentrations that differ from those used in the first experiment.\nWhen the solutions are combined, the student observes that the reaction mixture reaches an absorbance near\nzero too rapidly. In order to correct the problem, the student proposes the following three possible\nmodifications to the experiment.\n• Increasing the temperature\n• Increasing the concentration of the food coloring\n• Increasing the concentration of the bleach\nCircle the one proposed modification above that could correct the problem, and explain how that\nmodification increases the time for the reaction mixture to reach an absorbance near zero.\n(c) In another experiment, a student wishes to study the oxidation of red food coloring with bleach. How would\nthe student need to modify the original experimental procedure to determine the order of the reaction with\nrespect to the red food coloring?",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2015F5.png"
+ },
+ {
+  "id": "AP2015F6",
+  "year": 2015,
+  "q": 6,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 3: Intermolecular Forces and Properties"
+  ],
+  "title": "2015 AP Chemistry free-response question 6 (short, 4 points)",
+  "text": "Compound\nMelting Point (°C)\nLiI\nKI\nLiF\nNaF\n6. A student learns that ionic compounds have significant covalent character when a cation has a polarizing effect\non a large anion. As a result, the student hypothesizes that salts composed of small cations and large anions\nshould have relatively low melting points.\n(a) Select two compounds from the table and explain how the data support the student’s hypothesis.\n(b) Identify a compound from the table that can be dissolved in water to produce a basic solution. Write the net\nionic equation for the reaction that occurs to cause the solution to be basic.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2015F6.png"
+ },
+ {
+  "id": "AP2015F7",
+  "year": 2015,
+  "q": 7,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 6: Thermodynamics",
+   "Unit 9: Applications of Thermodynamics"
+  ],
+  "title": "2015 AP Chemistry free-response question 7 (short, 4 points)",
+  "text": "7. Aluminum metal can be recycled from scrap metal by melting the metal to evaporate impurities.\n(a) Calculate the amount of heat needed to purify 1.00 mole of Al originally at 298 K by melting it. The\nmelting point of Al is 933 K. The molar heat capacity of Al is 24 J/(mol⋅K), and the heat of fusion\nof Al is 10.7 kJ/mol.\n(b) The equation for the overall process of extracting Al from Al 2 O 3 is shown below. Which requires less\nenergy, recycling existing Al or extracting Al from Al 2 O 3 ? Justify your answer with a calculation.\nD H D = 1675 kJ/mol rxn\nAl 2 O 3 ( s )  2 Al( s ) \u000e\nO ( g )\n2 2",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2015F7.png"
+ },
+ {
+  "id": "AP2016F1",
+  "year": 2016,
+  "q": 1,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 6: Thermodynamics",
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 1: Atomic Structure and Properties"
+  ],
+  "title": "2016 AP Chemistry free-response question 1 (long, 10 points)",
+  "text": "1. A student investigates the enthalpy of solution, ΔH soln , for two alkali metal halides, LiCl and NaCl. In addition\nto the salts, the student has access to a calorimeter, a balance with a precision of ±0.1 g, and a thermometer with\na precision of ±0.1°C.\n(a) To measure ΔH soln for LiCl, the student adds 100.0 g of water initially at 15.0°C to a calorimeter and adds\n10.0 g of LiCl(s), stirring to dissolve. After the LiCl dissolves completely, the maximum temperature\nreached by the solution is 35.6°C.\n(i) Calculate the magnitude of the heat absorbed by the solution during the dissolution process, assuming\nthat the specific heat capacity of the solution is 4.18 J/(g·°C). Include units with your answer.\n(ii) Determine the value of ΔH soln for LiCl in kJ/mol rxn .\nTo explain why ΔH soln for NaCl is different than that for LiCl, the student investigates factors that affect\nΔH soln and finds that ionic radius and lattice enthalpy (which can be defined as the ΔH associated with the\nseparation of a solid crystal into gaseous ions) contribute to the process. The student consults references and\ncollects the data shown in the table below.\nIon\nIonic Radius (pm)\nLi +\n+\nNa\n(b) Write the complete electron configuration for the Na + ion in the ground state.\n(c) Using principles of atomic structure, explain why the Na + ion is larger than the Li + ion.\n(d) Which salt, LiCl or NaCl, has the greater lattice enthalpy? Justify your answer.\n(e) Below is a representation of a portion of a crystal of LiCl. Identify the ions in the representation by writing\nthe appropriate formulas ( Li + or Cl − ) in the boxes below.\n(f) The lattice enthalpy of LiCl is positive, indicating that it takes energy to break the ions apart in LiCl.\nHowever, the dissolution of LiCl in water is an exothermic process. Identify all particle-particle interactions\nthat contribute significantly to the dissolution process being exothermic. For each interaction, include the\nparticles that interact and the specific type of intermolecular force between those particles.\nNaHCO 3 (s) + HC 2 H 3 O 2 (aq) → NaC 2 H 3 O 2 (aq) + H 2 O(l) + CO 2 (g)",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2016F1.png"
+ },
+ {
+  "id": "AP2016F2",
+  "year": 2016,
+  "q": 2,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 4: Chemical Reactions",
+   "Unit 9: Applications of Thermodynamics",
+   "Unit 2: Molecular and Ionic Compound Structure and Properties"
+  ],
+  "title": "2016 AP Chemistry free-response question 2 (long, 10 points)",
+  "text": "2. A student designs an experiment to study the reaction between NaHCO 3 and HC 2 H 3 O 2 . The reaction is\nrepresented by the equation above. The student places 2.24 g of NaHCO 3 in a flask and adds 60.0 mL of\n0.875 M HC 2 H 3 O 2 . The student observes the formation of bubbles and that the flask gets cooler as the reaction\nproceeds.\n(a) Identify the reaction represented above as an acid-base reaction, precipitation reaction, or redox reaction.\nJustify your answer.\n(b) Based on the information above, identify the limiting reactant. Justify your answer with calculations.\n(c) The student observes that the bubbling is rapid at the beginning of the reaction and gradually slows as the\nreaction continues. Explain this change in the reaction rate in terms of the collisions between reactant\nparticles.\n(d) In thermodynamic terms, a reaction can be driven by enthalpy, entropy, or both.\n(i) Considering that the flask gets cooler as the reaction proceeds, what drives the chemical reaction\nbetween NaHCO 3 (s) and HC 2 H 3 O 2 (aq) ? Answer by drawing a circle around one of the choices\nbelow.\nEnthalpy only\nEntropy only\nBoth enthalpy and entropy\n(ii) Justify your selection in part (d)(i) in terms of ΔG°.\n(e) The HCO 3 − ion has three carbon-to-oxygen bonds. Two of the carbon-to-oxygen bonds have the same\nlength and the third carbon-to-oxygen bond is longer than the other two. The hydrogen atom is bonded to\none of the oxygen atoms. In the box below, draw a Lewis electron-dot diagram (or diagrams) for the HCO 3 −\nion that is (are) consistent with the given information.\n(f) A student prepares a solution containing equimolar amounts of HC 2 H 3 O 2 and NaC 2 H 3 O 2 . The pH of\nthe solution is measured to be 4.7. The student adds two drops of 3.0 M HNO 3 (aq) and stirs the sample,\nobserving that the pH remains at 4.7. Write a balanced, net-ionic equation for the reaction between\nHNO 3 (aq) and the chemical species in the sample that is responsible for the pH remaining at 4.7.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2016F2.png"
+ },
+ {
+  "id": "AP2016F3",
+  "year": 2016,
+  "q": 3,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 4: Chemical Reactions",
+   "Unit 3: Intermolecular Forces and Properties"
+  ],
+  "title": "2016 AP Chemistry free-response question 3 (long, 10 points)",
+  "text": "M + I 2 → MI 2\n3. To determine the molar mass of an unknown metal, M, a student reacts iodine with an excess of the metal to\nform the water-soluble compound MI 2 , as represented by the equation above. The reaction proceeds until all\nof the I 2 is consumed. The MI 2 (aq) solution is quantitatively collected and heated to remove the water, and the\nproduct is dried and weighed to constant mass. The experimental steps are represented below, followed by a\ndata table.\nData for Unknown Metal Lab\nMass of beaker\n125.457 g\nMass of beaker + metal M\n126.549 g\nMass of beaker + metal M + I 2\n127.570 g\nMass of MI 2 , first weighing\n1.284 g\nMass of MI 2 , second weighing\n1.284 g\n(a) Given that the metal M is in excess, calculate the number of moles of I 2 that reacted.\n(b) Calculate the molar mass of the unknown metal M .\nThe student hypothesizes that the compound formed in the synthesis reaction is ionic.\n(c) Propose an experimental test the student could perform that could be used to support the hypothesis. Explain\nhow the results of the test would support the hypothesis if the substance was ionic.\nThe student hypothesizes that Br 2 will react with metal M more vigorously than I 2 did because Br 2 is a liquid\nat room temperature.\n(d) Explain why I 2 is a solid at room temperature whereas Br 2 is a liquid. Your explanation should clearly\nreference the types and relative strengths of the intermolecular forces present in each substance.\nWhile cleaning up after the experiment, the student wishes to dispose of the unused solid I 2 in a responsible\nmanner. The student decides to convert the solid I 2 to I − (aq) anion. The student has access to three solutions,\nH 2 O 2 (aq), Na 2 S 2 O 3 (aq), and Na 2 S 4 O 6 (aq), and the standard reduction table shown below.\nHalf reaction\nE° (V)\nS 4 O 62− (aq) + 2 e − → 2 S 2 O 32− (aq)\n0.08\nI 2 (s) + 2 e − → 2 I − (aq)\n0.54\nO 2 (g) + 2 H + (aq) + 2 e − → H 2 O 2 (aq)\n0.68\n(e) Which solution should the student add to I 2 (s) to reduce it to I − (aq)? Circle your answer below. Justify\nyour answer, including a calculation of E° for the overall reaction.\nH 2 O 2 (aq)\nNa 2 S 2 O 3 (aq)\nNa 2 S 4 O 6 (aq)\n(f) Write the balanced net-ionic equation for the reaction between I 2 and the solution you selected in part (e).",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2016F3.png"
+ },
+ {
+  "id": "AP2016F4",
+  "year": 2016,
+  "q": 4,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 8: Acids and Bases",
+   "Unit 9: Applications of Thermodynamics"
+  ],
+  "title": "2016 AP Chemistry free-response question 4 (short, 4 points)",
+  "text": "→ C H O − (aq) + H O + (aq)\nK a = 1.12 × 10 −10\nC 6 H 5 OH(aq) + H 2 O(l) ←\n6 5\n4. Phenol is a weak acid that partially dissociates in water according to the equation above.\n(a) What is the pH of a 0.75 M C 6 H 5 OH(aq) solution?\n(b) For a certain reaction involving C 6 H 5 OH(aq) to proceed at a significant rate, the phenol must be primarily\nin its deprotonated form, C 6 H 5 O − (aq). In order to ensure that the C 6 H 5 OH(aq) is deprotonated, the reaction\nmust be conducted in a buffered solution. On the number scale below, circle each pH for which more than\n50 percent of the phenol molecules are in the deprotonated form (C 6 H 5 O − (aq)). Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2016F4.png"
+ },
+ {
+  "id": "AP2016F5",
+  "year": 2016,
+  "q": 5,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 5: Kinetics"
+  ],
+  "title": "2016 AP Chemistry free-response question 5 (short, 4 points)",
+  "text": "2 C 4 H 6 (g) → C 8 H 12 (g)\n5. At high temperatures the compound C 4 H 6 (1,3-butadiene) reacts according to the equation above. The rate of\nthe reaction was studied at 625 K in a rigid reaction vessel. Two different trials, each with a different starting\nconcentration, were carried out. The data were plotted in three different ways, as shown below.\n(a) For trial 1, calculate the initial pressure, in atm, in the vessel at 625 K. Assume that initially all the gas\npresent in the vessel is C 4 H 6 .\n(b) Use the data plotted in the graphs to determine the order of the reaction with respect to C 4 H 6 .\n(c) The initial rate of the reaction in trial 1 is 0.0010 mol/(L ⋅ s). Calculate the rate constant, k, for the reaction\nat 625 K.\nBa 2+ (aq) + EDTA 4 − (aq) R Ba(EDTA) 2− (aq)\nK = 7.7 × 10 7",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2016F5.png"
+ },
+ {
+  "id": "AP2016F6",
+  "year": 2016,
+  "q": 6,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 7: Equilibrium",
+   "Unit 3: Intermolecular Forces and Properties"
+  ],
+  "title": "2016 AP Chemistry free-response question 6 (short, 4 points)",
+  "text": "6. The polyatomic ion C 10 H 12 N 2 O 84− is commonly abbreviated as EDTA 4− . The ion can form complexes with\nmetal ions in aqueous solutions. A complex of EDTA 4− with Ba 2+ ion forms according to the equation\nabove. A 50.0 mL volume of a solution that has an EDTA 4 − (aq) concentration of 0.30 M is mixed with 50.0 mL\nof 0.20 M Ba(NO 3)2 to produce 100.0 mL of solution.\n(a) Considering the value of K for the reaction, determine the concentration of Ba(EDTA) 2− (aq) in the\n100.0 mL of solution. Justify your answer.\n(b) The solution is diluted with distilled water to a total volume of 1.00 L. After equilibrium has been\nreestablished, is the number of moles of Ba 2+ (aq) present in the solution greater than, less than, or equal to\nthe number of moles of Ba 2+ (aq) present in the original solution before it was diluted? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2016F6.png"
+ },
+ {
+  "id": "AP2016F7",
+  "year": 2016,
+  "q": 7,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 8: Acids and Bases",
+   "Unit 4: Chemical Reactions"
+  ],
+  "title": "2016 AP Chemistry free-response question 7 (short, 4 points)",
+  "text": "7. A student is given a 25.0 mL sample of a solution of an unknown monoprotic acid and asked to determine the\nconcentration of the acid by titration. The student uses a standardized solution of 0.110 M NaOH(aq), a buret, a\nflask, an appropriate indicator, and other laboratory equipment necessary for the titration.\n(a) The images below show the buret before the titration begins (below left) and at the end point (below right).\nWhat should the student record as the volume of NaOH(aq) delivered to the flask?\n(b) Based on the given information and your answer to part (a), determine the value of the concentration of the\nacid that should be recorded in the student’s lab report.\n(c) In a second trial, the student accidentally added more NaOH(aq) to the flask than was needed to reach the\nend point, and then recorded the final volume. Would this error increase, decrease, or have no effect on the\ncalculated acid concentration for the second trial? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2016F7.png"
+ },
+ {
+  "id": "AP2017F1",
+  "year": 2017,
+  "q": 1,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 3: Intermolecular Forces and Properties",
+   "Unit 4: Chemical Reactions",
+   "Unit 5: Kinetics"
+  ],
+  "title": "2017 AP Chemistry free-response question 1 (long, 10 points)",
+  "text": "CS 2 (g) + 3 Cl 2 (g) → CCl 4 (g) + S 2 Cl 2 (g)\n1. Carbon tetrachloride, CCl 4 (g), can be synthesized according to the reaction represented above. A chemist runs\nthe reaction at a constant temperature of 120°C in a rigid 25.0 L container.\n(a) Chlorine gas, Cl 2 (g), is initially present in the container at a pressure of 0.40 atm.\n(i) How many moles of Cl 2 (g) are in the container?\n(ii) How many grams of carbon disulfide, CS 2 (g), are needed to react completely with the Cl 2 (g) ?\n(b) At 30°C the reaction is thermodynamically favorable, but no reaction is observed to occur. However, at\n120°C, the reaction occurs at an observable rate.\n(i) Explain how the higher temperature affects the collisions between the reactant molecules so that the\nreaction occurs at an observable rate at 120°C.\n(ii) The graph below shows a distribution for the collision energies of reactant molecules at 120°C. Draw\na second curve on the graph that shows the distribution for the collision energies of reactant molecules\nat 30°C.\n(c) S 2 Cl 2 is a product of the reaction.\n(i) In the box below, complete the Lewis electron-dot diagram for the S 2 Cl 2 molecule by drawing in all of\nthe electron pairs.\nCl\nS\nS\nCl\n(ii) What is the approximate value of the Cl−S−S bond angle in the S 2 Cl 2 molecule that you drew in\npart (c)(i) ? (If the two Cl−S−S bond angles are not equal, include both angles.)\n(d) CCl 4 (g) can also be produced by reacting CHCl 3 (g) with Cl 2 (g) at 400°C, as represented by the equation\nbelow.\nCHCl 3 (g) + Cl 2 (g) → CCl 4 (g) + HCl(g)\nAt the completion of the reaction a chemist successfully separates the CCl 4 (g) from the HCl(g) by cooling\nthe mixture to 70°C, at which temperature the CCl 4 (g) condenses while the HCl(g) remains in the gaseous\nstate.\n(i) Identify all types of intermolecular forces present in HCl(l).\n(ii) What can be inferred about the relative strengths of the intermolecular forces in CCl 4 (l) and HCl(l) ?\nJustify your answer in terms of the information above.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2017F1.png"
+ },
+ {
+  "id": "AP2017F2",
+  "year": 2017,
+  "q": 2,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 6: Thermodynamics"
+  ],
+  "title": "2017 AP Chemistry free-response question 2 (long, 10 points)",
+  "text": "2. Answer the following questions about the isomers fulminic acid and isocyanic acid.\nTwo possible Lewis electron-dot diagrams for fulminic acid, HCNO, are shown below.\n(a) Explain why the diagram on the left is the better representation for the bonding in fulminic acid. Justify your\nchoice based on formal charges.\nFulminic acid can convert to isocyanic acid according to the equation below.\nHCNO(g) R HNCO(g)\nfulminic acid\nisocyanic acid\nFulminic Acid\nIsocyanic Acid\n(b) Using the Lewis electron-dot diagrams of fulminic acid and isocyanic acid shown in the boxes above and the\ntable of average bond enthalpies below, determine the value of 'H° for the reaction of HCNO(g) to form\nHNCO(g).\nEnthalpy\nEnthalpy\nEnthalpy\nBond\nBond\nBond\n(kJ/mol)\n(kJ/mol)\n(kJ/mol)\nN−O\nC=N\nH−C\nC ≡ N\nC=O\nH−N\n(c) A student claims that ΔS° for the reaction is close to zero. Explain why the student’s claim is accurate.\n(d) Which species, fulminic acid ( HCNO) or isocyanic acid (HNCO), is present in higher concentration at\nequilibrium at 298 K? Justify your answer in terms of thermodynamic favorability and the equilibrium\nconstant.\nThe ammonium salt of isocyanic acid is a product of the decomposition of urea, CO(NH 2 ) 2 , represented below.\nCO(NH 2 ) 2 (aq) R NH 4+ (aq) + OCN − (aq)\nA student studying the decomposition reaction runs the reaction at 90°C. The student collects data on the\nconcentration of urea as a function of time, as shown by the data table and the graph below.\n(e) The student proposes that the rate law is rate = k[CO(NH 2 ) 2 ].\n(i) Explain how the data support the student’s proposed rate law.\n(ii) Using the proposed rate law and the student’s results, determine the value of the rate constant, k.\nInclude units with your answer.\n(f) The student learns that the decomposition reaction was run in a solution with a pH of 13. Briefly describe\nan experiment, including the initial conditions that you would change and the data you would gather, to\ndetermine whether the rate of the reaction depends on the concentration of OH − (aq).",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2017F2.png"
+ },
+ {
+  "id": "AP2017F3",
+  "year": 2017,
+  "q": 3,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 7: Equilibrium"
+  ],
+  "title": "2017 AP Chemistry free-response question 3 (long, 10 points)",
+  "text": "→ 2 NO(g)\nN 2 (g) + O 2 (g) ←\n3. At high temperatures, N 2 (g) and O 2 (g) can react to produce nitrogen monoxide, NO(g), as represented by the\nequation above.\n(a) Write the expression for the equilibrium constant, K p , for the forward reaction.\n(b) A student injects N 2 (g) and O 2 (g) into a previously evacuated, rigid vessel and raises the temperature of\nthe vessel to 2000°C. At this temperature the initial partial pressures of N 2 (g) and O 2 (g) are 6.01 atm and\n1.61 atm, respectively. The system is allowed to reach equilibrium. The partial pressure of NO(g) at\nequilibrium is 0.122 atm. Calculate the value of K p .\nNitrogen monoxide, NO(g), can undergo further reactions to produce acids such as HNO 2 , a weak acid with a\nK a of 4.0 × 10 −4 and a pK a of 3.40.\n(c) A student is asked to make a buffer solution with a pH of 3.40 by using 0.100 M HNO 2 (aq) and\n0.100 M NaOH(aq).\n(i) Explain why the addition of 0.100 M NaOH(aq) to 0.100 M HNO 2 (aq) can result in the formation of\na buffer solution. Include the net ionic equation for the reaction that occurs when the student adds\nthe NaOH(aq) to the HNO 2 (aq).\n(ii) Determine the volume, in mL, of 0.100 M NaOH(aq) the student should add to 100. mL of\n0.100 M HNO 2 (aq) to make a buffer solution with a pH of 3.40. Justify your answer.\n(d) A second student makes a buffer by dissolving 0.100 mol of NaNO 2 (s) in 100. mL of 1.00 M HNO 2 (aq).\nWhich is more resistant to changes in pH when a strong acid or a strong base is added, the buffer made by\nthe second student or the buffer made by the first student in part (c) ? Justify your answer.\n(e) A new buffer is made using HNO 2 (aq) as one of the ingredients. A particulate representation of a small\nrepresentative portion of the buffer solution is shown below. (Cations and water molecules are not shown.)\nIs the pH of the buffer represented in the diagram greater than, less than, or equal to 3.40 ? Justify your\nanswer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2017F3.png"
+ },
+ {
+  "id": "AP2017F4",
+  "year": 2017,
+  "q": 4,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 3: Intermolecular Forces and Properties"
+  ],
+  "title": "2017 AP Chemistry free-response question 4 (short, 4 points)",
+  "text": "4. A student investigates various dyes using paper chromatography. The student has samples of three pure dyes,\nlabeled A, B, and C, and an unknown sample that contains one of the three dyes. The student prepares the\nchromatography chambers shown above on the left by putting a drop of each dye at the indicated position on\nthe chromatography paper (a polar material) and standing the paper in a nonpolar solvent. The developed\nchromatograms are shown above on the right.\n(a) Which dye (A, B, or C) is the least polar? Justify your answer in terms of the interactions between the dyes\nand the solvent or between the dyes and the paper.\n(b) Which dye is present in the unknown sample? Justify your answer.\n2 C 3 H 7 OH(l) + 9 O 2 (g) → 6 CO 2 (g) + 8 H 2 O(g)",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2017F4.png"
+ },
+ {
+  "id": "AP2017F5",
+  "year": 2017,
+  "q": 5,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 6: Thermodynamics"
+  ],
+  "title": "2017 AP Chemistry free-response question 5 (short, 4 points)",
+  "text": "5. A student performs an experiment to determine the enthalpy of combustion of 2-propanol, C 3 H 7 OH(l), which\ncombusts in oxygen according to the equation above. The student heats a sample of water by burning some of\nthe C 3 H 7 OH(l) that is in an alcohol burner, as represented below. The alcohol burner uses a wick to draw liquid\nup into the flame. The mass of C 3 H 7 OH(l) combusted is determined by weighing the alcohol burner before and\nafter combustion.\nData from the experiment are given in the table below.\nMass of C 3 H 7 OH(l) combusted\n0.55 g\nMass of water heated\n125.00 g\nInitial temperature of water\n22.0°C\nFinal temperature of water\n51.1°C\n4.18 J/(g · °C)\nSpecific heat of water\n(a) Calculate the magnitude of the heat energy, in kJ, absorbed by the water. (Assume that the energy released\nfrom the combustion is completely transferred to the water.)\n(b) Based on the experimental data, if one mole of C 3 H 7 OH(l) is combusted, how much heat, in kJ, is released ?\nReport your answer with the correct number of significant figures.\n(c) A second student performs the experiment using the same mass of water at the same initial temperature.\nHowever, the student uses an alcohol burner containing C 3 H 7 OH(l) that is contaminated with water, which\nis miscible with C 3 H 7 OH(l). The difference in mass of the alcohol burner before and after the combustion in\nthis experiment is also 0.55 g. Would the final temperature of the water in the beaker heated by the\nalcohol burner in this experiment be greater than, less than, or equal to the final temperature of the water\nin the beaker in the first student’s experiment? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2017F5.png"
+ },
+ {
+  "id": "AP2017F6",
+  "year": 2017,
+  "q": 6,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 7: Equilibrium",
+   "Unit 2: Molecular and Ionic Compound Structure and Properties"
+  ],
+  "title": "2017 AP Chemistry free-response question 6 (short, 4 points)",
+  "text": "6. Answer the following questions about Mg(OH) 2 . At 25°C, the value of the solubility product constant, K sp , for\nMg(OH) 2 (s) is 1.8 × 10 −11 .\n(a) Calculate the number of grams of Mg(OH) 2 (molar mass 58.32 g/mol) that is dissolved in 100. mL of a\nsaturated solution of Mg(OH) 2 at 25°C.\n(b) The energy required to separate the ions in the Mg(OH) 2 crystal lattice into individual Mg 2+ (g) and OH − (g)\nions, as represented in the table below, is known as the lattice energy of Mg(OH) 2 (s). As shown in the table,\nthe lattice energy of Sr(OH) 2 (s) is less than the lattice energy of Mg(OH) 2 (s). Explain why in terms of\nperiodic properties and Coulomb’s law.\nReaction\nLattice Energy (kJ/mol)\nMg(OH) 2 (s) → Mg 2+ (g) + 2 OH − (g)\nSr(OH) 2 (s) → Sr 2+ (g) + 2 OH − (g)",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2017F6.png"
+ },
+ {
+  "id": "AP2017F7",
+  "year": 2017,
+  "q": 7,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 9: Applications of Thermodynamics",
+   "Unit 4: Chemical Reactions"
+  ],
+  "title": "2017 AP Chemistry free-response question 7 (short, 4 points)",
+  "text": "7. A student wants to determine the concentration of H 2 O 2 in a solution of H 2 O 2 (aq). The student can use one of\ntwo titrants, either dichromate ion, Cr 2 O 72– (aq), or cobalt(II) ion, Co 2+ (aq). The balanced chemical equations\nfor the two titration reactions are shown below.\nDichromate as titrant: Cr 2 O 72– (aq) + 3 H 2 O 2 (aq) + 8 H + (aq) → 2 Cr 3+ (aq) + 3 O 2 (g) + 7 H 2 O(l)\n2 Co 2+ (aq) + H 2 O 2 (aq) + 2 H + (aq) → 2 Co 3+ (aq) + 2 H 2 O(l)\nCobalt(II) as titrant:\nThe half-reactions and the E° values for the systems related to the titrations above are given in the following\ntable.\nE° (V)\nHalf-Reaction\nat 298 K\nCo 3+ (aq) + e − → Co 2+ (aq)\n1.84\nH 2 O 2 (aq) + 2 H + (aq) + 2 e − → 2 H 2 O(l)\n1.77\nCr 2 O 72− (aq) + 14 H + (aq) + 6 e − → 2 Cr 3+ (aq) + 7 H 2 O(l)\n1.33\nO 2 (g) + 2 H + (aq) + 2 e − → H 2 O 2 (aq)\n0.70\n(a) Use the information in the table to calculate the following.\n(i) E° for the reaction between Cr 2 O 72– (aq) and H 2 O 2 (aq) at 298 K\n(ii) E° for the reaction between Co 2+ (aq) and H 2 O 2 (aq) at 298 K\n(b) Based on the calculated values of E°, the student must choose the titrant for which the titration reaction is\nthermodynamically favorable at 298 K.\n(i) Which titrant should the student choose? Explain your reasoning.\n(ii) Calculate the value of ΔG°, in kJ/mol rxn , for the reaction between the chosen titrant and H 2 O 2 (aq).",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2017F7.png"
+ },
+ {
+  "id": "AP2018F1",
+  "year": 2018,
+  "q": 1,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 6: Thermodynamics",
+   "Unit 4: Chemical Reactions"
+  ],
+  "title": "2018 AP Chemistry free-response question 1 (long, 10 points)",
+  "text": "Na 2 S 2 O 3 (aq) + 4 NaOCl(aq) + 2 NaOH(aq) → 2 Na 2 SO 4 (aq) + 4 NaCl(aq) + H 2 O(l)\n1. A student performs an experiment to determine the value of the enthalpy change, DH rxn\nD , for the\noxidation-reduction reaction represented by the balanced equation above.\n(a) Determine the oxidation number of Cl in NaOCl.\n(b) Calculate the number of grams of Na 2 S 2 O 3 needed to prepare 100.00 mL of 0.500 M Na 2 S 2 O 3 (aq) .\nIn the experiment, the student uses the solutions shown in the table below.\nConcentration\nVolume\nSolution\n(M)\n(mL)\nN a 2 S 2 O 3 (aq)\n0.500\n5.00\nNaOCl(aq)\n0.500\n5.00\nNaOH(aq)\n0.500\n5.00\n(c) Using the balanced equation for the oxidation-reduction reaction and the information in the table above,\ndetermine which reactant is the limiting reactant. Justify your answer.\nThe solutions, all originally at 20.0°C, are combined in an insulated calorimeter. The temperature of the reaction\nmixture is monitored, as shown in the graph below.\n(d) According to the graph, what is the temperature change of the reaction mixture?\n(e) The mass of the reaction mixture inside the calorimeter is 15.21 g.\n(i) Calculate the magnitude of the heat energy, in joules, that is released during the reaction. Assume that\nthe specific heat of the reaction mixture is 3.94 J/(g·°C) and that the heat absorbed by the calorimeter is\nnegligible.\n(ii) Using the balanced equation for the oxidation-reduction reaction and your answer to part (c), calculate\nthe value of the enthalpy change of the reaction, DH D , in kJ/mol . Include the appropriate algebraic\nrxn\nrxn\nsign with your answer.\nThe student repeats the experiment, but this time doubling the volume of each of the reactants, as shown in the\ntable below.\nConcentration\nVolume\nSolution\n(M)\n(mL)\nN a 2 S 2 O 3 (aq)\n0.500\n10.0\nNaOCl(aq)\n0.500\n10.0\nNaOH(aq)\n0.500\n10.0\n(f) The magnitude of the enthalpy change, DH rxn\nD , in kJ/mol , calculated from the results of the second\nrxn\nexperiment is the same as the result calculated in part (e)(ii). Explain this result.\n(g) Write the balanced net ionic equation for the given reaction.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2018F1.png"
+ },
+ {
+  "id": "AP2018F2",
+  "year": 2018,
+  "q": 2,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 7: Equilibrium"
+  ],
+  "title": "2018 AP Chemistry free-response question 2 (long, 10 points)",
+  "text": "2 NO(g) + O 2 (g) → 2 NO 2 (g)\n2. A student investigates the reactions of nitrogen oxides. One of the reactions in the investigation requires an\nequimolar mixture of NO(g) and NO 2 (g), which the student produces by using the reaction represented above.\n(a) The particle-level representation of the equimolar mixture of NO(g) and NO 2 (g) in the flask at the\ncompletion of the reaction between NO(g) and O 2 (g) is shown below in the box on the right. I n the box\nbelow on the left, draw the particle-level representation of the reactant mixture of NO(g) and O 2 (g) that\nwould yield the product mixture shown in the box on the right. In your drawing, represent oxygen atoms\nand nitrogen atoms as indicated below.\nThe student reads in a reference text that NO(g) and NO 2 (g) will react as represented by the equation below.\nThermodynamic data for the reaction are given in the table below the equation.\nNO(g) + NO 2 (g) R N 2 O 3 (g)\nD H \u0015\u001c\u001b\nD\nDS \u0015\u001c\u001b\nD\nD G \u0015\u001c\u001b\nD\n−40.4 kJ/mol rxn −138.5 J/(K ⋅ mol rxn )\n0.87 kJ/mol rxn\n(b) The student begins with an equimolar mixture of NO(g) and NO 2 (g) in a rigid reaction vessel and the\nmixture reaches equilibrium at 298 K.\n(i) Calculate the value of the equilibrium constant, K, for the reaction at 298 K.\n(ii) If both P NO and P NO 2 in the vessel are initially 1.0 atm, will P N 2 O 3 at equilibrium be equal to\n1.0 atm? Justify your answer.\n(c) The student hypothesizes that increasing the temperature will increase the amount of N 2 O 3 (g) in the\nequilibrium mixture. Indicate whether you agree or disagree with the hypothesis. Justify your answer.\nN 2 O 3 (g) reacts with water to form nitrous acid, HNO 2 (aq), a compound involved in the production of acid rain.\nThe reaction is represented below.\nN 2 O 3 (g) + H 2 O(l) → 2 HNO 2 (aq)\n(d) The skeletal structure of the HNO 2 molecule is shown in the box below.\n(i) Complete the Lewis electron-dot diagram of the HNO 2 molecule in the box below, including any lone\npairs of electrons.\nH O N O\n(ii) Based on your completed diagram above, identify the hybridization of the nitrogen atom in the HNO 2\nmolecule.\nTo produce an aqueous solution of HNO 2 , the student bubbles N 2 O 3 (g) into distilled water. Assume that the\nreaction goes to completion and that HNO 2 is the only species produced. To determine the concentration of\nHNO 2 (aq) in the resulting solution, the student titrates a 100. mL sample of the solution with 0.100 M KOH(aq).\nThe neutralization reaction is represented below.\nHNO 2 (aq) + OH − (aq) → NO 2 − (aq) + H 2 O(l)\nThe following titration curve shows the change in pH of the solution during the titration.\n(e) Use the titration curve and the information above to\n(i) determine the initial concentration of the HNO 2 (aq) solution\n(ii) estimate the value of pK a for HNO 2 (aq)\n(f) During the titration, after a volume of 15 mL of 0.100 M KOH(aq) has been added, which species,\nHNO 2 (aq) or NO 2 − (aq), is present at a higher concentration in the solution? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2018F2.png"
+ },
+ {
+  "id": "AP2018F3",
+  "year": 2018,
+  "q": 3,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 1: Atomic Structure and Properties",
+   "Unit 3: Intermolecular Forces and Properties",
+   "Unit 9: Applications of Thermodynamics"
+  ],
+  "title": "2018 AP Chemistry free-response question 3 (long, 10 points)",
+  "text": "3. Answer the following questions relating to Fe and its ions, Fe 2+ and Fe 3+ .\n(a) Write the ground-state electron configuration of the Fe 2+ ion.\nIon\nIonic Radius (pm)\nFe 2+\nFe 3+\n(b) The radii of the ions are given in the table above. Using principles of atomic structure, explain why\nthe radius of the Fe 2+ ion is larger than the radius of the Fe 3+ ion.\n(c) Fe 3+ ions interact more strongly with water molecules in aqueous solution than Fe 2+ ions do.\nGive one reason for this stronger interaction, and justify your answer using Coulomb’s law.\nA student obtains a solution that contains an unknown concentration of Fe 2+ (aq). To determine the concentration\nof Fe 2+ (aq) in the solution, the student titrates a sample of the solution with MnO 4 − (aq) , which converts\nFe 2+ (aq) to Fe 3+ (aq), as represented by the following equation.\n5 Fe 2+ (aq) + MnO 4 − (aq) + 8 H + (aq) → 5 Fe 3+ (aq) + Mn 2+ (aq) + 4 H 2 O(l)\n(d) Write the balanced equation for the half-reaction for the oxidation of Fe 2+ (aq) to Fe 3+ (aq).\n(e) The student titrates a 10.0 mL sample of the Fe 2+ (aq) solution. Calculate the value of [Fe 2+ ] in the solution\nif it takes 17.48 mL of added 0.0350 M KMnO 4 (aq) to reach the equivalence point of the titration.\nTo deliver the 10.0 mL sample of the Fe 2+ (aq) solution in part (e), the student has the choice of using one of the\npieces of glassware listed below.\n•\n25 mL buret\n•\n25 mL beaker\n•\n25 mL graduated cylinder\n•\n25 mL volumetric flask\n(f) Explain why the 25 mL volumetric flask would be a poor choice to use for delivering the required volume of\nthe Fe 2+ (aq) solution.\nIn a separate experiment, the student is given a sample of powdered Fe(s) that contains an inert impurity. The\nstudent uses a procedure to oxidize the Fe(s) in the sample to Fe 2 O 3 (s). The student collects the following data\nduring the experiment.\nMass of Fe(s) with inert impurity\n6.724 g\nMass of Fe 2 O 3 (s) produced\n7.531 g\n(g) Calculate the number of moles of Fe in the Fe 2 O 3 (s) produced.\n(h) Calculate the percent by mass of Fe in the original sample of powdered Fe(s) with the inert impurity.\n(i) If the oxidation of the Fe(s) in the original sample was incomplete so that some of the 7.531 g of product\nwas FeO(s) instead of Fe 2 O 3 (s), would the calculated mass percent of Fe(s) in the original sample be\nhigher, lower, or the same as the actual mass percent of Fe(s)? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2018F3.png"
+ },
+ {
+  "id": "AP2018F4",
+  "year": 2018,
+  "q": 4,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 3: Intermolecular Forces and Properties"
+  ],
+  "title": "2018 AP Chemistry free-response question 4 (short, 4 points)",
+  "text": "Boiling Point at 1 atm\nCompound\nMolecular Structure\n(K)\nCS 2\nCOS\n4. The table above gives the molecular structures and boiling points for the compounds CS 2 and COS.\n(a) In terms of the types and relative strengths of all the intermolecular forces in each compound, explain why\nthe boiling point of CS 2 (l) is higher than that of COS(l).\n(b) A 10.0 g sample of CS 2 (l) is put in an evacuated 5.0 L rigid container. The container is sealed and heated to\n325 K, at which temperature all of the CS 2 (l) has vaporized. What is the pressure in the container once all of\nthe CS 2 (l) has vaporized?",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2018F4.png"
+ },
+ {
+  "id": "AP2018F5",
+  "year": 2018,
+  "q": 5,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 8: Acids and Bases"
+  ],
+  "title": "2018 AP Chemistry free-response question 5 (short, 4 points)",
+  "text": "HF(aq) + H 2 O(l) R F − (aq) + H 3 O + (aq)\n5. The ionization of HF(aq) in water is represented by the equation above. In a 0.0350 M HF(aq) solution, the\npercent ionization of HF is 13.0 percent.\n(a) Two particulate representations of the ionization of HF molecules in the 0.0350 M HF(aq) solution are\nshown below in Figure 1 and Figure 2. Water molecules are not shown. Explain why the representation of\nthe ionization of HF molecules in water in Figure 1 is more accurate than the representation in Figure 2.\n(The key below identifies the particles in the representations.)\n(b) Use the percent ionization data above to calculate the value of K a for HF.\n(c) If 50.0 mL of distilled water is added to 50.0 mL of 0.035 M HF(aq), will the percent ionization of HF(aq)\nin the solution increase, decrease, or remain the same? Justify your answer with an explanation or\ncalculation.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2018F5.png"
+ },
+ {
+  "id": "AP2018F6",
+  "year": 2018,
+  "q": 6,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 9: Applications of Thermodynamics"
+  ],
+  "title": "2018 AP Chemistry free-response question 6 (short, 4 points)",
+  "text": "6. A student sets up a galvanic cell at 298 K that has an electrode of Ag(s) immersed in a 1.0 M solution of\nAg + (aq) and an electrode of Cr(s) immersed in a 1.0 M solution of Cr 3+ (aq), as shown in the diagram above.\n(a) The student measures the voltage of the cell shown above and discovers that it is zero. Identify the missing\ncomponent of the cell, and explain its importance for obtaining a nonzero voltage.\nHalf-Reaction\nE° (V)\nAg + (aq) + e − → Ag(s)\n+ 0.80\nCr (aq) + 3 e → Cr(s)\n3+\n−\n?\nD to be +1.54 V. As the cell operates,\n(b) The student adds the missing component to the cell and measures E cell\nAg + ions are reduced. Use this information and the information in the table above to do the following.\n(i) Calculate the value of E° for the half-reaction Cr 3+ (aq) + 3 e − → Cr(s).\n(ii) Write the balanced net-ionic equation for the overall reaction that occurs as the cell operates.\n(iii) Calculate the value of ΔG° for the overall cell reaction in J/mol rxn .",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2018F6.png"
+ },
+ {
+  "id": "AP2018F7",
+  "year": 2018,
+  "q": 7,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 1: Atomic Structure and Properties",
+   "Unit 5: Kinetics"
+  ],
+  "title": "2018 AP Chemistry free-response question 7 (short, 4 points)",
+  "text": "7. The complete photoelectron spectrum of an element is represented above.\n(a) Identify the element.\nA radioactive isotope of the element decays with a half-life of 10. minutes.\n(b) Calculate the value of the rate constant, k, for the radioactive decay. Include units with your answer.\n(c) If 64 atoms of the radioactive isotope are originally present in a sample, what is the expected amount of time\nthat will pass until only one atom of the isotope remains? Show how you arrived at your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2018F7.png"
+ },
+ {
+  "id": "AP2019F1",
+  "year": 2019,
+  "q": 1,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 3: Intermolecular Forces and Properties",
+   "Unit 9: Applications of Thermodynamics"
+  ],
+  "title": "2019 AP Chemistry free-response question 1 (long, 10 points)",
+  "text": "1. The compound urea, H 2 NCONH 2 , is widely used in chemical fertilizers. The complete Lewis electron-dot\ndiagram for the urea molecule is shown above.\n(a) Identify the hybridization of the valence orbitals of the carbon atom in the urea molecule.\n(b) Urea has a high solubility in water, due in part to its ability to form hydrogen bonds. A urea molecule and\nfour water molecules are represented in the box below. Draw ONE dashed line (----) to indicate a possible\nlocation of a hydrogen bond between a water molecule and the urea molecule.\n→ H NCONH (aq)\nH 2 NCONH 2 (s) ←\nThe dissolution of urea is represented by the equation above. A student determines that 5.39 grams of\nH 2 NCONH 2 (molar mass 60.06 g/mol) can dissolve in water to make 5.00 mL of a saturated solution at 20.°C.\n(c) Calculate the concentration of urea, in mol/L, in the saturated solution at 20.°C.\n(d) The student also determines that the concentration of urea in a saturated solution at 25°C is 19.8 M. Based\non this information, is the dissolution of urea endothermic or exothermic? Justify your answer in terms of\nLe Chatelier’s principle.\n(e) The equipment shown above is provided so that the student can determine the value of the molar heat of\nsolution for urea. Knowing that the specific heat of the solution is 4.18 J/(g⋅°C), list the specific\nmeasurements that are required to be made during the experiment.\nS° (J/(mol⋅K))\nH 2 NCONH 2 (s)\n104.6\nH 2 NCONH 2 (aq)\n?\n , is 70.1 J/(mol⋅K) at 25°C. Using the information in\n(f) The entropy change for the dissolution of urea, D S soln\nthe table above, calculate the absolute molar entropy, S°, of aqueous urea.\n is positive for the dissolution of urea in water.\n(g) Using particle-level reasoning, explain why D S soln\n(h) The student claims that ΔS° for the process contributes to the thermodynamic favorability of the dissolution\nof urea at 25°C. Use the thermodynamic information above to support the student’s claim.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2019F1.png"
+ },
+ {
+  "id": "AP2019F2",
+  "year": 2019,
+  "q": 2,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 3: Intermolecular Forces and Properties",
+   "Unit 6: Thermodynamics"
+  ],
+  "title": "2019 AP Chemistry free-response question 2 (long, 10 points)",
+  "text": "2. Answer the following questions relating to the chemistry of the halogens.\n(a) The molecular formulas of diatomic bromine, chlorine, fluorine, and iodine are written below. Circle the\nformula of the molecule that has the longest bond length. Justify your choice in terms of atomic structure.\nBr 2\nCl 2\nF 2\nI 2\nA chemistry teacher wants to prepare Br 2 . The teacher has access to the following three reagents: NaBr(aq),\nCl 2 (g), and I 2 (s).\nHalf-Reaction\nE° at 25°C (V)\nBr 2 + 2 e − → 2 Br −\n1.07\nCl 2 + 2 e − → 2 Cl −\n1.36\nI 2 + 2 e − → 2 I −\n0.53\n(b) Using the data in the table above, write the balanced equation for the thermodynamically favorable\nreaction that will produce Br 2 when the teacher combines two of the reagents. Justify that the reaction is\nthermodynamically favorable by calculating the value of E° for the reaction.\nBr 2 and Cl 2 can react to form the compound BrCl.\n(c) The boiling point of Br 2 is 332 K, whereas the boiling point of BrCl is 278 K. Explain this difference in\nboiling point in terms of all the intermolecular forces present between molecules of each substance.\nThe compound BrCl can decompose into Br 2 and Cl 2 , as represented by the balanced chemical equation below.\nΔH° = 1.6 kJ/mol rxn\n2 BrCl(g)  Br 2 (g) + Cl 2 (g)\nA 0.100 mole sample of pure BrCl(g) is placed in a previously evacuated, rigid 2.00 L container at 298 K.\nEventually the system reaches equilibrium according to the equation above.\n(d) Calculate the pressure in the container before equilibrium is established.\n(e) Write the expression for the equilibrium constant, K eq , for the decomposition of BrCl.\nAfter the system has reached equilibrium, 42 percent of the original BrCl sample has decomposed.\n(f) Determine the value of K eq for the decomposition reaction of BrCl at 298 K.\n(g) Calculate the bond energy of the Br-Cl bond, in kJ/mol, using ΔH° for the reaction (1.6 kJ/mol rxn ) and the\ninformation in the following table.\nBond Energy\nBond\n(kJ/mol)\nBr – Br",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2019F2.png"
+ },
+ {
+  "id": "AP2019F3",
+  "year": 2019,
+  "q": 3,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 4: Chemical Reactions"
+  ],
+  "title": "2019 AP Chemistry free-response question 3 (long, 10 points)",
+  "text": "3. A student is given 50.0 mL of a solution of Na 2 CO 3 of unknown concentration. To determine the concentration\nof the solution, the student mixes the solution with excess 1.0 M Ca(NO 3 ) 2 (aq), causing a precipitate to form.\nThe balanced equation for the reaction is shown below.\nNa 2 CO 3 (aq) + Ca(NO 3 ) 2 (aq) → 2 NaNO 3 (aq) + CaCO 3 (s)\n(a) Write the net ionic equation for the reaction that occurs when the solutions of Na 2 CO 3 and Ca(NO 3 ) 2 are\nmixed.\n(b) The diagram below is incomplete. Draw in the species needed to accurately represent the major ionic species\nremaining in the solution after the reaction has been completed.\nThe student filters and dries the precipitate of CaCO 3 (molar mass 100.1 g/mol) and records the data in the table\nbelow.\nVolume of Na 2 CO 3 solution\n50.0 mL\nVolume of 1.0 M Ca(NO 3 ) 2 added\n100.0 mL\nMass of CaCO 3 precipitate collected\n0.93 g\n(c) Determine the number of moles of Na 2 CO 3 in the original 50.0 mL of solution.\n(d) The student realizes that the precipitate was not completely dried and claims that as a result, the\ncalculated Na 2 CO 3 molarity is too low. Do you agree with the student’s claim? Justify your answer.\n(e) After the precipitate forms and is filtered, the liquid that passed through the filter is tested to see if it can\nconduct electricity. What would be observed? Justify your answer.\nThe student decides to determine the molarity of the same Na 2 CO 3 solution using a second method. When\nNa 2 CO 3 is dissolved in water, CO 32− (aq) hydrolyzes to form HCO 3 − (aq), as shown by the following equation.\n[HCO 3 - ][OH - ]\nCO 32− (aq) + H 2 O(l)  HCO 3 − (aq) + OH − (aq)\n= 2.1 × 10 −4\nK b =\n[CO 3 2 - ]\n(f) The student decides to first determine [OH − ] in the solution, then use that result to calculate the initial\nconcentration of CO 32− (aq).\n(i) Identify a laboratory method (not titration) that the student could use to collect data to determine [OH − ]\nin the solution.\n(ii) Explain how the student could use the measured value in part (f)(i) to calculate the initial concentration\nof CO 32− (aq). (Do not do any numerical calculations.)\n(g) In the original Na 2 CO 3 solution at equilibrium, is the concentration of HCO 3 − (aq) greater than, less than, or\nequal to the concentration of CO 32− (aq) ? Justify your answer.\n(h) The student needs to make a CO 32− /HCO 3 − buffer. Is the Na 2 CO 3 solution suitable for making a buffer\nwith a pH of 6? Explain why or why not.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2019F3.png"
+ },
+ {
+  "id": "AP2019F4",
+  "year": 2019,
+  "q": 4,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 3: Intermolecular Forces and Properties"
+  ],
+  "title": "2019 AP Chemistry free-response question 4 (short, 4 points)",
+  "text": "4. A student is doing experiments with CO 2 (g). Originally, a sample of the gas is in a rigid container at 299 K and\n0.70 atm. The student increases the temperature of the CO 2 (g) in the container to 425 K.\n(a) Describe the effect of raising the temperature on the motion of the CO 2 (g) molecules.\n(b) Calculate the pressure of the CO 2 (g) in the container at 425 K.\n(c) In terms of kinetic molecular theory, briefly explain why the pressure of the CO 2 (g) in the container\nchanges as it is heated to 425 K.\n(d) The student measures the actual pressure of the CO 2 (g) in the container at 425 K and observes that it is less\nthan the pressure predicted by the ideal gas law. Explain this observation.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2019F4.png"
+ },
+ {
+  "id": "AP2019F5",
+  "year": 2019,
+  "q": 5,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 1: Atomic Structure and Properties"
+  ],
+  "title": "2019 AP Chemistry free-response question 5 (short, 4 points)",
+  "text": "5. The complete photoelectron spectrum of an element in its ground state is represented below.\n(a) Based on the spectrum,\n(i) write the ground-state electron configuration of the element, and\n(ii) identify the element.\n(b) Calculate the wavelength, in meters, of electromagnetic radiation needed to remove an electron from the\nvalence shell of an atom of the element.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2019F5.png"
+ },
+ {
+  "id": "AP2019F6",
+  "year": 2019,
+  "q": 6,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 5: Kinetics"
+  ],
+  "title": "2019 AP Chemistry free-response question 6 (short, 4 points)",
+  "text": "6. Nitrogen dioxide, NO 2 (g), is produced as a by-product of the combustion of fossil fuels in internal combustion\nengines. At elevated temperatures NO 2 (g) decomposes according to the equation below.\n2 NO 2 (g) → 2 NO(g) + O 2 (g)\nThe concentration of a sample of NO 2 (g) is monitored as it decomposes and is recorded on the graph directly\nbelow. The two graphs that follow it are derived from the original data.\n(a) Explain how the graphs indicate that the reaction is second order.\n(b) Write the rate law for the decomposition of NO 2 (g).\n(c) Consider two possible mechanisms for the decomposition reaction.\n(i) Is the rate law described by mechanism I shown below consistent with the rate law you wrote in\npart (b) ? Justify your answer.\nMechanism I\nNO 2 (g) + NO 2 (g) → NO(g) + NO 3 (g)\nStep 1:\nslow\nNO 3 (g) → NO(g) + O 2 (g)\nStep 2:\nfast\n(ii) Is the rate law described by mechanism II shown below consistent with the rate law you wrote in\npart (b) ? Justify your answer.\nMechanism II\nNO 2 (g) + NO 2 (g)  N 2 O 4 (g)\nStep 1:\nfast equilibrium\nN 2 O 4 (g) → 2 NO(g) + O 2 (g)\nStep 2:\nslow\n6 H + (aq) + 2 MnO 4 − (aq) + 5 H 2 C 2 O 4 (aq) → 10 CO 2 (g) + 8 H 2 O(l) + 2 Mn 2+ (aq)",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2019F6.png"
+ },
+ {
+  "id": "AP2019F7",
+  "year": 2019,
+  "q": 7,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 4: Chemical Reactions"
+  ],
+  "title": "2019 AP Chemistry free-response question 7 (short, 4 points)",
+  "text": "7. A student dissolved a 0.139 g sample of oxalic acid, H 2 C 2 O 4 , in water in an Erlenmeyer flask. Then the student\ntitrated the H 2 C 2 O 4 solution in the flask with a solution of KMnO 4 , which has a dark purple color. The\nbalanced chemical equation for the reaction that occurred during the titration is shown above.\n(a) Identify the species that was reduced in the titration reaction. Justify your answer in terms of oxidation\nnumbers.\n(b) The student used a 50.0 mL buret to add the KMnO 4 (aq) to the H 2 C 2 O 4 (aq) until a faint lavender color was\nobserved in the flask, an indication that the end point of the titration had been reached. The initial and final\nvolume readings of the solution in the buret are shown below. Write down the initial reading and the final\nreading and use them to determine the volume of KMnO 4 (aq) that was added during the titration.\n(c) Given that the concentration of KMnO 4 (aq) was 0.0235 M, calculate the number of moles of MnO 4 − ions\nthat completely reacted with the H 2 C 2 O 4 .\n(d) The student proposes to perform another titration using a 0.139 g sample of H 2 C 2 O 4 , but this time using\n0.00143 M KMnO 4 (aq) in the buret. Would this titrant concentration be a reasonable choice to use if the\nstudent followed the same procedure and used the same equipment as before? Justify your response.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2019F7.png"
+ },
+ {
+  "id": "AP2021F1",
+  "year": 2021,
+  "q": 1,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 8: Acids and Bases",
+   "Unit 4: Chemical Reactions",
+   "Unit 2: Molecular and Ionic Compound Structure and Properties"
+  ],
+  "title": "2021 AP Chemistry free-response question 1 (long, 10 points)",
+  "text": "HCOOH ( aq )  H 2 O(l)  H 3 O  ( aq )  HCOO − ( aq )\nK a  = 1.8 ¥ 10 − 4\n1. Methanoic acid, HCOOH , ionizes according to the equation above.\n(a) Write the expression for the equilibrium constant, K a , for the reaction.\n(b) Calculate the pH of a 0.25 M solution of HCOOH .\n(c) In the box below, complete the Lewis electron-dot diagram for HCOOH . Show all bonding and nonbonding\nvalence electrons.\nH 2 NNH 2 ( aq )  H 2 O(l)  H 2 NNH 3  ( aq )  OH − ( aq )\n= 1.3  10 −6\nK b \n(d) In aqueous solution, the compound H 2 NNH 2 reacts according to the equation above. A 50.0 mL sample of\n0.25 M H 2 NNH 2 ( aq) is combined with a 50.0 mL sample of 0 .25 M HCOOH( aq ) .\n(i) Write the balanced net ionic equation for the reaction that occurs when H 2 NNH 2 is combined\nwith HCOOH .\n(ii) Is the resulting solution acidic, basic, or neutral? Justify your answer.\nWhen a catalyst is added to a solution of HCOOH(aq ) , the reaction represented by the following equation\noccurs.\nHCOOH ( aq ) → H 2 ( g )  CO 2 ( g )\n(e) Is the reaction a redox reaction? Justify your answer.\n(f) The reaction occurs in a rigid 4.3 L vessel at 25°C , and the total pressure is monitored, as shown in the\ngraph above. The vessel originally did not contain any gas. Calculate the number of moles of CO 2 ( g )\nproduced in the reaction. (Assume that the amount of CO 2 (g ) dissolved in the solution is negligible.)\n(g) After the reaction has proceeded for several minutes, does the amount of catalyst increase, decrease, or\nremain the same? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2021F1.png"
+ },
+ {
+  "id": "AP2021F2",
+  "year": 2021,
+  "q": 2,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 1: Atomic Structure and Properties",
+   "Unit 3: Intermolecular Forces and Properties",
+   "Unit 9: Applications of Thermodynamics"
+  ],
+  "title": "2021 AP Chemistry free-response question 2 (long, 10 points)",
+  "text": "2. Answer the following questions about the element Si and some of its compounds.\n(a) The mass spectrum of a pure sample of Si is shown below.\n(i) How many protons and how many neutrons are in the nucleus of an atom of the most abundant\nisotope of Si ?\n(ii) Write the ground-state electron configuration of Si .\nTwo compounds that contain Si are SiO 2 and SiH 4 .\n(b) At 161 K , SiH 4 boils but SiO 2 remains as a solid. Using principles of interparticle forces, explain the\ndifference in boiling points.\nAt high temperatures, SiH 4 decomposes to form solid silicon and hydrogen gas.\n(c) Write a balanced equation for the reaction.\nA table of absolute entropies of some substances is given below.\nSubstance S ° ( J/ ( mol  K) )\nH 2 ( g )\nSi( s )\nSiH 4 ( g )\n(d) Explain why the absolute molar entropy of Si(s ) is less than that of H 2 (g ) .\n(e) Calculate the value, in J/(mol K) , of ∆S ° for the reaction.\n(f) The reaction is thermodynamically favorable at all temperatures. Explain why the reaction occurs only at\nhigh temperatures.\n(g) A partial photoelectron spectrum of pure Si is shown below. On the spectrum, draw the missing peak that\ncorresponds to the electrons in the 3p sublevel.\n(h) Using principles of atomic structure, explain why the first ionization energy of Ge is lower than that of Si .\n(i) A single photon with a wavelength of 4.00  10 −7 m is absorbed by the Si sample. Calculate the energy of\nthe photon in joules.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2021F2.png"
+ },
+ {
+  "id": "AP2021F3",
+  "year": 2021,
+  "q": 3,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 4: Chemical Reactions",
+   "Unit 3: Intermolecular Forces and Properties"
+  ],
+  "title": "2021 AP Chemistry free-response question 3 (long, 10 points)",
+  "text": "3. A student is given the task of determining the molar concentration of a CuSO 4 solution using two different\nprocedures, precipitation and spectrophotometry.\nFor the precipitation experiment, the student adds 20.0 mL of 0.200 M Ba(NO 3 ) 2 to 50.0 mL of the CuSO 4 ( aq ) .\nThe reaction goes to completion, and a white precipitate forms. The student filters the precipitate and dries it\novernight. The data are given in the following table.\n0.764 g\nMass of dry filter paper\nVolume of CuSO 4 ( aq )\n50.0 mL\nVolume of 0.200 M Ba ( NO 3 ) 2\n20.0 mL\n1.136 g\nMass of filter paper and dried precipitate\n(a) Write a balanced net ionic equation for the precipitation reaction.\n(b) Calculate the number of moles of precipitate formed.\n(c) Calculate the molarity of the original CuSO 4 solution.\nFor the spectrophotometry experiment, the student first makes a standard curve. The student uses a 0.1000 M\nsolution of CuSO 4 ( aq ) to mak e three more solutions of known concentration ( 0.0500 M , 0.0300 M , and\n0.0100 M ) in 50.00 mL volumetric flasks.\n(d) Calculate the volume of 0.1000 M CuSO 4 (aq ) needed to make 50.00 mL of 0.0500 M CuSO 4 (aq ) .\n(e) Briefly describe the procedure the student should follow to make 50.00 mL of 0.0500 M CuSO 4 (aq ) using\n0.1000 M CuSO 4 ( aq ) , a 50.00 mL volumetric flask, and other standard laboratory equipment. Assume that all\nappropriate safety precautions will be taken.\nThe standard curve is given below.\n(f) The absorbance of the CuSO 4 solution of unknown concentration is 0.219 . Determine the molarity of the\nsolution.\n(g) A second student performs the same experiment. There are a few drops of water in the cuvette before the\nsecond student adds the CuSO 4 ( aq ) solut ion of unknown concentration. Will this result in a CuSO 4 ( aq )\nconcentration for the unknown that is greater than, less than, or equal to the concentration determined in\npart (f) ? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2021F3.png"
+ },
+ {
+  "id": "AP2021F4",
+  "year": 2021,
+  "q": 4,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 6: Thermodynamics"
+  ],
+  "title": "2021 AP Chemistry free-response question 4 (short, 4 points)",
+  "text": "4 Fe( s ) + 3 O 2 ( g) → 2 Fe 2 O 3 ( s )\n∆H ° = − 1650 kJ / mol rxn\n4. A student investigates a reaction used in hand warmers, represented above. The student mixes Fe(s ) with a\ncatalyst and sand in a small open container. The student measures the temperature of the mixture as the\nreaction proceeds. The data are given in the following table.\nTemperature of Mixture ( °C )\nTime (min)\n22.0\n25.1\n34.6\n37.3\n39.7\n39.4\n(a) The mixture ( Fe(s ) , catalyst, and sand) has a total mass of 15.0 g and a specific heat capacity of\n0.72 J/ ( g °C) . Calculate the amount of heat absorbed by the mixture from 0 minutes to 4 minutes.\n(b) Calculate the mass of Fe(s ) , in grams, that reacted to generate the amount of heat calculated in part (a).\n(c) In a second experiment, the student uses twice the mass of iron as that calculated in part (b) but the same\nmass of sand as in the first experiment. Would the maximum temperature reached in the second experiment be\ngreater than, less than, or equal to the maximum temperature in the first experiment? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2021F4.png"
+ },
+ {
+  "id": "AP2021F5",
+  "year": 2021,
+  "q": 5,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 9: Applications of Thermodynamics"
+  ],
+  "title": "2021 AP Chemistry free-response question 5 (short, 4 points)",
+  "text": "5. Molten MgCl 2 can be decomposed into its elements if a sufficient voltage is applied using inert electrodes. The\nproducts of the reaction are liquid Mg (at the cathode) and Cl 2 gas (at the anode). A simplified representation\nof the cell is shown above. The reduction half-reactions related to the overall reaction in the cell are given in the\ntable.\n(a) Draw an arrow on the diagram to show the direction of electron flow through the external circuit as the cell\noperates.\n(b) Would an applied voltage of 2.0 V be sufficient for the reaction to occur? Support your claim with a\ncalculation as part of your answer.\n(c) If the current in the cell is kept at a constant 5.00 amps, how many seconds does it take to produce 2.00 g\nof Mg(l ) at the cathode?",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2021F5.png"
+ },
+ {
+  "id": "AP2021F6",
+  "year": 2021,
+  "q": 6,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 7: Equilibrium"
+  ],
+  "title": "2021 AP Chemistry free-response question 6 (short, 4 points)",
+  "text": "\u0016\u000e A student is studying the properties of CaSO 4 and PbSO 4 . The student has samples of both compounds, which are\nwhite powders.\n(a) The student tests the electrical conductivity of each solid and observes that neither solid conducts\nelectricity. Describe the structures of the solids that account for their inability to conduct electricity.\nThe student places excess CaSO 4 (s ) in a beaker containing 100 mL of water and places excess PbSO 4 (s ) in\nanother beaker containing 100 mL of water. The student stirs the contents of the beakers and then measures the\nelectrical conductivity of the solution in each beaker. The student observes that the conductivity of the solution\nin the beaker containing the CaSO 4 (s ) is higher than the conductivity of the solution in the beaker containing\nthe PbSO 4 (s ) .\n(b) Which compound is more soluble in water, CaSO 4 (s ) or PbSO 4 (s ) ? Justify your answer based on the\nresults of the conductivity test.\nThe left side of the diagram below shows a particulate representation of the contents of the beaker containing\nthe CaSO 4 (s ) from the solution conductivity experiment.\n(c) Draw a particulate representation of PbSO 4 (s) and the ions dissolved in the solution in the beaker on the\nright in the diagram. Draw the particles to look like those shown to the right of the beaker. Draw an\nappropriate number of dissolved ions relative to the number of dissolved ions in the beaker on the left.\n(d) The student attempts to increase the solubility of CaSO 4 ( s ) by adding 10.0 mL of 2 M H 2 SO 4 ( aq) to the\nbeaker, and observes that additional precipitate forms in the beaker. Explain this observation.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2021F6.png"
+ },
+ {
+  "id": "AP2021F7",
+  "year": 2021,
+  "q": 7,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 3: Intermolecular Forces and Properties"
+  ],
+  "title": "2021 AP Chemistry free-response question 7 (short, 4 points)",
+  "text": "\u0017\u000e A student investigates gas behavior using a rigid cylinder with a movable piston of negligible mass, as shown in\nthe diagram above. The cylinder contains 0.325\u0001mol\u0001 of O 2\u0001 (g ) .\n(a) The cylinder has a volume of 7.95\u0001L\u0001 at 25°C\u0001 and 1.00\u0001atm . Calculate the density of the O 2\u0001 (g ) , in g/L ,\nunder these conditions.\n(b) Attempting to change the density of the O 2 (g ) , the student opens the valve on the side of the cylinder,\npushes down on the piston to release some of the gas, and closes the valve again. The temperature of the gas\nremains constant at 25°C . Will this action change the density of the gas remaining in the cylinder? Justify your\nanswer.\n(c) The student tries to change the density of the O 2 (g ) by cooling the cylinder to −55°C , which causes the\nvolume of the gas to decrease. Using principles of kinetic molecular theory, explain why the volume of the\nO 2 (g ) decreases when the temperature decreases to −55°C .\n(d) The student further cools the cylinder to −180°C and observes that the measured volume of the O 2 (g ) is\nsubstantially smaller than the volume that is calculated using the ideal gas law. Assume all equipment is\nfunctioning properly. Explain why the measured volume of the O 2 (g ) is smaller than the calculated volume.\n(The boiling point of O 2 ( l ) is −183°C .)",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2021F7.png"
+ },
+ {
+  "id": "AP2022F1",
+  "year": 2022,
+  "q": 1,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 4: Chemical Reactions",
+   "Unit 3: Intermolecular Forces and Properties",
+   "Unit 8: Acids and Bases"
+  ],
+  "title": "2022 AP Chemistry free-response question 1 (long, 10 points)",
+  "text": "1. A student reacts 0.300 g of methyl salicylate ( C 8 H 8 O 3 ) with a stoichiometric amount of a strong base. This\nproduct is then acidified to produce salicylic acid crystals ( HC 7 H 5 O 3 ) .\n(a) For every 1 mole of C 8 H 8 O 3 (molar mass 152.15 g/mol ) reactant used, 1 mole of salicylic acid crystals\n( HC 7 H 5 O 3 , molar mass 138.12 g/mol ) is produced. Calculate the maximum mass, in grams, of HC 7 H 5 O 3\nthat could be produced in this reaction.\nAs part of the experimental procedure to purify the HC 7 H 5 O 3 crystals after the reaction is complete, the crystals\nare filtered from the reaction mixture, rinsed with distilled water, and dried. Some physical properties of\nHC 7 H 5 O 3 are given in the following table.\nProperties of Salicylic Acid (HC 7 H 5 O 3 )\n159°C\nMelting point\nSolubility in H 2 O at 25 ° C\n2.2 g/L\n1.17 J/ ( g· ° C )\nSpecific heat capacity\n27.1 kJ/mol\nHeat of fusion\n(b) The student’s experiment results in an 87% yield of dry HC 7 H 5 O 3 . The student suggests that some of the\nHC 7 H 5 O 3 crystals dissolved in the distilled water during the rinsing step. Is the student’s claim consistent\nwith the calculated percent yield value? Justify your answer.\n(c) Given the physical properties in the table, calculate the quantity of heat that must be absorbed to increase the\ntemperature of a 0.105 g sample of dry HC 7 H 5 O 3 (molar mass 138.12 g / mol ) crystals from 25 ° C to the\nmelting point of 159 ° C and melt the crystals completely.\nThe structures and melting points for methyl salicylate and salicylic acid are shown.\n(d) The same three types of intermolecular forces (London dispersion forces, dipole-dipole interactions, and\nhydrogen bonding) exist among molecules of each substance. Explain why the melting point of salicylic acid\nis higher than that of methyl salicylate.\nThe student titrates 20.0 mL of 0.0100 M HC 7 H 5 O 3 ( aq ) with 0.0200 M NaOH , using a probe to monitor the\npH of the solution. The data are plotted producing the following titration curve.\n(e) Using the information in the graph, estimate the pK a of HC 7 H 5 O 3 . _______________\n(f) When the pH of the titration mixture is 4.00, is there a higher concentration of the weak acid, HC 7 H 5 O 3 , or\nits conjugate base, C 7 H 5 O 3 − , in the flask? Justify your answer.\n(g) The student researches benzoic acid ( HC 7 H 5 O 2 ) and finds that it has similar properties to salicylic acid\n( HC 7 H 5 O 3 ). The K a for benzoic acid is 6.3 ¥ 10 − 5 . Calculate the value of pK a for benzoic acid.\n(h) The student performs a second titration, this time titrating 20.0 mL of a 0.0100 M benzoic acid solution with\n0.0200 M NaOH . Sketch the curve that would result from this titration of benzoic acid on the following graph,\nwhich already shows the original curve from the titration of 20.0 mL of 0.0100 M salicylic acid. The initial\npH of the benzoic acid solution is 3.11 .",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2022F1.png"
+ },
+ {
+  "id": "AP2022F2",
+  "year": 2022,
+  "q": 2,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 7: Equilibrium",
+   "Unit 9: Applications of Thermodynamics"
+  ],
+  "title": "2022 AP Chemistry free-response question 2 (long, 10 points)",
+  "text": "CH 3 OH( g ) \u0002 CO ( g ) + 2 H 2 ( g )\n∆ H ° = 90.0 kJ / mol rxn\n2. Methanol vapor decomposes to form carbon monoxide gas and hydrogen gas at high temperatures in the presence\nof a platinum catalyst, as represented by the balanced chemical equation given.\n(a) Are the hydrogen atoms oxidized or are they reduced in the forward reaction? Justify your answer in terms of\noxidation numbers.\n(b) In the following box, draw the complete Lewis electron-dot diagram for the carbon monoxide molecule in\nwhich every atom obeys the octet rule. Show all bonding and nonbonding valence electrons.\n(c) The values of the standard molar entropies of the compounds involved in the reaction are given in the\nfollowing table.\nSubstance S° (J/(K·mol))\nCH 3 OH ( g )\n240.\nCO( g )\nH 2 ( g )\n(i) Use the data in the table to calculate the value of the standard entropy change, ∆S° , in J/(K·mol rxn ) ,\nfor the reaction.\n(ii) Calculate the value of ∆G° , in kJ/mol rxn , for the reaction at 375 K . Assume that ∆H° and ∆S° are\nindependent of temperature.\nThe following particle-level diagram shows a representative sample of the equilibrium mixture represented by the\nequation given.\n(d) Use information from the particle diagram to calculate the partial pressure of CO at equilibrium when the total\npressure of the equilibrium mixture is 12.0 atm .\n(e) Write the expression for the equilibrium constant, K p , for the reaction.\nCH 3 OH(g) \u0002 CO(g) + 2 H 2 (g)\nThe reaction system represented by the equation is allowed to achieve equilibrium at a different temperature. The\nfollowing table gives the partial pressure of each species in the equilibrium mixture.\nPartial Pressure at\nSubstance\nDifferent Temperature\nCH 3 OH( g)\n2.7 atm\nCO(g)\n4.2 atm\n8.4 atm\nH 2 (g)\n(f) Use the information in the table to calculate the value of the equilibrium constant, K p , at the new temperature.\n(g) The volume of the container is rapidly doubled with no change in temperature. As equilibrium is\nre-established, does the number of moles of CH 3 OH(g ) increase, decrease, or remain the same? Justify your\nanswer by comparing the value of the reaction quotient, Q , with the value of the equilibrium constant, K p .",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2022F2.png"
+ },
+ {
+  "id": "AP2022F3",
+  "year": 2022,
+  "q": 3,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 1: Atomic Structure and Properties",
+   "Unit 9: Applications of Thermodynamics"
+  ],
+  "title": "2022 AP Chemistry free-response question 3 (long, 10 points)",
+  "text": "3. Answer the following questions relating to the element aluminum, Al .\n(a) Write the complete ground-state electron configuration of an Al atom.\n(b) Based on principles of atomic structure, explain why the radius of the Al atom is larger than the radius of the\nAl 3+ ion.\nA student plans to combine solid aluminum with an aqueous solution of silver ions. The student determines the\nmass of solid AgNO 3 needed to prepare the solution with a specific concentration.\n(c) In the following table, briefly list the steps necessary to prepare 200.0 mL of an aqueous solution of AgNO 3\nusing only equipment selected from the choices given. Assume that all appropriate safety measures are already\nin place. Not all equipment or lines in the table may be needed.\n· Solid AgNO 3\n· Weighing paper and scoop\n· 250 mL beakers\n· Distilled water\n· 200.00 mL volumetric flask\n· Pipet\n· Balance\n· 50.0 mL graduated c ylinder\nStep\nStep Description\nUse weighing paper to measure the determined mass of solid AgNO 3 on a balance.\n1.\n2.\nAfter preparing the solution, the student places some of the solution into a beaker and adds a sample of aluminum.\nThe reaction represented by the following equation occurs.\nAl( s ) + 3 Ag + (aq) → Al 3+ ( aq ) + 3 Ag( s )\n(d) The following diagram gives an incomplete particulate representation of the reaction. The beaker on the left\nrepresents the system before the mixture reacts. Complete the drawing on the right to represent the system\nafter the reaction has occurred. Be sure to include 1 ) the correct type and number of particles based on the\nnumber shown on the left and 2 ) the relative spacing to depict the appropriate phases.\nThe student finds the standard reduction potentials given in the table, which are related to the reaction that occurs.\nE°\nHalf-Reaction\nAg + ( aq ) + e − → Ag ( s )\n0.80 V\nAl 3 + ( aq ) + 3 e − → Al ( s ) −1.66 V\n(e) Using the standard reduction potentials, calculate the value of E° for the reaction.\n(f) Based on the value of E° , would the standard free energy change of the reaction under standard conditions,\n∆G° , be positive, negative, or zero? Justify your answer.\n(g) Once the reaction appears to stop progressing, would the change in free energy, ∆G , be positive, negative, or\nzero? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2022F3.png"
+ },
+ {
+  "id": "AP2022F4",
+  "year": 2022,
+  "q": 4,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 3: Intermolecular Forces and Properties"
+  ],
+  "title": "2022 AP Chemistry free-response question 4 (short, 4 points)",
+  "text": "4. Answer the following questions about the compounds NH 2 Cl and NCl 3 . The Lewis electron-dot diagrams of the\ntwo compounds are shown.\n(a) Calculate the number of moles of NH 2 Cl (molar mass 51.48 g/mol ) present in 1.0 L of a solution in which\nthe concentration of NH 2 Cl is 0.0016 g/L .\n(b) NH 2 Cl is highly soluble in water, whereas NCl 3 is nearly insoluble. Explain this observation in terms of the\ntypes and relative strengths of the intermolecular forces between each of the solutes and water.\n\u0002\n(c) The value of ∆H vaporization\nfor NCl 3 ( l ) is 32.9 kJ/mol . Calculate the amount of energy required to vaporize a\n15.0 g sample of NCl 3 (molar mass 120.36 g/mol ).",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2022F4.png"
+ },
+ {
+  "id": "AP2022F5",
+  "year": 2022,
+  "q": 5,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 5: Kinetics"
+  ],
+  "title": "2022 AP Chemistry free-response question 5 (short, 4 points)",
+  "text": "5. The following equation represents the decomposition of N 2 O 5 , for which the rate law is rate = k ⎡ ⎣ N 2 O 5 ⎦ ⎤ .\n2 N 2 O 5 ( g ) → 4 NO 2 ( g ) + O 2 ( g )\nA sample of pure N 2 O 5 (g ) is placed in an evacuated container and allowed to decompose at a constant\ntemperature of 300 K . The concentration of N 2 O 5 (g ) in the container is measured over a period of time, and the\nmeasurements are recorded in the following table.\nTime (hr) ⎡ ⎣ N 2 O 5 ⎦ ⎤ ( M )\n0.160\n1.67\n0.0800\n3.33\n0.0400\n5.00\n0.0200\n(a) Determine the value of the rate constant, k , for the reaction. Include units in your answer.\n(b) The following mechanism is proposed for the decomposition of N 2 O 5 (g ) .\nStep 1: N 2 O 5 ( g ) → NO 2 ( g ) + NO 3 ( g )\nStep 2: NO 2 ( g ) + NO 3 ( g ) → NO 2 ( g ) + NO( g ) + O 2 ( g )\nStep 3: N 2 O 5 ( g ) + NO( g ) → 3 NO 2 ( g )\nIdentify which step of the proposed mechanism ( 1 , 2 , or 3 ) is the rate-determining step. Justify your\nanswer in terms of the rate law given.\n(c) If this experiment was repeated at the same temperature but with twice the initial concentration of N 2 O 5 ,\nwould the value of k increase, decrease, or remain the same? Explain your reasoning.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2022F5.png"
+ },
+ {
+  "id": "AP2022F6",
+  "year": 2022,
+  "q": 6,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 3: Intermolecular Forces and Properties"
+  ],
+  "title": "2022 AP Chemistry free-response question 6 (short, 4 points)",
+  "text": "6. A student wants to determine the concentration of permanganate, MnO 4 − ( aq ) , in a solution. The student plans to\nuse colorimetric analysis because solutions containing MnO 4 − ( aq ) have a purple color.\n(a) To determine the optimum wavelength for an experiment that measures the concentration of MnO 4 − ( aq ) , the\nstudent takes a sample of the solution and measures the amount of light absorbed by the sample over a range of\nwavelengths. The data are plotted in the graph shown. Identify the optimum wavelength that the student should\nuse for the experimental procedure.\n(b) The student uses a stock solution of 2.40 ¥ 10 −3 M KMnO 4 ( aq ) to prepare the standard solutions of\nMnO 4 − (aq) that are needed to construct a calibration curve.\n(i) The student uses a 100.0 mL graduated cylinder to measure a certain volume of KMnO 4 (aq) stock\nsolution, as shown in the diagram given. What volume should the student record?\n(ii) Calculate the volume, in mL, of 2.40 ¥ 10 −3 M KMnO 4 ( aq ) that is required to produce 100.0 mL of\na standard 1.68 ¥ 10 −3 M MnO 4 − ( aq) solution.\nThe student designs the following procedure to produce a calibration curve.\nStep 1: Prepare several standard solutions that have known MnO 4 − ( aq ) concentrations by dilution of the\nstock solution.\nStep 2: Rinse the cuvette with distilled water.\nStep 3: Rinse the cuvette with the standard solution and fill the cuvette with the standard solution.\nStep 4: Measure the absorbance of the standard solution with the colorimeter.\nStep 5: Repeat steps 2-4 for each of the standard solutions.\nThe data are plotted in the calibration curve shown. One of the data points (indicated with an arrow) on the\ncalibration curve is below the line of best fit.\n(c) Assuming that all lab equipment is functioning properly, identify which one of the procedural steps the student\ncould have executed incorrectly that would explain why the marked data point is below the line of best fit.\nJustify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2022F6.png"
+ },
+ {
+  "id": "AP2022F7",
+  "year": 2022,
+  "q": 7,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 7: Equilibrium"
+  ],
+  "title": "2022 AP Chemistry free-response question 7 (short, 4 points)",
+  "text": "7. A Lewis electron-dot diagram of the oxalate ion, C 2 O 4 2 − , is shown.\n(a) Identify the hybridization of the valence orbitals of either carbon atom in the oxalate ion.\n(b) Silver oxalate, Ag 2 C 2 O 4 (s ) , is slightly soluble in water. The value of K sp for Ag 2 C 2 O 4 is 5.40 ¥ 10 −12 .\n(i) Write the expression for the solubility-product constant, K sp , for Ag 2 C 2 O 4 .\n(ii) Calculate the molar solubility of Ag 2 C 2 O 4 in neutral distilled w ater.\n(iii) The molar solubility of Ag 2 C 2 O 4 increases when it is dissolv ed in 0. 5 M H ClO 4 ( aq ) instead of\nneutral distilled water. Write a balanced, net-ionic equation for the process that occurs between\nspecies in solution that contributes to the increased solubility of Ag 2 C 2 O 4 (aq) in HClO 4 (aq ) .",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2022F7.png"
+ },
+ {
+  "id": "AP2023F1",
+  "year": 2023,
+  "q": 1,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 1: Atomic Structure and Properties",
+   "Unit 4: Chemical Reactions",
+   "Unit 9: Applications of Thermodynamics"
+  ],
+  "title": "2023 AP Chemistry free-response question 1 (long, 10 points)",
+  "text": "1. Answer the following questions related to manganese compounds.\n(a) Manganese has several common oxidation states.\n(i) Write the complete electron configuration for an Mn atom in the ground state.\n(ii) When manganese forms cations, electrons are lost from which subshell first? Identify both the number\nand letter associated with the subshell.\nA student performs an experiment to produce a manganese salt of unknown composition, Mn x Cl y (aq) , and\ndetermine its empirical formula. The student places a sample of Mn(s) in a beaker containing excess HCl(aq) , as\nrepresented by the following equation.\ny\nx Mn(s) + y HCl(aq) → Mn x Cl y (aq) +\nH 2 ( g)\nThe student heats the resulting mixture until only Mn x Cl y (s) remains in the beaker. The data are given in the\nfollowing table.\n60.169 g\nMass of empty beaker\nMass of beaker and Mn(s)\n61.262 g\nMass of beaker and Mn x Cl y after heating to constant mass\n62.673 g\n(b) Calculate the mass of Cl in the sample of Mn x Cl y (s) remaining in the beaker.\n(c) Calculate the number of moles of Cl in the sample of Mn x Cl y (s) remaining in the beaker.\n(d) The student determines that 0.0199 mol of Mn was used in the experiment. Use the data to determine the\nempirical formula of the Mn x Cl y (s) .\n(e) The student repeats the experiment using the same amounts of Mn and HCl and notices that some of the\nMn x Cl y splatters out of the beaker as it is heated to dryness. Will the number of moles of Cl calculated for\nthis trial be greater than, less than, or equal to the number calculated in part (c) ? Justify your answer.\n(f) Another compound of manganese, MnO 2 , is used in alkaline batteries, represented by the following diagram.\nSome half-reactions are given in the table.\n(i) Based on the half-reactions given in the table, write the balanced net ionic equation for the reaction that\nhas the greatest thermodynamic favorability.\n\u0002\n(ii) Calculate the value of E cell\nfor the overall reaction.\n(iii) Calculate the value of ΔG° in kJ/mol rxn .\n(iv) A student claims that the total mass of an alkaline battery decreases as the battery operates because the\nanode loses mass. Do you agree with the student’s claim? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2023F1.png"
+ },
+ {
+  "id": "AP2023F2",
+  "year": 2023,
+  "q": 2,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 6: Thermodynamics",
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 7: Equilibrium"
+  ],
+  "title": "2023 AP Chemistry free-response question 2 (long, 10 points)",
+  "text": "2. In the gas phase, AlCl 3 is a molecular substance. A reaction of gaseous AlCl 3 at high temperature is represented\nby the following balanced equation.\nReaction 1: AlCl 3 (g) → Al(g) + 3 Cl(g) ΔH 1 \u0002 = ?\n(a) How many grams of Cl(g) can be formed from 1.25 mol of AlCl 3 (g) ?\nAdditional reactions that involve Al or Cl are shown in the following table.\nΔH rxn\n\u0002\n(kJ/mol rxn )\nReaction Number\nEquation\nAl(s) +\nCl 2 (g) → AlCl 3 (g)\n−583\nAl(s) → Al(g)\n+326\nCl 2 (g) → 2 Cl(g)\n+243\n(b) Calculate the value of ΔH 1 \u0002 , in kJ/mol rxn , for reaction 1 above using reactions 2, 3, and 4.\n(c) A potential energy diagram for Cl 2 is shown in the following graph.\n(i) Based on the graph, what is the bond length, in picometers, for Cl 2 ?\n_________\n(ii) A student finds that the average Al − Cl bond length is 220 picometers and the average bond energy is\n425 kJ/mol . Draw the potential energy curve for the average Al − Cl bond on the preceding graph.\n(d) Three proposed Lewis diagrams for the AlCl 3 (g) molecule are shown.\n(i) The AlCl 3 (g) molecule has a trigonal planar geometry. Which diagram (1, 2, or 3) can be eliminated\nbased on geometry? Justify your choice based on VSEPR theory.\n(ii) Which of the three diagrams is the best representation for the bonding in AlCl 3 ? Justify your choice\nbased on formal charges.\nAlCl 3 is known to dimerize reversibly in the gas phase. The dimerization equilibrium is represented by the\nfollowing equation.\n2 AlCl 3 (g) \u0003 Al 2 Cl 6 (g)\n(e) Write the expression for the equilibrium constant, K p , for this reaction.\nA particle-level diagram of an equilibrium mixture of AlCl 3 (g) and Al 2 Cl 6 (g) at 400°C in a 25 L closed\ncontainer is shown.\n(f) Using the particle-level diagram, calculate the value of K p for the reaction if the total pressure in the container\nis 22.1 atm .",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2023F2.png"
+ },
+ {
+  "id": "AP2023F3",
+  "year": 2023,
+  "q": 3,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 5: Kinetics",
+   "Unit 4: Chemical Reactions"
+  ],
+  "title": "2023 AP Chemistry free-response question 3 (long, 10 points)",
+  "text": "3. Answer the following questions about an experiment in which CaCO 3 (s) is combined with HCl(aq) , represented\nby the following balanced equation.\nCaCO 3 (s) + 2 HCl(aq) → CaCl 2 (aq) + CO 2 (g) + H 2 O(l)\n(a) Write the balanced net ionic equation for the reaction.\nA student performs an investigation to study factors that affect the rate of the reaction. In each trial the student\ncombines 50.0 mL of HCl(aq) at 21.2° C with 1.00 g of CaCO 3 (s) and measures the time required for the\nreaction to go to completion. The data are given in the following table.\nParticle Size of\nConcentration of\nTime of Reaction\nTrial\nHCl(aq) ( M )\nCaCO 3 (s )\n(s)\n1.00\nFine powder\n1.00\nSmall chunks\n1.00\nLarge chunk\n3.00\nFine powder\n3.00\nSmall chunks\n3.00\nLarge chunk\n(b) The student correctly identifies that trial 5 is inconsistent with the other trials. Explain why the student’s claim\nis correct using the data in the table.\n(c) Based on the reaction conditions and the collisions that occur between particles, explain the reason for the\ndifference in the reaction times for trial 2 and trial 3.\n(d) The student claims that the reaction is zero order with respect to HCl(aq) . Do you agree or disagree with the\nstudent’s claim? Justify your answer using the student’s data.\n(e) The HCl(aq) was present in excess in all trials of the experiment. Determine the molarity of the HCl(aq) in\nthe beaker after the reaction is complete in trial 2. Assume that the volume of the mixture remains constant at\n50.0 mL throughout the trial. (The molar mass of CaCO 3 is 100.09 g/mol .)\nCaCO 3 (s) + 2 HCl(aq) → CaCl 2 (aq) + CO 2 (g) + H 2 O(l)\nIn order to measure the enthalpy of the reaction shown, the student repeats trial 1 by mixing 50.0 mL of HCl(aq)\nwith 1.00 g of CaCO 3 (s) using a coffee cup calorimeter. The student records the temperature of the system every\n20 seconds. The data are given in the following table.\nMeasured Temperature of\nTime (s)\nSolution ( ° C)\n21.20\n21.51\n21.70\n21.85\n21.90\n21.90\n(f) Is the reaction endothermic or exothermic? Justify your answer using the information in the table.\n(g) Based on the experimental data, the mass of the system is 51.0 g , and the specific heat of the reaction mixture\nis 4.0 J / (g · ° C) .\n(i) Calculate the magnitude of heat transfer, q , in joules.\n(ii) Calculate the enthalpy of reaction in units of kJ/mol rxn . Include the algebraic sign on your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2023F3.png"
+ },
+ {
+  "id": "AP2023F4",
+  "year": 2023,
+  "q": 4,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 8: Acids and Bases"
+  ],
+  "title": "2023 AP Chemistry free-response question 4 (short, 4 points)",
+  "text": "4. A student is asked to prepare a buffer solution made with equimolar amounts of CH 3 NH 2 (aq) and CH 3 NH 3 Cl(s) .\nThe student uses 25.00 mL of 0.100 M CH 3 NH 2 (aq) , which contains 0.00250 mol of CH 3 NH 2 , to make the\nbuffer.\n(a) Calculate the mass of CH 3 NH 3 Cl(s) that contains 0.00250 mol of CH 3 NH 3 Cl .\nThe student has the following materials and equipment available.\n• 50 mL beaker\n• Distilled water\n• Electronic balance\n• Pipets\n• 0.100 M CH 3 NH 2 (aq)\n• 10.0 mL graduated cylinder\n• pH meter\n• Weighing paper\n• Solid CH 3 N H 3 Cl\n• 50.00 mL buret\n• Small spatula\n(b) The following table contains a partial procedure for making the buffer solution. Fill in steps 1 and 4 to\ncomplete the procedure using only materials and equipment selected from the choices given. (Not all materials\nlisted will be used. Assume that all appropriate safety measures are already in place.)\nStep\nProcedure\nPlace the solid in the 50 mL beaker.\nClean the buret and rinse with distilled water.\nUse the buret to add 25.00 mL of 0.100 M CH 3 NH 2 ( aq ) to the beaker.\nMix well.\nCheck the pH with the pH meter.\nThe value of K b for CH 3 NH 2 (aq) is 4.4 ¥ 10 −4 , and the pH of the buffer the student prepared is 10.64 .\n(c) The student prepares a second buffer solution. The student uses 25.00 mL of 0.050 M CH 3 NH 2 (aq) instead\nof 25.00 mL of 0.100 M CH 3 NH 2 (aq) , and half the mass of CH 3 NH 3 Cl(s) that was used in the first buffer. Is\nthe pH of the second buffer greater than, less than, or equal to the pH of the first buffer? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2023F4.png"
+ },
+ {
+  "id": "AP2023F5",
+  "year": 2023,
+  "q": 5,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 3: Intermolecular Forces and Properties",
+   "Unit 8: Acids and Bases"
+  ],
+  "title": "2023 AP Chemistry free-response question 5 (short, 4 points)",
+  "text": "5. HCl is a molecular gas as a pure substance but acts as an acid in aqueous solution.\n(a) A sample of HCl(g) is stored in a rigid 6.00 L container at 7.45 atm and 296 K .\n(i) Calculate the number of moles of HCl(g) in the container.\n(ii) The rigid 6.00 L container of HCl(g) is cooled to a temperature of 271 K . Calculate the new pressure,\nin atm, of the HCl(g) .\n(b) When HCl ionizes in aqueous solution, Cl − (aq) ions are formed. In the following box, draw three water\nmolecules with proper orientation around the Cl − ion. Use\nto represent water molecules.\nAcid (HA) Anion ( A − )\nK a Value\nNO 2 −\n5.6 ¥ 10 −4\nHNO 2\nCl −\n2.0 ¥ 10 7\nHCl\nClO 4 −\n1.6 ¥ 10 15\nHClO 4\nThe K a values for three acids are shown in the preceding table.\n(c) The following particulate diagram represents the ionization of one of the acids in the data table. Water\nmolecules have been omitted for clarity. Which acid ( HNO 2 , HCl , or HClO 4 ) is represented in the diagram?\nJustify your answer using the information in the table.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2023F5.png"
+ },
+ {
+  "id": "AP2023F6",
+  "year": 2023,
+  "q": 6,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 3: Intermolecular Forces and Properties",
+   "Unit 2: Molecular and Ionic Compound Structure and Properties"
+  ],
+  "title": "2023 AP Chemistry free-response question 6 (short, 4 points)",
+  "text": "6. Answer the following questions related to HBr(l) and HF(l) .\n(a) In the following table, list all of the types of intermolecular forces present in pure samples of HBr(l) and\nHF(l) .\nHBr(l)\nHF(l)\nLiquid\nIntermolecular\nforces present\n\u0002\n(b) The enthalpy of vaporization, ΔH vap\n, for each liquid is provided in the following table.\nHBr ( l)\nHF ( l )\nLiquid\n\u0002\nΔH vap\n17.3 kJ / mol 25.2 kJ / mol\n\u0002\n(i) Based on the types and relative strengths of intermolecular forces, explain why ΔH vap\nof HF(l) is greater\nthan that of HBr(l) .\n(ii) Calculate the amount of thermal energy, in kJ , required to vaporize 6.85 g of HF(l) .\n(c) Based on the arrangement of electrons in the Br and F atoms, explain why the bond length in an HBr\nmolecule is greater than that in an HF molecule.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2023F6.png"
+ },
+ {
+  "id": "AP2023F7",
+  "year": 2023,
+  "q": 7,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 7: Equilibrium"
+  ],
+  "title": "2023 AP Chemistry free-response question 7 (short, 4 points)",
+  "text": "7. Strontium hydroxide dissolves in water according to the following equation. The K sp expression for strontium\nhydroxide is provided.\nSr(OH) 2 (s) \u0003 Sr 2+ (aq) + 2 OH − (aq)\nK sp = [Sr 2+ ][OH − ] 2\n(a) A student draws the particulate diagram shown to represent the ions present in an aqueous solution of\nSr(OH) 2 . (Water molecules are intentionally omitted.) Identify the error in the student’s drawing.\n(b) The student prepares a saturated solution by adding excess Sr(OH) 2 (s) to distilled water and stirring until no\nmore solid dissolves. The student then determines that [Sr 2+ ] = 0.043 M in the solution.\n(i) Calculate the value of [OH − ] in the solution.\n(ii) Calculate the value of K sp for Sr(OH) 2 .\n(c) The student prepares a second saturated solution of Sr( OH) 2 in aqueous 0.10 M Sr(NO 3 ) 2 instead of water.\nWill the value of [OH − ] in the second solution be greater than, less than, or equal to the value in the first\nsolution? Justify your answer. (Assume constant temperature.)",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2023F7.png"
+ },
+ {
+  "id": "AP2024F1",
+  "year": 2024,
+  "q": 1,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 8: Acids and Bases"
+  ],
+  "title": "2024 AP Chemistry free-response question 1 (long, 10 points)",
+  "text": "C 3 H 6 O 3 ( aq ) + NaOH ( aq ) → NaC 3 H 5 O 3 ( aq ) + H 2 O ( l )\n1. A student is studying the reaction between lactic acid, C 3 H 6 O 3 , and sodium hydroxide, NaOH , as represented in\nthe balanced equation above.\n(a) The structural formula of lactic acid is shown in the following diagram. Circle the hydrogen atom that most\nreadily participates in the chemical reaction with sodium hydroxide.\n(b) The student begins the experiment by dissolving 10.22 g of sodium hydroxide (molar mass 40.00 g / mol ) in\nenough water to produce 500. mL of solution. Calculate the molarity of the sodium hydroxide solution.\nThe student uses the sodium hydroxide solution from part (b), a buret, a pH meter, and a 100 mL Erlenmeyer\nflask to titrate a 25.0 mL sample of lactic acid solution. The student’s data are shown in the following graph.\n(c) Use the information in the graph to determine the approximate pK a of lactic acid. ____________\n(d) The preceding diagram represents the relative amounts of major species in a sample of the solution in the flask\nat one point during the titration. (Note that water molecules are omitted.)\n(i) Draw an X on the preceding titration curve at a point in the titration where the reaction mixture would\nbe represented by this diagram.\n(ii) Justify your answer.\nExperiment Mass of NaOH( s ) (grams) Volume of Solution ( mL )\nTitration Curve\n10.22\n500.\nAlready shown on graph\n20.44\n500.\n?\n(iii) The student repeats the experiment but uses a solution of NaOH( aq ) with twice the concentration, as\nshown in the preceding table. On the following graph, draw the titration curve that would be expected\nfor experiment 2.\n(e) In a third experiment, the student investigates the enthalpy of the reaction between lactic acid and sodium\nhydroxide. The student combines 100.0 mL of a 0.500 M lactic acid solution at 20.0°C with 100.0 mL of a\n0.500 M NaOH solution at 20.0°C in a calorimeter. The final temperature of the resulting combined solution\nis 23.2°C . Assume that the density of each solution before combining is 1.00 g / mL and that the specific heat\ncapacity of the combined solution is 4.2 J / ( g · ° C ) .\n(i) Calculate the quantity of heat produced in the reaction, in J .\n(ii) Calculate the molar enthalpy of reaction, in kJ / mol rxn . Include the sign in your answer.\n(iii) The student claims that if heat is lost from the calorimeter to the surrounding air during the reaction,\nthen the experimental value of the molar enthalpy of reaction will be smaller in magnitude than the\nactual value. Do you agree or disagree with the student’s claim? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2024F1.png"
+ },
+ {
+  "id": "AP2024F2",
+  "year": 2024,
+  "q": 2,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 4: Chemical Reactions",
+   "Unit 9: Applications of Thermodynamics",
+   "Unit 8: Acids and Bases"
+  ],
+  "title": "2024 AP Chemistry free-response question 2 (long, 10 points)",
+  "text": "2. A chemical reaction between maleic acid ( H 2 C 4 H 2 O 4 ) and sodium bicarbonate ( NaHCO 3 ) occurs in the presence\nof water to produce carbon dioxide and sodium maleate ( Na 2 C 4 H 2 O 4 ) , as represented by the following equation.\nH 2 C 4 H 2 O 4 ( aq ) + 2 NaHCO 3 ( aq ) → 2 CO 2 ( g ) + 2 H 2 O ( l ) + Na 2 C 4 H 2 O 4 ( aq )\n(a) A student combines equal masses of H 2 C 4 H 2 O 4 ( s ) chunks and NaHCO 3 ( s ) chunks with sufficient water at\n20.0 ° C . The student determines that 0.0114 mol of CO 2 ( g ) is produced after the reaction goes to completion.\n(i) Calculate the number of grams of CO 2 ( g ) produced.\n(ii) The CO 2 ( g ) produced from the reaction at 20.0 ° C was collected and found to have a pressure of\n1.25 atm . Calculate the volume of CO 2 ( g ) , in liters.\n(b) The student performs a second experiment that is identical to the first except that the student grinds the chunks\nof H 2 C 4 H 2 O 4 ( s ) and NaHCO 3 ( s ) into powder before combining the powder with water.\n(i) What happens to the surface area of the reactants when the student grinds the chunks into powder?\n(ii) The rate-determining step for the overall reaction is the dissolving of the solids. Would the time\nrequired for the dissolving of the solids in the second experiment be longer than, shorter than, or the\nsame as the time required in the first experiment? Justify your answer based on the collisions between\nparticles.\n(iii) When the reaction is complete, will the volume of CO 2 ( g ) at the end of the second experiment be\ngreater than, less than, or equal to the volume at the end of the first experiment? Justify your answer.\nThe student conducts additional trials of the experiment and produces the following data table.\nMass of H 2 C 4 H 2 O 4 Mass of NaHCO 3 Moles of CO 2 Produced\nTrial\n(mol)\n(grams)\n(grams)\n1.543\n1.251\n0.01489\n1.543\n1.686\n0.02007\n(c) Based on the student’s data, identify the limiting reactant in trial 3. Justify your answer.\n(d) The reaction has a value of Δ S ° greater than zero. Using particle-level reasoning, explain why the entropy\nincreases as the reaction progresses.\nThe student notices that the temperature of the reaction mixture decreases as the reaction takes place and correctly\ndetermines that the reaction is endothermic.\n\n(e) The student claims that the reaction is thermodynamically favorable at all temperatures because Δ S rxn\n> 0 and\nthe reaction is endothermic. Do you agree or disagree with the student’s claim? Justify your answer.\nNext, the student investigates the acid-base behavior of maleic acid. The student notes that maleic acid is a\ndiprotic acid. The two acid dissociation processes that occur are represented by the following equations.\nH 2 C 4 H 2 O 4 + H 2 O  HC 4 H 2 O 4 − + H 3 O +\nK a 1 = 1.5 ¥ 10 − 2\nHC 4 H 2 O 4 − + H 2 O  C 4 H 2 O 4 2 − + H 3 O +\nK a 2 = 8.5 ¥ 10 − 7\n(f) Calculate the p K a 2 value for the HC 4 H 2 O 4 − ion.\n(g) A buffer solution with a pH of 7.00 is prepared using C 4 H 2 O 4 2− and HC 4 H 2 O 4 − . Calculate the ratio\n[ C 4 H 2 O 4 2 − ]\nin this solution.\n[ HC 4 H 2 O 4 − ]",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2024F2.png"
+ },
+ {
+  "id": "AP2024F3",
+  "year": 2024,
+  "q": 3,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 1: Atomic Structure and Properties",
+   "Unit 9: Applications of Thermodynamics",
+   "Unit 4: Chemical Reactions"
+  ],
+  "title": "2024 AP Chemistry free-response question 3 (long, 10 points)",
+  "text": "3. Sterling silver is an alloy that is commonly used to make jewelry and consists of 92.5% silver and 7.5% other\nmetals, such as copper, by mass. Over time, the alloy can form a tarnish of Ag 2 S ( s ) when it reacts with hydrogen\nsulfide, as represented by the following equation.\n2 Ag ( s ) + H 2 S ( g ) → Ag 2 S ( s ) + H 2 ( g )\n(a) What are the oxidation numbers of silver in Ag( s ) and Ag 2 S ( s ) ?\nAg ( s ) ___________ Ag 2 S ( s ) ____________\n(b) The following table contains the atomic radii for silver and copper.\nSilver ( Ag ) Copper ( Cu )\nElement\nAtomic radius ( pm )\n(i) Explain why sterling silver is better classified as a substitutional alloy than as an interstitial alloy.\n(ii) Using principles of atomic structure and Coulomb’s law, explain why silver has a larger atomic radius\nthan copper does.\nThe Ag 2 S tarnish on sterling silver can be removed until only sterling silver remains. A student weighs a\ntarnished sterling silver sample both before and after removing the Ag 2 S ( s ) (molar mass 247.80 g / mol ) and\nrecords the data in the following table.\nBefore Tarnish Removal After Tarnish Removal\n409.21 g\n398.94 g\nMass\n(c) Assuming that only Ag 2 S ( s ) is removed, calculate the number of moles of silver atoms removed.\nRhodium plating is a process used to protect sterling silver from tarnishing. This involves electroplating\n(depositing) solid rhodium, Rh( s ) , onto the surface of the metal from an acidified solution of Rh 2 ( SO 4 ) 3 ( aq ) .\nOxygen gas is produced during this process.\n(d) A table of half-reactions related to the overall reaction is provided.\nE ° ( V )\nHalf-Reaction\nRh 3 + ( aq ) + 3 e − → Rh ( s )\n+ 0.80\nO 2 ( g ) + 4 H + ( aq ) + 4 e − → 2 H 2 O ( l )\n+ 1.23\n(i) Write the balanced net ionic equation for plating Rh( s ) from the acidified Rh 2 ( SO 4 ) 3 ( aq ) solution.\n\n(ii) Calculate the value of E cell\nfor the reaction in part (d)(i).\n(iii) Based on your answer to part (d)(ii), explain why this process requires the use of an external power\nsource.\n(e) Calculate the length of time, in seconds, required to plate 2.8 g of Rh( s ) onto a piece of sterling silver if\n2.0 C / s of current is applied.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2024F3.png"
+ },
+ {
+  "id": "AP2024F4",
+  "year": 2024,
+  "q": 4,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 6: Thermodynamics"
+  ],
+  "title": "2024 AP Chemistry free-response question 4 (short, 4 points)",
+  "text": "4. A student performs an experiment to determine the specific heat capacity of a metal. The student places a cube of\nthe metal in boiling water so its temperature will be 100.0 ° C . The student then places the metal cube into a\ncalorimeter that contains water and records the highest temperature of the water. A data table and a diagram of the\nthermometer at the highest temperature are shown.\n_____________\n(a) What should the student report as the highest temperature of the water?\n(b) A particle-level representation of water molecules in the calorimeter before and after the metal cube was added\nis shown. The length of the arrows in the Before diagram represents the speed of the water molecules in the\nsystem. In the After diagram, draw an arrow for each molecule to indicate how the speed of each of the\nmolecules changes after the metal cube is added.\n(c) Assuming the metal transfers 2940 J of thermal energy to the water, calculate the specific heat of the metal in\nJ/ ( g·°C) .\n(d) In a second experiment, 2940 J of thermal energy is transferred from 98.1 g of aluminum, which has a\nspecific heat capacity of 0.897 J / ( g· ° C ) . Explain how the magnitude of the temperature change of the\naluminum, Δ T Al , compares with the magnitude of the temperature change of the metal in the original\nexperiment.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2024F4.png"
+ },
+ {
+  "id": "AP2024F5",
+  "year": 2024,
+  "q": 5,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 7: Equilibrium"
+  ],
+  "title": "2024 AP Chemistry free-response question 5 (short, 4 points)",
+  "text": "5. Hydrogen gas and iodine gas react to form hydrogen iodide at an elevated temperature, as represented by the\nfollowing equation.\nH 2 ( g ) + I 2 ( g )  2 HI ( g )\nΔ H rxn = − 12.19 kJ / mol rxn\n(a) Write the expression for the equilibrium constant, K c , for this reaction.\n(b) H 2 ( g ) and I 2 ( g ) are added to a previously evacuated container and allowed to react.\n(i) At a certain time, the value of the reaction quotient, Q , is 0.67 . The following particle diagram is an\nincomplete representation of the system at this time. The diagram shows the relative number of H 2 ( g )\nand I 2 ( g ) molecules, but the HI( g ) molecules are not included. Draw the number of HI( g ) molecules\nneeded to complete the diagram so that it accurately represents the system.\n(ii) A student monitors the number of moles of HI( g ) over time. Hypothesize an experimental change that\ncould have been applied to the system in the rigid container at time t to result in the change in the\nnumber of moles of HI( g ) shown in the graph. Assume that the student did not add more HI( g ) to the\nsystem.\n(iii) After equilibrium is established, the mixture is transferred to a larger container at constant\ntemperature. As a result, would the number of moles of HI( g ) increase, decrease, or remain the same?\nJustify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2024F5.png"
+ },
+ {
+  "id": "AP2024F6",
+  "year": 2024,
+  "q": 6,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 5: Kinetics"
+  ],
+  "title": "2024 AP Chemistry free-response question 6 (short, 4 points)",
+  "text": "6. At elevated temperatures, NO 2 undergoes decomposition in the gas phase, forming NO and O 2 as represented by\nthe following equation.\n2 NO 2 → 2 NO + O 2\nA scientist measures the change in [ NO 2 ] over the first 100. s of the reaction at 546 ° C . The scientist uses the data\ncollected from the experiment to generate the following two graphs.\nBased on these data, the scientist makes the claim that the rate law for the reaction is rate = k [ NO 2 ] 2 .\n(a) Explain how the graphs indicate that the reaction is second order with respect to NO 2 .\n(b) At a certain point in the reaction, the rate of disappearance of NO 2 is determined to be 6.52 ¥ 10 − 7 M /s .\nDetermine the rate of appearance, in M /s , of O 2 at this same point in the reaction.\n(c) NO 2 is a molecule that contains an odd number of electrons and can be oxidized to form the NO 2 + ion. In\nNO 2 , the unpaired electron is presumed to be localized on the nitrogen atom, as shown in the Lewis diagram in\nthe box on the left.\n(i) In the box on the right, complete the Lewis diagram for NO 2 + . Be sure to show all bonding and\nnonbonding electrons.\n(ii) A student makes the claim that the bond angles in NO 2 and NO 2 + are different from each other. Do\nyou agree or disagree with the student’s claim? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2024F6.png"
+ },
+ {
+  "id": "AP2024F7",
+  "year": 2024,
+  "q": 7,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 3: Intermolecular Forces and Properties",
+   "Unit 4: Chemical Reactions"
+  ],
+  "title": "2024 AP Chemistry free-response question 7 (short, 4 points)",
+  "text": "7. A student conducts a chromatography experiment and needs to prepare 100.0 mL of 0.340 M NaCl( aq ) to use as\nthe solvent.\n(a) Calculate the mass of solid NaCl (molar mass 58.44 g/ mol ) needed to prepare the 100.0 mL of\n0.340 M NaCl( aq ) .\n(b) In the following table, briefly list the additional steps necessary to prepare the 100.0 mL of 0.340 M\nNaCl( aq ) solution using only materials selected from the choices given. Assume that all appropriate safety\nmeasures are already in place. Not all materials in the list may be needed.\n• Solid NaCl\n• Distilled water\n• Weighing paper and scoop\n• 100.0 mL volumetric flask\n• 50.0 mL graduated cylinder\n• Balance\n• Pipet\n• 150 mL beakers\n• Chromatography paper\nStep\nStep Description and Materials Used\n1.\nUse the weighing paper and scoop to measure the correct mass of solid NaCl on the balance.\n2.\n3.\nSwirl the mixture to dissolve the solid NaCl .\n4.\n5.\nStopper and invert the mixture several times to ensure that the mixture is homogeneous.\nThe student uses the NaCl( aq ) solvent to separate a mixture of compounds X and Y in a chromatography\nexperiment. After 30 minutes, the student removes the chromatography paper from the chamber. The results of the\nexperiment are shown.\n(c) A second student conducts the same chromatography experiment but removes the chromatography paper from\nthe chamber after 15 minutes instead of 30 minutes. Predict the effect, if any, this would have on the separation\ndistance between compounds X and Y in the new experiment. Explain your reasoning.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2024F7.png"
+ },
+ {
+  "id": "AP2025F1",
+  "year": 2025,
+  "q": 1,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 1: Atomic Structure and Properties"
+  ],
+  "title": "2025 AP Chemistry free-response question 1 (long, 10 points)",
+  "text": "1. Answer the following questions about magnesium.\nA. An incomplete mass spectrum for magnesium is shown in the diagram.\nThe percent abundance of magnesium-24 is 79%. The percent abundances of the other two\nnatural isotopes of magnesium, magnesium-25 and magnesium-26, are approximately equal.\ni. Complete the mass spectrum in part A by drawing thick lines in the appropriate locations\nto represent the percent abundance of magnesium-25 and magnesium-26.\nii. Describe the difference in atomic structure that accounts for the difference in mass\nbetween magnesium-25 and magnesium-26.\nA student prepares a 1 . 85 × 10 - 3 M solution of Mg ( NO 3 ) 2 ( aq ) in beaker 1 and a 2 . 80 × 10 - 4 M\nsolution of NaOH ( aq ) in beaker 2, as shown.\nB. The particle diagram shown represents a magnesium ion, Mg 2+ , in beaker 1. A sodium\nion, Na + , in beaker 2 has a weaker attraction to water than the Mg 2+ does. Explain this\nphenomenon using Coulomb’s law and each of the following.\ni. The relative charge of the ions\nii. The relative radii of the ions\nC. Calculate the pH of the solution in beaker 2.\nD. A student combines 35.00 mL of 1 . 85 × 10 - 3 M Mg ( NO 3 ) 2 ( aq ) with 50.00 mL of\n2 . 80 × 10 - 4 M NaOH ( aq ) , as shown in the diagram. Calculate 8 Mg 2+ B after the two solutions are\ncombined but before any reaction takes place. (Assume that volumes are additive.)\nE. The dissolution of magnesium hydroxide is represented by the following equation.\nMg ( OH ) 2 ( s ) E Mg 2 + ( aq ) + 2 OH - ( aq )\nK sp = 5 . 61 × 10 - 12\ni. Write the expression for the solubility product constant, K sp .\nii. After the two solutions are combined in beaker 3 as described in part D, but before any\nreaction takes place, 7 OH - A = 1 . 65 × 10 - 4 M . Using your answer to part D, calculate the\nvalue of the reaction quotient, Q.\niii. Using the reaction quotient, Q, predict whether a precipitate should form as the mixture\nin beaker 3 approaches equilibrium. Justify your answer.\nF. In a separate experiment, the student adds HNO 3 ( aq ) to decrease the pH of a saturated\nsolution containing undissolved Mg ( OH ) 2 ( s ) . Does the amount of undissolved Mg ( OH ) 2 ( s )\nincrease, decrease, or remain the same as the HNO 3 ( aq ) is added? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2025F1.png"
+ },
+ {
+  "id": "AP2025F2",
+  "year": 2025,
+  "q": 2,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 1: Atomic Structure and Properties",
+   "Unit 8: Acids and Bases"
+  ],
+  "title": "2025 AP Chemistry free-response question 2 (long, 10 points)",
+  "text": "2. Answer the following questions about ascorbic acid (vitamin C).\nA. A student combusts a sample of ascorbic acid, C x H y O x , to determine its chemical\ncomposition. The only products of the reaction are 0.2400 mol of CO 2 and 2.883 g of H 2 O .\ni. Calculate the number of moles of H 2 O produced.\nii. The mole ratio of carbon ( C ) to oxygen ( O ) is 1:1 in ascorbic acid. Based on this\ninformation and your answer to part A (i), determine the empirical formula of ascorbic\nacid.\nB. Ascorbic acid, HAsc ( aq ) , acts as a weak acid, as shown in the equation.\nHAsc ( aq ) + H 2 O ( l ) E H 3 O + ( aq ) + Asc - ( aq )\nThe following titration curve was produced when a 10.0 mL sample of HAsc ( aq ) was titrated\nusing 0 . 0550 M NaOH ( aq ) .\ni. Calculate the molar concentration of the ascorbic acid solution.\nii. From the titration curve, determine the approximate pK a of ascorbic acid.\n7 Asc - A\niii. What is the value of the ratio\n7 HAsc A\nwhen the pH of the solution is 4.7?\nC. Dehydroascorbic acid ( DHAsc ) can be produced by reacting ascorbic acid with the triiodide\nion, I 3- , as represented by the following equation.\nHAsc + I 3 - \" DHAsc + 3 I - + 2 H +\nThe student runs three trials of the reaction with different initial concentrations of HAsc and\nI 3- , producing the following data.\n7 I 3- A _ M i\n[ HAsc ] _ M i\nInitial Rate of\nTrial\nDHAsc Formation _ M /s i\n0.450\n1.200\n2 . 457 × 10 - 4\n1 . 229 × 10 - 4\n0.450\n0.600\n4 . 914 × 10 - 4\n0.900\n1.200\ni. The rate law for the reaction is rate = k 7 HAsc A 7 I 3 - A . Explain how the data in the table\nsupport the conclusion that the reaction is first order with respect to 7 HAsc A .\nii. Calculate the value of the rate constant, k, for the reaction. Include units with your\nanswer.\nD. The triiodide ion, I 3- , is significantly more soluble in water than elemental iodine, I 2 , is.\nIdentify an intermolecular force between I 3- and water that is not present between I 2 and\nwater, which could explain the difference in solubility. Lewis diagrams for I 2 and I 3- are\nprovided.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2025F2.png"
+ },
+ {
+  "id": "AP2025F3",
+  "year": 2025,
+  "q": 3,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 6: Thermodynamics",
+   "Unit 9: Applications of Thermodynamics"
+  ],
+  "title": "2025 AP Chemistry free-response question 3 (long, 10 points)",
+  "text": "3. White phosphorus is composed of P 4 molecules with a tetrahedral structure, as shown in the\ndiagram on the left. Each P atom is bonded to the other three P atoms by single bonds, as shown\nin the incomplete Lewis diagram on the right.\nA. In the box in part A, complete the Lewis diagram for P 4 by drawing the nonbonding\nelectrons.\nB. The reaction of white phosphorus with oxygen to form P 4 O 10 ( s ) is thermodynamically\nfavorable at 298 K. The reaction is represented by equation 1.\nEquation 1: P 4 ( s ) + 5 O 2 ( g ) \" P 4 O 10 ( s )\ni. The entropy change of the reaction, T S c , is negative. Using particle-level reasoning,\nexplain why the entropy decreases as the reaction progresses.\nii. The enthalpy change of the reaction, T H c , is also negative. A student claims that the\nfavorability of the reaction is driven by enthalpy and not by entropy. Is the student’s\nclaim correct? Justify your answer by using the relationship between T G c , T H c , and T S c .\nP 4 O 10 ( s ) reacts exothermically with water to form phosphoric acid, as represented by\nequation 2.\nEquation 2: P 4 O 10 ( s ) + 6 H 2 O ( l ) \" 4 H 3 PO 4 ( aq )\nA chemist uses a calorimetry experiment to determine the enthalpy change for the reaction, as\nrepresented by the following diagram.\nC. The chemist carries out the calorimetry experiment and records the following information.\nMass of P 4 O 10\n0.100 g\nMass of H 2 O\n100.0 g\nInitial temperature\n22 . 00° C\nFinal temperature\n22 . 38° C\nMolar mass of P 4 O 10\n283.9 g / mol\n4.18 J / _ g ·° C i\nSpecific heat of H 2 O\ni. Calculate the amount of heat, q, released during the experiment, in kJ. Assume that the\nspecific heat of the solution is the same as that of water.\n% for equation 2 in kJ / mol rxn . Include the sign in your answer.\nii. Calculate the value of T H rxn\nD. The chemist weighed out 0.100 g P 4 O 10 of and 100.0 g of H 2 O to perform a second trial. In the\nsecond trial, some of the solid P 4 O 10 stuck to the weighing paper and was not transferred to\nthe calorimeter. Given that P 4 O 10 is the limiting reactant, would T T for the second trial be\ngreater than, less than, or equal to the value in the first trial? Justify your answer.\nP 4 ( s ) also reacts readily with Cl 2 ( g ) to produce phosphorus trichloride, PCl 3 ( g ) , which in turn\nreacts with Cl 2 ( g ) in an equilibrium process to produce PCl 5 ( g ) . The reactions are represented\nby equations 3 and 4.\nEquation 3: P 4 ( s ) + 6 Cl 2 ( g ) \" 4 PCl 3 ( g )\nT H 1 % = - 1148 kJ / mol rxn\nT H 2 % = - 88 kJ / mol rxn\nEquation 4: PCl 3 ( g ) + Cl 2 ( g ) E PCl 5 ( g )\nE. Calculate the standard enthalpy of formation of PCl 5 ( g ) represented by equation 5.\nEquation 5: 4 P 4 _ s i + 2 Cl 2 _ g i \" PCl 5 _ g i\nT H % f = ?\nThe following particle-level diagram represents the contents of the vessel in an equilibrium\nmixture at 546 K involving equation 4.\nF. Equation 4 for the reaction that occurs is shown.\nEquation 4: PCl 3 ( g ) + Cl 2 ( g ) E PCl 5 ( g )\nT H 2 % = - 88 kJ / mol rxn\ni. If each particle in the diagram represents a partial pressure of 1.00 atm, what is the value\nof K p for the equilibrium mixture at 546 K?\nii. Does the value of K p increase, decrease, or remain the same when the temperature is\nincreased to 596 K? Justify your answer based on T H 2 % .",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2025F3.png"
+ },
+ {
+  "id": "AP2025F4",
+  "year": 2025,
+  "q": 4,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 3: Intermolecular Forces and Properties"
+  ],
+  "title": "2025 AP Chemistry free-response question 4 (short, 4 points)",
+  "text": "4. A scientist is investigating the properties of a mixture of CH 3 OH and H 2 CO . The scientist\ngenerates the following diagram to represent the mixture.\nA. Identify the hybridization of the valence orbitals of the C atom in the H 2 CO molecule.\nB. In the diagram provided, draw a SINGLE dashed line (----) to represent a strong hydrogen-\nbonding attraction between one CH 3 OH molecule and one H 2 CO molecule in the mixture.\nC. The scientist plans to cool a gaseous mixture of CH 3 OH and H 2 CO to form a liquid mixture\nand finds data on the two compounds. The data are summarized in the table.\nMelting Point\nBoiling Point\nEnthalpy of Vaporization\nSubstance\n(K)\n(K)\n( kJ / mol )\n37.6\nCH 3 OH\n24.2\nH 2 CO\ni. Propose a temperature to which the mixture should be cooled such that CH 3 OH and\nH 2 CO will both be liquids.\nii. The scientist analyzes the mixture after it is cooled and determines that 8.59 g of\nCH 3 OH ( l ) is present. Calculate the amount of thermal energy, in kJ, that was removed to\ncondense the 8.59 g of CH 3 OH (molar mass 32.04 g / mol ) at its boiling point.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2025F4.png"
+ },
+ {
+  "id": "AP2025F5",
+  "year": 2025,
+  "q": 5,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 3: Intermolecular Forces and Properties"
+  ],
+  "title": "2025 AP Chemistry free-response question 5 (short, 4 points)",
+  "text": "5. Complete Lewis diagrams and some physical properties for compounds X and Y are given.\nCompound\nX\nY\nLewis diagram\nMolar mass\n74.1 g / mol\n90.2 g / mol\nBoiling point\n82° C\n98° C\nA. Based on VSEPR theory, predict the geometry around the Si atom in compound Y.\nB. A student claims that compound Y has a higher boiling point than that of compound X\nbecause compound Y has stronger London dispersion forces. Do you agree or disagree?\nJustify your answer.\nC. An equimolar mixture of the two compounds is heated. When the mixture reaches 82° C ,\nwhich compound will have the higher vapor pressure? Justify your answer.\nD. The mixture is heated to 198° C in a sealed, rigid 12.5 L container, at which point both\nsubstances are gases and the total pressure in the container is 2.30 atm. Calculate the number\nof moles of gas particles in the container.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2025F5.png"
+ },
+ {
+  "id": "AP2025F6",
+  "year": 2025,
+  "q": 6,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 9: Applications of Thermodynamics"
+  ],
+  "title": "2025 AP Chemistry free-response question 6 (short, 4 points)",
+  "text": "6. A scientist constructs a galvanic cell as shown in the diagram. As the cell operates, the Zn ( s )\nelectrode increases in mass and the Al ( s ) electrode decreases in mass. A data table with the\nstandard reduction potentials for the substances follows the diagram.\nE c _ V i\nHalf-Reaction\nZn 2 + ( aq ) + 2 e - \" Zn ( s )\n- 0 . 76\nAl 3 + ( aq ) + 3 e - \" Al ( s )\n- 1 . 66\nA. Write the half-reaction for the oxidation that occurs at the anode.\nB. Write the balanced net ionic equation for the overall reaction that occurs in the galvanic cell.\nC. Initially, each electrode has a mass of 50.0 g. The cell is allowed to run for a period of time\nand is then stopped. Which electrode’s mass changed the most? Justify your answer with a\ncalculation.\nE c _ V i\nReduction Half-Reaction\nAu 3 + ( aq ) + 3 e - \" Au ( s )\n+ 1 . 50\nZn 2 + ( aq ) + 2 e - \" Zn ( s )\n- 0 . 76\nMn 2 + ( aq ) + 2 e - \" Mn ( s )\n- 1 . 19\nAl 3 + ( aq ) + 3 e - \" Al ( s )\n- 1 . 66\nBe 2 + ( aq ) + 2 e - \" Be ( s )\n- 1 . 85\nD. The standard Zn / Al cell has a value of E cell\n% equal to 0.90 V. The scientist needs a galvanic cell\nthat produces a greater voltage. The scientist has access to the chemical systems in the table.\nIf the scientist uses the Zn half-cell and one of the other options from the table, what is the\nMAXIMUM voltage that could be generated at standard conditions?",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2025F6.png"
+ },
+ {
+  "id": "AP2025F7",
+  "year": 2025,
+  "q": 7,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 8: Acids and Bases",
+   "Unit 2: Molecular and Ionic Compound Structure and Properties"
+  ],
+  "title": "2025 AP Chemistry free-response question 7 (short, 4 points)",
+  "text": "7. Answer the following questions about the glycolate ion, C 2 H 3 O 3- , which acts as a base in\naqueous solution. A Lewis diagram for the ion is provided.\nA. On the Lewis diagram in part A, circle the atom that accepts the proton when the glycolate\nion reacts with water.\nWhen the glycolate ion reacts with water, it forms glycolic acid, HC 2 H 3 O 3 , according to the\nfollowing equation. The K b expression for the reaction is provided.\n8 HC 2 H 3 O 3 B 8 OH - B\nC 2 H 3 O 3 - ( aq ) + H 2 O ( l ) E HC 2 H 3 O 3 ( aq ) + OH - ( aq )\nK b =\n7 C 2 H 3 O 3 - A\nB. At 25° C , a 2 . 5 M solution of glycolate is found to have 7 OH - A = 1 . 3 # 10 - 5 M .\ni. Calculate the value of K b for the glycolate ion.\nii. Using your answer to part B (i), calculate the value of K a for glycolic acid at 25° C .\nGlycolic acid can be produced from the hydrolysis of methyl glycolate, C 3 H 6 O 3 . A proposed\nmechanism for the reaction is given.\nStep 1: C 3 H 6 O 3 + H 3 O + E C 2 H 5 O 3 + + CH 3 OH\nStep 2: C 2 H 5 O 3 + + H 2 O E HC 2 H 3 O 3 + H 3 O +\nOverall: C 3 H 6 O 3 + H 2 O E HC 2 H 3 O 3 + CH 3 OH\nC. A student claims that H 3 O + is a catalyst for the reaction. Do you agree or disagree? Justify\nyour answer based on the mechanism given.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2025F7.png"
+ },
+ {
+  "id": "AP2026F1",
+  "year": 2026,
+  "q": 1,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 1: Atomic Structure and Properties",
+   "Unit 6: Thermodynamics"
+  ],
+  "title": "2026 AP Chemistry free-response question 1 (long, 10 points)",
+  "text": "1. A student performs a calorimetry experiment with KCl .\nPart A\nConsider the K ion in KCl .\n+\ni. Write the complete ground-state electron configuration for the potassium ion, K .\n+\nii. Which has the larger radius, the K ion or the K atom? Explain your reasoning using\n+\nprinciples of atomic structure.\nThe following information applies to parts B, C, D, and E.\nA student performs an experiment to determine the enthalpy of solution, D H soln , of KCl . The\nstudent places water in a calorimeter, measures the initial temperature, adds KCl ( s ) , and stirs\nuntil the KCl dissolves completely. The temperature is continuously monitored during the\nexperiment. Data from the experiment are given in the following table.\nMass of water\n97 . 5 g\nMass of KCl ( s )\n6 . 80 g\nInitial temperature of water\n24 . 5 c C\nFinal temperature of solution\n21 . 1 c C\nPart B\nDescribe how the student can use the temperature readings during the experiment to\ndetermine when the dissolution is complete.\nPart C\nUse the data in the table to do the following.\ni. Calculate the magnitude of the thermal energy, q, in joules, transferred during the\ndissolution. Show the work that leads to your answer. (Assume that the solution has a\nspecific heat capacity of 3 . 95 J / ( g· c C ) .)\nii. Calculate the value of the molar enthalpy of solution, D H soln , in kJ / mol , for KCl given\nthat 0 . 0912 mol of KCl dissolved. Show the work that leads to your answer. Include the\nsign with your answer.\nPart D\nThe calorimeter is not perfectly insulated. Would this cause the magnitude of D H soln calculated\nin part C (ii) to be greater than, less than, or equal to the accepted value? Justify your answer.\nPart E\nThe student performs a second experiment using the same mass of water but 6 . 80 g of RbCl ( s )\ninstead of 6 . 80 g of KCl ( s ) . The magnitude of the molar enthalpy of solution, D H soln , of RbCl is\napproximately equal to that of KCl .\nIs the magnitude of D T in the RbCl experiment greater than, less than, or equal to that in the\nKCl experiment? Justify your answer. (Assume that the specific heat capacities of the solutions\nare equal.)\nPart F\nRbCl has a K sp of 57 at 20 c C .\ni. Write the net ionic equation for the dissolution of RbCl in pure water.\nii. Calculate the molar solubility of RbCl in a saturated solution at 20 c C . Show the work\nthat leads to your answer.\niii. A second saturated solution is prepared by dissolving RbCl ( s ) in 1 . 0 M KCl ( aq ) at 20 c C\ninstead of in pure water. Will the molar solubility of RbCl in 1 . 0 M KCl ( aq ) be greater\nthan, less than, or equal to the molar solubility calculated in part F (ii)? Justify your\nanswer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2026F1.png"
+ },
+ {
+  "id": "AP2026F2",
+  "year": 2026,
+  "q": 2,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 4: Chemical Reactions"
+  ],
+  "title": "2026 AP Chemistry free-response question 2 (long, 10 points)",
+  "text": "2. Answer the following questions about the chromate ion, CrO 42- , and the dichromate ion,\nCr 2 O 72- .\nPart A\nThe bonds between chromium and oxygen in CrO 42- can be represented as covalent bonds. One\npossible Lewis diagram for the CrO 42- ion is shown in Figure 1.\nFigure 1\ni. Based on VSEPR theory, predict the molecular geometry of the CrO 42- ion.\nii. On Figure 2, draw a complete Lewis diagram for a resonance structure of CrO 42- that\nresults in a formal charge of zero on two of the O atoms and a formal charge of - 1 on the\nother two O atoms. Your diagram should contain the same number of valence electrons\nas in Figure 1.\nFigure 2\nPart B\nWhen reacted with a strong acid like HNO 3 ( aq ) , CrO 42- ^ aq h can be converted to Cr 2 O 72- ^ aq h\nand H 2 O ( l ) in a reversible reaction.\ni. Write a balanced net ionic equation for the reaction between CrO 42- ^ aq h and a strong\nacid.\nii. Is the reaction a redox reaction? Justify your answer based on the oxidation number of\nCr .\nThe following information applies to parts C and D.\nIn acidic solutions, Cr 2 O 72- ^ aq h reacts to form CrO 3 ^ aq h according to Equation 1.\nEquation 1: Cr 2 O 72 ^ aq h + 2 H 3 O ^ aq h \" 2 CrO 3 ^ aq h + 3 H 2 O ^ l h\n-\n+\nCrO 3 ^ aq h can be electrolyzed to plate objects with a thin layer of chromium metal according to\nEquation 2.\nEquation 2: CrO 3 ^ aq h + 6 H ^ aq h + 6 e \" Cr ^ s h + 3 H 2 O ^ l h\n+\n-\nE % = - 1 . 32 V\nPart C\nIs the reaction represented by Equation 2 thermodynamically favorable or unfavorable under\nstandard conditions? Justify your answer with a calculation of D G c . Show the work that leads\nto your answer.\nPart D\nCalculate the number of grams of Cr ( s ) that could be plated onto the surface of a steel rod\nwhen 15 . 0 A of current is applied for 3250 seconds. Show the work that leads to your answer.\nPart E\nIn a separate experiment, an iron wire is placed directly in a solution of 0 . 50 M Cr 2 O 72- ^ aq h\nwith pH = 1 . 99 . The concentration of Cr 2 O 72- ^ aq h remaining is recorded over time, and the\nresults are presented in Figure 3.\nFigure 3\nExplain how the data in Figure 3 support the conclusion that the reaction is first order with\nrespect to Cr 2 O 72- .\nThe following information applies to parts F and G.\nThe student creates a plot of ln 7 Cr 2 O 72- A versus time for a trial with an initial concentration of\n0 . 50 M Cr 2 O 72- ^ aq h , as shown in Figure 4.\nFigure 4\nPart F\nCalculate the value of the rate constant, k, for the reaction. Report your answer in units of\nmin - 1 . Show the work that leads to your answer.\nPart G\nThe student then runs a second trial of the experiment under identical conditions but uses\nan initial concentration of 0 . 25 M Cr 2 O 72- ^ aq h instead of 0 . 50 M Cr 2 O 72- ^ aq h . On Figure 4,\ncarefully draw the plot of ln 7 Cr 2 O 72- A versus time that would be expected for the second\nexperiment. The point at time zero has already been plotted.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2026F2.png"
+ },
+ {
+  "id": "AP2026F3",
+  "year": 2026,
+  "q": 3,
+  "long": true,
+  "fmt": "FR",
+  "d": 4,
+  "units": [
+   "Unit 8: Acids and Bases"
+  ],
+  "title": "2026 AP Chemistry free-response question 3 (long, 10 points)",
+  "text": "The following information applies to all parts.\n3. Nitrous acid, HNO 2 , is a weak acid that ionizes according to Equation 1.\nEquation 1: HNO 2 ^ aq h + H 2 O ^ l h E NO 2 ^ aq h + H 3 O ^ aq h\n-\n+\nK a = 5 . 6 × 10 - 4 at 298 K\nPart A\nIdentify a conjugate acid-base pair in the equation. Be sure to clearly label which is the acid\nand which is the base.\nPart B\nA solution of HNO 2 ( aq ) with an initial concentration of 0 . 125 M has a pH of 2.09.\ni. Calculate the value of 8 H 3 O B in the solution. Show the work that leads to your answer.\n+\nii. Calculate 6 HNO 2 @ at equilibrium. Show the work that leads to your answer.\nPart C\nIn an experiment, the solution of 0 . 125 M HNO 2 ( aq ) is heated to 333 K . The new\nequilibrium concentrations are determined to be 6 HNO 2 @ = 0 . 114 M , 6 NO 2 @ = 0 . 0109 M , and\n-\n7 H 3 O + A = 0 . 0109 M .\ni. Calculate the value of K a for HNO 2 at 333 K . Show the work that leads to your answer.\nii. Is the reaction represented by Equation 1 endothermic or exothermic? Justify your\nanswer by comparing K a values at 298 K and 333 K .\nThe following information applies to parts D, E, and F.\nIn a second experiment, a student is given a bottle containing HNO 2 with an unknown molarity.\nTo determine the concentration of the HNO 2 ( aq ) in the bottle, the student titrates 35 . 0 mL of the\nHNO 2 ( aq ) with 0 . 16 M NaOH ( aq ) at 298 K , which reacts according to Equation 2.\nEquation 2: HNO 2 ^ aq h + OH ^ aq h \" NO 2 ^ aq h + H 2 O ^ l h\n-\n-\nThe results of the titration are summarized in Figure 1.\nFigure 1\nPart D\nUsing Figure 1, identify the pH at the equivalence point.\nPart E\nUsing Figure 1, calculate the molarity of HNO 2 ( aq ) in the bottle. Show the work that leads to\nyour answer.\nPart F\nDraw an X on Figure 1 to represent a point in the titration where 8 HNO 2 B 2 8 NO 2 B in the\n-\nreaction mixture.\nPart G\nEquilibrium constants at 298 K are shown in Table 1 for the acid ionization reaction\nrepresented by Equation 1, K a ; the autoionization of water, K w ; and the neutralization reaction\nrepresented by Equation 2, K 2 .\nTable 1\nChemical Equation\nEquilibrium Constant\nHNO 2 ^ aq h + H 2 O ^ l h E NO 2 - ^ aq h + H 3 O + ^ aq h\nK a = 5 . 6 # 10 - 4\nH 2 O ^ l h + H 2 O ^ l h E H 3 O + ^ aq h + OH - ^ aq h\nK w = 1 . 0 # 10 - 14\nHNO 2 ^ aq h + OH - ^ aq h \" NO 2 - ^ aq h + H 2 O ^ l h\nK 2 = ?\nCalculate the value of K 2 for Equation 2 at 298 K . Show the work that leads to your answer.\nPart H\nThe student decides to repeat the experiment, this time using an indicator, and has access to the\nindicators in Table 2.\nTable 2\nIndicator Name\nAcid Color\npH Range of Color Change\nBase Color\nMethyl orange\nRed\n3.1–4.4\nYellow\nThymol blue\nYellow\n8.0–9.6\nBlue\nClayton yellow\nYellow\n12.2–13.2\nOrange\nThe student conducts a second titration by adding two drops of methyl orange indicator to\n35 . 0 mL of the HNO 2 ( aq ) solution and titrating the solution with 0 . 16 M NaOH ( aq ) until a color\nchange from red to yellow occurs.\nThe student claims that methyl orange was the best choice for the indicator. Do you agree or\ndisagree? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2026F3.png"
+ },
+ {
+  "id": "AP2026F4",
+  "year": 2026,
+  "q": 4,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 7: Equilibrium"
+  ],
+  "title": "2026 AP Chemistry free-response question 4 (short, 4 points)",
+  "text": "4. White phosphorus, P 4 ( g ) , can decompose into P 2 ( g ) at elevated temperatures. A balanced\nchemical equation, K p expression, and Lewis diagrams for the chemical species involved in the\nreaction are given.\n^ P P h 2\nP 4 ^ g h E 2 P 2 ^ g h\nK p = P 2 = ?\nP 4\nCompound\nP 4\nP 2\nLewis diagram\nPart A\nThe average bond length in P 4 molecules is 221 pm , whereas the average bond length in P 2\nmolecules is 189 pm . Explain why the average bond length in P 4 is greater than the average\nbond length in P 2 .\nPart B\nA sample of P 4 ( s ) is placed in a sealed rigid container and heated to 1600 . K , at which point\nthe initial partial pressure of P 4 ( g ) is 0 . 470 atm . Some of the P 4 ( g ) decomposes into P 2 ( g ) as the\nsystem reaches equilibrium. At equilibrium, the partial pressure of P 2 ( g ) is determined to be\n0 . 630 atm .\nCalculate the value of the equilibrium constant, K p , for the reaction at 1600 . K . Show the work\nthat leads to your answer.\nPart C\nThe reaction is thermodynamically favorable under standard conditions only at temperatures\nabove 1500 K . A student claims that the reaction must be endothermic because it is favorable\nonly at high temperatures. Do you agree or disagree? Justify your answer using D S rxn\n%\nand\nD G rxn\n%\n.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2026F4.png"
+ },
+ {
+  "id": "AP2026F5",
+  "year": 2026,
+  "q": 5,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 3: Intermolecular Forces and Properties"
+  ],
+  "title": "2026 AP Chemistry free-response question 5 (short, 4 points)",
+  "text": "The following information applies to parts A and B.\n5. The Lewis diagram of CBrClF 2 is shown.\nPart A\nWhich of the bonds in CBrClF 2 ( C - Br , C - Cl , or C - F ) is the most polar? Justify your answer.\nPart B\nIn a molecule of CBrClF 2 , the F - C - F bond angle is 106 . 8c and the Br - C - Cl bond angle is 112 . 3c .\nExplain the difference in bond angles using principles of atomic structure and VSEPR theory.\nPart C\nLewis diagrams and boiling points for CBr 4 and CBrClF 2 are given in the following table.\nFormula\nCBr 4\nCBrClF 2\nLewis diagram\nBoiling point\n463 K\n269 K\ni. Clearly identify all the intermolecular forces in pure CBr 4 ^ l h and in pure CBrClF 2 ^ l h .\nCBr 4 ^ l h :\nCBrClF 2 ^ l h :\nii. In terms of the relative strengths of all the intermolecular forces, explain why pure\nCBr 4 ^ l h has a higher boiling point than pure CBrClF 2 ^ l h does.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2026F5.png"
+ },
+ {
+  "id": "AP2026F6",
+  "year": 2026,
+  "q": 6,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 3: Intermolecular Forces and Properties"
+  ],
+  "title": "2026 AP Chemistry free-response question 6 (short, 4 points)",
+  "text": "6. A student performs a spectrophotometry experiment with V 2+ ( aq ) solutions and produces the\ncalibration curve shown in Figure 1 by measuring the absorbance of several solutions of known\nconcentration.\nFigure 1\nPart A\nThe student measures an absorbance of 0.32 for a V 2+ ( aq ) solution. The concentration of V 2+\nions in the solution is represented by the particle diagram in the circle in Figure 2. In the circle\nin Figure 3, draw the correct number of V 2+ ions to represent the concentration of a solution\nwith an absorbance of 0.08. (Water molecules have been omitted for clarity. Assume that each\nparticle diagram represents the same volume.)\nFigure 2\nFigure 3\nPart B\nThe student measures the absorbance of a different V 2+ ( aq ) solution with an unknown\nmolarity, but the absorbance is higher than 0.36 (the upper limit of the graph). The student then\ntransfers 3 . 00 mL of this V 2+ ( aq ) solution to a 25 . 0 mL volumetric flask, dilutes to the mark on\nthe flask with distilled water, and measures the absorbance of the diluted solution.\ni. The absorbance of the diluted solution is 0.22. Determine the molarity of V 2+ ( aq ) in the\ndiluted solution.\nii. Determine the molarity of V 2+ ( aq ) in the original, undiluted solution. Show the work\nthat leads to your answer.\nPart C\nThe concentration of V 2+ ( aq ) calculated in part B (ii) is lower than the actual concentration\nof the undiluted solution. The student claims that the calculated concentration is too low\nbecause during the dilution step, the final level of the solution was higher than the mark on the\nvolumetric flask. Do you agree or disagree? Justify your answer.",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2026F6.png"
+ },
+ {
+  "id": "AP2026F7",
+  "year": 2026,
+  "q": 7,
+  "long": false,
+  "fmt": "FR",
+  "d": 3,
+  "units": [
+   "Unit 6: Thermodynamics",
+   "Unit 4: Chemical Reactions"
+  ],
+  "title": "2026 AP Chemistry free-response question 7 (short, 4 points)",
+  "text": "The following information applies to parts A and B.\n7. Sodium metal reacts with oxygen gas according to Equation 1.\nEquation 1: 4 Na ^ s h + O 2 ^ g h \" 2 Na 2 O ^ s h\nD H rxn\n%\n= - 828 kJ/mol rxn\nStandard enthalpies of formation are provided in Table 1.\nTable 1\nD H % f ^ kJ/mol h\nSubstance\nNa ( s )\nO 2 ( g )\nNa 2 O ( s )\n?\nPart A\nBased on the information given, calculate the value of D H % f for Na 2 O ( s ) . Show the work that\nleads to your answer.\nPart B\nAn 18 . 4 g sample of Na ( s ) reacts with 12 . 8 g of O 2 ( g ) according to Equation 1. Calculate the\ntotal amount of heat, in kilojoules, released during this process. Show the work that leads to\nyour answer.\nPart C\nLattice enthalpy can be defined as the energy required to separate an ionic crystal into gaseous\nions. Rb 2 O ( s ) and Na 2 O ( s ) have similar crystal structures, and their lattice enthalpies are given\nin Table 2.\nTable 2\nCompound\nLattice Enthalpy ( kJ / mol )\nNa 2 O ( s )\nRb 2 O ( s )\nUsing Coulomb’s law, explain why the lattice enthalpy of Rb 2 O ( s ) is smaller than that of\nNa 2 O ( s ) .",
+  "a": "The released question paper has no answer key. The official scoring guidelines are on AP Central.",
+  "im": "images/AP2026F7.png"
+ }
+]

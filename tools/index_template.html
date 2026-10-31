@@ -178,7 +178,7 @@ function pills(){
   if(S.topic)out.push(['topic',tp?tp.short:S.topic]);if(S.sec)out.push(['sec',SEC[S.sec]||S.sec]);if(S.d)out.push(['d','Difficulty '+S.d+' '+LVL[S.d]]);if(S.fmt)out.push(['fmt',S.fmt]);if(S.q)out.push(['q','"'+S.q+'"']);
   $('#pills').innerHTML=out.map(([k,l])=>`<span class="pill">${esc(l)}<button data-clear="${k}" aria-label="Remove filter">&times;</button></span>`).join('')}
 /* ---------- cards ---------- */
-const val=(d,k)=>(edits[d.id]&&edits[d.id][k]!==undefined)?edits[d.id][k]:d.ed[k];
+const val=(d,k)=>(edits[d.id]&&edits[d.id][k]!==undefined)?edits[d.id][k]:(d.ed?d.ed[k]:(k==='answer'?d.a:''));
 const bodyKey=d=>d.f==='Multiple choice'?'stem':'question';
 function secChips(d){if(!d.s.length)return '';const L=d.s.slice(0,3).map(s=>`<button class="chip" data-gosec="${s}" title="${esc(SEC[s])}">${esc(s)} ${esc((SEC[s]||'').replace(/^[\d.]+\s*/,'').slice(0,34))}</button>`).join('');
   return `<div class="chips">${L}${d.s.length>3?`<span class="src">+${d.s.length-3}</span>`:''}</div>`}
@@ -189,13 +189,14 @@ function card(d){
   let h='',wide=false;
   if(d.k==='question'){
     const mc=d.f==='Multiple choice';
+    if(d.c==='ap'&&d.im)wide=true;
     h=head+`<h3>${esc(d.n)}</h3>`+(d.sub?`<div class="sub">${esc(d.sub)}</div>`:'')+`<div class="body">${esc(val(d,bodyKey(d)))}</div>`+(d.im?`<img loading="lazy" src="${esc(d.im)}" alt="">`:'');
     if(mc){const op=val(d,'options'),imgs=d.o.some(o=>o.t==='img');wide=imgs;
       h+=`<div class="opts ${imgs?'grid2':''}">`+d.o.map((o,i)=>{const L='ABCD'[i],right=show&&L===d.oa;
         return `<div class="opt ${right?'right':''}"><b>${L})</b>${o.t==='img'?`<img loading="lazy" src="${esc(o.v)}" alt="Choice ${L}">`:`<span>${esc(op&&op[i]!=null?op[i]:o.v)}</span>`}</div>`}).join('')+'</div>'}
     h+=secChips(d);
     if(isEd){h+=editForm(d)}
-    else{h+=`<div class="actions"><button class="btn small" data-ans="${d.id}">${show?'Hide answer':'Show answer'}</button><button class="btn small" data-edit="${d.id}">Edit wording</button></div>`;
+    else{h+=`<div class="actions"><button class="btn small" data-ans="${d.id}">${show?'Hide answer':'Show answer'}</button>${d.ed?`<button class="btn small" data-edit="${d.id}">Edit wording</button>`:''}</div>`;
       if(show){h+='<div class="panel">'+(mc?`<div class="ans">Answer: ${d.oa}</div>`:`<div class="ans">${esc(val(d,'answer'))}</div>`)+(d.am?`<img loading="lazy" src="${esc(d.am)}" alt="">`:'')+`<div>${esc(val(d,mc?'why':'explanation'))}</div>`+(d.m.Source?`<div class="src">Source: ${esc(d.m.Source)}</div>`:'')+'</div>'}}
   }else if(d.k==='molecule'){
     h=head+`<h3>${esc(d.n)}</h3><div class="sub">${esc(d.sub)}</div>`+`<img loading="lazy" src="${esc(d.im)}" alt="${esc(d.n)}">`+secChips(d)+

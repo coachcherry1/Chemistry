@@ -185,7 +185,20 @@ def bank():
                             x=' '.join([q['id'], q['stem'], q['a'], q['why']]))
 
 
-LOADERS = [problems, quiz, bank, molecules, simulations]
+AP_BANK = 'ap-chemistry/question-bank/'
+
+
+def ap_bank():
+    """released AP Chemistry free-response questions, 2015 to 2026, shown as the printed page (image) with a search text"""
+    path = os.path.join(ROOT, AP_BANK, 'questions.json')
+    if not os.path.exists(path):
+        return
+    for q in json.load(open(path, encoding='utf-8')):
+        yield make_item(id=q['id'], k='question', f='Free response', c='ap', tp=q['units'], dl=int(q['d']), n=q['title'], b='', a=q['a'],
+                        im=AP_BANK + q['im'], x=' '.join([q['id'], str(q['year']), 'AP released free response', q['title'], clean(q['text'])] + q['units']))
+
+
+LOADERS = [problems, quiz, bank, ap_bank, molecules, simulations]
 DOCS = [('Acid/base + nomenclature question set (Word)', QZ + 'Acids_Bases_Nomenclature_Quiz.docx'),
         ('Question set answer key', QZ + 'Acids_Bases_Nomenclature_Quiz_Answer_Key.docx'),
         ('Sub/elim problems (Word)', SNE + 'SN_E_Problems.docx'), ('Sub/elim answer key', SNE + 'SN_E_Answer_Key.docx'),
