@@ -16,7 +16,8 @@ const uid=()=>'b'+Math.random().toString(36).slice(2,9);
 const dOf=id=>DATA.find(x=>x.id===id);
 const has=id=>sh().boxes.some(b=>b.qid===id);
 const PGH=PH+GAP;
-const cw=b=>b.type==='text'?(b.w||600):W0;
+const cw=b=>b.w||(b.type==='text'?600:W0);
+const cstyle=b=>`width:${cw(b)}px${b.minH?`;min-height:${b.minH}px`:''}`;
 const pageOf=b=>Math.max(0,Math.min(sh().pages-1,Math.floor((b.y+4)/PGH)));
 const snap=v=>Math.round(v/4)*4;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -24,7 +25,7 @@ function badge(){const n=sh().boxes.filter(b=>b.type==='q').length;const el=$('#
 
 /* ----- content ----- */
 function loadImg(src){return new Promise(r=>{const i=new Image();i.onload=()=>r({w:i.naturalWidth,h:i.naturalHeight});i.onerror=()=>r({w:600,h:300});i.src=src})}
-function imgDims(b,src,grid){const n=(b.sizes&&b.sizes[src])||{w:600,h:300};let w=/^AP\d{4}F/.test(b.qid||'')?n.w*96/110:n.w/2;w=Math.min(w,grid?W0/2-24:W0);return {w:Math.round(w),h:Math.round(w*n.h/n.w)}}
+function imgDims(b,src,grid){const n=(b.sizes&&b.sizes[src])||{w:600,h:300};let w=/^AP\d{4}F/.test(b.qid||'')?n.w*96/110:n.w/2;if(grid&&b.optW)w=b.optW;else if(!grid&&b.imgW)w=b.imgW;w=Math.max(30,Math.min(w,grid?cw(b)/2-24:cw(b)));return {w:Math.round(w),h:Math.round(w*n.h/n.w)}}
 async function snapshot(d){
   const mc=d.f==='Multiple choice';
   const stem=d.c==='ap'?'':(val(d,mc?'stem':'question')||'');
@@ -34,19 +35,22 @@ async function snapshot(d){
   const srcs=[b.im,...opts.filter(o=>o.t==='img').map(o=>o.v)].filter(Boolean);
   const dims=await Promise.all(srcs.map(loadImg));srcs.forEach((s,i)=>b.sizes[s]=dims[i]);
   return b}
-function numbers(){const q=sh().boxes.filter(b=>b.type==='q').sort((a,b)=>a.y-b.y||a.x-b.x);const m={};q.forEach((b,i)=>m[b.id]=i+1);return m}
+/* reading order: rows from top to bottom, left to right within a row (boxes whose tops are within 40 px share a row) */
+function ordered(list){const a=[...list].sort((p,q)=>p.y-q.y||p.x-q.x),out=[];let row=[],y0=null;
+  a.forEach(b=>{if(y0===null||b.y-y0>40){out.push(...row.sort((p,q)=>p.x-q.x));row=[];y0=b.y}row.push(b)});out.push(...row.sort((p,q)=>p.x-q.x));return out}
+function numbers(){const q=ordered(sh().boxes.filter(b=>b.type==='q'));const m={};q.forEach((b,i)=>m[b.id]=i+1);return m}
 function inner(b,num){
   if(b.type==='text')return `<div class="wstext" data-f="text" style="font-size:${b.fs||16}px">${esc(b.text)}</div>`;
   let h=`<div class="wsrow">${sh().numbers?`<span class="wsnum">${num}.</span>`:''}<div class="wsstem" data-f="stem">${esc(b.stem)}</div></div>`;
-  if(b.im){const z=imgDims(b,b.im);h+=`<img class="wsimg" src="${esc(b.im)}" width="${z.w}" height="${z.h}" alt="">`}
+  if(b.im){const z=imgDims(b,b.im);h+=`<div class="wsimgbox" style="width:${z.w}px"><img class="wsimg" src="${esc(b.im)}" width="${z.w}" height="${z.h}" alt=""><i class="wsimgh" data-h="main" title="Drag to resize this picture only"></i></div>`}
   if(b.fmt==='MC'){
     const imgs=b.opts.some(o=>o.t==='img');
     h+=`<div class="wsopts${imgs?' g2':''}">`+b.opts.map((o,i)=>{const L='ABCD'[i];
-      if(o.t==='img'){const z=imgDims(b,o.v,true);return `<div class="wsopt wsoi"><img src="${esc(o.v)}" width="${z.w}" height="${z.h}" alt="Choice ${L}"></div>`}
+      if(o.t==='img'){const z=imgDims(b,o.v,true);return `<div class="wsopt wsoi"><span class="wsimgbox" style="width:${z.w}px"><img src="${esc(o.v)}" width="${z.w}" height="${z.h}" alt="Choice ${L}"><i class="wsimgh" data-h="opt" title="Drag to resize the choice pictures"></i></span></div>`}
       return `<div class="wsopt"><b>${L})</b> <span data-f="opt" data-i="${i}">${esc(o.v)}</span></div>`}).join('')+'</div>'}
   else if(b.lines)h+=`<div class="wslines">${'<div></div>'.repeat(b.lines)}</div>`;
   return h}
-function tmp(b){const m=$('#wsmeasure');m.innerHTML=`<div class="wscontent" style="width:${cw(b)}px">${inner(b,numbers()[b.id]||1)}</div>`;return m.firstChild}
+function tmp(b){const m=$('#wsmeasure');m.innerHTML=`<div class="wscontent" style="${cstyle(b)}">${inner(b,numbers()[b.id]||1)}</div>`;return m.firstChild}
 const hOf=b=>tmp(b).offsetHeight*b.s;
 
 /* ----- placement ----- */
@@ -59,10 +63,14 @@ function place(b){
   if(y+h>top+PH-MARGIN&&y>top+MARGIN){pg++;y=pg*PGH+MARGIN}
   b.x=MARGIN;b.y=y;sh().pages=Math.max(sh().pages,Math.floor(y/PGH)+1)}
 function arrange(){
-  let y=MARGIN,pg=0;sh().boxes.forEach(b=>{
-    let h=hOf(b);const top=pg*PGH;if(h>PH-2*MARGIN){b.s=Math.max(.3,Math.floor(b.s*(PH-2*MARGIN)/h*100)/100);h=hOf(b)}
-    if(y+h>top+PH-MARGIN&&y>top+MARGIN){pg++;y=pg*PGH+MARGIN}
-    b.x=MARGIN;b.y=y;y+=h+STEP});
+  let x=MARGIN,y=MARGIN,rowH=0,pg=0;
+  sh().boxes.forEach(b=>{
+    let h=hOf(b);if(h>PH-2*MARGIN){b.s=Math.max(.3,Math.floor(b.s*(PH-2*MARGIN)/h*100)/100);h=hOf(b)}
+    const w=cw(b)*b.s;
+    if(x>MARGIN&&x+w>PW-MARGIN+1){y+=rowH+STEP;x=MARGIN;rowH=0}              /* does not fit beside the last box: new row */
+    const top=pg*PGH;
+    if(y+h>top+PH-MARGIN&&y>top+MARGIN){pg++;y=pg*PGH+MARGIN;x=MARGIN;rowH=0}  /* does not fit on the page: next page */
+    b.x=x;b.y=y;x+=w+STEP+6;rowH=Math.max(rowH,h)});
   sh().pages=Math.max(1,pg+1);save();draw()}
 
 /* ----- add / remove ----- */
@@ -72,14 +80,14 @@ function btn(d){if(d.k!=='question')return '';return `<button class="btn small${
 function syncBtns(id){document.querySelectorAll(`[data-ws="${CSS.escape(id)}"]`).forEach(x=>{const on=has(id);x.textContent=on?'In worksheet (remove)':'+ Worksheet';x.classList.toggle('on',on)});if(!$('#ws').hidden)draw()}
 function syncAll(){document.querySelectorAll('[data-ws]').forEach(x=>{const on=has(x.dataset.ws);x.textContent=on?'In worksheet (remove)':'+ Worksheet';x.classList.toggle('on',on)})}
 function addText(kind){
-  const b={id:uid(),type:'text',text:kind==='header'?'Name: ____________________    Date: ____________    Period: ______':'Type here',w:kind==='header'?700:420,fs:kind==='header'?16:16,s:1,x:MARGIN,y:MARGIN};
+  const b={id:uid(),type:'text',text:kind==='header'?'Name: ____________________    Date: ____________    Period: ______':'Type here',w:kind==='header'?700:420,w0:kind==='header'?700:420,fs:kind==='header'?16:16,s:1,x:MARGIN,y:MARGIN};
   sh().boxes.push(b);place(b);sel=b.id;save();draw()}
 
 /* ----- drawing the editor ----- */
 function boxEl(b,num){
   const el=document.createElement('div');el.className='wsbox'+(b.type==='text'?' txt':'');el.dataset.id=b.id;el.tabIndex=0;
   el.style.left=b.x+'px';el.style.top=b.y+'px';el.style.width=cw(b)*b.s+'px';
-  el.innerHTML=`<div class="wsgrip" title="Drag to move"><span class="wsmove">&#8942;&#8942; Move</span><span class="wstools"><button data-t="smaller" title="Smaller" aria-label="Smaller">&minus;</button><button data-t="bigger" title="Bigger" aria-label="Bigger">+</button>${b.type==='q'&&b.fmt==='FR'?`<button data-t="lm" title="Fewer answer lines" aria-label="Fewer answer lines">&#8722;&#9776;</button><button data-t="lp" title="More answer lines" aria-label="More answer lines">+&#9776;</button>`:''}<button data-t="del" title="Remove" aria-label="Remove">&times;</button></span></div><div class="wscontent" style="width:${cw(b)}px;transform:scale(${b.s})">${inner(b,num)}</div><div class="wsresize" title="Drag to resize"></div><div class="wswarnmsg">Crosses a page edge</div>`;
+  el.innerHTML=`<div class="wsgrip" title="Drag to move"><span class="wsmove">&#8942;&#8942; Move</span><span class="wstools"><button data-t="smaller" title="Scale everything down" aria-label="Scale everything down">&minus;</button><button data-t="bigger" title="Scale everything up" aria-label="Scale everything up">+</button><button data-t="wn" title="Narrower (text re-wraps)" aria-label="Narrower">&#8676;</button><button data-t="ww" title="Wider (text re-wraps)" aria-label="Wider">&#8677;</button>${b.im||(b.opts||[]).some(o=>o.t==='img')?`<button data-t="in" title="Picture smaller (text stays)" aria-label="Picture smaller">&#128444;&minus;</button><button data-t="ig" title="Picture bigger (text stays)" aria-label="Picture bigger">&#128444;+</button>`:''}${b.type==='q'&&b.fmt==='FR'?`<button data-t="lm" title="Fewer answer lines" aria-label="Fewer answer lines">&#8722;&#9776;</button><button data-t="lp" title="More answer lines" aria-label="More answer lines">+&#9776;</button>`:''}<button data-t="reset" title="Back to the default size" aria-label="Reset size">&#8634;</button><button data-t="del" title="Remove" aria-label="Remove">&times;</button></span></div><div class="wscontent" style="${cstyle(b)};transform:scale(${b.s})">${inner(b,num)}</div><div class="wsrw" title="Drag to change the width (text re-wraps)"></div><div class="wsrh" title="Drag to add empty space below"></div><div class="wsresize" title="Drag to scale everything"></div><div class="wswarnmsg">Crosses a page edge</div>`;
   const c=el.querySelector('.wscontent');
   el.querySelectorAll('[data-f]').forEach(t=>{t.contentEditable='plaintext-only';if(t.contentEditable!=='plaintext-only')t.contentEditable='true';t.spellcheck=true});
   fit(el,b);return el}
@@ -116,7 +124,10 @@ function bindSheet(){
     const el=e.target.closest('.wsbox');if(!el){select(null);return}
     const b=sh().boxes.find(x=>x.id===el.dataset.id);select(b.id);
     if(e.target.closest('.wsgrip')&&!e.target.closest('button'))startDrag(e,el,b);
-    else if(e.target.closest('.wsresize'))startResize(e,el,b)});
+    else if(e.target.closest('.wsresize'))startResize(e,el,b)
+    else if(e.target.closest('.wsrw'))startWidth(e,el,b)
+    else if(e.target.closest('.wsrh'))startHeight(e,el,b)
+    else if(e.target.closest('.wsimgh'))startImg(e,el,b,e.target.closest('.wsimgh').dataset.h)});
   area.addEventListener('input',e=>{
     const el=e.target.closest('.wsbox');if(!el)return;const b=sh().boxes.find(x=>x.id===el.dataset.id),f=e.target.dataset.f;
     if(f==='stem')b.stem=e.target.innerText;else if(f==='text')b.text=e.target.innerText;else if(f==='opt')b.opts[+e.target.dataset.i].v=e.target.innerText;
@@ -125,6 +136,9 @@ function bindSheet(){
     const t=e.target.closest('[data-t]');if(!t)return;const el=t.closest('.wsbox'),b=sh().boxes.find(x=>x.id===el.dataset.id),k=t.dataset.t;
     if(k==='del'){sh().boxes=sh().boxes.filter(x=>x!==b);if(b.qid)syncAll();save();draw();return}
     if(k==='smaller'||k==='bigger'){b.s=clamp(+(b.s+(k==='bigger'?.1:-.1)).toFixed(2),.25,Math.min(1.6,(PW-b.x)/cw(b)));}
+    if(k==='wn'||k==='ww')b.w=Math.round(clamp(cw(b)+(k==='ww'?40:-40),180,(PW-b.x)/b.s));
+    if(k==='in'||k==='ig'){const f=k==='ig'?1.1:1/1.1;if(b.im){const z=imgDims(b,b.im);b.imgW=Math.round(clamp(z.w*f,40,cw(b)))}const o=(b.opts||[]).find(o=>o.t==='img');if(o){const z=imgDims(b,o.v,true);b.optW=Math.round(clamp(z.w*f,40,cw(b)/2-24))}}
+    if(k==='reset'){b.s=1;delete b.imgW;delete b.optW;delete b.minH;if(b.type==='q')delete b.w;else b.w=b.w0||420}
     if(k==='lp')b.lines=Math.min(14,(b.lines||0)+1);
     if(k==='lm')b.lines=Math.max(0,(b.lines||0)-1);
     save();draw();select(b.id)});
@@ -145,6 +159,20 @@ function startResize(e,el,b){
   const up=()=>{g.removeEventListener('pointermove',mv);g.removeEventListener('pointerup',up);g.removeEventListener('pointercancel',up);save()};
   g.addEventListener('pointermove',mv);g.addEventListener('pointerup',up);g.addEventListener('pointercancel',up)}
 
+/* box width: the text re-wraps, nothing is scaled; box length follows the text (the bottom handle adds empty space) */
+function redo(el,b){const c=el.querySelector('.wscontent');c.style.cssText=`${cstyle(b)};transform:scale(${b.s})`;c.innerHTML=inner(b,numbers()[b.id]||'');
+  c.querySelectorAll('[data-f]').forEach(t=>{t.contentEditable='plaintext-only';if(t.contentEditable!=='plaintext-only')t.contentEditable='true'});fit(el,b)}
+function drag(el,g,e,mv,done){e.preventDefault();g.setPointerCapture(e.pointerId);
+  const up=()=>{g.removeEventListener('pointermove',mv);g.removeEventListener('pointerup',up);g.removeEventListener('pointercancel',up);done&&done();save()};
+  g.addEventListener('pointermove',mv);g.addEventListener('pointerup',up);g.addEventListener('pointercancel',up)}
+function startWidth(e,el,b){const sx=e.clientX,w0=cw(b);
+  drag(el,el.querySelector('.wsrw'),e,ev=>{b.w=Math.round(clamp(w0+(ev.clientX-sx)/(Z*b.s),180,(PW-b.x)/b.s));redo(el,b)})}
+function startHeight(e,el,b){const sy=e.clientY,c=el.querySelector('.wscontent'),h0=c.offsetHeight;b.minH=0;const natural=c.offsetHeight;
+  drag(el,el.querySelector('.wsrh'),e,ev=>{const h=Math.round(h0+(ev.clientY-sy)/(Z*b.s));b.minH=h>natural+4?h:0;redo(el,b)})}
+function liveImg(el,b,grid){el.querySelectorAll(grid?'.wsopt .wsimgbox':'.wscontent>.wsimgbox').forEach(w=>{const im=w.querySelector('img'),z=imgDims(b,im.getAttribute('src'),grid);w.style.width=z.w+'px';im.width=z.w;im.height=z.h});fit(el,b)}
+function startImg(e,el,b,which){const sx=e.clientX,grid=which==='opt',src=grid?(b.opts.find(o=>o.t==='img')||{}).v:b.im;if(!src)return;const w0=imgDims(b,src,grid).w;
+  drag(el,e.target.closest('.wsimgh'),e,ev=>{const w=Math.round(clamp(w0+(ev.clientX-sx)/(Z*b.s),40,grid?cw(b)/2-24:cw(b)));if(grid)b.optW=w;else b.imgW=w;liveImg(el,b,grid)})}
+
 /* ----- the answer key ----- */
 function keyItems(){
   const nums=numbers();
@@ -164,7 +192,7 @@ function buildPrint(){
   for(let k=0;k<s.pages;k++){
     const p=document.createElement('div');p.className='pp';
     s.boxes.filter(b=>pageOf(b)===k).forEach(b=>{const e=document.createElement('div');e.className='ppbox';e.style.cssText=`left:${b.x}px;top:${b.y-k*PGH}px;width:${cw(b)*b.s}px`;
-      e.innerHTML=`<div class="wscontent" style="width:${cw(b)}px;${ZOOM?`zoom:${b.s}`:`transform:scale(${b.s})`}">${inner(b,nums[b.id]||'')}</div>`;p.appendChild(e)});
+      e.innerHTML=`<div class="wscontent" style="${cstyle(b)};${ZOOM?`zoom:${b.s}`:`transform:scale(${b.s})`}">${inner(b,nums[b.id]||'')}</div>`;p.appendChild(e)});
     root.appendChild(p)}
   if(s.key){
     const items=keyItems();let p=null;
@@ -206,7 +234,7 @@ async function docx(){missing=[];
     return `<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:docPr id="${id}" name="Picture ${id}"/><wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="${id}" name="${f.name}"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${f.rid}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>`};
   const MAXW=Math.round(6.5*96);
   const sizeOf=(b,src,grid)=>{const z=imgDims(b,src,grid);const k=b.s;let w=Math.min(z.w*k,grid?3*96:MAXW);let h=w*z.h/z.w;const MAXH=Math.round(8.6*96);if(h>MAXH){w=w*MAXH/h;h=MAXH}return {w,h}};
-  let body='';const sorted=[...s.boxes].sort((a,b)=>pageOf(a)-pageOf(b)||a.y-b.y||a.x-b.x);let curPg=0;
+  let body='';const sorted=[];for(let k=0;k<s.pages;k++)sorted.push(...ordered(s.boxes.filter(b=>pageOf(b)===k)));let curPg=0;
   body+=para(run(s.title,{b:true,sz:36}),{after:160});
   for(const b of sorted){
     const pg=pageOf(b);if(pg>curPg){body+='<w:p><w:r><w:br w:type="page"/></w:r></w:p>';curPg=pg}
@@ -271,10 +299,11 @@ function mount(){
    <div class="wsrow2"><button class="btn small" id="wsaddt">Text box</button><button class="btn small" id="wsaddh">Name / date line</button></div>
    <div class="wsh">Layout</div>
    <div class="wsrow2"><button class="btn small" id="wsarr">Arrange in list order</button><button class="btn small" id="wsap">Add page</button><button class="btn small" id="wsrp">Remove last page</button></div>
+   <p class="wsnote"><b>Sizes:</b> drag a box's <b>right edge</b> to change its width (the text re-wraps, nothing shrinks), its <b>bottom edge</b> for empty space, the <b>orange square</b> on a picture to resize only the picture, and the <b>round corner</b> to scale everything. "Arrange" puts narrow boxes side by side.</p>
    <div class="wsh">Order (drag to reorder)</div><ol id="wslist"></ol>
    <div class="wsh">Export</div>
    <div class="wsrow2"><button class="btn primary" id="wspdf">PDF</button><button class="btn primary" id="wsdoc">Word</button></div>
-   <p class="wsnote"><b>PDF</b> matches the page exactly: choose "Save as PDF" in the print window.<br><b>Word</b> keeps the order, text and sizes but <b>not the exact box positions</b>; fix the layout in Word if you need to.</p>
+   <p class="wsnote"><b>PDF</b> matches the page exactly: choose "Save as PDF" in the print window.<br><b>Word</b> keeps the order, edited text and picture sizes but <b>not the exact box positions or widths</b> (no side by side); fix the layout in Word if you need to.</p>
    <div class="wsrow2"><button class="btn small" id="wssave">Save as file</button><button class="btn small" id="wsopen">Open file</button><input type="file" id="wsfile" accept=".json,application/json" hidden></div>
    <p class="wsnote">Worksheets are saved in this browser automatically. Use "Save as file" to move one to another computer.</p>
   </aside>
