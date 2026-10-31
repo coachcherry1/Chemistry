@@ -30,13 +30,13 @@ def read_lines(path):
 def above_top(ls, ys, top):
     """a figure printed above a question number belongs to the question: start after the last full-width line above it"""
     long_above = [l[3] for l in ls if l[3] < ys - 2 and l[2] - l[0] >= 200 and not JUNK.search(l[4]) and l[1] > top and not MARK.search(l[4])]
-    return (max(long_above) + 2) if long_above else top
+    return (max(long_above) - 1) if long_above else top
 
 
 def first_top(ls, ys, top):
     """question 1 shares its page with the exam directions, which end 'Pay attention to significant figures.'"""
     d = [l[3] for l in ls if l[3] < ys and re.search(r'significant figures\.?$', l[4])]
-    return (max(d) + 2) if d else above_top(ls, ys, top)
+    return (max(d) - 1) if d else above_top(ls, ys, top)
 
 
 def segments(pages):
@@ -90,11 +90,13 @@ def clean(im, whiten=()):
     for y0, y1 in whiten:
         a[max(0, y0):max(0, y1), :] = 255
     dark = a < 110
-    cols = np.where(dark.mean(axis=0) > 0.5)[0]
-    rows = np.where(dark.mean(axis=1) > 0.6)[0]
+    W, Hh = a.shape[1], a.shape[0]
+    edge = int(0.06 * W)
+    cols = np.array([c for c in np.where(dark.mean(axis=0) > 0.5)[0] if c < edge or c >= W - edge])       # the answer-box frame sits at the edges
+    rows = np.array([r for r in np.where(dark.mean(axis=1) > 0.6)[0] if r < 12 or r >= Hh - 12])         # never touch table rules or graph lines inside
     x0, x1 = 0, a.shape[1]
-    left = [c for c in cols if c < a.shape[1] / 2]
-    right = [c for c in cols if c >= a.shape[1] / 2]
+    left = [c for c in cols if c < edge]
+    right = [c for c in cols if c >= W - edge]
     if left:
         x0 = max(left) + 4
     if right:
