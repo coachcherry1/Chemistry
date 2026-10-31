@@ -110,6 +110,15 @@ script. Pages shows only `main`.
   (`chemdraw.py` drawings, `namer.py` IUPAC names, `overrides.py`). `molecules.json` is the source of truth for the
   molecule ids; do not re-run its `generate.py` unless the whole set is being replaced.
 
+## Organic question bank (difficulty and filters)
+
+`organic-chemistry/question-bank/` holds about 100 questions per Klein chapter 2 to 11 (50 multiple choice, 50 free response), built by
+`build/chNN.py`; see its README. Every question has a difficulty 1 to 5 (Easy, Basic, Moderate, Hard, Very hard); only 1 to 4 are
+written, level 5 is Klein's Challenge level and is avoided. The index filters by topic, subtopic, difficulty, format (Multiple
+choice or Free response) and course, sorts by difficulty, and lets the teacher change any question's difficulty inline (exported
+as `difficulty` through the Edits file). Questions follow the same wording rules as everywhere else (no em dashes, no
+"spontaneous", "anti-coplanar", "back-side").
+
 ## Before every commit (in the package folder)
 
 ```bash
