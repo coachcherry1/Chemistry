@@ -312,4 +312,10 @@ add('Energy diagrams', 'SN1', 3, 'Sketch the reaction energy diagram for the SN1
     'The number of humps equals the number of steps; the highest hump is the rate-determining step.')
 add('Energy diagrams', 'SN2', 2, 'How does the energy diagram of an SN2 reaction differ from that of an SN1 reaction? Include the number of steps, transition states and intermediates.',
     'SN2: one step, one transition state, no intermediate. SN1: two core steps, two transition states and a carbocation intermediate.', 'SN2 is concerted; SN1 is stepwise.')
+# wording edits from content/overrides.json (see tools/apply_edits.py)
+import overrides as _ov
+for _p in P:
+    for _k, _v in _ov.load().get(_p['id'], {}).items():
+        if _k in ('question', 'answer', 'explanation'):
+            _p[_k] = _v
 assert len(P) == 100, len(P)

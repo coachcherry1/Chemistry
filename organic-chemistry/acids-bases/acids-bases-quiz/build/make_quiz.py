@@ -232,6 +232,21 @@ def build_key(Q):
     return out
 
 
+def apply_overrides(Q):
+    import overrides
+    ed = overrides.load()
+    for q in Q:
+        e = ed.get(f"Q{q['n']:02d}", {})
+        if 'stem' in e:
+            q['stem'] = e['stem']
+        if 'why' in e:
+            q['why'] = e['why']
+        for i, t in enumerate(e.get('options') or []):
+            if t is not None and i < len(q['opts']) and q['opts'][i][0] == 'text':
+                q['opts'][i] = ('text', t)
+    return Q
+
+
 def export_json(Q):
     import json
     out = []
@@ -244,7 +259,7 @@ def export_json(Q):
 
 
 if __name__ == "__main__":
-    Q = finalize(qmod.build())
+    Q = apply_overrides(finalize(qmod.build()))
     print("answer distribution:", dict(collections.Counter(q["correct"] for q in Q)))
     export_json(Q)
     print(build_quiz(Q))

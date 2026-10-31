@@ -1,0 +1,590 @@
+{
+ "_note": "Chapters 2-11 and section titles come from the textbook chapter PDFs (section list read from each PDF). Section 3.4 is split into the four ARIO factors. Edit labels here, then run tools/build_index.py.",
+ "organic": [
+  {
+   "id": "2",
+   "label": "Ch. 2  Molecular Representations",
+   "short": "Molecular Representations",
+   "sections": [
+    {
+     "id": "2.1",
+     "label": "2.1 Molecular Representations"
+    },
+    {
+     "id": "2.2",
+     "label": "2.2 Drawing Bond-Line Structures"
+    },
+    {
+     "id": "2.3",
+     "label": "2.3 Identifying Functional Groups"
+    },
+    {
+     "id": "2.4",
+     "label": "2.4 Carbon Atoms with Formal Charges"
+    },
+    {
+     "id": "2.5",
+     "label": "2.5 Identifying Lone Pairs"
+    },
+    {
+     "id": "2.6",
+     "label": "2.6 Three-Dimensional Bond-Line Structures"
+    },
+    {
+     "id": "2.7",
+     "label": "2.7 Introduction to Resonance"
+    },
+    {
+     "id": "2.8",
+     "label": "2.8 Curved Arrows"
+    },
+    {
+     "id": "2.9",
+     "label": "2.9 Formal Charges in Resonance Structures"
+    },
+    {
+     "id": "2.10",
+     "label": "2.10 Drawing Resonance Structures via Pattern Recognition"
+    },
+    {
+     "id": "2.11",
+     "label": "2.11 Assessing the Relative Importance of Resonance Structures"
+    },
+    {
+     "id": "2.12",
+     "label": "2.12 The Resonance Hybrid"
+    },
+    {
+     "id": "2.13",
+     "label": "2.13 Delocalized and Localized Lone Pairs"
+    }
+   ]
+  },
+  {
+   "id": "3",
+   "label": "Ch. 3  Acids and Bases",
+   "short": "Acids and Bases",
+   "sections": [
+    {
+     "id": "3.1",
+     "label": "3.1 Introduction to Brønsted-Lowry Acids and Bases"
+    },
+    {
+     "id": "3.2",
+     "label": "3.2 Flow of Electron Density: Curved-Arrow Notation"
+    },
+    {
+     "id": "3.3",
+     "label": "3.3 Comparing pKa Values"
+    },
+    {
+     "id": "3.4",
+     "label": "3.4 Factors Affecting the Stability of Anions"
+    },
+    {
+     "id": "3.4.1",
+     "label": "3.4 Anion stability: Atom"
+    },
+    {
+     "id": "3.4.2",
+     "label": "3.4 Anion stability: Resonance"
+    },
+    {
+     "id": "3.4.3",
+     "label": "3.4 Anion stability: Induction"
+    },
+    {
+     "id": "3.4.4",
+     "label": "3.4 Anion stability: Orbitals"
+    },
+    {
+     "id": "3.4.5",
+     "label": "3.4 Anion stability: Ranking the factors (ARIO)"
+    },
+    {
+     "id": "3.5",
+     "label": "3.5 Relative Acidity of Cationic Acids"
+    },
+    {
+     "id": "3.6",
+     "label": "3.6 Position of Equilibrium and Choice of Reagents"
+    },
+    {
+     "id": "3.7",
+     "label": "3.7 Leveling Effect"
+    },
+    {
+     "id": "3.8",
+     "label": "3.8 Solvating Effects"
+    },
+    {
+     "id": "3.9",
+     "label": "3.9 Counterions"
+    },
+    {
+     "id": "3.10",
+     "label": "3.10 Lewis Acids and Bases"
+    }
+   ]
+  },
+  {
+   "id": "4",
+   "label": "Ch. 4  Alkanes and Cycloalkanes",
+   "short": "Alkanes and Cycloalkanes",
+   "sections": [
+    {
+     "id": "4.1",
+     "label": "4.1 Introduction to Alkanes"
+    },
+    {
+     "id": "4.2",
+     "label": "4.2 Nomenclature of Alkanes"
+    },
+    {
+     "id": "4.3",
+     "label": "4.3 Constitutional Isomers of Alkanes"
+    },
+    {
+     "id": "4.4",
+     "label": "4.4 Relative Stability of Isomeric Alkanes"
+    },
+    {
+     "id": "4.5",
+     "label": "4.5 Sources and Uses of Alkanes"
+    },
+    {
+     "id": "4.6",
+     "label": "4.6 Drawing Newman Projections"
+    },
+    {
+     "id": "4.7",
+     "label": "4.7 Conformational Analysis of Ethane and Propane"
+    },
+    {
+     "id": "4.8",
+     "label": "4.8 Conformational Analysis of Butane"
+    },
+    {
+     "id": "4.9",
+     "label": "4.9 Cycloalkanes"
+    },
+    {
+     "id": "4.10",
+     "label": "4.10 Conformations of Cyclohexane"
+    },
+    {
+     "id": "4.11",
+     "label": "4.11 Drawing Chair Conformations"
+    },
+    {
+     "id": "4.12",
+     "label": "4.12 Monosubstituted Cyclohexane"
+    },
+    {
+     "id": "4.13",
+     "label": "4.13 Disubstituted Cyclohexane"
+    },
+    {
+     "id": "4.14",
+     "label": "4.14 cis-trans Stereoisomerism"
+    },
+    {
+     "id": "4.15",
+     "label": "4.15 Polycyclic Systems"
+    }
+   ]
+  },
+  {
+   "id": "5",
+   "label": "Ch. 5  Stereoisomerism",
+   "short": "Stereoisomerism",
+   "sections": [
+    {
+     "id": "5.1",
+     "label": "5.1 Overview of Isomerism"
+    },
+    {
+     "id": "5.2",
+     "label": "5.2 Introduction to Stereoisomerism"
+    },
+    {
+     "id": "5.3",
+     "label": "5.3 Designating Configuration (Cahn-Ingold-Prelog, R/S)"
+    },
+    {
+     "id": "5.4",
+     "label": "5.4 Optical Activity"
+    },
+    {
+     "id": "5.5",
+     "label": "5.5 Enantiomers and Diastereomers"
+    },
+    {
+     "id": "5.6",
+     "label": "5.6 Symmetry and Chirality"
+    },
+    {
+     "id": "5.7",
+     "label": "5.7 Fischer Projections"
+    },
+    {
+     "id": "5.8",
+     "label": "5.8 Conformationally Mobile Systems"
+    },
+    {
+     "id": "5.9",
+     "label": "5.9 Chiral Compounds that Lack a Chiral Center"
+    },
+    {
+     "id": "5.10",
+     "label": "5.10 Resolution of Enantiomers"
+    },
+    {
+     "id": "5.11",
+     "label": "5.11 E and Z Designations for Alkenes"
+    }
+   ]
+  },
+  {
+   "id": "6",
+   "label": "Ch. 6  Chemical Reactivity and Mechanisms",
+   "short": "Chemical Reactivity and Mechanisms",
+   "sections": [
+    {
+     "id": "6.1",
+     "label": "6.1 Enthalpy"
+    },
+    {
+     "id": "6.2",
+     "label": "6.2 Entropy"
+    },
+    {
+     "id": "6.3",
+     "label": "6.3 Gibbs Free Energy"
+    },
+    {
+     "id": "6.4",
+     "label": "6.4 Equilibria"
+    },
+    {
+     "id": "6.5",
+     "label": "6.5 Kinetics"
+    },
+    {
+     "id": "6.6",
+     "label": "6.6 Reading Energy Diagrams"
+    },
+    {
+     "id": "6.7",
+     "label": "6.7 Nucleophiles and Electrophiles"
+    },
+    {
+     "id": "6.8",
+     "label": "6.8 Mechanisms and Arrow Pushing"
+    },
+    {
+     "id": "6.9",
+     "label": "6.9 Combining the Patterns of Arrow Pushing"
+    },
+    {
+     "id": "6.10",
+     "label": "6.10 Drawing Curved Arrows"
+    },
+    {
+     "id": "6.11",
+     "label": "6.11 Carbocation Rearrangements"
+    },
+    {
+     "id": "6.12",
+     "label": "6.12 Reversible and Irreversible Reaction Arrows"
+    }
+   ]
+  },
+  {
+   "id": "7",
+   "label": "Ch. 7  Alkyl Halides: Substitution and Elimination",
+   "short": "Alkyl Halides: Substitution and Elimination",
+   "sections": [
+    {
+     "id": "7.1",
+     "label": "7.1 Introduction to Substitution and Elimination"
+    },
+    {
+     "id": "7.2",
+     "label": "7.2 Nomenclature and Uses of Alkyl Halides"
+    },
+    {
+     "id": "7.3",
+     "label": "7.3 SN2 Reactions"
+    },
+    {
+     "id": "7.4",
+     "label": "7.4 Nucleophilic Strength in SN2 Reactions"
+    },
+    {
+     "id": "7.5",
+     "label": "7.5 Introduction to E2 Reactions"
+    },
+    {
+     "id": "7.6",
+     "label": "7.6 Stability of Alkenes and Cycloalkenes"
+    },
+    {
+     "id": "7.7",
+     "label": "7.7 Regiochemical and Stereochemical Outcomes of E2"
+    },
+    {
+     "id": "7.8",
+     "label": "7.8 Unimolecular Reactions (SN1 and E1)"
+    },
+    {
+     "id": "7.9",
+     "label": "7.9 Predicting Products: Substitution vs. Elimination"
+    },
+    {
+     "id": "7.10",
+     "label": "7.10 Substitution and Elimination with Other Substrates"
+    },
+    {
+     "id": "7.11",
+     "label": "7.11 Synthesis Strategies"
+    },
+    {
+     "id": "7.12",
+     "label": "7.12 Solvent Effects in Substitution Reactions"
+    }
+   ]
+  },
+  {
+   "id": "8",
+   "label": "Ch. 8  Addition Reactions to Alkenes",
+   "short": "Addition Reactions to Alkenes",
+   "sections": [
+    {
+     "id": "8.1",
+     "label": "8.1 Introduction to Addition Reactions"
+    },
+    {
+     "id": "8.2",
+     "label": "8.2 Alkenes in Nature and in Industry"
+    },
+    {
+     "id": "8.3",
+     "label": "8.3 Nomenclature of Alkenes"
+    },
+    {
+     "id": "8.4",
+     "label": "8.4 Addition vs. Elimination: A Thermodynamic Perspective"
+    },
+    {
+     "id": "8.5",
+     "label": "8.5 Hydrohalogenation"
+    },
+    {
+     "id": "8.6",
+     "label": "8.6 Acid-Catalyzed Hydration"
+    },
+    {
+     "id": "8.7",
+     "label": "8.7 Oxymercuration-Demercuration"
+    },
+    {
+     "id": "8.8",
+     "label": "8.8 Hydroboration-Oxidation"
+    },
+    {
+     "id": "8.9",
+     "label": "8.9 Catalytic Hydrogenation"
+    },
+    {
+     "id": "8.10",
+     "label": "8.10 Halogenation and Halohydrin Formation"
+    },
+    {
+     "id": "8.11",
+     "label": "8.11 Anti Dihydroxylation"
+    },
+    {
+     "id": "8.12",
+     "label": "8.12 Syn Dihydroxylation"
+    },
+    {
+     "id": "8.13",
+     "label": "8.13 Oxidative Cleavage"
+    },
+    {
+     "id": "8.14",
+     "label": "8.14 Predicting the Products of an Addition Reaction"
+    },
+    {
+     "id": "8.15",
+     "label": "8.15 Synthesis Strategies"
+    }
+   ]
+  },
+  {
+   "id": "9",
+   "label": "Ch. 9  Alkynes",
+   "short": "Alkynes",
+   "sections": [
+    {
+     "id": "9.1",
+     "label": "9.1 Introduction to Alkynes"
+    },
+    {
+     "id": "9.2",
+     "label": "9.2 Nomenclature of Alkynes"
+    },
+    {
+     "id": "9.3",
+     "label": "9.3 Acidity of Acetylene and Terminal Alkynes"
+    },
+    {
+     "id": "9.4",
+     "label": "9.4 Preparation of Alkynes"
+    },
+    {
+     "id": "9.5",
+     "label": "9.5 Reduction of Alkynes"
+    },
+    {
+     "id": "9.6",
+     "label": "9.6 Hydrohalogenation of Alkynes"
+    },
+    {
+     "id": "9.7",
+     "label": "9.7 Hydration of Alkynes"
+    },
+    {
+     "id": "9.8",
+     "label": "9.8 Halogenation of Alkynes"
+    },
+    {
+     "id": "9.9",
+     "label": "9.9 Ozonolysis of Alkynes"
+    },
+    {
+     "id": "9.10",
+     "label": "9.10 Alkylation of Terminal Alkynes"
+    },
+    {
+     "id": "9.11",
+     "label": "9.11 Synthesis Strategies"
+    }
+   ]
+  },
+  {
+   "id": "10",
+   "label": "Ch. 10  Radical Reactions",
+   "short": "Radical Reactions",
+   "sections": [
+    {
+     "id": "10.1",
+     "label": "10.1 Radicals"
+    },
+    {
+     "id": "10.2",
+     "label": "10.2 Common Patterns in Radical Mechanisms"
+    },
+    {
+     "id": "10.3",
+     "label": "10.3 Chlorination of Methane"
+    },
+    {
+     "id": "10.4",
+     "label": "10.4 Thermodynamic Considerations"
+    },
+    {
+     "id": "10.5",
+     "label": "10.5 Selectivity of Halogenation"
+    },
+    {
+     "id": "10.6",
+     "label": "10.6 Stereochemistry of Halogenation"
+    },
+    {
+     "id": "10.7",
+     "label": "10.7 Allylic Bromination"
+    },
+    {
+     "id": "10.8",
+     "label": "10.8 Atmospheric Chemistry and the Ozone Layer"
+    },
+    {
+     "id": "10.9",
+     "label": "10.9 Autooxidation and Antioxidants"
+    },
+    {
+     "id": "10.10",
+     "label": "10.10 Radical Addition of HBr: Anti-Markovnikov"
+    },
+    {
+     "id": "10.11",
+     "label": "10.11 Radical Polymerization"
+    },
+    {
+     "id": "10.12",
+     "label": "10.12 Radical Processes in the Petrochemical Industry"
+    },
+    {
+     "id": "10.13",
+     "label": "10.13 Halogenation as a Synthetic Technique"
+    }
+   ]
+  },
+  {
+   "id": "11",
+   "label": "Ch. 11  Multi-Step Synthesis",
+   "short": "Multi-Step Synthesis",
+   "sections": [
+    {
+     "id": "11.1",
+     "label": "11.1 One-Step Syntheses"
+    },
+    {
+     "id": "11.2",
+     "label": "11.2 Functional Group Transformations"
+    },
+    {
+     "id": "11.3",
+     "label": "11.3 Reactions That Change the Carbon Skeleton"
+    },
+    {
+     "id": "11.4",
+     "label": "11.4 How to Approach a Synthesis Problem"
+    },
+    {
+     "id": "11.5",
+     "label": "11.5 Multi-Step Synthesis and Retrosynthetic Analysis"
+    },
+    {
+     "id": "11.6",
+     "label": "11.6 Green Chemistry"
+    },
+    {
+     "id": "11.7",
+     "label": "11.7 Practical Tips for Increasing Proficiency"
+    }
+   ]
+  },
+  {
+   "id": "X",
+   "label": "Other organic topics",
+   "short": "Other organic topics (not in Ch. 2-11)",
+   "sections": [
+    {
+     "id": "X.1",
+     "label": "Infrared spectroscopy"
+    },
+    {
+     "id": "X.2",
+     "label": "Mass spectrometry"
+    },
+    {
+     "id": "X.3",
+     "label": "NMR spectroscopy"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chemistry Question and Activity Index</title>
+<style>
+:root{--bg:#f4f6f9;--panel:#fff;--ink:#18212d;--mute:#5f6b7a;--line:#dfe3ea;--acc:#1d5fb4;--acc-ink:#fff;--soft:#e8f0fb;--good:#14703f;--goodbg:#e4f4ea;--warn:#a34a07;--warnbg:#fdf0e1;--shadow:0 1px 2px rgba(16,24,40,.07)}
+@media(prefers-color-scheme:dark){:root{--bg:#11161d;--panel:#1a212b;--ink:#e7ebf1;--mute:#9aa7b7;--line:#2b3542;--acc:#6aa8f0;--acc-ink:#0d1520;--soft:#203049;--good:#6fd39b;--goodbg:#173325;--warn:#f0a35e;--warnbg:#3a2a18;--shadow:none}}
+*{box-sizing:border-box}html{scroll-padding-top:150px}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--acc)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.top{position:sticky;top:0;z-index:20;background:var(--panel);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+.wrap{max-width:1320px;margin:0 auto;padding:0 18px}
+.bar{display:flex;gap:12px;align-items:center;padding:12px 0}
+.brand{font-weight:700;font-size:17px;white-space:nowrap}
+.search{flex:1;position:relative}
+.search input{width:100%;padding:10px 38px 10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.search button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;cursor:pointer;color:var(--mute);font-size:18px;display:none}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:9px;padding:8px 12px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--acc)}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+.btn.small{padding:4px 10px;font-size:13px}
+.badgeN{background:var(--warn);color:#fff;border-radius:999px;padding:0 7px;font-size:12px;margin-left:6px}
+.menu{position:relative}.menu summary{list-style:none}.menu summary::-webkit-details-marker{display:none}
+.menu .pop{position:absolute;right:0;top:calc(100% + 6px);min-width:300px;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:6px}
+.menu .pop a{display:block;padding:8px 10px;border-radius:7px;text-decoration:none}
+.menu .pop a:hover{background:var(--soft)}
+.filters{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;padding:0 0 12px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{border:0;background:none;padding:7px 14px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed=true]{background:var(--acc);color:var(--acc-ink);font-weight:600}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tabs button{border:1px solid transparent;background:none;padding:6px 12px;border-radius:999px;cursor:pointer;color:var(--mute)}
+.tabs button[aria-pressed=true]{background:var(--soft);color:var(--acc);border-color:var(--acc);font-weight:600}
+.tabs b{font-weight:600;margin-left:4px;opacity:.75}
+.layout{display:grid;grid-template-columns:300px 1fr;gap:20px;padding:18px 0 40px}
+#side{align-self:start;position:sticky;top:150px;max-height:calc(100vh - 170px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px}
+#side h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:8px 8px 4px}
+.t{display:flex;justify-content:space-between;gap:8px;width:100%;text-align:left;border:0;background:none;padding:7px 10px;border-radius:8px;cursor:pointer;line-height:1.3}
+.t:hover{background:var(--soft)}
+.t .c{color:var(--mute);font-variant-numeric:tabular-nums}
+.t[aria-pressed=true]{background:var(--soft);color:var(--acc);font-weight:650}
+.t.zero{opacity:.45}
+.subs{margin:2px 0 8px 12px;padding-left:8px;border-left:2px solid var(--line)}
+.subs .t{font-size:13.5px;padding:5px 8px}.subs .t.deep{padding-left:22px;font-size:13px}
+.crumbs{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;min-height:30px}
+.pill{background:var(--soft);color:var(--acc);border-radius:999px;padding:3px 6px 3px 12px;font-size:13px;display:inline-flex;gap:6px;align-items:center}
+.pill button{border:0;background:none;cursor:pointer;color:inherit;font-size:15px;padding:0 4px}
+.info{color:var(--mute);font-size:13px;margin-right:auto}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0;box-shadow:var(--shadow)}
+.card.wide{grid-column:span 2}
+.head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px}
+.id{font-weight:700;color:var(--mute);font-variant-numeric:tabular-nums}
+.badge{border-radius:6px;padding:1px 8px;font-weight:600}
+.badge.question{background:var(--soft);color:var(--acc)}.badge.molecule{background:var(--goodbg);color:var(--good)}.badge.sim{background:var(--warnbg);color:var(--warn)}
+.badge.ed{background:var(--warn);color:#fff;margin-left:auto}
+.card h3{margin:0;font-size:16px;line-height:1.3}
+.sub{color:var(--mute);font-size:13px}
+.body{white-space:pre-wrap}
+.card img{max-width:100%;max-height:210px;object-fit:contain;align-self:center;background:#fff;border-radius:8px}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{border:1px solid var(--line);background:var(--bg);color:var(--mute);border-radius:999px;padding:1px 9px;font-size:12px;cursor:pointer}
+.chip:hover{border-color:var(--acc);color:var(--acc)}
+.opts{display:grid;grid-template-columns:1fr;gap:5px;margin:2px 0}
+.opts.grid2{grid-template-columns:1fr 1fr}
+.opt{display:flex;gap:8px;align-items:flex-start;padding:6px 9px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+.opt b{min-width:18px}.opt img{max-height:120px}
+.opt.right{border-color:var(--good);background:var(--goodbg)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+.panel{border-top:1px dashed var(--line);padding-top:8px;display:flex;flex-direction:column;gap:6px}
+.ans{color:var(--good);font-weight:650}
+.src{font-size:12px;color:var(--mute)}
+.edit label{font-size:12px;font-weight:650;color:var(--mute);display:block;margin:6px 0 2px}
+.edit textarea,.edit input{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:var(--bg);resize:vertical}
+.edit textarea{min-height:76px}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;word-break:break-all;background:var(--bg);padding:6px 8px;border-radius:6px}
+.empty{grid-column:1/-1;text-align:center;color:var(--mute);padding:50px 10px}
+#more{display:block;margin:20px auto}#more[hidden]{display:none}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink);max-width:640px;width:92vw;padding:20px}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog h2{margin:0 0 6px;font-size:18px}
+.editrow{border:1px solid var(--line);border-radius:9px;padding:8px 10px;margin:6px 0;font-size:13.5px}
+.editrow b{margin-right:6px}
+.mobile{display:none}
+@media(max-width:900px){.layout{grid-template-columns:1fr}#side{display:none;position:static;max-height:60vh}#side.open{display:block}.mobile{display:inline-block}.card.wide{grid-column:auto}.bar{flex-wrap:wrap;gap:8px}.brand{width:100%}.search{order:2;flex:1 1 100%}.bar .btn,.bar .menu{order:3}.seg{max-width:100%;overflow-x:auto}.seg button{padding:7px 10px;font-size:13px}.filters{gap:8px}html{scroll-padding-top:200px}}
+@media(prefers-reduced-motion:no-preference){.card{transition:border-color .15s}.card:hover{border-color:var(--acc)}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="bar">
+    <div class="brand">Chemistry Question and Activity Index</div>
+    <div class="search"><input id="q" type="search" placeholder="Search questions, molecules, simulations  (press / to focus)" aria-label="Search"><button id="clearQ" aria-label="Clear search">&times;</button></div>
+    <button class="btn mobile" id="topicsToggle">Topics</button>
+    <details class="menu"><summary class="btn">Word documents</summary><div class="pop" id="docs"></div></details>
+    <button class="btn" id="editsBtn">Edits<span class="badgeN" id="editsN" hidden>0</span></button>
+  </div>
+  <div class="filters">
+    <div class="seg" id="courses" role="group" aria-label="Course"></div>
+    <div class="tabs" id="kinds" role="group" aria-label="Type"></div>
+  </div>
+</div></header>
+
+<div class="wrap layout">
+  <aside id="side" aria-label="Topics"></aside>
+  <main>
+    <div class="crumbs"><span class="info" id="info"></span><span id="pills" style="display:contents"></span><label class="src"><input type="checkbox" id="showAns"> Show all answers</label></div>
+    <div id="grid"></div>
+    <button class="btn" id="more" hidden>Show more</button>
+  </main>
+</div>
+
+<dialog id="dlg"><h2>Pending wording edits</h2>
+  <p class="src">Edits you make with the Edit button are saved in this browser only. Download the file and send it to Claude (or run <code>python3 tools/apply_edits.py</code> on it) to update the Word documents, data files and this page everywhere.</p>
+  <div id="editList"></div>
+  <div class="actions" style="margin-top:12px"><button class="btn primary" id="dl">Download edits file</button><button class="btn" id="cp">Copy to clipboard</button><button class="btn" id="clr">Clear all edits</button><button class="btn" id="close" style="margin-left:auto">Close</button></div>
+</dialog>
+
+<script>
+const DATA=__DATA__,TAX=__TAX__,DOCS=__DOCS__,SEC=__SECLABEL__,COURSES=__COURSES__;
+const KINDS={question:'Questions',molecule:'Molecules',sim:'Simulations'},PAGE=36,KEY='chem-index-edits-v1';
+const $=s=>document.querySelector(s),esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let S={course:'organic',kind:'',topic:'',sec:'',q:'',ans:false,n:PAGE},edits={},shown=new Set(),editing=new Set();
+try{edits=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const saveEdits=()=>{try{localStorage.setItem(KEY,JSON.stringify(edits))}catch(e){}};
+const IDX=DATA.map(d=>(d.x+' '+d.n+' '+d.sub+' '+d.s.map(s=>SEC[s]).join(' ')+' '+d.tp.join(' ')).toLowerCase());
+const inSec=(d,s)=>d.s.some(x=>x===s||x.startsWith(s+'.'));
+function match(d,i,skip){
+  const sk=skip||[];
+  if(S.course&&!sk.includes('course')&&d.c!==S.course)return false;
+  if(S.kind&&!sk.includes('kind')&&d.k!==S.kind)return false;
+  if(S.topic&&!sk.includes('topic')&&!d.tp.includes(S.topic))return false;
+  if(S.sec&&!sk.includes('sec')&&!inSec(d,S.sec))return false;
+  for(const w of S.q.toLowerCase().split(/\s+/).filter(Boolean))if(!IDX[i].includes(w))return false;
+  return true}
+const count=(skip,extra)=>DATA.reduce((n,d,i)=>n+(match(d,i,skip)&&(!extra||extra(d))?1:0),0);
+/* ---------- state in the address bar so views can be bookmarked and shared ---------- */
+function readHash(){const p=new URLSearchParams(location.hash.slice(1));S.course=p.has('course')?p.get('course'):'organic';S.kind=p.get('kind')||'';S.topic=p.get('topic')||'';S.sec=p.get('sec')||'';S.q=p.get('q')||'';S.ans=p.get('ans')==='1';$('#q').value=S.q;$('#showAns').checked=S.ans}
+function writeHash(){const p=new URLSearchParams();if(S.course!=='organic')p.set('course',S.course);['kind','topic','sec','q'].forEach(k=>S[k]&&p.set(k,S[k]));if(S.ans)p.set('ans','1');history.replaceState(null,'','#'+p)}
+/* ---------- navigation ---------- */
+function nav(){
+  const st=$('#side').scrollTop;
+  $('#courses').innerHTML=[['organic'],['honors'],['ap'],['']].map(([c])=>`<button data-course="${c}" aria-pressed="${S.course===c}">${c?COURSES[c]:'All courses'}</button>`).join('');
+  $('#kinds').innerHTML=[['','All']].concat(Object.entries(KINDS)).map(([k,l])=>`<button data-kind="${k}" aria-pressed="${S.kind===k}">${l}<b>${count(['kind'],d=>!k||d.k===k)}</b></button>`).join('');
+  const courses=S.course?[S.course]:['organic','honors','ap'];let h='';
+  for(const c of courses){
+    if(!S.course)h+=`<h2>${COURSES[c]}</h2>`;else h+='<h2>Topics</h2>';
+    h+=`<button class="t" data-topic="" aria-pressed="${!S.topic}"><span>All topics</span><span class="c">${count(['topic','sec'],d=>d.c===c)}</span></button>`;
+    for(const t of TAX[c]){
+      const n=count(['topic','sec'],d=>d.c===c&&d.tp.includes(t.id)),on=S.topic===t.id&&(S.course===c||!S.course);
+      h+=`<button class="t ${n?'':'zero'}" data-topic="${esc(t.id)}" aria-pressed="${on}"><span>${esc(t.label)}</span><span class="c">${n}</span></button>`;
+      if(on&&t.sections.length){h+='<div class="subs">';
+        h+=`<button class="t" data-sec="" aria-pressed="${!S.sec}"><span>All of this chapter</span><span class="c">${n}</span></button>`;
+        for(const s of t.sections){const m=count(['sec'],d=>d.c===c&&inSec(d,s.id)),deep=s.id.split('.').length>2;
+          h+=`<button class="t ${deep?'deep':''} ${m?'':'zero'}" data-sec="${s.id}" aria-pressed="${S.sec===s.id}"><span>${esc(s.label)}</span><span class="c">${m}</span></button>`}
+        h+='</div>'}}}
+  $('#side').innerHTML=h;$('#side').scrollTop=st}
+function pills(){
+  const out=[];const tp=S.topic&&Object.values(TAX).flat().find(t=>t.id===S.topic);
+  if(S.topic)out.push(['topic',tp?tp.short:S.topic]);if(S.sec)out.push(['sec',SEC[S.sec]||S.sec]);if(S.q)out.push(['q','"'+S.q+'"']);
+  $('#pills').innerHTML=out.map(([k,l])=>`<span class="pill">${esc(l)}<button data-clear="${k}" aria-label="Remove filter">&times;</button></span>`).join('')}
+/* ---------- cards ---------- */
+const val=(d,k)=>(edits[d.id]&&edits[d.id][k]!==undefined)?edits[d.id][k]:d.ed[k];
+const bodyKey=d=>d.f==='Multiple choice'?'stem':'question';
+function secChips(d){if(!d.s.length)return '';const L=d.s.slice(0,3).map(s=>`<button class="chip" data-gosec="${s}" title="${esc(SEC[s])}">${esc(s)} ${esc((SEC[s]||'').replace(/^[\d.]+\s*/,'').slice(0,34))}</button>`).join('');
+  return `<div class="chips">${L}${d.s.length>3?`<span class="src">+${d.s.length-3}</span>`:''}</div>`}
+function card(d){
+  const ed=!!edits[d.id],show=S.ans||shown.has(d.id),isEd=editing.has(d.id);
+  const head=`<div class="head"><span class="id">${esc(d.id)}</span><span class="badge ${d.k}">${esc(d.f)}</span>${ed?'<span class="badge ed">edited</span>':''}</div>`;
+  let h='',wide=false;
+  if(d.k==='question'){
+    const mc=d.f==='Multiple choice';
+    h=head+`<h3>${esc(d.n)}</h3>`+(d.sub?`<div class="sub">${esc(d.sub)}</div>`:'')+`<div class="body">${esc(val(d,bodyKey(d)))}</div>`+(d.im?`<img loading="lazy" src="${esc(d.im)}" alt="">`:'');
+    if(mc){const op=val(d,'options'),imgs=d.o.some(o=>o.t==='img');wide=imgs;
+      h+=`<div class="opts ${imgs?'grid2':''}">`+d.o.map((o,i)=>{const L='ABCD'[i],right=show&&L===d.oa;
+        return `<div class="opt ${right?'right':''}"><b>${L})</b>${o.t==='img'?`<img loading="lazy" src="${esc(o.v)}" alt="Choice ${L}">`:`<span>${esc(op&&op[i]!=null?op[i]:o.v)}</span>`}</div>`}).join('')+'</div>'}
+    h+=secChips(d);
+    if(isEd){h+=editForm(d)}
+    else{h+=`<div class="actions"><button class="btn small" data-ans="${d.id}">${show?'Hide answer':'Show answer'}</button><button class="btn small" data-edit="${d.id}">Edit wording</button></div>`;
+      if(show){h+='<div class="panel">'+(mc?`<div class="ans">Answer: ${d.oa}</div>`:`<div class="ans">${esc(val(d,'answer'))}</div>`)+(d.am?`<img loading="lazy" src="${esc(d.am)}" alt="">`:'')+`<div>${esc(val(d,mc?'why':'explanation'))}</div>`+(d.m.Source?`<div class="src">Source: ${esc(d.m.Source)}</div>`:'')+'</div>'}}
+  }else if(d.k==='molecule'){
+    h=head+`<h3>${esc(d.n)}</h3><div class="sub">${esc(d.sub)}</div>`+`<img loading="lazy" src="${esc(d.im)}" alt="${esc(d.n)}">`+secChips(d)+
+      `<div class="actions"><button class="btn small" data-ans="${d.id}">${show?'Hide details':'Details'}</button><button class="btn small" data-copy="${esc(d.m.SMILES)}">Copy SMILES</button></div>`+
+      (show?'<div class="panel">'+Object.entries(d.m).map(([k,v])=>`<div class="src"><b>${esc(k)}:</b> ${k==='SMILES'?`<span class="mono">${esc(v)}</span>`:esc(v)}</div>`).join('')+'</div>':'')
+  }else{
+    h=head+`<h3>${esc(d.n)}</h3>`+(d.sub?`<div class="sub">${esc(d.sub)}</div>`:'')+`<div class="src">${esc(COURSES[d.c])}${d.tp.length&&d.c!=='organic'?' / '+esc(d.tp[0]):''}</div>`+secChips(d)+
+      `<div class="actions"><a class="btn primary small" href="${esc(d.l)}">Open</a>${d.z?`<a class="btn small" href="${esc(d.z)}">SCORM zip</a>`:''}</div>`}
+  return `<article class="card${wide?' wide':''}" data-id="${esc(d.id)}">${h}</article>`}
+function editForm(d){
+  let h='<div class="panel edit">';
+  for(const [k,label] of d.fl){
+    if(k==='options'){const op=val(d,'options')||[];h+=`<label>${label} (text choices only)</label>`;
+      d.o.forEach((o,i)=>{if(o.t==='text')h+=`<input data-f="options" data-i="${i}" value="${esc(op[i]!=null?op[i]:o.v)}" aria-label="Choice ${'ABCD'[i]}">`})}
+    else h+=`<label>${label}</label><textarea data-f="${k}">${esc(val(d,k))}</textarea>`}
+  return h+`<div class="actions"><button class="btn primary small" data-save="${d.id}">Save edit</button><button class="btn small" data-cancel="${d.id}">Cancel</button><button class="btn small" data-reset="${d.id}">Reset to original</button></div></div>`}
+function render(){
+  const list=DATA.filter((d,i)=>match(d,i));
+  $('#info').textContent=list.length+(list.length===1?' item':' items');
+  $('#grid').innerHTML=list.length?list.slice(0,S.n).map(card).join(''):`<div class="empty"><b>No matches.</b><br>Try a different search or clear a filter.<br><br><button class="btn" data-clearall="1">Clear filters</button></div>`;
+  $('#more').hidden=list.length<=S.n;$('#more').textContent=`Show more (${list.length-S.n} left)`;
+  nav();pills();writeHash();$('#clearQ').style.display=S.q?'block':'none';
+  const n=Object.keys(edits).length;$('#editsN').hidden=!n;$('#editsN').textContent=n}
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const D=b.dataset;
+  if('course' in D){S.course=D.course;S.topic='';S.sec='';S.n=PAGE}
+  else if('kind' in D){S.kind=D.kind;S.n=PAGE}
+  else if('topic' in D){S.topic=S.topic===D.topic?'':D.topic;S.sec='';S.n=PAGE}
+  else if('sec' in D){S.sec=S.sec===D.sec?'':D.sec;S.n=PAGE}
+  else if(D.clear){if(D.clear==='topic'){S.topic='';S.sec=''}else S[D.clear]='';if(D.clear==='q')$('#q').value=''}
+  else if(D.clearall){S.topic=S.sec=S.q='';S.kind='';$('#q').value=''}
+  else if(D.gosec){S.course='organic';S.topic=D.gosec.split('.')[0];S.sec=D.gosec;S.n=PAGE;scrollTo({top:0,behavior:'smooth'})}
+  else if(D.ans){shown.has(D.ans)?shown.delete(D.ans):shown.add(D.ans)}
+  else if(D.edit){editing.add(D.edit)}
+  else if(D.cancel){editing.delete(D.cancel)}
+  else if(D.reset){delete edits[D.reset];editing.delete(D.reset);saveEdits()}
+  else if(D.save){saveEdit(D.save,b.closest('.edit'))}
+  else if(D.copy){navigator.clipboard&&navigator.clipboard.writeText(D.copy);b.textContent='Copied';return}
+  else if(b.id==='more'){S.n+=PAGE}
+  else if(b.id==='topicsToggle'){$('#side').classList.toggle('open');return}
+  else if(b.id==='editsBtn'){openEdits();return}
+  else if(b.id==='clearQ'){S.q='';$('#q').value=''}
+  else return;
+  render()});
+$('#q').addEventListener('input',e=>{S.q=e.target.value;S.n=PAGE;render()});
+$('#showAns').addEventListener('change',e=>{S.ans=e.target.checked;render()});
+document.addEventListener('keydown',e=>{if(e.key==='/'&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();$('#q').focus()}});
+addEventListener('hashchange',()=>{readHash();render()});
+/* ---------- editing ---------- */
+function saveEdit(id,box){
+  const d=DATA.find(x=>x.id===id),ch={};
+  box.querySelectorAll('textarea[data-f]').forEach(t=>{if(t.value!==d.ed[t.dataset.f])ch[t.dataset.f]=t.value});
+  if(d.ed.options){const vals={};box.querySelectorAll('input[data-f=options]').forEach(i=>{vals[+i.dataset.i]=i.value});
+    const opts=d.ed.options.map((b,k)=>(b!==null&&vals[k]!==undefined&&vals[k]!==b)?vals[k]:null);
+    if(opts.some(x=>x!==null))ch.options=opts}
+  if(Object.keys(ch).length)edits[id]=ch;else delete edits[id];
+  editing.delete(id);saveEdits()}
+function payload(){return JSON.stringify({version:1,edits},null,1)}
+function openEdits(){const ids=Object.keys(edits);
+  $('#editList').innerHTML=ids.length?ids.map(id=>`<div class="editrow"><b>${esc(id)}</b>${Object.keys(edits[id]).map(esc).join(', ')}</div>`).join(''):'<p class="src">No edits yet. Open a question and press "Edit wording".</p>';
+  $('#dl').disabled=$('#cp').disabled=!ids.length;$('#dlg').showModal()}
+$('#dl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([payload()],{type:'application/json'}));a.download='chem-index-edits.json';a.click()};
+$('#cp').onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(payload());$('#cp').textContent='Copied'};
+$('#clr').onclick=()=>{if(confirm('Discard all pending edits in this browser?')){edits={};saveEdits();$('#dlg').close();render()}};
+$('#close').onclick=()=>$('#dlg').close();
+$('#docs').innerHTML=DOCS.map(d=>`<a href="${esc(d.p)}">${esc(d.n)}</a>`).join('');
+readHash();render();
+</script>
+</body>
+</html>

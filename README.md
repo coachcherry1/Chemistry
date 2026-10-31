@@ -7,18 +7,28 @@ commit; each activity folder's `README.md` describes it and its built zip in `di
 
 ## Searchable index
 
-`index.html` at the repo root is one searchable page for everything in this repo: the SCORM activities and the teacher
-pages in `to-merge/` (simulations), plus the organic problem banks (molecule database, substitution and elimination
-problems, acids and bases quiz). Filter by collection or type; answers stay hidden until a card is opened.
+`index.html` at the repo root is one searchable page for everything in this repo. Pick a **course** (Organic, Honors, AP),
+a **type** (questions, molecules, simulations) and a **chapter**; choosing a chapter opens its **subtopics**, which are the
+textbook sections of that chapter (empty subtopics are dimmed, so you can see where questions are still needed). The
+organic chapters (2 to 11) and their sections come from the chapter PDFs and live in `content/taxonomy.json`. Views can be
+bookmarked: the address bar records the filters. Answers stay hidden until a card is opened.
 On GitHub Pages: <https://coachcherry1.github.io/Chemistry/> (shown once merged to `main`).
-Rebuild it after adding or changing anything with `python3 tools/build_index.py`.
+
+**Changing the wording of a question.** The page is a viewer; the Word documents are generated from the same data, so
+text is not edited in the documents. Press **Edit wording** on a question card, change it, and save. Edits are kept in your
+browser; **Edits** (top right) downloads them as a small file. Send that file to Claude, or run
+`python3 tools/apply_edits.py chem-index-edits.json`, and the new wording is written to `content/overrides.json` and
+rebuilt into the Word documents, the JSON and CSV data, and the index in one step.
+
+Rebuild the index after adding or changing anything with `python3 tools/build_index.py`.
 
 | Folder | Contents |
 | --- | --- |
 | `organic-chemistry/nomenclature/molecule-database/` | 500 drawn molecules with verified IUPAC names, CSV and JSON |
-| `organic-chemistry/substitution-elimination/problem-bank/` | 100 SN1, SN2, E1 and E2 free-response problems with schemes and answer key |
-| `organic-chemistry/acids-bases/acids-bases-quiz/` | 40-question quiz (acids and bases by ARIO, branched-alkane naming) with answer key |
-| `organic-chemistry/_shared/` | Drawing and naming code used by the three folders above |
+| `organic-chemistry/substitution-elimination/problem-bank/` | 100 SN1, SN2, E1 and E2 free-response questions with schemes and answer key |
+| `organic-chemistry/acids-bases/acids-bases-quiz/` | 30 acid and base questions (ARIO) and 10 alkane naming questions, as multiple choice, with answer key |
+| `organic-chemistry/_shared/` | Drawing, naming and wording-edit code used by the three folders above |
+| `content/` | `taxonomy.json` (chapters and sections) and `overrides.json` (wording edits) |
 
 ## Web versions
 
