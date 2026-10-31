@@ -9,7 +9,12 @@ PDFS = os.path.join(ROOT, 'reference', 'frq-pdfs')
 IMG = os.path.join(ROOT, 'images')
 YEARS = [2015, 2016, 2017, 2018, 2019, 2021, 2022, 2023, 2024, 2025, 2026]
 DPI = 110
-JUNK = re.compile(r'^Question \d|GO ON TO THE NEXT PAGE|©|Visit College Board|Use a pencil or pen|Unauthorized copying|^-\d+-$|^AP\s*®?\s*Chemistry\s+\d{4}|Free-Response Questions$|^\d+$|STOP|END OF EXAM|^Page \d+')
+JUNK = re.compile(r'^Question \d|GO ON TO THE NEXT PAGE|©|Visit College Board|Use a pencil or pen|Unauthorized copying|^-\d+-$|^AP\s*®?\s*Chemistry\s+\d{4}|Free-Response Questions$|STOP|END OF EXAM|^Page \d+')
+def is_junk(l, H):
+    """footer, header or page-number line"""
+    return bool(JUNK.search(l[4])) or (bool(re.match(r'^\d{1,2}$', l[4].strip())) and l[1] > H * 0.9 and 270 < l[0] < 330)
+
+
 MARK = re.compile(r'(Begin|Continue) your response to QUESTION (\d)')
 LABEL = re.compile(r'^Question (\d)\b')
 START = re.compile(r'^([1-7])\.\s')
@@ -29,7 +34,7 @@ def read_lines(path):
 
 def above_top(ls, ys, top):
     """a figure printed above a question number belongs to the question: start after the last full-width line above it"""
-    long_above = [l[3] for l in ls if l[3] < ys - 2 and l[2] - l[0] >= 200 and not JUNK.search(l[4]) and l[1] > top and not MARK.search(l[4])]
+    long_above = [l[3] for l in ls if l[3] < ys - 2 and l[0] < 100 and l[2] - l[0] >= 150 and not JUNK.search(l[4]) and l[1] > top and not MARK.search(l[4])]
     return (max(long_above) - 1) if long_above else top
 
 
@@ -45,12 +50,12 @@ def segments(pages):
     for pi, p in enumerate(pages):
         ls = p['lines']
         marks = [int(MARK.search(t).group(2)) for *_, t in ls if MARK.search(t)]
-        junk_y = [y0 for x0, y0, x1, y1, t in ls if y0 > p['h'] * 0.8 and JUNK.search(t)]
+        junk_y = [l[1] for l in ls if l[1] > p['h'] * 0.8 and is_junk(l, p['h'])]
         bottom = min(junk_y) - 3 if junk_y else p['h'] - 20
         stop = [y0 for x0, y0, x1, y1, t in ls if t.strip() == 'STOP']
         if stop:
             bottom = min(bottom, stop[0] - 6)
-        top = max([l[3] for l in ls if l[1] < 60 and re.search('free-response', l[4], re.I)] + [38]) + 1
+        top = max([l[3] for l in ls if l[1] < 45] + [38]) + 1
         if marks:
             st = [l for l in ls if l[0] < 70 and START.match(l[4]) and int(START.match(l[4]).group(1)) == marks[0]]
             y = top
@@ -139,7 +144,7 @@ def main():
                 for sq, pi, y0, y1 in segs:
                     if sq != q:
                         continue
-                    ls = [l for l in pages[pi]['lines'] if y0 - 2 <= l[1] <= y1 and not JUNK.search(l[4]) and not MARK.search(l[4])]
+                    ls = [l for l in pages[pi]['lines'] if y0 - 2 <= l[1] <= y1 and not is_junk(l, pages[pi]['h']) and not MARK.search(l[4])]
                     body = [l for l in ls if l[4].strip()]
                     text += [l[4] for l in sorted(body, key=lambda l: (round(l[1] / 3), l[0]))]
                     f = Image.open(os.path.join(td, files[pi])).convert('RGB')

@@ -4,6 +4,8 @@
 and shown in the index (AP Chemistry tab) with a difficulty you can change. See `reference/REFERENCE.md` for sources, the unit table and
 the two multiple-choice practice exams kept for writing questions later.
 
+The exact wording of each question is in `reference/frq-text/` (one file per year).
+
 ```bash
 cd ap-chemistry/question-bank/build
 python3 frq_extract.py   # PDFs in reference/frq-pdfs -> images/ and frqs.json (needs poppler and Pillow)

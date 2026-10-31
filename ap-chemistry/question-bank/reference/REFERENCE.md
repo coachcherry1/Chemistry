@@ -8,7 +8,10 @@ This folder is the reference for writing AP Chemistry questions later. Everythin
 - `reference/frq-pdfs/ap<year>-frq-chemistry.pdf`: the released question paper for each year (7 questions: 3 long at 10 points, 4 short at 4 points).
   Sources: the archive page at adriandingleschemistrypages.com/apfrqarchives-2/ (AP Central for 2023 to 2026, mirrors for 2015 to 2022).
   The papers carry no scoring guidelines, so no answer key is stored.
-- `reference/text/ap<year>-frq-chemistry.txt`: extracted text of each paper (search it; formulas and tables are rough).
+- `reference/frq-text/ap<year>.md`: the clean text of every question, one file per year. Prose is copied from the paper; equations, subscripts, charges,
+  Greek letters and tables are retyped by hand from the page image, and each diagram or graph has a bracketed description. Use these when you need the
+  exact wording. Numbers were checked against the PDF text. The questions in `frqs.json` and the index search use this text.
+- `reference/text/ap<year>-frq-chemistry.txt`: the raw text copied out of each PDF (rough: formulas and tables come out garbled).
 - `frqs.json` and `images/AP<year>F<n>.png`: every question cut out with its diagrams, tables, graphs and particle drawings, exactly as printed
   (the exam directions and answer-box frames are removed). `build/frq_extract.py` makes them from the PDFs, `build/build_bank.py` writes
   `questions.json`, which the index reads. Unit tags are in `build/ap_meta.py`.

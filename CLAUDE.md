@@ -124,7 +124,7 @@ as `difficulty` through the Edits file). Questions follow the same wording rules
 `ap-chemistry/question-bank/` holds every released AP Chemistry free-response question from 2015 to 2026 (no 2020 exam): 77 questions cut
 out of the College Board papers with their diagrams (`images/AP<year>F<n>.png`), tagged by AP unit in `build/ap_meta.py`, and shown in the
 index's AP Chemistry tab. Long questions start at difficulty 4, short ones at 3. The papers have no answer keys. `reference/` keeps the
-source PDFs, their text, two multiple-choice practice exams (60 questions each, no keys) and `REFERENCE.md`, which is where to look when
+source PDFs, their raw text, `frq-text/` (clean hand-checked wording of every question), two multiple-choice practice exams (60 questions each, no keys) and `REFERENCE.md`, which is where to look when
 writing new AP questions. These are College Board materials, published as released.
 
 ## Before every commit (in the package folder)
