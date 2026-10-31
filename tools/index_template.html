@@ -28,6 +28,7 @@ a{color:var(--acc)}
 .menu .pop{position:absolute;right:0;top:calc(100% + 6px);min-width:300px;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:6px}
 .menu .pop a{display:block;padding:8px 10px;border-radius:7px;text-decoration:none}
 .menu .pop a:hover{background:var(--soft)}
+.menu .pop{max-height:70vh;overflow:auto;min-width:360px;z-index:60;background:var(--bg,var(--panel))!important}.dlh{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--mute,#667);padding:8px 10px 4px}.dlrow{display:flex;align-items:center;gap:6px;padding:2px 4px}.dlrow span{flex:1;padding:6px 6px}.dlrow a{display:inline-block;padding:5px 9px;border:1px solid var(--line);border-radius:7px;font-size:13px}.dlpill{display:inline-flex;gap:8px;align-items:center;padding:4px 10px;border:1px solid var(--acc);border-radius:999px;font-size:13px}.dlpill a{font-weight:600}
 .filters{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;padding:0 0 12px}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
 .seg button{border:0;background:none;padding:7px 14px;cursor:pointer}
@@ -100,7 +101,7 @@ select.diff.d1{color:#14703f}select.diff.d2{color:#2a6f97}select.diff.d3{color:#
     <div class="brand">Chemistry Question and Activity Index</div>
     <div class="search"><input id="q" type="search" placeholder="Search questions, molecules, simulations  (press / to focus)" aria-label="Search"><button id="clearQ" aria-label="Clear search">&times;</button></div>
     <button class="btn mobile" id="topicsToggle">Topics</button>
-    <details class="menu"><summary class="btn">Word documents</summary><div class="pop" id="docs"></div></details>
+    <details class="menu" id="dlmenu"><summary class="btn primary">Download Word docs</summary><div class="pop" id="docs"></div></details>
     <button class="btn" id="editsBtn">Edits<span class="badgeN" id="editsN" hidden>0</span></button>
   </div>
   <div class="filters">
@@ -176,7 +177,8 @@ function nav2(){
 function pills(){
   const out=[];const tp=S.topic&&Object.values(TAX).flat().find(t=>t.id===S.topic);
   if(S.topic)out.push(['topic',tp?tp.short:S.topic]);if(S.sec)out.push(['sec',SEC[S.sec]||S.sec]);if(S.d)out.push(['d','Difficulty '+S.d+' '+LVL[S.d]]);if(S.fmt)out.push(['fmt',S.fmt]);if(S.q)out.push(['q','"'+S.q+'"']);
-  $('#pills').innerHTML=out.map(([k,l])=>`<span class="pill">${esc(l)}<button data-clear="${k}" aria-label="Remove filter">&times;</button></span>`).join('')}
+  const dd=S.topic&&DOCS.find(d=>d.g===S.topic);
+  $('#pills').innerHTML=out.map(([k,l])=>`<span class="pill">${esc(l)}<button data-clear="${k}" aria-label="Remove filter">&times;</button></span>`).join('')+(dd?`<span class="dlpill">Word docs for this chapter: <a href="${esc(dd.q)}" download>Questions</a> <a href="${esc(dd.k)}" download>Answer key</a></span>`:'')}
 /* ---------- cards ---------- */
 const val=(d,k)=>(edits[d.id]&&edits[d.id][k]!==undefined)?edits[d.id][k]:(d.ed?d.ed[k]:(k==='answer'?d.a:''));
 const bodyKey=d=>d.f==='Multiple choice'?'stem':'question';
@@ -269,7 +271,7 @@ $('#dl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjec
 $('#cp').onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(payload());$('#cp').textContent='Copied'};
 $('#clr').onclick=()=>{if(confirm('Discard all pending edits in this browser?')){edits={};saveEdits();$('#dlg').close();render()}};
 $('#close').onclick=()=>$('#dlg').close();
-$('#docs').innerHTML=DOCS.map(d=>`<a href="${esc(d.p)}">${esc(d.n)}</a>`).join('');
+$('#docs').innerHTML='<div class="dlh">Organic chemistry: one set per chapter</div>'+DOCS.filter(d=>d.g).map(d=>`<div class="dlrow"><span>${esc(d.n)}</span><a href="${esc(d.q)}" download>Questions</a><a href="${esc(d.k)}" download>Answer key</a></div>`).join('')+'<div class="dlh">Other downloads</div>'+DOCS.filter(d=>!d.g).map(d=>`<a class="dlone" href="${esc(d.q)}" download>${esc(d.n)}</a>`).join('');
 readHash();render();
 </script>
 </body>

@@ -1,7 +1,9 @@
-"""AP Chemistry course units and the unit(s) each released free-response question belongs to (read by hand from the questions)."""
-UNITS = {1: 'Unit 1: Atomic Structure and Properties', 2: 'Unit 2: Molecular and Ionic Compound Structure and Properties',
-         3: 'Unit 3: Intermolecular Forces and Properties', 4: 'Unit 4: Chemical Reactions', 5: 'Unit 5: Kinetics',
-         6: 'Unit 6: Thermodynamics', 7: 'Unit 7: Equilibrium', 8: 'Unit 8: Acids and Bases', 9: 'Unit 9: Applications of Thermodynamics'}
+"""AP Chemistry course units (names as in the Fall 2024 course and exam description) and the unit(s) each released free-response question belongs to (read by hand from the questions)."""
+UNITS = {1: 'Unit 1: Atomic Structure and Properties', 2: 'Unit 2: Compound Structure and Properties',
+         3: 'Unit 3: Properties of Substances and Mixtures', 4: 'Unit 4: Chemical Reactions', 5: 'Unit 5: Kinetics',
+         6: 'Unit 6: Thermochemistry', 7: 'Unit 7: Equilibrium', 8: 'Unit 8: Acids and Bases', 9: 'Unit 9: Thermodynamics and Electrochemistry'}
+# exam weighting of each unit in the multiple-choice section, from the Fall 2024 course and exam description
+WEIGHT = {1: '7-9%', 2: '7-9%', 3: '18-22%', 4: '7-9%', 5: '7-9%', 6: '7-9%', 7: '7-9%', 8: '11-15%', 9: '7-9%'}
 
 FRQ_UNITS = {
     2015: {1: [9, 1], 2: [2, 3, 9], 3: [4, 8], 4: [7], 5: [5], 6: [2, 3], 7: [6, 9]},
