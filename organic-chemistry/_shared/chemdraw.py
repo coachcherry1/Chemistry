@@ -27,7 +27,7 @@ def _ang_dist(a, b):
 
 class Struct:
     def __init__(self, smiles, hlabels=None, lone=(), rotate=0, atomlabels=None,
-                 flip=False, redh=True, charge_pref=315, cip=False):
+                 flip=False, redh=True, charge_pref=315, cip=False, radical=False):
         """hlabels: {map: 'a'} puts a subscript letter on a labeled H.
         lone: map numbers of uncharged atoms that should also show lone pairs.
         Charged atoms always get a circled charge and their lone pairs.
@@ -42,15 +42,20 @@ class Struct:
         mol.UpdatePropertyCache(strict=False)
         Chem.SanitizeMol(mol, sanitizeOps=Chem.SANITIZE_ALL ^ Chem.SANITIZE_SETAROMATICITY)
         for a in mol.GetAtoms():
-            if a.GetNumRadicalElectrons() or (a.GetNoImplicit() and a.GetAtomicNum() == 6 and a.GetTotalValence() + a.GetFormalCharge() * -1 < 4 and a.GetFormalCharge() == 0):
+            if (a.GetNumRadicalElectrons() and not radical) or (a.GetNoImplicit() and not radical and a.GetAtomicNum() == 6 and a.GetTotalValence() + a.GetFormalCharge() * -1 < 4 and a.GetFormalCharge() == 0):
                 raise ValueError(f'unintended radical/missing H on atom {a.GetIdx()} ({a.GetSymbol()}) in {smiles}')
         self.idx = {a.GetAtomMapNum(): a.GetIdx() for a in mol.GetAtoms() if a.GetAtomMapNum()}
 
         # lone pair counts and charges come from the real molecule
         self.charge = {}
         self.lp_count = {}
+        self.rad_set = set()
         for a in mol.GetAtoms():
             i = a.GetIdx()
+            if radical and a.GetNumRadicalElectrons():
+                self.lp_count[i] = 1
+                self.rad_set.add(i)
+                continue
             chg = a.GetFormalCharge()
             show = chg != 0 or a.GetAtomMapNum() in lone
             if chg != 0:
@@ -63,6 +68,11 @@ class Struct:
         # display copy: charges removed (we draw circled charges ourselves)
         dm = Chem.Mol(mol)
         for a in dm.GetAtoms():
+            if radical and a.GetNumRadicalElectrons():
+                nh = a.GetTotalNumHs()
+                a.SetNoImplicit(True)
+                a.SetNumExplicitHs(nh)
+                a.SetNumRadicalElectrons(0)
             if a.GetFormalCharge() != 0:
                 nh = a.GetTotalNumHs()
                 a.SetFormalCharge(0)
@@ -177,6 +187,9 @@ class Struct:
             for ang, cx, cy in pts:
                 th = math.radians(ang)
                 nx, ny = -math.sin(th), math.cos(th)
+                if i in self.rad_set:
+                    out.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="2.1" fill="black"/>')
+                    continue
                 for s in (-1, 1):
                     out.append(f'<circle cx="{cx + s * 2.6 * nx:.1f}" cy="{cy + s * 2.6 * ny:.1f}" r="1.7" fill="black"/>')
         for i, (cx, cy) in self.charge_pt.items():
