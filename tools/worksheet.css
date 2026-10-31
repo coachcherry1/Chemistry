@@ -33,6 +33,7 @@ body.wsopen{overflow:hidden}
 .wsbox{position:absolute;outline:1px dashed transparent;background:transparent}
 .wsbox:hover{outline-color:#8aa4c8}
 .wsbox.sel{outline:2px solid #1d5fb4;z-index:5}
+.wsbox:hover,.wsbox:focus-within{z-index:6}
 .wsbox.warn{outline:2px solid #c0392b}
 .wsbox.over{outline:2px solid #d98200}
 .wsbox.warn .wswarnmsg,.wsbox.over .wswarnmsg{display:block}
@@ -69,3 +70,18 @@ body.wsopen{overflow:hidden}
   #wsprint .pp{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 @media(max-width:900px){.wsbody{flex-direction:column}.wsside{width:auto;max-height:42vh;border-right:0;border-bottom:1px solid var(--line)}}
+
+/* separate sizing: box width, extra space, picture only */
+.wsrw{position:absolute;right:-6px;top:15%;height:70%;width:12px;cursor:ew-resize;touch-action:none;display:none;background:rgba(29,95,180,.25);border-radius:6px}
+.wsrw:hover{background:rgba(29,95,180,.55)}
+.wsrh{position:absolute;left:15%;bottom:-6px;width:70%;height:12px;cursor:ns-resize;touch-action:none;display:none;background:rgba(29,95,180,.25);border-radius:6px}
+.wsrh:hover{background:rgba(29,95,180,.55)}
+.wsbox:hover .wsrw,.wsbox.sel .wsrw,.wsbox:hover .wsrh,.wsbox.sel .wsrh{display:block}
+.wsimgbox{position:relative;display:block;max-width:100%}
+.wsopt .wsimgbox{display:inline-block}
+.wsimgh{position:absolute;right:-5px;bottom:-5px;width:14px;height:14px;background:#d98200;border:2px solid #fff;border-radius:3px;cursor:nwse-resize;touch-action:none;display:none;box-shadow:0 0 0 1px #d98200}
+.wsbox:hover .wsimgh,.wsbox.sel .wsimgh{display:block}
+.pp .wsimgh,#wsmeasure .wsimgh,.pp .wsrw,.pp .wsrh{display:none!important}
+
+/* a selected box that is not under the pointer must not block clicks on the boxes around it */
+.wsbox.sel:not(:hover) .wsgrip,.wsbox.sel:not(:hover) .wsrw,.wsbox.sel:not(:hover) .wsrh,.wsbox.sel:not(:hover) .wsresize,.wsbox.sel:not(:hover) .wsimgh{pointer-events:none}
