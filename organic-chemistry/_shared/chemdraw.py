@@ -41,6 +41,7 @@ class Struct:
         assert mol is not None, smiles
         mol.UpdatePropertyCache(strict=False)
         Chem.SanitizeMol(mol, sanitizeOps=Chem.SANITIZE_ALL ^ Chem.SANITIZE_SETAROMATICITY)
+        Chem.AssignStereochemistry(mol, cleanIt=True, force=True)     # double-bond (cis/trans, E/Z) geometry must reach the drawing
         for a in mol.GetAtoms():
             if (a.GetNumRadicalElectrons() and not radical) or (a.GetNoImplicit() and not radical and a.GetAtomicNum() == 6 and a.GetTotalValence() + a.GetFormalCharge() * -1 < 4 and a.GetFormalCharge() == 0):
                 raise ValueError(f'unintended radical/missing H on atom {a.GetIdx()} ({a.GetSymbol()}) in {smiles}')
