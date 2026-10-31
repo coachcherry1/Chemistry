@@ -1,5 +1,8 @@
 # Chemistry
 
+> ## [**Open the searchable index of all questions, molecules and simulations**](https://coachcherry1.github.io/Chemistry/)
+> Browse by course, textbook chapter and section. <https://coachcherry1.github.io/Chemistry/>
+
 SCORM 1.2 activities for Schoology, organised as `class/topic/activity`: `chemistry/`, `ap-chemistry/` and
 `organic-chemistry/`, each holding topic folders (for example `chemistry/bonding/`), each holding one folder per
 activity. `CLAUDE.md` lists every package by course, with the house rules and the commands to run before each
