@@ -7,7 +7,7 @@
   "fmt": "FR",
   "d": 4,
   "units": [
-   "Unit 9: Applications of Thermodynamics",
+   "Unit 9: Thermodynamics and Electrochemistry",
    "Unit 1: Atomic Structure and Properties"
   ],
   "title": "2015 AP Chemistry free-response question 1 (long, 10 points)",
@@ -23,9 +23,9 @@
   "fmt": "FR",
   "d": 4,
   "units": [
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
-   "Unit 3: Intermolecular Forces and Properties",
-   "Unit 9: Applications of Thermodynamics"
+   "Unit 2: Compound Structure and Properties",
+   "Unit 3: Properties of Substances and Mixtures",
+   "Unit 9: Thermodynamics and Electrochemistry"
   ],
   "title": "2015 AP Chemistry free-response question 2 (long, 10 points)",
   "text": "[Diagram: laboratory apparatus. A test tube containing glass wool with ethanol and a solid catalyst is clamped on a stand and heated by a Bunsen burner. A delivery tube leads into a water trough, where an inverted tube collects the ethene gas.]\n\n2. Ethene, C₂H₄(g) (molar mass 28.1 g/mol), may be prepared by the dehydration of ethanol, C₂H₅OH(g) (molar mass 46.1 g/mol), using a solid catalyst. A setup for the lab synthesis is shown in the diagram above. The equation for the dehydration reaction is given below.\n\nC₂H₅OH(g) → C₂H₄(g) + H₂O(g)  (catalyst)  ΔH°₂₉₈ = 45.5 kJ/mol(rxn); ΔS°₂₉₈ = 126 J/(K·mol(rxn))\n(ethanol → ethene + water)\n\nA student added a 0.200 g sample of C₂H₅OH(l) to a test tube using the setup shown above. The student heated the test tube gently with a Bunsen burner until all of the C₂H₅OH(l) evaporated and gas generation stopped. When the reaction stopped, the volume of collected gas was 0.0854 L at 0.822 atm and 305 K. (The vapor pressure of water at 305 K is 35.7 torr.)\n\n(a) Calculate the number of moles of C₂H₄(g)\n\n(i) that are actually produced in the experiment and measured in the gas collection tube and\n\n(ii) that would be produced if the dehydration reaction went to completion.\n\n(b) Calculate the percent yield of C₂H₄(g) in the experiment.\n\nBecause the dehydration reaction is not observed to occur at 298 K, the student claims that the reaction has an equilibrium constant less than 1.00 at 298 K.\n\n(c) Do the thermodynamic data for the reaction support the student's claim? Justify your answer, including a calculation of ΔG°₂₉₈ for the reaction.\n\n(d) The Lewis electron-dot diagram for C₂H₄ is shown below in the box on the left. In the box on the right, complete the Lewis electron-dot diagram for C₂H₅OH by drawing in all of the electron pairs.\n\n[Left box: H₂C::CH₂ drawn with the carbon-carbon double bond as two shared pairs and the C–H bonding pairs shown as dots. Right box: the atoms of ethanol arranged as H H / H C C O H / H H (top row H H over the carbons, bottom row H H under them, a final H after O), with no electron pairs drawn.]\n\n(e) What is the approximate value of the C–O–H bond angle in the ethanol molecule?\n\n(f) During the dehydration experiment, C₂H₄(g) and unreacted C₂H₅OH(g) passed through the tube into the water. The C₂H₄ was quantitatively collected as a gas, but the unreacted C₂H₅OH was not. Explain this observation in terms of the intermolecular forces between water and each of the two gases.",
@@ -86,8 +86,8 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
-   "Unit 3: Intermolecular Forces and Properties"
+   "Unit 2: Compound Structure and Properties",
+   "Unit 3: Properties of Substances and Mixtures"
   ],
   "title": "2015 AP Chemistry free-response question 6 (short, 4 points)",
   "text": "| Compound | Melting Point (°C) |\n| --- | --- |\n| LiI | 449 |\n| KI | 686 |\n| LiF | 845 |\n| NaF | 993 |\n\n6. A student learns that ionic compounds have significant covalent character when a cation has a polarizing effect on a large anion. As a result, the student hypothesizes that salts composed of small cations and large anions should have relatively low melting points.\n\n(a) Select two compounds from the table and explain how the data support the student's hypothesis.\n\n(b) Identify a compound from the table that can be dissolved in water to produce a basic solution. Write the net ionic equation for the reaction that occurs to cause the solution to be basic.",
@@ -102,8 +102,8 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 6: Thermodynamics",
-   "Unit 9: Applications of Thermodynamics"
+   "Unit 6: Thermochemistry",
+   "Unit 9: Thermodynamics and Electrochemistry"
   ],
   "title": "2015 AP Chemistry free-response question 7 (short, 4 points)",
   "text": "7. Aluminum metal can be recycled from scrap metal by melting the metal to evaporate impurities.\n\n(a) Calculate the amount of heat needed to purify 1.00 mole of Al originally at 298 K by melting it. The melting point of Al is 933 K. The molar heat capacity of Al is 24 J/(mol·K), and the heat of fusion of Al is 10.7 kJ/mol.\n\n(b) The equation for the overall process of extracting Al from Al₂O₃ is shown below. Which requires less energy, recycling existing Al or extracting Al from Al₂O₃? Justify your answer with a calculation.\n\nAl₂O₃(s) → 2 Al(s) + (3/2) O₂(g)  ΔH° = 1675 kJ/mol(rxn)",
@@ -118,8 +118,8 @@
   "fmt": "FR",
   "d": 4,
   "units": [
-   "Unit 6: Thermodynamics",
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 6: Thermochemistry",
+   "Unit 2: Compound Structure and Properties",
    "Unit 1: Atomic Structure and Properties"
   ],
   "title": "2016 AP Chemistry free-response question 1 (long, 10 points)",
@@ -136,8 +136,8 @@
   "d": 4,
   "units": [
    "Unit 4: Chemical Reactions",
-   "Unit 9: Applications of Thermodynamics",
-   "Unit 2: Molecular and Ionic Compound Structure and Properties"
+   "Unit 9: Thermodynamics and Electrochemistry",
+   "Unit 2: Compound Structure and Properties"
   ],
   "title": "2016 AP Chemistry free-response question 2 (long, 10 points)",
   "text": "[The reaction equation referred to as \"the equation above\" is: NaHCO₃(s) + HC₂H₃O₂(aq) → NaC₂H₃O₂(aq) + H₂O(l) + CO₂(g)]\n\n2. A student designs an experiment to study the reaction between NaHCO₃ and HC₂H₃O₂. The reaction is represented by the equation above. The student places 2.24 g of NaHCO₃ in a flask and adds 60.0 mL of 0.875 M HC₂H₃O₂. The student observes the formation of bubbles and that the flask gets cooler as the reaction proceeds.\n\n(a) Identify the reaction represented above as an acid-base reaction, precipitation reaction, or redox reaction. Justify your answer.\n\n(b) Based on the information above, identify the limiting reactant. Justify your answer with calculations.\n\n(c) The student observes that the bubbling is rapid at the beginning of the reaction and gradually slows as the reaction continues. Explain this change in the reaction rate in terms of the collisions between reactant particles.\n\n(d) In thermodynamic terms, a reaction can be driven by enthalpy, entropy, or both.\n\n(i) Considering that the flask gets cooler as the reaction proceeds, what drives the chemical reaction between NaHCO₃(s) and HC₂H₃O₂(aq)? Answer by drawing a circle around one of the choices below.\n\nEnthalpy only    Entropy only    Both enthalpy and entropy\n\n(ii) Justify your selection in part (d)(i) in terms of ΔG°.\n\n(e) The HCO₃⁻ ion has three carbon-to-oxygen bonds. Two of the carbon-to-oxygen bonds have the same length and the third carbon-to-oxygen bond is longer than the other two. The hydrogen atom is bonded to one of the oxygen atoms. In the box below, draw a Lewis electron-dot diagram (or diagrams) for the HCO₃⁻ ion that is (are) consistent with the given information.\n\n[A large empty box for the drawing.]\n\n(f) A student prepares a solution containing equimolar amounts of HC₂H₃O₂ and NaC₂H₃O₂. The pH of the solution is measured to be 4.7. The student adds two drops of 3.0 M HNO₃(aq) and stirs the sample, observing that the pH remains at 4.7. Write a balanced, net-ionic equation for the reaction between HNO₃(aq) and the chemical species in the sample that is responsible for the pH remaining at 4.7.",
@@ -153,7 +153,7 @@
   "d": 4,
   "units": [
    "Unit 4: Chemical Reactions",
-   "Unit 3: Intermolecular Forces and Properties"
+   "Unit 3: Properties of Substances and Mixtures"
   ],
   "title": "2016 AP Chemistry free-response question 3 (long, 10 points)",
   "text": "M + I₂ → MI₂\n\n3. To determine the molar mass of an unknown metal, M, a student reacts iodine with an excess of the metal to form the water-soluble compound MI₂, as represented by the equation above. The reaction proceeds until all of the I₂ is consumed. The MI₂(aq) solution is quantitatively collected and heated to remove the water, and the product is dried and weighed to constant mass. The experimental steps are represented below, followed by a data table.\n\n[Diagram, first row: an empty beaker on a balance reading 125.457 g; arrow \"Add M\" to the beaker with metal M on a balance reading 126.549 g; arrow \"Add I₂\" to the beaker with M and I₂ on a balance reading 127.570 g.\nSecond row: \"Add H₂O\" is poured into the beaker; arrow \"reaction occurs\" to the beaker containing MI₂(aq) and leftover M; arrow \"solution collected\" to a test tube of MI₂(aq); arrow \"heat\" to a test tube with a little solid at the bottom; arrow \"reheat\" to a test tube with MI₂(s).]\n\nData for Unknown Metal Lab\n\n| Measurement | Value |\n| --- | --- |\n| Mass of beaker | 125.457 g |\n| Mass of beaker + metal M | 126.549 g |\n| Mass of beaker + metal M + I₂ | 127.570 g |\n| Mass of MI₂, first weighing | 1.284 g |\n| Mass of MI₂, second weighing | 1.284 g |\n\n(a) Given that the metal M is in excess, calculate the number of moles of I₂ that reacted.\n\n(b) Calculate the molar mass of the unknown metal M.\n\nThe student hypothesizes that the compound formed in the synthesis reaction is ionic.\n\n(c) Propose an experimental test the student could perform that could be used to support the hypothesis. Explain how the results of the test would support the hypothesis if the substance was ionic.\n\nThe student hypothesizes that Br₂ will react with metal M more vigorously than I₂ did because Br₂ is a liquid at room temperature.\n\n(d) Explain why I₂ is a solid at room temperature whereas Br₂ is a liquid. Your explanation should clearly reference the types and relative strengths of the intermolecular forces present in each substance.\n\nWhile cleaning up after the experiment, the student wishes to dispose of the unused solid I₂ in a responsible manner. The student decides to convert the solid I₂ to I⁻(aq) anion. The student has access to three solutions, H₂O₂(aq), Na₂S₂O₃(aq), and Na₂S₄O₆(aq), and the standard reduction table shown below.\n\n| Half reaction | E° (V) |\n| --- | --- |\n| S₄O₆²⁻(aq) + 2 e⁻ → 2 S₂O₃²⁻(aq) | 0.08 |\n| I₂(s) + 2 e⁻ → 2 I⁻(aq) | 0.54 |\n| O₂(g) + 2 H⁺(aq) + 2 e⁻ → H₂O₂(aq) | 0.68 |\n\n(e) Which solution should the student add to I₂(s) to reduce it to I⁻(aq)? Circle your answer below. Justify your answer, including a calculation of E° for the overall reaction.\n\nH₂O₂(aq)    Na₂S₂O₃(aq)    Na₂S₄O₆(aq)\n\n(f) Write the balanced net-ionic equation for the reaction between I₂ and the solution you selected in part (e).",
@@ -169,7 +169,7 @@
   "d": 3,
   "units": [
    "Unit 8: Acids and Bases",
-   "Unit 9: Applications of Thermodynamics"
+   "Unit 9: Thermodynamics and Electrochemistry"
   ],
   "title": "2016 AP Chemistry free-response question 4 (short, 4 points)",
   "text": "C₆H₅OH(aq) + H₂O(l) ⇌ C₆H₅O⁻(aq) + H₃O⁺(aq)  Kₐ = 1.12 × 10⁻¹⁰\n\n4. Phenol is a weak acid that partially dissociates in water according to the equation above.\n\n(a) What is the pH of a 0.75 M C₆H₅OH(aq) solution?\n\n(b) For a certain reaction involving C₆H₅OH(aq) to proceed at a significant rate, the phenol must be primarily in its deprotonated form, C₆H₅O⁻(aq). In order to ensure that the C₆H₅OH(aq) is deprotonated, the reaction must be conducted in a buffered solution. On the number scale below, circle each pH for which more than 50 percent of the phenol molecules are in the deprotonated form (C₆H₅O⁻(aq)). Justify your answer.\n\n1   2   3   4   5   6   7   8   9   10   11   12   13   14",
@@ -200,7 +200,7 @@
   "d": 3,
   "units": [
    "Unit 7: Equilibrium",
-   "Unit 3: Intermolecular Forces and Properties"
+   "Unit 3: Properties of Substances and Mixtures"
   ],
   "title": "2016 AP Chemistry free-response question 6 (short, 4 points)",
   "text": "Ba²⁺(aq) + EDTA⁴⁻(aq) ⇌ Ba(EDTA)²⁻(aq)  K = 7.7 × 10⁷\n\n6. The polyatomic ion C₁₀H₁₂N₂O₈⁴⁻ is commonly abbreviated as EDTA⁴⁻. The ion can form complexes with metal ions in aqueous solutions. A complex of EDTA⁴⁻ with Ba²⁺ ion forms according to the equation above. A 50.0 mL volume of a solution that has an EDTA⁴⁻(aq) concentration of 0.30 M is mixed with 50.0 mL of 0.20 M Ba(NO₃)₂ to produce 100.0 mL of solution.\n\n(a) Considering the value of K for the reaction, determine the concentration of Ba(EDTA)²⁻(aq) in the 100.0 mL of solution. Justify your answer.\n\n(b) The solution is diluted with distilled water to a total volume of 1.00 L. After equilibrium has been reestablished, is the number of moles of Ba²⁺(aq) present in the solution greater than, less than, or equal to the number of moles of Ba²⁺(aq) present in the original solution before it was diluted? Justify your answer.",
@@ -231,7 +231,7 @@
   "fmt": "FR",
   "d": 4,
   "units": [
-   "Unit 3: Intermolecular Forces and Properties",
+   "Unit 3: Properties of Substances and Mixtures",
    "Unit 4: Chemical Reactions",
    "Unit 5: Kinetics"
   ],
@@ -248,8 +248,8 @@
   "fmt": "FR",
   "d": 4,
   "units": [
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
-   "Unit 6: Thermodynamics"
+   "Unit 2: Compound Structure and Properties",
+   "Unit 6: Thermochemistry"
   ],
   "title": "2017 AP Chemistry free-response question 2 (long, 10 points)",
   "text": "2. Answer the following questions about the isomers fulminic acid and isocyanic acid.\n\nTwo possible Lewis electron-dot diagrams for fulminic acid, HCNO, are shown below.\n\n[Left diagram: H–C≡N–O, with lone pairs drawn on the oxygen. Right diagram: H–C=N=O with double bonds C=N and N=O, with lone pairs drawn on the carbon and on the oxygen.]\n\n(a) Explain why the diagram on the left is the better representation for the bonding in fulminic acid. Justify your choice based on formal charges.\n\nFulminic acid can convert to isocyanic acid according to the equation below.\n\nHCNO(g) ⇌ HNCO(g)\n(fulminic acid ⇌ isocyanic acid)\n\n| Fulminic Acid | Isocyanic Acid |\n| --- | --- |\n| H–C≡N–O (single bond H–C, triple bond C≡N, single bond N–O, lone pairs on O) | H–N=C=O (single bond H–N, double bonds N=C and C=O, lone pairs on N and on O) |\n\n(b) Using the Lewis electron-dot diagrams of fulminic acid and isocyanic acid shown in the boxes above and the table of average bond enthalpies below, determine the value of ΔH° for the reaction of HCNO(g) to form HNCO(g).\n\n| Bond | Enthalpy (kJ/mol) | Bond | Enthalpy (kJ/mol) | Bond | Enthalpy (kJ/mol) |\n| --- | --- | --- | --- | --- | --- |\n| N–O | 201 | C=N | 615 | H–C | 413 |\n| C=O | 745 | C≡N | 891 | H–N | 391 |\n\n(c) A student claims that ΔS° for the reaction is close to zero. Explain why the student's claim is accurate.\n\n(d) Which species, fulminic acid (HCNO) or isocyanic acid (HNCO), is present in higher concentration at equilibrium at 298 K? Justify your answer in terms of thermodynamic favorability and the equilibrium constant.\n\nThe ammonium salt of isocyanic acid is a product of the decomposition of urea, CO(NH₂)₂, represented below.\n\nCO(NH₂)₂(aq) ⇌ NH₄⁺(aq) + OCN⁻(aq)\n\nA student studying the decomposition reaction runs the reaction at 90°C. The student collects data on the concentration of urea as a function of time, as shown by the data table and the graph below.\n\n| Time (hours) | [CO(NH₂)₂] |\n| --- | --- |\n| 0 | 0.1000 |\n| 5 | 0.0707 |\n| 10 | 0.0500 |\n| 15 | 0.0354 |\n| 20 | 0.0250 |\n| 25 | 0.0177 |\n| 30 | 0.0125 |\n\n[Graph: [CO(NH₂)₂] (0.00 to 0.10) versus Time (hours, 0 to 30). A smooth curve falls from 0.10 at 0 hours to about 0.0125 at 30 hours, decreasing more slowly as time goes on.]\n\n(e) The student proposes that the rate law is rate = k[CO(NH₂)₂].\n\n(i) Explain how the data support the student's proposed rate law.\n\n(ii) Using the proposed rate law and the student's results, determine the value of the rate constant, k. Include units with your answer.\n\n(f) The student learns that the decomposition reaction was run in a solution with a pH of 13. Briefly describe an experiment, including the initial conditions that you would change and the data you would gather, to determine whether the rate of the reaction depends on the concentration of OH⁻(aq).",
@@ -279,7 +279,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 3: Intermolecular Forces and Properties"
+   "Unit 3: Properties of Substances and Mixtures"
   ],
   "title": "2017 AP Chemistry free-response question 4 (short, 4 points)",
   "text": "[Diagram: \"Chromatography Chambers\" on the left: two chambers. In the first, a strip of chromatography paper has three spots near the bottom, labeled Dye A, Dye B and Dye C; in the second, a strip has one spot labeled Unknown. Both strips stand in \"Nonpolar Solvent\" at the bottom of each chamber. \"Developed Chromatograms\" on the right: two strips marked with a dashed \"Origin\" line and a \"Solvent Front\" line at the top. On the first strip the spots rise to different heights: Dye B lowest, Dye A in the middle, Dye C highest. The second strip has a single Unknown spot, and its solvent front is at a different height from the first strip's. The student must compare the spots' positions relative to the origin and the solvent front.]\n\n4. A student investigates various dyes using paper chromatography. The student has samples of three pure dyes, labeled A, B, and C, and an unknown sample that contains one of the three dyes. The student prepares the chromatography chambers shown above on the left by putting a drop of each dye at the indicated position on the chromatography paper (a polar material) and standing the paper in a nonpolar solvent. The developed chromatograms are shown above on the right.\n\n(a) Which dye (A, B, or C) is the least polar? Justify your answer in terms of the interactions between the dyes and the solvent or between the dyes and the paper.\n\n(b) Which dye is present in the unknown sample? Justify your answer.",
@@ -294,7 +294,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 6: Thermodynamics"
+   "Unit 6: Thermochemistry"
   ],
   "title": "2017 AP Chemistry free-response question 5 (short, 4 points)",
   "text": "2 C₃H₇OH(l) + 9 O₂(g) → 6 CO₂(g) + 8 H₂O(g)\n\n5. A student performs an experiment to determine the enthalpy of combustion of 2-propanol, C₃H₇OH(l), which combusts in oxygen according to the equation above. The student heats a sample of water by burning some of the C₃H₇OH(l) that is in an alcohol burner, as represented below. The alcohol burner uses a wick to draw liquid up into the flame. The mass of C₃H₇OH(l) combusted is determined by weighing the alcohol burner before and after combustion.\n\n[Diagram: two drawings labeled Initial and Final. Each shows a beaker of water clamped to a ring stand above an alcohol burner containing C₃H₇OH(l), with a wick. In the Initial drawing the burner is nearly full and the flame is lit; in the Final drawing the liquid level is lower.]\n\nData from the experiment are given in the table below.\n\n| Measurement | Value |\n| --- | --- |\n| Mass of C₃H₇OH(l) combusted | 0.55 g |\n| Mass of water heated | 125.00 g |\n| Initial temperature of water | 22.0°C |\n| Final temperature of water | 51.1°C |\n| Specific heat of water | 4.18 J/(g·°C) |\n\n(a) Calculate the magnitude of the heat energy, in kJ, absorbed by the water. (Assume that the energy released from the combustion is completely transferred to the water.)\n\n(b) Based on the experimental data, if one mole of C₃H₇OH(l) is combusted, how much heat, in kJ, is released? Report your answer with the correct number of significant figures.\n\n(c) A second student performs the experiment using the same mass of water at the same initial temperature. However, the student uses an alcohol burner containing C₃H₇OH(l) that is contaminated with water, which is miscible with C₃H₇OH(l). The difference in mass of the alcohol burner before and after the combustion in this experiment is also 0.55 g. Would the final temperature of the water in the beaker heated by the alcohol burner in this experiment be greater than, less than, or equal to the final temperature of the water in the beaker in the first student's experiment? Justify your answer.",
@@ -310,7 +310,7 @@
   "d": 3,
   "units": [
    "Unit 7: Equilibrium",
-   "Unit 2: Molecular and Ionic Compound Structure and Properties"
+   "Unit 2: Compound Structure and Properties"
   ],
   "title": "2017 AP Chemistry free-response question 6 (short, 4 points)",
   "text": "6. Answer the following questions about Mg(OH)₂. At 25°C, the value of the solubility product constant, Ksp, for Mg(OH)₂(s) is 1.8 × 10⁻¹¹.\n\n(a) Calculate the number of grams of Mg(OH)₂ (molar mass 58.32 g/mol) that is dissolved in 100. mL of a saturated solution of Mg(OH)₂ at 25°C.\n\n(b) The energy required to separate the ions in the Mg(OH)₂ crystal lattice into individual Mg²⁺(g) and OH⁻(g) ions, as represented in the table below, is known as the lattice energy of Mg(OH)₂(s). As shown in the table, the lattice energy of Sr(OH)₂(s) is less than the lattice energy of Mg(OH)₂(s). Explain why in terms of periodic properties and Coulomb's law.\n\n| Reaction | Lattice Energy (kJ/mol) |\n| --- | --- |\n| Mg(OH)₂(s) → Mg²⁺(g) + 2 OH⁻(g) | 2900 |\n| Sr(OH)₂(s) → Sr²⁺(g) + 2 OH⁻(g) | 2300 |",
@@ -325,7 +325,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 9: Applications of Thermodynamics",
+   "Unit 9: Thermodynamics and Electrochemistry",
    "Unit 4: Chemical Reactions"
   ],
   "title": "2017 AP Chemistry free-response question 7 (short, 4 points)",
@@ -341,7 +341,7 @@
   "fmt": "FR",
   "d": 4,
   "units": [
-   "Unit 6: Thermodynamics",
+   "Unit 6: Thermochemistry",
    "Unit 4: Chemical Reactions"
   ],
   "title": "2018 AP Chemistry free-response question 1 (long, 10 points)",
@@ -373,8 +373,8 @@
   "d": 4,
   "units": [
    "Unit 1: Atomic Structure and Properties",
-   "Unit 3: Intermolecular Forces and Properties",
-   "Unit 9: Applications of Thermodynamics"
+   "Unit 3: Properties of Substances and Mixtures",
+   "Unit 9: Thermodynamics and Electrochemistry"
   ],
   "title": "2018 AP Chemistry free-response question 3 (long, 10 points)",
   "text": "3. Answer the following questions relating to Fe and its ions, Fe²⁺ and Fe³⁺.\n\n(a) Write the ground-state electron configuration of the Fe²⁺ ion.\n\n| Ion | Ionic Radius (pm) |\n| --- | --- |\n| Fe²⁺ | 92 |\n| Fe³⁺ | 79 |\n\n(b) The radii of the ions are given in the table above. Using principles of atomic structure, explain why the radius of the Fe²⁺ ion is larger than the radius of the Fe³⁺ ion.\n\n(c) Fe³⁺ ions interact more strongly with water molecules in aqueous solution than Fe²⁺ ions do. Give one reason for this stronger interaction, and justify your answer using Coulomb's law.\n\nA student obtains a solution that contains an unknown concentration of Fe²⁺(aq). To determine the concentration of Fe²⁺(aq) in the solution, the student titrates a sample of the solution with MnO₄⁻(aq), which converts Fe²⁺(aq) to Fe³⁺(aq), as represented by the following equation.\n\n5 Fe²⁺(aq) + MnO₄⁻(aq) + 8 H⁺(aq) → 5 Fe³⁺(aq) + Mn²⁺(aq) + 4 H₂O(l)\n\n(d) Write the balanced equation for the half-reaction for the oxidation of Fe²⁺(aq) to Fe³⁺(aq).\n\n(e) The student titrates a 10.0 mL sample of the Fe²⁺(aq) solution. Calculate the value of [Fe²⁺] in the solution if it takes 17.48 mL of added 0.0350 M KMnO₄(aq) to reach the equivalence point of the titration.\n\nTo deliver the 10.0 mL sample of the Fe²⁺(aq) solution in part (e), the student has the choice of using one of the pieces of glassware listed below.\n\n- 25 mL buret\n- 25 mL beaker\n- 25 mL graduated cylinder\n- 25 mL volumetric flask\n\n(f) Explain why the 25 mL volumetric flask would be a poor choice to use for delivering the required volume of the Fe²⁺(aq) solution.\n\nIn a separate experiment, the student is given a sample of powdered Fe(s) that contains an inert impurity. The student uses a procedure to oxidize the Fe(s) in the sample to Fe₂O₃(s). The student collects the following data during the experiment.\n\n| Measurement | Value |\n| --- | --- |\n| Mass of Fe(s) with inert impurity | 6.724 g |\n| Mass of Fe₂O₃(s) produced | 7.531 g |\n\n(g) Calculate the number of moles of Fe in the Fe₂O₃(s) produced.\n\n(h) Calculate the percent by mass of Fe in the original sample of powdered Fe(s) with the inert impurity.\n\n(i) If the oxidation of the Fe(s) in the original sample was incomplete so that some of the 7.531 g of product was FeO(s) instead of Fe₂O₃(s), would the calculated mass percent of Fe(s) in the original sample be higher, lower, or the same as the actual mass percent of Fe(s)? Justify your answer.",
@@ -389,7 +389,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 3: Intermolecular Forces and Properties"
+   "Unit 3: Properties of Substances and Mixtures"
   ],
   "title": "2018 AP Chemistry free-response question 4 (short, 4 points)",
   "text": "[Key: sulfur atom = large light-gray circle; carbon atom = black circle; oxygen atom = open (white) circle.]\n\n| Compound | Molecular Structure | Boiling Point at 1 atm (K) |\n| --- | --- | --- |\n| CS₂ | gray–black–gray, a linear molecule with the carbon in the middle bonded to a sulfur on each side by double bonds (S=C=S) | 319 |\n| COS | gray–black–white, a linear molecule with carbon bonded to a sulfur on one side and an oxygen on the other by double bonds (S=C=O) | 223 |\n\n4. The table above gives the molecular structures and boiling points for the compounds CS₂ and COS.\n\n(a) In terms of the types and relative strengths of all the intermolecular forces in each compound, explain why the boiling point of CS₂(l) is higher than that of COS(l).\n\n(b) A 10.0 g sample of CS₂(l) is put in an evacuated 5.0 L rigid container. The container is sealed and heated to 325 K, at which temperature all of the CS₂(l) has vaporized. What is the pressure in the container once all of the CS₂(l) has vaporized?",
@@ -419,7 +419,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 9: Applications of Thermodynamics"
+   "Unit 9: Thermodynamics and Electrochemistry"
   ],
   "title": "2018 AP Chemistry free-response question 6 (short, 4 points)",
   "text": "[Diagram: a galvanic cell. Two beakers are connected by wires to a voltmeter at the top. The left beaker contains a Cr(s) electrode in Cr³⁺(aq). The right beaker contains an Ag(s) electrode in Ag⁺(aq). There is no salt bridge between the beakers.]\n\n6. A student sets up a galvanic cell at 298 K that has an electrode of Ag(s) immersed in a 1.0 M solution of Ag⁺(aq) and an electrode of Cr(s) immersed in a 1.0 M solution of Cr³⁺(aq), as shown in the diagram above.\n\n(a) The student measures the voltage of the cell shown above and discovers that it is zero. Identify the missing component of the cell, and explain its importance for obtaining a nonzero voltage.\n\n| Half-Reaction | E° (V) |\n| --- | --- |\n| Ag⁺(aq) + e⁻ → Ag(s) | +0.80 |\n| Cr³⁺(aq) + 3 e⁻ → Cr(s) | ? |\n\n(b) The student adds the missing component to the cell and measures E°_cell to be +1.54 V. As the cell operates, Ag⁺ ions are reduced. Use this information and the information in the table above to do the following.\n\n(i) Calculate the value of E° for the half-reaction Cr³⁺(aq) + 3 e⁻ → Cr(s).\n\n(ii) Write the balanced net-ionic equation for the overall reaction that occurs as the cell operates.\n\n(iii) Calculate the value of ΔG° for the overall cell reaction in J/mol(rxn).",
@@ -450,9 +450,9 @@
   "fmt": "FR",
   "d": 4,
   "units": [
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
-   "Unit 3: Intermolecular Forces and Properties",
-   "Unit 9: Applications of Thermodynamics"
+   "Unit 2: Compound Structure and Properties",
+   "Unit 3: Properties of Substances and Mixtures",
+   "Unit 9: Thermodynamics and Electrochemistry"
   ],
   "title": "2019 AP Chemistry free-response question 1 (long, 10 points)",
   "text": "[Diagram: the Lewis electron-dot diagram of urea. A central carbon is double-bonded to an oxygen above it (oxygen with two lone pairs) and single-bonded to two nitrogen atoms, left and right. Each nitrogen has one lone pair and is bonded to two hydrogen atoms (one H at the end of the row, one H below).]\n\n1. The compound urea, H₂NCONH₂, is widely used in chemical fertilizers. The complete Lewis electron-dot diagram for the urea molecule is shown above.\n\n(a) Identify the hybridization of the valence orbitals of the carbon atom in the urea molecule.\n\n(b) Urea has a high solubility in water, due in part to its ability to form hydrogen bonds. A urea molecule and four water molecules are represented in the box below. Draw ONE dashed line (----) to indicate a possible location of a hydrogen bond between a water molecule and the urea molecule.\n\n[Box: a ball-and-stick drawing of one urea molecule in the center (C black, N hatched, O white, H gray) surrounded by four water molecules (an O with two H). Key: white = O, gray = H, black = C, hatched = N.]\n\nH₂NCONH₂(s) ⇌ H₂NCONH₂(aq)\n\nThe dissolution of urea is represented by the equation above. A student determines that 5.39 grams of H₂NCONH₂ (molar mass 60.06 g/mol) can dissolve in water to make 5.00 mL of a saturated solution at 20.°C.\n\n(c) Calculate the concentration of urea, in mol/L, in the saturated solution at 20.°C.\n\n(d) The student also determines that the concentration of urea in a saturated solution at 25°C is 19.8 M. Based on this information, is the dissolution of urea endothermic or exothermic? Justify your answer in terms of Le Chatelier's principle.\n\n[Picture of the available equipment: a polystyrene cup, a thermometer, a stirring rod, a bottle of urea, a balance, and a wash bottle of distilled water.]\n\n(e) The equipment shown above is provided so that the student can determine the value of the molar heat of solution for urea. Knowing that the specific heat of the solution is 4.18 J/(g·°C), list the specific measurements that are required to be made during the experiment.\n\n| Substance | S° (J/(mol·K)) |\n| --- | --- |\n| H₂NCONH₂(s) | 104.6 |\n| H₂NCONH₂(aq) | ? |\n\n(f) The entropy change for the dissolution of urea, ΔS°_soln, is 70.1 J/(mol·K) at 25°C. Using the information in the table above, calculate the absolute molar entropy, S°, of aqueous urea.\n\n(g) Using particle-level reasoning, explain why ΔS°_soln is positive for the dissolution of urea in water.\n\n(h) The student claims that ΔS° for the process contributes to the thermodynamic favorability of the dissolution of urea at 25°C. Use the thermodynamic information above to support the student's claim.",
@@ -467,9 +467,9 @@
   "fmt": "FR",
   "d": 4,
   "units": [
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
-   "Unit 3: Intermolecular Forces and Properties",
-   "Unit 6: Thermodynamics"
+   "Unit 2: Compound Structure and Properties",
+   "Unit 3: Properties of Substances and Mixtures",
+   "Unit 6: Thermochemistry"
   ],
   "title": "2019 AP Chemistry free-response question 2 (long, 10 points)",
   "text": "2. Answer the following questions relating to the chemistry of the halogens.\n\n(a) The molecular formulas of diatomic bromine, chlorine, fluorine, and iodine are written below. Circle the formula of the molecule that has the longest bond length. Justify your choice in terms of atomic structure.\n\nBr₂    Cl₂    F₂    I₂\n\nA chemistry teacher wants to prepare Br₂. The teacher has access to the following three reagents: NaBr(aq), Cl₂(g), and I₂(s).\n\n| Half-Reaction | E° at 25°C (V) |\n| --- | --- |\n| Br₂ + 2 e⁻ → 2 Br⁻ | 1.07 |\n| Cl₂ + 2 e⁻ → 2 Cl⁻ | 1.36 |\n| I₂ + 2 e⁻ → 2 I⁻ | 0.53 |\n\n(b) Using the data in the table above, write the balanced equation for the thermodynamically favorable reaction that will produce Br₂ when the teacher combines two of the reagents. Justify that the reaction is thermodynamically favorable by calculating the value of E° for the reaction.\n\nBr₂ and Cl₂ can react to form the compound BrCl.\n\n(c) The boiling point of Br₂ is 332 K, whereas the boiling point of BrCl is 278 K. Explain this difference in boiling point in terms of all the intermolecular forces present between molecules of each substance.\n\nThe compound BrCl can decompose into Br₂ and Cl₂, as represented by the balanced chemical equation below.\n\n2 BrCl(g) ⇌ Br₂(g) + Cl₂(g)  ΔH° = 1.6 kJ/mol(rxn)\n\nA 0.100 mole sample of pure BrCl(g) is placed in a previously evacuated, rigid 2.00 L container at 298 K. Eventually the system reaches equilibrium according to the equation above.\n\n(d) Calculate the pressure in the container before equilibrium is established.\n\n(e) Write the expression for the equilibrium constant, K_eq, for the decomposition of BrCl.\n\nAfter the system has reached equilibrium, 42 percent of the original BrCl sample has decomposed.\n\n(f) Determine the value of K_eq for the decomposition reaction of BrCl at 298 K.\n\n(g) Calculate the bond energy of the Br–Cl bond, in kJ/mol, using ΔH° for the reaction (1.6 kJ/mol(rxn)) and the information in the following table.\n\n| Bond | Bond Energy (kJ/mol) |\n| --- | --- |\n| Br–Br | 193 |\n| Cl–Cl | 243 |\n| Br–Cl | ? |",
@@ -499,7 +499,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 3: Intermolecular Forces and Properties"
+   "Unit 3: Properties of Substances and Mixtures"
   ],
   "title": "2019 AP Chemistry free-response question 4 (short, 4 points)",
   "text": "4. A student is doing experiments with CO₂(g). Originally, a sample of the gas is in a rigid container at 299 K and 0.70 atm. The student increases the temperature of the CO₂(g) in the container to 425 K.\n\n(a) Describe the effect of raising the temperature on the motion of CO₂(g) molecules.\n\n(b) Calculate the pressure of CO₂(g) in the container at 425 K.\n\n(c) In terms of kinetic molecular theory, briefly explain why the pressure of the CO₂(g) in the container changes as it is heated to 425 K.\n\n(d) The student measures the actual pressure of the CO₂(g) in the container at 425 K and observes that it is less than the pressure predicted by the ideal gas law. Explain this observation.",
@@ -561,7 +561,7 @@
   "units": [
    "Unit 8: Acids and Bases",
    "Unit 4: Chemical Reactions",
-   "Unit 2: Molecular and Ionic Compound Structure and Properties"
+   "Unit 2: Compound Structure and Properties"
   ],
   "title": "2021 AP Chemistry free-response question 1 (long, 10 points)",
   "text": "HCOOH(aq) + H₂O(l) ⇌ H₃O⁺(aq) + HCOO⁻(aq)  Kₐ = 1.8 × 10⁻⁴\n\n1. Methanoic acid, HCOOH, ionizes according to the equation above.\n\n(a) Write the expression for the equilibrium constant, Kₐ, for the reaction.\n\n(b) Calculate the pH of a 0.25 M solution of HCOOH.\n\n(c) In the box below, complete the Lewis electron-dot diagram for HCOOH. Show all bonding and nonbonding valence electrons.\n\n[Box containing the atoms arranged as: O above, and below it a row H C O H (the oxygen above the carbon), with no bonds or electron pairs drawn.]\n\nH₂NNH₂(aq) + H₂O(l) ⇌ H₂NNH₃⁺(aq) + OH⁻(aq)  K_b = 1.3 × 10⁻⁶\n\n(d) In aqueous solution, the compound H₂NNH₂ reacts according to the equation above. A 50.0 mL sample of 0.25 M H₂NNH₂(aq) is combined with a 50.0 mL sample of 0.25 M HCOOH(aq).\n\n(i) Write the balanced net ionic equation for the reaction that occurs when H₂NNH₂ is combined with HCOOH.\n\n(ii) Is the resulting solution acidic, basic, or neutral? Justify your answer.\n\nWhen a catalyst is added to a solution of HCOOH(aq), the reaction represented by the following equation occurs.\n\nHCOOH(aq) → H₂(g) + CO₂(g)\n\n(e) Is the reaction a redox reaction? Justify your answer.\n\n[Graph: Total Pressure (atm) versus Time (hours). The pressure rises from 0 in a curve that levels off at a plateau marked at 24 atm (dashed horizontal line).]\n\n(f) The reaction occurs in a rigid 4.3 L vessel at 25°C, and the total pressure is monitored, as shown in the graph above. The vessel originally did not contain any gas. Calculate the number of moles of CO₂(g) produced in the reaction. (Assume that the amount of CO₂(g) dissolved in the solution is negligible.)\n\n(g) After the reaction has proceeded for several minutes, does the amount of catalyst increase, decrease, or remain the same? Justify your answer.",
@@ -577,8 +577,8 @@
   "d": 4,
   "units": [
    "Unit 1: Atomic Structure and Properties",
-   "Unit 3: Intermolecular Forces and Properties",
-   "Unit 9: Applications of Thermodynamics"
+   "Unit 3: Properties of Substances and Mixtures",
+   "Unit 9: Thermodynamics and Electrochemistry"
   ],
   "title": "2021 AP Chemistry free-response question 2 (long, 10 points)",
   "text": "2. Answer the following questions about the element Si and some of its compounds.\n\n(a) The mass spectrum of a pure sample of Si is shown below.\n\n[Graph: Relative Abundance (0 to 100) versus Mass (amu), with marked values 27 to 32. A very tall bar at 28 (about 92), a short bar at 29 (about 5), and a shorter bar at 30 (about 3).]\n\n(i) How many protons and how many neutrons are in the nucleus of an atom of the most abundant isotope of Si?\n\n(ii) Write the ground-state electron configuration of Si.\n\nTwo compounds that contain Si are SiO₂ and SiH₄.\n\n(b) At 161 K, SiH₄ boils but SiO₂ remains as a solid. Using principles of interparticle forces, explain the difference in boiling points.\n\nAt high temperatures, SiH₄ decomposes to form solid silicon and hydrogen gas.\n\n(c) Write a balanced equation for the reaction.\n\nA table of absolute entropies of some substances is given below.\n\n| Substance | S° (J/(mol·K)) |\n| --- | --- |\n| H₂(g) | 131 |\n| Si(s) | 18 |\n| SiH₄(g) | 205 |\n\n(d) Explain why the absolute molar entropy of Si(s) is less than that of H₂(g).\n\n(e) Calculate the value, in J/(mol·K), of ΔS° for the reaction.\n\n(f) The reaction is thermodynamically favorable at all temperatures. Explain why the reaction occurs only at high temperatures.\n\n(g) A partial photoelectron spectrum of pure Si is shown below. On the spectrum, draw the missing peak that corresponds to the electrons in the 3p sublevel.\n\n[Graph: Relative Number of Electrons (vertical axis with horizontal gridlines) versus Binding Energy (MJ/mol) on a logarithmic axis labeled 1,000, 100, 10, 1 and 0.1 (decreasing to the right). Four peaks are drawn: three short peaks of equal height, and one tall peak at about 10 MJ/mol. The peak for the 3p sublevel is missing.]\n\n(h) Using principles of atomic structure, explain why the first ionization energy of Ge is lower than that of Si.\n\n(i) A single photon with a wavelength of 4.00 × 10⁻⁷ m is absorbed by the Si sample. Calculate the energy of the photon in joules.",
@@ -594,7 +594,7 @@
   "d": 4,
   "units": [
    "Unit 4: Chemical Reactions",
-   "Unit 3: Intermolecular Forces and Properties"
+   "Unit 3: Properties of Substances and Mixtures"
   ],
   "title": "2021 AP Chemistry free-response question 3 (long, 10 points)",
   "text": "3. A student is given the task of determining the molar concentration of a CuSO₄ solution using two different procedures, precipitation and spectrophotometry.\n\nFor the precipitation experiment, the student adds 20.0 mL of 0.200 M Ba(NO₃)₂ to 50.0 mL of the CuSO₄(aq). The reaction goes to completion, and a white precipitate forms. The student filters the precipitate and dries it overnight. The data are given in the following table.\n\n| Measurement | Value |\n| --- | --- |\n| Mass of dry filter paper | 0.764 g |\n| Volume of CuSO₄(aq) | 50.0 mL |\n| Volume of 0.200 M Ba(NO₃)₂ | 20.0 mL |\n| Mass of filter paper and dried precipitate | 1.136 g |\n\n(a) Write a balanced net ionic equation for the precipitation reaction.\n\n(b) Calculate the number of moles of precipitate formed.\n\n(c) Calculate the molarity of the original CuSO₄ solution.\n\nFor the spectrophotometry experiment, the student first makes a standard curve. The student uses a 0.1000 M solution of CuSO₄(aq) to make three more solutions of known concentration (0.0500 M, 0.0300 M, and 0.0100 M) in 50.00 mL volumetric flasks.\n\n(d) Calculate the volume of 0.1000 M CuSO₄(aq) needed to make 50.00 mL of 0.0500 M CuSO₄(aq).\n\n(e) Briefly describe the procedure the student should follow to make 50.00 mL of 0.0500 M CuSO₄(aq) using 0.1000 M CuSO₄(aq), a 50.00 mL volumetric flask, and other standard laboratory equipment. Assume that all appropriate safety precautions will be taken.\n\nThe standard curve is given below.\n\n[Graph: Absorbance (0 to 0.800) versus Concentration (M) (0 to 0.1000). Four data points lie close to a straight best-fit line that passes through the origin and rises to about 0.63 at 0.1000 M: points at about 0.0100 M (absorbance about 0.08), 0.0300 M (about 0.17), 0.0500 M (about 0.33), and 0.1000 M (about 0.60).]\n\n(f) The absorbance of the CuSO₄ solution of unknown concentration is 0.219. Determine the molarity of the solution.\n\n(g) A second student performs the same experiment. There are a few drops of water in the cuvette before the second student adds the CuSO₄(aq) solution of unknown concentration. Will this result in a CuSO₄(aq) concentration for the unknown that is greater than, less than, or equal to the concentration determined in part (f)? Justify your answer.",
@@ -609,7 +609,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 6: Thermodynamics"
+   "Unit 6: Thermochemistry"
   ],
   "title": "2021 AP Chemistry free-response question 4 (short, 4 points)",
   "text": "4 Fe(s) + 3 O₂(g) → 2 Fe₂O₃(s)  ΔH° = −1650 kJ/mol(rxn)\n\n4. A student investigates a reaction used in hand warmers, represented above. The student mixes Fe(s) with a catalyst and sand in a small open container. The student measures the temperature of the mixture as the reaction proceeds. The data are given in the following table.\n\n| Time (min) | Temperature of Mixture (°C) |\n| --- | --- |\n| 0 | 22.0 |\n| 1 | 25.1 |\n| 2 | 34.6 |\n| 3 | 37.3 |\n| 4 | 39.7 |\n| 5 | 39.4 |\n\n(a) The mixture (Fe(s), catalyst, and sand) has a total mass of 15.0 g and a specific heat capacity of 0.72 J/(g·°C). Calculate the amount of heat absorbed by the mixture from 0 minutes to 4 minutes.\n\n(b) Calculate the mass of Fe(s), in grams, that reacted to generate the amount of heat calculated in part (a).\n\n(c) In a second experiment, the student uses twice the mass of iron as that calculated in part (b) but the same mass of sand as in the first experiment. Would the maximum temperature reached in the second experiment be greater than, less than, or equal to the maximum temperature in the first experiment? Justify your answer.",
@@ -624,7 +624,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 9: Applications of Thermodynamics"
+   "Unit 9: Thermodynamics and Electrochemistry"
   ],
   "title": "2021 AP Chemistry free-response question 5 (short, 4 points)",
   "text": "[Diagram: an electrolytic cell. A power source is connected by wires to two inert electrodes dipping into a beaker of molten MgCl₂. The left electrode has a layer of Mg(l) floating at the surface around it; the right electrode is surrounded by bubbles of Cl₂(g).]\n\n| Half-Reaction | E° (V) |\n| --- | --- |\n| Mg²⁺ + 2 e⁻ → Mg | −2.37 |\n| Cl₂ + 2 e⁻ → 2 Cl⁻ | +1.36 |\n\n5. Molten MgCl₂ can be decomposed into its elements if a sufficient voltage is applied using inert electrodes. The products of the reaction are liquid Mg (at the cathode) and Cl₂ gas (at the anode). A simplified representation of the cell is shown above. The reduction half-reactions related to the overall reaction in the cell are given in the table.\n\n(a) Draw an arrow on the diagram to show the direction of electron flow through the external circuit as the cell operates.\n\n(b) Would an applied voltage of 2.0 V be sufficient for the reaction to occur? Support your claim with a calculation as part of your answer.\n\n(c) If the current in the cell is kept at a constant 5.00 amps, how many seconds does it take to produce 2.00 g of Mg(l) at the cathode?",
@@ -639,7 +639,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 2: Compound Structure and Properties",
    "Unit 7: Equilibrium"
   ],
   "title": "2021 AP Chemistry free-response question 6 (short, 4 points)",
@@ -655,7 +655,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 3: Intermolecular Forces and Properties"
+   "Unit 3: Properties of Substances and Mixtures"
   ],
   "title": "2021 AP Chemistry free-response question 7 (short, 4 points)",
   "text": "7. A student investigates gas behavior using a rigid cylinder with a movable piston of negligible mass, as shown in the diagram above. The cylinder contains 0.325 mol of O₂(g).\n\n[Diagram: a cylinder containing O₂(g), closed at the top by a \"Movable Piston\", with a \"Valve\" on the side near the bottom.]\n\n(a) The cylinder has a volume of 7.95 L at 25°C and 1.00 atm. Calculate the density of the O₂(g), in g/L, under these conditions.\n\n(b) Attempting to change the density of the O₂(g), the student opens the valve on the side of the cylinder, pushes down on the piston to release some of the gas, and closes the valve again. The temperature of the gas remains constant at 25°C. Will this action change the density of the gas remaining in the cylinder? Justify your answer.\n\n(c) The student tries to change the density of the O₂(g) by cooling the cylinder to −55°C, which causes the volume of the gas to decrease. Using principles of kinetic molecular theory, explain why the volume of the O₂(g) decreases when the temperature decreases to −55°C.\n\n(d) The student further cools the cylinder to −180°C and observes that the measured volume of the O₂(g) is substantially smaller than the volume that is calculated using the ideal gas law. Assume all equipment is functioning properly. Explain why the measured volume of the O₂(g) is smaller than the calculated volume. (The boiling point of O₂(l) is −183°C.)",
@@ -671,7 +671,7 @@
   "d": 4,
   "units": [
    "Unit 4: Chemical Reactions",
-   "Unit 3: Intermolecular Forces and Properties",
+   "Unit 3: Properties of Substances and Mixtures",
    "Unit 8: Acids and Bases"
   ],
   "title": "2022 AP Chemistry free-response question 1 (long, 10 points)",
@@ -687,9 +687,9 @@
   "fmt": "FR",
   "d": 4,
   "units": [
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 2: Compound Structure and Properties",
    "Unit 7: Equilibrium",
-   "Unit 9: Applications of Thermodynamics"
+   "Unit 9: Thermodynamics and Electrochemistry"
   ],
   "title": "2022 AP Chemistry free-response question 2 (long, 10 points)",
   "text": "CH₃OH(g) ⇌ CO(g) + 2 H₂(g)  ΔH° = 90.0 kJ/mol(rxn)\n\n2. Methanol vapor decomposes to form carbon monoxide gas and hydrogen gas at high temperatures in the presence of a platinum catalyst, as represented by the balanced chemical equation given.\n\n(a) Are the hydrogen atoms oxidized or are they reduced in the forward reaction? Justify your answer in terms of oxidation numbers.\n\n(b) In the following box, draw the complete Lewis electron-dot diagram for the carbon monoxide molecule in which every atom obeys the octet rule. Show all bonding and nonbonding valence electrons.\n\n[Box containing the two atoms: C O, with no bonds or electron pairs drawn.]\n\n(c) The values of the standard molar entropies of the compounds involved in the reaction are given in the following table.\n\n| Substance | S° (J/(K·mol)) |\n| --- | --- |\n| CH₃OH(g) | 240. |\n| CO(g) | 198 |\n| H₂(g) | 131 |\n\n(i) Use the data in the table to calculate the value of the standard entropy change, ΔS°, in J/(K·mol(rxn)), for the reaction.\n\n(ii) Calculate the value of ΔG°, in kJ/mol(rxn), for the reaction at 375 K. Assume that ΔH° and ΔS° are independent of temperature.\n\nThe following particle-level diagram shows a representative sample of the equilibrium mixture represented by the equation given.\n\n[Diagram: a box containing a mixture of molecules drawn as spheres, with a key. Key: CH₃OH = a gray sphere bonded to a black sphere with four white spheres around it; CO = a gray sphere bonded to a black sphere; H₂ = two white spheres bonded together. The box contains molecules of all three kinds, which the student counts.]\n\n(d) Use information from the particle diagram to calculate the partial pressure of CO at equilibrium when the total pressure of the equilibrium mixture is 12.0 atm.\n\n(e) Write the expression for the equilibrium constant, K_p, for the reaction.\n\nCH₃OH(g) ⇌ CO(g) + 2 H₂(g)\n\nThe reaction system represented by the equation is allowed to achieve equilibrium at a different temperature. The following table gives the partial pressure of each species in the equilibrium mixture.\n\n| Substance | Partial Pressure at Different Temperature |\n| --- | --- |\n| CH₃OH(g) | 2.7 atm |\n| CO(g) | 4.2 atm |\n| H₂(g) | 8.4 atm |\n\n(f) Use the information in the table to calculate the value of the equilibrium constant, K_p, at the new temperature.\n\n(g) The volume of the container is rapidly doubled with no change in temperature. As equilibrium is re-established, does the number of moles of CH₃OH(g) increase, decrease, or remain the same? Justify your answer by comparing the value of the reaction quotient, Q, with the value of the equilibrium constant, K_p.",
@@ -705,7 +705,7 @@
   "d": 4,
   "units": [
    "Unit 1: Atomic Structure and Properties",
-   "Unit 9: Applications of Thermodynamics"
+   "Unit 9: Thermodynamics and Electrochemistry"
   ],
   "title": "2022 AP Chemistry free-response question 3 (long, 10 points)",
   "text": "3. Answer the following questions relating to the element aluminum, Al.\n\n(a) Write the complete ground-state electron configuration of an Al atom.\n\n(b) Based on principles of atomic structure, explain why the radius of the Al atom is larger than the radius of the Al³⁺ ion.\n\nA student plans to combine solid aluminum with an aqueous solution of silver ions. The student determines the mass of solid AgNO₃ needed to prepare the solution with a specific concentration.\n\n(c) In the following table, briefly list the steps necessary to prepare 200.0 mL of an aqueous solution of AgNO₃ using only equipment selected from the choices given. Assume that all appropriate safety measures are already in place. Not all equipment or lines in the table may be needed.\n\nEquipment: solid AgNO₃; distilled water; balance; weighing paper and scoop; 200.00 mL volumetric flask; 50.0 mL graduated cylinder; 250 mL beakers; pipet.\n\n| Step | Step Description |\n| --- | --- |\n| 1. | Use weighing paper to measure the determined mass of solid AgNO₃ on a balance. |\n| 2. | |\n| (blank) | |\n| (blank) | |\n| (blank) | |\n| (blank) | |\n\nAfter preparing the solution, the student places some of the solution into a beaker and adds a sample of aluminum. The reaction represented by the following equation occurs.\n\nAl(s) + 3 Ag⁺(aq) → Al³⁺(aq) + 3 Ag(s)\n\n(d) The following diagram gives an incomplete particulate representation of the reaction. The beaker on the left represents the system before the mixture reacts. Complete the drawing on the right to represent the system after the reaction has occurred. Be sure to include 1) the correct type and number of particles based on the number shown on the left and 2) the relative spacing to depict the appropriate phases.\n\n[Diagram: two beakers joined by an arrow. The left beaker (before reaction) shows 4 Al atoms (gray circles) stacked at the bottom and 8 Ag⁺ ions (open circles with a + sign) dispersed in the solution. The right beaker (after reaction) shows 2 Al atoms stacked at the bottom and is otherwise empty, for the student to complete. Key: gray circle \"Al\" = Al atom; open circle \"Ag\" = Ag atom; small gray circle \"Al³⁺\" = Al³⁺ ion; open circle \"Ag⁺\" = Ag⁺ ion.]\n\nThe student finds the standard reduction potentials given in the table, which are related to the reaction that occurs.\n\n| Half-Reaction | E° |\n| --- | --- |\n| Ag⁺(aq) + e⁻ → Ag(s) | 0.80 V |\n| Al³⁺(aq) + 3 e⁻ → Al(s) | −1.66 V |\n\n(e) Using the standard reduction potentials, calculate the value of E° for the reaction.\n\n(f) Based on the value of E°, would the standard free energy change of the reaction under standard conditions, ΔG°, be positive, negative, or zero? Justify your answer.\n\n(g) Once the reaction appears to stop progressing, would the change in free energy, ΔG, be positive, negative, or zero? Justify your answer.",
@@ -720,8 +720,8 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
-   "Unit 3: Intermolecular Forces and Properties"
+   "Unit 2: Compound Structure and Properties",
+   "Unit 3: Properties of Substances and Mixtures"
   ],
   "title": "2022 AP Chemistry free-response question 4 (short, 4 points)",
   "text": "4. Answer the following questions about the compounds NH₂Cl and NCl₃. The Lewis electron-dot diagrams of the two compounds are shown.\n\n[Diagram: NH₂Cl: a central N with one lone pair, bonded to H (left), to H (below) and to Cl (right), the Cl with three lone pairs. NCl₃: a central N with one lone pair, bonded to three Cl atoms (left, right and below), each Cl with three lone pairs.]\n\n(a) Calculate the number of moles of NH₂Cl (molar mass 51.48 g/mol) present in 1.0 L of a solution in which the concentration of NH₂Cl is 0.0016 g/L.\n\n(b) NH₂Cl is highly soluble in water, whereas NCl₃ is nearly insoluble. Explain this observation in terms of the types and relative strengths of the intermolecular forces between each of the solutes and water.\n\n(c) The value of ΔH°_vaporization for NCl₃(l) is 32.9 kJ/mol. Calculate the amount of energy required to vaporize a 15.0 g sample of NCl₃ (molar mass 120.36 g/mol).",
@@ -751,7 +751,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 3: Intermolecular Forces and Properties"
+   "Unit 3: Properties of Substances and Mixtures"
   ],
   "title": "2022 AP Chemistry free-response question 6 (short, 4 points)",
   "text": "6. A student wants to determine the concentration of permanganate, MnO₄⁻(aq), in a solution. The student plans to use colorimetric analysis because solutions containing MnO₄⁻(aq) have a purple color.\n\n[Graph: Absorbance (0.00 to 1.00) versus Wavelength (nm) (400 to 750). The absorption spectrum of MnO₄⁻(aq): the absorbance is small near 400 to 450 nm, rises to a group of peaks between roughly 500 and 575 nm, and then drops sharply to nearly zero beyond about 600 nm.]\n\n(a) To determine the optimum wavelength for an experiment that measures the concentration of MnO₄⁻(aq), the student takes a sample of the solution and measures the amount of light absorbed by the sample over a range of wavelengths. The data are plotted in the graph shown. Identify the optimum wavelength that the student should use for the experimental procedure.\n\n(b) The student uses a stock solution of 2.40 × 10⁻³ M KMnO₄(aq) to prepare the standard solutions of MnO₄⁻(aq) that are needed to construct a calibration curve.\n\n[Diagram: a graduated cylinder with a magnified circle showing the top of the liquid. The scale marks 100 and 90 are visible, with the bottom of the meniscus between them, below the 100 mark.]\n\n(i) The student uses a 100.0 mL graduated cylinder to measure a certain volume of KMnO₄(aq) stock solution, as shown in the diagram given. What volume should the student record?\n\n(ii) Calculate the volume, in mL, of 2.40 × 10⁻³ M KMnO₄(aq) that is required to produce 100.0 mL of a standard 1.68 × 10⁻³ M MnO₄⁻(aq) solution.\n\nThe student designs the following procedure to produce a calibration curve.\n\nStep 1: Prepare several standard solutions that have known MnO₄⁻(aq) concentrations by dilution of the stock solution.\nStep 2: Rinse the cuvette with distilled water.\nStep 3: Rinse the cuvette with the standard solution and fill the cuvette with the standard solution.\nStep 4: Measure the absorbance of the standard solution with the colorimeter.\nStep 5: Repeat steps 2-4 for each of the standard solutions.\n\nThe data are plotted in the calibration curve shown. One of the data points (indicated with an arrow) on the calibration curve is below the line of best fit.\n\n[Graph: Absorbance (0 to 0.9) versus [MnO₄⁻] (0 to 0.0025). About ten data points lie on a straight line through the origin that rises to about 0.85 at about 0.0024. One point, near [MnO₄⁻] = 0.0012, is marked with an arrow and lies clearly below the line.]\n\n(c) Assuming that all lab equipment is functioning properly, identify which one of the procedural steps the student could have executed incorrectly that would explain why the marked data point is below the line of best fit. Justify your answer.",
@@ -766,7 +766,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 2: Compound Structure and Properties",
    "Unit 7: Equilibrium"
   ],
   "title": "2022 AP Chemistry free-response question 7 (short, 4 points)",
@@ -784,7 +784,7 @@
   "units": [
    "Unit 1: Atomic Structure and Properties",
    "Unit 4: Chemical Reactions",
-   "Unit 9: Applications of Thermodynamics"
+   "Unit 9: Thermodynamics and Electrochemistry"
   ],
   "title": "2023 AP Chemistry free-response question 1 (long, 10 points)",
   "text": "1. Answer the following questions related to manganese compounds.\n\n(a) Manganese has several common oxidation states.\n\n(i) Write the complete electron configuration for an Mn atom in the ground state.\n\n(ii) When manganese forms cations, electrons are lost from which subshell first? Identify both the number and letter associated with the subshell.\n\nA student performs an experiment to produce a manganese salt of unknown composition, MnₓCl_y(aq), and determine its empirical formula. The student places a sample of Mn(s) in a beaker containing excess HCl(aq), as represented by the following equation.\n\nx Mn(s) + y HCl(aq) → MnₓCl_y(aq) + (y/2) H₂(g)\n\nThe student heats the resulting mixture until only MnₓCl_y(s) remains in the beaker. The data are given in the following table.\n\n| Measurement | Value |\n| --- | --- |\n| Mass of empty beaker | 60.169 g |\n| Mass of beaker and Mn(s) | 61.262 g |\n| Mass of beaker and MnₓCl_y after heating to constant mass | 62.673 g |\n\n(b) Calculate the mass of Cl in the sample of MnₓCl_y(s) remaining in the beaker.\n\n(c) Calculate the number of moles of Cl in the sample of MnₓCl_y(s) remaining in the beaker.\n\n(d) The student determines that 0.0199 mol of Mn was used in the experiment. Use the data to determine the empirical formula of the MnₓCl_y(s).\n\n(e) The student repeats the experiment using the same amounts of Mn and HCl and notices that some of the MnₓCl_y splatters out of the beaker as it is heated to dryness. Will the number of moles of Cl calculated for this trial be greater than, less than, or equal to the number calculated in part (c)? Justify your answer.\n\n(f) Another compound of manganese, MnO₂, is used in alkaline batteries, represented by the following diagram. Some half-reactions are given in the table.\n\n[Diagram: a cross-section of an alkaline battery. A graphite rod in the center is surrounded by MnO₂ paste, then KOH paste, then an outer zinc case.]\n\n| Reduction Half-Reaction | E° (V) |\n| --- | --- |\n| Zn²⁺(aq) + 2 e⁻ → Zn(s) | −0.76 |\n| ZnO(s) + H₂O(l) + 2 e⁻ → Zn(s) + 2 OH⁻(aq) | −1.28 |\n| 2 MnO₂(s) + H₂O(l) + 2 e⁻ → Mn₂O₃(s) + 2 OH⁻(aq) | 0.15 |\n\n(i) Based on the half-reactions given in the table, write the balanced net ionic equation for the reaction that has the greatest thermodynamic favorability.\n\n(ii) Calculate the value of E°_cell for the overall reaction.\n\n(iii) Calculate the value of ΔG° in kJ/mol(rxn).\n\n(iv) A student claims that the total mass of an alkaline battery decreases as the battery operates because the anode loses mass. Do you agree with the student's claim? Justify your answer.",
@@ -799,8 +799,8 @@
   "fmt": "FR",
   "d": 4,
   "units": [
-   "Unit 6: Thermodynamics",
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 6: Thermochemistry",
+   "Unit 2: Compound Structure and Properties",
    "Unit 7: Equilibrium"
   ],
   "title": "2023 AP Chemistry free-response question 2 (long, 10 points)",
@@ -847,7 +847,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 3: Intermolecular Forces and Properties",
+   "Unit 3: Properties of Substances and Mixtures",
    "Unit 8: Acids and Bases"
   ],
   "title": "2023 AP Chemistry free-response question 5 (short, 4 points)",
@@ -863,8 +863,8 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 3: Intermolecular Forces and Properties",
-   "Unit 2: Molecular and Ionic Compound Structure and Properties"
+   "Unit 3: Properties of Substances and Mixtures",
+   "Unit 2: Compound Structure and Properties"
   ],
   "title": "2023 AP Chemistry free-response question 6 (short, 4 points)",
   "text": "6. Answer the following questions related to HBr(l) and HF(l).\n\n(a) In the following table, list all of the types of intermolecular forces present in pure samples of HBr(l) and HF(l).\n\n| Liquid | HBr(l) | HF(l) |\n| --- | --- | --- |\n| Intermolecular forces present | (blank) | (blank) |\n\n(b) The enthalpy of vaporization, ΔH°_vap, for each liquid is provided in the following table.\n\n| Liquid | HBr(l) | HF(l) |\n| --- | --- | --- |\n| ΔH°_vap | 17.3 kJ/mol | 25.2 kJ/mol |\n\n(i) Based on the types and relative strengths of intermolecular forces, explain why ΔH°_vap of HF(l) is greater than that of HBr(l).\n\n(ii) Calculate the amount of thermal energy, in kJ, required to vaporize 6.85 g of HF(l).\n\n(c) Based on the arrangement of electrons in the Br and F atoms, explain why the bond length in an HBr molecule is greater than that in an HF molecule.",
@@ -910,7 +910,7 @@
   "d": 4,
   "units": [
    "Unit 4: Chemical Reactions",
-   "Unit 9: Applications of Thermodynamics",
+   "Unit 9: Thermodynamics and Electrochemistry",
    "Unit 8: Acids and Bases"
   ],
   "title": "2024 AP Chemistry free-response question 2 (long, 10 points)",
@@ -927,7 +927,7 @@
   "d": 4,
   "units": [
    "Unit 1: Atomic Structure and Properties",
-   "Unit 9: Applications of Thermodynamics",
+   "Unit 9: Thermodynamics and Electrochemistry",
    "Unit 4: Chemical Reactions"
   ],
   "title": "2024 AP Chemistry free-response question 3 (long, 10 points)",
@@ -943,7 +943,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 6: Thermodynamics"
+   "Unit 6: Thermochemistry"
   ],
   "title": "2024 AP Chemistry free-response question 4 (short, 4 points)",
   "text": "4. A student performs an experiment to determine the specific heat capacity of a metal. The student places a cube of the metal in boiling water so its temperature will be 100.0°C. The student then places the metal cube into a calorimeter that contains water and records the highest temperature of the water. A data table and a diagram of the thermometer at the highest temperature are shown.\n\n| Measurement | Value |\n| --- | --- |\n| Mass of metal cube | 98.1 g |\n| Mass of water | 52.0 g |\n| Initial temperature of metal cube | 100.0°C |\n| Initial temperature of water | 25.0°C |\n| Highest temperature of water | ? |\n\n[Diagram: a foam cup calorimeter with a thermometer. A magnified circle shows the thermometer scale with the marks 40 and 30 labeled and finer graduations between them; the top of the dark liquid column lies between the 30 and 40 marks.]\n\n(a) What should the student report as the highest temperature of the water? ____________\n\n(b) A particle-level representation of water molecules in the calorimeter before and after the metal cube was added is shown. The length of the arrows in the Before diagram represents the speed of the water molecules in the system. In the After diagram, draw an arrow for each molecule to indicate how the speed of each of the molecules changes after the metal cube is added.\n\n[Diagram: two magnified circles, \"Before\" and \"After\", each showing three water molecules as dots. In the Before diagram each dot has an arrow of a different length (one short, two longer). In the After diagram the three dots have no arrows, for the student to draw.]\n\n(c) Assuming the metal transfers 2940 J of thermal energy to the water, calculate the specific heat of the metal in J/(g·°C).\n\n(d) In a second experiment, 2940 J of thermal energy is transferred from 98.1 g of aluminum, which has a specific heat capacity of 0.897 J/(g·°C). Explain how the magnitude of the temperature change of the aluminum, ΔT_Al, compares with the magnitude of the temperature change of the metal in the original experiment.",
@@ -988,7 +988,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 3: Intermolecular Forces and Properties",
+   "Unit 3: Properties of Substances and Mixtures",
    "Unit 4: Chemical Reactions"
   ],
   "title": "2024 AP Chemistry free-response question 7 (short, 4 points)",
@@ -1035,9 +1035,9 @@
   "fmt": "FR",
   "d": 4,
   "units": [
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
-   "Unit 6: Thermodynamics",
-   "Unit 9: Applications of Thermodynamics"
+   "Unit 2: Compound Structure and Properties",
+   "Unit 6: Thermochemistry",
+   "Unit 9: Thermodynamics and Electrochemistry"
   ],
   "title": "2025 AP Chemistry free-response question 3 (long, 10 points)",
   "text": "3. White phosphorus is composed of P₄ molecules with a tetrahedral structure, as shown in the diagram on the left. Each P atom is bonded to the other three P atoms by single bonds, as shown in the incomplete Lewis diagram on the right.\n\n[Diagram: on the left, a ball-and-stick model of a tetrahedron of four P atoms. On the right, a box containing an incomplete Lewis diagram: four P atoms joined by single bonds (a triangle of three P atoms with a fourth P in the center), with no lone pairs drawn.]\n\nA. In the box in part A, complete the Lewis diagram for P₄ by drawing the nonbonding electrons.\n\nB. The reaction of white phosphorus with oxygen to form P₄O₁₀(s) is thermodynamically favorable at 298 K. The reaction is represented by equation 1.\n\nEquation 1: P₄(s) + 5 O₂(g) → P₄O₁₀(s)\n\ni. The entropy change of the reaction, ΔS°, is negative. Using particle-level reasoning, explain why the entropy decreases as the reaction progresses.\n\nii. The enthalpy change of the reaction, ΔH°, is also negative. A student claims that the favorability of the reaction is driven by enthalpy and **not** by entropy. Is the student's claim correct? Justify your answer by using the relationship between ΔG°, ΔH°, and ΔS°.\n\nP₄O₁₀(s) reacts exothermically with water to form phosphoric acid, as represented by equation 2.\n\nEquation 2: P₄O₁₀(s) + 6 H₂O(l) → 4 H₃PO₄(aq)\n\nA chemist uses a calorimetry experiment to determine the enthalpy change for the reaction, as represented by the following diagram.\n\n[Diagram: a calorimeter. An outer vessel contains an inner vessel holding a liquid. An insulating cover on top holds a thermometer and a stirrer, both dipping into the liquid. Labels: Thermometer, Stirrer, Insulating Cover, Inner Vessel, Outer Vessel.]\n\nC. The chemist carries out the calorimetry experiment and records the following information.\n\n| Measurement | Value |\n| --- | --- |\n| Mass of P₄O₁₀ | 0.100 g |\n| Mass of H₂O | 100.0 g |\n| Initial temperature | 22.00°C |\n| Final temperature | 22.38°C |\n| Molar mass of P₄O₁₀ | 283.9 g/mol |\n| Specific heat of H₂O | 4.18 J/(g·°C) |\n\ni. Calculate the amount of heat, q, released during the experiment, in kJ. Assume that the specific heat of the solution is the same as that of water.\n\nii. Calculate the value of ΔH°_rxn for equation 2 in kJ/mol(rxn). Include the sign in your answer.\n\nD. The chemist weighed out 0.100 g P₄O₁₀ and 100.0 g of H₂O to perform a second trial. In the second trial, some of the solid P₄O₁₀ stuck to the weighing paper and was not transferred to the calorimeter. Given that P₄O₁₀ is the limiting reactant, would ΔT for the second trial be greater than, less than, or equal to the value in the first trial? Justify your answer.\n\nP₄(s) also reacts readily with Cl₂(g) to produce phosphorus trichloride, PCl₃(g), which in turn reacts with Cl₂(g) in an equilibrium process to produce PCl₅(g). The reactions are represented by equations 3 and 4.\n\nEquation 3: P₄(s) + 6 Cl₂(g) → 4 PCl₃(g)  ΔH°₁ = −1148 kJ/mol(rxn)\n\nEquation 4: PCl₃(g) + Cl₂(g) ⇌ PCl₅(g)  ΔH°₂ = −88 kJ/mol(rxn)\n\nE. Calculate the standard enthalpy of formation of PCl₅(g) represented by equation 5.\n\nEquation 5: (1/4) P₄(s) + (5/2) Cl₂(g) → PCl₅(g)  ΔH°_f = ?\n\nThe following particle-level diagram represents the contents of the vessel in an equilibrium mixture at 546 K involving equation 4.\n\n[Diagram: a box containing Cl₂, PCl₃ and PCl₅ molecules. Key: Cl₂ = two gray circles joined; PCl₃ = a small open circle (P) bonded to three gray circles (Cl); PCl₅ = a small open circle (P) bonded to five gray circles (Cl). The student counts each kind of particle.]\n\nF. Equation 4 for the reaction that occurs is shown.\n\nEquation 4: PCl₃(g) + Cl₂(g) ⇌ PCl₅(g)  ΔH°₂ = −88 kJ/mol(rxn)\n\ni. If each particle in the diagram represents a partial pressure of 1.00 atm, what is the value of K_p for the equilibrium mixture at 546 K?\n\nii. Does the value of K_p increase, decrease, or remain the same when the temperature is increased to 596 K? Justify your answer based on ΔH°₂.",
@@ -1052,8 +1052,8 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
-   "Unit 3: Intermolecular Forces and Properties"
+   "Unit 2: Compound Structure and Properties",
+   "Unit 3: Properties of Substances and Mixtures"
   ],
   "title": "2025 AP Chemistry free-response question 4 (short, 4 points)",
   "text": "4. A scientist is investigating the properties of a mixture of CH₃OH and H₂CO. The scientist generates the following diagram to represent the mixture.\n\n[Diagram: a box containing several CH₃OH molecules and several H₂CO molecules drawn as Lewis diagrams (CH₃OH: a carbon with three H and an O–H group, the oxygen with two lone pairs; H₂CO: a carbon with two H and a double bond to O, the oxygen with two lone pairs). The molecules are scattered at different positions and orientations in the box.]\n\nA. Identify the hybridization of the valence orbitals of the C atom in the H₂CO molecule.\n\nB. In the diagram provided, draw a SINGLE dashed line (----) to represent a strong hydrogen-bonding attraction between one CH₃OH molecule and one H₂CO molecule in the mixture.\n\nC. The scientist plans to cool a gaseous mixture of CH₃OH and H₂CO to form a liquid mixture and finds data on the two compounds. The data are summarized in the table.\n\n| Substance | Melting Point (K) | Boiling Point (K) | Enthalpy of Vaporization (kJ/mol) |\n| --- | --- | --- | --- |\n| CH₃OH | 176 | 338 | 37.6 |\n| H₂CO | 181 | 254 | 24.2 |\n\ni. Propose a temperature to which the mixture should be cooled such that CH₃OH and H₂CO will both be liquids.\n\nii. The scientist analyzes the mixture after it is cooled and determines that 8.59 g of CH₃OH(l) is present. Calculate the amount of thermal energy, in kJ, that was removed to condense the 8.59 g of CH₃OH (molar mass 32.04 g/mol) at its boiling point.",
@@ -1068,8 +1068,8 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
-   "Unit 3: Intermolecular Forces and Properties"
+   "Unit 2: Compound Structure and Properties",
+   "Unit 3: Properties of Substances and Mixtures"
   ],
   "title": "2025 AP Chemistry free-response question 5 (short, 4 points)",
   "text": "5. Complete Lewis diagrams and some physical properties for compounds X and Y are given.\n\n| | X | Y |\n| --- | --- | --- |\n| Lewis diagram | A central carbon atom bonded to an –O–H group (oxygen with two lone pairs) and to three CH₃ groups (each carbon bonded to three H) | A central silicon atom bonded to an –O–H group (oxygen with two lone pairs) and to three CH₃ groups (each carbon bonded to three H) |\n| Molar mass | 74.1 g/mol | 90.2 g/mol |\n| Boiling point | 82°C | 98°C |\n\nA. Based on VSEPR theory, predict the geometry around the Si atom in compound Y.\n\nB. A student claims that compound Y has a higher boiling point than that of compound X because compound Y has stronger London dispersion forces. Do you agree or disagree? Justify your answer.\n\nC. An equimolar mixture of the two compounds is heated. When the mixture reaches 82°C, which compound will have the higher vapor pressure? Justify your answer.\n\nD. The mixture is heated to 198°C in a sealed, rigid 12.5 L container, at which point both substances are gases and the total pressure in the container is 2.30 atm. Calculate the number of moles of gas particles in the container.",
@@ -1084,7 +1084,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 9: Applications of Thermodynamics"
+   "Unit 9: Thermodynamics and Electrochemistry"
   ],
   "title": "2025 AP Chemistry free-response question 6 (short, 4 points)",
   "text": "6. A scientist constructs a galvanic cell as shown in the diagram. As the cell operates, the Zn(s) electrode increases in mass and the Al(s) electrode decreases in mass. A data table with the standard reduction potentials for the substances follows the diagram.\n\n[Diagram: a galvanic cell. A voltmeter reading 0.90 V is connected by wires to two electrodes. On the left, a Zn(s) electrode dips into 1.0 M Zn(NO₃)₂(aq). On the right, an Al(s) electrode dips into 1.0 M Al(NO₃)₃(aq). A salt bridge (an upside-down U-tube with plugs at both ends) connects the two solutions.]\n\n| Half-Reaction | E° (V) |\n| --- | --- |\n| Zn²⁺(aq) + 2 e⁻ → Zn(s) | −0.76 |\n| Al³⁺(aq) + 3 e⁻ → Al(s) | −1.66 |\n\nA. Write the half-reaction for the oxidation that occurs at the anode.\n\nB. Write the balanced net ionic equation for the overall reaction that occurs in the galvanic cell.\n\nC. Initially, each electrode has a mass of 50.0 g. The cell is allowed to run for a period of time and is then stopped. Which electrode's mass changed the most? Justify your answer with a calculation.\n\n| Reduction Half-Reaction | E° (V) |\n| --- | --- |\n| Au³⁺(aq) + 3 e⁻ → Au(s) | +1.50 |\n| Zn²⁺(aq) + 2 e⁻ → Zn(s) | −0.76 |\n| Mn²⁺(aq) + 2 e⁻ → Mn(s) | −1.19 |\n| Al³⁺(aq) + 3 e⁻ → Al(s) | −1.66 |\n| Be²⁺(aq) + 2 e⁻ → Be(s) | −1.85 |\n\nD. The standard Zn/Al cell has a value of E°_cell equal to 0.90 V. The scientist needs a galvanic cell that produces a greater voltage. The scientist has access to the chemical systems in the table. If the scientist uses the Zn half-cell and one of the other options from the table, what is the MAXIMUM voltage that could be generated at standard conditions?",
@@ -1100,7 +1100,7 @@
   "d": 3,
   "units": [
    "Unit 8: Acids and Bases",
-   "Unit 2: Molecular and Ionic Compound Structure and Properties"
+   "Unit 2: Compound Structure and Properties"
   ],
   "title": "2025 AP Chemistry free-response question 7 (short, 4 points)",
   "text": "7. Answer the following questions about the glycolate ion, C₂H₃O₃⁻, which acts as a base in aqueous solution. A Lewis diagram for the ion is provided.\n\n[Diagram: the Lewis diagram of the glycolate ion in brackets with a − charge: H–O–CH₂–C(=O)–O. A carbon bonded to an H above and an H below and to an –O–H on the left; this carbon is bonded to a second carbon that is double-bonded to an O (above) and single-bonded to an O (right), carrying lone pairs.]\n\nA. On the Lewis diagram in part A, circle the atom that accepts the proton when the glycolate ion reacts with water.\n\nWhen the glycolate ion reacts with water, it forms glycolic acid, HC₂H₃O₃, according to the following equation. The K_b expression for the reaction is provided.\n\nC₂H₃O₃⁻(aq) + H₂O(l) ⇌ HC₂H₃O₃(aq) + OH⁻(aq)  K_b = [HC₂H₃O₃][OH⁻]/[C₂H₃O₃⁻]\n\nB. At 25°C, a 2.5 M solution of glycolate is found to have [OH⁻] = 1.3 × 10⁻⁵ M.\n\ni. Calculate the value of K_b for the glycolate ion.\n\nii. Using your answer to part B (i), calculate the value of Kₐ for glycolic acid at 25°C.\n\nGlycolic acid can be produced from the hydrolysis of methyl glycolate, C₃H₆O₃. A proposed mechanism for the reaction is given.\n\nStep 1: C₃H₆O₃ + H₃O⁺ ⇌ C₂H₅O₃⁺ + CH₃OH\nStep 2: C₂H₅O₃⁺ + H₂O ⇌ HC₂H₃O₃ + H₃O⁺\nOverall: C₃H₆O₃ + H₂O ⇌ HC₂H₃O₃ + CH₃OH\n\nC. A student claims that H₃O⁺ is a catalyst for the reaction. Do you agree or disagree? Justify your answer based on the mechanism given.",
@@ -1116,7 +1116,7 @@
   "d": 4,
   "units": [
    "Unit 1: Atomic Structure and Properties",
-   "Unit 6: Thermodynamics"
+   "Unit 6: Thermochemistry"
   ],
   "title": "2026 AP Chemistry free-response question 1 (long, 10 points)",
   "text": "1. A student performs a calorimetry experiment with KCl.\n\nPart A\n\nConsider the K⁺ ion in KCl.\n\ni. **Write** the complete ground-state electron configuration for the potassium ion, K⁺.\n\nii. Which has the larger radius, the K⁺ ion or the K atom? **Explain** your reasoning using principles of atomic structure.\n\n**The following information applies to parts B, C, D, and E.**\n\nA student performs an experiment to determine the enthalpy of solution, ΔH_soln, of KCl. The student places water in a calorimeter, measures the initial temperature, adds KCl(s), and stirs until the KCl dissolves completely. The temperature is continuously monitored during the experiment. Data from the experiment are given in the following table.\n\n| Measurement | Value |\n| --- | --- |\n| Mass of water | 97.5 g |\n| Mass of KCl(s) | 6.80 g |\n| Initial temperature of water | 24.5°C |\n| Final temperature of solution | 21.1°C |\n\nPart B\n\n**Describe** how the student can use the temperature readings during the experiment to determine when the dissolution is complete.\n\nPart C\n\nUse the data in the table to do the following.\n\ni. **Calculate** the magnitude of the thermal energy, q, in joules, transferred during the dissolution. Show the work that leads to your answer. (Assume that the solution has a specific heat capacity of 3.95 J/(g·°C).)\n\nii. **Calculate** the value of the molar enthalpy of solution, ΔH_soln, in kJ/mol, for KCl given that 0.0912 mol of KCl dissolved. Show the work that leads to your answer. Include the sign with your answer.\n\nPart D\n\nThe calorimeter is not perfectly insulated. Would this cause the magnitude of ΔH_soln calculated in part C (ii) to be greater than, less than, or equal to the accepted value? **Justify** your answer.\n\nPart E\n\nThe student performs a second experiment using the same mass of water but 6.80 g of RbCl(s) instead of 6.80 g of KCl(s). The magnitude of the molar enthalpy of solution, ΔH_soln, of RbCl is approximately equal to that of KCl.\n\nIs the magnitude of ΔT in the RbCl experiment greater than, less than, or equal to that in the KCl experiment? **Justify** your answer. (Assume that the specific heat capacities of the solutions are equal.)\n\nPart F\n\nRbCl has a Ksp of 57 at 20°C.\n\ni. **Write** the net ionic equation for the dissolution of RbCl in pure water.\n\nii. **Calculate** the molar solubility of RbCl in a saturated solution at 20°C. Show the work that leads to your answer.\n\niii. A second saturated solution is prepared by dissolving RbCl(s) in 1.0 M KCl(aq) at 20°C instead of in pure water. Will the molar solubility of RbCl in 1.0 M KCl(aq) be greater than, less than, or equal to the molar solubility calculated in part F (ii)? **Justify** your answer.",
@@ -1131,7 +1131,7 @@
   "fmt": "FR",
   "d": 4,
   "units": [
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 2: Compound Structure and Properties",
    "Unit 4: Chemical Reactions"
   ],
   "title": "2026 AP Chemistry free-response question 2 (long, 10 points)",
@@ -1162,7 +1162,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
+   "Unit 2: Compound Structure and Properties",
    "Unit 7: Equilibrium"
   ],
   "title": "2026 AP Chemistry free-response question 4 (short, 4 points)",
@@ -1178,8 +1178,8 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 2: Molecular and Ionic Compound Structure and Properties",
-   "Unit 3: Intermolecular Forces and Properties"
+   "Unit 2: Compound Structure and Properties",
+   "Unit 3: Properties of Substances and Mixtures"
   ],
   "title": "2026 AP Chemistry free-response question 5 (short, 4 points)",
   "text": "**The following information applies to parts A and B.**\n\n5. The Lewis diagram of CBrClF₂ is shown.\n\n[Diagram: a central carbon bonded by single bonds to F (above), Cl (left), Br (right) and F (below); each halogen has three lone pairs.]\n\nPart A\n\nWhich of the bonds in CBrClF₂ (C–Br, C–Cl, or C–F) is the most polar? **Justify** your answer.\n\nPart B\n\nIn a molecule of CBrClF₂, the F–C–F bond angle is 106.8° and the Br–C–Cl bond angle is 112.3°. **Explain** the difference in bond angles using principles of atomic structure and VSEPR theory.\n\nPart C\n\nLewis diagrams and boiling points for CBr₄ and CBrClF₂ are given in the following table.\n\n| Formula | CBr₄ | CBrClF₂ |\n| --- | --- | --- |\n| Lewis diagram | a central carbon bonded by single bonds to four Br atoms (each with three lone pairs) | a central carbon bonded by single bonds to F (above), Cl (left), Br (right) and F (below), each halogen with three lone pairs |\n| Boiling point | 463 K | 269 K |\n\ni. Clearly **identify** all the intermolecular forces in pure CBr₄(l) and in pure CBrClF₂(l).\n\nCBr₄(l):\n\nCBrClF₂(l):\n\nii. In terms of the relative strengths of all the intermolecular forces, **explain** why pure CBr₄(l) has a higher boiling point than pure CBrClF₂(l) does.",
@@ -1194,7 +1194,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 3: Intermolecular Forces and Properties"
+   "Unit 3: Properties of Substances and Mixtures"
   ],
   "title": "2026 AP Chemistry free-response question 6 (short, 4 points)",
   "text": "6. A student performs a spectrophotometry experiment with V²⁺(aq) solutions and produces the calibration curve shown in Figure 1 by measuring the absorbance of several solutions of known concentration.\n\nFigure 1\n\n[Graph: Absorbance (0.00 to 0.50) versus Concentration (M) (0.000 to 0.090), with a fine grid. A dashed straight line of data points passes through the origin and rises to an absorbance of about 0.36 at 0.090 M. Data points lie at about (0.020 M, 0.08), (0.040 M, 0.16), (0.050 M, 0.20), (0.070 M, 0.28) and (0.090 M, 0.36).]\n\nPart A\n\nThe student measures an absorbance of 0.32 for a V²⁺(aq) solution. The concentration of V²⁺ ions in the solution is represented by the particle diagram in the circle in Figure 2. In the circle in Figure 3, **draw** the correct number of V²⁺ ions to represent the concentration of a solution with an absorbance of 0.08. (Water molecules have been omitted for clarity. Assume that each particle diagram represents the same volume.)\n\nFigure 2\n\n[Diagram: a test tube containing solution, with a magnified circle that shows eight V²⁺ ions (small gray circles). Key: gray circle = V²⁺ ion. Caption: Absorbance = 0.32.]\n\nFigure 3\n\n[Diagram: a test tube containing solution, with an empty magnified circle for the student to fill in. Key: gray circle = V²⁺ ion. Caption: Absorbance = 0.08.]\n\nPart B\n\nThe student measures the absorbance of a different V²⁺(aq) solution with an unknown molarity, but the absorbance is higher than 0.36 (the upper limit of the graph). The student then transfers 3.00 mL of this V²⁺(aq) solution to a 25.0 mL volumetric flask, dilutes to the mark on the flask with distilled water, and measures the absorbance of the diluted solution.\n\ni. The absorbance of the diluted solution is 0.22. **Determine** the molarity of V²⁺(aq) in the diluted solution.\n\nii. **Determine** the molarity of V²⁺(aq) in the original, undiluted solution. Show the work that leads to your answer.\n\nPart C\n\nThe concentration of V²⁺(aq) calculated in part B (ii) is lower than the actual concentration of the undiluted solution. The student claims that the calculated concentration is too low because during the dilution step, the final level of the solution was higher than the mark on the volumetric flask. Do you agree or disagree? **Justify** your answer.",
@@ -1209,7 +1209,7 @@
   "fmt": "FR",
   "d": 3,
   "units": [
-   "Unit 6: Thermodynamics",
+   "Unit 6: Thermochemistry",
    "Unit 4: Chemical Reactions"
   ],
   "title": "2026 AP Chemistry free-response question 7 (short, 4 points)",

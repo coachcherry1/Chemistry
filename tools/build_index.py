@@ -199,10 +199,26 @@ def ap_bank():
 
 
 LOADERS = [problems, quiz, bank, ap_bank, molecules, simulations]
-DOCS = [('Acid/base + nomenclature question set (Word)', QZ + 'Acids_Bases_Nomenclature_Quiz.docx'),
-        ('Question set answer key', QZ + 'Acids_Bases_Nomenclature_Quiz_Answer_Key.docx'),
-        ('Sub/elim problems (Word)', SNE + 'SN_E_Problems.docx'), ('Sub/elim answer key', SNE + 'SN_E_Answer_Key.docx'),
-        ('Molecule data (CSV)', MOL + 'molecules.csv')]
+WORD = 'organic-chemistry/word-docs/'
+
+
+def docs():
+    """downloads: one Word question document and one answer key per organic chapter, plus the molecule data"""
+    out = []
+    folder = os.path.join(ROOT, WORD)
+    names = sorted(os.listdir(folder)) if os.path.isdir(folder) else []
+    for t in TAX:
+        if t['id'] == 'X':
+            continue
+        pre = 'Ch%02d_' % int(t['id'])
+        q = [n for n in names if n.startswith(pre) and n.endswith('_Questions.docx')]
+        k = [n for n in names if n.startswith(pre) and n.endswith('_Answer_Key.docx')]
+        if q and k:
+            out.append(dict(n='Ch. %s %s' % (t['id'], t['short']), g=t['id'], q=WORD + q[0], k=WORD + k[0]))
+    for n, p in [('Molecule data (CSV)', MOL + 'molecules.csv')]:
+        if os.path.exists(os.path.join(ROOT, p)):
+            out.append(dict(n=n, g='', q=p, k=''))
+    return out
 
 
 def main():
@@ -211,7 +227,7 @@ def main():
     for course in ('honors', 'ap'):
         names = sorted({tp for d in data if d['c'] == course for tp in d['tp']})
         tax[course] = [dict(id=n, label=n, short=n, sections=[]) for n in names]
-    docs = [dict(n=n, p=p) for n, p in DOCS if os.path.exists(os.path.join(ROOT, p))]
+    docs_ = docs()
     missing = []
     for d in data:
         for key in ('im', 'am', 'l', 'z'):
@@ -224,7 +240,7 @@ def main():
     unplaced = [d['id'] for d in data if d['c'] == 'organic' and not d['s'] and d['k'] != 'sim']
     tpl = open(os.path.join(ROOT, 'tools', 'index_template.html'), encoding='utf-8').read()
     payload = lambda o: json.dumps(o, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
-    out = (tpl.replace('__DATA__', payload(data)).replace('__TAX__', payload(tax)).replace('__DOCS__', payload(docs))
+    out = (tpl.replace('__DATA__', payload(data)).replace('__TAX__', payload(tax)).replace('__DOCS__', payload(docs_))
               .replace('__SECLABEL__', payload(SEC_LABEL)).replace('__COURSES__', payload(COURSE_LABEL)))
     assert '\u2014' not in out, 'em dash in generated page'
     open(os.path.join(ROOT, 'index.html'), 'w', encoding='utf-8').write(out)

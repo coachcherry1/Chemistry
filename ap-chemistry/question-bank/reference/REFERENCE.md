@@ -17,7 +17,7 @@ This folder is the reference for writing AP Chemistry questions later. Everythin
   `questions.json`, which the index reads. Unit tags are in `build/ap_meta.py`.
 - Difficulty starts at 4 (Hard) for the three long questions and 3 (Moderate) for the short ones. Change any of them in the index.
 
-### Which units each question covers (hand-tagged, a question can cover several)
+### Which units each question covers (hand-tagged to the Fall 2024 CED unit names, a question can cover several)
 
 | Year | Q1 (long) | Q2 (long) | Q3 (long) | Q4 | Q5 | Q6 | Q7 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -33,21 +33,35 @@ This folder is the reference for writing AP Chemistry questions later. Everythin
 | 2025 | 1 | 1,8 | 2,6,9 | 2,3 | 2,3 | 9 | 8,2 |
 | 2026 | 1,6 | 2,4 | 8 | 2,7 | 2,3 | 3 | 6,4 |
 
-| Unit | Name | Questions tagged |
-| --- | --- | --- |
-| 1 | Atomic Structure and Properties | 12 |
-| 2 | Molecular and Ionic Compound Structure and Properties | 22 |
-| 3 | Intermolecular Forces and Properties | 24 |
-| 4 | Chemical Reactions | 19 |
-| 5 | Kinetics | 8 |
-| 6 | Thermodynamics | 12 |
-| 7 | Equilibrium | 12 |
-| 8 | Acids and Bases | 13 |
-| 9 | Applications of Thermodynamics | 18 |
+| Unit | Name | Exam weighting | Questions tagged |
+| --- | --- | --- | --- |
+| 1 | Atomic Structure and Properties | 7-9% | 12 |
+| 2 | Compound Structure and Properties | 7-9% | 22 |
+| 3 | Properties of Substances and Mixtures | 18-22% | 24 |
+| 4 | Chemical Reactions | 7-9% | 19 |
+| 5 | Kinetics | 7-9% | 8 |
+| 6 | Thermochemistry | 7-9% | 12 |
+| 7 | Equilibrium | 7-9% | 12 |
+| 8 | Acids and Bases | 11-15% | 13 |
+| 9 | Thermodynamics and Electrochemistry | 7-9% | 18 |
+
+## Course and Exam Description (CED)
+
+- `reference/ced/ap-chemistry-course-and-exam-description.pdf`: the official AP Chemistry CED, effective Fall 2024 (238 pages), downloaded from AP Central.
+  `reference/text/ap-chemistry-ced.txt` is its text. It holds the course framework (all nine units with every topic's learning objectives, essential
+  knowledge and suggested skills), the six science practices, the exam overview, sample exam questions, scoring guidelines, and the equations and constants sheet.
+- Use it to write new questions that match the course: pick a unit and topic, copy the learning objective's verb and level, and tag the question with the unit.
+- Exam format: Section I is 60 multiple-choice questions (90 minutes, no calculator). Section II is 7 free-response questions (105 minutes): 3 long (10 points each)
+  and 4 short (4 points each).
+- Science practices: 1 Models and Representations, 2 Question and Method, 3 Representing Data and Phenomena, 4 Model Analysis, 5 Mathematical Routines,
+  6 Argumentation. Weighting in multiple choice: practice 5 is 35-42%, practice 4 is 23-30%, practices 1, 2 and 6 are 8-12% each (practice 3 is not tested).
+  In free response: practice 5 is 43-53%, practice 6 is 15-24%, practice 2 is 10-16%, practice 3 is 8-16%, practice 4 is 5-9%, practice 1 is 2-4%.
+- Task verbs used in free-response questions: Calculate, Describe, Determine, Estimate, Explain, Identify/Indicate/Circle, Justify, Make a claim,
+  Predict, and Represent/Draw/Write an Equation/Complete a Diagram. "Justify" supplies evidence or reasoning for a claim; "Explain" says how or why.
 
 ## Multiple-choice practice exams (Section I)
 
-- `reference/mcq-pdfs/ap-chemistry-practice-exam-2013-section1.pdf`: 60 questions, 90 minutes, no calculator (the 2013 College Board practice exam).
+- `reference/mcq-pdfs/ap-chemistry-practice-exam-2013-section1.pdf`: 60 questions, 90 minutes, no calculator (the 2013 College Board practice exam, written for the older course, so check its topics against the CED).
 - `reference/mcq-pdfs/ap-chemistry-practice-exam-2-section1.pdf`: practice exam 2, Section I, 60 questions with an answer sheet.
 - `reference/text/` has the text of both. Neither file has an answer key.
 
