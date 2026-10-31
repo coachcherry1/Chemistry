@@ -232,6 +232,9 @@ def build_key(Q):
     return out
 
 
+LEVEL_D = {'Direct': 1, 'Two-factor': 2, 'Challenge': 4}   # the 1 to 5 difficulty scale of the question index
+
+
 def apply_overrides(Q):
     import overrides
     ed = overrides.load()
@@ -241,6 +244,8 @@ def apply_overrides(Q):
             q['stem'] = e['stem']
         if 'why' in e:
             q['why'] = e['why']
+        if 'difficulty' in e:
+            q['difficulty'] = int(e['difficulty'])
         for i, t in enumerate(e.get('options') or []):
             if t is not None and i < len(q['opts']) and q['opts'][i][0] == 'text':
                 q['opts'][i] = ('text', t)
@@ -252,7 +257,7 @@ def export_json(Q):
     out = []
     for q in Q:
         opts = [{'type': k, 'value': os.path.relpath(v, OUT) if k == 'img' else v} for k, v in q['opts']]
-        out.append(dict(id=f"Q{q['n']:02d}", number=q['n'], topic=q['topic'], level=q['level'], stem=q['stem'],
+        out.append(dict(id=f"Q{q['n']:02d}", number=q['n'], topic=q['topic'], level=q['level'], difficulty=int(q.get('difficulty', LEVEL_D.get(q['level'], 2))), stem=q['stem'],
                         stem_image=os.path.relpath(q['stem_img'], OUT) if q.get('stem_img') else None,
                         options=opts, answer=q['correct'], why=q['why']))
     json.dump(out, open(os.path.join(OUT, 'questions.json'), 'w'), indent=1, ensure_ascii=False)

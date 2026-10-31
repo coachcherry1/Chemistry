@@ -4,6 +4,7 @@
   "number": 1,
   "topic": "Atom",
   "level": "Direct",
+  "difficulty": 1,
   "stem": "Ethanolamine has three different kinds of hydrogen, labeled below. Which labeled H is the most acidic?",
   "stem_image": "img/q01.png",
   "options": [
@@ -32,6 +33,7 @@
   "number": 2,
   "topic": "Atom",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Which labeled hydrogen in 3-mercaptopropan-1-ol is the most acidic?",
   "stem_image": "img/q02.png",
   "options": [
@@ -60,6 +62,7 @@
   "number": 3,
   "topic": "Atom",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Acetaminophen (Tylenol) is shown below. Which labeled H is the most acidic?",
   "stem_image": "img/q03.png",
   "options": [
@@ -88,6 +91,7 @@
   "number": 4,
   "topic": "Atom",
   "level": "Direct",
+  "difficulty": 1,
   "stem": "Two anions are shown. Which is the stronger base, and why?",
   "stem_image": "img/q04.png",
   "options": [
@@ -116,6 +120,7 @@
   "number": 5,
   "topic": "Resonance",
   "level": "Direct",
+  "difficulty": 1,
   "stem": "4-Hydroxybutanoic acid has the labeled hydrogens shown. Which is the most acidic?",
   "stem_image": "img/q05.png",
   "options": [
@@ -144,6 +149,7 @@
   "number": 6,
   "topic": "Resonance",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Which labeled hydrogen in the following compound is the most acidic?",
   "stem_image": "img/q06.png",
   "options": [
@@ -172,6 +178,7 @@
   "number": 7,
   "topic": "Resonance",
   "level": "Direct",
+  "difficulty": 1,
   "stem": "Which labeled hydrogen is the most acidic?",
   "stem_image": "img/q07.png",
   "options": [
@@ -200,6 +207,7 @@
   "number": 8,
   "topic": "Resonance",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Ethyl acetoacetate has the labeled hydrogens shown. Which one is the most acidic?",
   "stem_image": "img/q08.png",
   "options": [
@@ -228,6 +236,7 @@
   "number": 9,
   "topic": "Resonance",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Acetate is shown. Which set of curved arrows correctly converts this resonance structure into the other one?",
   "stem_image": null,
   "options": [
@@ -256,6 +265,7 @@
   "number": 10,
   "topic": "Resonance",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Which set of curved arrows correctly shows the charge of phenoxide moving onto an ortho carbon?",
   "stem_image": null,
   "options": [
@@ -284,6 +294,7 @@
   "number": 11,
   "topic": "Resonance",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Cyclopentadiene is shown. Which labeled hydrogen is the most acidic?",
   "stem_image": "img/q11.png",
   "options": [
@@ -312,6 +323,7 @@
   "number": 12,
   "topic": "Induction",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Rank the carboxylic acids from LEAST acidic to MOST acidic.",
   "stem_image": "img/q12.png",
   "options": [
@@ -340,6 +352,7 @@
   "number": 13,
   "topic": "Induction",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Which labeled hydrogen is the most acidic?",
   "stem_image": "img/q13.png",
   "options": [
@@ -368,6 +381,7 @@
   "number": 14,
   "topic": "Induction",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Which acid is the strongest?",
   "stem_image": null,
   "options": [
@@ -396,6 +410,7 @@
   "number": 15,
   "topic": "Orbitals",
   "level": "Direct",
+  "difficulty": 1,
   "stem": "Which labeled hydrogen in the following compound is the most acidic?",
   "stem_image": "img/q15.png",
   "options": [
@@ -424,6 +439,7 @@
   "number": 16,
   "topic": "Orbitals",
   "level": "Direct",
+  "difficulty": 1,
   "stem": "Which of these anions is the strongest base?",
   "stem_image": null,
   "options": [
@@ -452,6 +468,7 @@
   "number": 17,
   "topic": "Orbitals",
   "level": "Direct",
+  "difficulty": 1,
   "stem": "A terminal alkyne C–H is more acidic than an alkene C–H. Which statement best explains why?",
   "stem_image": null,
   "options": [
@@ -480,6 +497,7 @@
   "number": 18,
   "topic": "Competing factors",
   "level": "Challenge",
+  "difficulty": 4,
   "stem": "Which of the labeled hydrogens is more acidic?",
   "stem_image": "img/q18.png",
   "options": [
@@ -508,6 +526,7 @@
   "number": 19,
   "topic": "Competing factors",
   "level": "Challenge",
+  "difficulty": 4,
   "stem": "Which labeled hydrogen is the most acidic?",
   "stem_image": "img/q19.png",
   "options": [
@@ -536,6 +555,7 @@
   "number": 20,
   "topic": "Competing factors",
   "level": "Challenge",
+  "difficulty": 4,
   "stem": "Which labeled hydrogen is more acidic?",
   "stem_image": "img/q20.png",
   "options": [
@@ -564,6 +584,7 @@
   "number": 21,
   "topic": "Competing factors",
   "level": "Challenge",
+  "difficulty": 4,
   "stem": "Rank these from LEAST acidic to MOST acidic.",
   "stem_image": "img/q21.png",
   "options": [
@@ -592,6 +613,7 @@
   "number": 22,
   "topic": "Competing factors",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Aspirin is shown. Which labeled hydrogen is the most acidic?",
   "stem_image": "img/q22.png",
   "options": [
@@ -620,6 +642,7 @@
   "number": 23,
   "topic": "Equilibrium",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Which side of the equilibrium is favored?",
   "stem_image": "img/q23.png",
   "options": [
@@ -648,6 +671,7 @@
   "number": 24,
   "topic": "Equilibrium",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Which side of the equilibrium is favored?",
   "stem_image": "img/q24.png",
   "options": [
@@ -676,6 +700,7 @@
   "number": 25,
   "topic": "Equilibrium",
   "level": "Challenge",
+  "difficulty": 4,
   "stem": "Which side of the equilibrium is favored?",
   "stem_image": "img/q25.png",
   "options": [
@@ -704,6 +729,7 @@
   "number": 26,
   "topic": "Equilibrium",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Which side of the equilibrium is favored?",
   "stem_image": "img/q26.png",
   "options": [
@@ -732,6 +758,7 @@
   "number": 27,
   "topic": "Equilibrium",
   "level": "Challenge",
+  "difficulty": 4,
   "stem": "Which side of the equilibrium is favored?",
   "stem_image": "img/q27.png",
   "options": [
@@ -760,6 +787,7 @@
   "number": 28,
   "topic": "Equilibrium",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Hydroxide deprotonates phenol. Which set of curved arrows correctly shows the proton transfer?",
   "stem_image": null,
   "options": [
@@ -788,6 +816,7 @@
   "number": 29,
   "topic": "Equilibrium",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Which side of the equilibrium is favored?",
   "stem_image": "img/q29.png",
   "options": [
@@ -816,6 +845,7 @@
   "number": 30,
   "topic": "Equilibrium",
   "level": "Challenge",
+  "difficulty": 4,
   "stem": "Which anion is a strong enough base to deprotonate ethanol so that the equilibrium favors the products?",
   "stem_image": null,
   "options": [
@@ -844,6 +874,7 @@
   "number": 31,
   "topic": "Nomenclature",
   "level": "Direct",
+  "difficulty": 1,
   "stem": "Which is the correct IUPAC name for this alkane?",
   "stem_image": "img/q31.png",
   "options": [
@@ -872,6 +903,7 @@
   "number": 32,
   "topic": "Nomenclature",
   "level": "Direct",
+  "difficulty": 1,
   "stem": "Which is the correct IUPAC name for this alkane?",
   "stem_image": "img/q32.png",
   "options": [
@@ -900,6 +932,7 @@
   "number": 33,
   "topic": "Nomenclature",
   "level": "Direct",
+  "difficulty": 1,
   "stem": "Which is the correct IUPAC name for this alkane?",
   "stem_image": "img/q33.png",
   "options": [
@@ -928,6 +961,7 @@
   "number": 34,
   "topic": "Nomenclature",
   "level": "Direct",
+  "difficulty": 1,
   "stem": "Which is the correct IUPAC name for this alkane?",
   "stem_image": "img/q34.png",
   "options": [
@@ -956,6 +990,7 @@
   "number": 35,
   "topic": "Nomenclature",
   "level": "Direct",
+  "difficulty": 1,
   "stem": "Which is the correct IUPAC name for this alkane?",
   "stem_image": "img/q35.png",
   "options": [
@@ -984,6 +1019,7 @@
   "number": 36,
   "topic": "Nomenclature",
   "level": "Direct",
+  "difficulty": 1,
   "stem": "Which is the correct IUPAC name for this alkane?",
   "stem_image": "img/q36.png",
   "options": [
@@ -1012,6 +1048,7 @@
   "number": 37,
   "topic": "Nomenclature",
   "level": "Direct",
+  "difficulty": 1,
   "stem": "Which is the correct IUPAC name for this alkane?",
   "stem_image": "img/q37.png",
   "options": [
@@ -1040,6 +1077,7 @@
   "number": 38,
   "topic": "Nomenclature",
   "level": "Direct",
+  "difficulty": 1,
   "stem": "Which is the correct IUPAC name for this alkane?",
   "stem_image": "img/q38.png",
   "options": [
@@ -1068,6 +1106,7 @@
   "number": 39,
   "topic": "Nomenclature",
   "level": "Direct",
+  "difficulty": 1,
   "stem": "Which is the correct IUPAC name for this alkane?",
   "stem_image": "img/q39.png",
   "options": [
@@ -1096,6 +1135,7 @@
   "number": 40,
   "topic": "Nomenclature",
   "level": "Two-factor",
+  "difficulty": 2,
   "stem": "Which structure is 2,3,3-trimethylpentane?",
   "stem_image": null,
   "options": [

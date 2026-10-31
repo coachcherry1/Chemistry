@@ -27,7 +27,7 @@ def _ang_dist(a, b):
 
 class Struct:
     def __init__(self, smiles, hlabels=None, lone=(), rotate=0, atomlabels=None,
-                 flip=False, redh=True, charge_pref=315, cip=False):
+                 flip=False, redh=True, charge_pref=315, cip=False, radical=False):
         """hlabels: {map: 'a'} puts a subscript letter on a labeled H.
         lone: map numbers of uncharged atoms that should also show lone pairs.
         Charged atoms always get a circled charge and their lone pairs.
@@ -42,15 +42,20 @@ class Struct:
         mol.UpdatePropertyCache(strict=False)
         Chem.SanitizeMol(mol, sanitizeOps=Chem.SANITIZE_ALL ^ Chem.SANITIZE_SETAROMATICITY)
         for a in mol.GetAtoms():
-            if a.GetNumRadicalElectrons() or (a.GetNoImplicit() and a.GetAtomicNum() == 6 and a.GetTotalValence() + a.GetFormalCharge() * -1 < 4 and a.GetFormalCharge() == 0):
+            if (a.GetNumRadicalElectrons() and not radical) or (a.GetNoImplicit() and not radical and a.GetAtomicNum() == 6 and a.GetTotalValence() + a.GetFormalCharge() * -1 < 4 and a.GetFormalCharge() == 0):
                 raise ValueError(f'unintended radical/missing H on atom {a.GetIdx()} ({a.GetSymbol()}) in {smiles}')
         self.idx = {a.GetAtomMapNum(): a.GetIdx() for a in mol.GetAtoms() if a.GetAtomMapNum()}
 
         # lone pair counts and charges come from the real molecule
         self.charge = {}
         self.lp_count = {}
+        self.rad_set = set()
         for a in mol.GetAtoms():
             i = a.GetIdx()
+            if radical and a.GetNumRadicalElectrons():
+                self.lp_count[i] = 1
+                self.rad_set.add(i)
+                continue
             chg = a.GetFormalCharge()
             show = chg != 0 or a.GetAtomMapNum() in lone
             if chg != 0:
@@ -63,6 +68,11 @@ class Struct:
         # display copy: charges removed (we draw circled charges ourselves)
         dm = Chem.Mol(mol)
         for a in dm.GetAtoms():
+            if radical and a.GetNumRadicalElectrons():
+                nh = a.GetTotalNumHs()
+                a.SetNoImplicit(True)
+                a.SetNumExplicitHs(nh)
+                a.SetNumRadicalElectrons(0)
             if a.GetFormalCharge() != 0:
                 nh = a.GetTotalNumHs()
                 a.SetFormalCharge(0)
@@ -129,7 +139,8 @@ class Struct:
     def _compute_lone_pairs(self):
         self.lp_pts = {}
         self.charge_pt = {}
-        for i, n in self.lp_count.items():
+        for i in sorted(set(self.lp_count) | set(self.charge)):
+            n = self.lp_count.get(i, 0)      # carbocations have a charge but no lone pairs
             px, py = self.pos[i]
             nb = []
             for nbr in self.dm.GetAtomWithIdx(i).GetNeighbors():
@@ -176,6 +187,9 @@ class Struct:
             for ang, cx, cy in pts:
                 th = math.radians(ang)
                 nx, ny = -math.sin(th), math.cos(th)
+                if i in self.rad_set:
+                    out.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="2.1" fill="black"/>')
+                    continue
                 for s in (-1, 1):
                     out.append(f'<circle cx="{cx + s * 2.6 * nx:.1f}" cy="{cy + s * 2.6 * ny:.1f}" r="1.7" fill="black"/>')
         for i, (cx, cy) in self.charge_pt.items():
@@ -455,3 +469,110 @@ class Arrow:
                 out.append(f'<text x="{x + w / 2:.1f}" y="{cy + 5 + self.size + k * (self.size + 4):.1f}" text-anchor="middle" font-family="{FONT}" font-size="{self.size}">{t}</text>')
             return ''.join(out)
         return (w, h, render)
+
+
+class Chair:
+    """Cyclohexane chair projected from a 3D model, so axial and equatorial bonds are drawn correctly.
+
+    subs: list of (carbon 1..6, 'up'|'down', label). A substituent is described by its face of the ring
+    (cis/trans is preserved by a ring flip); whether it is axial or equatorial follows from the chair drawn.
+    flipped=True draws the other chair. numbers=True numbers the ring carbons 1 to 6."""
+    H = 0.25
+
+    TILT, ZS = 0.40, 1.4
+
+    def __init__(self, subs=(), flipped=False, numbers=False, size=70, hlabels=False, tilt=None, zs=None):
+        self.subs, self.flipped, self.numbers, self.R, self.hl = list(subs), flipped, numbers, size, hlabels
+        self.tilt, self.zs = tilt or self.TILT, zs or self.ZS
+
+    def _pt(self, x, y, z):
+        return (self.R * x, -self.R * (self.tilt * y + self.zs * z))
+
+    def geometry(self):
+        pts, ps = [], []
+        for k in range(6):
+            th = math.radians(60 * k)
+            s = (-1) ** k * (-1 if self.flipped else 1)
+            pts.append(self._pt(math.cos(th), math.sin(th), self.H * s))
+            ps.append((th, s))
+        out = []
+        for c, face, label in self.subs:
+            k = c - 1
+            th, s = ps[k]
+            axial = (face == 'up' and s > 0) or (face == 'down' and s < 0)
+            if axial:
+                v = (0, 0, 1 if face == 'up' else -1)
+                L = 0.62
+            else:
+                v = (math.cos(th), math.sin(th), -s * 0.36)
+                L = 0.62
+            n = math.sqrt(sum(a * a for a in v))
+            d = self._pt(*(a / n * L for a in v))
+            out.append((k, d, label, axial))
+        return pts, out
+
+    def layout(self):
+        pts, subs = self.geometry()
+        xs = [p[0] for p in pts]; ys = [p[1] for p in pts]
+        for k, d, label, _ in subs:
+            ex, ey = pts[k][0] + d[0], pts[k][1] + d[1]
+            w = len(label) * 10 + 6
+            xs += [ex, ex + (w if d[0] >= 0 else -w)]; ys += [ey - 10, ey + 10]
+        pad = 14
+        x0, y0, x1, y1 = min(xs) - pad, min(ys) - pad, max(xs) + pad, max(ys) + pad
+
+        def render(x, y):
+            ox, oy = x - x0, y - y0
+            g = []
+            order = sorted(range(6), key=lambda k: (pts[k][1] + pts[(k + 1) % 6][1]))
+            for k in order:                      # back edges first, front (lower on screen) edges drawn thicker
+                a, b = pts[k], pts[(k + 1) % 6]
+                front = (a[1] + b[1]) / 2 > 0
+                g.append(f'<line x1="{ox + a[0]:.1f}" y1="{oy + a[1]:.1f}" x2="{ox + b[0]:.1f}" y2="{oy + b[1]:.1f}" stroke="black" '
+                         f'stroke-width="{3.6 if front else 2}" stroke-linecap="round"/>')
+            for k, d, label, _ in subs:
+                sx, sy = ox + pts[k][0], oy + pts[k][1]
+                g.append(f'<line x1="{sx:.1f}" y1="{sy:.1f}" x2="{sx + d[0]:.1f}" y2="{sy + d[1]:.1f}" stroke="black" stroke-width="2" stroke-linecap="round"/>')
+                anchor = 'start' if d[0] >= 0 else 'end'
+                g.append(f'<text x="{sx + d[0] + (4 if d[0] >= 0 else -4):.1f}" y="{sy + d[1] + 6:.1f}" text-anchor="{anchor}" font-family="{FONT}" font-size="17">{label}</text>')
+            if self.numbers:
+                for k in range(6):
+                    cx = ox + pts[k][0] * 0.62; cy = oy + pts[k][1] * 0.62 + 5
+                    g.append(f'<text x="{cx:.1f}" y="{cy:.1f}" text-anchor="middle" font-family="{FONT}" font-size="12" fill="#556">{k + 1}</text>')
+            return ''.join(g)
+        return (x1 - x0, y1 - y0, render)
+
+
+class Newman:
+    """Newman projection. front/back: [(angle, label), ...] with 90 = up. Front bonds meet at the centre; back bonds
+    start at the circle. If a back group sits exactly behind a front group (eclipsed) the back bonds are drawn 14 degrees
+    off so both stay visible."""
+
+    def __init__(self, front, back, R=36, ext=32):
+        self.front, self.back, self.R, self.ext = list(front), list(back), R, ext
+
+    def layout(self):
+        R, ext = self.R, self.ext
+        W = 2 * (R + ext + 26)
+        back = self.back
+        if any(abs(((fa - ba) + 180) % 360 - 180) < 1 for fa, _ in self.front for ba, _ in back):
+            back = [(a + 22, l) for a, l in back]
+
+        shifted = back is not self.back
+
+        def render(x, y):
+            cx, cy = x + W / 2, y + W / 2
+            g = []
+
+            def seg(a, r0, r1, lab):
+                ca, sa = math.cos(math.radians(a)), -math.sin(math.radians(a))
+                g.append(f'<line x1="{cx + r0 * ca:.1f}" y1="{cy + r0 * sa:.1f}" x2="{cx + r1 * ca:.1f}" y2="{cy + r1 * sa:.1f}" stroke="black" stroke-width="2.4" stroke-linecap="round"/>')
+                lx, ly = cx + (r1 + 13) * ca, cy + (r1 + 13) * sa + 6
+                g.append(f'<text x="{lx:.1f}" y="{ly:.1f}" text-anchor="middle" font-family="{FONT}" font-size="17">{lab}</text>')
+            for a, lab in back:
+                seg(a, R, R + ext + (8 if shifted else 0), lab)
+            g.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{R}" fill="none" stroke="black" stroke-width="2.4"/>')
+            for a, lab in self.front:
+                seg(a, 0, R + ext, lab)
+            return ''.join(g)
+        return (W, W, render)
