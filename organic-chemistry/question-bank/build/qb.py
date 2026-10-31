@@ -17,7 +17,7 @@ while not os.path.isdir(os.path.join(_d, '_shared')) and _d != os.path.dirname(_
     _d = os.path.dirname(_d)
 sys.path.insert(0, os.path.join(_d, '_shared'))
 REPO = os.path.dirname(_d)
-from chemdraw import Struct, Arrow, Text, Plus, Equil, compose
+from chemdraw import Struct, Arrow, Text, Plus, Equil, Chair, Newman, compose
 from rdkit import Chem, RDLogger
 from rdkit.Chem import rdMolDescriptors, rdCIPLabeler
 RDLogger.DisableLog('rdApp.*')
@@ -51,6 +51,20 @@ def H(smi, labels, **kw):
 def A(smi, arrows, **kw):
     """curved arrows: arrows = [(from_spec, to_spec, {bend:.., s_off:.., e_off:..}), ...]; atoms by map number"""
     return ('A', smi, arrows, kw)
+
+
+def CH(subs=(), flipped=False, numbers=False):
+    return ('CH', list(subs), flipped, numbers)
+
+
+def CF(subs=(), numbers=False):
+    """both chair conformations with an equilibrium arrow"""
+    return ('CF', list(subs), numbers)
+
+
+def NW(front, back):
+    """Newman projection: front/back = [(angle, label), ...], 90 = up"""
+    return ('N', list(front), list(back))
 
 
 def _items(x, kw=None):
@@ -91,6 +105,12 @@ def build_items(spec):
         for frm, to, ak in arrows:
             st.arrow(frm, to, **ak)
         return [st], 16
+    if kind == 'N':
+        return [Newman(spec[1], spec[2])], 16
+    if kind == 'CH':
+        return [Chair(spec[1], spec[2], spec[3])], 16
+    if kind == 'CF':
+        return [Chair(spec[1], False, spec[2]), Equil(), Chair(spec[1], True, spec[2])], 26
     raise ValueError(kind)
 
 
@@ -168,6 +188,7 @@ class Bank:
         self.ch = ch
         self.items = []
         self.name_checks = []       # (smiles, wrong name) pairs that must NOT name the right structure
+        self.name_true = []         # (smiles, name) pairs that MUST agree (names written by hand, e.g. rings)
         self.nm = {'M': 0, 'F': 0}
 
     def _secs(self, sec):
@@ -201,6 +222,12 @@ class Bank:
         self.name_checks += [(smi, w) for w in wrong_names]
         self.mc(sec, d, stem, right, wrong_names, why, img=img if img is not None else S(smi))
 
+    def mcring(self, sec, d, stem, smi, right, wrong, why, img=None):
+        """name question for rings or anything the namer does not cover: the right name is checked with OPSIN"""
+        self.name_true.append((smi, right))
+        self.name_checks += [(smi, w) for w in wrong]
+        self.mc(sec, d, stem, right, wrong, why, img=img if img is not None else S(smi))
+
     def mcstruct(self, sec, d, name_or_stem, smi, wrong_smis, why):
         """choose the structure for a name"""
         self.mc(sec, d, name_or_stem, smi, wrong_smis, why, oimg=True)
@@ -223,6 +250,12 @@ def finish(banks, overrides=None):
         for (s, w), b in zip(bad, back):
             if b and Chem.CanonSmiles(b) == Chem.CanonSmiles(s):
                 raise AssertionError(f'distractor name {w!r} is actually correct for {s}')
+    truth = [c for b in banks for c in b.name_true]
+    if truth:
+        with open(os.devnull, 'w') as dn, contextlib.redirect_stderr(dn):
+            back = py2opsin([n for _, n in truth])
+        for (s_, n_), b_ in zip(truth, back):
+            assert b_ and Chem.CanonSmiles(b_) == Chem.CanonSmiles(s_), f'name {n_!r} does not match {s_}'
     seen = set()
     for b in banks:
         rng = random.Random(1000 + b.ch)
