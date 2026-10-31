@@ -26,7 +26,7 @@ def load(rel):
 
 
 def clean(t):
-    return re.sub(r'\s+', ' ', (t or '').replace('—', ' - ')).strip()
+    return re.sub(r'\s+', ' ', (t or '').replace('\u2014', ' - ')).strip()
 
 
 def make_item(**kw):
@@ -191,7 +191,7 @@ def main():
     payload = lambda o: json.dumps(o, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     out = (tpl.replace('__DATA__', payload(data)).replace('__TAX__', payload(tax)).replace('__DOCS__', payload(docs))
               .replace('__SECLABEL__', payload(SEC_LABEL)).replace('__COURSES__', payload(COURSE_LABEL)))
-    assert '—' not in out, 'em dash in generated page'
+    assert '\u2014' not in out, 'em dash in generated page'
     open(os.path.join(ROOT, 'index.html'), 'w', encoding='utf-8').write(out)
     print(f'{len(data)} items, {len(out) // 1024} KB;', dict(Counter(d['k'] for d in data)), '| missing targets:', len(missing), missing[:3],
           '| organic items without a section:', len(unplaced), unplaced[:5])
