@@ -5,6 +5,21 @@ SCORM 1.2 activities for Schoology, organised as `class/topic/activity`: `chemis
 activity. `CLAUDE.md` lists every package by course, with the house rules and the commands to run before each
 commit; each activity folder's `README.md` describes it and its built zip in `dist/`.
 
+## Searchable index
+
+`index.html` at the repo root is one searchable page for everything in this repo: the SCORM activities and the teacher
+pages in `to-merge/` (simulations), plus the organic problem banks (molecule database, substitution and elimination
+problems, acids and bases quiz). Filter by collection or type; answers stay hidden until a card is opened.
+On GitHub Pages: <https://coachcherry1.github.io/Chemistry/> (shown once merged to `main`).
+Rebuild it after adding or changing anything with `python3 tools/build_index.py`.
+
+| Folder | Contents |
+| --- | --- |
+| `organic-chemistry/nomenclature/molecule-database/` | 500 drawn molecules with verified IUPAC names, CSV and JSON |
+| `organic-chemistry/substitution-elimination/problem-bank/` | 100 SN1, SN2, E1 and E2 free-response problems with schemes and answer key |
+| `organic-chemistry/acids-bases/acids-bases-quiz/` | 40-question quiz (acids and bases by ARIO, branched-alkane naming) with answer key |
+| `organic-chemistry/_shared/` | Drawing and naming code used by the three folders above |
+
 ## Web versions
 
 Every activity also runs as a web page on GitHub Pages, outside Schoology (the address is
