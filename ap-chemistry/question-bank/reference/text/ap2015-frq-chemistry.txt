@@ -1,0 +1,417 @@
+AP Chemistry
+         ®
+
+
+
+2015 Free-Response Questions
+
+
+© 2015 The College Board. College Board, Advanced Placement Program, AP, AP Central, and the acorn logo
+are registered trademarks of the College Board.
+Visit the College Board on the Web: www.collegeboard.org.
+AP Central is the official online home for the AP Program: apcentral.collegeboard.org.
+-2-
+                                           ®
+                                     AP CHEMISTRY EQUATIONS AND CONSTANTS
+
+Throughout the exam the following symbols have the definitions specified unless otherwise noted.
+                     L, mL =           liter(s), milliliter(s)          mm Hg    =   millimeters of mercury
+                     g     =           gram(s)                          J, kJ    =   joule(s), kilojoule(s)
+                     nm    =           nanometer(s)                     V        =   volt(s)
+                     atm   =           atmosphere(s)                    mol      =   mole(s)
+
+ATOMIC STRUCTURE
+                                                                                   E = energy
+   E = hν                                                                          ν = frequency
+   c = λν                                                                          λ = wavelength
+                                                                       Planck’s constant, h = 6.626 × 10−34 J s
+                                                                          Speed of light, c = 2.998 × 108 m s−1
+                                                                       Avogadro’s number = 6.022 × 1023 mol−1
+                                                                         Electron charge, e = −1.602 × 10−19 coulomb
+
+
+EQUILIBRIUM
+
+        [C]c [D]d
+ Kc =             , where a A + b B R c C + d D                                Equilibrium Constants
+        [A]a [B]b
+                                                                               Kc (molar concentrations)
+        (PC )c (PD )d
+ Kp =                                                                          Kp (gas pressures)
+        (PA )a (PB )b                                                          Ka (weak acid)
+                     
+ Ka = [H ][A ]                                                                 Kb (weak base)
+             [HA]                                                              Kw (water)
+                           
+ Kb = [OH ][HB ]
+                 [B]
+ Kw = [H ][OH−] = 1.0 × 10−14 at 25°C
+             +
+
+    = K a × Kb
+ pH = −log[H+] , pOH = −log[OH−]
+  14 = pH + pOH
+                                 
+ pH = pKa + log [A ]
+                           [HA]
+ pKa = −logKa , pKb = −logKb
+
+
+KINETICS
+
+   ln[A] t − ln[A] 0 = − kt                                                       k = rate constant
+                                                                                   t = time
+        1  1                   = kt                                            t ½ = half-life
+     >A @t       >A @0
+                          t ½ = 0.693
+                                       k
+
+
+
+
+                                                                 -3-
+GASES, LIQUIDS, AND SOLUTIONS
+                                                                            P = pressure
+                                                                            V = volume
+               PV = nRT
+                                                                            T = temperature
+                                                moles A                     n = number of moles
+               PA = Ptotal × XA, where XA =
+                                              total moles                   m = mass
+             Ptotal = PA + PB + PC + . . .                                  M = molar mass
+                                                                            D = density
+                n = m                                                      KE = kinetic energy
+                      M
+                                                                             v = velocity
+                K = °C + 273
+                                                                            A = absorbance
+                D= m                                                        a = molar absorptivity
+                      V
+                                                                            b = path length
+KE per molecule = 1 mv 2                                                    c = concentration
+                      2
+    Molarity, M = moles of solute per liter of solution        Gas constant, R = 8.314 J mol−1 K−1
+
+                A = abc                                                        = 0.08206 L atm mol−1 K−1
+                                                                               = 62.36 L torr mol−1 K−1
+                                                                        1 atm = 760 mm Hg = 760 torr
+                                                                          STP = 273.15 K and 1.0 atm
+                                                               Ideal gas at STP = 22.4 L molí1
+
+THERMODYNAMICS / ELECTROCHEMISTRY
+                                                                                q = heat
+   q = mc∆T                                                                    m = mass
+                                                                                c = specific heat capacity
+ ∆S° = Ç SD products  Ç SD reactants                                           T = temperature
+                                                                               S° = standard entropy
+ ∆H° =   Ç DHfD products  Ç DHfD reactants                                    H° = standard enthalpy
+                                                                               G° = standard Gibbs free energy
+ ∆G° =   Ç DGfD products  Ç DGfD reactants                                     n = number of moles
+                                                                               E° = standard reduction potential
+ ∆G° = ∆H° − T∆S°                                                               I = current (amperes)
+     = −RT ln K                                                                 q = charge (coulombs)
+     = − n E°                                                                    t = time (seconds)
+         q                                                    Faraday’s constant,  = 96,485 coulombs per mole
+   I =
+         t                                                                                    of electrons
+                                                                                        1 joule
+                                                                             1 volt =
+                                                                                      1 coulomb
+
+
+
+
+                                                        -4-
+                      2015 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+                                                    CHEMISTRY
+                                                   Section II
+                                                  7 Questions
+                                           Time - 1 hour and 45 minutes
+
+                       YOU MAY USE YOUR CALCULATOR FOR THIS SECTION.
+
+Directions: Questions 1–3 are long free-response questions that require about 23 minutes each to answer and are
+worth 10 points each. Questions 4–7 are short free-response questions that require about 9 minutes each to answer
+and are worth 4 points each.
+Write your response in the space provided following each question. Examples and equations may be included in
+your responses where appropriate. For calculations, clearly show the method used and the steps involved in arriving
+at your answers. You must show your work to receive credit for your answer. Pay attention to significant figures.
+
+
+
+
+1. Metal-air cells are a relatively new type of portable energy source consisting of a metal anode, an alkaline
+   electrolyte paste that contains water, and a porous cathode membrane that lets in oxygen from the air. A
+   schematic of the cell is shown above. Reduction potentials for the cathode and three possible metal anodes are
+   given in the table below.
+
+                                   Half Reaction                                 E at pH 11 and 298 K (V)
+               O2(g) + 2 H2O(l) + 4 e− → 4 OH−(aq)                                            +0.34
+               ZnO(s) + H2O(l) + 2 e− → Zn(s) + 2 OH−(aq)                                     –1.31
+              Na2O(s) + H2O(l) + 2 e− → 2 Na(s) + 2 OH−(aq)                                   –1.60
+               CaO(s) + H2O(l) + 2 e− → Ca(s) + 2 OH−(aq)                                     –2.78
+
+
+
+
+                                                   © 2015 The College Board.
+                                  Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                         GO ON TO THE NEXT PAGE.
+                                                            -5-
+                    2015 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+(a) Early forms of metal-air cells used zinc as the anode. Zinc oxide is produced as the cell operates according
+    to the overall equation below.
+                                             2 Zn(s) + O2(g) → 2 ZnO(s)
+      (i) Using the data in the table above, calculate the cell potential for the zinc-air cell.
+     (ii) The electrolyte paste contains OH− ions. On the diagram of the cell above, draw an arrow to indicate
+          the direction of migration of OH− ions through the electrolyte as the cell operates.
+
+(b) A fresh zinc-air cell is weighed on an analytical balance before being placed in a hearing aid for use.
+      (i) As the cell operates, does the mass of the cell increase, decrease, or remain the same?
+     (ii) Justify your answer to part (b)(i) in terms of the equation for the overall cell reaction.
+
+(c) The zinc-air cell is taken to the top of a mountain where the air pressure is lower.
+      (i) Will the cell potential be higher, lower, or the same as the cell potential at the lower elevation?
+     (ii) Justify your answer to part (c)(i) based on the equation for the overall cell reaction and the information
+          above.
+
+(d) Metal-air cells need to be lightweight for many applications. In order to transfer more electrons with a
+    smaller mass, Na and Ca are investigated as potential anodes. A 1.0 g anode of which of these metals
+    would transfer more electrons, assuming that the anode is totally consumed during the lifetime of a cell?
+    Justify your answer with calculations.
+
+(e) The only common oxide of zinc has the formula ZnO.
+      (i) Write the electron configuration for a Zn atom in the ground state.
+     (ii) From which sublevel are electrons removed when a Zn atom in the ground state is oxidized?
+
+
+
+
+                                                 © 2015 The College Board.
+                                Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                       GO ON TO THE NEXT PAGE.
+                                                          -6-
+                       2015 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+
+
+
+2. Ethene, C2H4(g) (molar mass 28.1 g/mol), may be prepared by the dehydration of ethanol, C2H5OH(g) (molar
+   mass 46.1 g/mol), using a solid catalyst. A setup for the lab synthesis is shown in the diagram above. The
+   equation for the dehydration reaction is given below.
+
+       C 2 H 5OH(g ) 
+                      catalyst
+                               → C 2 H 4 (g ) + H 2 O(g )       D = 45.5 kJ/mol ; DS D = 126 J/(K < mol )
+                                                             DH 298            rxn  298                rxn
+        ethanol                  ethene         water
+
+   A student added a 0.200 g sample of C2H5OH(l) to a test tube using the setup shown above. The student heated
+   the test tube gently with a Bunsen burner until all of the C2H5OH(l) evaporated and gas generation stopped.
+   When the reaction stopped, the volume of collected gas was 0.0854 L at 0.822 atm and 305 K. (The vapor
+   pressure of water at 305 K is 35.7 torr.)
+   (a) Calculate the number of moles of C2H4(g)
+         (i) that are actually produced in the experiment and measured in the gas collection tube and
+        (ii) that would be produced if the dehydration reaction went to completion.
+
+   (b) Calculate the percent yield of C2H4(g) in the experiment.
+
+   Because the dehydration reaction is not observed to occur at 298 K, the student claims that the reaction has an
+   equilibrium constant less than 1.00 at 298 K.
+   (c) Do the thermodynamic data for the reaction support the student’s claim? Justify your answer, including a
+                        D for the reaction.
+       calculation of DG298
+
+
+
+
+                                                    © 2015 The College Board.
+                                   Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                          GO ON TO THE NEXT PAGE.
+                                                             -7-
+                  2015 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+(d) The Lewis electron-dot diagram for C2H4 is shown below in the box on the left. In the box on the right,
+    complete the Lewis electron-dot diagram for C2H5OH by drawing in all of the electron pairs.
+
+
+
+
+(e) What is the approximate value of the C–O–H bond angle in the ethanol molecule?
+(f) During the dehydration experiment, C2H4(g) and unreacted C2H5OH(g) passed through the tube into the
+    water. The C2H4 was quantitatively collected as a gas, but the unreacted C2H5OH was not. Explain this
+    observation in terms of the intermolecular forces between water and each of the two gases.
+
+
+
+
+                                              © 2015 The College Board.
+                             Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                    GO ON TO THE NEXT PAGE.
+                                                       -8-
+                     2015 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+3. Potassium sorbate, KC6H7O2 (molar mass 150. g/mol) is commonly added to diet soft drinks as a preservative.
+   A stock solution of KC6H7O2(aq) of known concentration must be prepared. A student titrates 45.00 mL of the
+   stock solution with 1.25 M HCl(aq) using both an indicator and a pH meter. The value of Ka for sorbic acid,
+   HC6H7O2, is 1.7 × 10−5.
+
+   (a) Write the net-ionic equation for the reaction between KC6H7O2(aq) and HCl(aq).
+
+
+   (b) A total of 29.95 mL of 1.25 M HCl(aq) is required to reach the equivalence point. Calculate [KC6H7O2] in
+       the stock solution.
+
+
+   (c) The pH at the equivalence point of the titration is measured to be 2.54 Which of the following indicators
+       would be the best choice for determining the end point of the titration? Justify your answer.
+
+                                                 Indicator              pKa
+                                             Phenolphthalein            9.3
+                                           Bromothymol blue             7.0
+                                                Methyl red              5.0
+                                               Thymol blue              2.0
+                                              Methyl violet             0.80
+
+   (d) Calculate the pH at the half-equivalence point.
+
+
+
+
+                                                  © 2015 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                                           -9-
+                   2015 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+(e) The initial pH and the equivalence point are plotted on the graph below. Accurately sketch the titration curve
+    on the graph below. Mark the position of the half-equivalence point on the curve with an X.
+
+
+
+
+(f) The pH of the soft drink is 3.37 after the addition of the KC6H7O2(aq). Which species, HC6H7O2 or
+    C6H7O2− , has a higher concentration in the soft drink? Justify your answer.
+
+
+
+
+                                               © 2015 The College Board.
+                              Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                     GO ON TO THE NEXT PAGE.
+                                                       -10-
+                      2015 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+4. Answer the following questions about the solubility of Ca(OH)2 ( K sp = 1.3  10 6 ) .
+
+   (a) Write a balanced chemical equation for the dissolution of Ca(OH)2(s) in pure water.
+   (b) Calculate the molar solubility of Ca(OH)2 in 0.10 M Ca(NO3)2 .
+   (c) In the box below, complete a particle representation diagram that includes four water molecules with proper
+       orientation around the Ca2+ ion.
+
+       Represent water molecules as            .
+
+
+
+
+                                                   © 2015 The College Board.
+                                  Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                         GO ON TO THE NEXT PAGE.
+                                                           -11-
+                      2015 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+                                     Na2C37H34N2S3O9 + OCl− → products
+                                           blue               colorless
+
+5. Blue food coloring can be oxidized by household bleach (which contains OCl− ) to form colorless products, as
+   represented by the equation above. A student used a spectrophotometer set at a wavelength of 635 nm to study
+   the absorbance of the food coloring over time during the bleaching process. In the study, bleach is present in
+   large excess so that the concentration of OCl− is essentially constant throughout the reaction. The student used
+   data from the study to generate the graphs below.
+
+
+
+
+   (a) Based on the graphs above, what is the order of the reaction with respect to the blue food coloring?
+   (b) The reaction is known to be first order with respect to bleach. In a second experiment, the student prepares
+       solutions of food coloring and bleach with concentrations that differ from those used in the first experiment.
+       When the solutions are combined, the student observes that the reaction mixture reaches an absorbance near
+       zero too rapidly. In order to correct the problem, the student proposes the following three possible
+       modifications to the experiment.
+           • Increasing the temperature
+           • Increasing the concentration of the food coloring
+           • Increasing the concentration of the bleach
+       Circle the one proposed modification above that could correct the problem, and explain how that
+       modification increases the time for the reaction mixture to reach an absorbance near zero.
+   (c) In another experiment, a student wishes to study the oxidation of red food coloring with bleach. How would
+       the student need to modify the original experimental procedure to determine the order of the reaction with
+       respect to the red food coloring?
+
+
+
+
+                                                  © 2015 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                                          -12-
+                      2015 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+                                             Compound          Melting Point (°C)
+                                                  LiI                   449
+                                                  KI                    686
+                                                  LiF                   845
+                                                 NaF                    993
+
+6. A student learns that ionic compounds have significant covalent character when a cation has a polarizing effect
+   on a large anion. As a result, the student hypothesizes that salts composed of small cations and large anions
+   should have relatively low melting points.
+
+   (a) Select two compounds from the table and explain how the data support the student’s hypothesis.
+   (b) Identify a compound from the table that can be dissolved in water to produce a basic solution. Write the net
+       ionic equation for the reaction that occurs to cause the solution to be basic.
+
+
+
+
+                                                  © 2015 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                                          -13-
+                     2015 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+7. Aluminum metal can be recycled from scrap metal by melting the metal to evaporate impurities.
+
+   (a) Calculate the amount of heat needed to purify 1.00 mole of Al originally at 298 K by melting it. The
+       melting point of Al is 933 K. The molar heat capacity of Al is 24 J/(mol⋅K), and the heat of fusion
+       of Al is 10.7 kJ/mol.
+
+
+   (b) The equation for the overall process of extracting Al from Al2O3 is shown below. Which requires less
+       energy, recycling existing Al or extracting Al from Al2O3 ? Justify your answer with a calculation.
+                                                        3
+                             Al 2O3 (s)  2 Al(s)        O ( g)        DH D = 1675 kJ/molrxn
+                                                        2 2
+
+
+
+
+                                                        STOP
+
+                                                  END OF EXAM
+
+
+
+
+                                                 © 2015 The College Board.
+                                Visit the College Board on the Web: www.collegeboard.org.
+
+
+                                                         -14-
+

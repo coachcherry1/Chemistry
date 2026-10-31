@@ -1,0 +1,1221 @@
+                                                                         Name: __________________________
+
+
+
+
+    Answer Sheet for AP® Chemistry
+      Practice Exam #2, Section I
+
+Question No.        Answer                          Question No.         Answer
+     1                                                    31
+     2                                                    32
+     3                                                    33
+     4                                                    34
+     5                                                    35
+     6                                                    36
+     7                                                    37
+     8                                                    38
+     9                                                    39
+    10                                                    40
+    11                                                    41
+    12                                                    42
+    13                                                    43
+    14                                                    44
+    15                                                    45
+    16                                                    46
+    17                                                    47
+    18                                                    48
+    19                                                    49
+    20                                                    50
+    21                                                    51
+    22                                                    52
+    23                                                    53
+    24                                                    54
+    25                                                    55
+    26                                                    56
+    27                                                    57
+    28                                                    58
+    29                                                    59
+    30                                                    60
+
+
+
+
+         Unauthorized copying or reuse of any part of this is illegal.
+GO ON TO THE NEXT PAGE.
+AP® Chemistry Exam
+  SECTION I: Multiple Choice
+
+DO NOT OPEN THIS BOOKLET UNTIL YOU ARE TOLD TO DO SO.
+
+Instructions                                                                                      At a Glance
+Section I of this exam contains 60 multiple-choice questions. Pages containing a periodic
+                                                                                               Total Time
+table and lists containing equations and constants are also printed in this booklet.
+                                                                                                 1 hour and 30 minutes
+Indicate all of your answers to the multiple-choice questions on the answer sheet. No credit   Number of Questions
+will be given for anything written in this exam booklet, but you may use the booklet for         60
+notes or scratch work.                                                                         Percent of Total Score
+                                                                                                 50%
+Use your time effectively, working as quickly as you can without losing accuracy. Do not
+                                                                                               Writing Instrument
+spend too much time on any one question. Go on to other questions and come back to the
+                                                                                                 Either pencil or pen
+ones you have not answered if you have time. It is not expected that everyone will know the
+                                                                                                 with black or dark
+answers to all of the multiple-choice questions.
+                                                                                                 blue ink
+Your total score on Section I is based only on the number of questions answered correctly.     Electronic Device
+Points are not deducted for incorrect answers or unanswered questions.                           Calculator allowed
+
+
+
+
+                               Unauthorized copying or reuse of any part of this is illegal.
+
+                                                                                                                         9
+10
+                           AP® CHEMISTRY EQUATIONS AND CONSTANTS
+        UNIT SYMBOLS                           UNIT CONVERSIONS                          METRIC PREFIXES
+  gram,                     g                                                         Factor      Preﬁx      Symbol
+  mole,                     mol             1 hertz = 1 s−1
+                                                                                       109        giga         G
+  liter,                    L
+  meter,                    m               1 atm = 760 mm Hg = 760 torr               106        mega         M
+  second,                   s
+                                                                                       103         kilo            k
+  hertz,                    Hz              K = °C + 273.15
+  atmosphere,               atm                                                        10−2       centi            c
+  millimeter of mercury,    mm Hg                        1 joule
+  degree Celsius,           °C
+                                            1 volt =                                   10−3       milli        m
+                                                       1 coulomb
+  kelvin,                   K                                                                     micro            μ
+                                                          1 coulomb                    10−6
+  joule,                    J               1 ampere =
+                                                           1 second
+  volt,                     V                                                          10−9       nano             n
+  coulomb,                  C
+                                                                                      10−12       pico             p
+  ampere,                   A
+
+ATOMIC STRUCTURE                                                                         E = energy
+             E = hν                                                                      ν = frequency
+                                                                                         λ = wavelength
+              c = λν
+                                                                                         F = force
+                    q1q2                                                                 q = charge
+     Fcoulombic ∝
+                    r2                                                                   r = separation
+                                                                        Planck's constant, h = 6.626 × 10−34 J s
+                                                                           Speed of light, c = 2.998 × 108 m s−1
+                                                                        Avogadro's number = 6.022 × 1023 mol−1
+
+GASES, LIQUIDS, AND SOLUTIONS                                                      P = pressure
+                                                                                   V = volume
+     PV     PV
+      1 1
+          = 2 2                                                                    T = temperature
+     T1     T2
+                                                                                    n = number of moles
+      PV = nRT                                                                     X = mole fraction
+                                          moles A                                  m = mass
+       PA = Ptotal × X A , where X A =                                             M = molar mass
+                                         total moles
+                                                                                   D = density
+     Ptotal = PA + PB + PC + ...
+                                                                                  KE = kinetic energy
+             m                                                                      v = velocity
+        n=
+             M                                                                     M = molarity
+             m                                                                     A = absorbance
+        D=                                                                          ε = molar absorptivity
+             V
+                                                                                    b = path length
+             1 2
+      KE =     mv                                                                   c = concentration
+             2
+                                                                      Gas constant, R = 8.314 J mol−1 K −1
+           n
+       M = solute                                                                    = 0.08206 L atm K −1 mol−1
+          L solution
+                                                                                 STP = 273.15 K and 1.0 atm
+        A = ε bc                                                      Ideal gas at STP = 22.4 L mol−1
+
+AP
+ Chemistry Equations and Constants Sheet                                                                              11
+KINETICS
+    [A]t − [A]0 = −kt                                                                   k = rate constant
+                                                                                        t = time
+    ln[A]t − ln[A]0 = −kt
+                                                                                     t 1 = half-life
+                                                                                       2
+           1    1
+              −     = kt
+          [A]t [A]0
+                                0.693
+                         t1 =
+                          2       k
+
+EQUILIBRIUM
+                 [C]c [D]d
+          Kc =                  , where a A + b B  c C + d D                        Equilibrium Constants
+                 [A]a [B]b
+                                                                                       Kc   (molar concentrations)
+                 (PC )c (PD ) d
+      Kp =                                                                             Kp   (gas pressures)
+                 (PA ) a (PB )b
+                                                                                       Kw   (water)
+                          +       −          −14
+      K w = [H 3O ][OH ] = 1.0 × 10                at 25°C                             Ka   (acid)
+     pK w = 14 = pH + pOH at 25°C                                                      Kb   (base)
+
+      pH = − log[H 3O+ ],                 pOH = − log[OH − ]
+
+                 [H 3O+ ][A − ]                    [OH − ][HB+ ]
+      Ka =                      ,          Kb =
+                     [HA]                              [B]
+
+     pK a = − log K a ,                   pK b = − log K b
+
+      K w = K a × Kb ,                    pK w = pK a + pK b
+
+                                [A − ]
+      pH = pK a + log
+                                [HA]
+
+THERMODYNAMICS/ELECTROCHEMISTRY
+                                                                                     q = heat
+     q mc T
+                                                                                     m = mass
+     reactio                                                                         c = specific heat capacity
+                                                                                     T = temperature
+     re                                                                             S° = standard entropy
+                                                                                    H ° = standard enthalpy
+                                                                                    G° = standard Gibbs free energy
+           G             H° − T S                                                    R = gas constant
+                                                                                     K = equilibrium constant
+                 = −RT ln K
+                                                                                     n = number of moles of electrons
+                 = −nFE °                                                           E° = standard potential
+                     q                                                                I = current (amperes)
+               I =
+                     t                                                               q = charge (coulombs)
+                               RT                                                    t = time (seconds)
+          Ecell = Ecell −          ln Q
+                                nF                                                   Q = reaction quotient
+                                                                   Faraday's constant, F = 96, 485 coulombs / 1 mol e−
+
+
+AP
+12 Chemistry Equations and Constants Sheet
+AP® Chemistry Practice Exam #2
+
+
+                                                       AP® CHEMISTRY
+                                                              Section I
+                                              Time - 1 hour and 30 minutes
+                                                          60 Questions
+                                 CALCULATORS ARE ALLOWED FOR SECTION I.
+
+Note: For all questions, assume that the temperature is 298 K, the pressure is 1.0 atm, and solutions are aqueous unless
+otherwise specified.
+
+Directions: Each of the questions or incomplete statements below is followed by four suggested answers or completions.
+Select the one that is best in each case and then enter the letter in the corresponding space on the answer sheet.
+
+
+ 1.                                                                                              H 2O ( g ) → H 2O (l )
+      (A) F–F
+                                                                        3.
+      (B)
+      (C) O–I
+      (D) O–Cl
+                                                                             (A) ∆H ° and ∆S ° are positive.
+ 2. A sample of an oxide of vanadium is                                      (B) ∆H ° is positive, and ∆S ° is negative.
+    separated into its elements, resulting in                                (C)
+    1.02 g V and 0.48 g O. Which of the following is                         (D) ∆H ° and ∆S ° are negative.
+    the formula of the oxide?
+    (A)
+    (B) VO 2
+    (C) V2 O3
+    (D) V2 O5
+
+
+
+
+                                                                                             GO ON TO THE NEXT PAGE.
+                                 Unauthorized copying or reuse of any part of this is illegal.
+
+AP® Chemistry Practice Exam #2                                                                                            13
+                                                                                                       AP® Chemistry Practice Exam #2
+
+
+                                AlCl 3 (aq) + 3 NaOH(aq) → Al(OH)3 (s) + 3 NaCl(aq)
+
+ 4. Which of the following is the balanced net ionic equation for the reaction represented by the preceding
+    equation?
+    (A) Al 3+ (aq) + OH − (aq) → Al(OH)3 (s)
+    (B) Al 3+ (aq) + 3 OH − (aq) → Al(OH)3 (s)
+    (C)
+    (D) Al 3+ (aq) + 3 Cl − (aq) + 3 Na + (aq) + 3 OH − (aq) → Al(OH)3 (s) + 3 Na + (aq) + 3 Cl − (aq)
+
+
+                            Mn 2+ + C2 O 4 2−  MnC2 O 4                        K1 = 1 × 10 3
+                                          2−
+                           [ Mn(C2 O4 )2 ]  MnC2 O4 + C2 O4 2−                 K 2 = 1 × 10 −2
+
+ 5. Which of the following is the value of the equilibrium constant for the following reaction, given the
+    equilibrium constants K1 and K 2?
+
+                                         Mn 2+ + 2 C2 O 4 2−  [Mn(C2 O 4 )2 ]2−
+     (A)
+     (B)
+     (C) ×
+     (D)
+
+
+                                        Reduction Half-Reaction             E° at 298 K
+                                            2+       −
+                                         Pb + 2 e → Pb                        −0.13 V
+                                         Cr 3+ + 3 e − → Cr                   −0.74 V
+
+ 6. Based on the table of half-reactions, which of the following is a true statement with correct justification?
+    (A)
+
+     (B)
+
+     (C)
+
+     (D) A reaction will occur when Cr ( s ) is added to a 1.0 M solution of Pb ( NO3 )2 , because E ° for the reaction
+         is 1.09 V.
+
+
+
+
+                                                                                         GO ON TO THE NEXT PAGE.
+                                       Unauthorized copying or reuse of any part of this is illegal.
+
+14                                                                                                AP® Chemistry Practice Exam #2
+AP® Chemistry Practice Exam #2
+
+
+ 7.
+
+      (A)
+
+
+
+
+      (B)
+
+
+
+
+      (C)
+
+
+
+
+      (D)
+
+
+
+
+                                                                                             GO ON TO THE NEXT PAGE.
+                                 Unauthorized copying or reuse of any part of this is illegal.
+
+AP® Chemistry Practice Exam #2                                                                                   15
+                                                                                                      AP® Chemistry Practice Exam #2
+
+
+
+                                    Substance       Absolute Entropy J / ( mol ⋅ K )
+                                    H2 ( g)                          130
+                                    Cl 2 ( g )                       220
+
+                              H 2 ( g ) + Cl 2 ( g ) → 2 HCl ( g ) ∆S °rxn = 20. J / (mol ⋅ K)
+ 8. According to the information in the table and the chemical equation, the value of the molar entropy of HCl ( g )
+    is closest to which of the following?
+    (A)
+    (B)
+    (C)
+    (D)
+
+
+
+
+ 9. How does the hybridization of the carbon atoms change from reactants to products in the reaction represented
+    by the equation?
+    (A)
+    (B) sp to sp3
+    (C) sp2 to sp
+    (D) sp3 to sp
+
+
+
+
+10.
+
+      (A) A
+      (B)
+      (C)
+      (D) D
+
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                      Unauthorized copying or reuse of any part of this is illegal.
+
+16                                                                                               AP® Chemistry Practice Exam #2
+AP® Chemistry Practice Exam #2
+
+
+Questions 11–14 refer to the following information.
+
+                                          HA ( aq ) + OH − ( aq ) → H 2 O ( l ) + A − ( aq )
+
+A 10.0 mL solution of an unknown acid, HA, is titrated with 0.20 M NaOH ( aq ). The reaction represented by the
+preceding equation occurs during the titration. The following titration curve is produced.
+
+
+
+
+11. Which of the following is a conjugate acid-                        13. The pK a of HA is closest to which of the
+    base pair for the reaction that occurs during the                      following?
+    titration?                                                             (A)
+    (A) HA and OH −                                                        (B)
+    (B)                                                                    (C)
+    (C) H 2 O and A −                                                      (D)
+    (D)
+                                                                       14. Which of the following shows the relative
+12. The volume of the HA solution that was titrated                        concentrations of species in the solution
+    was 10.0 mL. What was the initial concentration                        represented by point X on the titration curve?
+    of the HA solution?                                                    (A)
+    (A)                                                                    (B)
+    (B)                                                                    (C) [OH − ] > [A − ] > [H + ]
+    (C)                                                                    (D)
+    (D)
+
+
+
+
+                                                                                             GO ON TO THE NEXT PAGE.
+                                 Unauthorized copying or reuse of any part of this is illegal.
+
+AP® Chemistry Practice Exam #2                                                                                             17
+                                                                                           AP® Chemistry Practice Exam #2
+
+
+15.
+
+
+
+
+      (A)
+      (B)
+      (C)
+      (D) [Ne] 3s 2 3 p6
+
+
+
+
+                                                                             GO ON TO THE NEXT PAGE.
+                           Unauthorized copying or reuse of any part of this is illegal.
+
+18                                                                                    AP® Chemistry Practice Exam #2
+AP® Chemistry Practice Exam #2
+
+
+16.
+
+
+      (A)
+
+
+
+
+      (B)
+
+
+
+
+      (C)
+
+
+
+
+      (D)
+
+
+
+
+                                                                                             GO ON TO THE NEXT PAGE.
+                                 Unauthorized copying or reuse of any part of this is illegal.
+
+AP® Chemistry Practice Exam #2                                                                                   19
+                                                                                                           AP® Chemistry Practice Exam #2
+
+
+
+                  Boiling         Molar                                            MgCO3 (s)  MgO(s) + CO 2 (g)
+                   Point          Mass                                                         H = 100 kJ/mol rxn
+ Substance         (°C)          (g/mol)             Ka
+                                                                      19.
+ CH 3OH              65           32.04         5.0 × 10 −16
+ H 2O               100           18.02         1.0 × 10 −14
+17. Properties of CH 3OH and H 2 O are given in the
+    table. A student is given a beaker containing
+    a solution of CH 3OH ( l ) and H 2 O ( l ). If the student
+    wishes to separate and collect the two components                       (A) Raising the temperature of the system
+    of the solution, which of the following experimental                        to 300°C
+    techniques would be most appropriate?                                   (B)
+    (A) Using paper chromatography and collecting
+         the liquid that first moves to the top of the                      (C) Adding MgO ( s ) to the system
+         paper                                                              (D) Adding MgCO3 (s) to the system
+    (B) Combusting the CH 3OH and collecting the
+         products of the reaction
+    (C) Boiling the mixture and condensing and                                        Ag+ (aq) Cl − (aq)          AgCl(s)
+         collecting the first vapors produced
+    (D) Titrating the mixture with HCl ( aq ) to the                  20. A student conducts an experiment to determine the
+         equivalence point                                                percentage of silver in an alloy by first reacting the
+                                                                          alloy with nitric acid. The student then precipitates
+                                                                          the Ag+ (aq) by adding excess NaCl ( aq ) to form
+18. In a kinetic study of a reaction, a student                           AgCl ( s ) according to the equation. The precipitate
+    measures concentration of one species in the                          is filtered, dried, and weighed. Which of the
+    reaction at regular time intervals and graphs the                     following indicates the effect on the calculated
+    concentration versus time. If the reaction was                        percentage of silver if the precipitate was not dried
+    zeroth order instead of first order, then the graph                   completely before weighing it, and explains why?
+    of concentration versus time would show a                             (A)
+    (A) constant half-life
+    (B)
+    (C) half-life that gets progressively longer
+                                                                            (B)
+    (D) slope that becomes less steep over time
+
+
+
+                                                                            (C)
+
+
+
+                                                                            (D)
+
+
+
+
+                                                                                             GO ON TO THE NEXT PAGE.
+                                           Unauthorized copying or reuse of any part of this is illegal.
+
+20                                                                                                    AP® Chemistry Practice Exam #2
+AP® Chemistry Practice Exam #2
+
+
+Questions 21–24 refer to the following information.
+An equimolar mixture of SO 2 and O 2 is placed in a rigid container at 298 K . The initial pressure in the container
+is 0.20 atm. A catalyst is added to the mixture, and the reaction represented below occurs.
+
+                                 2 SO 2 ( g ) + O 2 ( g ) → 2 SO3 ( g )      ∆H ° = −200 kJ/mol rxn
+
+21. Which of the following gives the shape of the SO 2                        Bond Type                    Bond Energy (kJ/mol)
+    molecule and best helps explain why it has that
+    shape?                                                                    Sulfur-oxygen bond in SO 2           530
+    (A) It is linear, because there are two electron                          Oxygen-oxygen bond in O 2            500
+        domains around the sulfur atom.                                       Sulfur-oxygen bond in SO3             ?
+    (B)
+                                                                       23.
+    (C)
+
+    (D)                                                                      (A)	  403 kJ/mol
+                                                                             (B)	  470 kJ/mol
+                                                                             (C) 	  880 kJ/mol
+22. What is the partial pressure of O 2 ( g ) in the                         (D) 1410 kJ/mol
+    container before any reaction occurs?
+    (A)
+                                                                       24. What is the partial pressure of SO3 ( g ) in the
+    (B) 0.10 atm
+                                                                           container after the reaction goes to completion and
+    (C) 0.13 atm                                                           the temperature is returned to 298 K?
+    (D)                                                                    (A)
+                                                                           (B) 0.10 atm
+                                                                           (C) 0.20 atm
+                                                                           (D) 0.40 atm
+
+
+
+
+                                                                                             GO ON TO THE NEXT PAGE.
+                                 Unauthorized copying or reuse of any part of this is illegal.
+
+AP® Chemistry Practice Exam #2                                                                                             21
+                                                                                                        AP® Chemistry Practice Exam #2
+
+
+     Identity of sample                                            26. Humans are warned to shield their eyes from
+                            Sample X        Sample Z
+                                                                       ultraviolet radiation with wavelengths shorter
+     Mass of ice placed                                                than 300 nm but not from infrared radiation with
+     in sample                  6.0 g           6.0 g
+                                                                       wavelengths of about 900 nm . Which of the
+     Temperature change                                                following explains the reason for this based on
+     of sample                −5.0 K          −3.0 K
+                                                                       what happens at the molecular level with exposure
+25. A student performs an experiment on samples of                     to these types of radiation?
+    two unknown liquids. Each of the samples, which                    (A) 900 nm radiation has triple the energy of
+    have the same mass, are placed into identical                           300 nm radiation, so infrared radiation is more
+    insulated cups. Identical masses of ice are added                       likely to promote electrons or break covalent
+    to each sample, and the ice melts completely.                           bonds.
+    The student collects the information shown in the                  (B) 900 nm radiation has one-third the energy of
+    table. Which of the following could explain why                         300 nm radiation, so infrared radiation is more
+    the temperature changes in samples X and Z were                         likely to cause molecular rotation to occur.
+    different?                                                         (C) 300 nm radiation has triple the energy of
+    (A) Sample X and sample Z were of the same                              900 nm radiation, so ultraviolet radiation is
+         substance, but the volume of sample X was                          more likely to promote electrons or break
+         greater than that of sample Z.                                     covalent bonds.
+    (B) Sample X and sample Z were of the same                         (D) 300 nm radiation has one-third the energy of
+         substance, but the specific heat of sample X                       900 nm radiation, so ultraviolet radiation is more
+         was less than that of sample Z.                                    likely to cause molecular vibration to occur.
+    (C) Sample X and sample Z were of different
+         substances, but the amount of energy needed
+         to melt the ice in sample X was greater than in
+         sample Z.
+    (D) Sample X and sample Z were of different
+         substances, and the specific heat of sample X
+         was less than sample Z.
+
+
+
+
+                                                                                          GO ON TO THE NEXT PAGE.
+                                        Unauthorized copying or reuse of any part of this is illegal.
+
+22                                                                                                 AP® Chemistry Practice Exam #2
+AP® Chemistry Practice Exam #2
+
+
+                 2 NOBr      2 NO Br2                                             CO ( g ) NO 2 ( g )     CO 2 ( g ) + NO ( g )
+
+27. An elementary step in a reaction mechanism is                      28. The rate law for the reaction represented
+                                                                           is rate = k [ NO 2 ] . Which of the following
+                                                                                               2
+    given above. Which of the following diagrams
+    would best help explain why not all collisions                         mechanisms is consistent with the rate law?
+    result in reaction?
+                                                                            (A)
+
+(A)
+                                                                                   C NO 2         CO 2 + N    fast
+                                                                                   2 N O2         2 NO        fast
+                                                   O                        (B) 2 NO 2  N 2 O 4                            fast
+                                                  N
+                                                                                   N 2O4     2 CO       2 CO 2 + 2 NO slow
+(B)
+            N    Br                               Br                        (C) 2 NO 2           2 NO O 2     slow
+        O
+                                                                                   O2    CO       CO 2 + O    fast
+                                                                                   O CO          CO 2         fast
+                                                                            (D) 2 NO 2           NO NO3              fast
+(C)                                                                                NO3      CO      NO 2 + CO 2      slow
+
+
+
+
+(D)
+
+
+
+
+                                                                                             GO ON TO THE NEXT PAGE.
+                                 Unauthorized copying or reuse of any part of this is illegal.
+
+AP® Chemistry Practice Exam #2                                                                                                    23
+                                                                                                      AP® Chemistry Practice Exam #2
+
+
+Questions 29–31 refer to the following information.
+
+                                        Element         Radius       Electronegativity
+                                            Ag          165 pm                1.93
+                                            Au          174 pm                2.54
+                                            Cu          145 pm                1.90
+                                             N           56 pm                3.04
+                                            Ni          149 pm                1.91
+                                            W           193 pm                2.36
+
+29.                                                              31. Which of the following best explains why Au has
+                                                                     a larger radius than Cu does?
+                                                                     (A) Au has a larger electronegativity than
+      (A) Ni and Cu, because Ni atoms would fit in the                    Cu does.
+          spaces between Cu atoms in the solid lattice.              (B) Au has more occupied electron shells than
+      (B)                                                                 Cu does.
+                                                                     (C) Au has more protons than Cu does.
+      (C)                                                            (D) Au is more dense than Cu is.
+
+      (D)
+
+
+
+30. Which of the following explains why an alloy of
+    Au and Ag conducts electricity?
+    (A) Ag typically forms only Ag+ ions, whereas
+        Au forms both Au + and Au 3+ ions.
+    (B) Au has a larger atomic radius than Ag, so its
+        electrons are easier to remove.
+    (C) Both Ag and Au have delocalized valence
+        electrons.
+    (D) Both Ag and Au attract shared electrons
+        equally.
+
+
+
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                      Unauthorized copying or reuse of any part of this is illegal.
+
+24                                                                                               AP® Chemistry Practice Exam #2
+AP® Chemistry Practice Exam #2
+
+
+
+
+32.
+
+
+
+
+(A)                                                                   (B)
+
+
+
+
+(C)                                                                   (D)
+
+
+
+
+                                                                                             GO ON TO THE NEXT PAGE.
+                                 Unauthorized copying or reuse of any part of this is illegal.
+
+AP® Chemistry Practice Exam #2                                                                                   25
+                                                                                                       AP® Chemistry Practice Exam #2
+
+
+33. A solution is prepared by mixing 0.50 L of                                           Molar
+    0.40 M HNO3 with 0.50 L of 0.20 M KOH.                           Compound            Mass               K sp      Appearance
+    If it is assumed that volumes are additive, the                                                                   White, flaky
+    pH of the resulting mixture will be which of the                  NaOH            40. g/mol 1.1 × 10 2             powder
+    following?
+                                                                                                                        White
+    (A) 0.10                                                          KOH             56 g/mol         3.6 × 10 2      powder
+    (B) 0.70                                                                                                            White
+    (C) 1.0                                                           Mg(OH)2         58 g/mol         1.8 × 10 −11    powder
+    (D) 7.0                                                                                                           White, flaky
+                                                                      Ca(OH)2         74 g/mol          5.5 × 10 −6    powder
+       Mg(s) 2 HCl(aq)        MgCl 2 (aq) + H 2 (g)               35. Formulas and properties of some group 1 and 2
+                                                                      compounds are listed in the table. Which of the
+34. A student reacts Mg ( s ) with HCl ( aq ) to                      following questions could be tested to determine if
+    determine the value of H for the reaction                         an unknown white powder was a hydroxide from
+    represented. Information for the experiment is                    group 2 and not from group 1?
+    given in the following table.
+                                                                      (A)
+      Mass of Mg ( s ) used                    2.4 g
+                                                                        (B) Does the compound dissolve significantly in
+      Volume of 1.0 M HCl used               300. mL                        distilled water?
+                                                                        (C)
+      Temperature change of solution          15.1 K
+      Specific heat of solution            4.0 J/(g K)                  (D) Does the compound have a molar mass above
+                                                                            50 g/mol ?
+		
+
+
+     (A)
+     (B) The temperature change of the solution will be
+         less than 15.1 K .
+     (C)
+
+     (D)
+
+
+
+
+                                                                                         GO ON TO THE NEXT PAGE.
+                                       Unauthorized copying or reuse of any part of this is illegal.
+
+26                                                                                                AP® Chemistry Practice Exam #2
+AP® Chemistry Practice Exam #2
+
+
+Questions 36–38 refer to the following information.
+
+                         2 NaCl ( aq ) + 2 H 2 O ( l ) → 2 NaOH ( aq ) + Cl 2 ( g ) + H 2 ( g ) ∆G ° = 400 kJ / mol rxn
+Sodium hydroxide can be produced commercially from the electrolysis of sodium chloride solutions, as indicated
+by the balanced equation.
+
+36. Which of the following is the best evidence that the reaction is an oxidation-reduction reaction?
+    (A) Heat is consumed during the reaction.
+    (B)
+    (C) The oxidation number of each Cl atom changes from −1 to 0 , and some H atoms change from +1 to 0 .
+    (D) Each Cl atom gains an electron, and each H 2 O molecule loses a proton.
+
+
+37. What is the approximate minimum voltage that must be supplied to a 1.0 M solution of NaCl ( aq ) to produce
+    NaOH ( aq ) according to the reaction above? (F ≈ 100,000 coulombs per mole of electrons.)
+    (A) 0.004 V
+    (B) 1.0 V
+    (C) 2.0 V
+    (D) 4.0 V
+
+
+38. The gases produced from the electrolysis reaction are condensed in order to prevent their escape into the
+    atmosphere. Which of the following indicates the gas that condenses at the lower temperature and gives a
+    particle-level explanation for why?
+    (A) H 2 , because the hydrogen bonding in H 2 ( l ) is stronger than the dispersion forces in Cl 2 ( l ).
+    (B) H 2 , because the dispersion forces in H 2 ( l ) are weaker than the dispersion forces in Cl 2 ( l ).
+    (C)       because the Cl − Cl bond in Cl 2 is stronger than the H − H bond in H 2 .
+    (D)       because Cl atoms are more electronegative than H atoms.
+
+
+
+
+                                                                                             GO ON TO THE NEXT PAGE.
+                                 Unauthorized copying or reuse of any part of this is illegal.
+
+AP® Chemistry Practice Exam #2                                                                                           27
+                                                                                                     AP® Chemistry Practice Exam #2
+
+
+                                                                40. A student measures the ratio PV
+                                                                                                 nT
+                                                                                                    for a sample
+                                                                      of gaseous C4 H10 at three different volumes in a
+                                                                      sealed syringe of variable volume. At all times the
+                                                                      syringe is held at a temperature of 300 K . The data
+                                                                      are shown in the table.
+
+                                                                                                                 PV
+                                                                                     Volume              Ratio
+                                                                                                                 nT
+
+                                                                                     20.0 mL               0.0821
+
+                                                                                     10.0 mL               0.0790
+
+                                                                                     5.00 mL               0.0718
+
+39. A student prepares several solutions of known                     Which of the following best explains the trend in
+    concentration and measures their absorbance in a                  the data as the volume decreases?
+    1.0 cm cuvette to generate the Beer-Lambert plot                  (A) The C4 H10 molecules decompose as the
+    shown. Another student uses the same solutions                        volume decreases, creating more moles of gas.
+    with a 2.0 cm cuvette. Which of the following                     (B) The volume of the C4 H10 molecules becomes
+    indicates how the second student’s plot will differ                   more significant as the volume decreases.
+    from the plot of the first student?                               (C) The intermolecular forces between C4 H10
+    (A) The slope will be doubled because the                             molecules become more significant as the
+        absorbance is doubled in the 2.0 cm cell.                         volume decreases.
+    (B) The slope will be halved because half as much                 (D) The average kinetic energy of the C4 H10
+        light gets through the 2.0 cm cell.                               molecules decreases as the volume decreases.
+    (C) The slope will be doubled because the molar
+        absorptivity is doubled in the 2.0 cm cuvette.
+    (D) The slope will be halved because the molar
+        absorptivity is halved in the 2.0 cm cuvette.
+
+
+
+
+                                                                                       GO ON TO THE NEXT PAGE.
+                                     Unauthorized copying or reuse of any part of this is illegal.
+
+28                                                                                              AP® Chemistry Practice Exam #2
+AP® Chemistry Practice Exam #2
+
+
+41. Structural diagrams for two weak acids, X and Z, are shown.
+
+
+
+
+    		 K a , and why?
+    (A) X, because more hydrogen atoms per molecule can dissociate, decreasing the pH of the solution.
+    (B) X, because the weaker London dispersion forces make the hydrogen atom more likely to be separated
+        from the conjugate base.
+    (C)
+
+    (D) Z, because the electronegative Cl atoms stabilize the conjugate base, allowing the acid to ionize to a
+        greater degree than acid X.
+
+
+                                                      2 H 2O2 → 2 H 2O + O2
+
+42. The reaction represented is first order with respect to H 2 O 2 . An experiment is performed in which 100. mL of
+    0.20 M H 2 O 2 is decomposed to H 2 O and O 2 at a temperature of 300 K . A chemist wants to triple the rate of
+    the reaction. Which of the following experimental conditions would triple the rate of the reaction?
+    (A) Repeating the experiment with 50. mL of 0.60 M H 2 O 2 at 300 K
+    (B) Repeating the experiment with 100. mL of 0.20 M H 2O 2 at 100 K
+    (C) Repeating the experiment with 200. mL of 0.067 M H 2 O 2 at 300 K
+    (D) Repeating the experiment with 300. mL of 0.20 M H 2 O 2 at 300 K
+
+
+
+
+Questions 43–45 refer to the following information.
+
+                                                 N 2 ( g ) + 3 H 2 ( g ) → 2 NH 3 ( g )
+
+Samples of N 2 ( g ) and H 2 ( g ) are placed in a rigid container at a constant temperature of 315 K and allowed to
+react according to the equation shown.
+43. Which of the following compares the average kinetic energy and average speed of the N 2 ( g ) and H 2 ( g )
+    molecules in the container at 315 K before any reaction occurs?
+    (A) The H 2 ( g ) molecules have a greater average kinetic energy and average speed than the N 2 ( g ) molecules.
+    (B) The H 2 ( g ) molecules have a greater average kinetic energy than the N 2 ( g ) molecules, but the molecules
+        have the same average speed.
+    (C) The H 2 ( g ) molecules have a greater average speed than the N 2 ( g ) molecules, but the molecules have the
+        same average kinetic energy.
+    (D) The H 2 ( g ) molecules and N 2 ( g ) molecules have the same average kinetic energy and average speed.
+
+
+
+                                                                                             GO ON TO THE NEXT PAGE.
+                                 Unauthorized copying or reuse of any part of this is illegal.
+
+AP® Chemistry Practice Exam #2                                                                                        29
+                                                                                                     AP® Chemistry Practice Exam #2
+
+
+                                                                45. The synthesis of ammonia is carried out in three
+                                                                    glass vessels of equal volume. In each vessel,
+                                                                    N 2 and H 2 both have an initial partial pressure
+                                                                    of 3.0 atm. A small piece of iron is added to one
+                                                                    vessel, and a small piece of nickel is added to
+                                                                    another vessel. The temperature is kept constant,
+                                                                    and the pressure is measured at regular intervals,
+                                                                    as shown in the table.
+44. The reactants are represented in the diagram.
+    A catalyst is added to the mixture and the reaction                              Total Pressure in Reaction Vessel
+    occurs. Which of the following is a correct                                                 Glass with         Glass with
+    particulate representation of the mixture after the             Time          Glass
+                                                                                                Iron Added        Nickel Added
+    reaction occurs?
+                                                                   0 min        6.0 atm              6.0 atm         6.0 atm
+     (A)
+                                                                  30 min        6.0 atm              5.8 atm         5.8 atm
+
+                                                                  60 min        6.0 atm              5.6 atm         5.6 atm
+
+                                                                  90 min        6.0 atm              5.5 atm         5.5 atm
+
+
+                                                                		
+                                                                 Which of the following explains the results shown
+     (B)                                                         in the table?
+                                                                 (A) Both iron and nickel are inhibitors; they
+                                                                      prevent the system from reaching equilibrium.
+                                                                 (B) Both iron and nickel are catalysts; more N 2
+                                                                      and H 2 are consumed in the iron and nickel
+                                                                      vessels than in the glass vessel, reducing the
+                                                                      overall pressure.
+     (C)                                                         (C) Both iron and nickel react strongly with NH 3,
+                                                                      causing it to decompose into N 2 and H 2 ,
+                                                                      reducing the overall pressure.
+                                                                 (D)
+
+
+
+
+     (D)
+
+
+
+
+                                                                                       GO ON TO THE NEXT PAGE.
+                                     Unauthorized copying or reuse of any part of this is illegal.
+
+30                                                                                              AP® Chemistry Practice Exam #2
+AP® Chemistry Practice Exam #2
+
+
+46. A solution of KI(aq) is electrolyzed using the                         47.
+    setup shown.
+
+
+
+
+                                                                                 (A) The heated metal transfers some thermal
+                                                                                     energy to the surrounding air before it contacts
+                                                                                     the water in the calorimeter.
+                                                                                 (B) The warmer air in the laboratory transfers
+                                                                                     thermal energy into the colder water in the
+    		                                                                               calorimeter.
+                                                                                 (C) An improperly calibrated balance results in
+    When phenolphthalein (pK a = 9.4 ) is added,
+                                                                                     more than 20.0 g of metal being used in the
+    the solution surrounding the cathode turns pink.
+                                                                                     experiment.
+    Standard reduction potentials are given in the table.
+                                                                                 (D)
+
+ Half-Reaction                                           E° ( V )
+ K + (aq) + e − → K(s)                                 −2.92 V
+ H 2 O ( l ) + 2 e − → H 2 ( g ) + 2 OH − ( aq )       −0.83 V                   2 N 2 ( g ) + O2 ( g )  2 N 2O ( g )   K eq = K1
+ O 2 ( g ) + 2 H 2 O ( l ) + 4 e → 4 OH ( aq )
+                               −           −
+                                                         0.40 V
+                                                                           48. The reaction represented has an equilibrium
+ I 2 ( aq ) + 2 e − → 2 I − ( aq )                       0.54 V
+                                                                               constant with a value of K1. What is the value of
+ O 2 (g) + 4 H + (aq) + 4 e − → 2 H 2 O(l)               1.23 V                the equilibrium constant, in terms of K1, for the
+                                                                               reaction 4 N 2 O ( g )  4 N 2 ( g ) + 2 O 2 ( g ) ?
+   		
+    Which of the following identifies what is produced                         (A) ( K1 )2
+    at the cathode and provides correct reasoning?                                       1
+                                                                                 (B)
+    (A) K ( s ) is produced; the phenolphthalein                                         K1
+         indicates that the solution is acidic, and alkali
+                                                                                         1
+         metals produce H 2 ( g ) and acidic solutions                           (C)
+         when added to water.                                                          2 K1
+    (B) H 2 ( g ) and OH − ( aq ) are produced; gas                                       1
+                                                                                 (D)
+         bubbles form, and the phenolphthalein color                                   ( K1 ) 2
+         change indicates that OH − ( aq ) is produced in
+         the solution around the cathode.
+    (C) O 2 ( g ) and OH − ( aq ) are produced; gas
+         bubbles form, and the phenolphthalein color
+         change indicates that OH − ( aq ) is produced in
+         the solution around the cathode.
+    (D) O 2 ( g ) is produced; the last half-reaction in the
+         table has the most positive reduction potential,
+         which indicates that it is the most favored
+         reaction.
+
+                                                                                                  GO ON TO THE NEXT PAGE.
+                                     Unauthorized copying or reuse of any part of this is illegal.
+
+AP® Chemistry Practice Exam #2                                                                                                       31
+                                                                                                          AP® Chemistry Practice Exam #2
+
+
+                               CO ( g ) + H 2 O ( g )  CO 2 ( g ) + H 2 ( g )   K p = 100 at 500 K
+
+                                       Substance          Initial Partial Pressure (atm)
+                                       CO ( g )                          0.50
+                                       H 2O ( g )                        0.10
+                                       CO 2 ( g )                        6.0
+                                       H2 ( g)                           1.0
+
+49. A mixture of CO ( g ) , H 2 O ( g ) , CO 2 ( g ) , and H 2 ( g ) is placed in a previously evacuated, rigid container.
+    The initial partial pressures are given in the table. Which of the following predicts what will happen to the
+    concentration of CO 2 as the system approaches equilibrium at 500 K, with justification?
+    (A) [ CO 2 ] will increase because Q > K .
+    (B) [ CO 2 ] will increase because Q < K .
+    (C) [ CO 2 ] will decrease because Q > K .
+    (D) [ CO 2 ] will decrease because Q < K .
+
+
+50. Which of the following reactions has the most negative value of ∆S °?
+    (A) HCl(aq) + NaOH(aq) → H 2 O(l ) + NaCl(aq)
+    (B)
+    (C) C2 H 2 ( g) + 2 Cl 2 ( g) → C2 H 2 Cl 4 (l )
+    (D) HCN( g) → HNC( g)
+
+
+
+
+                                                                                            GO ON TO THE NEXT PAGE.
+                                          Unauthorized copying or reuse of any part of this is illegal.
+
+32                                                                                                   AP® Chemistry Practice Exam #2
+AP® Chemistry Practice Exam #2
+
+
+                    Compound                                        Propane                      Dimethyl ether
+
+
+                    Lewis diagram
+
+
+                    Solubility in 100 g of H 2 O                     0.007 g                          7g
+51. Information about two compounds is given in the table. Which of the following provides particle-level
+    reasoning for the solubility of the two compounds?
+    (A) Molecules of both compounds are polar and will experience London dispersion forces only.
+    (B) Molecules of both compounds have similar masses and therefore have similar London dispersion forces.
+    (C) Molecules of propane have more available hydrogen bonding sites for H 2 O molecules.
+    (D) Molecules of dimethyl ether will experience hydrogen bonding attractions to H 2 O molecules, but
+        molecules of propane will not.
+
+
+
+
+                                                                                             GO ON TO THE NEXT PAGE.
+                                 Unauthorized copying or reuse of any part of this is illegal.
+
+AP® Chemistry Practice Exam #2                                                                                   33
+                                                                                                            AP® Chemistry Practice Exam #2
+
+
+Questions 52–55 refer to the following information.
+
+A solution is prepared by combining 1.0 L of 0.50 M HClO 2 with 1.0 L of 0.50 M KClO 2 . The pH of the
+solution is 2.0.
+52. The value of K b for ClO 2 − is closest to which of                54. If the solution was prepared by combining 1.0 L
+    the following?                                                         of 2.0 M HClO 2 and 1.0 L of 2.0 M KClO 2
+    (A) 1.0 × 10 −14                                                       instead of 1.0 L of 0.50 M HClO 2 and 1.0 L of
+                                                                           0.50 M KClO 2 , which of the following would
+    (B) 1.0 × 10 −12
+                                                                           describe the solution?
+    (C) 1.0 × 10 −7
+                                                                           (A) It would have a pH greater than 2.0.
+    (D) 1.0 × 10 −2
+                                                                           (B) It would have a pH less than 2.0.
+                                                                           (C) It would have a pH of 2.0 and a greater
+53. When 10 mL of 0.50 M NaOH is added to the                                   buffer capacity than the solution made with
+    solution, the pH does not change significantly.                             0.50 M HClO 2 and KClO 2 .
+    Which of the following is the net ionic equation                       (D)
+    for the reaction that occurs and prevents a
+    significant change in pH ?                                                    0.50 M HClO 2 and KClO 2 .
+    (A)
+    (B) NaOH ( aq ) + ClO 2 − ( aq ) → NaCl ( aq ) + H 2 O ( l )
+                                                                       55. Consider the Lewis electron-dot diagram for the
+    (C) OH − (aq) + Na + (aq) → NaOH(s)                                    ClO 2 − ion that minimizes formal charge. Which of
+    (D) OH − ( aq ) + HClO 2 ( aq ) → ClO 2 − ( aq ) + H 2 O ( l )         the following is true about the hybridization of the
+                                                                           Cl atom in the ion?
+                                                                           (A) The Cl atom is not hybridized, and the ion
+                                                                               contains one single Cl − O bond and one
+                                                                               double Cl − O bond.
+                                                                           (B) The Cl atom is sp hybridized, and the ion
+                                                                               contains two equivalent Cl − O double bonds.
+                                                                           (C) The Cl atom is sp2 hybridized, and the ion
+                                                                               contains two equivalent Cl − O single bonds.
+                                                                           (D) The Cl atom is sp3 hybridized, and the ion
+                                                                               contains two equivalent Cl − O single bonds.
+
+
+
+
+                                                                                              GO ON TO THE NEXT PAGE.
+                                            Unauthorized copying or reuse of any part of this is illegal.
+
+34                                                                                                     AP® Chemistry Practice Exam #2
+AP® Chemistry Practice Exam #2
+
+
+
+
+56. The preceding graph shows potential energy versus bond length for a Br2 molecule. Which of the following
+    graphs shows potential energy versus bond length for an I 2 molecule?
+
+(A)                                                                     (B)
+
+
+
+
+(C)                                                                     (D)
+
+
+
+
+                                                                                             GO ON TO THE NEXT PAGE.
+                                 Unauthorized copying or reuse of any part of this is illegal.
+
+AP® Chemistry Practice Exam #2                                                                                   35
+                                                                                                       AP® Chemistry Practice Exam #2
+
+
+
+
+57. To measure the heat of solution for NH 4 Cl , a student measures the temperature of 100.0 g of H 2 O (specific
+    heat 4.18 J/(g C)), adds 22.15 g of NH 4 Cl , and measures the temperature after the NH 4 Cl is dissolved. The
+    temperatures are shown in the diagram. Which of the following indicates the sign of H soln and the number
+    of significant figures that can be reported for the value of H soln in the experiment? (Assume that the specific
+    heat of the solution is identical to the specific heat of water.)
+    (A) H soln 0, 2 significant figures
+    (B) H soln 0, 3 significant figures
+    (C) H soln 0, 2 significant figures
+    (D) H soln 0, 3 significant figures
+
+
+58. The molar solubility of PbI 2 is 1 × 10 −3 M . Which of the following is the best estimate for the value of K sp of
+    PbI 2 ?
+    (A) 1 × 10 −6
+    (B) 2 × 10 −6
+    (C) 1 × 10 −9
+    (D) 4 × 10 −9
+
+
+
+
+                                                                                         GO ON TO THE NEXT PAGE.
+                                       Unauthorized copying or reuse of any part of this is illegal.
+
+36                                                                                                AP® Chemistry Practice Exam #2
+AP® Chemistry Practice Exam #2
+
+
+
+
+59. A chemist conducts a column chromatography experiment by placing an aqueous mixture of X and Z into a
+    column that is packed with a nonpolar stationary phase, as represented on the left. After ethanol ( C2 H 5OH ) is
+    poured through the column, separation of X and Z occurs, as represented by the column on the right. Which
+    of the following explains the experimental result based on particle interactions?
+    (A) X is more polar than Z; molecules of X are more attracted to the stationary phase than to the mobile
+         phase.
+    (B)
+
+    (C) Z is more polar than X; molecules of Z are more attracted to the mobile phase than to the stationary
+        phase.
+    (D) Z has a larger molar mass than X does; molecules of Z are more influenced by gravity.
+
+
+
+
+                                                                                             GO ON TO THE NEXT PAGE.
+                                 Unauthorized copying or reuse of any part of this is illegal.
+
+AP® Chemistry Practice Exam #2                                                                                    37
+                                                                                                        AP® Chemistry Practice Exam #2
+
+
+
+                    Reaction 1: H 2 (g) + 12 O 2 (g) → H 2 O(l )                  ∆H ° = −285 kJ/mol rxn
+                    Reaction 2: H 2 ( g ) + O 2 ( g ) → H 2 O 2 ( aq )            ∆H ° = ?
+                    Reaction 3: 2 H 2 O 2 ( aq ) → 2 H 2 O ( l ) + O 2 ( g )     ∆H ° = −200. kJ/mol rxn
+60. Reactions 1 and 2 represented can be manipulated to produce reaction 3. What is the value of ∆H ° for
+    reaction 2?
+    (A) −370 kJ/mol rxn
+    (B) −185 kJ/mol rxn
+    (C) 85 kJ/mol rxn
+     (D) 185 kJ/mol rxn
+
+
+
+
+                                                                                          GO ON TO THE NEXT PAGE.
+                                        Unauthorized copying or reuse of any part of this is illegal.
+
+38                                                                                                 AP® Chemistry Practice Exam #2
+AP® Chemistry Practice Exam #2
+
+
+
+
+                                     END OF SECTION I
+                           IF YOU FINISH BEFORE TIME IS CALLED,
+                       YOU MAY CHECK YOUR WORK ON THIS SECTION.
+                  DO NOT GO ON TO SECTION II UNTIL YOU ARE TOLD TO DO SO.
+
+                                            ______________________________
+
+
+MAKE SURE YOU HAVE DONE THE FOLLOWING:
+
+• PLACED YOUR AP NUMBER LABEL ON YOUR ANSWER SHEET
+
+• WRITTEN AND GRIDDED YOUR AP NUMBER CORRECTLY ON YOUR ANSWER SHEET
+
+• TAKEN THE AP EXAM LABEL FROM THE FRONT OF THIS BOOKLET AND PLACED IT ON
+  YOUR ANSWER SHEET
+
+
+
+
+                                 Unauthorized copying or reuse of any part of this is illegal.
+
+AP® Chemistry Practice Exam #2                                                                  39
+

@@ -17,6 +17,8 @@ if len(sys.argv) > 1:
     print(f'merged edits for {n} item(s) into content/overrides.json')
 STEPS = [('organic-chemistry/substitution-elimination/problem-bank/build', ['python3', 'build.py']),
          ('organic-chemistry/acids-bases/acids-bases-quiz/build', ['python3', 'make_quiz.py']),
+         ('organic-chemistry/question-bank/build', ['python3', 'build.py']),
+         ('ap-chemistry/question-bank/build', ['python3', 'build_bank.py']),
          ('.', ['python3', 'tools/build_index.py'])]
 for cwd, cmd in STEPS:
     print('running', ' '.join(cmd), 'in', cwd)

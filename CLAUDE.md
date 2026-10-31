@@ -113,11 +113,19 @@ script. Pages shows only `main`.
 ## Organic question bank (difficulty and filters)
 
 `organic-chemistry/question-bank/` holds about 100 questions per Klein chapter 2 to 11 (50 multiple choice, 50 free response), built by
-`build/chNN.py`; see its README. Every question has a difficulty 1 to 5 (Easy, Basic, Moderate, Hard, Very hard); only 1 to 4 are
+`build/chNN.py`; see its README. `tools/apply_edits.py` rebuilds both question banks before the index. Every question has a difficulty 1 to 5 (Easy, Basic, Moderate, Hard, Very hard); only 1 to 4 are
 written, level 5 is Klein's Challenge level and is avoided. The index filters by topic, subtopic, difficulty, format (Multiple
 choice or Free response) and course, sorts by difficulty, and lets the teacher change any question's difficulty inline (exported
 as `difficulty` through the Edits file). Questions follow the same wording rules as everywhere else (no em dashes, no
 "spontaneous", "anti-coplanar", "back-side").
+
+## AP chemistry question bank
+
+`ap-chemistry/question-bank/` holds every released AP Chemistry free-response question from 2015 to 2026 (no 2020 exam): 77 questions cut
+out of the College Board papers with their diagrams (`images/AP<year>F<n>.png`), tagged by AP unit in `build/ap_meta.py`, and shown in the
+index's AP Chemistry tab. Long questions start at difficulty 4, short ones at 3. The papers have no answer keys. `reference/` keeps the
+source PDFs, their text, two multiple-choice practice exams (60 questions each, no keys) and `REFERENCE.md`, which is where to look when
+writing new AP questions. These are College Board materials, published as released.
 
 ## Before every commit (in the package folder)
 

@@ -1,0 +1,822 @@
+ 2024
+
+
+
+
+AP Chemistry
+             ®
+
+
+
+
+Free-Response Questions
+
+
+
+
+© 2024 College Board. College Board, Advanced Placement, AP, AP Central, and the acorn logo are registered
+trademarks of College Board. Visit College Board on the web: collegeboard.org.
+AP Central is the official online home for the AP Program: apcentral.collegeboard.org.
+AP® Chemistry 2024 Free-Response Questions
+
+
+
+
+                                         © 2024 College Board.
+                           Visit College Board on the web: collegeboard.org.
+
+                                                  2
+AP® Chemistry 2024 Free-Response Questions
+
+
+
+                            AP® CHEMISTRY EQUATIONS AND CONSTANTS
+
+   Throughout the exam the following symbols have the definitions specified unless otherwise noted.
+                 L, mL =          liter(s), milliliter(s)         mm Hg    =   millimeters of mercury
+                 g     =          gram(s)                         J, kJ    =   joule(s), kilojoule(s)
+                 nm    =          nanometer(s)                    V        =   volt(s)
+                 atm   =          atmosphere(s)                   mol      =   mole(s)
+
+   ATOMIC STRUCTURE
+                                                                             E = energy
+       E = h                                                                 = frequency
+       c =                                                                  = wavelength
+                                                                 Planck’s constant, h = 6.626  1034 J s
+                                                                    Speed of light, c = 2.998  108 m s1
+                                                                 Avogadro’s number = 6.022  1023 mol1
+                                                                   Electron charge, e = 1.602 × 1019 coulomb
+
+
+   EQUILIBRIUM
+
+           [C]c [D]d                                                     Equilibrium Constants
+    Kc =             , where a A + b B  c C + d D
+           [A]a [B]b
+                                                                         Kc (molar concentrations)
+           (PC )c (PD )d                                                 Kp (gas pressures)
+    Kp =
+           (PA )a (PB )b                                                 Ka (weak acid)
+           [H + ][A - ]                                                  Kb (weak base)
+    Ka =
+             [HA]                                                        Kw (water)
+         [OH - ][HB+ ]
+    Kb =
+              [B]
+    Kw = [H ][OH] = 1.0  1014 at 25C
+           +
+
+       = Ka  Kb
+     pH =  log[H+] , pOH =  log[OH]
+     14 = pH + pOH
+                      [A - ]
+    pH = pKa + log
+                      [HA]
+    pKa =  log Ka , pKb =  log Kb
+
+
+   KINETICS
+
+           [A] t  [A] 0 =  kt                                             k = rate constant
+                                                                             t = time
+      ln[A] t  ln[A] 0 =  kt                                            t ½ = half-life
+          1      1
+              -            = kt
+        [ A ]t [ A ]0
+                    t ½ = 0.693
+                            k
+                                                   © 2024 College Board.
+                                     Visit College Board on the web: collegeboard.org.
+
+                                                            3
+AP® Chemistry 2024 Free-Response Questions
+
+
+
+
+  GASES, LIQUIDS, AND SOLUTIONS
+                                                                             P = pressure
+                                                                             V = volume
+                 PV = nRT
+                                                                             T = temperature
+                                                 moles A                     n = number of moles
+                 PA = Ptotal  XA, where XA =
+                                                total moles                  m = mass
+             Ptotal = PA + PB + PC + . . .                                   M = molar mass
+                                                                             D = density
+                        m
+                  n =                                                       KE = kinetic energy
+                        M
+                                                                              v = velocity
+                 K = C + 273                                                A = absorbance
+                        m                                                     = molar absorptivity
+                 D =
+                        V                                                    b = path length
+                        1                                                    c = concentration
+       KEmolecule =       mv 2
+                        2
+                                                                Gas constant, R = 8.314 J mol1 K1
+     Molarity, M = moles of solute per liter of solution
+                                                                                = 0.08206 L atm mol1 K1
+                 A =  bc
+                                                                                = 62.36 L torr mol1 K1
+                                                                         1 atm = 760 mm Hg = 760 torr
+                                                                           STP = 273.15 K and 1.0 atm
+                                                                Ideal gas at STP = 22.4 L mol−1
+
+  THERMODYNAMICS / ELECTROCHEMISTRY
+                                                                                 q = heat
+      q = mcT                                                                  m = mass
+                                                                                 c = specific heat capacity
+     S =Â S products - Â S reactants                                         T = temperature
+                                                                                S = standard entropy
+    H = Â DHf products - Â DHf reactants
+                                                                                H = standard enthalpy
+                                                                                G = standard Gibbs free energy
+    G =    Â DGf products - Â DGf reactants                                  n = number of moles
+                                                                                E = standard reduction potential
+    G = H  TS
+                                                                                 I = current (amperes)
+         =  RT ln K                                                             q = charge (coulombs)
+         =  nF E                                                                t = time (seconds)
+                                                                                 Q = reaction quotient
+             q
+      I =                                                      Faraday’s constant, F = 96,485 coulombs per mole
+             t
+                      RT                                                                       of electrons
+             o
+    Ecell = Ecell -      lnQ                                                             1 joule
+                      nF                                                      1 volt =
+                                                                                       1 coulomb
+
+
+
+
+                                               © 2024 College Board.
+                                 Visit College Board on the web: collegeboard.org.
+
+                                                           4
+   AP® Chemistry 2024 Free-Response Questions
+
+
+                              Begin your response to QUESTION 1 on this page.
+
+
+                                                   CHEMISTRY
+                                                   SECTION II
+                                          Time - 1 hour and 45 minutes
+                                                    7 Questions
+
+
+Directions: Questions 1–3 are long free-response questions that require about 23 minutes each to answer and are
+worth 10 points each. Questions 4–7 are short free-response questions that require about 9 minutes each to answer
+and are worth 4 points each.
+For each question, show your work for each part in the space provided after that part. Examples and equations may
+be included in your responses where appropriate. For calculations, clearly show the method used and the steps
+involved in arriving at your answers. You must show your work to receive credit for your answer. Pay attention to
+significant figures.
+
+
+                             C 3H 6 O 3(aq) + NaOH(aq) → NaC 3H5 O 3(aq) + H2 O(l)
+
+1. A student is studying the reaction between lactic acid, C 3H 6 O 3, and sodium hydroxide, NaOH, as represented in
+   the balanced equation above.
+  (a) The structural formula of lactic acid is shown in the following diagram. Circle the hydrogen atom that most
+      readily participates in the chemical reaction with sodium hydroxide.
+
+
+
+
+  (b) The student begins the experiment by dissolving 10.22 g of sodium hydroxide (molar mass 40.00 g / mol) in
+      enough water to produce 500. mL of solution. Calculate the molarity of the sodium hydroxide solution.
+
+
+
+
+                                                                                 GO ON TO THE NEXT PAGE.
+
+
+                                                © 2024 College Board.
+                                  Visit College Board on the web: collegeboard.org.
+
+                                                           5
+AP® Chemistry 2024 Free-Response Questions
+
+
+
+                          Continue your response to QUESTION 1 on this page.
+
+ The student uses the sodium hydroxide solution from part (b), a buret, a pH meter, and a 100 mL Erlenmeyer
+ flask to titrate a 25.0 mL sample of lactic acid solution. The student’s data are shown in the following graph.
+
+
+
+
+ (c) Use the information in the graph to determine the approximate pKa of lactic acid. ____________
+
+
+
+
+ (d) The preceding diagram represents the relative amounts of major species in a sample of the solution in the flask
+     at one point during the titration. (Note that water molecules are omitted.)
+        (i) Draw an X on the preceding titration curve at a point in the titration where the reaction mixture would
+            be represented by this diagram.
+        (ii) Justify your answer.
+
+
+
+
+                                                                                GO ON TO THE NEXT PAGE.
+
+
+                                             © 2024 College Board.
+                               Visit College Board on the web: collegeboard.org.
+
+                                                        6
+AP® Chemistry 2024 Free-Response Questions
+
+
+
+                         Continue your response to QUESTION 1 on this page.
+
+         Experiment Mass of NaOH(s) (grams) Volume of Solution (mL )              Titration Curve
+
+              1                  10.22                         500.           Already shown on graph
+
+              2                  20.44                         500.                       ?
+
+
+
+       (iii) The student repeats the experiment but uses a solution of NaOH(aq) with twice the concentration, as
+             shown in the preceding table. On the following graph, draw the titration curve that would be expected
+             for experiment 2.
+
+
+
+
+(e) In a third experiment, the student investigates the enthalpy of the reaction between lactic acid and sodium
+    hydroxide. The student combines 100.0 mL of a 0.500 M lactic acid solution at 20.0°C with 100.0 mL of a
+    0.500 M NaOH solution at 20.0°C in a calorimeter. The final temperature of the resulting combined solution
+    is 23.2°C. Assume that the density of each solution before combining is 1.00 g / mL and that the specific heat
+    capacity of the combined solution is 4.2 J / ( g · ° C).
+       (i) Calculate the quantity of heat produced in the reaction, in J .
+
+
+
+
+                                                                               GO ON TO THE NEXT PAGE.
+
+
+                                              © 2024 College Board.
+                                Visit College Board on the web: collegeboard.org.
+
+                                                           7
+AP® Chemistry 2024 Free-Response Questions
+
+
+
+                          Continue your response to QUESTION 1 on this page.
+
+        (ii) Calculate the molar enthalpy of reaction, in kJ / molrxn. Include the sign in your answer.
+
+
+
+
+        (iii) The student claims that if heat is lost from the calorimeter to the surrounding air during the reaction,
+              then the experimental value of the molar enthalpy of reaction will be smaller in magnitude than the
+              actual value. Do you agree or disagree with the student’s claim? Justify your answer.
+
+
+
+
+                                                                                  GO ON TO THE NEXT PAGE.
+
+
+                                             © 2024 College Board.
+                               Visit College Board on the web: collegeboard.org.
+
+                                                         8
+   AP® Chemistry 2024 Free-Response Questions
+
+
+                               Begin your response to QUESTION 2 on this page.
+
+2. A chemical reaction between maleic acid (H2 C4 H2 O4) and sodium bicarbonate (NaHCO 3) occurs in the presence
+   of water to produce carbon dioxide and sodium maleate (Na2 C4 H2 O4), as represented by the following equation.
+                   H2 C4 H2 O4(aq) + 2 NaHCO 3(aq) → 2 CO 2( g) + 2 H2 O(l ) + Na2 C4 H2 O4(aq)
+
+  (a) A student combines equal masses of H2 C4 H2 O4(s) chunks and NaHCO 3(s) chunks with sufficient water at
+      20.0°C. The student determines that 0.0114 mol of CO 2( g) is produced after the reaction goes to completion.
+          (i) Calculate the number of grams of CO 2( g) produced.
+
+
+
+
+          (ii) The CO 2( g) produced from the reaction at 20.0°C was collected and found to have a pressure of
+               1.25 atm . Calculate the volume of CO 2( g), in liters.
+
+
+
+
+  (b) The student performs a second experiment that is identical to the first except that the student grinds the chunks
+      of H2 C4 H2 O4(s) and NaHCO 3(s) into powder before combining the powder with water.
+          (i) What happens to the surface area of the reactants when the student grinds the chunks into powder?
+
+
+
+
+          (ii) The rate-determining step for the overall reaction is the dissolving of the solids. Would the time
+               required for the dissolving of the solids in the second experiment be longer than, shorter than, or the
+               same as the time required in the first experiment? Justify your answer based on the collisions between
+               particles.
+
+
+
+
+                                                                                  GO ON TO THE NEXT PAGE.
+
+
+                                                © 2024 College Board.
+                                  Visit College Board on the web: collegeboard.org.
+
+                                                            9
+AP® Chemistry 2024 Free-Response Questions
+
+
+
+                             Continue your response to QUESTION 2 on this page.
+
+         (iii) When the reaction is complete, will the volume of CO 2( g) at the end of the second experiment be
+               greater than, less than, or equal to the volume at the end of the first experiment? Justify your answer.
+
+
+
+
+ The student conducts additional trials of the experiment and produces the following data table.
+
+
+
+                             Mass of H2 C4 H2 O4 Mass of NaHCO 3 Moles of CO 2 Produced
+                     Trial        (grams)            (grams)              (mol)
+
+                       3           1.543                  1.251                  0.01489
+
+                       4           1.543                 1.686                   0.02007
+
+
+
+ (c) Based on the student’s data, identify the limiting reactant in trial 3. Justify your answer.
+
+
+
+
+ (d) The reaction has a value of ΔS° greater than zero. Using particle-level reasoning, explain why the entropy
+     increases as the reaction progresses.
+
+
+
+
+                                                                                    GO ON TO THE NEXT PAGE.
+
+
+                                               © 2024 College Board.
+                                 Visit College Board on the web: collegeboard.org.
+
+                                                          10
+AP® Chemistry 2024 Free-Response Questions
+
+
+
+                         Continue your response to QUESTION 2 on this page.
+
+The student notices that the temperature of the reaction mixture decreases as the reaction takes place and correctly
+determines that the reaction is endothermic.
+                                                                                                       
+(e) The student claims that the reaction is thermodynamically favorable at all temperatures because ΔSrxn > 0 and
+    the reaction is endothermic. Do you agree or disagree with the student’s claim? Justify your answer.
+
+
+
+
+Next, the student investigates the acid-base behavior of maleic acid. The student notes that maleic acid is a
+diprotic acid. The two acid dissociation processes that occur are represented by the following equations.
+
+                      H2 C4 H2 O4 + H2 O  HC4 H2 O4− + H3 O+               K a1 = 1.5 ¥ 10− 2
+                      HC4 H2 O4− + H2 O  C4 H2 O4 2 − + H3 O+              K a 2 = 8.5 ¥ 10− 7
+
+(f) Calculate the pK a 2 value for the HC4 H2 O4− ion.
+
+
+
+
+(g) A buffer solution with a pH of 7.00 is prepared using C4 H2 O4 2− and HC4 H2 O4−. Calculate the ratio
+
+   [C4 H2 O4 2 −]
+                  in this solution.
+   [HC4 H2 O4−]
+
+
+
+
+                                                                                GO ON TO THE NEXT PAGE.
+
+
+                                              © 2024 College Board.
+                                Visit College Board on the web: collegeboard.org.
+
+                                                         11
+ AP® Chemistry 2024 Free-Response Questions
+
+
+
+                                  Begin your response to QUESTION 3 on this page.
+
+3. Sterling silver is an alloy that is commonly used to make jewelry and consists of 92.5% silver and 7.5% other
+  metals, such as copper, by mass. Over time, the alloy can form a tarnish of Ag2 S(s) when it reacts with hydrogen
+  sulfide, as represented by the following equation.
+
+                                         2 Ag(s) + H2 S( g) → Ag2 S(s) + H2( g)
+
+  (a) What are the oxidation numbers of silver in Ag(s) and Ag2 S(s) ?
+
+
+                                           Ag(s)___________ Ag2 S(s)____________
+
+
+  (b) The following table contains the atomic radii for silver and copper.
+
+
+                                    Element                 Silver (Ag ) Copper (Cu )
+
+                                    Atomic radius (pm )          165          145
+
+
+          (i) Explain why sterling silver is better classified as a substitutional alloy than as an interstitial alloy.
+
+
+
+
+          (ii) Using principles of atomic structure and Coulomb’s law, explain why silver has a larger atomic radius
+               than copper does.
+
+
+
+
+                                                                                      GO ON TO THE NEXT PAGE.
+
+
+                                                © 2024 College Board.
+                                  Visit College Board on the web: collegeboard.org.
+
+                                                            12
+AP® Chemistry 2024 Free-Response Questions
+
+
+
+                           Continue your response to QUESTION 3 on this page.
+
+The Ag2 S tarnish on sterling silver can be removed until only sterling silver remains. A student weighs a
+tarnished sterling silver sample both before and after removing the Ag2 S(s) (molar mass 247.80 g / mol) and
+records the data in the following table.
+
+
+                                     Before Tarnish Removal After Tarnish Removal
+
+                              Mass           409.21 g                    398.94 g
+
+
+
+(c) Assuming that only Ag2 S(s) is removed, calculate the number of moles of silver atoms removed.
+
+
+
+
+Rhodium plating is a process used to protect sterling silver from tarnishing. This involves electroplating
+(depositing) solid rhodium, Rh(s), onto the surface of the metal from an acidified solution of Rh2(SO4)3 (aq).
+Oxygen gas is produced during this process.
+
+(d) A table of half-reactions related to the overall reaction is provided.
+
+
+                                               Half-Reaction                    E ° (V)
+
+                              Rh3 +(aq) + 3 e− → Rh(s)                          + 0.80
+
+                              O 2( g) + 4 H +(aq) + 4 e− → 2 H2 O(l)            + 1.23
+
+
+
+        (i) Write the balanced net ionic equation for plating Rh(s) from the acidified Rh2(SO4)3 (aq) solution.
+
+
+
+
+                                     
+        (ii) Calculate the value of Ecell for the reaction in part (d)(i).
+
+
+
+
+                                                                                    GO ON TO THE NEXT PAGE.
+
+
+                                                © 2024 College Board.
+                                  Visit College Board on the web: collegeboard.org.
+
+                                                            13
+AP® Chemistry 2024 Free-Response Questions
+
+
+
+                           Continue your response to QUESTION 3 on this page.
+
+         (iii) Based on your answer to part (d)(ii), explain why this process requires the use of an external power
+               source.
+
+
+
+
+ (e) Calculate the length of time, in seconds, required to plate 2.8 g of Rh(s) onto a piece of sterling silver if
+     2.0 C / s of current is applied.
+
+
+
+
+                                                                                   GO ON TO THE NEXT PAGE.
+
+
+                                              © 2024 College Board.
+                                Visit College Board on the web: collegeboard.org.
+
+                                                          14
+   AP® Chemistry 2024 Free-Response Questions
+
+
+                                 Begin your response to QUESTION 4 on this page.
+
+4. A student performs an experiment to determine the specific heat capacity of a metal. The student places a cube of
+   the metal in boiling water so its temperature will be 100.0°C . The student then places the metal cube into a
+   calorimeter that contains water and records the highest temperature of the water. A data table and a diagram of the
+   thermometer at the highest temperature are shown.
+
+
+
+
+  (a) What should the student report as the highest temperature of the water?    _____________
+
+
+
+  (b) A particle-level representation of water molecules in the calorimeter before and after the metal cube was added
+      is shown. The length of the arrows in the Before diagram represents the speed of the water molecules in the
+      system. In the After diagram, draw an arrow for each molecule to indicate how the speed of each of the
+      molecules changes after the metal cube is added.
+
+
+
+
+                                                                                  GO ON TO THE NEXT PAGE.
+
+
+                                                 © 2024 College Board.
+                                   Visit College Board on the web: collegeboard.org.
+
+                                                           15
+AP® Chemistry 2024 Free-Response Questions
+
+
+
+                          Continue your response to QUESTION 4 on this page.
+
+ (c) Assuming the metal transfers 2940 J of thermal energy to the water, calculate the specific heat of the metal in
+     J/(g·°C) .
+
+
+
+
+ (d) In a second experiment, 2940 J of thermal energy is transferred from 98.1 g of aluminum, which has a
+     specific heat capacity of 0.897 J / ( g·° C). Explain how the magnitude of the temperature change of the
+     aluminum, ΔTAl, compares with the magnitude of the temperature change of the metal in the original
+     experiment.
+
+
+
+
+                                                                                GO ON TO THE NEXT PAGE.
+
+
+                                             © 2024 College Board.
+                               Visit College Board on the web: collegeboard.org.
+
+                                                        16
+   AP® Chemistry 2024 Free-Response Questions
+
+
+                                 Begin your response to QUESTION 5 on this page.
+
+5. Hydrogen gas and iodine gas react to form hydrogen iodide at an elevated temperature, as represented by the
+   following equation.
+                              H2( g) + I2( g)  2 HI( g)          ΔHrxn = −12.19 kJ / molrxn
+
+  (a) Write the expression for the equilibrium constant, Kc , for this reaction.
+
+
+
+
+  (b) H2( g) and I2( g) are added to a previously evacuated container and allowed to react.
+          (i) At a certain time, the value of the reaction quotient, Q , is 0.67. The following particle diagram is an
+              incomplete representation of the system at this time. The diagram shows the relative number of H2( g)
+              and I2( g) molecules, but the HI( g) molecules are not included. Draw the number of HI( g) molecules
+              needed to complete the diagram so that it accurately represents the system.
+
+
+
+
+                                                                                   GO ON TO THE NEXT PAGE.
+
+
+                                                 © 2024 College Board.
+                                   Visit College Board on the web: collegeboard.org.
+
+                                                             17
+AP® Chemistry 2024 Free-Response Questions
+
+
+
+                         Continue your response to QUESTION 5 on this page.
+
+
+        (ii) A student monitors the number of moles of HI( g) over time. Hypothesize an experimental change that
+             could have been applied to the system in the rigid container at time t to result in the change in the
+             number of moles of HI( g) shown in the graph. Assume that the student did not add more HI( g) to the
+             system.
+
+
+
+
+        (iii) After equilibrium is established, the mixture is transferred to a larger container at constant
+              temperature. As a result, would the number of moles of HI( g) increase, decrease, or remain the same?
+              Justify your answer.
+
+
+
+
+                                                                              GO ON TO THE NEXT PAGE.
+
+
+                                            © 2024 College Board.
+                              Visit College Board on the web: collegeboard.org.
+
+                                                      18
+  AP® Chemistry 2024 Free-Response Questions
+
+
+                               Begin your response to QUESTION 6 on this page.
+
+6. At elevated temperatures, NO 2 undergoes decomposition in the gas phase, forming NO and O 2 as represented by
+   the following equation.
+                                                 2 NO 2 → 2 NO + O 2
+
+  A scientist measures the change in [NO 2] over the first 100. s of the reaction at 546°C. The scientist uses the data
+  collected from the experiment to generate the following two graphs.
+
+
+
+
+  Based on these data, the scientist makes the claim that the rate law for the reaction is rate = k[NO 2]2.
+
+  (a) Explain how the graphs indicate that the reaction is second order with respect to NO 2.
+
+
+
+
+  (b) At a certain point in the reaction, the rate of disappearance of NO 2 is determined to be 6.52 ¥ 10− 7 M /s .
+      Determine the rate of appearance, in M /s, of O 2 at this same point in the reaction.
+
+
+
+
+                                                                                   GO ON TO THE NEXT PAGE.
+
+
+                                                 © 2024 College Board.
+                                   Visit College Board on the web: collegeboard.org.
+
+                                                            19
+AP® Chemistry 2024 Free-Response Questions
+
+
+
+                           Continue your response to QUESTION 6 on this page.
+
+ (c) NO 2 is a molecule that contains an odd number of electrons and can be oxidized to form the NO 2 + ion. In
+    NO 2, the unpaired electron is presumed to be localized on the nitrogen atom, as shown in the Lewis diagram in
+    the box on the left.
+
+
+
+
+        (i) In the box on the right, complete the Lewis diagram for NO 2 + . Be sure to show all bonding and
+           nonbonding electrons.
+
+
+        (ii) A student makes the claim that the bond angles in NO 2 and NO 2 + are different from each other. Do
+            you agree or disagree with the student’s claim? Justify your answer.
+
+
+
+
+                                                                               GO ON TO THE NEXT PAGE.
+
+
+                                             © 2024 College Board.
+                               Visit College Board on the web: collegeboard.org.
+
+                                                       20
+  AP® Chemistry 2024 Free-Response Questions
+
+
+                               Begin your response to QUESTION 7 on this page.
+
+7. A student conducts a chromatography experiment and needs to prepare 100.0 mL of 0.340 M NaCl(aq) to use as
+   the solvent.
+
+  (a) Calculate the mass of solid NaCl (molar mass 58.44 g/ mol ) needed to prepare the 100.0 mL of
+      0.340 M NaCl(aq).
+
+
+
+
+  (b) In the following table, briefly list the additional steps necessary to prepare the 100.0 mL of 0.340 M
+      NaCl(aq) solution using only materials selected from the choices given. Assume that all appropriate safety
+      measures are already in place. Not all materials in the list may be needed.
+
+
+             • Solid NaCl        • Distilled water                  • Weighing paper and scoop
+
+             • Balance           • 100.0 mL volumetric flask        • 50.0 mL graduated cylinder
+
+             • Pipet             • 150 mL beakers                   • Chromatography paper
+
+
+
+    Step                                    Step Description and Materials Used
+
+     1.    Use the weighing paper and scoop to measure the correct mass of solid NaCl on the balance.
+
+
+
+     2.
+
+
+
+     3.    Swirl the mixture to dissolve the solid NaCl .
+
+
+
+     4.
+
+
+
+     5.    Stopper and invert the mixture several times to ensure that the mixture is homogeneous.
+
+
+                                                                                  GO ON TO THE NEXT PAGE.
+
+
+                                                © 2024 College Board.
+                                  Visit College Board on the web: collegeboard.org.
+
+                                                            21
+AP® Chemistry 2024 Free-Response Questions
+
+
+
+                          Continue your response to QUESTION 7 on this page.
+
+ The student uses the NaCl(aq) solvent to separate a mixture of compounds X and Y in a chromatography
+ experiment. After 30 minutes, the student removes the chromatography paper from the chamber. The results of the
+ experiment are shown.
+
+
+
+
+ (c) A second student conducts the same chromatography experiment but removes the chromatography paper from
+     the chamber after 15 minutes instead of 30 minutes. Predict the effect, if any, this would have on the separation
+     distance between compounds X and Y in the new experiment. Explain your reasoning.
+
+
+
+
+                                                         STOP
+
+
+                                                    END OF EXAM
+
+
+
+
+                                              © 2024 College Board.
+                                Visit College Board on the web: collegeboard.org.
+
+                                                        22
+
