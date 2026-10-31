@@ -93,6 +93,7 @@ select.diff.d1{color:#14703f}select.diff.d2{color:#2a6f97}select.diff.d3{color:#
 .filters .src{align-self:center}
 @media(max-width:900px){.layout{grid-template-columns:1fr}#side{display:none;position:static;max-height:60vh}#side.open{display:block}.mobile{display:inline-block}.card.wide{grid-column:auto}.bar{flex-wrap:wrap;gap:8px}.brand{width:100%}.search{order:2;flex:1 1 100%}.bar .btn,.bar .menu{order:3}.seg{max-width:100%;overflow-x:auto}.seg button{padding:7px 10px;font-size:13px}.filters{gap:8px}html{scroll-padding-top:200px}}
 @media(prefers-reduced-motion:no-preference){.card{transition:border-color .15s}.card:hover{border-color:var(--acc)}}
+/*__WS_CSS__*/
 </style>
 </head>
 <body>
@@ -102,6 +103,7 @@ select.diff.d1{color:#14703f}select.diff.d2{color:#2a6f97}select.diff.d3{color:#
     <div class="search"><input id="q" type="search" placeholder="Search questions, molecules, simulations  (press / to focus)" aria-label="Search"><button id="clearQ" aria-label="Clear search">&times;</button></div>
     <button class="btn mobile" id="topicsToggle">Topics</button>
     <details class="menu" id="dlmenu"><summary class="btn primary">Download Word docs</summary><div class="pop" id="docs"></div></details>
+    <button class="btn" id="wsBtn" title="Collect questions into a worksheet or test, arrange them, edit them and export to PDF or Word">Worksheet <span class="badgeN" id="wsN" hidden>0</span></button>
     <button class="btn" id="editsBtn">Edits<span class="badgeN" id="editsN" hidden>0</span></button>
   </div>
   <div class="filters">
@@ -195,10 +197,10 @@ function card(d){
     h=head+`<h3>${esc(d.n)}</h3>`+(d.sub?`<div class="sub">${esc(d.sub)}</div>`:'')+`<div class="body">${esc(val(d,bodyKey(d)))}</div>`+(d.im?`<img loading="lazy" src="${esc(d.im)}" alt="">`:'');
     if(mc){const op=val(d,'options'),imgs=d.o.some(o=>o.t==='img');wide=imgs;
       h+=`<div class="opts ${imgs?'grid2':''}">`+d.o.map((o,i)=>{const L='ABCD'[i],right=show&&L===d.oa;
-        return `<div class="opt ${right?'right':''}"><b>${L})</b>${o.t==='img'?`<img loading="lazy" src="${esc(o.v)}" alt="Choice ${L}">`:`<span>${esc(op&&op[i]!=null?op[i]:o.v)}</span>`}</div>`}).join('')+'</div>'}
+        return `<div class="opt ${right?'right':''}">${o.t==='img'?'':`<b>${L})</b>`}${o.t==='img'?`<img loading="lazy" src="${esc(o.v)}" alt="Choice ${L}">`:`<span>${esc(op&&op[i]!=null?op[i]:o.v)}</span>`}</div>`}).join('')+'</div>'}
     h+=secChips(d);
     if(isEd){h+=editForm(d)}
-    else{h+=`<div class="actions"><button class="btn small" data-ans="${d.id}">${show?'Hide answer':'Show answer'}</button>${d.ed?`<button class="btn small" data-edit="${d.id}">Edit wording</button>`:''}</div>`;
+    else{h+=`<div class="actions"><button class="btn small" data-ans="${d.id}">${show?'Hide answer':'Show answer'}</button>${d.ed?`<button class="btn small" data-edit="${d.id}">Edit wording</button>`:''}${WS.btn(d)}</div>`;
       if(show){h+='<div class="panel">'+(mc?`<div class="ans">Answer: ${d.oa}</div>`:`<div class="ans">${esc(val(d,'answer'))}</div>`)+(d.am?`<img loading="lazy" src="${esc(d.am)}" alt="">`:'')+`<div>${esc(val(d,mc?'why':'explanation'))}</div>`+(d.m.Source?`<div class="src">Source: ${esc(d.m.Source)}</div>`:'')+'</div>'}}
   }else if(d.k==='molecule'){
     h=head+`<h3>${esc(d.n)}</h3><div class="sub">${esc(d.sub)}</div>`+`<img loading="lazy" src="${esc(d.im)}" alt="${esc(d.n)}">`+secChips(d)+
@@ -272,6 +274,7 @@ $('#cp').onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(payload
 $('#clr').onclick=()=>{if(confirm('Discard all pending edits in this browser?')){edits={};saveEdits();$('#dlg').close();render()}};
 $('#close').onclick=()=>$('#dlg').close();
 $('#docs').innerHTML='<div class="dlh">Organic chemistry: one set per chapter</div>'+DOCS.filter(d=>d.g).map(d=>`<div class="dlrow"><span>${esc(d.n)}</span><a href="${esc(d.q)}" download>Questions</a><a href="${esc(d.k)}" download>Answer key</a></div>`).join('')+'<div class="dlh">Other downloads</div>'+DOCS.filter(d=>!d.g).map(d=>`<a class="dlone" href="${esc(d.q)}" download>${esc(d.n)}</a>`).join('');
+//__WS_JS__
 readHash();render();
 </script>
 </body>
