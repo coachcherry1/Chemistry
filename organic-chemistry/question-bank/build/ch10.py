@@ -95,7 +95,7 @@ def build(b):
     b.fr('10.7', 4, 'Outline the mechanism of allylic bromination of cyclohexene with NBS: name the two propagation steps.', 'Br• abstracts an allylic hydrogen to give a resonance-stabilised allylic radical and HBr; the radical abstracts a Br from Br₂ to give 3-bromocyclohexene and Br•.', 'Hydrogen abstraction then halogen abstraction.')
     b.fr('10.8', 1, 'What are CFCs, and what problem did they cause?', 'Chlorofluorocarbons; they release chlorine radicals in the stratosphere that destroy the ozone layer.', 'Ozone depletion.')
     b.fr('10.8', 2, 'Why were HFCs introduced as replacements for CFCs?', 'HFCs contain no chlorine, so they do not generate chlorine radicals that destroy ozone.', 'No chlorine.')
-    b.fr('10.9', 1, 'What is autooxidation?', 'A radical chain reaction of organic compounds with atmospheric oxygen that forms hydroperoxides.', 'Spontaneous oxidation by O₂.')
+    b.fr('10.9', 1, 'What is autooxidation?', 'A radical chain reaction of organic compounds with atmospheric oxygen that forms hydroperoxides.', 'Oxidation by O₂ in air.')
     b.fr('10.9', 2, 'Explain how BHT preserves foods.', 'BHT is a radical scavenger: it donates a hydrogen atom to peroxy radicals, forming a stable radical that does not continue the chain.', 'Radical trap.')
     b.fr('10.9', 3, 'Name two natural antioxidants.', 'Vitamin E and vitamin C.', 'Protect cell membranes.')
     b.fr('10.10', 1, 'What conditions cause HBr to add to an alkene in an anti-Markovnikov sense?', 'HBr with peroxides (ROOR) or light.', 'Radical mechanism.')
