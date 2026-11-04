@@ -281,7 +281,7 @@ const files = [];
   }
 })(root);
 const DASH = new RegExp(String.fromCharCode(0x2014));
-const BANNED = [/spontane/i, /reversible/i, /\u21cc/, /rate equation/i, /rate constant/i, /\b(first|second|third)[- ]order\b/i, /Hammond/i, /catalys/i, /\bacceptor\b/i];
+const BANNED = [/spontane/i, /reversible/i, /Lewis (acid|base)/i, /hyperconjugation/i, /\u21cc/, /rate equation/i, /rate constant/i, /\b(first|second|third)[- ]order\b/i, /Hammond/i, /catalys/i, /\bacceptor\b/i];
 for (const f of files) {
   const text = fs.readFileSync(f, 'utf8');
   text.split('\n').forEach((line, i) => {

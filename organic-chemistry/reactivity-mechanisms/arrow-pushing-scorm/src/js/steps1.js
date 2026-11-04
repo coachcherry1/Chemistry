@@ -578,16 +578,16 @@
       var cw = Chem.charge(st, 'C');
       void cw;
       return U.panel(sc.title, part.C === '+' ? 'the carbon is electron-poor' : 'the carbon is electron-rich', [h('div', { class: 'mol-wrap' }, [svg]),
-        h('p', { class: 'muted', text: part.C === '+' ? 'δ+ carbon: an electrophile ("electron lover"), a Lewis acid. It can accept a pair of electrons.'
-                                                     : 'δ− carbon: a nucleophile ("nucleus lover"), a Lewis base. It can give a pair of electrons.' })]);
+        h('p', { class: 'muted', text: part.C === '+' ? 'δ+ carbon: an electrophile ("electron lover"). It can accept a pair of electrons.'
+                                                     : 'δ− carbon: a nucleophile ("nucleus lover"). It can give a pair of electrons.' })]);
     }
     function paint() {
       area.innerHTML = '';
       if (pr.p == null) return;
       area.appendChild(h('div', { class: 'grid2' }, [card('ch3cl'), card('ch3li')]));
       area.appendChild(U.panel('The two players', null, [h('ul', { class: 'keylist' }, [
-        h('li', { text: 'A nucleophile is electron-rich and gives a pair of electrons: a Lewis base. Nucleophiles are attracted to positive charge.' }),
-        h('li', { text: 'An electrophile is electron-poor and accepts a pair of electrons: a Lewis acid. Electrophiles are attracted to negative charge.' }),
+        h('li', { text: 'A nucleophile is electron-rich and gives a pair of electrons. Nucleophiles are attracted to positive charge.' }),
+        h('li', { text: 'An electrophile is electron-poor and accepts a pair of electrons. Electrophiles are attracted to negative charge.' }),
         h('li', { text: 'Ionic (polar) reactions, about 95% of the reactions in this course, happen when the two meet. Being able to spot them is the skill behind every mechanism.' })
       ])]));
     }

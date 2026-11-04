@@ -1024,3 +1024,10 @@ path.hole { fill: var(--bg); stroke: var(--muted); stroke-width: 2; }
 .fig-name { font-size: 0.72rem; font-weight: 700; color: var(--muted); line-height: 1.2; max-width: 96px; }
 .fig-step.done .fig-name { color: var(--accent); }
 .fig-arrow { font-size: 1.6rem; line-height: 1; color: var(--muted); }
+
+/* induction: alkyl groups push electron density toward a C⁺ */
+.ind-arrow { stroke: var(--accent); stroke-width: 2; }
+.ind-head { fill: var(--accent); }
+.drift { fill: var(--red); animation: drift 2.2s ease-in infinite; }
+@keyframes drift { 0% { transform: translate(0, 0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .drift { animation: none; opacity: 0.8; } }
