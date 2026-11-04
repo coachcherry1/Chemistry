@@ -314,11 +314,11 @@ not the full page.
   strongest first, predict each `[prop, most]`, then run the liquid bench (drop on plastic, pipet draining, drop left
   out). Reduced motion shows a still partway through with the order in words.
 
-## arrow-pushing-scorm (branch `claude/charming-gauss-ear0ac`, zip v1, SCHEMA 2)
+## arrow-pushing-scorm (branch `claude/charming-gauss-ear0ac`, zip v1, SCHEMA 3)
 
 - **Key objective:** recognise and draw Klein's four patterns (6.8): nucleophilic attack, loss of a leaving group,
   proton transfer, carbocation rearrangement; vocabulary adoption. Comes before `substitution-elimination-scorm/`.
-- 24 steps in 4 parts; 18 graded questions (4+4+5+5) from a pool of 57. Energy words beside checkpoint 1, Klein Table
+- 24 steps in 4 parts; 18 graded questions (4+4+5+5) from a pool of 56. Energy words beside checkpoint 1, Klein Table
   6.3 (and the four patterns) beside 2 to 4. Every checkpoint's core has a vocabulary question; checkpoints 3 and 4
   each have a **graded arrow drawing** (first Check counts; Check with nothing drawn is not an answer) and a
   pattern or sequence question (pick groups in `quiz.js`).
@@ -326,7 +326,8 @@ not the full page.
   thermodynamically favorable; ΔG kept; exergonic and endergonic used. No ΔH calculated, but "bond breaking is
   endothermic, bond making is exothermic" everywhere (energy ledger beside every animation). Kinetics left out except
   Eₐ as a hill and peaks/valleys: no rate equations, orders, rate constants, catalysts, Hammond. No reversible or
-  irreversible arrows (Klein 6.12 was removed at the teacher's request). The validator bans those words and ⇌ in `src/`. Table 6.1 values only as bar heights, never added up.
+  irreversible arrows (Klein 6.12 was removed at the teacher's request). No "Lewis acid"/"Lewis base" and no hyperconjugation (not taught in the course): carbocation
+  stability is alkyl groups being electron-donating, by induction. The validator bans all of those words and ⇌ in `src/`. Table 6.1 values only as bar heights, never added up.
 - **One model:** `chem.js` states (atoms with hidden H and lone pairs, bonds; charges computed) and `apply()` moving one
   pair per arrow with Klein's rules (6.10); `classify()` names a step from the bonds that change. `scenes.js` writes each
   step once (Klein's drawing, coordinates, arrows); the product is what the arrows make, checked against SMILES and

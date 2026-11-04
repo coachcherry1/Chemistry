@@ -21,7 +21,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a scene changes: a save
      from an older build is then discarded and the student starts fresh. */
-  var SCHEMA = 2;
+  var SCHEMA = 3;
 
   var PARTS = [
     { n: 1, name: 'Energy and bonds' },
@@ -668,10 +668,10 @@ var App = (function () {
     'Bond breaking is endothermic (energy in) and bond making is exothermic (energy out). A step goes uphill or downhill depending on which wins.',
     'A reaction with ΔG < 0 is exergonic and thermodynamically favorable (K > 1); with ΔG > 0 it is endergonic and not thermodynamically favorable.',
     'On an energy diagram every peak is a transition state (partial bonds, never isolated) and every valley between peaks is an intermediate.',
-    'Ionic reactions: an electron-rich nucleophile (a Lewis base) gives a pair of electrons to an electron-poor electrophile (a Lewis acid).',
+    'Ionic reactions: an electron-rich nucleophile gives a pair of electrons to an electron-poor electrophile.',
     'A curved arrow moves one pair of electrons: the tail on a lone pair or a bond, never on a positive charge; the head on a new bond or a new lone pair; never a fifth bond to C, N or O.',
     'Every ionic mechanism combines four patterns: nucleophilic attack, loss of a leaving group, proton transfer and carbocation rearrangement.',
-    'A carbocation rearranges (hydride or methyl shift) only when that makes a more stable carbocation: 3° > 2° > 1° > methyl, by hyperconjugation.',
+    'A carbocation rearranges (hydride or methyl shift) only when that makes a more stable carbocation: 3° > 2° > 1° > methyl, because alkyl groups are electron-donating.',
     'Two patterns in one step make a concerted step. Every mechanism is a sequence of the four patterns.'
   ];
 
@@ -738,11 +738,11 @@ var App = (function () {
     ['Transition state', 'A peak on an energy diagram: bonds partly broken and partly formed. It cannot be isolated. Drawn in brackets with ‡.'],
     ['Intermediate', 'A valley between peaks: a real species with a short lifetime, such as a carbocation.'],
     ['Ionic (polar) reaction', 'A reaction in which an electron-rich site meets an electron-poor one, through ions or polar bonds.'],
-    ['Nucleophile', '“Nucleus lover”: electron-rich, gives a pair of electrons. A Lewis base.'],
-    ['Electrophile', '“Electron lover”: electron-poor, accepts a pair of electrons. A Lewis acid.'],
+    ['Nucleophile', '“Nucleus lover”: electron-rich, gives a pair of electrons.'],
+    ['Electrophile', '“Electron lover”: electron-poor, accepts a pair of electrons.'],
     ['Polarizability', 'How easily an atom’s electron cloud shifts. Large atoms (I, S) are polarizable: strong nucleophiles.'],
     ['Carbocation', 'A carbon with three bonds, a positive charge and an empty p orbital. 3° > 2° > 1° > methyl.'],
-    ['Hyperconjugation', 'A neighbouring C–H or C–C bond sharing electron density with the empty p orbital of a carbocation.'],
+    ['Electron-donating group', 'A group that pushes electron density toward the atom it is bonded to, by induction. Alkyl groups are electron-donating, so each one on a C⁺ stabilizes it.'],
     ['Curved arrow', 'Moves one pair of electrons: tail on a lone pair or a bond, head on a new bond or lone pair.'],
     ['Fish-hook arrow', 'A curved arrow with half a head: moves one electron.'],
     ['Mechanism', 'The steps of a reaction, drawn with curved arrows.'],
