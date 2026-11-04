@@ -30,12 +30,16 @@ var MOLECULES = (function () {
   var G = GEOM;
   var S2 = Math.sqrt(2 / 3), C2 = Math.sqrt(1 / 3);
 
-  /* Template slot directions. */
+  /* Template slot directions. A is Klein's layout (the wedge and dash on top,
+     two bonds in the page below), V the same upside down, and S sideways
+     (two bonds in the page on the left, the wedge and dash to the right), as
+     on the teacher's worksheets. */
   var TEMPLATES = {
     V: { ul: [-S2, C2, 0], ur: [S2, C2, 0], w: [0, -C2, S2], d: [0, -C2, -S2] },
-    A: { ll: [-S2, -C2, 0], lr: [S2, -C2, 0], w: [0, C2, S2], d: [0, C2, -S2] }
+    A: { ll: [-S2, -C2, 0], lr: [S2, -C2, 0], w: [0, C2, S2], d: [0, C2, -S2] },
+    S: { lu: [-C2, S2, 0], ld: [-C2, -S2, 0], w: [C2, 0, S2], d: [C2, 0, -S2] }
   };
-  var SLOT_ORDER = { V: ['ul', 'ur', 'w', 'd'], A: ['ll', 'lr', 'w', 'd'] };
+  var SLOT_ORDER = { V: ['ul', 'ur', 'w', 'd'], A: ['ll', 'lr', 'w', 'd'], S: ['lu', 'ld', 'w', 'd'] };
 
   var M = {};
 
@@ -76,8 +80,8 @@ var MOLECULES = (function () {
   def('bromobutane', { name: '2-Bromobutane', chain: { first: 2, n: 2, ends: ['CH3', 'CH3'],
     subs: { 2: { w: 'Br', d: 'H' } } }, note: 'drawn as in the Newman activity' });
   def('butanol_S', { name: '2-Butanol', centre: { tpl: 'V', ul: 'CH3', ur: 'Et', w: 'OH', d: 'H' } });
-  def('alanine_w', { name: 'Alanine', centre: { tpl: 'V', ul: 'COOH', ur: 'CH3', w: 'H', d: 'NH2' } });
-  def('bcfe_plane', { name: '1-Bromo-1-chloro-1-fluoroethane', formula: 'CBrClF–CH₃', centre: { tpl: 'A', ll: 'CH3', lr: 'Br', w: 'Cl', d: 'F' } });
+  def('alanine_w', { name: 'Alanine', centre: { tpl: 'A', ll: 'CH3', lr: 'COOH', w: 'H', d: 'NH2' } });
+  def('bcfe_plane', { name: '1-Bromo-1-chloro-1-fluoroethane', formula: 'CBrClF–CH₃', centre: { tpl: 'S', lu: 'CH3', ld: 'Br', w: 'Cl', d: 'F' } });
   def('butanol_hidden', { name: '2-Butanol', chain: { n: 4, subs: { 2: { d: 'OH' } } } });
   def('butanol_R', { name: '2-Butanol', centre: { tpl: 'V', ul: 'Et', ur: 'CH3', w: 'OH', d: 'H' } });
   def('lactic_w', { name: 'Lactic acid', centre: { tpl: 'A', ll: 'COOH', lr: 'CH3', w: 'H', d: 'OH' } });

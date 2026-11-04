@@ -91,9 +91,24 @@ var STEREO = (function () {
   var INPAGE = G.rot([0, 0, 1], 180);            /* half a turn in the page */
   var CHAIN_TURNS = [I, OVER, UPSIDE, INPAGE];
 
-  /* Every orientation a molecule can be drawn in. */
+  /* A quarter turn on the spear (between the two bonds in the page) takes a
+     template's four directions onto its partner's: A onto V and back (the
+     spear is vertical), S onto S drawn the other way round (the spear comes
+     from the side). */
+  var DUAL = { A: [0, 1, 0], V: [0, 1, 0], S: [1, 0, 0] };
+
+  /* Every orientation a molecule can be drawn in: for one centre, the twelve
+     turns of its template, then the twelve that draw it in the partner
+     template (so turn indices 0 to 11 are the template's own). */
+  var orientCache = {};
   function orientations(m) {
-    if (m.kind === 'centre') return turns(m.tpl).map(function (t) { return t.R; });
+    if (m.kind === 'centre') {
+      if (!orientCache[m.tpl]) {
+        var own = turns(m.tpl).map(function (t) { return t.R; }), Q = G.rot(DUAL[m.tpl], 90);
+        orientCache[m.tpl] = own.concat(own.map(function (R) { return G.mmul(Q, R); }));
+      }
+      return orientCache[m.tpl];
+    }
     if (m.kind === 'chain') return CHAIN_TURNS;
     return [I];
   }
@@ -114,6 +129,54 @@ var STEREO = (function () {
   function spin(m, R, slot) {
     var T = MOLECULES.TEMPLATES[m.tpl];
     return G.mmul(G.rot(T[slot], 120), R);
+  }
+
+  /* ---- Klein's spears */
+
+  /* The spears a drawing can be turned on, as the model now lies, at centre c
+     (a zigzag may be speared at another point, `at`). The teacher's way, and
+     Klein's: spear the molecule through the carbon, then rotate it about the
+     spear, so the drawing can still be drawn afterwards.
+       one centre  one spear through the carbon, between the two bonds in the
+                   page (and between the wedge and the dash): vertical in
+                   Klein's layout, from the side in a sideways drawing.
+                   180°: the two groups in the page trade sides, the wedge
+                   goes back to the dash and the dash comes forward (4 on the
+                   wedge). 90°: the two groups in the page go out of the page
+                   and the wedge and dash come into it, turned the way that
+                   carries 4 to the dash when 4 is in the page.
+       a zigzag    the page's up–down line through its middle, 180°, and the
+                   page's left–right line (the side spear), 180°.
+     Each spear: { id, group, kind ('vertical' or 'side'), part ('front',
+     'back' or 'all': which end of the shaft carries its arrow), at, axis
+     (unit, page coordinates), deg }: a turn of deg about axis through at;
+     deg's sign is the way the curved arrow points (right-handed). */
+  function spears(m, c, at) {
+    var p = at || m.atoms[c].p;
+    if (m.kind === 'chain') {
+      return [{ id: 'v180', group: 'v', kind: 'vertical', part: 'all', at: p, axis: [0, 1, 0], deg: 180 },
+              { id: 'h180', group: 'h', kind: 'side', part: 'all', at: p, axis: [1, 0, 0], deg: 180 }];
+    }
+    if (m.kind !== 'centre') return [];
+    var cp = m.atoms[c].p;
+    var inPage = MOLECULES.neighbours(m)[c].filter(function (x) { return bondStyle(cp, m.atoms[x.j].p) === 'plain'; });
+    var b = inPage.reduce(function (s, x) { return G.add(s, G.unit(G.sub(m.atoms[x.j].p, cp))); }, [0, 0, 0]);
+    var side = inPage.length === 2 && Math.abs(b[0]) > Math.abs(b[1]);
+    var axis = side ? [1, 0, 0] : [0, 1, 0], g = side ? 's' : 'v', kind = side ? 'side' : 'vertical';
+    var four = CIP.rank(m, c).order[3], q = 90;
+    if (bondStyle(cp, m.atoms[four].p) === 'plain' && G.mvec(G.rot(axis, 90), G.sub(m.atoms[four].p, cp))[2] > -0.3) q = -90;
+    return [{ id: g + '180', group: g, kind: kind, part: 'front', at: cp, axis: axis, deg: 180 },
+            { id: g + '90', group: g, kind: kind, part: 'back', at: cp, axis: axis, deg: q }];
+  }
+
+  /* The turn a spear makes (a linear map about its own axis). */
+  function spearTurn(s, deg) { return G.rot(s.axis, deg == null ? s.deg : deg); }
+
+  /* Model m turned on spear s (by deg, default all the way), about the spear
+     itself rather than the pivot: the speared carbon stays where it is. */
+  function speared(m, s, deg) {
+    var L = spearTurn(s, deg);
+    return MOLECULES.transformed(m, function (q) { return G.add(s.at, G.mvec(L, G.sub(q, s.at))); });
   }
 
   /* ---- applying a turn or a reflection */
@@ -508,6 +571,6 @@ var STEREO = (function () {
     superimposable: superimposable, geometric: geometric, matchCount: matchCount, mismatched: mismatched,
     twisted: twisted, subDihedral: subDihedral, symmetricIn: symmetricIn, mesoPlane: mesoPlane,
     centrePlane: centrePlane, ringPlane: ringPlane, permutations: permutations, side: side,
-    halves: halves, facing: facing, eclipsedNear: eclipsedNear
+    halves: halves, facing: facing, eclipsedNear: eclipsedNear, spears: spears, spearTurn: spearTurn, speared: speared
   };
 })();
