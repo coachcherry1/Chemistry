@@ -493,16 +493,8 @@ var React = (function () {
       out.bonds[k].order = 2;
       if (Mol.isStereoAlkene(out, k)) {
         /* larger groups trans: E1 is stereoselective */
-        var ga = out.nb(c).filter(function (y) { return y.j !== x.j; }).map(function (y) { return y.j; });
-        var gb = out.nb(x.j).filter(function (y) { return y.j !== c; }).map(function (y) { return y.j; });
-        while (ga.length < 2) ga.push(-1);
-        while (gb.length < 2) gb.push(-1);
-        var bigA = size(out, ga[0], c) >= size(out, ga[1], c) ? ga[0] : ga[1];
-        var bigB = gb.filter(function (j) { return j >= 0; }).sort(function (p, q) { return size(out, q, x.j) - size(out, p, x.j); })[0];
-        var fwd = out.bonds[k].a === c;
-        function cfgOf(rel) { return fwd ? { na: bigA, nb: bigB, rel: rel } : { na: bigB, nb: bigA, rel: rel }; }
-        var maj = out.clone(); maj.bonds[k].cfg = cfgOf('trans');
-        var mnr = out.clone(); mnr.bonds[k].cfg = cfgOf('cis');
+        var maj = out.clone(); maj.bonds[k].cfg = largerCfg(out, c, x.j, 'trans');
+        var mnr = out.clone(); mnr.bonds[k].cfg = largerCfg(out, c, x.j, 'cis');
         list.push({ mol: maj, how: 'selective-major' }, { mol: mnr, how: 'selective-minor' });
       } else list.push({ mol: out, how: 'only' });
     });
@@ -514,6 +506,19 @@ var React = (function () {
     var major = list.filter(function (p) { return p.subst === hi && p.how !== 'selective-minor'; })[0];
     list.forEach(function (p) { p.role = p === major ? 'major' : 'minor'; });
     return list;
+  }
+
+  /* The cfg of the C=C between c and b with the larger group on each
+     carbon `rel` (cis or trans), in the bond's own a, b order. */
+  function largerCfg(out, c, b, rel) {
+    var k = out.bondBetween(c, b);
+    var ga = out.nb(c).filter(function (y) { return y.j !== b; }).map(function (y) { return y.j; });
+    var gb = out.nb(b).filter(function (y) { return y.j !== c; }).map(function (y) { return y.j; });
+    while (ga.length < 2) ga.push(-1);
+    while (gb.length < 2) gb.push(-1);
+    var bigA = size(out, ga[0], c) >= size(out, ga[1], c) ? ga[0] : ga[1];
+    var bigB = gb.filter(function (j) { return j >= 0; }).sort(function (p, q) { return size(out, q, b) - size(out, p, b); })[0];
+    return out.bonds[k].a === c ? { na: bigA, nb: bigB, rel: rel } : { na: bigB, nb: bigA, rel: rel };
   }
 
   /* Klein's three steps for substrate m and reagent key. */
@@ -545,6 +550,6 @@ var React = (function () {
     bestShift: bestShift, doShift: doShift, capture: capture, cationPath: cationPath, alkene: alkene,
     e2From: e2From, e2Products: e2Products, sn1Products: sn1Products, e1Products: e1Products, predict: predict,
     frontPair: frontPair, backPair: backPair, substitution: substitution, ringAnti: ringAnti, faceOf: faceOf,
-    chairs: chairs, size: size, nucAtom: nucAtom, oxonium: oxonium
+    chairs: chairs, size: size, nucAtom: nucAtom, oxonium: oxonium, largerCfg: largerCfg
   };
 })();

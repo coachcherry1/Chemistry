@@ -34,7 +34,13 @@ var Arrows = (function () {
       var sp = scene.species[i];
       var g = el('g', { class: 'sp', 'data-sp': i }, root);
       gs[i] = g;
-      var geo = Draw.mol(sp.mol, Object.assign({}, sp.opts || {}, { g: g, at: [0, 0] }));
+      var o = Object.assign({}, sp.opts || {}, { g: g, at: [0, 0] });
+      /* a base turned so the rest of it points away from the H it takes */
+      if (sp.anchor && sp.anchor.out != null && sp.anchor.back != null) {
+        var q0 = geos[sp.anchor.sp].P[sp.anchor.out], q1 = geos[sp.anchor.sp].P[sp.anchor.atom];
+        o.orient = [sp.anchor.me, sp.anchor.back, Math.atan2(-(q1[1] - q0[1]), q1[0] - q0[0]) * 180 / Math.PI];
+      }
+      var geo = Draw.mol(sp.mol, o);
       var dx, dy;
       if (sp.anchor) {
         var A = sp.anchor, base = geos[A.sp];
@@ -105,7 +111,8 @@ var Arrows = (function () {
     return 'M' + T[0].toFixed(1) + ' ' + T[1].toFixed(1) + ' Q' + C[0].toFixed(1) + ' ' + C[1].toFixed(1) + ' ' + H[0].toFixed(1) + ' ' + H[1].toFixed(1);
   }
 
-  /* The path of an arrow from key f to key t: { d, head (polygon points), mid } */
+  /* The path of an arrow from key f to key t: { d, head (polygon points),
+     mid, T, C, H (tail, control point and head of the curve) } */
   function geometry(geos, f, t, centre) {
     /* a bond's electrons going to one of its own atoms (loss of a leaving
        group, O–H to O): a short hook over the bond onto the atom */
@@ -121,7 +128,7 @@ var Arrows = (function () {
         var T1 = [mid[0] + n[0] * 5, mid[1] + n[1] * 5];
         var H1 = [PX[0] + n[0] * 13 - u[0] * 2, PX[1] + n[1] * 13 - u[1] * 2];
         var C1 = [(T1[0] + H1[0]) / 2 + n[0] * 16 + u[0] * 2, (T1[1] + H1[1]) / 2 + n[1] * 16 + u[1] * 2];
-        return { d: pathOf(T1, C1, H1), head: headOf(H1, C1), mid: C1 };
+        return { d: pathOf(T1, C1, H1), head: headOf(H1, C1), mid: C1, T: T1, C: C1, H: H1 };
       }
     }
     /* a bond's electrons moving over to the next bond (C–H to C=C) */
@@ -136,7 +143,7 @@ var Arrows = (function () {
         var m1 = [(e1[0] + S0[0]) / 2, (e1[1] + S0[1]) / 2], m2 = [(e2[0] + S0[0]) / 2, (e2[1] + S0[1]) / 2];
         var T2 = [m1[0] + out[0] * 3, m1[1] + out[1] * 3], H2 = [m2[0] + out[0] * 5, m2[1] + out[1] * 5];
         var C2 = [(T2[0] + H2[0]) / 2 + out[0] * 20, (T2[1] + H2[1]) / 2 + out[1] * 20];
-        return { d: pathOf(T2, C2, H2), head: headOf(H2, C2), mid: C2 };
+        return { d: pathOf(T2, C2, H2), head: headOf(H2, C2), mid: C2, T: T2, C: C2, H: H2 };
       }
     }
     var headAt = pointOf(geos, t);
@@ -162,7 +169,7 @@ var Arrows = (function () {
     }
     var bulge = Math.max(16, Math.min(46, 0.42 * L));
     var C = [mid2[0] + nx * bulge * side, mid2[1] + ny * bulge * side];
-    return { d: pathOf(T, C, H), head: headOf(H, C), mid: C };
+    return { d: pathOf(T, C, H), head: headOf(H, C), mid: C, T: T, C: C, H: H };
   }
 
   /* Names for the aria labels. */
@@ -393,5 +400,5 @@ var Arrows = (function () {
     return built.svg;
   }
 
-  return { Tool: Tool, figure: figure, compose: compose };
+  return { Tool: Tool, figure: figure, compose: compose, geometry: geometry, centroid: centroid };
 })();
