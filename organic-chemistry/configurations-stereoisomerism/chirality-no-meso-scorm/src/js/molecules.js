@@ -49,6 +49,7 @@ var MOLECULES = (function () {
 
   /* Part 1: finding chirality centres in bond-line formulas (no wedges) */
   def('butanol_line', { name: '2-Butanol', chain: { n: 4, subs: { 2: { w: 'OH', plain: true } } } });
+  def('propanol_line', { name: '2-Propanol', chain: { n: 3, subs: { 2: { w: 'OH', plain: true } } } });
   def('methylpentane', { name: '3-Methylpentane', chain: { n: 5, subs: { 3: { w: 'CH3', plain: true } } } });
   def('dimethylpentane', { name: '2,3-Dimethylpentane', chain: { n: 5, subs: { 2: { w: 'CH3', plain: true }, 3: { d: 'CH3', plain: true } } } });
   def('bcb_line', { name: '2-Bromo-3-chlorobutane', chain: { n: 4, subs: { 2: { w: 'Br', plain: true }, 3: { w: 'Cl', plain: true } } } });

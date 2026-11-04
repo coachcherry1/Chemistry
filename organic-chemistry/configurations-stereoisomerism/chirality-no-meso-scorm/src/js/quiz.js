@@ -97,12 +97,17 @@ var QUIZZES = {
                   'Every group moves from left to right'],
         why: 'Whatever points toward you (a wedge) appears in a mirror behind the page pointing away (a dash), and the other ' +
              'way round. Bonds in the page stay where they are. The result is the mirror image.' },
-      { id: 'a-meter',
-        q: 'You turn the mirror image of a molecule every way you can, and at best two of its four atoms line up with the ' +
-           'original. The molecule is…',
-        choices: ['Chiral', 'Achiral', 'Neither chiral nor achiral', 'Not a real molecule'],
-        why: 'If the mirror image never fits, the molecule is chiral. For an achiral molecule all four atoms line up in some ' +
-             'position, as they did for CH₂BrCl.' },
+      { id: 'a-butanol',
+        q: '2-Butanol is chiral, but 2-propanol is not. Why?',
+        fig: { pair: [{ mol: 'butanol_line', numbers: true }, { mol: 'propanol_line', numbers: true }],
+               captions: ['2-Butanol', '2-Propanol'] },
+        choices: ['C2 of 2-butanol carries four different groups; C2 of 2-propanol carries two CH₃ groups',
+                  '2-Butanol has an OH group on C2',
+                  '2-Butanol has a mirror plane',
+                  '2-Butanol has more carbon atoms, and more carbons always make a molecule chiral'],
+        why: 'A chirality centre needs four different groups on one carbon. C2 of 2-butanol carries H, OH, CH₃ and ' +
+             'CH₂CH₃, so 2-butanol is chiral. C2 of 2-propanol carries H, OH and two identical CH₃ groups, so 2-propanol ' +
+             'has a mirror plane and is achiral. Both have an OH on C2, and more carbons alone never make a molecule chiral.' },
       { id: 'a-sp2',
         q: 'Can a carbon in a C=C double bond be a chirality centre?',
         choices: ['No: it is joined to only three atoms, not four',

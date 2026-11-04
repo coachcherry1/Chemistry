@@ -175,7 +175,7 @@ not the full page.
   - `app.js`: `STEPS`, `PREDICT`, renderers
   - `quiz.js`: question bank
 
-## chirality-scorm (branch `claude/hopeful-feynman-fuhl6t`, zip v1, SCHEMA 2)
+## chirality-scorm (branch `claude/hopeful-feynman-fuhl6t`, zip v1, SCHEMA 3)
 
 - **Key objective:** name a chirality centre R or S by rotating the molecule until 4 is on the dash, never by swapping
   groups; then tell enantiomers, diastereomers and meso compounds apart.
@@ -207,7 +207,7 @@ not the full page.
   - `app.js`: `STEPS`, `PREDICT`, renderers
   - `quiz.js`: question bank
 
-## chirality-no-meso-scorm (zip v1, SCHEMA 2)
+## chirality-no-meso-scorm (zip v1, SCHEMA 3)
 
 - A copy of `chirality-scorm/` for weaker years: Parts 1–3 identical; Part 4 keeps the four stereoisomers and Rings
   (trans-1,3, cis- and trans-1,4 only: chiral or no chirality centres). No meso tutorial, no Molecules A and B, no cis-1,3.

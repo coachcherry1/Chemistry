@@ -158,6 +158,12 @@ const fakeLMS = () => {
   }
 
   /* ---- Part 1 */
+  /* each mirror prediction shows the molecule's drawing beside the question */
+  const predictFig = async (name) => {
+    expect(await page.locator('.predict-fig svg.mol').count() === 1, 'mirror: no drawing beside the ' + name + ' prediction');
+    expect((await page.textContent('.predict-fig figcaption')) === name, 'mirror: the prediction drawing is not ' + name);
+  };
+  await predictFig('Bromochlorofluoromethane');
   await predict(1);
   expect(await page.isDisabled('button:has-text("Slide them together")'), 'mirror: sliding allowed before trying');
   await page.click('.turnbar button:has-text("Turn it over")');
@@ -167,6 +173,7 @@ const fakeLMS = () => {
   expect(/You predicted/.test(await page.textContent('.reveal')), 'mirror: reveal does not mention the wrong prediction');
   expect(/2 of 4/.test(await page.textContent('.meter-text')), 'mirror: CHBrClF should line up 2 of 4 atoms');
   await page.click('button:has-text("Next molecule")');
+  await predictFig('Bromochloromethane');
   await predict(0);
   await page.click('.turnbar button:has-text("Turn it over")');
   await wait(900);

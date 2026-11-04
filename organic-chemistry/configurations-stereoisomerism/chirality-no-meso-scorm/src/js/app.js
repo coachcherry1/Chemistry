@@ -23,7 +23,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a molecule changes: a save
      from an older build is then discarded and the student starts fresh. */
-  var SCHEMA = 2;
+  var SCHEMA = 3;
 
   var PARTS = [
     { n: 1, name: 'Chirality' },
@@ -350,7 +350,9 @@ var App = (function () {
     catch (e) { node.scrollIntoView(false); }
   }
 
-  function predictCard(p, chosen, onPick) {
+  /* `fig`, when given, is a figure spec (as in the checkpoints): the molecule
+     the prediction is about, drawn beside the question. */
+  function predictCard(p, chosen, onPick, fig) {
     var box = h('div', { class: 'predict' }, [
       h('p', { class: 'predict-kicker', text: 'Predict (not graded)' }),
       h('p', { class: 'q-text', text: p.q })
@@ -363,7 +365,9 @@ var App = (function () {
       row.appendChild(b);
     });
     box.appendChild(row);
-    return box;
+    if (!fig) return box;
+    return h('div', { class: 'predict-fig-row' }, [
+      h('figure', { class: 'predict-fig' }, [figure(fig), h('figcaption', { text: figModel(fig).name })]), box]);
   }
 
   function reveal(lines) {
@@ -811,7 +815,7 @@ var App = (function () {
       var P = PREDICT[KEYS[k]];
       top.appendChild(panel('Your prediction', null, [predictCard(P, pr.p[k], function (i) {
         pr.p[k] = i; save(); paint(); showArea(area);
-      })]));
+      }, { mol: s.mols[k] })]));
       area.innerHTML = '';
       if (pr.p[k] == null) return;
       var m = molecule(s.mols[k]);
