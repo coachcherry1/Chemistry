@@ -21,6 +21,7 @@ const order = (m, c) => CIP.rank(m, c).order;
 const pri = (m, c) => order(m, c).map((j) => CIP.groupText(m, c, j)).join(' > ');
 const cfg = (m) => App.configText(m) || 'no chirality centre';
 const SLOT = { ul: 'upper left, in the page', ur: 'upper right, in the page', ll: 'lower left, in the page',
+               lu: 'upper left, in the page', ld: 'lower left, in the page',
                lr: 'lower right, in the page', w: 'wedge', d: 'dash' };
 const four = (m, c) => (STEREO.fourOnDash(m, c) ? '4 on the dash' : '4 ' + ({ wedge: 'on a wedge', plain: 'in the page' })[
   STEREO.bondStyle(m.atoms[c].p, m.atoms[order(m, c)[3]].p)]);
@@ -129,8 +130,7 @@ function spearTo4(m, c) {
   const sps = STEREO.spears(m, c, m.kind === 'centre' ? null : m.pivot);
   const hit = sps.find((sp) => STEREO.fourOnDash(STEREO.speared(m, sp), c));
   if (!hit) return 'no single spear';
-  return hit.kind === 'vertical' ? 'the vertical spear, 180°'
-    : hit.atom != null ? `the side spear through ${GROUPS[m.atoms[hit.atom].group].label}, 120°` : 'the side spear, 180°';
+  return `${Math.abs(hit.deg)}° on the ${hit.kind} spear`;
 }
 for (const id of S('wheel').mols.concat(S('rotate').mols)) {
   const m = mol(id), c = CIP.centres(m)[0];

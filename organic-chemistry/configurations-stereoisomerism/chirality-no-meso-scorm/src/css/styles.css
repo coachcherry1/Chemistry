@@ -301,6 +301,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .spear { cursor: pointer; }
 .spear[aria-disabled="true"] { cursor: default; opacity: 0.35; }
 .spear-hit { stroke: transparent; stroke-width: 20; stroke-linecap: round; }
+.spear-pad { fill: transparent; }
 .spear-shaft { stroke: var(--spear); stroke-width: 2.4; stroke-linecap: round; opacity: 0.85; }
 .spear-tip, .spear-arc-head { fill: var(--spear); }
 .spear-arc { fill: none; stroke: var(--spear); stroke-width: 2; }

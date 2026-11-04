@@ -37,7 +37,7 @@ Nothing is calculated. The atomic numbers are open beside checkpoints 2 to 4.
 | 2-Bromobutane (`bromobutane`) | C2: Br (wedge), H (dash); C3: H (wedge), H (dash) | C2: Br > CH₂CH₃ > CH₃ > H (4 on the dash) | (2R) |
 | 2-Butanol (`butanol_S`) | CH₃ upper left, in the page, CH₂CH₃ upper right, in the page, OH wedge, H dash | OH > CH₂CH₃ > CH₃ > H (4 on the dash) | S |
 | Alanine (`alanine_w`) | CH₃ lower left, in the page, COOH lower right, in the page, H wedge, NH₂ dash | NH₂ > COOH > CH₃ > H (4 on a wedge) | S |
-| 1-Bromo-1-chloro-1-fluoroethane (`bcfe_plane`) | CH₃ lower left, in the page, Br lower right, in the page, Cl wedge, F dash | Br > Cl > F > CH₃ (4 in the page) | R |
+| 1-Bromo-1-chloro-1-fluoroethane (`bcfe_plane`) | CH₃ upper left, in the page, Br lower left, in the page, Cl wedge, F dash | Br > Cl > F > CH₃ (4 in the page) | R |
 | 2-Butanol (`butanol_hidden`) | C2: H (wedge), OH (dash); C3: H (wedge), H (dash) | C2: OH > CH₂CH₃ > CH₃ > H (4 on a wedge) | (2S) |
 | 2-Butanol (`butanol_R`) | CH₂CH₃ upper left, in the page, CH₃ upper right, in the page, OH wedge, H dash | OH > CH₂CH₃ > CH₃ > H (4 on the dash) | R |
 | Lactic acid (`lactic_w`) | COOH lower left, in the page, CH₃ lower right, in the page, H wedge, OH dash | OH > COOH > CH₃ > H (4 on a wedge) | R |
@@ -117,8 +117,8 @@ Predictions: priority 1 of CHBrClF is **Br: it has the highest atomic number**; 
 
 - 2-Bromobutane: 4 on the dash as drawn (read as drawn); Br > CH₂CH₃ > CH₃ > H: **R**.
 - 2-Butanol: 4 on the dash as drawn (read as drawn); OH > CH₂CH₃ > CH₃ > H: **S**.
-- Alanine: 4 on a wedge as drawn (the vertical spear, 180°); NH₂ > COOH > CH₃ > H: **S**.
-- 1-Bromo-1-chloro-1-fluoroethane: 4 in the page as drawn (the side spear through Br, 120°); Br > Cl > F > CH₃: **R**.
+- Alanine: 4 on a wedge as drawn (180° on the vertical spear); NH₂ > COOH > CH₃ > H: **S**.
+- 1-Bromo-1-chloro-1-fluoroethane: 4 in the page as drawn (90° on the side spear); Br > Cl > F > CH₃: **R**.
 
 Prediction (4 on the wedge): can it be read as drawn? **No: first rotate the molecule until 4 is on the dash**.
 
@@ -470,24 +470,24 @@ Figure: 2-Butanol: CH₃ upper left, in the page, CH₂CH₃ upper right, in the
 
 > A mirror turns clockwise into counterclockwise, so the mirror image is S at that centre.
 
-**`c-rotate-label`** An (R) molecule is speared through one of its bonds and rotated a third of a turn. Its label is now…
+**`c-rotate-label`** An (R) molecule is speared and rotated 90°. Its label is now…
 
 - ✓ Still R: rotating never changes R or S
 - S
-- R or S, depending on which bond
+- R or S, depending on the spear
 - Unknown until 4 is on the dash
 
 > Rotating changes how the molecule is drawn, not the molecule itself. Only a reflection (or breaking bonds) turns R into S.
 
 **`c-not-H`** Name the chirality centre of this 1-bromo-1-chloro-1-fluoroethane: R or S?
 
-Figure: 1-Bromo-1-chloro-1-fluoroethane: CH₃ lower left, in the page, Br lower right, in the page, Cl wedge, F dash = R.
+Figure: 1-Bromo-1-chloro-1-fluoroethane: CH₃ upper left, in the page, Br lower left, in the page, Cl wedge, F dash = R.
 
 - ✓ R
 - S
 - It has none, because it has no H
 
-> Here 4 is the CH₃, attached through carbon. It lies in the page, so spear the molecule from the side, through the Br (the other group in the page), and rotate it 120°: the CH₃ goes to the dash. Br → Cl → F then runs clockwise. R.
+> Here 4 is the CH₃, attached through carbon. It lies in the page, so spear the molecule from the side, between the two bonds in the page, and rotate it 90°: the CH₃ goes to the dash. Br → Cl → F then runs clockwise. R.
 
 **`c-hidden`** What is the configuration of C2 in this drawing of 2-bromobutane?
 

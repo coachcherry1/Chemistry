@@ -67,9 +67,9 @@ var App = (function () {
             'counterclockwise is S. Click 1, then 2, then 3, and decide.' },
     { id: 'rotate', part: 3, kind: 'rotate', mols: ['alanine_w', 'bcfe_plane'],
       title: 'If 4 is not on the dash, rotate',
-      text: 'Here 4 is not on the dash, so rotate the molecule until it is, the way your textbook does: spear it, then ' +
-            'rotate it about the spear. 4 on the wedge: the vertical spear, 180°. 4 in the page: spear it from the side, ' +
-            'through the other group in the page, 120°. Click a spear on the drawing or the 3D model. Then read 1 → 2 → 3.' },
+      text: 'Here 4 is not on the dash, so rotate the molecule until it is, the way your textbook does: spear it through ' +
+            'the carbon, between the two bonds in the page, and rotate it about the spear. 4 on the wedge: rotate 180°. 4 in ' +
+            'the page: rotate 90°. Click an arrow on the spear, in the drawing or the 3D model. Then read 1 → 2 → 3.' },
     { id: 'hidden', part: 3, kind: 'hidden', mol: 'butanol_hidden',
       title: 'The hidden H',
       text: 'Bond-line drawings leave out the H on a chirality centre. Find where it points, spear the molecule and rotate ' +
@@ -424,25 +424,24 @@ var App = (function () {
 
   /* How a spear is named on its button and to a screen reader. */
   function spearWords(m, sp) {
-    if (sp.kind === 'vertical') {
-      return { short: 'Vertical spear, 180°',
-               aria: 'Vertical spear: rotate the molecule 180° about the up and down line through the carbon' };
-    }
-    if (sp.atom == null) {
-      return { short: 'Side spear, 180°',
-               aria: 'Side spear: rotate the molecule 180° about the left and right line of the page' };
-    }
-    var g = GROUPS[m.atoms[sp.atom].group];
-    return { short: 'Side spear through ' + g.label + ', 120°',
-             aria: 'Side spear through the bond to ' + g.name + ': ' + g.name + ' stays put and the other three groups ' +
-                   'rotate a third of a turn, 120°' };
+    var name = sp.kind === 'vertical' ? 'vertical spear' : 'side spear';
+    var line = (sp.kind === 'vertical' ? 'the up and down line' : 'the left and right line') +
+      (m.kind === 'centre' ? ' through the carbon, between the two bonds in the page' : ' through the middle of the molecule');
+    return { short: name.charAt(0).toUpperCase() + name.slice(1) + ', ' + Math.abs(sp.deg) + '°',
+             aria: 'Rotate the molecule ' + Math.abs(sp.deg) + '° on the ' + name + ', ' + line };
+  }
+
+  /* The name of a centre's spear, as the rule says it. */
+  function spearName(t, c) {
+    var sp = spearsAt(t, c)[0];
+    return sp && sp.kind === 'side' ? 'side spear' : 'vertical spear';
   }
 
   /* Spears as the drawing takes them (a zigzag is speared at its middle,
      the drawing's origin). */
   function spearDraw(m, list, c, extra) {
     return list.map(function (sp) {
-      return Object.assign({ id: sp.id, axis: sp.axis, deg: sp.deg, c: m.kind === 'centre' ? c : null, atom: sp.atom,
+      return Object.assign({ id: sp.id, axis: sp.axis, deg: sp.deg, part: sp.part, c: m.kind === 'centre' ? c : null,
                              aria: spearWords(m, sp).aria }, extra || {});
     });
   }
@@ -467,8 +466,10 @@ var App = (function () {
   }
 
   /* The drawing seen a little from the side while it turns, so a wedge and
-     a dash part smoothly instead of jumping (k matches the fanning). */
+     a dash part smoothly instead of jumping (k matches the fanning: a wedge
+     to the left of a vertical pair, above a sideways one). */
   var SHEAR = 0.408;
+  function shearFor(t, sp) { return t.kind === 'centre' && sp.kind === 'side' ? [0, SHEAR] : [SHEAR, 0]; }
 
   /* Buttons for the spears, for the keyboard and for anyone who would rather
      not aim at a thin rod. */
@@ -488,7 +489,8 @@ var App = (function () {
   function spearAnim(viewer, i, start, sp, onFrame, done) {
     var o = viewer.get(i), R0 = o.R, off0 = o.offset.slice(), piv = start.pivot;
     var a = G.sub(sp.at, piv);
-    var rod = { id: sp.id, at: G.add(off0, a), axis: sp.axis, world: true, hot: true, idle: true, out: sp.atom != null };
+    var rod = { id: sp.id, at: G.add(off0, a), axis: sp.axis, world: true, hot: true, idle: true, part: sp.part,
+                label: Math.abs(sp.deg) + '°' };
     var ms = reduceMotion ? 0 : (Math.abs(sp.deg) > 150 ? 1500 : 1150);
     var t0 = null;
     function set(e) {
@@ -585,7 +587,7 @@ var App = (function () {
       spearAnim(viewer, 0, startM, sp, function (e) {
         drawHost.innerHTML = '';
         drawHost.appendChild(Draw.mol(STEREO.speared(startM, sp, sp.deg * e), Object.assign({}, dOpts, {
-          box: box, badges: [c], spears: hot, shear: SHEAR, noSplay: true, label: 'The drawing, turning' })));
+          box: box, badges: [c], spears: hot, shear: shearFor(startM, sp), noSplay: true, label: 'The drawing, turning' })));
       }, function (Rnew, off0) {
         var target = STEREO.nearest(m, Rnew);
         viewer.set(0, { R: target, spears: [] });
@@ -628,9 +630,9 @@ var App = (function () {
       }
       var four = order()[3];
       var style = STEREO.bondStyle(c.atoms[centre].p, c.atoms[four].p);
-      if (style === 'wedge') return '4 is not on the dash: it is on the wedge. Rotate the molecule 180° on the vertical spear.';
-      return '4 is not on the dash: it is in the page. Rotate the molecule a third of a turn on the side spear through ' +
-        'the other group in the page.';
+      var name = spearName(c, centre);
+      if (style === 'wedge') return '4 is not on the dash: it is on the wedge. Rotate the molecule 180° on the ' + name + '.';
+      return '4 is not on the dash: it is in the page. Rotate the molecule 90° on the ' + name + '.';
     }
 
     function paint() {
@@ -655,7 +657,7 @@ var App = (function () {
         spears: spearDraw(c, list, centre), arrow: full && dash ? centre : null }, drawOpts())));
       if (viewer) {
         viewer.set(0, { badges: badges(), wheel: full && dash ? { c: centre, order: ord } : null,
-          spears: wheelOn ? [] : list.map(function (sp) { return { id: sp.id, at: sp.at, axis: sp.axis, out: sp.atom != null }; }) });
+          spears: wheelOn ? [] : list.map(function (sp) { return { id: sp.id, at: sp.at, axis: sp.axis, part: sp.part, label: Math.abs(sp.deg) + '°' }; }) });
       }
       wheelBtn.disabled = !dash;
       /* the rule, always in view */
@@ -835,7 +837,7 @@ var App = (function () {
       turnbar.innerHTML = '';
       if (!viewer) return;
       var list = together ? [] : imgSpears();
-      viewer.set(1, { spears: together ? [] : busy ? viewer.get(1).spears : list.map(function (sp) { return { id: sp.id, at: sp.at, axis: sp.axis, out: sp.atom != null }; }) });
+      viewer.set(1, { spears: together ? [] : busy ? viewer.get(1).spears : list.map(function (sp) { return { id: sp.id, at: sp.at, axis: sp.axis, part: sp.part, label: Math.abs(sp.deg) + '°' }; }) });
       if (together) return;
       var bar = spearBar(imgNow(), list, turnImage, busy);
       bar.firstChild.textContent = 'Rotate the mirror image:';
@@ -1550,8 +1552,8 @@ var App = (function () {
             'The vertical spear did not change the molecule: the drawing changed because you are looking at the molecule from ' +
             'the other side.'];
         }
-        return ['Here 4 was the CH₃, lying in the page. The vertical spear keeps a group in the page in the page, so it ' +
-          'took a side spear, through the other group in the page, to carry 4 back to the dash.',
+        return ['Here 4 was the CH₃, lying in the page, in a drawing turned on its side, so the spear comes in from the ' +
+          'side. Rotating 180° keeps a group in the page in the page; rotating 90° carries it back to the dash.',
           'Priority 4 is just the lowest-ranked group: it is not always H. This centre is ' + pr.ok[m.id] + '.'];
       },
       doneMsg: 'If 4 is not on the dash, rotate the molecule. Then read 1 → 2 → 3.'
@@ -2302,8 +2304,8 @@ var App = (function () {
     el.howBody.appendChild(h('ol', { class: 'ref-steps' }, [
       'Find the four groups on the chirality centre and rank them 1 to 4 by atomic number.',
       'Break a tie at the first point of difference. A double bond counts twice.',
-      'If 4 is not on the dash, rotate the molecule until it is: spear it and rotate it. 4 on the wedge: the vertical spear, ' +
-        '180°. 4 in the page: a side spear through the other group in the page, 120°.',
+      'If 4 is not on the dash, rotate the molecule until it is: spear it through the carbon, between the two bonds in ' +
+        'the page, and rotate it 180° if 4 is on the wedge, 90° if 4 is in the page.',
       'Follow 1 → 2 → 3: clockwise is R, counterclockwise is S.'
     ].map(function (t) { return h('li', { text: t }); })));
     var dl = h('dl', { class: 'vocab' });

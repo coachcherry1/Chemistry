@@ -190,16 +190,17 @@ not the full page.
   give at most 2ⁿ; cut between the centres and the halves must match (`STEREO.halves`); turn to eclipsed and every group
   must face its twin (`STEREO.facing`). R,S only confirms it. Not by laying the molecule on its mirror image (a guided
   version of that was tried and reverted). The three checks are `MESO_CHECKS` in `app.js`, also in Vocabulary.
-- **Rotation is Klein's spear** (the teacher's request): spear the molecule, then rotate it about the spear. Vertical
-  spear, 180°, for 4 on the wedge; for one centre, side spears along each in-page bond, 120°, turned the way that
-  carries the other in-page group to the dash (4 in the page: "spear it from the side" through its in-page
-  neighbour); a zigzag has vertical and side (left-right) 180° spears through its middle. `STEREO.spears`/`speared`.
-  Spears are drawn on the structure (`Draw.mol` `opts.spears`) and as rods in 3D (viewer `spears`, `onSpear`), both
-  clickable, with buttons too; the drawing animates with the model (sheared frames in a fixed `box`). Nothing in the
-  R/S rotator or the mirror scenes can be dragged; the look-only viewers (centres, rank, mesotut, meso plane, rings)
-  still can. Part 3 single centres use Klein's layout (wedge and dash on top). Rules name the spear: "4 is not on the
-  dash: it is on the wedge. Rotate the molecule 180° on the vertical spear." The validator tries every spear in
-  every position and reflection.
+- **Rotation is the teacher's spear** (and Klein's): spear the molecule through the carbon, between the two bonds in
+  the page, and rotate it about the spear: 180° for 4 on the wedge, 90° for 4 in the page (worksheet part e). The
+  spear is vertical in Klein's layout (template A, also V) and comes from the side in a sideways drawing (template S,
+  used for the rotate step's 4-in-page molecule). A zigzag has vertical and side 180° spears through its middle. A
+  centre has 24 drawable orientations: its template's 12 and 12 more in the partner template (A and V, or S turned
+  round), so turn indices 0 to 11 are unchanged. `STEREO.spears`/`speared`. Each spear is drawn on the structure
+  (`Draw.mol` `opts.spears`: 180° arrow at the point end, 90° at the other) and as a rod in 3D (viewer `spears`,
+  `onSpear`); each half, its arrow and its button are clickable; the drawing animates with the model (sheared
+  frames in a fixed `box`). Nothing in the R/S rotator or the mirror scenes can be dragged; the look-only viewers
+  (centres, rank, mesotut, meso plane, rings) still can. Rules name the turn ("Rotate the molecule 90° on the side
+  spear."). The validator tries every turn in every position and reflection.
 - **Geometry:** one 3D model per molecule drives everything.
   - Drawings are projections of it (x right, y up, z toward the reader). A bond whose unit vector has z above 0.3 is a
     wedge, below −0.3 a dash.

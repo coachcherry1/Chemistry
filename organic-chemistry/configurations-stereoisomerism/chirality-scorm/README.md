@@ -28,7 +28,7 @@ answer. Students rotate.
 | --- | --- | --- |
 | 1 Chirality | 4 | **Mirror, mirror:** students predict with the molecule's bond-line drawing beside the question; then CHBrClF stands beside a mirror in 3D. Students rotate the reflection on its spears (Klein's way, below) and try to make it fit. A meter counts the atoms that line up: never more than two of four. CH₂BrCl's reflection fits after one turn on the vertical spear, and its mirror plane (the page itself) appears. **Draw the mirror image:** place the atoms of CHBrClF as a mirror beside the molecule shows them, then as a mirror lying behind the page shows them. **Find the chirality centres:** click every carbon with four different groups in four bond-line drawings; the 3D model colours the four groups on whichever carbon is clicked, the same colour for groups that are the same. **Checkpoint 1** (4 questions). |
 | 2 Priorities | 3 | **Highest atomic number first:** predict which atom of CHBrClF ranks 1 (most pick F, the most electronegative), then put the numbers 1 to 4 on the groups; then a molecule whose priority 4 is CH₃, not H. **Ties:** 2-butanol, CH₂OH against C(CH₃)₃ (the biggest group of the chairs activity loses to one O) and glyceraldehyde (the C=O counts twice). A **Look closer** button lists the atoms on each group's first carbon, written as Klein writes them: (C, H, H). **Checkpoint 2** (4). |
-| 3 R and S | 5 | **Read the steering wheel:** 4 already on the dash. Click 1, 2, 3; an arrow follows; choose clockwise (R) or counterclockwise (S). The first molecule is the Newman activity's drawing of 2-bromobutane, which is R. A **Steering-wheel view** button swings the 3D model round so 4 hides behind the carbon. **If 4 is not on the dash, rotate:** alanine with H on the wedge, drawn as in Klein's figure (the vertical spear, 180°), then a molecule whose 4 is a CH₃ in the page (the vertical spear leaves it there; a side spear through the other group in the page carries it to the dash, 120°). Reading stays locked until 4 is on the dash. **The hidden H:** a bond-line 2-butanol with the OH on a dash; find the hidden H (on the wedge), rotate it on the vertical spear, redraw the molecule with 4 on the dash, and read it. **Mirror images have opposite labels:** the mirror image of (R)-2-butanol, read after rotating, is S; the original stays R whatever spear it is rotated on. **Checkpoint 3** (4). |
+| 3 R and S | 5 | **Read the steering wheel:** 4 already on the dash. Click 1, 2, 3; an arrow follows; choose clockwise (R) or counterclockwise (S). The first molecule is the Newman activity's drawing of 2-bromobutane, which is R. A **Steering-wheel view** button swings the 3D model round so 4 hides behind the carbon. **If 4 is not on the dash, rotate:** alanine with H on the wedge, drawn as in Klein's figure (the vertical spear, 180°), then a molecule whose 4 is a CH₃ in the page, drawn on its side as on the teacher's worksheet, so the spear comes in from the side (180° leaves 4 in the page; 90° carries it to the dash). Reading stays locked until 4 is on the dash. **The hidden H:** a bond-line 2-butanol with the OH on a dash; find the hidden H (on the wedge), rotate it on the vertical spear, redraw the molecule with 4 on the dash, and read it. **Mirror images have opposite labels:** the mirror image of (R)-2-butanol, read after rotating, is S; the original stays R whatever spear it is rotated on. **Checkpoint 3** (4). |
 | 4 Two centres | 5 | **Four stereoisomers:** name both centres of one 2-bromo-3-chlorobutane (one centre needs a rotation), then label all six pairs of the four stereoisomers enantiomers or diastereomers. **Two centres: chiral or meso?** A short tutorial on spotting meso. Predict whether two centres make a molecule chiral (not always: n centres give at most 2ⁿ stereoisomers). *Do the halves match?* Cut four molecules between C2 and C3 and sort them into "halves match" and "halves differ" (2-bromo-3-chlorobutane and 2,3-dibromopentane differ, so they can never be meso; 2,3-butanediol and 2,3-dibromobutane match). *Look for a mirror plane:* turn the C2–C3 bond of two 2,3-butanediols until their groups are eclipsed; a grey line marks where a mirror plane would be, and a readout lists what faces what across it ("OH faces OH ✓, CH₃ faces H ✗"). Only the one with one OH on a wedge and one on a dash ever pairs every group: an internal mirror plane, so it is meso. *What R and S say:* its R and S labels, (2R,3S), and its mirror image's, (2S,3R), name the same molecule read from the other end. The step ends with a three-point **Spotting meso** checklist, also in Vocabulary. **Meso:** 2,3-dibromobutane, Molecules A and B exactly as drawn in the Newman activity. A's mirror image fits on it after the side spear; B's never does. Turning A's C2–C3 bond until the Br atoms are eclipsed shows its mirror plane in 3D, in a Newman projection and as a dashed line on the drawing. A is meso (2R,3S), B is (2R,3R), and they are diastereomers, which is why their energy curves differed in the Newman activity. **Rings:** sort cis- and trans-1,3- and 1,4-dimethylcyclohexane (from the chairs activity) into meso, chiral, or no chirality centres, with each ring's chair in 3D and a button that looks for a mirror plane. **Checkpoint 4** (4). |
 
 Every drawing, ranking, reading and prediction has to be finished to move on, but none of them is graded. A wrong
@@ -51,22 +51,23 @@ above each step as well as below it.
 
 ### Rotating, never swapping
 
-Molecules are rotated the way Klein's textbook does it: spear the molecule, then rotate it about the spear. The
-spears are drawn on the structure (a shaft through the carbon, a curved arrow and the angle) and as rods through the
-3D model; clicking either, or the spear's button, turns the molecule, and the drawing turns on screen with the 3D
-model until it settles into the new wedge-and-dash drawing. The models cannot be dragged; spears are the only way to
-turn a molecule.
+Molecules are rotated the way the teacher and Klein's textbook do it: spear the molecule through the carbon,
+between the two bonds in the page (and between the wedge and the dash), then rotate it about the spear. In Klein's
+layout (the wedge and dash on top) the spear is vertical; in a drawing turned on its side it comes in from the side.
 
-- **Vertical spear, 180°**: the page's up–down line through the carbon. The two groups in the page trade sides, the
-  wedge goes back to the dash and the dash comes forward to the wedge. This is the spear for 4 on the wedge.
-- **Side spear, 120°** (one chirality centre): along the bond to a group in the page. That group stays put and the
-  other three turn a third of a turn, the way that carries the other group in the page back to the dash. For 4 in
-  the page, spear it from the side through the other group in the page: one turn takes 4 to the dash.
-- **Side spear, 180°** (a zigzag): the page's left–right line through the middle of the molecule.
+- **180°**, for 4 on the wedge: the two groups in the page trade sides, the wedge goes back to the dash and the dash
+  comes forward to the wedge (Klein's figure; the teacher's worksheet part a).
+- **90°**, for 4 in the page: the two groups in the page go out of the page and the wedge and the dash come into
+  it, turned the way that carries 4 to the dash (the teacher's worksheet part e, speared from the side).
+- A zigzag has a vertical spear and a side (left–right) spear through the middle of the molecule, both 180°.
 
-The rule under every drawing names the spear: "4 is not on the dash: it is on the wedge. Rotate the molecule 180°
-on the vertical spear." Single centres in Part 3 are drawn in Klein's layout, the wedge and dash on top. Every spear
-is a real rotation, and the twelve positions they reach are exactly the twelve ways to draw a centre. The 3D models
+Each spear is drawn on the structure (a shaft through the carbon with a point, and a curved arrow with its angle at
+each end: 180° at the point, 90° at the other end) and as a rod through the 3D model with the same two angles.
+Clicking an arrow or its half of the shaft, the same half of the rod, or the button makes that turn, and the
+drawing turns on screen with the 3D model until it settles into the new wedge-and-dash drawing. The models cannot
+be dragged; spears are the only way to turn a molecule. The rule under every drawing names the turn: "4 is not on
+the dash: it is in the page. Rotate the molecule 90° on the side spear." Every turn is a real rotation into one of
+the 24 ways to draw a centre (its template and the partner template a quarter turn gives). The 3D models
 in Parts 1 and 2 that are only for looking (finding centres, ranking, rings) can still be dragged. A drawing a student makes by moving groups around on paper is judged against those
 twelve. A drawing that moves only two groups is the mirror image, and the feedback says so in those words, without
 ever offering it as a shortcut. `tools/validate.js` fails if any student-facing text mentions swapping, switching

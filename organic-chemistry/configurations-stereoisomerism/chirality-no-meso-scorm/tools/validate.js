@@ -151,11 +151,14 @@ for (const id of ids) {
   }
 }
 /* every template has exactly twelve turns, and the buttons are among them */
-for (const tpl of ['V', 'A']) {
+for (const tpl of ['V', 'A', 'S']) {
   const T = STEREO.turns(tpl);
   if (T.length !== 12) fail(`template ${tpl} has ${T.length} turns, not 12`);
   const has = (R) => T.some((t) => G.gap(t.R, R) < 0.01);
-  if (!has(STEREO.OVER)) fail(`template ${tpl}: Turn it over is not one of its turns`);
+  const spearAxis = tpl === 'S' ? [1, 0, 0] : [0, 1, 0];
+  if (!has(G.rot(spearAxis, 180))) fail(`template ${tpl}: 180° on its spear is not one of its turns`);
+  const Q = G.rot(spearAxis, 90), dual = STEREO.orientations(STEREO.fromSlots(tpl, Object.fromEntries(MOLECULES.SLOT_ORDER[tpl].map((x, i) => [x, ['Br', 'Cl', 'F', 'H'][i]]))));
+  if (dual.length !== 24 || !T.every((t) => dual.some((R) => G.gap(R, G.mmul(Q, t.R)) < 0.01))) fail(`template ${tpl}: 90° on its spear does not draw it in its partner template`);
   for (const s of Object.keys(MOLECULES.TEMPLATES[tpl])) {
     if (!has(G.rot(MOLECULES.TEMPLATES[tpl][s], 120))) fail(`template ${tpl}: a spin around ${s} is not one of its turns`);
   }
@@ -163,9 +166,8 @@ for (const tpl of ['V', 'A']) {
 
 /* Klein's spears: in every position a molecule can be drawn in (and its
    reflections), every spear lands it in a drawable position and keeps every
-   label, and the spear the rule names takes 4 to the dash in one turn: the
-   vertical spear when 4 is on the wedge; for one centre with 4 in the page,
-   the side spear through the other group in the page. */
+   label, and the turn the rule names takes 4 to the dash: 180° on the spear
+   when 4 is on the wedge, 90° when it is in the page (one centre). */
 {
   let bad = [];
   for (const id of ids) {
@@ -183,12 +185,10 @@ for (const tpl of ['V', 'A']) {
             if (!STEREO.orientations(M).some((Q) => G.gap(Q, L) < 0.01)) bad.push(`${id}: spear ${sp.id} lands in a position that cannot be drawn`);
             if (CIP.centres(t).some((x) => label(t, x) !== label(m, x))) bad.push(`${id}: spear ${sp.id} changes a label`);
           }
-          const v = sps.find((sp) => sp.kind === 'vertical');
-          if (style === 'wedge' && !STEREO.fourOnDash(STEREO.speared(m, v), c)) bad.push(`${id}: the vertical spear leaves 4 off the dash`);
-          if (style === 'plain' && m.kind === 'centre') {
-            const other = MOLECULES.neighbours(m)[c].find((x) => x.j !== four && STEREO.bondStyle(m.atoms[c].p, m.atoms[x.j].p) === 'plain');
-            const sp = sps.find((x) => x.atom === other.j);
-            if (!sp || !STEREO.fourOnDash(STEREO.speared(m, sp), c)) bad.push(`${id}: the side spear through the other group in the page leaves 4 off the dash`);
+          const half = sps.find((sp) => sp.deg === 180), quarter = sps.find((sp) => Math.abs(sp.deg) === 90);
+          if (style === 'wedge' && !STEREO.fourOnDash(STEREO.speared(m, half), c)) bad.push(`${id}: 180° on the spear leaves 4 off the dash`);
+          if (style === 'plain' && m.kind === 'centre' && (!quarter || !STEREO.fourOnDash(STEREO.speared(m, quarter), c))) {
+            bad.push(`${id}: 90° on the spear leaves 4 off the dash`);
           }
           if (style === 'plain' && m.kind !== 'centre') bad.push(`${id}: 4 lies in the page of a zigzag, where no spear can take it to the dash`);
         }
@@ -337,12 +337,14 @@ const m0 = (id) => mol(S(id).mols ? S(id).mols[0] : S(id).mol);
   if (STEREO.bondStyle(a.atoms[a.centre].p, a.atoms[o[3]].p) !== 'wedge' || !/^No/.test(key(P.asis))) fail('rotate: alanine should start with H on the wedge');
   const b = mol('bcfe_plane'), ob = order(b, b.centre);
   if (b.atoms[ob[3]].group !== 'CH3' || STEREO.bondStyle(b.atoms[b.centre].p, b.atoms[ob[3]].p) !== 'plain') fail('rotate: 4 should be CH₃, in the page');
-  const turned = STEREO.apply(b, STEREO.OVER);
-  if (STEREO.bondStyle(turned.atoms[turned.centre].p, turned.atoms[ob[3]].p) !== 'plain') fail('rotate: the vertical spear should leave CH₃ in the page');
-  const side = STEREO.spears(b, b.centre).find((sp) => sp.atom != null && b.atoms[sp.atom].group === 'Br');
-  if (!side || !STEREO.fourOnDash(STEREO.speared(b, side), b.centre)) fail('rotate: the side spear through Br should take CH₃ to the dash (the step says so)');
-  if (!STEREO.fourOnDash(STEREO.speared(a, STEREO.spears(a, a.centre)[0]), a.centre)) fail('rotate: the vertical spear should put alanine\'s H on the dash');
-  if (a.tpl !== 'A' || b.tpl !== 'A') fail('rotate: Part 3 molecules are drawn in Klein\'s layout, the wedge and dash on top');
+  const sb = STEREO.spears(b, b.centre), sa = STEREO.spears(a, a.centre);
+  if (sb[0].kind !== 'side') fail('rotate: the sideways drawing should be speared from the side (the step says so)');
+  if (STEREO.fourOnDash(STEREO.speared(b, sb.find((sp) => sp.deg === 180)), b.centre)) fail('rotate: 180° should leave CH₃ in the page');
+  if (!STEREO.fourOnDash(STEREO.speared(b, sb.find((sp) => Math.abs(sp.deg) === 90)), b.centre)) fail('rotate: 90° on the side spear should take CH₃ to the dash');
+  if (sa[0].kind !== 'vertical' || !STEREO.fourOnDash(STEREO.speared(a, sa.find((sp) => sp.deg === 180)), a.centre)) {
+    fail('rotate: 180° on the vertical spear should put alanine\'s H on the dash');
+  }
+  if (a.tpl !== 'A' || b.tpl !== 'S') fail('rotate: alanine is drawn in Klein\'s layout (wedge and dash on top), the second molecule sideways as on the worksheet');
 }
 /* hidden: the H hides on the wedge; exactly three redraws are right */
 {
@@ -545,8 +547,8 @@ const STUDENT = ['src/js/app.js', 'src/js/quiz.js', 'src/index.html'];
     });
   }
   const app = read('src/js/app.js');
-  for (const rule of ['If 4 is not on the dash, rotate the molecule', '4 is not on the dash: it is on the wedge. Rotate the molecule 180° on the vertical spear.',
-                      '4 is not on the dash: it is in the page. Rotate the molecule a third of a turn on the side spear through']) {
+  for (const rule of ['If 4 is not on the dash, rotate the molecule', '4 is not on the dash: it is on the wedge. Rotate the molecule 180° on the ',
+                      '4 is not on the dash: it is in the page. Rotate the molecule 90° on the ']) {
     if (app.indexOf(rule) < 0) fail(`the rule "${rule}" is missing`);
   }
   /* rockwise: in three places only (where R and S are introduced, the

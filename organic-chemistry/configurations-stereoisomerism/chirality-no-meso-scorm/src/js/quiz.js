@@ -262,17 +262,16 @@ var QUIZZES = {
         choices: ['S', 'R', 'R or S, depending on how the image is turned', 'No longer a chirality centre'],
         why: 'A mirror turns clockwise into counterclockwise, so the mirror image is S at that centre.' },
       { id: 'c-rotate-label',
-        q: 'An (R) molecule is speared through one of its bonds and rotated a third of a turn. Its label is now…',
-        choices: ['Still R: rotating never changes R or S', 'S', 'R or S, depending on which bond', 'Unknown until 4 is on the dash'],
+        q: 'An (R) molecule is speared and rotated 90°. Its label is now…',
+        choices: ['Still R: rotating never changes R or S', 'S', 'R or S, depending on the spear', 'Unknown until 4 is on the dash'],
         why: 'Rotating changes how the molecule is drawn, not the molecule itself. Only a reflection (or breaking bonds) ' +
              'turns R into S.' },
       { id: 'c-not-H',
         q: 'Name the chirality centre of this 1-bromo-1-chloro-1-fluoroethane: R or S?',
         fig: { mol: 'bcfe_plane' },
         choices: ['R', 'S', 'It has none, because it has no H'],
-        why: 'Here 4 is the CH₃, attached through carbon. It lies in the page, so spear the molecule from the side, through ' +
-             'the Br (the other group in the page), and rotate it 120°: the CH₃ goes to the dash. Br → Cl → F then runs ' +
-             'clockwise. R.' },
+        why: 'Here 4 is the CH₃, attached through carbon. It lies in the page, so spear the molecule from the side, between ' +
+             'the two bonds in the page, and rotate it 90°: the CH₃ goes to the dash. Br → Cl → F then runs clockwise. R.' },
       { id: 'c-hidden',
         q: 'What is the configuration of C2 in this drawing of 2-bromobutane?',
         fig: { mol: 'bromobutane_line', numbers: true },

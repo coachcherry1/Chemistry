@@ -293,18 +293,23 @@ var Viewer3D = (function () {
       }
       (o.spears || []).forEach(function (sp) {
         var base = sp.world ? sp.at : G.add(o.offset, G.sub(sp.at, piv));
-        var hl = self.radius * 0.98, n = 10, lo = sp.out ? 0 : -0.8;
+        /* a spear with two turns: the front half makes one, the back half the other */
+        var hl = self.radius * 0.98, n = 8;
+        var lo = sp.part === 'front' ? 0.02 : -0.95, hi = sp.part === 'back' ? -0.02 : 1;
         for (var k = 0; k < n; k++) {
-          var t0 = lo + (1 - lo) * k / n, t1 = lo + (1 - lo) * (k + 1) / n;
+          var t0 = lo + (hi - lo) * k / n, t1 = lo + (hi - lo) * (k + 1) / n;
           var w0 = G.add(base, G.mul(sp.axis, hl * t0)), w1 = G.add(base, G.mul(sp.axis, hl * t1));
           var a0 = project(w0), a1 = project(w1);
-          items.push({ type: 'rod', z: (a0.z + a1.z) / 2 - 0.1, a: a0, b: a1, tip: k === n - 1, sp: sp, oi: oi });
+          items.push({ type: 'rod', z: (a0.z + a1.z) / 2 - 0.1, a: a0, b: a1, tip: k === n - 1 && sp.part !== 'back',
+                       label: sp.label && (sp.part === 'back' ? k === 0 : k === n - 1) ? { at: sp.part === 'back' ? a0 : a1 } : null,
+                       sp: sp, oi: oi });
         }
       });
       all = all.concat(pts);
     });
     items.sort(function (p, q) { return p.z - q.z; });
     var spearCol = hex(cssVar('spear', '#b05f00'));
+    var rodLabels = [];
     this.rods = [];
     var letters = [];
     /* the mirror between two molecules is seen edge-on: a band of glass */
@@ -342,6 +347,8 @@ var Viewer3D = (function () {
           ctx.closePath(); ctx.fill();
         }
         ctx.globalAlpha = 1;
+        if (it.label) rodLabels.push({ x: it.label.at.x, y: it.label.at.y, text: it.sp.label, dir: [it.b.x - it.a.x, it.b.y - it.a.y],
+                                       back: it.sp.part === 'back' });
         if (!it.sp.idle) self.rods.push({ oi: it.oi, id: it.sp.id, ax: it.a.x, ay: it.a.y, bx: it.b.x, by: it.b.y });
         return;
       }
@@ -400,6 +407,24 @@ var Viewer3D = (function () {
       }
       if (self.labels && at.a.el !== 'C' && at.a.el !== 'H' && o.alpha > 0.6) letters.push(at);
       ctx.globalAlpha = 1;
+    });
+
+    /* each spear's angle, at the end of its half of the rod */
+    rodLabels.forEach(function (lb) {
+      var l = Math.hypot(lb.dir[0], lb.dir[1]) || 1, ux = lb.dir[0] / l * (lb.back ? -1 : 1), uy = lb.dir[1] / l * (lb.back ? -1 : 1);
+      var fs = Math.max(11, Math.round(scale * 0.2));
+      ctx.font = '700 ' + fs + 'px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      /* beside the end of the rod, on its right, a little back from the end */
+      var px = -uy, py = ux;
+      if (px < 0 || (px === 0 && py > 0)) { px = -px; py = -py; }
+      var x = lb.x - ux * fs * 0.9 + px * fs * 1.7, y = lb.y - uy * fs * 0.9 + py * fs * 1.7;
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = cssVar('panel', '#ffffff');
+      ctx.strokeText(lb.text, x, y);
+      ctx.fillStyle = spearCol;
+      ctx.fillText(lb.text, x, y);
     });
 
     /* element letters last, so no bond is drawn across one */

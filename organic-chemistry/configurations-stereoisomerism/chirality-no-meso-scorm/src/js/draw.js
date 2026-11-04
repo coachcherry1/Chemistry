@@ -92,7 +92,8 @@ var Draw = (function () {
   function ang2(d) { return Math.atan2(d[1], d[0]) / RAD; }
 
   /* Fan apart each wedge and dash that share a direction: the wedge to the
-     left (or, for a sideways pair, lower), the dash to the other side. */
+     left (or, for a sideways pair, upper, as on the teacher's worksheets), the
+     dash to the other side. */
   function splay(bonds, wedgeRight) {
     for (var i = 0; i < bonds.length; i++) for (var j = i + 1; j < bonds.length; j++) {
       var a = bonds[i], b = bonds[j];
@@ -105,7 +106,7 @@ var Draw = (function () {
       mid = [mid[0] / l, mid[1] / l];
       var plus = rotate2(mid, SPREAD), minus = rotate2(mid, -SPREAD);
       var vertical = Math.abs(mid[1]) >= Math.abs(mid[0]);
-      var plusIsWedge = vertical ? plus[0] < minus[0] : plus[1] > minus[1];
+      var plusIsWedge = vertical ? plus[0] < minus[0] : plus[1] < minus[1];
       if (wedgeRight) plusIsWedge = !plusIsWedge;
       w.d = plusIsWedge ? plus : minus;
       dsh.d = plusIsWedge ? minus : plus;
@@ -331,28 +332,29 @@ var Draw = (function () {
 
   /* ------------------------------------------------------------ spears */
 
-  /* Klein's spear on a drawing: a shaft through the carbon along the axis,
-     a point at its far end, and a curved arrow round the shaft showing which
-     way the molecule turns, with the angle. The ring of the arrow is drawn
-     as if seen a little from the side: its front half (toward the reader)
-     lies toward the molecule.
-       sp  { id, axis (page coordinates, y up), deg, c (the speared carbon, or
-             null: the drawing's origin),
-             atom (a side spear's group), aria, cls, idle (not clickable) } */
+  /* A spear on a drawing: a shaft through the carbon along the axis, a point
+     at its front end, and a curved arrow round the shaft with the angle. One
+     spear can carry two turns (180° at the front end, 90° at the back), so
+     each turn owns its half of the shaft and its arrow, and clicking either
+     makes that turn. The ring of an arrow is drawn as if seen a little from
+     the side.
+       sp  { id, axis (page coordinates, y up), deg, part ('front', 'back' or
+             'all'), c (the speared carbon, or null: the drawing's origin),
+             aria, cls, idle (not clickable) } */
   function spearShape(L, sp, g, pts, all) {
-    var c = L.verts[sp.c] || [0, 0];
+    var c = sp.c != null && L.verts[sp.c] ? L.verts[sp.c] : [0, 0];
     var u = [sp.axis[0], -sp.axis[1]], ul = Math.sqrt(u[0] * u[0] + u[1] * u[1]) || 1;
     u = [u[0] / ul, u[1] / ul];
     var front = 0, back = 0;
     all.forEach(function (p) {
-      var d = (p[0] - c[0]) * u[0] + (p[1] - c[1]) * u[1];
-      if (d > front) front = d;
-      if (-d > back) back = -d;
+      var dd = (p[0] - c[0]) * u[0] + (p[1] - c[1]) * u[1];
+      if (dd > front) front = dd;
+      if (-dd > back) back = -dd;
     });
-    /* a side spear runs out from the carbon along its bond; the others right through */
-    var backLen = sp.atom != null ? 4 : back + 12;
-    var a = [c[0] - u[0] * backLen, c[1] - u[1] * backLen];
-    var e = [c[0] + u[0] * (front + 38), c[1] + u[1] * (front + 38)];
+    var part = sp.part || 'all';
+    var fEnd = [c[0] + u[0] * (front + 38), c[1] + u[1] * (front + 38)];
+    var bEnd = [c[0] - u[0] * (back + 38), c[1] - u[1] * (back + 38)];
+    var a = part === 'front' ? c : bEnd, e = part === 'back' ? c : fEnd;
     var node = el('g', { class: 'spear' + (sp.cls ? ' ' + sp.cls : ''), 'data-spear': sp.id }, g);
     if (!sp.idle) {
       node.setAttribute('tabindex', '0');
@@ -362,10 +364,14 @@ var Draw = (function () {
     el('line', { x1: a[0], y1: a[1], x2: e[0], y2: e[1], class: 'spear-hit' }, node);
     el('line', { x1: a[0], y1: a[1], x2: e[0], y2: e[1], class: 'spear-shaft' }, node);
     var n = [-u[1], u[0]];
-    el('polygon', { class: 'spear-tip', points: [[e[0] + u[0] * 11, e[1] + u[1] * 11], [e[0] + n[0] * 5, e[1] + n[1] * 5],
-      [e[0] - n[0] * 5, e[1] - n[1] * 5]].map(function (q) { return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' ') }, node);
-    /* the curved arrow: phi grows the right-handed way about the axis */
-    var r = 13, T = [c[0] + u[0] * (front + 20), c[1] + u[1] * (front + 20)];
+    if (part !== 'back') {
+      el('polygon', { class: 'spear-tip', points: [[e[0] + u[0] * 11, e[1] + u[1] * 11], [e[0] + n[0] * 5, e[1] + n[1] * 5],
+        [e[0] - n[0] * 5, e[1] - n[1] * 5]].map(function (q) { return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' ') }, node);
+    }
+    /* the curved arrow, near the end of this turn's half: phi grows the
+       right-handed way about the axis */
+    var r = 13, out = part === 'back' ? -1 : 1, reach = part === 'back' ? back + 20 : front + 20;
+    var T = [c[0] + out * u[0] * reach, c[1] + out * u[1] * reach];
     var e1 = [-sp.axis[1], -sp.axis[0]];
     var l1 = Math.sqrt(e1[0] * e1[0] + e1[1] * e1[1]) || 1;
     e1 = [e1[0] / l1, e1[1] / l1];
@@ -376,6 +382,7 @@ var Draw = (function () {
     var sgn = sp.deg < 0 ? -1 : 1, endP = sgn > 0 ? 140 : 40, startP = endP - sgn * 280;
     var path = [];
     for (var k = 0; k <= 40; k++) path.push(Q(startP + (endP - startP) * k / 40));
+    el('circle', { cx: T[0], cy: T[1], r: 19, class: 'spear-pad' }, node);
     el('path', { class: 'spear-arc', d: 'M' + path.map(function (q) { return q[0].toFixed(1) + ' ' + q[1].toFixed(1); }).join(' L') }, node);
     var tip = path[path.length - 1], prev = path[path.length - 3];
     var t = [tip[0] - prev[0], tip[1] - prev[1]], tl = Math.sqrt(t[0] * t[0] + t[1] * t[1]) || 1;
@@ -383,12 +390,12 @@ var Draw = (function () {
     var tn = [-t[1], t[0]];
     el('polygon', { class: 'spear-arc-head', points: [[tip[0] + t[0] * 7, tip[1] + t[1] * 7], [tip[0] + tn[0] * 4.2, tip[1] + tn[1] * 4.2],
       [tip[0] - tn[0] * 4.2, tip[1] - tn[1] * 4.2]].map(function (q) { return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' ') }, node);
-    /* the angle, on the side of the arrow away from the molecule's middle */
+    /* the angle, beside the arrow */
     var side = n[0] > 0 || (n[0] === 0 && n[1] < 0) ? n : [-n[0], -n[1]];
     var tx = T[0] + side[0] * (r + 8), ty = T[1] + side[1] * (r + 8);
     el('text', { x: tx, y: ty, 'text-anchor': side[0] > 0.3 ? 'start' : side[0] < -0.3 ? 'end' : 'middle',
                  'dominant-baseline': 'central', class: 'spear-deg' }, node, Math.abs(sp.deg) + '°');
-    pts.push(a, [e[0] + u[0] * 12, e[1] + u[1] * 12], [tx - 18, ty - 9], [tx + 18, ty + 9]);
+    pts.push(a, e, [e[0] + u[0] * 12, e[1] + u[1] * 12], [tx - 18, ty - 9], [tx + 18, ty + 9], [T[0] - 19, T[1] - 19], [T[0] + 19, T[1] + 19]);
     path.forEach(function (q) { pts.push(q); });
     return node;
   }
@@ -416,15 +423,16 @@ var Draw = (function () {
      opts.originAtom the atom at the drawing's origin (the speared carbon)
      opts.origin     or a point there (a zigzag's middle, where it is speared)
      opts.box        a fixed viewBox [x, y, w, h], so a turning drawing stays put
-     opts.shear      a frame of a turn: the page seen a little from the side,
-                     so a wedge and a dash draw apart without fanning (with noSplay) */
+     opts.shear      a frame of a turn, [kx, ky]: the page seen a little from the
+                     side, so a wedge and a dash draw apart without fanning (with
+                     noSplay): a wedge moves left by kx and up by ky */
   function mol(m, opts) {
     opts = opts || {};
     if (m.kind === 'ring') return flat(m, opts);
     var label = opts.label || describe(m, layout(m, opts));
     if (opts.shear) {
-      var k = opts.shear;
-      m = MOLECULES.transformed(m, function (p) { return [p[0] - k * p[2], p[1], p[2]]; });
+      var kx = opts.shear[0], ky = opts.shear[1];
+      m = MOLECULES.transformed(m, function (p) { return [p[0] - kx * p[2], p[1] + ky * p[2], p[2]]; });
     }
     var L = layout(m, opts);
     var s = svg('mol ' + (opts.cls || '') + (opts.spears ? ' with-spears' : ''), label);
@@ -549,6 +557,7 @@ var Draw = (function () {
 
   var SLOT_WORDS = {
     ul: 'in the page, upper left', ur: 'in the page, upper right', ll: 'in the page, lower left',
+    lu: 'in the page, upper left', ld: 'in the page, lower left',
     lr: 'in the page, lower right', w: 'on the wedge, toward you', d: 'on the dash, away from you'
   };
 
