@@ -558,6 +558,12 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 /* --------------------------------------------------- predictions, reveals */
 
 .predict-kicker { margin: 0; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sketch); }
+/* a prediction about one molecule: its drawing on the left */
+.predict-fig-row { display: grid; grid-template-columns: minmax(0, 230px) minmax(0, 1fr); gap: 4px 24px; align-items: center; }
+.predict-fig { margin: 0; text-align: center; }
+.predict-fig .mol { width: 100%; max-width: 230px; max-height: min(150px, 24vh); }
+.predict-fig figcaption { font-size: 0.78rem; color: var(--muted); }
+@media (max-width: 760px) { .predict-fig-row { grid-template-columns: minmax(0, 1fr); } }
 .reveal {
   margin: 10px 0 0;
   padding: 10px 12px;

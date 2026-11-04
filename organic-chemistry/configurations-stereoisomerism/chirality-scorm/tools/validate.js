@@ -488,7 +488,12 @@ const checks = {
   'a-count-dmb': () => CIP.centres(mol('dimethylbutane')).length === 0,
   'a-plane': () => STEREO.centrePlane(mol('ch2brcl')) && !STEREO.chiral(mol('ch2brcl')),
   'a-mirror-behind': () => true,
-  'a-meter': () => STEREO.chiral(mol('chbrclf')),
+  'a-butanol': () => {
+    const b = mol('butanol_line'), p = mol('propanol_line'), on2 = (m) => App.groupsOn(m, m.carbonAt[2]);
+    return CIP.centres(b).map((c) => b.atoms[c].num).join() === '2' && STEREO.chiral(b) && /OH/.test(on2(b)) &&
+      CIP.centres(p).length === 0 && !STEREO.chiral(p) && /OH/.test(on2(p)) && /two CH₃ groups/.test(on2(p)) &&
+      Qn('a-butanol').fig.captions.join() === [b.name, p.name].join();
+  },
   'a-sp2': () => true,
   'b-top': () => texts(mol('chloroethanol'), mol('chloroethanol').centre)[0] === 'Cl',
   'b-why-br': () => ELEMENTS.Br.z > ELEMENTS.F.z,
