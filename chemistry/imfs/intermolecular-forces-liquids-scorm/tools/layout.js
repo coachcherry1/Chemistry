@@ -42,7 +42,7 @@ function groups() {
   const boxes = [...document.querySelectorAll('.heat-canvas')].filter(vis);
   if (boxes.length) {
     const read = document.querySelector('.thermo-read');
-    out.push({ name: 'thermometer and every box', els: [range || read].concat(boxes).filter(Boolean) });
+    out.push({ name: 'thermometer, Heat button and every box', els: [range || read, document.querySelector('.heat-btn')].concat(boxes).filter(Boolean) });
   }
   const pside = [...document.querySelectorAll('.pside .predict')].filter(vis)[0];
   if (pside && range) out.push({ name: 'prediction and the thermometer', els: [pside, range] });

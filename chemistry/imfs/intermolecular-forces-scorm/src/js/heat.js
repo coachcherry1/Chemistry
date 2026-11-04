@@ -1,8 +1,11 @@
 /* heat.js: the heating stage.
  *
  * Boxes of particles side by side, one substance in each, and one
- * thermometer for all of them. Drag the thermometer and every box warms or
- * cools together.
+ * thermometer for all of them. Press Heat and the thermometer climbs steadily
+ * from the coldest to the hottest temperature in 10 seconds, warming every
+ * box together (Pause stops it; at the top, Start again goes back to the
+ * cold end). The thermometer only shows the temperature: students cannot
+ * jump it, so they watch each substance melt and boil in turn.
  *
  * Inside each box the particles really attract each other (a Lennard-Jones
  * pull that grows as two come close, with a push at very short range),
@@ -29,7 +32,7 @@
  *  - Particles are drawn as their molecule's shape, but each one moves as a
  *    single ball. Sizes are not to scale.
  * With reduced motion the boxes stand still: each shows its phase as a
- * still picture that updates when the thermometer moves.
+ * still picture that updates as the thermometer climbs.
  */
 
 function HeatStage(host, opts) {
@@ -83,13 +86,18 @@ function HeatStage(host, opts) {
              p: [], v: [], a: [], ang: [], spin: [], Tst: reduced(id, K), glyph: glyphOf(id) };
   });
 
+  /* the thermometer: a gauge only (the Heat button drives it) */
   var range = h('input', { type: 'range', class: 'thermo-range', min: String(Math.round(minK)), max: String(Math.round(maxK)),
-    step: '1', value: String(Math.round(K)), 'aria-label': 'Thermometer' });
+    step: '1', value: String(Math.round(K)), disabled: true, tabindex: '-1', 'aria-hidden': 'true' });
+  var RAMP = 10;                   /* seconds from the cold end to the hot end */
+  var btn = h('button', { type: 'button', class: 'primary heat-btn' });
+  var ramp = null, rampFrom = 0, rampAt = 0;
   var readC = h('span', { class: 'thermo-c' });
   var readK = h('span', { class: 'thermo-k' });
   var thermo = h('div', { class: 'thermo' + (opts.fixed ? ' fixed' : '') }, [
     h('div', { class: 'thermo-read' }, [h('span', { class: 'thermo-icon', 'aria-hidden': 'true', text: '🌡' }), readC, readK]),
     opts.fixed ? null : h('div', { class: 'thermo-track' }, [range]),
+    opts.fixed ? null : h('div', { class: 'btnrow tight' }, [btn]),
     h('p', { class: 'heat-key' }, [h('span', { class: 'imf-line', 'aria-hidden': 'true' }),
       ' dashed lines: the attractions (IMFs) between neighbouring particles'])
   ]);
@@ -283,6 +291,7 @@ function HeatStage(host, opts) {
 
   function setK(k, quiet) {
     K = Math.max(minK, Math.min(maxK, k));
+    paintBtn();
     maxSeen = Math.max(maxSeen, K);
     minSeen = Math.min(minSeen, K);
     range.value = String(Math.round(K));
@@ -297,7 +306,28 @@ function HeatStage(host, opts) {
     if (!quiet && opts.onChange) opts.onChange(K, maxSeen, minSeen);
   }
 
-  range.addEventListener('input', function () { setK(+range.value); });
+  /* Heat: K climbs from where it is to maxK at the rate that takes RAMP
+     seconds for the whole range. With reduced motion the boxes are redrawn
+     as still pictures once a second on the way up. */
+  function paintBtn() {
+    btn.textContent = ramp ? 'Pause' : K >= maxK ? 'Start again from ' + Chem.fmtC(minK) :
+      K > minK ? 'Keep heating' : 'Heat from ' + Chem.fmtC(minK) + ' to ' + Chem.fmtC(maxK);
+    btn.setAttribute('aria-pressed', ramp ? 'true' : 'false');
+  }
+  function stop() { if (ramp) clearInterval(ramp); ramp = null; paintBtn(); }
+  function tick() {
+    var k = rampFrom + (maxK - minK) * (Date.now() - rampAt) / (RAMP * 1000);
+    setK(k);
+    if (K >= maxK) stop();
+  }
+  btn.addEventListener('click', function () {
+    if (ramp) { stop(); return; }
+    if (K >= maxK) setK(minK);
+    rampFrom = K; rampAt = Date.now();
+    ramp = setInterval(tick, reduceMotion ? 1000 : 50);
+    paintBtn();
+  });
+  paintBtn();
 
   boxes.forEach(seed);
   label();
@@ -306,7 +336,9 @@ function HeatStage(host, opts) {
   if (reduceMotion) settle(); else anim = requestAnimationFrame(frame);
 
   return {
-    node: node, range: range,
+    /* `range` is the control the activity locks until a prediction is made
+       and focuses afterwards: the Heat button */
+    node: node, range: btn, gauge: range, heating: function () { return !!ramp; },
     setK: function (k) { setK(k, true); },
     K: function () { return K; },
     maxSeen: function () { return maxSeen; },
@@ -322,6 +354,6 @@ function HeatStage(host, opts) {
       });
       return out;
     },
-    destroy: function () { if (anim) cancelAnimationFrame(anim); anim = null; if (ro) ro.disconnect(); }
+    destroy: function () { if (anim) cancelAnimationFrame(anim); anim = null; if (ramp) clearInterval(ramp); ramp = null; if (ro) ro.disconnect(); }
   };
 }

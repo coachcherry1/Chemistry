@@ -41,7 +41,7 @@ var App = (function () {
       text: 'Predict first. Then warm the water past its boiling point and watch what leaves the liquid.' },
     { id: 'argon', part: 1, kind: 'race', title: 'Temperature and speed', ids: ['Ar'], predict: 'speed',
       minK: C(-200), maxK: C(-170), startK: C(-200),
-      text: 'Argon atoms attract each other. Drag the thermometer from −200 °C up to −170 °C and watch the atoms.' },
+      text: 'Argon atoms attract each other. Press Heat to warm them from −200 °C to −170 °C, and watch the atoms.' },
 
     { id: 'he-ne', part: 2, kind: 'race', title: 'Helium and neon', ids: ['He', 'Ne'], predict: 'heNe',
       minK: 2, maxK: 32, startK: 2, assign: true,
@@ -331,6 +331,12 @@ var App = (function () {
     return lines.join(' ');
   }
 
+  /* said when the Heat run has taken every substance past its boiling point */
+  function boiled(s) {
+    return (s.ids.length === 1 ? Chem.cap(sub(s.ids[0]).name) + ' has boiled.' : 'Every one has boiled.') +
+      ' Read what happened, then press Next.';
+  }
+
   var RENDER = {};
 
   /* ---- name the IMFs of each substance, from its Lewis structure
@@ -421,7 +427,7 @@ var App = (function () {
     var side = h('div', { class: 'predict-host' });
     var a = s.assign ? assignBlock(s, { onDone: function () { draw(); return 'Now predict.'; } }) : null;
     if (a) el.stage.appendChild(assignPanel(a));
-    el.stage.appendChild(row('race n' + s.ids.length, [panel('The heating stage', 'drag the thermometer', [host], 'pheat'),
+    el.stage.appendChild(row('race n' + s.ids.length, [panel('The heating stage', 'press Heat: cold to hot in 10 seconds', [host], 'pheat'),
       panel('Predict, then watch', null, [side], 'pside')]));
     var top = Math.max.apply(null, s.ids.map(function (id) { return sub(id).bp; }));
     var stage = HeatStage(host, { ids: s.ids, minK: s.minK, maxK: s.maxK, startK: s.startK, onChange: check });
@@ -430,9 +436,9 @@ var App = (function () {
     function check(K, maxSeen) {
       if (state.done[s.id] || state.pr[s.id] == null) return;
       if (maxSeen >= top + 0.5) {
-        complete();
+        complete(boiled(s));
         draw();
-      } else say(s.ids.length === 1 ? 'Keep going: past ' + Chem.fmtT(top) + '.' : 'Keep warming until every one has boiled.');
+      } else say(s.ids.length === 1 ? 'Watch the atoms as the temperature climbs past ' + Chem.fmtT(top) + '.' : 'Watch each one melt and boil as the temperature climbs.');
     }
 
     function draw() {
@@ -446,7 +452,7 @@ var App = (function () {
         persist();
         stage.range.disabled = false;
         draw();
-        say('Now drag the thermometer.');
+        say('Now press Heat and watch.');
         stage.range.focus();
       }));
       if (state.done[s.id]) {
@@ -475,7 +481,7 @@ var App = (function () {
     var p = PREDICT.bubbles;
     var host = h('div', { class: 'heat-host' });
     var side = h('div', { class: 'predict-host' });
-    el.stage.appendChild(row('race n1', [panel('Water on the heating stage', 'drag the thermometer', [host], 'pheat'),
+    el.stage.appendChild(row('race n1', [panel('Water on the heating stage', 'press Heat: cold to hot in 10 seconds', [host], 'pheat'),
       panel('Predict, then watch', null, [side], 'pside')]));
     var stage = HeatStage(host, { ids: s.ids, minK: s.minK, maxK: s.maxK, startK: s.startK, onChange: function (K, maxSeen) {
       if (!state.done[s.id] && state.pr.bubbles != null && maxSeen >= sub('H2O').bp + 5) { complete(); draw(); }
@@ -484,7 +490,7 @@ var App = (function () {
     function draw() {
       side.innerHTML = '';
       side.appendChild(predictCard(p, state.pr.bubbles, function (i) {
-        state.pr.bubbles = i; persist(); stage.range.disabled = false; draw(); say('Now warm the water past 100 °C.');
+        state.pr.bubbles = i; persist(); stage.range.disabled = false; draw(); say('Now press Heat and watch the water.');
       }));
       if (state.done[s.id]) {
         side.appendChild(reveal([verdict(p, state.pr.bubbles) + 'Every particle that leaves is still a whole H₂O ' +
@@ -842,7 +848,7 @@ var App = (function () {
     } });
     el.stage.appendChild(h('div', { class: 'col' }, [panel('Name the IMFs, then count', s.full ? 'H on N, O or F; lone pairs on N, O or F' :
       'from each Lewis structure', [a.node], 'pcount'),
-      row('race n' + s.ids.length, [panel('The heating stage', 'drag the thermometer', [heatHost], 'pheat'),
+      row('race n' + s.ids.length, [panel('The heating stage', 'press Heat: cold to hot in 10 seconds', [heatHost], 'pheat'),
         panel('Predict, then watch', null, [side], 'pside')])]));
     var p = predictionFor(s.predict, s.ids);
     var stage = null;
@@ -879,7 +885,7 @@ var App = (function () {
       if (!a.done()) { side.appendChild(h('p', { class: 'muted', text: 'First name the IMFs of each (above). Then count, then predict.' })); return; }
       if (!counted()) { side.appendChild(h('p', { class: 'muted', text: 'Count first; then predict.' })); return; }
       side.appendChild(predictCard(p, state.pr[s.id], function (i) {
-        state.pr[s.id] = i; persist(); paintSide(); startStage(); say('Now drag the thermometer.');
+        state.pr[s.id] = i; persist(); paintSide(); startStage(); say('Now press Heat and watch.');
       }));
       if (state.done[s.id]) side.appendChild(reveal([verdict(p, state.pr[s.id]), raceStory(s.ids)]));
     }
@@ -888,7 +894,7 @@ var App = (function () {
       if (stage) { stage.range.disabled = false; return; }
       heatHost.innerHTML = '';
       stage = HeatStage(heatHost, { ids: s.ids, minK: s.minK, maxK: s.maxK, startK: s.startK, onChange: function (K, maxSeen) {
-        if (!state.done[s.id] && maxSeen >= top + 0.5) { complete(); paintSide(); }
+        if (!state.done[s.id] && maxSeen >= top + 0.5) { complete(boiled(s)); paintSide(); }
       } });
       if (state.done[s.id]) stage.setK(top + 3);
     }
@@ -908,7 +914,7 @@ var App = (function () {
     var a = assignBlock(s, { onDone: function () { paint(); return 'Now put them in order of boiling point, lowest first.'; } });
     el.stage.appendChild(assignPanel(a));
     el.stage.appendChild(h('div', { class: 'col' }, [panel('Lowest boiling point first', 'click them in order', [cards], 'prank'),
-      row('race n' + s.ids.length, [panel('The heating stage', 'drag the thermometer', [heatHost], 'pheat'), panel('Why', null, [side], 'pside')])]));
+      row('race n' + s.ids.length, [panel('The heating stage', 'press Heat: cold to hot in 10 seconds', [heatHost], 'pheat'), panel('Why', null, [side], 'pside')])]));
     var stage = null;
     var top = Math.max.apply(null, s.ids.map(function (id) { return sub(id).bp; }));
     function correctOrder() { return s.ids.slice().sort(function (a, b) { return sub(a).bp - sub(b).bp; }); }
@@ -929,7 +935,7 @@ var App = (function () {
       var want = correctOrder();
       if (want[order.length] === id) {
         order.push(id);
-        say(order.length === s.ids.length ? 'Right order. Now warm them and check it against the real boiling points.' :
+        say(order.length === s.ids.length ? 'Right order. Now press Heat and check it against the real boiling points.' :
           sub(id).text + ' is next. Which comes after it?', 'good');
         if (order.length === s.ids.length) startStage();
       } else {
@@ -950,7 +956,7 @@ var App = (function () {
       if (stage) return;
       heatHost.innerHTML = '';
       stage = HeatStage(heatHost, { ids: s.ids, minK: s.minK, maxK: s.maxK, startK: s.startK, onChange: function (K, maxSeen) {
-        if (!state.done[s.id] && maxSeen >= top + 0.5) { complete(); paintSide(); }
+        if (!state.done[s.id] && maxSeen >= top + 0.5) { complete(boiled(s)); paintSide(); }
       } });
       if (state.done[s.id]) stage.setK(top + 3);
     }
@@ -1173,7 +1179,7 @@ var App = (function () {
       h('p', { text: 'Predictions are never graded, so try things. The four checkpoints are graded: your first answer to ' +
                      'each question counts. About 25 minutes. Your progress is saved if you leave.' }),
       h('p', { class: 'screen-note', text: 'Every melting and boiling point here is real. Everything works with a mouse, ' +
-                     'a touch screen or the keyboard (Tab, Enter, and the arrow keys on the thermometer).' })
+                     'a touch screen or the keyboard (Tab and Enter).' })
     ]);
     var go = h('button', { type: 'button', class: 'primary', text: state.max > 0 ? 'Continue where you left off' : 'Start' });
     box.appendChild(go);

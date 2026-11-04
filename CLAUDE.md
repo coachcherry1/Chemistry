@@ -250,7 +250,7 @@ not the full page.
 - **Files:** `species.js`, `vsepr.js` (model), `viewer3d.js` (canvas 3D, lone-pair lobes, arcs, charges), `field.js`
   (field test), `quiz.js`, `app.js`, plus the copied Lewis files.
 
-## intermolecular-forces-scorm (branch `intermolecular-forces`, zip v4, SCHEMA 3)
+## intermolecular-forces-scorm (branch `intermolecular-forces`, zip v5, SCHEMA 3)
 
 - **Key objective:** IMFs are between molecules; stronger IMFs, higher mp/bp; with similar electron counts LDF <
   dipole-dipole < hydrogen bonding.
@@ -276,6 +276,10 @@ not the full page.
   from the real mp/bp: solid 0.03 to 0.15, liquid 0.33 to 0.38, gas 1.8 to 2.8. Dashed IMF lines join close pairs
   (r < 1.27) in solids and liquids, none in a gas (drawn as ideal). Motion is illustrative (solid still, liquid slow);
   no speeds and no boiling-point ticks are shown.
+- **Heat button, not a slider** (the teacher saw students jump the thermometer): Heat warms every box from `minK` to
+  `maxK` in 10 s (`RAMP`), Pause holds it, Start again returns to the cold end. The range input is a gauge only;
+  `stage.range` is the button, so the activity's lock-until-predicted code is unchanged. Same `heat.js` in both IMF
+  packages.
 - **Files:** `data.js`, `chem.js` (model), `mol2d.js` (Lewis SVG scenes, H-bond lines), `heat.js`, `cloud.js`
   (polarizability), `quiz.js`, `app.js`.
 - **Walkthrough harness (both new packages):** the fake LMS reads and writes sessionStorage on every call and never stages
@@ -315,7 +319,7 @@ not the full page.
   `arrows.js`, `play.js`, `chair.js` (from the chairs activity), `molecules.js`, `quiz.js`, `app.js`, `steps1.js` (Parts 1-2),
   `steps2.js` (Parts 3-4), `steps3.js` (Part 5).
 
-## intermolecular-forces-liquids-scorm (zip v1, SCHEMA 1)
+## intermolecular-forces-liquids-scorm (zip v2, SCHEMA 1)
 
 - A copy of `intermolecular-forces-scorm/` (left as it is; the teacher's base version) with part 6, **properties of
   liquids** (10 to 15 min), and its own SCORM ids (`IMFL_*`) and storage key. Fixes to parts 1 to 5 belong in both copies.
