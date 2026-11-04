@@ -239,20 +239,22 @@
       products = [major('tBuBr', key), textSpecies('EtOH'), textSpecies('Br⁻')];
       profile = Anim.PROFILES.e2;
     }
-    var after = h('div');
-    var ab = U.arrowBox(sc, pr, 'a', function () { paintAfter(); if (!U.isDone(s.id)) U.complete(); });
+    var after = h('div'), rxnHost = h('div', null, [U.rxn(sub, React.REAGENTS[key].text, [])]);
+    var eb = null;
+    var ab = U.arrowBox(sc, pr, 'a', function () { paintAfter(); if (!U.isDone(s.id)) U.complete(); },
+      { onPlay: function (p) { if (eb) eb.draw(p); } });
     stage().appendChild(h('div', { class: 'work work-wide' }, [
-      U.panel(sc.title + ' mechanism', 'arrows from electrons', [ab.node]),
-      U.panel('The reaction', null, [U.rxn(sub, React.REAGENTS[key].text, []), after])
+      U.panel(sc.title + ' mechanism', 'arrows from electrons, then watch it happen', [ab.node]),
+      U.panel('The reaction', null, [rxnHost, after])
     ]));
     function paintAfter() {
       after.innerHTML = '';
-      var prodRow = h('div', { class: 'rxn' }, products.map(function (p, i) {
-        return p.nodeType ? p : U.molCard(p);
-      }).reduce(function (acc, n, i) { if (i) acc.push(h('span', { class: 'plus', text: '+' })); acc.push(n); return acc; }, []));
-      after.appendChild(h('p', { class: 'muted', text: 'Products:' }));
-      after.appendChild(prodRow);
-      after.appendChild(U.energyBox(profile, { p: 1 }).node);
+      /* written out in one line: substrate, reagent, products */
+      rxnHost.innerHTML = '';
+      rxnHost.appendChild(U.rxn(sub, React.REAGENTS[key].text, products));
+      /* the marker follows the animation, which starts at the arrows */
+      eb = U.energyBox(profile, { p: 0 });
+      after.appendChild(eb.node);
       after.appendChild(U.reveal([s.mech === 'sn2'
         ? 'One step, one transition state: the S–C bond forms as the C–Br bond breaks. Both the substrate and HS⁻ are in that step, so SN2 is bimolecular.'
         : 'One step, one transition state: EtO⁻ takes the H, the C–H electrons become the π bond, and Br⁻ leaves, all at once. E2 is bimolecular.']));
@@ -349,7 +351,7 @@
       var read = h('p', { class: 'readout' });
       var chips = U.chipRow('Substrate', s.mols.map(function (id) { return molName(mol(id)); }), k,
         function (i) { return !!(pr.seen & (1 << i)); }, function () { return true; }, function (i) { k = i; pr.k = k; U.persist(); paint(); });
-      area.appendChild(U.panel('The back side', 'the α carbon is blue', [chips, h('div', { class: 'work' }, [
+      area.appendChild(U.panel('Steric hindrance at the back side', 'the α carbon is blue', [chips, h('div', { class: 'work' }, [
         h('div', null, [vb.node, h('div', { class: 'btnrow' }, [go])]),
         h('div', null, [U.molCard(m), read, h('div', { class: 'ranking' })])
       ])]));
@@ -357,9 +359,9 @@
       vb.viewer().setFrame(ap.frame(0));
       function text() {
         var n = ap.crowd;
-        if (ap.blocked) return 'Three CH₃ groups surround the back side. HS⁻ cannot get near the α carbon: no SN2 at a 3° carbon.';
-        if (n === 0) return 'Nothing is in the way: HS⁻ reaches the back of the α carbon easily. Fastest.';
-        return (n === 1 ? 'One β carbon puts an H in the way (red): a little crowded. Fast.' : 'Two β carbons put H atoms in the way (red): crowded. Slower.');
+        if (ap.blocked) return 'Three CH₃ groups surround the back side: too much steric hindrance. HS⁻ cannot get near the α carbon, so there is no SN2 at a 3° carbon.';
+        if (n === 0) return 'No steric hindrance: nothing is in the way, and HS⁻ reaches the back of the α carbon easily. Fastest.';
+        return (n === 1 ? 'One β carbon puts an H in the way (red): a little steric hindrance. Fast.' : 'Two β carbons put H atoms in the way (red): more steric hindrance. Slower.');
       }
       go.addEventListener('click', function () {
         if (anim) cancelAnimationFrame(anim);
@@ -384,7 +386,7 @@
     function finish(quiet) {
       var box = area.querySelector('.ranking');
       if (box && !box.children.length) box.appendChild(U.reveal([U.verdict(P.fastest, pr.p) +
-        'SN2 rate: methyl > 1° > 2°, and a 3° substrate does not react by SN2 at all. Every carbon on the α carbon crowds the back side.']));
+        'SN2 rate: methyl > 1° > 2°, and a 3° substrate does not react by SN2 at all. Every carbon on the α carbon adds steric hindrance at the back side.']));
       if (!quiet || !U.isDone(s.id)) U.complete();
     }
     paint();
@@ -412,25 +414,29 @@
     function doneCount() { var n = 0; for (var i = 0; i < 3; i++) if (pr['a' + i]) n++; return n; }
     function paint() {
       left.innerHTML = '';
-      var chips = U.chipRow('Step', names, k, function (i) { return !!pr['a' + i]; }, function (i) { return i === 0 || !!pr['a' + (i - 1)]; },
-        function (i) { k = i; paint(); });
+      var chipsHost = h('div');
+      function chipRow() {
+        return U.chipRow('Step', names, k, function (i) { return !!pr['a' + i]; }, function (i) { return i === 0 || !!pr['a' + (i - 1)]; },
+          function (i) { k = i; paint(); });
+      }
+      chipsHost.appendChild(chipRow());
+      var here = k;
+      var nextBtn = h('div', { class: 'btnrow' });
       var ab = U.arrowBox(scenes[k], pr, 'a' + k, function (fresh) {
         if (doneCount() === 3 && !U.isDone(s.id)) U.complete('All three steps. ' + NOTES[2]);
-        if (fresh && k < 2) {
-          /* straight on to the next step, with this one's lesson */
-          var note = NOTES[k] + ' On to step ' + (k + 2) + '.';
-          k++; paint(); U.say(note, 'good');
-          return;
-        }
         paintRight();
-      });
-      left.appendChild(U.panel('SN1 of 2-bromo-2-methylpropane in ethanol', null, [chips, ab.node]));
+        if (fresh) U.say(NOTES[here] + (here < 2 ? ' Watch it happen, then on to step ' + (here + 2) + '.' : ''), 'good');
+        if (here < 2) nextBtn.appendChild(h('button', { type: 'button', class: 'primary', text: 'On to step ' + (here + 2) + ' →', onclick: function () { k = here + 1; paint(); } }));
+        chipsHost.innerHTML = ''; chipsHost.appendChild(chipRow());
+      }, { onPlay: function (p) { if (eb) eb.draw((here + p) / 3, Math.max((here + p) / 3, doneCount() / 3)); } });
+      left.appendChild(U.panel('SN1 of 2-bromo-2-methylpropane in ethanol', null, [chipsHost, ab.node, nextBtn]));
       paintRight();
     }
+    var eb = null;
     function paintRight() {
       right.innerHTML = '';
       var n = doneCount();
-      var eb = U.energyBox(Anim.PROFILES.sn1, { p: [0, 0.33, 0.67, 1][n], upto: [0, 0.34, 0.67, 1][n],
+      eb = U.energyBox(Anim.PROFILES.sn1, { p: [0, 0.33, 0.67, 1][n], upto: [0, 0.34, 0.67, 1][n],
         bands: [{ from: 0, to: 0.67, text: 'Substitution', cls: 'sub' }, { from: 0.67, to: 1, text: 'Proton transfer', cls: 'pt' }] });
       var notes = [];
       for (var i = 0; i < n; i++) notes.push(NOTES[i]);
@@ -541,17 +547,19 @@
       var after = h('div');
       var chips = U.chipRow('Substrate', s.mols.map(function (id) { return molName(mol(id)); }), k,
         function (i) { return !!pr['a' + i]; }, function (i) { return i === 0 || !!pr.a0; }, function (i) { k = i; paint(); });
+      var eb = U.energyBox(Anim.PROFILES.shift, { p: pr['a' + k] ? 1 : 0.4, upto: pr['a' + k] ? 1 : 0.34 });
+      var nextBtn = h('div', { class: 'btnrow' });
       var ab = U.arrowBox(sc, pr, 'a' + k, function (fresh) {
         paintAfter();
         if (pr.a0 && pr.a1 && !U.isDone(s.id)) U.complete();
-        else if (fresh && k === 0) {
-          var t = 'Right: a ' + (cp.shift.kind === 'H' ? 'hydride' : 'methyl') + ' shift. Now the other substrate.';
-          setTimeout(function () { k = 1; paint(); U.say(t, 'good'); }, U.reduceMotion ? 0 : 1600);
+        else if (k === 0) {
+          if (fresh) U.say('Right: a ' + (cp.shift.kind === 'H' ? 'hydride' : 'methyl') + ' shift. Watch it happen, then the other substrate.', 'good');
+          nextBtn.appendChild(h('button', { type: 'button', class: 'primary', text: 'The other substrate →', onclick: function () { k = 1; paint(); } }));
         }
-      });
+      }, { onPlay: function (p) { eb.draw(1 / 3 + p / 3, p >= 1 ? 1 : 1 / 3 + p / 3); } });
       area.appendChild(h('div', { class: 'work work-wide' }, [
-        U.panel('Draw the shift', molName(m) + ' in ethanol', [chips, ab.node]),
-        U.panel('Energy and products', null, [U.energyBox(Anim.PROFILES.shift, { p: pr['a' + k] ? 1 : 0.4, upto: pr['a' + k] ? 1 : 0.34 }).node, after])
+        U.panel('Draw the shift', molName(m) + ' in ethanol', [chips, ab.node, nextBtn]),
+        U.panel('Energy and products', null, [eb.node, after])
       ]));
       function paintAfter() {
         after.innerHTML = '';

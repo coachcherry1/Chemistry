@@ -8,7 +8,8 @@
  * Every step is opened at each window size and taken to where the student
  * works (predictions made). Then whatever a student works with must be on
  * screen at once, after scrolling the first of it to the top of the window:
- *   - a mechanism and its Check button;
+ *   - a mechanism and its Check button; once its arrows are right, the step
+ *     played, its slider and the energy diagram the slider moves;
  *   - a 3D model, its slider and the energy diagram it moves;
  *   - a Newman projection, its turn buttons, the 3D model and Eliminate;
  *   - a chair drawing, its flip slider and its Newman projection;
@@ -37,6 +38,8 @@ function groups() {
   const out = [];
   const tool = first('.arrow-tool');
   if (tool) out.push({ name: 'mechanism and Check', els: [tool.querySelector('svg'), tool.querySelector('.arrow-tools') || tool.querySelector('svg')] });
+  const play = first('.play-host svg.player');
+  if (play) out.push({ name: 'animation, its slider and energy diagram', els: [play, first('.play-host .prog-range'), first('.energy')].filter(Boolean) });
   const nh = first('.newman-host');
   if (nh) {
     const turn = first('.turnbar');
@@ -76,6 +79,18 @@ function groups() {
         await page.waitForTimeout(60);
       }
       await page.waitForTimeout(200);
+      /* then the same step with its arrows right: the step, played */
+      for (let pass = 0; pass < 2; pass++) {
+      if (pass === 1) {
+        const played = await page.evaluate(() => {
+          const t = [...document.querySelectorAll('.arrow-tool')].find((n) => !n.hidden && n.parentNode.__finish);
+          if (!t) return false;
+          t.parentNode.__finish();
+          return true;
+        });
+        if (!played) break;
+        await page.waitForTimeout(150);
+      }
       const r = await page.evaluate((src) => {
         const res = { side: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1, fit: [] };
         const gs = (0, eval)('(' + src + ')')();
@@ -94,13 +109,14 @@ function groups() {
       const probs = [];
       if (r.side) probs.push('scrolls sideways');
       r.fit.forEach((f) => { if (!f.ok) probs.push(`${f.name} needs ${f.span}px, window ${hgt} (${f.rs})`); });
-      if (probs.length) { bad++; out.push(`  ${st.id}: ${probs.join('; ')}`); }
+      if (probs.length) { bad++; out.push(`  ${st.id}${pass ? ' (played)' : ''}: ${probs.join('; ')}`); }
       if (shots && r.fit.length) {
         require('fs').mkdirSync(shots, { recursive: true });
         for (let i = 0; i < r.fit.length; i++) {
           await page.evaluate((y) => window.scrollTo(0, y), r.fit[i].y);
-          await page.screenshot({ path: path.join(shots, `${w}x${hgt}-${st.id}-${i + 1}.png`) });
+          await page.screenshot({ path: path.join(shots, `${w}x${hgt}-${st.id}${pass ? '-played' : ''}-${i + 1}.png`) });
         }
+      }
       }
     }
     bad += errs.length;

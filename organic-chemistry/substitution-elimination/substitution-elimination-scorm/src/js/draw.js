@@ -55,6 +55,8 @@ var Draw = (function () {
     var left = dirIn != null && dirIn > 0.3;   /* the neighbour is to the right: write it backwards */
     if (ab) return { text: left ? ab.left : ab.text, anchorAt: left ? ab.left.length - 1 : 0, alkyl: !!ab.alkyl, el: ab.alkyl ? 'C' : a.el };
     if (a.el === 'C') {
+      /* a carbanion's C (cyanide) is written out in a mechanism, so its lone pair shows */
+      if (opts.mech && a.charge < 0 && m.lonePairs(i) > 0) return { text: 'C', anchorAt: 0, el: 'C' };
       if (m.atoms.filter(function (x) { return x.el === 'C'; }).length === 1 && !opts.mech) {
         var t = 'C' + (a.h ? 'H' + (SUB[a.h] || '') : '');
         if (left) t = (a.h ? 'H' + (SUB[a.h] || '') : '') + 'C';
@@ -77,7 +79,15 @@ var Draw = (function () {
        pick        atoms drawn as focusable targets: { atom: aria label }
        label       aria-label (default: the name)
        mech        mechanism style (layout.js)
-       g, at       draw into group g at offset at (for scenes)            */
+       g, at       draw into group g at offset at (for scenes)
+     and for a frame of an animation (play.js):
+       layout      positions etc. given (layout.js's shape), not computed
+       bondStyle   { bond: { op, dash, op2, dash2 } }  a bond (and the
+                   second line of a double bond) fading, or dashed while
+                   it breaks or forms
+       lpN         { atom: n }   lone pairs drawn, instead of the atom's own
+       lpAt        { atom: [[dx, dy]] }  where they go, instead of computed
+       chargeOp    { atom: op }  a charge fading in or out               */
   function mol(m, opts) {
     opts = opts || {};
     var sc = opts.scale || S;
@@ -115,7 +125,9 @@ var Draw = (function () {
       var s0 = shrink(b.a), s1 = shrink(b.b);
       var p0 = [a[0] + ux * s0, a[1] + uy * s0], p1 = [c[0] - ux * s1, c[1] - uy * s1];
       var cls = 'm-bond' + (opts.hotBond && opts.hotBond[k] ? ' ' + opts.hotBond[k] : '');
-      var w = L.wedge[k];
+      var st = (opts.bondStyle && opts.bondStyle[k]) || {};
+      var st2 = { op: st.op2 != null ? st.op2 : st.op, dash: st.op2 != null ? st.dash2 : st.dash };
+      var w = st.dash ? null : L.wedge[k];
       geo.bonds[k] = { p0: p0, p1: p1, mid: [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2] };
       if (w) {
         var from = w.from === b.a ? p0 : p1, to = w.from === b.a ? p1 : p0;
@@ -135,11 +147,11 @@ var Draw = (function () {
         }
         return;
       }
-      line(p0, p1, cls);
+      line(p0, p1, cls, st);
       if (b.order === 3) {
         var tx = -uy * 0.15 * sc, ty = ux * 0.15 * sc;
-        line([p0[0] + tx, p0[1] + ty], [p1[0] + tx, p1[1] + ty], cls);
-        line([p0[0] - tx, p0[1] - ty], [p1[0] - tx, p1[1] - ty], cls);
+        line([p0[0] + tx, p0[1] + ty], [p1[0] + tx, p1[1] + ty], cls, st);
+        line([p0[0] - tx, p0[1] - ty], [p1[0] - tx, p1[1] - ty], cls, st);
         return;
       }
       if (b.order >= 2) {
@@ -148,18 +160,20 @@ var Draw = (function () {
         if (side === 0) {
           /* centred: redraw as two lines either side */
           gb.removeChild(gb.lastChild);
-          line([p0[0] + nx2 * gap / 2, p0[1] + ny2 * gap / 2], [p1[0] + nx2 * gap / 2, p1[1] + ny2 * gap / 2], cls);
-          line([p0[0] - nx2 * gap / 2, p0[1] - ny2 * gap / 2], [p1[0] - nx2 * gap / 2, p1[1] - ny2 * gap / 2], cls);
+          line([p0[0] + nx2 * gap / 2, p0[1] + ny2 * gap / 2], [p1[0] + nx2 * gap / 2, p1[1] + ny2 * gap / 2], cls, st);
+          line([p0[0] - nx2 * gap / 2, p0[1] - ny2 * gap / 2], [p1[0] - nx2 * gap / 2, p1[1] - ny2 * gap / 2], cls, st2);
         } else {
           var sh = 0.14 * len;
           var q0 = [p0[0] + ux * (labels[b.a] ? 0 : sh) + nx2 * gap * side, p0[1] + uy * (labels[b.a] ? 0 : sh) + ny2 * gap * side];
           var q1 = [p1[0] - ux * (labels[b.b] ? 0 : sh) + nx2 * gap * side, p1[1] - uy * (labels[b.b] ? 0 : sh) + ny2 * gap * side];
-          line(q0, q1, cls);
+          line(q0, q1, cls, st2);
         }
       }
     });
-    function line(p0, p1, cls) {
-      el('line', { class: cls, x1: p0[0].toFixed(1), y1: p0[1].toFixed(1), x2: p1[0].toFixed(1), y2: p1[1].toFixed(1) }, gb);
+    function line(p0, p1, cls, st) {
+      st = st || {};
+      el('line', { class: cls + (st.dash ? ' partial' : ''), x1: p0[0].toFixed(1), y1: p0[1].toFixed(1), x2: p1[0].toFixed(1), y2: p1[1].toFixed(1),
+        opacity: st.op != null && st.op < 0.999 ? st.op.toFixed(2) : null }, gb);
     }
 
     /* atom labels, charges, lone pairs */
@@ -180,8 +194,8 @@ var Draw = (function () {
       }
       var wantLp = opts.lp === true ? (a.el !== 'C' && a.el !== 'H') : opts.lp && opts.lp.indexOf(i) >= 0;
       if (wantLp && lab && !lab.alkyl) {
-        var n = m.lonePairs(i);
-        var dirs = lpDirs(i, n);
+        var n = opts.lpN && opts.lpN[i] != null ? opts.lpN[i] : m.lonePairs(i);
+        var dirs = opts.lpAt && opts.lpAt[i] ? opts.lpAt[i] : lpDirs(i, n);
         geo.lp[i] = [];
         dirs.forEach(function (d, q) {
           var r = 0.5 * sc;
@@ -219,8 +233,11 @@ var Draw = (function () {
         if (Math.cos(best) > 0.3) cx = Math.max(cx, lx.x1 + 7);
         if (Math.cos(best) < -0.3) cx = Math.min(cx, lx.x0 - 7);
       }
-      el('circle', { cx: cx.toFixed(1), cy: cy.toFixed(1), r: 6.2, class: 'm-charge-ring' }, gl);
-      el('text', { x: cx.toFixed(1), y: (cy + 4).toFixed(1), class: 'm-charge', 'text-anchor': 'middle' }, gl, a.charge > 0 ? '+' : '−');
+      var cop = opts.chargeOp && opts.chargeOp[i] != null ? opts.chargeOp[i] : 1;
+      if (cop < 0.02) return;
+      var gq = cop < 0.999 ? el('g', { opacity: cop.toFixed(2) }, gl) : gl;
+      el('circle', { cx: cx.toFixed(1), cy: cy.toFixed(1), r: 6.2, class: 'm-charge-ring' }, gq);
+      el('text', { x: cx.toFixed(1), y: (cy + 4).toFixed(1), class: 'm-charge', 'text-anchor': 'middle' }, gq, a.charge > 0 ? '+' : '−');
       geo.charge = geo.charge || {};
       geo.charge[i] = [cx, cy];
       grow(cx, cy, 7);

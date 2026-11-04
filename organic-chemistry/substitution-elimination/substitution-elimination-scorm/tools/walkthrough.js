@@ -102,30 +102,33 @@ const fakeLMS = () => {
       /* the arrows the scene on screen needs */
       const t = document.querySelector(s);
       return t && t.__scene ? t.__scene.arrows.map((a) => ({ from: a.from[0], to: a.to[0] })) : null;
-    }, sel || '.arrow-tool');
+    }, sel || TOOL);
     expect(want, 'no arrow scene on ' + (await stepId()));
     if (!want) return;
-    const click = (k) => page.click(`.arrow-tool [data-key="${k}"] >> nth=0`, { force: true });
+    const click = (k) => page.click(`${TOOL} [data-key="${k}"] >> nth=0`, { force: true });
     if (wrongFirst) {
       /* an arrow starting on an atom */
-      const atom = await page.$eval('.arrow-tool .tgt.atom', (n) => n.getAttribute('data-key'));
+      const atom = await page.$eval(`${TOOL} .tgt.atom`, (n) => n.getAttribute('data-key'));
       await click(atom);
       await bad('an arrow from an atom');
       /* the right tail to the wrong head */
       await click(want[want.length - 1].from);
       const other = await page.evaluate((w) => {
-        const keys = [...document.querySelectorAll('.arrow-tool .tgt.atom')].map((n) => n.getAttribute('data-key'));
+        const keys = [...document.querySelectorAll('.arrow-tool:not([hidden]) .tgt.atom')].map((n) => n.getAttribute('data-key'));
         return keys.find((k) => !w.some((a) => a.to === k));
       }, want);
       await click(other);
-      await page.click('.arrow-tool button:text-is("Check")');
+      await page.click(`${TOOL} button:text-is("Check")`);
       await bad('a wrong arrow');
-      await page.click('.arrow-tool button:text-is("Clear")');
+      await page.click(`${TOOL} button:text-is("Clear")`);
     }
     for (const a of want) { await click(a.from); await click(a.to); }
-    await page.click('.arrow-tool button:text-is("Check")');
+    await page.click(`${TOOL} button:text-is("Check")`);
     await good('right arrows');
+    /* the arrows are replaced by the step, played */
+    expect(await page.isVisible('.play-host:not([hidden]) svg.player'), 'no animation after the arrows on ' + (await stepId()));
   }
+  const TOOL = '.arrow-tool:not([hidden])';
 
   /* ---- fresh start */
   async function startsFresh(lmsVersion, browserVersion, what) {
@@ -203,6 +206,14 @@ const fakeLMS = () => {
   expect((await stepId()) === 'quiz-A', 'reload: resumed at ' + (await stepId()));
   await next();
 
+  /* every mechanism the activity plays draws its products right: wedges
+     and dashes for each configuration, cis or trans for each E or Z */
+  const drawn = await page.evaluate(() => App.playedScenes().map((pl) => pl.scenes.map((sc, k) => {
+    const pp = Play.Player(sc).problems;
+    return pp.length ? pl.label + ' step ' + (k + 1) + ': ' + pp.join('; ') : null;
+  }).filter(Boolean)).reduce((a, b) => a.concat(b), []));
+  drawn.forEach((t) => problems.push('played drawing: ' + t));
+
   /* =========================================================== Part 2 */
   await arrows(null, true);
   await next();
@@ -222,7 +233,10 @@ const fakeLMS = () => {
   expect(/methyl > 1° > 2°/.test(await page.textContent('#stage')), 'sterics: no ranking');
   await next();
   /* SN1 step by step */
-  for (let k = 0; k < 3; k++) await arrows(null, k === 1);
+  for (let k = 0; k < 3; k++) {
+    await arrows(null, k === 1);
+    if (k < 2) await page.click('button:has-text("On to step")');
+  }
   await next();
   /* either face */
   await predict(0);
@@ -234,7 +248,7 @@ const fakeLMS = () => {
   /* shifts */
   await predict(0);
   await arrows(null, true);
-  await page.waitForTimeout(50);
+  await page.click('button:has-text("The other substrate")');
   await arrows(null, false);
   await next();
   await quiz();
@@ -319,6 +333,7 @@ const fakeLMS = () => {
   /* E1 */
   await predict(0);
   await arrows(null, false);
+  await page.click('button:has-text("On to step 2")');
   await arrows(null, true);
   expect(/regioselective/.test(await page.textContent('#stage')), 'e1: no notes');
   await next();
@@ -367,11 +382,20 @@ const fakeLMS = () => {
   await page.click('.panel:has-text("Klein problem 7.18") .predict .choice >> nth=0');
   await next();
   /* sort */
-  const cards = await page.evaluate(() => App.SEL_CARDS.map((c) => [c.id, c.bin]));
-  await page.click(`.tile[data-tile="${cards[0][0]}"]`);
-  await page.click(`.bin[data-drop="${cards[0][1] === 'regiosel' ? 'stereospec' : 'regiosel'}"]`);
+  /* one reaction at a time, drawn out */
+  const bins = await page.evaluate(() => { const o = {}; App.SEL_CARDS.forEach((c) => { o[c.id] = c.bin; }); return o; });
+  const firstCard = await page.getAttribute('.tile.rxn-tile', 'data-tile');
+  expect(await page.$('.tile.rxn-tile svg.mol'), 'sortsel: the reaction is not drawn');
+  await page.click('.tile.rxn-tile');
+  await page.click(`.bin[data-drop="${bins[firstCard] === 'regiosel' ? 'stereospec' : 'regiosel'}"]`);
   await bad('sortsel: a wrong bin');
-  for (const [id, bin] of cards) { await page.click(`.tile[data-tile="${id}"]`); await page.click(`.bin[data-drop="${bin}"]`); }
+  for (let n = 0; n < Object.keys(bins).length; n++) {
+    const id = await page.getAttribute('.tile.rxn-tile', 'data-tile');
+    await page.click('.tile.rxn-tile');
+    if (!(await page.$('.tile.rxn-tile.selected'))) await page.click('.tile.rxn-tile');
+    await page.click(`.bin[data-drop="${bins[id]}"]`);
+  }
+  expect(/All sorted/.test(await feedback()) || (await page.isVisible('.tray-empty')), 'sortsel: not finished');
   await next();
   await quiz();
   await next();

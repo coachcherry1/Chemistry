@@ -47,9 +47,9 @@ var App = (function () {
             'arrows, from the electrons to where they go.' },
     { id: 'backside', part: 2, kind: 'backside', title: 'Back-side attack', mol: 'bbR', ring: 'cisBrMe',
       text: 'Predict, then drag the slider (or press Play) to run the reaction. Turn the 3D model by dragging it.' },
-    { id: 'sterics', part: 2, kind: 'sterics', title: 'Crowding the back side',
+    { id: 'sterics', part: 2, kind: 'sterics', title: 'Steric hindrance',
       mols: ['bromomethane', 'bromopropane1', 'bromopropane2', 'tBuBr'],
-      text: 'The nucleophile must reach the back side of the α carbon. Predict, then send HS⁻ in toward each substrate.' },
+      text: 'The nucleophile must reach the back side of the α carbon. Groups on the α carbon get in its way: steric hindrance. Predict, then send HS⁻ in toward each substrate.' },
     { id: 'sn1arrows', part: 2, kind: 'sn1steps', title: 'SN1, step by step', mol: 'tBuBr',
       text: 'In ethanol, a 3° substrate reacts in steps. Draw the arrows for each step; the energy diagram follows.' },
     { id: 'sn1stereo', part: 2, kind: 'sn1stereo', title: 'Either face', mol: 'bmhR',
@@ -401,7 +401,9 @@ var App = (function () {
       if (reduceMotion) {
         /* no motion: five still frames, one per press */
         var next = Math.min(100, (Math.floor(+range.value / 25) + 1) * 25);
-        range.value = next; onInput(next / 100); return;
+        range.value = next; onInput(next / 100);
+        if (next >= 100 && o.done) o.done();
+        return;
       }
       var start = null, from = +range.value, dur = o.ms || 3200;
       play.textContent = '❚❚ Pause';
@@ -410,7 +412,7 @@ var App = (function () {
         var v = Math.min(100, from + (ts - start) / dur * 100);
         range.value = v;
         onInput(v / 100);
-        if (v < 100) anim = requestAnimationFrame(step); else stop();
+        if (v < 100) anim = requestAnimationFrame(step); else { stop(); if (o.done) o.done(); }
       }
       anim = requestAnimationFrame(step);
     });
@@ -444,22 +446,108 @@ var App = (function () {
     return { node: host, draw: draw };
   }
 
-  /* An arrow-drawing exercise on one mechanism scene. done() is called once
-     the arrows are right (now or on a revisit). */
+  /* A mechanism step played (play.js) with its slider: the arrows, the
+     electrons riding them, then the products. o: arrows (the ones drawn),
+     badges, onInput(p), done (at the end of a play), ms. */
+  function playBox(scene, o) {
+    o = o || {};
+    var pl = Play.Player(scene, { arrows: o.arrows, badges: o.badges, p: o.p || 0 });
+    var sl = slider(function (p) { pl.set(p); if (o.onInput) o.onInput(p); },
+      { from: 'Arrows', to: 'Products', ms: o.ms || 4200, p: o.p || 0, done: o.done, label: scene.title + ': reaction progress' });
+    var node = h('div', { class: 'player-box' }, [h('div', { class: 'play-wrap' }, [pl.node]), sl.node]);
+    return { node: node, player: pl, slider: sl, play: function () { if (!reduceMotion) sl.play.click(); } };
+  }
+
+  /* Several steps of a mechanism, played one after another: a chip for
+     each step, and the next one plays when a step has played to the end.
+     o: titles (instead of the scenes' own), label (of the chips),
+     onInput(step, p). */
+  function chainBox(scenes, o) {
+    o = o || {};
+    var host = h('div', { class: 'chain-box' });
+    var k = 0, cur = null;
+    function title(i) { return (o.titles && o.titles[i]) || scenes[i].title; }
+    function show(i, play) {
+      if (cur) cur.slider.stop();
+      k = i;
+      host.innerHTML = '';
+      if (scenes.length > 1) host.appendChild(chipRow(o.label || 'Step', scenes.map(function (sc, j) { return (j + 1) + '  ' + title(j); }), k,
+        function () { return false; }, function () { return true; }, function (j) { show(j, false); }));
+      cur = playBox(scenes[i], {
+        onInput: o.onInput ? function (p) { o.onInput(i, p); } : null,
+        done: function () { if (k < scenes.length - 1) setTimeout(function () { if (k === i) show(i + 1, true); }, reduceMotion ? 0 : 600); }
+      });
+      host.appendChild(cur.node);
+      if (play) cur.play();
+    }
+    show(0, false);
+    return { node: host, play: function () { show(0, true); }, stop: function () { if (cur) cur.slider.stop(); } };
+  }
+
+  /* The mechanism of product p (from React.predict) of substrate m with
+     reagent key, as scenes to play. */
+  function scenesFor(m, key, p) {
+    var L = React.lg(m);
+    function betaFor(name) {
+      var beta = null;
+      React.betas(m, L.a).forEach(function (b) {
+        if (beta == null && React.e2From(m, L.a, b.b, L.x).some(function (q) { return Name.name(q.mol) === name; })) beta = b.b;
+      });
+      return beta;
+    }
+    if (p.mech === 'SN2') return [Mech.sn2(m, key)];
+    if (p.mech === 'E2') return [Mech.e2(m, key, betaFor(p.name))];
+    var cp = React.cationPath(m);
+    var list = [Mech.loss(m)];
+    if (cp.shift) list.push(Mech.shift(cp.first, cp.c, cp.shift));
+    if (p.mech === 'SN1') {
+      list.push(Mech.attack(cp.final, cp.at, key));
+      var ox = React.oxonium(cp.final, cp.at, key);
+      list.push(Mech.protonOff(ox.mol, ox.o, ox.h, key));
+    } else {
+      var made = Name.name(p.mol), b = null;
+      cp.final.carbonsOn(cp.at).forEach(function (x) {
+        if (b != null || !cp.final.hCount(x.j)) return;
+        var t = cp.final.clone();
+        t.atoms[cp.at].charge = 0; t.atoms[x.j].h--;
+        t.bonds[t.bondBetween(cp.at, x.j)].order = 2;
+        var kk = t.bondBetween(cp.at, x.j);
+        if (Mol.isStereoAlkene(t, kk)) t.bonds[kk].cfg = React.largerCfg(t, cp.at, x.j, 'trans');
+        if (Name.name(t) === made) b = x.j;
+      });
+      list.push(Mech.e1(cp.final, cp.at, b, key));
+    }
+    return list;
+  }
+
+  /* An arrow-drawing exercise on one mechanism scene. When the arrows are
+     right the step plays in their place (playBox), on its own the first
+     time. done(fresh) is called once the arrows are right (now or on a
+     revisit). o: misses, onPlay(p) for every frame, onPlayed at the end. */
   function arrowBox(scene, pr, key, done, o) {
     o = o || {};
     var tool = Arrows.Tool(scene, { say: say, onCheck: check });
     var legend = h('ol', { class: 'pattern-list', hidden: true });
     var help = h('button', { type: 'button', class: 'ghostbtn', text: 'Show me', hidden: true });
-    var node = h('div', null, [tool.node, h('div', { class: 'btnrow' }, [help]), legend]);
+    var playHost = h('div', { class: 'play-host', hidden: true });
+    var node = h('div', null, [tool.node, playHost, h('div', { class: 'btnrow' }, [help]), legend]);
+    var box = { node: node, tool: tool, pb: null };
     function finish(fresh) {
       tool.done();
       legend.innerHTML = '';
       tool.legend().forEach(function (t) { legend.appendChild(h('li', { text: t.replace(/^\d+\s+/, '') })); });
       legend.hidden = false;
       help.hidden = true;
+      /* the student's own arrows, played */
+      box.pb = playBox(scene, { arrows: tool.drawn(), badges: true, onInput: o.onPlay, done: o.onPlayed });
+      playHost.innerHTML = '';
+      playHost.appendChild(box.pb.node);
+      playHost.hidden = false;
+      tool.node.hidden = true;
+      if (fresh || o.autoplay) setTimeout(box.pb.play, 450);
       if (done) done(fresh);
     }
+    node.__finish = function () { if (!pr[key]) { tool.show(true); pr[key] = 1; persist(); finish(true); } };   /* for tools/layout.js */
     function check(r) {
       if (r.ok) {
         pr[key] = 1; persist();
@@ -480,7 +568,7 @@ var App = (function () {
     });
     if (pr[key]) { tool.show(true); finish(false); }
     else if (pr[key + 'm'] >= (o.misses || 3)) help.hidden = false;
-    return { node: node, tool: tool };
+    return box;
   }
 
   /* Choice buttons that stay on screen once answered (ungraded). */
@@ -683,7 +771,7 @@ var App = (function () {
 
   var BIG_IDEAS = [
     'Klein’s three steps: the function of the reagent, then the substrate (methyl, 1°, 2°, 3°), then the regiochemistry and stereochemistry of the products.',
-    'SN2 is concerted: nucleophilic attack and loss of the leaving group in one step, by back-side attack, with inversion of configuration. Crowding stops it at a 3° carbon.',
+    'SN2 is concerted: nucleophilic attack and loss of the leaving group in one step, by back-side attack, with inversion of configuration. Steric hindrance at the back side stops it at a 3° carbon.',
     'SN1 goes through a flat carbocation: loss of the leaving group, then nucleophilic attack from either face (and a proton transfer for a neutral nucleophile). A carbocation can rearrange first.',
     'E2 is concerted: proton transfer and loss of the leaving group in one step. The H and the leaving group must be anti-coplanar; on a ring, trans-diaxial.',
     'Regioselective: one regiochemical product is major (Zaitsev with an ordinary base, Hofmann with t-BuOK). Regiospecific: only one can form.',
@@ -745,9 +833,10 @@ var App = (function () {
     ['α carbon, β carbon', 'The α carbon carries the leaving group. A β carbon is bonded to the α carbon.'],
     ['Nucleophile', 'Attacks a carbon with a lone pair. Strong when it is negatively charged or large and polarizable.'],
     ['Base', 'Removes a proton. Strong when its conjugate acid is weak.'],
+    ['Steric hindrance', 'Groups crowding an atom so that another molecule cannot get close to it. In SN2 the groups on the α carbon get in the nucleophile’s way at the back side: methyl > 1° > 2°, and no SN2 at 3°.'],
     ['Sterically hindered', 'Crowded. A hindered base (t-BuO⁻, DBU) reaches an H more easily than a carbon.'],
     ['Concerted', 'All in one step: SN2 and E2.'],
-    ['Back-side attack', 'In SN2 the nucleophile attacks the side of the α carbon opposite the leaving group.'],
+    ['Back-side attack', 'In SN2 the nucleophile attacks the side of the α carbon opposite the leaving group. Steric hindrance there slows it, or stops it at a 3° carbon.'],
     ['Inversion of configuration', 'The three other groups turn inside out, like an umbrella in the wind. SN2 always inverts.'],
     ['Carbocation', 'A carbon with only three bonds and a positive charge: flat, with an empty p orbital. 3° is more stable than 2°, 2° than 1°.'],
     ['Carbocation rearrangement', 'An H (hydride shift) or a CH₃ (methyl shift) moves with its bonding electrons to the next carbon, making a more stable carbocation.'],
@@ -766,7 +855,7 @@ var App = (function () {
 
   function buildReference() {
     var mechs = [
-      ['SN2', 'One step: nucleophilic attack and loss of the leaving group together (concerted). Back-side attack, inversion of configuration. Methyl > 1° > 2°; never 3°.'],
+      ['SN2', 'One step: nucleophilic attack and loss of the leaving group together (concerted). Back-side attack, inversion of configuration. Steric hindrance at the back side: methyl > 1° > 2°; never 3°.'],
       ['SN1', 'Loss of the leaving group (the slow step), then nucleophilic attack on the carbocation from either face, then a proton transfer if the nucleophile was neutral. 3°; watch for rearrangements.'],
       ['E2', 'One step: proton transfer and loss of the leaving group together (concerted). The H and the leaving group anti-coplanar.'],
       ['E1', 'Loss of the leaving group, then a proton transfer from a β carbon of the carbocation. 3°; the Zaitsev product.']
@@ -845,7 +934,7 @@ var App = (function () {
   /* Everything the step files need. */
   var U = {
     h: h, say: say, panel: panel, carbonName: carbonName, capFirst: capFirst, predictCard: predictCard, reveal: reveal, verdict: verdict, chipRow: chipRow, def: def,
-    molCard: molCard, rxn: rxn, slider: slider, viewerBox: viewerBox, energyBox: energyBox, arrowBox: arrowBox,
+    molCard: molCard, rxn: rxn, slider: slider, viewerBox: viewerBox, energyBox: energyBox, arrowBox: arrowBox, playBox: playBox, chainBox: chainBox, scenesFor: scenesFor,
     choiceRow: choiceRow, showArea: showArea, shuffle: shuffle, rng: rng, hash: hash, figure: figure,
     complete: complete, progress: progress, persist: persist,
     stage: function () { return el.stage; },

@@ -13,7 +13,7 @@ global.document = { addEventListener() {} };
 global.localStorage = { getItem() { return null; }, setItem() {}, removeItem() {} };
 const src = path.join(__dirname, '..', 'src', 'js');
 for (const f of ['geom.js', 'mol.js', 'name.js', 'layout.js', 'chair.js', 'draw.js', 'react.js', 'build3d.js', 'viewer3d.js', 'anim.js',
-                 'mech.js', 'arrows.js', 'molecules.js', 'picker.js', 'quiz.js', 'scorm.js', 'app.js', 'steps1.js', 'steps2.js', 'steps3.js']) {
+                 'mech.js', 'arrows.js', 'play.js', 'molecules.js', 'picker.js', 'quiz.js', 'scorm.js', 'app.js', 'steps1.js', 'steps2.js', 'steps3.js']) {
   (0, eval)(fs.readFileSync(path.join(src, f), 'utf8'));
 }
 

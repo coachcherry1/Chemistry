@@ -270,7 +270,7 @@ not the full page.
 - **Walkthrough harness (both new packages):** the fake LMS reads and writes sessionStorage on every call and never stages
   the next load's data; staging made the reload check fail at random (still the case in the older packages' walkthroughs).
 
-## substitution-elimination-scorm (branch `claude/compassionate-allen-hwn3ov`, zip v1, SCHEMA 1)
+## substitution-elimination-scorm (branch `claude/compassionate-allen-hwn3ov`, zip v2, SCHEMA 1)
 
 - **Key objective:** Klein's three steps (7.11): the function of the reagent, the substrate and Klein's table, then
   regio- and stereochemistry; major and minor products.
@@ -278,7 +278,9 @@ not the full page.
   reagent-function question. No reference table beside the checkpoints (the teacher's choice).
 - **Klein's wording:** SN2 is nucleophilic attack and loss of the leaving group, concerted, back-side attack,
   inversion of configuration; E2 is proton transfer and loss of the leaving group, anti-coplanar (never
-  antiperiplanar); the four arrow patterns by Klein's names. The validator bans backside, Saytzeff and Walden.
+  antiperiplanar); the four arrow patterns by Klein's names. What slows or stops SN2 is **steric hindrance** at
+  the back side (the teacher's phrase, never "crowding the back side"). The validator bans backside, Saytzeff,
+  Walden and crowding the back side.
 - **Teacher's choices:** four functions named "Nucleophile only", "Strong nucleophile and strong base", "Base only",
   "Weak nucleophile, weak base" with Klein's headings beside; t-BuOK is strong/strong but hindered (E2 major at 1°,
   Hofmann). NaCN and NaN₃ nucleophile only, NaH base only. Regiospecific = only one β H can be anti-coplanar.
@@ -291,8 +293,15 @@ not the full page.
   conformer). Ring E2 uses faces: an H is trans-diaxial if it is on the face opposite the leaving group.
 - **Arrows:** tap the electrons (lone pair or bond), then the target (atom, or bond for a new π bond), or drag, or
   Tab/Enter; Klein's reasons for wrong arrows in `mech.js`; Show me after three misses.
+- **Every reaction plays** (`play.js`, the teacher asked for as many animations as possible, like arrow pushing):
+  right arrows are replaced by the step played (electron pairs ride the arrows, bonds fade or grow, atoms glide
+  into the products, charges move; ‡ brackets and δ− for SN2 and E2), with Play, a slider and the energy marker.
+  The products are what the arrows make in the graph; each scene's `anchor` and `stereo` give the inversion and
+  E/Z. Regio and the predict problems play mechanisms without drawing (`U.chainBox`, `U.scenesFor`).
+  `App.playedScenes()` lists them all: the validator checks their products against react.js, the walkthrough
+  their drawings. The step-21 sort shows one reaction at a time, drawn out.
 - **Files:** `mol.js`, `name.js`, `layout.js`, `draw.js`, `react.js`, `build3d.js`, `viewer3d.js`, `anim.js`, `mech.js`,
-  `arrows.js`, `chair.js` (from the chairs activity), `molecules.js`, `quiz.js`, `app.js`, `steps1.js` (Parts 1-2),
+  `arrows.js`, `play.js`, `chair.js` (from the chairs activity), `molecules.js`, `quiz.js`, `app.js`, `steps1.js` (Parts 1-2),
   `steps2.js` (Parts 3-4), `steps3.js` (Part 5).
 
 ## intermolecular-forces-liquids-scorm (zip v1, SCHEMA 1)
