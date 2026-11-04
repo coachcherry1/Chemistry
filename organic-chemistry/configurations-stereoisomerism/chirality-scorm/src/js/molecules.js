@@ -76,7 +76,7 @@ var MOLECULES = (function () {
   def('bromobutane', { name: '2-Bromobutane', chain: { first: 2, n: 2, ends: ['CH3', 'CH3'],
     subs: { 2: { w: 'Br', d: 'H' } } }, note: 'drawn as in the Newman activity' });
   def('butanol_S', { name: '2-Butanol', centre: { tpl: 'V', ul: 'CH3', ur: 'Et', w: 'OH', d: 'H' } });
-  def('alanine_w', { name: 'Alanine', centre: { tpl: 'V', ul: 'COOH', ur: 'CH3', w: 'H', d: 'NH2' } });
+  def('alanine_w', { name: 'Alanine', centre: { tpl: 'A', ll: 'CH3', lr: 'COOH', w: 'H', d: 'NH2' } });
   def('bcfe_plane', { name: '1-Bromo-1-chloro-1-fluoroethane', formula: 'CBrClF–CH₃', centre: { tpl: 'A', ll: 'CH3', lr: 'Br', w: 'Cl', d: 'F' } });
   def('butanol_hidden', { name: '2-Butanol', chain: { n: 4, subs: { 2: { d: 'OH' } } } });
   def('butanol_R', { name: '2-Butanol', centre: { tpl: 'V', ul: 'Et', ur: 'CH3', w: 'OH', d: 'H' } });

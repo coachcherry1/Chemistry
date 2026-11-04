@@ -175,7 +175,7 @@ not the full page.
   - `app.js`: `STEPS`, `PREDICT`, renderers
   - `quiz.js`: question bank
 
-## chirality-scorm (branch `claude/hopeful-feynman-fuhl6t`, zip v1, SCHEMA 3)
+## chirality-scorm (branch `claude/hopeful-feynman-fuhl6t`, zip v1, SCHEMA 4)
 
 - **Key objective:** name a chirality centre R or S by rotating the molecule until 4 is on the dash, never by swapping
   groups; then tell enantiomers, diastereomers and meso compounds apart.
@@ -190,6 +190,16 @@ not the full page.
   give at most 2ⁿ; cut between the centres and the halves must match (`STEREO.halves`); turn to eclipsed and every group
   must face its twin (`STEREO.facing`). R,S only confirms it. Not by laying the molecule on its mirror image (a guided
   version of that was tried and reverted). The three checks are `MESO_CHECKS` in `app.js`, also in Vocabulary.
+- **Rotation is Klein's spear** (the teacher's request): spear the molecule, then rotate it about the spear. Vertical
+  spear, 180°, for 4 on the wedge; for one centre, side spears along each in-page bond, 120°, turned the way that
+  carries the other in-page group to the dash (4 in the page: "spear it from the side" through its in-page
+  neighbour); a zigzag has vertical and side (left-right) 180° spears through its middle. `STEREO.spears`/`speared`.
+  Spears are drawn on the structure (`Draw.mol` `opts.spears`) and as rods in 3D (viewer `spears`, `onSpear`), both
+  clickable, with buttons too; the drawing animates with the model (sheared frames in a fixed `box`). Nothing in the
+  R/S rotator or the mirror scenes can be dragged; the look-only viewers (centres, rank, mesotut, meso plane, rings)
+  still can. Part 3 single centres use Klein's layout (wedge and dash on top). Rules name the spear: "4 is not on the
+  dash: it is on the wedge. Rotate the molecule 180° on the vertical spear." The validator tries every spear in
+  every position and reflection.
 - **Geometry:** one 3D model per molecule drives everything.
   - Drawings are projections of it (x right, y up, z toward the reader). A bond whose unit vector has z above 0.3 is a
     wedge, below −0.3 a dash.
@@ -207,7 +217,7 @@ not the full page.
   - `app.js`: `STEPS`, `PREDICT`, renderers
   - `quiz.js`: question bank
 
-## chirality-no-meso-scorm (zip v1, SCHEMA 3)
+## chirality-no-meso-scorm (zip v1, SCHEMA 4)
 
 - A copy of `chirality-scorm/` for weaker years: Parts 1–3 identical; Part 4 keeps the four stereoisomers and Rings
   (trans-1,3, cis- and trans-1,4 only: chiral or no chirality centres). No meso tutorial, no Molecules A and B, no cis-1,3.

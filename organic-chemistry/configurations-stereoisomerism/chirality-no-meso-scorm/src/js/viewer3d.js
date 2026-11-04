@@ -14,6 +14,11 @@
  * onRelease, which the activity uses to settle the molecule into the nearest
  * position that can be drawn on paper.
  *
+ * Spears (Klein's way of rotating): an object's `spears` are rods through
+ * the molecule along the axes it can be turned about. Clicking one calls
+ * onSpear(objectIndex, spearId); an object that is not draggable never
+ * turns any other way.
+ *
  * Extras: tinted atoms, glowing atoms, priority badges (1 to 4) beside
  * atoms, element letters on the coloured atoms, a see-through plane (a
  * mirror plane inside a molecule), a ghosted copy laid over the original,
@@ -58,6 +63,9 @@ var Viewer3D = (function () {
     this.labels = opts.labels !== false;
     this.onRelease = opts.onRelease || null;
     this.onTurn = opts.onTurn || null;
+    this.onSpear = opts.onSpear || null;
+    this.rods = [];
+    canvas._viewer = this;            /* for tools/walkthrough.js */
     /* the camera looks at the page from a little above and to one side, so a
        wedge and a dash that line up on paper show apart in 3D */
     this.cam = opts.cam || (this.objects.length > 1 ? Viewer.CAM_MIRROR : Viewer.CAM);
@@ -144,10 +152,31 @@ var Viewer3D = (function () {
     if (this.onTurn) this.onTurn(i);
   };
 
+  /* The spear rod under a pointer, if any. */
+  Viewer.prototype.rodAt = function (ev) {
+    var r = this.canvas.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+    var x = (ev.clientX - r.left) * (this.canvas.width / Math.max(1, r.width));
+    var y = (ev.clientY - r.top) * (this.canvas.height / Math.max(1, r.height));
+    var best = null, bd = 14 * dpr;
+    this.rods.forEach(function (rd) {
+      var dx = rd.bx - rd.ax, dy = rd.by - rd.ay, l2 = dx * dx + dy * dy || 1;
+      var t = Math.max(0, Math.min(1, ((x - rd.ax) * dx + (y - rd.ay) * dy) / l2));
+      var d = Math.hypot(x - (rd.ax + dx * t), y - (rd.ay + dy * t));
+      if (d < bd) { bd = d; best = rd; }
+    });
+    return best;
+  };
+
   Viewer.prototype.attach = function () {
     var self = this, drag = null;
     var c = this.canvas;
+    c.addEventListener('pointermove', function (ev) {
+      if (drag) return;
+      c.classList.toggle('on-spear', !!(self.onSpear && self.rodAt(ev)));
+    });
     c.addEventListener('pointerdown', function (ev) {
+      var rod = self.onSpear ? self.rodAt(ev) : null;
+      if (rod) { ev.preventDefault(); self.onSpear(rod.oi, rod.id); return; }
       var i = self.objectAt(ev.clientX);
       if (i == null) return;
       drag = { i: i, x: ev.clientX, y: ev.clientY, moved: 0 };
@@ -262,9 +291,21 @@ var Viewer3D = (function () {
           items.push({ type: 'tile', z: z, pts: ws.map(project), color: tintColor('plane') });
         });
       }
+      (o.spears || []).forEach(function (sp) {
+        var base = sp.world ? sp.at : G.add(o.offset, G.sub(sp.at, piv));
+        var hl = self.radius * 0.98, n = 10, lo = sp.out ? 0 : -0.8;
+        for (var k = 0; k < n; k++) {
+          var t0 = lo + (1 - lo) * k / n, t1 = lo + (1 - lo) * (k + 1) / n;
+          var w0 = G.add(base, G.mul(sp.axis, hl * t0)), w1 = G.add(base, G.mul(sp.axis, hl * t1));
+          var a0 = project(w0), a1 = project(w1);
+          items.push({ type: 'rod', z: (a0.z + a1.z) / 2 - 0.1, a: a0, b: a1, tip: k === n - 1, sp: sp, oi: oi });
+        }
+      });
       all = all.concat(pts);
     });
     items.sort(function (p, q) { return p.z - q.z; });
+    var spearCol = hex(cssVar('spear', '#b05f00'));
+    this.rods = [];
     var letters = [];
     /* the mirror between two molecules is seen edge-on: a band of glass */
     if (this.pane && n > 1) {
@@ -280,6 +321,30 @@ var Viewer3D = (function () {
     }
 
     items.forEach(function (it) {
+      if (it.type === 'rod') {
+        var lw = Math.max(2.5, scale * (it.sp.hot ? 0.075 : 0.05));
+        ctx.globalAlpha = it.sp.idle ? 0.5 : 0.92;
+        ctx.lineCap = 'round';
+        ctx.lineWidth = lw + 2;
+        ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+        ctx.beginPath(); ctx.moveTo(it.a.x, it.a.y); ctx.lineTo(it.b.x, it.b.y); ctx.stroke();
+        ctx.lineWidth = lw;
+        ctx.strokeStyle = spearCol;
+        ctx.beginPath(); ctx.moveTo(it.a.x, it.a.y); ctx.lineTo(it.b.x, it.b.y); ctx.stroke();
+        if (it.tip) {
+          var dx = it.b.x - it.a.x, dy = it.b.y - it.a.y, l = Math.hypot(dx, dy) || 1;
+          var ux = dx / l, uy = dy / l, hs = Math.max(7, scale * 0.13);
+          ctx.fillStyle = spearCol;
+          ctx.beginPath();
+          ctx.moveTo(it.b.x + ux * hs * 1.4, it.b.y + uy * hs * 1.4);
+          ctx.lineTo(it.b.x - uy * hs * 0.6, it.b.y + ux * hs * 0.6);
+          ctx.lineTo(it.b.x + uy * hs * 0.6, it.b.y - ux * hs * 0.6);
+          ctx.closePath(); ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        if (!it.sp.idle) self.rods.push({ oi: it.oi, id: it.sp.id, ax: it.a.x, ay: it.a.y, bx: it.b.x, by: it.b.y });
+        return;
+      }
       if (it.type === 'tile') {
         ctx.beginPath();
         it.pts.forEach(function (p, k) { if (k) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); });

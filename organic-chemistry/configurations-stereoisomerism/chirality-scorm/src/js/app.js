@@ -23,7 +23,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a molecule changes: a save
      from an older build is then discarded and the student starts fresh. */
-  var SCHEMA = 3;
+  var SCHEMA = 4;
 
   var PARTS = [
     { n: 1, name: 'Chirality' },
@@ -67,12 +67,13 @@ var App = (function () {
             'counterclockwise is S. Click 1, then 2, then 3, and decide.' },
     { id: 'rotate', part: 3, kind: 'rotate', mols: ['alanine_w', 'bcfe_plane'],
       title: 'If 4 is not on the dash, rotate',
-      text: 'Here 4 is not on the dash, so rotate the molecule until it is: drag the 3D model, use the arrow keys, or ' +
-            'use the turn buttons. The drawing always shows the model as it now lies. Then read 1 → 2 → 3.' },
+      text: 'Here 4 is not on the dash, so rotate the molecule until it is, the way your textbook does: spear it, then ' +
+            'rotate it about the spear. 4 on the wedge: the vertical spear, 180°. 4 in the page: spear it from the side, ' +
+            'through the other group in the page, 120°. Click a spear on the drawing or the 3D model. Then read 1 → 2 → 3.' },
     { id: 'hidden', part: 3, kind: 'hidden', mol: 'butanol_hidden',
       title: 'The hidden H',
-      text: 'Bond-line drawings leave out the H on a chirality centre. Find where it points, rotate the molecule until ' +
-            'it is on the dash, redraw it that way, and name the centre.' },
+      text: 'Bond-line drawings leave out the H on a chirality centre. Find where it points, spear the molecule and rotate ' +
+            'it until the H is on the dash, redraw it that way, and name the centre.' },
     { id: 'enant', part: 3, kind: 'enant', mol: 'butanol_R',
       title: 'Mirror images have opposite labels',
       text: 'Enantiomers are mirror images that cannot be laid on each other. What does a mirror do to R and S? ' +
@@ -433,18 +434,107 @@ var App = (function () {
     return [G.cross(y, z), y, z];
   }
 
+  /* ---------------------------------------------------- Klein's spears */
+
+  /* How a spear is named on its button and to a screen reader. */
+  function spearWords(m, sp) {
+    if (sp.kind === 'vertical') {
+      return { short: 'Vertical spear, 180°',
+               aria: 'Vertical spear: rotate the molecule 180° about the up and down line through the carbon' };
+    }
+    if (sp.atom == null) {
+      return { short: 'Side spear, 180°',
+               aria: 'Side spear: rotate the molecule 180° about the left and right line of the page' };
+    }
+    var g = GROUPS[m.atoms[sp.atom].group];
+    return { short: 'Side spear through ' + g.label + ', 120°',
+             aria: 'Side spear through the bond to ' + g.name + ': ' + g.name + ' stays put and the other three groups ' +
+                   'rotate a third of a turn, 120°' };
+  }
+
+  /* Spears as the drawing takes them (a zigzag is speared at its middle,
+     the drawing's origin). */
+  function spearDraw(m, list, c, extra) {
+    return list.map(function (sp) {
+      return Object.assign({ id: sp.id, axis: sp.axis, deg: sp.deg, c: m.kind === 'centre' ? c : null, atom: sp.atom,
+                             aria: spearWords(m, sp).aria }, extra || {});
+    });
+  }
+
+  /* Where a model is speared and drawn from: a centre at its carbon, a
+     zigzag at its middle, so a half turn keeps it in the same place. */
+  function spearsAt(t, c) { return STEREO.spears(t, c, t.kind === 'centre' ? null : t.pivot); }
+  function spearOrigin(t, c) { return t.kind === 'centre' ? { originAtom: c } : { origin: t.pivot }; }
+
+  /* One viewBox that holds the drawing in every position the spears can
+     put it in, so a turning drawing never jumps or shrinks. */
+  function spearBox(m, c, drawOpts, spearsOf) {
+    var bx = null;
+    STEREO.orientations(m).forEach(function (O) {
+      var t = STEREO.apply(m, O);
+      var s = Draw.mol(t, Object.assign({}, drawOpts || {}, spearOrigin(t, c), { badges: [c], spears: spearDraw(t, spearsOf(t), c) }));
+      var v = Draw.viewBox(s);
+      bx = bx ? [Math.min(bx[0], v[0]), Math.min(bx[1], v[1]), Math.max(bx[2], v[0] + v[2]), Math.max(bx[3], v[1] + v[3])]
+        : [v[0], v[1], v[0] + v[2], v[1] + v[3]];
+    });
+    return [bx[0], bx[1], bx[2] - bx[0], bx[3] - bx[1]];
+  }
+
+  /* The drawing seen a little from the side while it turns, so a wedge and
+     a dash part smoothly instead of jumping (k matches the fanning). */
+  var SHEAR = 0.408;
+
+  /* Buttons for the spears, for the keyboard and for anyone who would rather
+     not aim at a thin rod. */
+  function spearBar(m, list, onSpear, busy) {
+    var bar = h('div', { class: 'spearbar' }, [h('span', { class: 'lbl', text: 'Spears:' })]);
+    list.forEach(function (sp) {
+      var w = spearWords(m, sp);
+      bar.appendChild(h('button', { type: 'button', class: 'mini', 'data-spear': sp.id, 'aria-label': w.aria, disabled: !!busy,
+        onclick: function () { onSpear(sp.id); } }, [h('span', { class: 'sp-ico', 'aria-hidden': 'true', text: '↻' }), w.short]));
+    });
+    return bar;
+  }
+
+  /* Turn object i of a viewer on spear sp (in the coordinates of model
+     `start`, the molecule as it lies), drawing each frame with `onFrame(e)`
+     (e from 0 to 1); done(R) gets the object's new rotation. */
+  function spearAnim(viewer, i, start, sp, onFrame, done) {
+    var o = viewer.get(i), R0 = o.R, off0 = o.offset.slice(), piv = start.pivot;
+    var a = G.sub(sp.at, piv);
+    var rod = { id: sp.id, at: G.add(off0, a), axis: sp.axis, world: true, hot: true, idle: true, out: sp.atom != null };
+    var ms = reduceMotion ? 0 : (Math.abs(sp.deg) > 150 ? 1500 : 1150);
+    var t0 = null;
+    function set(e) {
+      var L = STEREO.spearTurn(sp, sp.deg * e);
+      viewer.set(i, { R: G.orthonormal(G.mmul(L, R0)), offset: G.add(off0, G.sub(a, G.mvec(L, a))), spears: [rod] });
+      if (onFrame) onFrame(e);
+    }
+    function frame(ts) {
+      if (t0 == null) t0 = ts;
+      var t = ms ? Math.min(1, (ts - t0) / ms) : 1;
+      set(t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+      if (t < 1) requestAnimationFrame(frame);
+      else done(G.mmul(STEREO.spearTurn(sp), R0), off0);
+    }
+    if (!ms) { set(1); done(G.mmul(STEREO.spearTurn(sp), R0), off0); return; }
+    requestAnimationFrame(frame);
+  }
+
   /* ---------------------------------------------- rotate and read a centre */
 
-  /* A molecule to rotate and read: the 3D model and the drawing of it as it
-     now lies, side by side, with the turn buttons and (opts.read) the tools
-     to read R or S: click 1, 2, 3, then choose. Reading only opens once 4 is
-     on the dash.
+  /* A molecule to rotate and read, Klein's way: spear it and rotate it about
+     the spear. The drawing (with its spears) and the 3D model (with the same
+     spears as rods) sit side by side; clicking a spear on either, or its
+     button, turns both, and the drawing turns on screen as the model does.
+     Nothing turns any other way. With opts.read, R or S is read by clicking
+     1, 2, 3, then choosing; reading only opens once 4 is on the dash.
        opts.centres    centres a student may pick between (a zigzag)
-       opts.turns      false to hide the turn buttons
+       opts.turns      false: no spears
        opts.read       true to ask for R or S
        opts.answers    { centreIndex: 'R' } already read correctly
        opts.onRead(c, label)   a centre read correctly
-       opts.onTurn()   the molecule settled into a new position
+       opts.onTurn(R)  the molecule settled into a new position
        opts.drawOpts   extra options for the drawing (showH) */
   function rotator(m, opts) {
     opts = opts || {};
@@ -452,90 +542,82 @@ var App = (function () {
     var centres = opts.centres || CIP.centres(m).slice(0, 1);
     var centre = centres[0];
     var answers = opts.answers || {};
-    var clicks = [], chose = null, wheelOn = false, busy = false;
+    var clicks = [], chose = null, wheelOn = false, busy = false, box = null;
 
     function cur() { return STEREO.apply(m, R); }
     function order() { return CIP.rank(m, centre).order; }
     function onDash() { return STEREO.fourOnDash(cur(), centre); }
+    function spearList(t) { return opts.turns === false ? [] : spearsAt(t || cur(), centre); }
 
-    var canvas = h('canvas', { class: 'c3d', tabindex: 0, role: 'img',
-      'aria-label': '3D model of ' + m.name + '. Drag it, or use the arrow keys, to rotate it.' });
-    var turnbar = h('div', { class: 'turnbar' });
+    var canvas = h('canvas', { class: 'c3d nodrag', tabindex: 0, role: 'img',
+      'aria-label': '3D model of ' + m.name + ', with the spears it can be rotated on. Click a spear to rotate the molecule.' });
+    var turnbar = h('div');
     var wheelBtn = h('button', { type: 'button', class: 'mini', text: 'Steering-wheel view', disabled: true });
-    var p3 = panel(opts.title3 || '3D model', 'drag or arrow keys to rotate', [h('div', { class: 'c3d-wrap' }, [canvas]), turnbar,
+    var p3 = panel(opts.title3 || '3D model', opts.turns === false ? null : 'click a spear', [h('div', { class: 'c3d-wrap' }, [canvas]), turnbar,
       h('div', { class: 'btnrow' }, [wheelBtn])]);
     var chipsHost = h('div');
     var drawHost = h('div', { class: 'mol-wrap big' });
     var rule = h('p', { class: 'rule' });
     var rsRow = h('div', { class: 'rs-row' });
     var after = h('div');
-    var p2 = panel(opts.title2 || 'The drawing', opts.read ? 'click 1, 2, 3' : null, [chipsHost, drawHost, rule, rsRow, after]);
+    var p2 = panel(opts.title2 || 'The drawing', opts.read ? (opts.turns === false ? 'click 1, 2, 3' : 'click a spear, or 1, 2, 3')
+      : opts.turns === false ? null : 'click a spear',
+      [chipsHost, drawHost, rule, rsRow, after]);
     var node = h('div', { class: 'work' + (opts.third ? ' work-3' : '') }, [p3, p2, opts.third || null]);
     var viewer = null;
 
     function badges() { return CIP.priorities(m, centre); }
+    function drawOpts() { return Object.assign(spearOrigin(m, centre), opts.drawOpts || {}); }
 
     function start() {
-      viewer = new Viewer3D(canvas, { objects: [{ model: m, R: R, badges: badges() }], radius: radiusOf(m),
-        onRelease: settle, onTurn: function () { if (wheelOn) { wheelOn = false; wheelBtn.textContent = 'Steering-wheel view'; } } });
+      viewer = new Viewer3D(canvas, { objects: [{ model: m, R: R, badges: badges(), draggable: false }], radius: radiusOf(m),
+        onSpear: function (oi, id) { spearById(id); } });
       paint();
     }
 
-    function settle() {
-      if (!viewer) return;
-      var o = viewer.get(0);
-      var target = STEREO.nearest(m, o.R);
-      busy = true;
-      viewer.set(0, { wheel: null });
-      viewer.slide(0, [0, 0, 0], 300);
-      viewer.animate(0, target, 320, function () { busy = false; land(target); });
+    function spearById(id) {
+      var sp = spearList().filter(function (x) { return x.id === id; })[0];
+      if (sp) turn(sp);
     }
 
-    function land(target) {
-      var moved = G.gap(target, R) > 1;
-      R = target;
-      if (moved) { clicks = []; chose = null; }
-      paint();
-      if (moved && opts.onTurn) opts.onTurn(R);
-    }
-
-    function turn(L) {
-      if (busy || !viewer) return;
-      var target = G.mmul(L, R);
-      busy = true;
+    function wheelOff() {
+      if (!wheelOn) return;
       wheelOn = false;
       wheelBtn.textContent = 'Steering-wheel view';
-      viewer.set(0, { wheel: null });
-      viewer.slide(0, [0, 0, 0], 300);
-      viewer.animate(0, target, 650, function () { busy = false; land(target); });
+      viewer.set(0, { R: R, offset: [0, 0, 0], wheel: null });
     }
 
-    /* the turn buttons: turning over always; a third of a turn about any
-       group's bond for one centre; upside down for a zigzag */
-    function paintTurns() {
+    function turn(sp) {
+      if (busy || !viewer) return;
+      wheelOff();
+      busy = true;
+      say('');
+      var startM = cur(), c = centre, dOpts = drawOpts();
+      var hot = spearDraw(startM, [sp], c, { cls: 'hot', idle: true });
+      viewer.set(0, { wheel: null });
+      paintBar();
+      spearAnim(viewer, 0, startM, sp, function (e) {
+        drawHost.innerHTML = '';
+        drawHost.appendChild(Draw.mol(STEREO.speared(startM, sp, sp.deg * e), Object.assign({}, dOpts, {
+          box: box, badges: [c], spears: hot, shear: SHEAR, noSplay: true, label: 'The drawing, turning' })));
+      }, function (Rnew, off0) {
+        var target = STEREO.nearest(m, Rnew);
+        viewer.set(0, { R: target, spears: [] });
+        viewer.slide(0, off0, 350, function () {
+          busy = false;
+          var moved = G.gap(target, R) > 1;
+          R = target;
+          if (moved) { clicks = []; chose = null; }
+          paint();
+          if (moved && opts.onTurn) opts.onTurn(R);
+        });
+      });
+    }
+
+    function paintBar() {
       turnbar.innerHTML = '';
       if (opts.turns === false) return;
-      turnbar.appendChild(h('span', { class: 'lbl', text: 'Turn:' }));
-      turnbar.appendChild(h('button', { type: 'button', class: 'mini', text: 'Turn it over ⟲',
-        title: 'Half a turn about the up–down line of the page: wedges become dashes and left becomes right',
-        onclick: function () { turn(STEREO.OVER); } }));
-      if (m.kind === 'chain') {
-        turnbar.appendChild(h('button', { type: 'button', class: 'mini', text: 'Upside down',
-          title: 'Half a turn about the left–right line of the page', onclick: function () { turn(STEREO.UPSIDE); } }));
-        return;
-      }
-      turnbar.appendChild(h('span', { class: 'lbl', text: 'Spin around:' }));
-      Object.keys(m.slots).forEach(function (s) {
-        var j = m.slots[s];
-        var label = GROUPS[m.atoms[j].group].label;
-        turnbar.appendChild(h('button', { type: 'button', class: 'mini', text: label,
-          'aria-label': 'Spin the other three groups a third of a turn around the bond to ' + GROUPS[m.atoms[j].group].name,
-          onclick: function () {
-            var c = cur();
-            var axis = G.sub(c.atoms[j].p, c.atoms[c.centre].p);
-            turn(G.rot(axis, 120));
-          } }));
-      });
+      turnbar.appendChild(spearBar(cur(), spearList(), spearById, busy));
     }
 
     function paintChips() {
@@ -544,10 +626,25 @@ var App = (function () {
       chipsHost.appendChild(chipRow('Read:', centres.map(function (c) { return 'C' + m.atoms[c].num; }),
         centres.indexOf(centre), function (k) { return !!answers[centres[k]]; }, function () { return true; },
         function (k) {
-          centre = centres[k]; clicks = []; chose = null;
-          if (viewer) viewer.set(0, { badges: badges(), wheel: null });
+          if (busy) return;
+          centre = centres[k]; clicks = []; chose = null; box = null;
+          if (viewer) { wheelOff(); viewer.set(0, { badges: badges(), wheel: null }); }
           paint();
         }));
+    }
+
+    /* where 4 is, and which spear takes it to the dash */
+    function ruleText(c, dash) {
+      if (dash) {
+        return answers[centre] ? centreName(m, centre).charAt(0).toUpperCase() + centreName(m, centre).slice(1) + ' is ' + answers[centre] + '.'
+          : '4 is on the dash.' + (opts.read ? (clicks.length < 3 ? ' Click ' + (clicks.length + 1) + (clicks.length ? ' next.' : ' first.')
+            : ' Which way does 1 → 2 → 3 run?') : '');
+      }
+      var four = order()[3];
+      var style = STEREO.bondStyle(c.atoms[centre].p, c.atoms[four].p);
+      if (style === 'wedge') return '4 is not on the dash: it is on the wedge. Rotate the molecule 180° on the vertical spear.';
+      return '4 is not on the dash: it is in the page. Rotate the molecule a third of a turn on the side spear through ' +
+        'the other group in the page.';
     }
 
     function paint() {
@@ -555,6 +652,7 @@ var App = (function () {
       var c = cur();
       var dash = onDash();
       var ord = order();
+      if (!box) box = spearBox(m, centre, drawOpts(), spearList);
       var targets = {};
       if (opts.read) {
         MOLECULES.neighbours(m)[centre].forEach(function (x) {
@@ -566,19 +664,19 @@ var App = (function () {
       }
       drawHost.innerHTML = '';
       var full = clicks.length === 3 || !!answers[centre];
-      drawHost.appendChild(Draw.mol(c, Object.assign({ badges: [centre], targets: targets,
-        arrow: full && dash ? centre : null }, opts.drawOpts || {})));
-      if (viewer) viewer.set(0, { badges: badges(), wheel: full && dash ? { c: centre, order: ord } : null });
+      var list = spearList(c);
+      drawHost.appendChild(Draw.mol(c, Object.assign({ badges: [centre], targets: targets, box: box,
+        spears: spearDraw(c, list, centre), arrow: full && dash ? centre : null }, drawOpts())));
+      if (viewer) {
+        viewer.set(0, { badges: badges(), wheel: full && dash ? { c: centre, order: ord } : null,
+          spears: wheelOn ? [] : list.map(function (sp) { return { id: sp.id, at: sp.at, axis: sp.axis, out: sp.atom != null }; }) });
+      }
       wheelBtn.disabled = !dash;
       /* the rule, always in view */
       rule.className = 'rule ' + (dash ? 'ok' : 'wait');
-      rule.textContent = dash
-        ? (answers[centre] ? centreName(m, centre).charAt(0).toUpperCase() + centreName(m, centre).slice(1) + ' is ' + answers[centre] + '.'
-          : '4 is on the dash.' + (opts.read ? (clicks.length < 3 ? ' Click ' + (clicks.length + 1) + (clicks.length ? ' next.' : ' first.')
-            : ' Which way does 1 → 2 → 3 run?') : ''))
-        : '4 is not on the dash. Rotate the molecule.';
+      rule.textContent = ruleText(c, dash);
       paintRS(dash);
-      paintTurns();
+      paintBar();
     }
 
     function paintRS(dash) {
@@ -610,9 +708,9 @@ var App = (function () {
     }
 
     function click(key) {
-      if (!opts.read || answers[centre]) return;
+      if (!opts.read || answers[centre] || busy) return;
       var j = +key, ord = order();
-      if (!onDash()) { say('4 is not on the dash yet, so 1 → 2 → 3 tells you nothing. Rotate the molecule first.', 'bad'); return; }
+      if (!onDash()) { say('4 is not on the dash yet, so 1 → 2 → 3 tells you nothing. Spear the molecule and rotate it first.', 'bad'); return; }
       if (clicks.indexOf(j) >= 0) return;
       var want = ord[clicks.length];
       if (j === want) {
@@ -627,13 +725,24 @@ var App = (function () {
       shake(drawHost, key);
     }
 
+    /* a spear on the drawing: click, or Enter or Space when it has focus */
+    function spearEvent(ev) {
+      var t = ev.target && ev.target.closest ? ev.target.closest('.spear[data-spear]') : null;
+      if (!t || !drawHost.contains(t)) return;
+      if (ev.type === 'keydown' && ev.key !== 'Enter' && ev.key !== ' ') return;
+      ev.preventDefault();
+      spearById(t.getAttribute('data-spear'));
+    }
+    drawHost.addEventListener('click', spearEvent);
+    drawHost.addEventListener('keydown', spearEvent);
+
     wheelBtn.addEventListener('click', function () {
       if (!viewer || busy) return;
       if (wheelOn) {
         wheelOn = false;
         wheelBtn.textContent = 'Steering-wheel view';
         viewer.slide(0, [0, 0, 0], 400);
-        viewer.animate(0, R, 600);
+        viewer.animate(0, R, 600, function () { paint(); });
         return;
       }
       wheelOn = true;
@@ -642,6 +751,7 @@ var App = (function () {
       /* straight down the bond to 4, allowing for the camera's slant */
       var target = G.mmul(G.transpose(viewer.cam), G.mmul(W, R));
       var off = G.mul(G.mvec(target, G.sub(m.atoms[centre].p, m.pivot)), -1);
+      viewer.set(0, { spears: [] });
       viewer.slide(0, off, 600);
       viewer.animate(0, target, 600);
       viewer.set(0, { wheel: { c: centre, order: order() } });
@@ -653,7 +763,8 @@ var App = (function () {
     return {
       node: node, after: after, start: start,
       R: function () { return R; }, model: cur, centre: function () { return centre; },
-      setCentre: function (c) { centre = c; clicks = []; chose = null; if (viewer) viewer.set(0, { badges: badges() }); paint(); },
+      setCentre: function (c) { centre = c; clicks = []; chose = null; box = null; if (viewer) viewer.set(0, { badges: badges() }); paint(); },
+      spear: spearById, busy: function () { return busy; },
       repaint: paint,
       destroy: function () { picker.destroy(); }
     };
@@ -661,19 +772,20 @@ var App = (function () {
 
   /* ------------------------------------------------------- the mirror scene */
 
-  /* A molecule and its mirror image, with a mirror between them. Rotate the
-     molecule and the image turns as a reflection does; rotate the image on
-     its own to try to make it fit, then slide them together.
-       opts.onTry()     the image was turned on its own
+  /* A molecule and its mirror image, with a mirror between them. The mirror
+     image carries Klein's spears: rotate it on them to try to make it fit,
+     then slide the two together.
+       opts.onTry()     the image was rotated on a spear
        opts.onSlide(n)  the two were slid together; n atoms line up */
   function mirrorScene(m, opts) {
     opts = opts || {};
     var img = STEREO.mirror(m, 'beside');
     var r = radiusOf(m);
     var off = r + 0.4;
-    var linked = true, together = false, busy = false;
-    var canvas = h('canvas', { class: 'c3d', tabindex: 0, role: 'img',
-      'aria-label': m.name + ' on the left and its mirror image on the right, with a mirror between them. Drag either one to rotate it.' });
+    var together = false, busy = false;
+    var canvas = h('canvas', { class: 'c3d nodrag', tabindex: 0, role: 'img',
+      'aria-label': m.name + ' on the left and its mirror image on the right, with a mirror between them. Click a spear on the ' +
+        'mirror image to rotate it.' });
     var wrap = h('div', { class: 'c3d-wrap wide' }, [canvas, h('span', { class: 'side-tag l', text: 'molecule' }),
       h('span', { class: 'mirror-tag', text: 'mirror' }), h('span', { class: 'side-tag r', text: 'mirror image' })]);
     var meter = h('div', { class: 'meter' }, [h('span')]);
@@ -701,56 +813,47 @@ var App = (function () {
 
     function start() {
       viewer = new Viewer3D(canvas, {
-        objects: [{ model: m, offset: [-off, 0, 0] }, { model: img, offset: [off, 0, 0] }],
-        radius: r, pane: true, linked: true,
-        onTurn: function (i) { if (i === 1) { linked = false; viewer.linked = false; } paintMeter(); },
-        onRelease: function (i) { settle(i); }
+        objects: [{ model: m, offset: [-off, 0, 0], draggable: false }, { model: img, offset: [off, 0, 0], draggable: false }],
+        radius: r, pane: true,
+        onSpear: function (i, id) { if (i === 1) turnImage(id); }
       });
-      viewer.keyTarget = 1;
       paintMeter();
       paintTurns();
       if (opts.needTry) slideBtn.disabled = true;
     }
 
-    function settle(i) {
-      var o = viewer.get(i);
-      var target = STEREO.nearest(i ? img : m, o.R);
-      busy = true;
-      viewer.animate(i, target, 300, function () {
-        busy = false;
-        if (i === 1) { tried++; slideBtn.disabled = together; if (opts.onTry) opts.onTry(); }
-        paintMeter();
-      });
+    /* the image as it now lies, and its spears: through its carbon for one
+       centre, through its middle for a zigzag */
+    function imgNow() { return STEREO.apply(img, viewer.get(1).R); }
+    function imgSpears() {
+      var b = imgNow();
+      return spearsAt(b, b.kind === 'centre' ? b.centre : CIP.centres(b)[0]);
     }
 
-    function turnImage(L) {
+    function turnImage(id) {
       if (busy || !viewer || together) return;
-      linked = false; viewer.linked = false;
-      var target = G.mmul(L, viewer.get(1).R);
+      var sp = imgSpears().filter(function (x) { return x.id === id; })[0];
+      if (!sp) return;
       busy = true;
-      viewer.animate(1, target, 600, function () {
-        busy = false; tried++; slideBtn.disabled = together; paintMeter();
-        if (opts.onTry) opts.onTry();
+      paintTurns();
+      spearAnim(viewer, 1, imgNow(), sp, null, function (Rnew, off0) {
+        viewer.set(1, { R: STEREO.nearest(img, Rnew), spears: [] });
+        viewer.slide(1, off0, 300, function () {
+          busy = false; tried++; slideBtn.disabled = together; paintMeter(); paintTurns();
+          if (opts.onTry) opts.onTry();
+        });
       });
     }
 
     function paintTurns() {
       turnbar.innerHTML = '';
-      turnbar.appendChild(h('span', { class: 'lbl', text: 'Turn the image:' }));
-      turnbar.appendChild(h('button', { type: 'button', class: 'mini', text: 'Turn it over ⟲', onclick: function () { turnImage(STEREO.OVER); } }));
-      if (m.kind === 'chain') {
-        turnbar.appendChild(h('button', { type: 'button', class: 'mini', text: 'Upside down', onclick: function () { turnImage(STEREO.UPSIDE); } }));
-        return;
-      }
-      turnbar.appendChild(h('span', { class: 'lbl', text: 'Spin around:' }));
-      Object.keys(img.slots).forEach(function (s) {
-        var j = img.slots[s];
-        turnbar.appendChild(h('button', { type: 'button', class: 'mini', text: GROUPS[img.atoms[j].group].label,
-          onclick: function () {
-            var b = STEREO.apply(img, viewer.get(1).R);
-            turnImage(G.rot(G.sub(b.atoms[j].p, b.atoms[b.centre].p), 120));
-          } }));
-      });
+      if (!viewer) return;
+      var list = together ? [] : imgSpears();
+      viewer.set(1, { spears: together ? [] : busy ? viewer.get(1).spears : list.map(function (sp) { return { id: sp.id, at: sp.at, axis: sp.axis, out: sp.atom != null }; }) });
+      if (together) return;
+      var bar = spearBar(imgNow(), list, turnImage, busy);
+      bar.firstChild.textContent = 'Rotate the mirror image:';
+      turnbar.appendChild(bar);
     }
 
     slideBtn.addEventListener('click', function () {
@@ -761,6 +864,7 @@ var App = (function () {
       var x = models();
       var miss = STEREO.mismatched(x.b, x.a);
       viewer.pane = false;
+      paintTurns();
       viewer.set(1, { alpha: 0.5 });
       viewer.slide(0, [0, 0, 0], 700);
       viewer.slide(1, [0, 0, 0], 700, function () {
@@ -787,10 +891,11 @@ var App = (function () {
       slideBtn.disabled = false;
       resetBtn.disabled = true;
       status.textContent = '';
+      paintTurns();
     });
     resetBtn.disabled = true;
 
-    var node = panel('Molecule and mirror image', 'drag either one', [wrap, turnbar,
+    var node = panel('Molecule and mirror image', 'click a spear on the mirror image', [wrap, turnbar,
       h('div', { class: 'meter-row' }, [meter, meterText]), h('div', { class: 'btnrow' }, [slideBtn, resetBtn]), status], 'p3d');
     return {
       node: node, start: start, tried: function () { return tried; }, count: count,
@@ -841,9 +946,8 @@ var App = (function () {
       function paintSide() {
         side.innerHTML = '';
         if (!pr.ok[m.id]) {
-          side.appendChild(h('p', { class: 'muted', text: 'Turning the molecule on the left turns its reflection, as a real mirror ' +
-            'would. Now pick up the mirror image: drag it, or use the buttons under it, and try to make every atom line up ' +
-            'with its partner. Then slide them together.' }));
+          side.appendChild(h('p', { class: 'muted', text: 'The mirror image carries spears. Rotate it on them (click a spear, or ' +
+            'its button) and try to make every atom line up with its partner. Then slide them together.' }));
           return;
         }
         if (k === 0) {
@@ -866,7 +970,7 @@ var App = (function () {
       function slid(n, total) {
         if (k === 0) {
           if (!pr.ok[m.id]) { pr.ok[m.id] = 1; save(); }
-          say(n + ' of ' + total + ' atoms line up. Try other turns if you like: two is the most that ever will.', 'good');
+          say(n + ' of ' + total + ' atoms line up. Try other spears if you like: two is the most that ever will.', 'good');
           paintSide();
           paint2();
         } else if (n === total) {
@@ -874,8 +978,8 @@ var App = (function () {
           paintSide();
           paint2();
         } else {
-          say('Only ' + n + ' of ' + total + ' line up so far. Go back to the mirror, turn the image some more and slide again. ' +
-              'Try Turn it over.', 'bad');
+          say('Only ' + n + ' of ' + total + ' line up so far. Go back to the mirror, rotate the image on a spear and slide ' +
+              'again. Try the vertical spear.', 'bad');
         }
       }
       paintSide();
@@ -921,7 +1025,8 @@ var App = (function () {
     if (STEREO.relation(built, m) === 'identical') {
       var over = same(got, STEREO.arrangement(STEREO.apply(m, STEREO.OVER)));
       return { kind: 'turned', msg: (over ? 'You moved every group from left to right and changed the wedge and the dash: ' +
-        'that is the original molecule turned over. ' : 'That drawing is the original molecule, only turned. ') +
+        'that is the original molecule rotated 180° on the vertical spear (turned over). ' : 'That drawing is the original ' +
+        'molecule, only rotated. ') +
         'It would fit the original exactly, so it is not the mirror image. ' + MIRROR_WORDS[where] };
     }
     var slots = MOLECULES.SLOT_ORDER[m.tpl];
@@ -1051,7 +1156,7 @@ var App = (function () {
           ? 'The mirror stands between the molecule and its image. Turn the molecule and watch the image: every atom keeps its ' +
             'height and its distance from the page; only left and right change.'
           : 'Here the mirror stands beside the molecule, but the image is the same molecule as the one a mirror behind the page ' +
-            'shows, just turned. Use Turn it over on the image to see the drawing you need.' })])]));
+            'shows, just rotated. Rotate the image on its vertical spear to see the drawing you need.' })])]));
         sc.start();
         showArea(help);
       });
@@ -1454,13 +1559,13 @@ var App = (function () {
       predict: { alanine_w: 'asis' },
       extra: function (k, m, pr) {
         if (k === 0) {
-          return ['With the H turned onto the dash, NH₂ → COOH → CH₃ runs counterclockwise: (S)-alanine. It is the alanine ' +
+          return ['With the H rotated onto the dash, NH₂ → COOH → CH₃ runs counterclockwise: (S)-alanine. It is the alanine ' +
             'in the proteins of every living thing.',
-            'Turning the molecule over did not change it: the drawing changed because you are looking at the molecule from ' +
+            'The vertical spear did not change the molecule: the drawing changed because you are looking at the molecule from ' +
             'the other side.'];
         }
-        return ['Here 4 was the CH₃, lying in the page. Turning the molecule over leaves a group in the page in the page, so ' +
-          'it took a spin around a bond (or a drag) to put 4 on the dash.',
+        return ['Here 4 was the CH₃, lying in the page. The vertical spear keeps a group in the page in the page, so it ' +
+          'took a side spear, through the other group in the page, to carry 4 back to the dash.',
           'Priority 4 is just the lowest-ranked group: it is not always H. This centre is ' + pr.ok[m.id] + '.'];
       },
       doneMsg: 'If 4 is not on the dash, rotate the molecule. Then read 1 → 2 → 3.'
@@ -1480,16 +1585,16 @@ var App = (function () {
     var dash = STEREO.fourOnDash(built, built.centre);
     if (rel === 'identical' && dash) return { ok: true, built: built };
     if (rel === 'identical') {
-      return { msg: 'That is the right molecule, but the H (4) is not on the dash yet. Keep rotating: the H has to end up on the dash.' };
+      return { msg: 'That is the right molecule, but the H (4) is not on the dash yet. Rotate it on another spear: the H has to end up on the dash.' };
     }
     var moved = ['ll', 'lr'].every(function (x) { return got[x] === HIDDEN_AS_DRAWN[x]; }) && got.w === 'OH' && got.d === 'H';
     if (moved) {
       return { msg: 'You moved the H to the dash and the OH to the wedge, and nothing else moved. That drawing is the mirror ' +
-        'image of the molecule. When the molecule really turns over, the CH₃ and the CH₂CH₃ change sides too: press Turn it ' +
-        'over and watch the drawing.' };
+        'image of the molecule. When the molecule really rotates on the vertical spear, the CH₃ and the CH₂CH₃ change sides ' +
+        'too: click the vertical spear and watch the drawing.' };
     }
-    return { msg: 'That drawing is the mirror image of the molecule, not the molecule turned. Rotate the 3D model until the ' +
-      'H is on the dash, then copy what you see.' + (dash ? '' : ' (The H is not on the dash either.)') };
+    return { msg: 'That drawing is the mirror image of the molecule, not the molecule rotated. Rotate the molecule on a spear ' +
+      'until the H is on the dash, then copy what you see.' + (dash ? '' : ' (The H is not on the dash either.)') };
   }
 
   RENDER.hidden = function (s) {
@@ -1511,7 +1616,7 @@ var App = (function () {
       if (pr.p != null) {
         top.appendChild(reveal([verdict(P, pr.p) + 'The hidden H points toward you, on a wedge. At a carbon in the zigzag the ' +
           'two bonds out of the page always point opposite ways: if the drawn group is on a dash, the H is on a wedge, and the ' +
-          'other way round.', 'So here 4 is on the wedge, and the molecule has to be rotated before it can be read.']));
+          'other way round.', 'So here 4 is on the wedge, and the molecule has to be rotated on a spear before it can be read.']));
       }
     }
 
@@ -1565,15 +1670,15 @@ var App = (function () {
         if (r.ok) {
           pr.built = fill;
           save();
-          say('Correct! That is the same molecule, turned so the H is on the dash. Now read it.', 'good');
+          say('Correct! That is the same molecule, rotated so the H is on the dash. Now read it.', 'good');
           paint();
           return;
         }
         wrong++;
         say(r.msg, 'bad');
         tip.hidden = false;
-        tip.textContent = 'Tip: press Turn it over under the 3D model. The H moves to the dash, and look where the CH₃ and ' +
-          'the CH₂CH₃ go. Your drawing can show the molecule from any side, as long as the H is on the dash.';
+        tip.textContent = 'Tip: click the vertical spear. The H moves to the dash, and look where the CH₃ and the CH₂CH₃ go. ' +
+          'Your drawing can show the molecule from any side, as long as the H is on the dash.';
       });
       clear.addEventListener('click', function () { fill = {}; paintTpl(); say(''); });
       paintTpl();
@@ -1595,7 +1700,7 @@ var App = (function () {
       rot.after.innerHTML = '';
       rot.after.appendChild(reveal(['OH → CH₂CH₃ → CH₃ runs ' + (pr.label === 'R' ? 'clockwise' : 'counterclockwise') + ': (' +
         pr.label + ')-2-butanol. It is the same answer you would get from any drawing of this molecule, once 4 is on the dash.']));
-      if (!state.done[s.id]) complete('Find the hidden H first. If it is not on the dash, rotate the molecule, then read it.');
+      if (!state.done[s.id]) complete('Find the hidden H first. If it is not on the dash, spear the molecule and rotate it, then read it.');
       else if (fresh) say('(' + pr.label + ')-2-butanol.', 'good');
     }
 
@@ -1647,7 +1752,7 @@ var App = (function () {
       rot = rotator(m, { read: false, title3: '3D model of (R)-2-butanol', title2: '(R)-2-butanol, as it now lies', drawOpts: { mark: mark },
         onTurn: function () { pr.turns = (pr.turns || 0) + 1; save(); fin(true); } });
       area.appendChild(reveal([verdict(P, pr.p) + 'The mirror image of (R)-2-butanol is (S)-2-butanol. A mirror turns every ' +
-        'clockwise into counterclockwise.', 'Now rotate (R)-2-butanol any way you like: drag it or use the buttons. Watch its label.']));
+        'clockwise into counterclockwise.', 'Now rotate (R)-2-butanol on its spears as often as you like. Watch its label.']));
       area.appendChild(rot.node);
       rot.start();
       fin(false);
@@ -1843,11 +1948,11 @@ var App = (function () {
       var sc = mirrorScene(m, { needTry: true, onSlide: function (n, total) {
         if (k === 0) {
           if (n === total) { pr.fit.dbb_A = 'full'; save(); say('A fits its mirror image exactly.', 'good'); }
-          else say(n + ' of ' + total + ' line up. Go back to the mirror and try Upside down on the image.', 'bad');
+          else say(n + ' of ' + total + ' line up. Go back to the mirror and try the side spear on the image.', 'bad');
         } else {
           pr.fit.dbb_B = pr.fit.dbb_B || 1;
           save();
-          say(n + ' of ' + total + ' line up. Try other turns: B never fits.', 'good');
+          say(n + ' of ' + total + ' line up. Try other spears: B never fits.', 'good');
         }
         paintSide();
         area.firstChild.replaceWith(chipRow('Try the mirror:', NAMES, k, function (i) { return i ? okB() : okA(); },
@@ -1864,7 +1969,7 @@ var App = (function () {
         side.innerHTML = '';
         var lines = [];
         if (k === 0 && okA()) {
-          lines.push('Molecule A is (2R,3S). Its mirror image is (2S,3R), and that turned upside down is A again: one ' +
+          lines.push('Molecule A is (2R,3S). Its mirror image is (2S,3R), and that rotated 180° on the side spear is A again: one ' +
             'molecule, not two. A has two chirality centres but is achiral. That makes it a meso compound.');
         }
         if (k === 1 && okB()) {
@@ -1872,8 +1977,8 @@ var App = (function () {
             'enantiomer.');
         }
         if (lines.length) side.appendChild(reveal(lines));
-        else side.appendChild(h('p', { class: 'muted', text: 'Turn the mirror image with the buttons (or drag it), then slide ' +
-          'the two together.' }));
+        else side.appendChild(h('p', { class: 'muted', text: 'Rotate the mirror image on its spears, then slide the two ' +
+          'together.' }));
       }
       paintSide();
       paintPlane();
@@ -2633,7 +2738,8 @@ var App = (function () {
     el.howBody.appendChild(h('ol', { class: 'ref-steps' }, [
       'Find the four groups on the chirality centre and rank them 1 to 4 by atomic number.',
       'Break a tie at the first point of difference. A double bond counts twice.',
-      'If 4 is not on the dash, rotate the molecule until it is.',
+      'If 4 is not on the dash, rotate the molecule until it is: spear it and rotate it. 4 on the wedge: the vertical spear, ' +
+        '180°. 4 in the page: a side spear through the other group in the page, 120°.',
       'Follow 1 → 2 → 3: clockwise is R, counterclockwise is S.'
     ].map(function (t) { return h('li', { text: t }); })));
     var dl = h('dl', { class: 'vocab' });
@@ -2659,8 +2765,8 @@ var App = (function () {
       ]),
       h('p', { text: 'Predictions, drawings and rankings are never graded, so try things. The four checkpoints are graded: ' +
                      'your first answer to each question counts. About 30 minutes. Your progress is saved if you leave.' }),
-      h('p', { class: 'screen-note', text: 'Everything works with a mouse, a touch screen or the keyboard (Tab and Enter; the ' +
-                                            'arrow keys rotate a 3D model).' })
+      h('p', { class: 'screen-note', text: 'Everything works with a mouse, a touch screen or the keyboard (Tab and Enter; ' +
+                                            'every spear has a button too).' })
     ]);
     var go = h('button', { type: 'button', class: 'primary', text: state.max > 0 ? 'Continue where you left off' : 'Start' });
     box.appendChild(go);

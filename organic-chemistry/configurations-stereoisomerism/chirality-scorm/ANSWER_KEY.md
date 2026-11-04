@@ -36,7 +36,7 @@ Nothing is calculated. The atomic numbers are open beside checkpoints 2 to 4.
 | Ethanol (`ethanol`) | CH₃ upper left, in the page, OH upper right, in the page, H wedge, H dash | none | no chirality centre, achiral |
 | 2-Bromobutane (`bromobutane`) | C2: Br (wedge), H (dash); C3: H (wedge), H (dash) | C2: Br > CH₂CH₃ > CH₃ > H (4 on the dash) | (2R) |
 | 2-Butanol (`butanol_S`) | CH₃ upper left, in the page, CH₂CH₃ upper right, in the page, OH wedge, H dash | OH > CH₂CH₃ > CH₃ > H (4 on the dash) | S |
-| Alanine (`alanine_w`) | COOH upper left, in the page, CH₃ upper right, in the page, H wedge, NH₂ dash | NH₂ > COOH > CH₃ > H (4 on a wedge) | S |
+| Alanine (`alanine_w`) | CH₃ lower left, in the page, COOH lower right, in the page, H wedge, NH₂ dash | NH₂ > COOH > CH₃ > H (4 on a wedge) | S |
 | 1-Bromo-1-chloro-1-fluoroethane (`bcfe_plane`) | CH₃ lower left, in the page, Br lower right, in the page, Cl wedge, F dash | Br > Cl > F > CH₃ (4 in the page) | R |
 | 2-Butanol (`butanol_hidden`) | C2: H (wedge), OH (dash); C3: H (wedge), H (dash) | C2: OH > CH₂CH₃ > CH₃ > H (4 on a wedge) | (2S) |
 | 2-Butanol (`butanol_R`) | CH₂CH₃ upper left, in the page, CH₃ upper right, in the page, OH wedge, H dash | OH > CH₂CH₃ > CH₃ > H (4 on the dash) | R |
@@ -71,7 +71,7 @@ Nothing is calculated. The atomic numbers are open beside checkpoints 2 to 4.
 
 ### Mirror, mirror
 
-Predictions: CHBrClF's mirror image fits? **No, never**. CH₂BrCl's? **Yes**. CHBrClF: at most 2 of 4 atoms ever line up. CH₂BrCl: all 4 line up after **Turn it over** on the image; its mirror plane is the page (through Br, C and Cl).
+Predictions: CHBrClF's mirror image fits? **No, never**. CH₂BrCl's? **Yes**. CHBrClF: at most 2 of 4 atoms ever line up, whatever spear the image is rotated on. CH₂BrCl: all 4 line up after the **vertical spear** (180°) on the image; its mirror plane is the page (through Br, C and Cl).
 
 ### Draw the mirror image
 
@@ -115,16 +115,16 @@ Predictions: priority 1 of CHBrClF is **Br: it has the highest atomic number**; 
 
 ### R and S
 
-- 2-Bromobutane: 4 on the dash as drawn; Br > CH₂CH₃ > CH₃ > H: **R**.
-- 2-Butanol: 4 on the dash as drawn; OH > CH₂CH₃ > CH₃ > H: **S**.
-- Alanine: 4 on a wedge as drawn; NH₂ > COOH > CH₃ > H: **S**.
-- 1-Bromo-1-chloro-1-fluoroethane: 4 in the page as drawn; Br > Cl > F > CH₃: **R**.
+- 2-Bromobutane: 4 on the dash as drawn (read as drawn); Br > CH₂CH₃ > CH₃ > H: **R**.
+- 2-Butanol: 4 on the dash as drawn (read as drawn); OH > CH₂CH₃ > CH₃ > H: **S**.
+- Alanine: 4 on a wedge as drawn (the vertical spear, 180°); NH₂ > COOH > CH₃ > H: **S**.
+- 1-Bromo-1-chloro-1-fluoroethane: 4 in the page as drawn (the side spear through Br, 120°); Br > Cl > F > CH₃: **R**.
 
 Prediction (4 on the wedge): can it be read as drawn? **No: first rotate the molecule until 4 is on the dash**.
 
 ### The hidden H
 
-The hidden H on C2 points **toward you, on a wedge**. Redrawn with H on the dash, three drawings are accepted (the molecule turned over, and those two spun about the dash):
+The hidden H on C2 points **toward you, on a wedge**. Redrawn with H on the dash, three drawings are accepted (the molecule rotated 180° on the vertical spear, and that drawing rotated a third of a turn about the bond to the H):
 
 - OH lower left, in the page, CH₂CH₃ lower right, in the page, CH₃ wedge, H dash
 - CH₃ lower left, in the page, OH lower right, in the page, CH₂CH₃ wedge, H dash
@@ -165,7 +165,7 @@ The checklist shown at the end:
 
 ### Meso: Molecules A and B again
 
-Prediction: **3** stereoisomers. Molecule A is (2R,3S), meso: its mirror image fits after **Upside down**, and its mirror plane appears when C3 is turned 180° (Br eclipsing Br). Molecule B is (2R,3R), chiral; no turn of the C2–C3 bond gives it a mirror plane. A and B are diastereomers.
+Prediction: **3** stereoisomers. Molecule A is (2R,3S), meso: its mirror image fits after the **side spear** (180°), and its mirror plane appears when C3 is turned 180° (Br eclipsing Br). Molecule B is (2R,3R), chiral; no turn of the C2–C3 bond gives it a mirror plane. A and B are diastereomers.
 
 ### Rings
 
@@ -431,7 +431,7 @@ Figure: Bromochlorofluoromethane: Cl upper left, in the page, F upper right, in 
 - R
 - It cannot be named while 4 is on a wedge
 
-> 4 (the H) is on the wedge, so rotate the molecule first: turned over, the H is on the dash. Then Br → Cl → F runs counterclockwise. S.
+> 4 (the H) is on the wedge, so rotate the molecule first: 180° on the vertical spear puts the H on the dash. Then Br → Cl → F runs counterclockwise. S.
 
 **★ `c-which-S`** Which drawing shows (S)-alanine?
 
@@ -491,7 +491,7 @@ Figure: 2-Butanol: CH₃ upper left, in the page, CH₂CH₃ upper right, in the
 
 > A mirror turns clockwise into counterclockwise, so the mirror image is S at that centre.
 
-**`c-rotate-label`** An (R) molecule is rotated a third of a turn around one of its bonds. Its label is now…
+**`c-rotate-label`** An (R) molecule is speared through one of its bonds and rotated a third of a turn. Its label is now…
 
 - ✓ Still R: rotating never changes R or S
 - S
@@ -508,7 +508,7 @@ Figure: 1-Bromo-1-chloro-1-fluoroethane: CH₃ lower left, in the page, Br lower
 - S
 - It has none, because it has no H
 
-> Here 4 is the CH₃, attached through carbon. It lies in the page, so rotate until the CH₃ is on the dash: Br → Cl → F then runs clockwise. R.
+> Here 4 is the CH₃, attached through carbon. It lies in the page, so spear the molecule from the side, through the Br (the other group in the page), and rotate it 120°: the CH₃ goes to the dash. Br → Cl → F then runs clockwise. R.
 
 **`c-hidden`** What is the configuration of C2 in this drawing of 2-bromobutane?
 
@@ -518,7 +518,7 @@ Figure: 2-Bromobutane: C2: H (wedge), Br (dash); C3: H (wedge), H (dash) = (2S).
 - R
 - It cannot be named, because the H is not drawn
 
-> The hidden H on C2 is on the wedge, opposite the dashed Br. Rotate so the H is on the dash: Br → CH₂CH₃ → CH₃ then runs counterclockwise. S.
+> The hidden H on C2 is on the wedge, opposite the dashed Br. Rotate the molecule 180° on the vertical spear so the H is on the dash: Br → CH₂CH₃ → CH₃ then runs counterclockwise. S.
 
 **`c-steering`** Seen with 4 pointing straight away from you, 1 → 2 → 3 runs counterclockwise. The centre is…
 

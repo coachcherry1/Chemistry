@@ -116,6 +116,57 @@ var STEREO = (function () {
     return G.mmul(G.rot(T[slot], 120), R);
   }
 
+  /* ---- Klein's spears */
+
+  /* The spears a drawing can be turned on, as the model now lies, at centre c
+     (a zigzag may be speared at another point, `at`). Klein's way: spear the
+     molecule, then rotate it about the spear, so the drawing can still be
+     drawn afterwards.
+       vertical  the page's up–down line through the carbon, 180°: the two
+                 groups in the page trade sides, the wedge goes back to the
+                 dash and the dash comes forward to the wedge
+       side      for one centre: along the bond to a group in the page, 120°;
+                 the group on the spear stays put and the other three turn a
+                 third of a turn, the way that carries the other group in the
+                 page back onto the dash (so 4 in the page reaches the dash in
+                 one turn, speared through its neighbour in the page)
+                 for a zigzag: the page's left–right line, 180°
+     Each spear: { id, kind, at, axis (unit, page coordinates), deg, atom }.
+     A turn of `deg` about `axis` through `at`; deg's sign is the way the
+     curved arrow points (right-handed about axis). */
+  function spears(m, c, at) {
+    var p = at || m.atoms[c].p, out = [];
+    out.push({ id: 'v', kind: 'vertical', at: p, axis: [0, 1, 0], deg: 180 });
+    if (m.kind === 'chain') {
+      out.push({ id: 'h', kind: 'side', at: p, axis: [1, 0, 0], deg: 180 });
+      return out;
+    }
+    if (m.kind !== 'centre') return out;
+    var cp = m.atoms[c].p;
+    var inPage = MOLECULES.neighbours(m)[c].filter(function (x) { return bondStyle(cp, m.atoms[x.j].p) === 'plain'; });
+    inPage.forEach(function (x) {
+      var axis = G.unit(G.sub(m.atoms[x.j].p, cp));
+      var other = inPage.filter(function (y) { return y.j !== x.j; })[0];
+      var deg = 120;
+      if (other) {
+        var q = G.mvec(G.rot(axis, deg), G.sub(m.atoms[other.j].p, cp));
+        if (q[2] > -0.3) deg = -120;
+      }
+      out.push({ id: 's' + x.j, kind: 'side', at: cp, axis: axis, deg: deg, atom: x.j });
+    });
+    return out;
+  }
+
+  /* The turn a spear makes (a linear map about its own axis). */
+  function spearTurn(s, deg) { return G.rot(s.axis, deg == null ? s.deg : deg); }
+
+  /* Model m turned on spear s (by deg, default all the way), about the spear
+     itself rather than the pivot: the speared carbon stays where it is. */
+  function speared(m, s, deg) {
+    var L = spearTurn(s, deg);
+    return MOLECULES.transformed(m, function (q) { return G.add(s.at, G.mvec(L, G.sub(q, s.at))); });
+  }
+
   /* ---- applying a turn or a reflection */
 
   /* Model m with every atom moved by the linear map L about m's pivot. */
@@ -508,6 +559,6 @@ var STEREO = (function () {
     superimposable: superimposable, geometric: geometric, matchCount: matchCount, mismatched: mismatched,
     twisted: twisted, subDihedral: subDihedral, symmetricIn: symmetricIn, mesoPlane: mesoPlane,
     centrePlane: centrePlane, ringPlane: ringPlane, permutations: permutations, side: side,
-    halves: halves, facing: facing, eclipsedNear: eclipsedNear
+    halves: halves, facing: facing, eclipsedNear: eclipsedNear, spears: spears, spearTurn: spearTurn, speared: speared
   };
 })();

@@ -107,7 +107,32 @@ const fakeLMS = () => {
     for (let k = 0; k < 3; k++) await page.click(`.gdrop[data-drop="${order[k]}"]`);
   }
   const rule = () => page.textContent('.rule');
-  async function turn(label) { await page.click(`.turnbar button:has-text("${label}")`); await wait(900); }
+  /* Klein's spears, four ways: on the drawing, by keyboard, its button, or the rod in the 3D model */
+  async function spear(id, via) {
+    if (via === 'button') await page.click(`.spearbar button[data-spear="${id}"]`);
+    else if (via === 'key') { await page.focus(`.mol-wrap .spear[data-spear="${id}"]`); await page.keyboard.press('Enter'); }
+    else if (via === 'rod') {
+      const at = await page.evaluate((sid) => {
+        const c = [...document.querySelectorAll('canvas.c3d')].filter((x) => x._viewer && x._viewer.rods.some((r) => r.id === sid))[0];
+        const rs = c._viewer.rods.filter((x) => x.id === sid), r = rs[Math.floor(rs.length * 0.8)];
+        const b = c.getBoundingClientRect(), k = b.width / c.width;
+        return { x: b.left + (r.ax + r.bx) / 2 * k, y: b.top + (r.ay + r.by) / 2 * k };
+      }, id);
+      await page.mouse.click(at.x, at.y);
+    } else {
+      /* a point on the shaft, partway out from the carbon (a vertical line has no width to aim at) */
+      const at = await page.$eval(`.mol-wrap .spear[data-spear="${id}"] .spear-shaft`, (l) => {
+        const sv = l.ownerSVGElement, pt = sv.createSVGPoint(), t = 0.62;
+        pt.x = +l.getAttribute('x1') + (l.getAttribute('x2') - l.getAttribute('x1')) * t;
+        pt.y = +l.getAttribute('y1') + (l.getAttribute('y2') - l.getAttribute('y1')) * t;
+        const q = pt.matrixTransform(sv.getScreenCTM());
+        return { x: q.x, y: q.y };
+      });
+      await page.mouse.click(at.x, at.y);
+    }
+    await wait(2300);
+  }
+  const sideSpear = (expr, group) => page.evaluate(([e, g]) => 's' + (0, eval)(e).atoms.findIndex((a) => a.group === g), [expr, group]);
 
   /* ---- fresh start: a save from another release in the LMS, then a current
      save the browser kept from another copy of the package; neither may be resumed */
@@ -166,8 +191,8 @@ const fakeLMS = () => {
   await predictFig('Bromochlorofluoromethane');
   await predict(1);
   expect(await page.isDisabled('button:has-text("Slide them together")'), 'mirror: sliding allowed before trying');
-  await page.click('.turnbar button:has-text("Turn it over")');
-  await wait(900);
+  expect(await page.$$eval('canvas.c3d', (cs) => cs.every((c) => c.classList.contains('nodrag'))), 'mirror: a 3D model can still be dragged');
+  await spear('v', 'rod');
   await page.click('button:has-text("Slide them together")');
   await wait(1000);
   expect(/You predicted/.test(await page.textContent('.reveal')), 'mirror: reveal does not mention the wrong prediction');
@@ -175,8 +200,7 @@ const fakeLMS = () => {
   await page.click('button:has-text("Next molecule")');
   await predictFig('Bromochloromethane');
   await predict(0);
-  await page.click('.turnbar button:has-text("Turn it over")');
-  await wait(900);
+  await spear('v', 'button');
   await page.click('button:has-text("Slide them together")');
   await wait(1000);
   await fb(/CH₂BrCl is achiral/, 'mirror step did not complete');
@@ -292,27 +316,23 @@ const fakeLMS = () => {
 
   /* rotate: reading is locked until 4 is on the dash */
   await predict(0);
-  expect(/4 is not on the dash\. Rotate the molecule\./.test(await rule()), 'rotate: the rule is not shown');
+  expect(/4 is not on the dash: it is on the wedge\. Rotate the molecule 180° on the vertical spear\./.test(await rule()), 'rotate: the rule is not shown');
+  expect((await page.$$('.mol-wrap .spear[role="button"]')).length === 3, 'rotate: the drawing should carry three spears');
   expect(await page.isDisabled('button:has-text("Clockwise: R")'), 'rotate: R/S open before 4 is on the dash');
   {
     const o = await ranks("molecule('alanine_w')");
     await page.dispatchEvent(`.gdrop[data-drop="${o[0]}"]`, 'click');
-    await fb(/Rotate the molecule first/, 'reading before rotating not stopped');
-    await turn('Turn it over');
-    expect(/4 is on the dash/.test(await rule()), 'rotate: Turn it over did not put 4 on the dash');
+    await fb(/Spear the molecule and rotate it first/, 'reading before rotating not stopped');
+    await spear('v');
+    expect(/4 is on the dash/.test(await rule()), 'rotate: the vertical spear did not put 4 on the dash');
     await read123(o);
     await page.click('button:has-text("Counterclockwise: S")');
     await page.click('button:has-text("Next molecule")');
-    await turn('Turn it over');
-    expect(/not on the dash/.test(await rule()), 'rotate: Turn it over should leave CH₃ in the page');
-    let onDash = false;
-    for (let n = 0; n < 8 && !onDash; n++) {
-      /* the buttons are drawn afresh after every turn: Turn it over, then one spin per group */
-      await page.click(`.turnbar button >> nth=${1 + (n % 4)}`);
-      await wait(900);
-      onDash = /4 is on the dash/.test(await rule());
-    }
-    expect(onDash, 'rotate: no spin put CH₃ on the dash');
+    await spear('v');
+    expect(/it is in the page\. Rotate the molecule a third of a turn on the side spear/.test(await rule()),
+      'rotate: the vertical spear should leave CH₃ in the page, and the rule should say so');
+    await spear(await sideSpear("molecule('bcfe_plane')", 'Br'), 'key');
+    expect(/4 is on the dash/.test(await rule()), 'rotate: the side spear through Br did not put CH₃ on the dash');
     const o2 = await ranks("molecule('bcfe_plane')");
     await read123(o2);
     await page.click('button:has-text("Clockwise: R")');
@@ -322,7 +342,7 @@ const fakeLMS = () => {
 
   /* hidden: predict, then a mirror-image redraw, then the right one, then read */
   await predict(0);
-  await turn('Turn it over');
+  await spear('v');
   await place('OH', '.slot[data-drop="w"]'); await place('H', '.slot[data-drop="d"]');
   await place('CH3', '.slot[data-drop="ll"]'); await place('Et', '.slot[data-drop="lr"]');
   await page.click('button:has-text("Check")');
@@ -345,12 +365,12 @@ const fakeLMS = () => {
 
   /* enant: the mirror image (H on the wedge) is turned over and read */
   await predict(1);
-  await turn('Turn it over');
+  await spear('v');
   {
     const o = await page.evaluate(() => { const m = STEREO.mirror(molecule('butanol_R'), 'behind'); return CIP.rank(m, m.centre).order; });
     await read123(o);
     await page.click('button:has-text("Counterclockwise: S")');
-    await turn('Turn it over');
+    await spear('v');
     await fb(/Enantiomers: every chirality centre is opposite/, 'enant step did not complete');
     expect(/Still R/.test(await page.textContent('.reveal:last-of-type, .panel .reveal')), 'enant: the label does not stay R');
   }
@@ -367,7 +387,7 @@ const fakeLMS = () => {
     await page.click('button:has-text("Clockwise: R")');
     await fb(/Now C3/, 'C2 of molecule A not accepted');
     expect(/not on the dash/.test(await rule()), 'four: C3 of molecule A should need a rotation');
-    await turn('Turn it over');
+    await spear('v');
     const o3 = await ranks("molecule('bcb_wd')", 3);
     await read123(o3);
     await page.click('button:has-text("Counterclockwise: S")');
@@ -423,14 +443,12 @@ const fakeLMS = () => {
 
   /* meso: A fits its mirror image upside down; B never fits; A's mirror plane */
   await predict(1);
-  await page.click('.turnbar button:has-text("Upside down")');
-  await wait(900);
+  await spear('h', 'button');
   await page.click('button:has-text("Slide them together")');
   await wait(1000);
   await fb(/A fits its mirror image exactly/, 'meso: A did not fit its mirror image');
   await page.click('.chips button:has-text("Molecule B")');
-  await page.click('.turnbar button:has-text("Turn it over")');
-  await wait(900);
+  await spear('v', 'rod');
   await page.click('button:has-text("Slide them together")');
   await wait(1000);
   await fb(/B never fits/, 'meso: B slide not reported');
