@@ -33,6 +33,7 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `ap-chemistry/bonding/resonance-scorm/` | Resonance structures and the hybrid, same 5 rules and builder |
 | `ap-chemistry/kinetics/acetone-kinetics-scorm/` | Virtual lab: iodination of acetone by initial rates |
 | `ap-chemistry/acids-bases/titration-curves-scorm/` | Titration curves: a particle diagram at five points, strong acid (HCl) vs weak acid (HF), why the equivalence point differs, acetic acid review (conceptual) |
+| `ap-chemistry/acids-bases/buffers-scorm/` | Buffers: an acid or base added to a buffer, particle diagrams of the reaction, why the pH barely moves, the Henderson-Hasselbalch equation (only for buffers) (first draft) |
 
 **Organic chemistry elective (Klein)**
 
@@ -278,6 +279,25 @@ not the full page.
   atoms glide), fills the energy ledger, then a word-tile sentence (`SAY` in `steps2.js`).
 - **Files:** `chem.js`, `scenes.js`, `judge.js`, `render.js`, `arrows.js`, `energy.js`, `picker.js`, `quiz.js`, `scorm.js`,
   `app.js`, `steps1.js` (Parts 1-2), `steps2.js` (Parts 3-4).
+
+## buffers-scorm (zip v1, SCHEMA 1; first draft, to be flushed out with the teacher)
+
+- **Key objective:** a buffer has a particle ready for added acid (the base member) and one ready for added base (the acid member);
+  added H⁺ or OH⁻ is used up, the ratio changes little, so the pH changes little. Not about making a buffer.
+- 18 steps in 5 parts; 20 graded questions (4+4+4+4+4) from a pool of 40. The pair table and particle key sit beside every checkpoint;
+  the equation warning sits beside 4 and 5.
+- **The equation rule (teacher's):** pH = pKa + log([base member] / [acid member]) is only for a buffer with appreciable amounts of BOTH
+  members. It always appears with that warning (the validator checks the ratio, "does it work" and use steps). Weak acid alone, conjugate
+  base alone and strong acid are taught as "does not work". "Appreciable" means neither member under a tenth of the other.
+- **Pairs:** acetic acid / acetate (pKa 4.74, Na⁺ spectator) and NH₄⁺ / NH₃ (pKa 9.26, Cl⁻ spectator). HF is left out on purpose (its Ka
+  makes the equation poor after a few additions). One particle is 0.010 M; the buffer is 10 + 10; added strong acid or base is in the same
+  units, dilution ignored. Free H⁺ is not drawn in a working buffer (counts keep charge balanced).
+- **One model** (`buffer.js`): a flask is (pair, acid member, base member, strong acid or base added); the exact pH from a charge balance,
+  particle counts, curves, reactions and every checkpoint answer come from it. `quiz.js` `fact` entries: `pH`, `waterpH`, `count`,
+  `counts`, `hh`. Where a buffer stops (10 particles of acid or base) is taught in the range steps.
+- **Files:** `buffer.js`, `flask.js` (particles, flashes when a particle changes form), `phcurve.js`, `steps.js` (lesson steps),
+  `app.js` (order, saving, checkpoint screen), `quiz.js`, `picker.js`, `scorm.js`.
+- Teacher links: `?step=<id or number>` and `?step=quiz-D&all`. Walkthrough harness: the fake LMS reads and writes sessionStorage on every call.
 
 ## titration-curves-scorm (zip v1, SCHEMA 1)
 
