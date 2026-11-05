@@ -85,3 +85,10 @@ body.wsopen{overflow:hidden}
 
 /* a selected box that is not under the pointer must not block clicks on the boxes around it */
 .wsbox.sel:not(:hover) .wsgrip,.wsbox.sel:not(:hover) .wsrw,.wsbox.sel:not(:hover) .wsrh,.wsbox.sel:not(:hover) .wsresize,.wsbox.sel:not(:hover) .wsimgh{pointer-events:none}
+
+/* click-to-place for text boxes */
+#wshint{background:#d98200;color:#fff;border-radius:999px;padding:3px 12px;font-size:13px}
+#ws.wsplacing .wspage{cursor:crosshair}
+#ws.wsplacing #wssheet{cursor:crosshair;touch-action:none}
+#ws.wsplacing .wsbox{pointer-events:none}
+.wsghost{position:absolute;border:2px dashed #d98200;background:rgba(217,130,0,.12);border-radius:4px;pointer-events:none;z-index:9}

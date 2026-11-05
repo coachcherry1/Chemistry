@@ -79,6 +79,30 @@ function removeQ(id){sh().boxes=sh().boxes.filter(b=>b.qid!==id);save();syncBtns
 function btn(d){if(d.k!=='question')return '';return `<button class="btn small${has(d.id)?' on':''}" data-ws="${esc(d.id)}">${has(d.id)?'In worksheet (remove)':'+ Worksheet'}</button>`}
 function syncBtns(id){document.querySelectorAll(`[data-ws="${CSS.escape(id)}"]`).forEach(x=>{const on=has(id);x.textContent=on?'In worksheet (remove)':'+ Worksheet';x.classList.toggle('on',on)});if(!$('#ws').hidden)draw()}
 function syncAll(){document.querySelectorAll('[data-ws]').forEach(x=>{const on=has(x.dataset.ws);x.textContent=on?'In worksheet (remove)':'+ Worksheet';x.classList.toggle('on',on)})}
+const TXT=kind=>kind==='header'?{text:'Name: ____________________    Date: ____________    Period: ______',w:700}:{text:'Type here',w:420};
+function addTextAt(kind,x,y,w){
+  const d=TXT(kind),bw=Math.max(180,Math.min(PW-2*8,Math.round(w||d.w)));
+  const b={id:uid(),type:'text',text:d.text,w:bw,w0:d.w,fs:16,s:1,x:snap(clamp(x,0,PW-bw)),y:Math.max(0,snap(y))};
+  const pg=Math.floor((b.y+4)/PGH);sh().pages=Math.max(sh().pages,pg+1);
+  sh().boxes.push(b);sel=b.id;save();draw();
+  const t=document.querySelector(`#wssheet .wsbox[data-id="${b.id}"] .wstext`);
+  if(t&&kind!=='header'){t.focus();const r=document.createRange();r.selectNodeContents(t);const g=getSelection();g.removeAllRanges();g.addRange(r)}}   /* typing replaces the placeholder */
+/* click-to-place: choose a button, then click (or drag the width) where the box should go */
+let placing=null;
+function startPlace(kind){if(placing===kind){stopPlace();return}placing=kind;const w=$('#ws');w.classList.add('wsplacing');$('#wshint').hidden=false;
+  $('#wsaddt').classList.toggle('on',kind==='text');$('#wsaddh').classList.toggle('on',kind==='header')}
+function stopPlace(){placing=null;const w=$('#ws');w.classList.remove('wsplacing');$('#wshint').hidden=true;$('#wsaddt').classList.remove('on');$('#wsaddh').classList.remove('on');document.querySelectorAll('.wsghost').forEach(g=>g.remove())}
+function sheetPt(e){const r=$('#wssheet').getBoundingClientRect();return {x:(e.clientX-r.left)/Z,y:(e.clientY-r.top)/Z}}
+function placeDown(e){
+  const kind=placing,p0=sheetPt(e),pg=Math.floor(p0.y/PGH);
+  if(pg<0||pg>=sh().pages||p0.y-pg*PGH>PH||p0.x<0||p0.x>PW)return;          /* only on a page, not in the grey gap */
+  e.preventDefault();const g=document.createElement('div');g.className='wsghost';$('#wssheet').appendChild(g);
+  const draw_=ev=>{const p=sheetPt(ev),w=Math.max(0,p.x-p0.x);g.style.cssText=`left:${p0.x}px;top:${p0.y}px;width:${Math.max(w,60)}px;height:28px`};draw_(e);
+  const mv=ev=>draw_(ev);
+  const up=ev=>{document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);document.removeEventListener('pointercancel',cancel);g.remove();
+    const p=sheetPt(ev),dx=p.x-p0.x;stopPlace();addTextAt(kind,p0.x,p0.y,dx>40?dx:0)};
+  const cancel=()=>{document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);document.removeEventListener('pointercancel',cancel);g.remove()};
+  document.addEventListener('pointermove',mv);document.addEventListener('pointerup',up);document.addEventListener('pointercancel',cancel)}
 function addText(kind){
   const b={id:uid(),type:'text',text:kind==='header'?'Name: ____________________    Date: ____________    Period: ______':'Type here',w:kind==='header'?700:420,w0:kind==='header'?700:420,fs:kind==='header'?16:16,s:1,x:MARGIN,y:MARGIN};
   sh().boxes.push(b);place(b);sel=b.id;save();draw()}
@@ -121,6 +145,7 @@ function select(id){sel=id;document.querySelectorAll('.wsbox').forEach(e=>e.clas
 function bindSheet(){
   const area=$('#wssheet');
   area.addEventListener('pointerdown',e=>{
+    if(placing){placeDown(e);return}
     const el=e.target.closest('.wsbox');if(!el){select(null);return}
     const b=sh().boxes.find(x=>x.id===el.dataset.id);select(b.id);
     if(e.target.closest('.wsgrip')&&!e.target.closest('button'))startDrag(e,el,b);
@@ -285,7 +310,7 @@ function mount(){
   const css=document.createElement('div');
   document.body.insertAdjacentHTML('beforeend',`<div id="wsmeasure" aria-hidden="true"></div><div id="wsprint"></div>
 <div id="ws" hidden role="dialog" aria-label="Worksheet builder">
- <div class="wsbar"><button class="btn" id="wsback">&larr; Back to questions</button><b>Worksheet builder</b>
+ <div class="wsbar"><button class="btn" id="wsback">&larr; Back to questions</button><b>Worksheet builder</b><span id="wshint" hidden>Click on the page where the box should go (drag to set its width). Esc cancels.</span>
   <span class="wsz"><button class="btn small" id="wszo" aria-label="Zoom out">&minus;</button><span id="wszv"></span><button class="btn small" id="wszi" aria-label="Zoom in">+</button><button class="btn small" id="wszf">Fit</button></span></div>
  <div class="wsbody">
   <aside class="wsside">
@@ -295,8 +320,8 @@ function mount(){
    <label class="wsc"><input type="checkbox" id="wsnum"> Number the questions</label>
    <label class="wsc"><input type="checkbox" id="wskey"> Add an answer key at the end</label>
    <label class="wsc wsind"><input type="checkbox" id="wskeywhy"> Include explanations</label>
-   <div class="wsh">Add</div>
-   <div class="wsrow2"><button class="btn small" id="wsaddt">Text box</button><button class="btn small" id="wsaddh">Name / date line</button></div>
+   <div class="wsh">Add (then click on the page)</div>
+   <div class="wsrow2"><button class="btn small" id="wsaddt" title="Click here, then click on the page where the box should go. Shift-click adds it at the bottom.">Text box</button><button class="btn small" id="wsaddh" title="Click here, then click on the page where the line should go. Shift-click adds it at the bottom.">Name / date line</button></div>
    <div class="wsh">Layout</div>
    <div class="wsrow2"><button class="btn small" id="wsarr">Arrange in list order</button><button class="btn small" id="wsap">Add page</button><button class="btn small" id="wsrp">Remove last page</button></div>
    <p class="wsnote"><b>Sizes:</b> drag a box's <b>right edge</b> to change its width (the text re-wraps, nothing shrinks), its <b>bottom edge</b> for empty space, the <b>orange square</b> on a picture to resize only the picture, and the <b>round corner</b> to scale everything. "Arrange" puts narrow boxes side by side.</p>
@@ -310,9 +335,9 @@ function mount(){
   <div class="wsmain" id="wsmain"><div id="wsscale"><div id="wssheet"></div></div></div>
  </div></div>`);
   bindSheet();
-  const open=()=>{$('#ws').hidden=false;document.body.classList.add('wsopen');fitZoom();draw()},close=()=>{$('#ws').hidden=true;document.body.classList.remove('wsopen')};
+  const open=()=>{$('#ws').hidden=false;document.body.classList.add('wsopen');fitZoom();draw()},close=()=>{stopPlace();$('#ws').hidden=true;document.body.classList.remove('wsopen')};
   $('#wsBtn').onclick=open;$('#wsback').onclick=close;
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#ws').hidden&&!e.target.isContentEditable)close()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#ws').hidden){if(placing){stopPlace();return}if(!e.target.isContentEditable)close()}});
   const zoom=z=>{autoFit=false;Z=clamp(z,.3,1.6);$('#wszv').textContent=Math.round(Z*100)+'%';draw()};
   function fitZoom(){Z=clamp(($('#wsmain').clientWidth-36)/PW,.3,1);$('#wszv').textContent=Math.round(Z*100)+'%'}
   $('#wszo').onclick=()=>zoom(Z-.1);$('#wszi').onclick=()=>zoom(Z+.1);$('#wszf').onclick=()=>{autoFit=true;fitZoom();draw()};
@@ -324,7 +349,7 @@ function mount(){
   $('#wspick').onchange=e=>{store.cur=e.target.value;sel=null;save();syncAll();draw()};
   $('#wsnew').onclick=newSheet;
   $('#wsdel').onclick=()=>{if(!confirm('Delete this worksheet?'))return;delete store.sheets[store.cur];if(!Object.keys(store.sheets).length)store=fresh();else store.cur=Object.keys(store.sheets)[0];save();syncAll();draw()};
-  $('#wsaddt').onclick=()=>addText('text');$('#wsaddh').onclick=()=>addText('header');
+  $('#wsaddt').onclick=e=>e.shiftKey?addText('text'):startPlace('text');$('#wsaddh').onclick=e=>e.shiftKey?addText('header'):startPlace('header');
   $('#wsarr').onclick=arrange;
   $('#wsap').onclick=()=>{sh().pages++;save();draw()};
   $('#wsrp').onclick=()=>{const n=sh().pages;if(n<2)return;if(sh().boxes.some(b=>pageOf(b)>=n-1)){alert('Move the boxes off the last page first.');return}sh().pages--;save();draw()};

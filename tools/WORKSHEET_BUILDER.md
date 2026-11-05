@@ -13,7 +13,7 @@ No libraries and no server: it runs from GitHub Pages in the browser.
    - The toolbar buttons do the same in steps: - and + scale everything, the arrows make it narrower or wider, the picture buttons resize the picture, and the circular arrow resets the size.
    - Click into the question or a choice to edit the wording (edits stay in the worksheet, not in the question bank).
    - Free-response boxes have buttons to add answer lines.
-   - **Text box** and **Name / date line** add your own text. Drag and resize them the same way.
+   - **Text box** and **Name / date line** add your own text: click the button, then click on the page where the box should go (or drag across the page to set its width as well). It starts with the placeholder text selected so you can type right away. Esc, or clicking the button again, cancels; Shift-click on the button adds the box at the bottom instead. Drag and resize them the same way as questions.
    - A red outline means a box crosses a page edge, orange means it overlaps another box.
    - **Arrange in list order** lays the boxes out in the order of the list, side by side when they are narrow enough, then moves down and onto new pages as needed; it stacks the boxes in the order of the list on the left (drag the list or use the arrows to reorder) and moves to new pages as needed. Arrow keys nudge a focused box; Delete removes it.
 4. Tick **Add an answer key at the end** for answer pages (with or without explanations).
