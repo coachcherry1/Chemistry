@@ -1,0 +1,753 @@
+ 2022
+
+
+
+
+AP Chemistry
+             ®
+
+
+
+
+Free-Response Questions
+
+
+
+
+© 2022 College Board. College Board, Advanced Placement, AP, AP Central, and the acorn logo are registered
+trademarks of College Board. Visit College Board on the web: collegeboard.org.
+AP Central is the official online home for the AP Program: apcentral.collegeboard.org.
+2
+                         AP® CHEMISTRY EQUATIONS AND CONSTANTS
+
+Throughout the exam the following symbols have the definitions specified unless otherwise noted.
+              L, mL =          liter(s), milliliter(s)        mm Hg    =   millimeters of mercury
+              g     =          gram(s)                        J, kJ    =   joule(s), kilojoule(s)
+              nm    =          nanometer(s)                   V        =   volt(s)
+              atm   =          atmosphere(s)                  mol      =   mole(s)
+
+ATOMIC STRUCTURE
+                                                                         E = energy
+   E = h                                                                 = frequency
+   c =                                                                  = wavelength
+                                                             Planck’s constant, h = 6.626  1034 J s
+                                                                Speed of light, c = 2.998  108 m s1
+                                                             Avogadro’s number = 6.022  1023 mol1
+                                                               Electron charge, e = 1.602 × 1019 coulomb
+
+
+EQUILIBRIUM
+
+        [C]c [D]d                                                    Equilibrium Constants
+ Kc =             , where a A + b B  c C + d D
+        [A]a [B]b
+                                                                     Kc (molar concentrations)
+        (PC )c (PD )d                                                Kp (gas pressures)
+ Kp =
+        (PA )a (PB )b                                                Ka (weak acid)
+        [H + ][A - ]                                                 Kb (weak base)
+ Ka =
+          [HA]                                                       Kw (water)
+      [OH - ][HB+ ]
+ Kb =
+           [B]
+ Kw = [H ][OH] = 1.0  1014 at 25C
+        +
+
+    = Ka  Kb
+ pH =  log[H+] , pOH =  log[OH]
+  14 = pH + pOH
+                   [A - ]
+ pH = pKa + log
+                   [HA]
+ pKa =  log Ka , pKb =  log Kb
+
+
+KINETICS
+
+        [A] t  [A] 0 =  kt                                            k = rate constant
+                                                                         t = time
+   ln[A] t  ln[A] 0 =  kt                                           t ½ = half-life
+       1      1
+           -            = kt
+     [ A ]t [ A ]0
+                 t ½ = 0.693
+                         k
+
+
+
+                                                         3
+GASES, LIQUIDS, AND SOLUTIONS
+                                                                          P = pressure
+                                                                          V = volume
+              PV = nRT
+                                                                          T = temperature
+                                              moles A                     n = number of moles
+              PA = Ptotal  XA, where XA =
+                                             total moles                  m = mass
+          Ptotal = PA + PB + PC + . . .                                   M = molar mass
+                                                                          D = density
+                     m
+               n =                                                       KE = kinetic energy
+                     M
+                                                                           v = velocity
+              K = C + 273                                                A = absorbance
+                     m                                                     = molar absorptivity
+              D =
+                     V                                                    b = path length
+                     1                                                    c = concentration
+    KEmolecule =       mv 2
+                     2
+                                                             Gas constant, R = 8.314 J mol1 K1
+  Molarity, M = moles of solute per liter of solution
+                                                                             = 0.08206 L atm mol1 K1
+              A =  bc
+                                                                             = 62.36 L torr mol1 K1
+                                                                      1 atm = 760 mm Hg = 760 torr
+                                                                        STP = 273.15 K and 1.0 atm
+                                                             Ideal gas at STP = 22.4 L mol−1
+
+THERMODYNAMICS / ELECTROCHEMISTRY
+                                                                              q = heat
+   q = mcT                                                                  m = mass
+                                                                              c = specific heat capacity
+  S =Â S products - Â S reactants                                         T = temperature
+                                                                             S = standard entropy
+ H = Â DHf products - Â DHf reactants
+                                                                             H = standard enthalpy
+                                                                             G = standard Gibbs free energy
+ G =    Â DGf products - Â DGf reactants                                  n = number of moles
+                                                                             E = standard reduction potential
+ G = H  TS
+                                                                              I = current (amperes)
+      =  RT ln K                                                             q = charge (coulombs)
+      =  nF E                                                                t = time (seconds)
+                                                                              Q = reaction quotient
+          q
+   I =                                                      Faraday’s constant, F = 96,485 coulombs per mole
+          t
+                   RT                                                                       of electrons
+          o
+ Ecell = Ecell -      lnQ                                                             1 joule
+                   nF                                                      1 volt =
+                                                                                    1 coulomb
+
+
+
+
+                                                        4
+     AP® Chemistry 2022 Free-Response Questions
+
+                              Begin your response to QUESTION 1 on this page.
+
+
+                                                   CHEMISTRY
+                                                    SECTION II
+                                           Time - 1 hour and 45 minutes
+                                                     7 Questions
+
+
+                         YOU MAY USE YOUR CALCULATOR FOR THIS SECTION.
+
+
+Directions: Questions 1–3 are long free-response questions that require about 23 minutes each to answer and are
+worth 10 points each. Questions 4–7 are short free-response questions that require about 9 minutes each to answer
+and are worth 4 points each.
+For each question, show your work for each part in the space provided after that part. Examples and equations may
+be included in your responses where appropriate. For calculations, clearly show the method used and the steps
+involved in arriving at your answers. You must show your work to receive credit for your answer. Pay attention to
+significant figures.
+
+
+
+1. A student reacts 0.300 g of methyl salicylate (C8 H8 O 3) with a stoichiometric amount of a strong base. This
+   product is then acidified to produce salicylic acid crystals (HC 7 H5 O 3).
+
+  (a) For every 1 mole of C8 H8 O 3 (molar mass 152.15 g/mol) reactant used, 1 mole of salicylic acid crystals
+      (HC 7 H5 O 3, molar mass 138.12 g/mol) is produced. Calculate the maximum mass, in grams, of HC 7 H5 O 3
+      that could be produced in this reaction.
+
+
+
+
+                                                                                  GO ON TO THE NEXT PAGE.
+
+
+                                                 © 2022 College Board.
+                                   Visit College Board on the web: collegeboard.org.
+
+                                                            5
+AP® Chemistry 2022 Free-Response Questions
+
+
+                          Continue your response to QUESTION 1 on this page.
+
+As part of the experimental procedure to purify the HC 7 H5 O 3 crystals after the reaction is complete, the crystals
+are filtered from the reaction mixture, rinsed with distilled water, and dried. Some physical properties of
+HC 7 H5 O 3 are given in the following table.
+
+
+                                     Properties of Salicylic Acid (HC 7 H5 O 3 )
+
+                                    Melting point                      159°C
+
+                             Solubility in H2 O at 25°C               2.2 g/L
+
+                               Specific heat capacity              1.17 J/(g·°C)
+
+                                   Heat of fusion                   27.1 kJ/mol
+
+(b) The student’s experiment results in an 87% yield of dry HC 7 H5 O 3. The student suggests that some of the
+    HC 7 H5 O 3 crystals dissolved in the distilled water during the rinsing step. Is the student’s claim consistent
+    with the calculated percent yield value? Justify your answer.
+
+
+
+
+(c) Given the physical properties in the table, calculate the quantity of heat that must be absorbed to increase the
+    temperature of a 0.105 g sample of dry HC 7 H5 O 3 (molar mass 138.12 g / mol) crystals from 25° C to the
+    melting point of 159° C and melt the crystals completely.
+
+
+
+
+                                                                                   GO ON TO THE NEXT PAGE.
+
+
+                                             © 2022 College Board.
+                               Visit College Board on the web: collegeboard.org.
+
+                                                          6
+  AP® Chemistry 2022 Free-Response Questions
+
+
+                         Continue your response to QUESTION 1 on this page.
+
+The structures and melting points for methyl salicylate and salicylic acid are shown.
+
+
+
+
+(d) The same three types of intermolecular forces (London dispersion forces, dipole-dipole interactions, and
+    hydrogen bonding) exist among molecules of each substance. Explain why the melting point of salicylic acid
+    is higher than that of methyl salicylate.
+
+
+
+
+The student titrates 20.0 mL of 0.0100 M HC 7 H5 O 3(aq) with 0.0200 M NaOH, using a probe to monitor the
+pH of the solution. The data are plotted producing the following titration curve.
+
+
+
+
+                                                                               GO ON TO THE NEXT PAGE.
+
+
+                                              © 2022 College Board.
+                                Visit College Board on the web: collegeboard.org.
+
+                                                         7
+AP® Chemistry 2022 Free-Response Questions
+
+
+                          Continue your response to QUESTION 1 on this page.
+
+(e) Using the information in the graph, estimate the pKa of HC 7 H5 O 3. _______________
+
+(f) When the pH of the titration mixture is 4.00, is there a higher concentration of the weak acid, HC 7 H5 O 3, or
+    its conjugate base, C 7 H5 O 3−, in the flask? Justify your answer.
+
+
+
+
+(g) The student researches benzoic acid (HC 7 H5 O 2) and finds that it has similar properties to salicylic acid
+   (HC 7 H5 O 3). The Ka for benzoic acid is 6.3 ¥ 10− 5 . Calculate the value of pKa for benzoic acid.
+
+
+
+
+(h) The student performs a second titration, this time titrating 20.0 mL of a 0.0100 M benzoic acid solution with
+    0.0200 M NaOH . Sketch the curve that would result from this titration of benzoic acid on the following graph,
+    which already shows the original curve from the titration of 20.0 mL of 0.0100 M salicylic acid. The initial
+    pH of the benzoic acid solution is 3.11.
+
+
+
+
+                                                                                  GO ON TO THE NEXT PAGE.
+
+
+                                             © 2022 College Board.
+                               Visit College Board on the web: collegeboard.org.
+
+                                                         8
+    AP® Chemistry 2022 Free-Response Questions
+
+                                 Begin your response to QUESTION 2 on this page.
+                          CH3 OH( g)  CO( g) + 2 H2( g)           ∆H ° = 90.0 kJ / molrxn
+
+2. Methanol vapor decomposes to form carbon monoxide gas and hydrogen gas at high temperatures in the presence
+   of a platinum catalyst, as represented by the balanced chemical equation given.
+  (a) Are the hydrogen atoms oxidized or are they reduced in the forward reaction? Justify your answer in terms of
+      oxidation numbers.
+
+
+
+
+  (b) In the following box, draw the complete Lewis electron-dot diagram for the carbon monoxide molecule in
+      which every atom obeys the octet rule. Show all bonding and nonbonding valence electrons.
+
+
+
+
+  (c) The values of the standard molar entropies of the compounds involved in the reaction are given in the
+      following table.
+
+
+                                              Substance S° (J/(K·mol))
+
+                                             CH3 OH( g)          240.
+
+                                                CO( g)           198
+
+                                                H2( g)           131
+
+          (i) Use the data in the table to calculate the value of the standard entropy change, ∆S° , in J/(K·molrxn ) ,
+          for the reaction.
+
+
+
+
+                                                                                    GO ON TO THE NEXT PAGE.
+
+
+                                                © 2022 College Board.
+                                  Visit College Board on the web: collegeboard.org.
+
+                                                             9
+AP® Chemistry 2022 Free-Response Questions
+
+
+                          Continue your response to QUESTION 2 on this page.
+
+        (ii) Calculate the value of ∆G°, in kJ/molrxn, for the reaction at 375 K. Assume that ∆H° and ∆S° are
+             independent of temperature.
+
+
+
+
+The following particle-level diagram shows a representative sample of the equilibrium mixture represented by the
+equation given.
+
+
+
+
+(d) Use information from the particle diagram to calculate the partial pressure of CO at equilibrium when the total
+    pressure of the equilibrium mixture is 12.0 atm.
+
+
+
+
+(e) Write the expression for the equilibrium constant, Kp, for the reaction.
+
+
+
+
+                                                                               GO ON TO THE NEXT PAGE.
+
+
+                                             © 2022 College Board.
+                               Visit College Board on the web: collegeboard.org.
+
+                                                        10
+  AP® Chemistry 2022 Free-Response Questions
+
+
+                          Continue your response to QUESTION 2 on this page.
+
+                                           CH3 OH(g)  CO(g) + 2 H2 (g)
+The reaction system represented by the equation is allowed to achieve equilibrium at a different temperature. The
+following table gives the partial pressure of each species in the equilibrium mixture.
+
+
+                                                     Partial Pressure at
+                                        Substance
+                                                    Different Temperature
+                                       CH3 OH(g)           2.7 atm
+
+                                         CO(g)             4.2 atm
+
+                                          H2 (g)           8.4 atm
+
+(f) Use the information in the table to calculate the value of the equilibrium constant, Kp, at the new temperature.
+
+
+
+
+(g) The volume of the container is rapidly doubled with no change in temperature. As equilibrium is
+   re-established, does the number of moles of CH3 OH(g) increase, decrease, or remain the same? Justify your
+   answer by comparing the value of the reaction quotient, Q , with the value of the equilibrium constant, Kp.
+
+
+
+
+                                                                                GO ON TO THE NEXT PAGE.
+
+
+                                              © 2022 College Board.
+                                Visit College Board on the web: collegeboard.org.
+
+                                                         11
+   AP® Chemistry 2022 Free-Response Questions
+
+
+                                Begin your response to QUESTION 3 on this page.
+
+3. Answer the following questions relating to the element aluminum, Al.
+
+  (a) Write the complete ground-state electron configuration of an Al atom.
+
+
+  (b) Based on principles of atomic structure, explain why the radius of the Al atom is larger than the radius of the
+        Al3+ ion.
+
+
+
+
+  A student plans to combine solid aluminum with an aqueous solution of silver ions. The student determines the
+  mass of solid AgNO3 needed to prepare the solution with a specific concentration.
+
+  (c) In the following table, briefly list the steps necessary to prepare 200.0 mL of an aqueous solution of AgNO3
+      using only equipment selected from the choices given. Assume that all appropriate safety measures are already
+      in place. Not all equipment or lines in the table may be needed.
+
+
+   · Solid AgNO3                · Weighing paper and scoop                · 250 mL beakers
+
+   · Distilled water            · 200.00 mL volumetric flask              · Pipet
+
+   · Balance                    · 50.0 mL graduated cylinder
+
+ Step                                                Step Description
+   1.    Use weighing paper to measure the determined mass of solid AgNO3 on a balance.
+
+   2.
+
+
+
+
+                                                                                    GO ON TO THE NEXT PAGE.
+
+
+                                              © 2022 College Board.
+                                Visit College Board on the web: collegeboard.org.
+
+                                                         12
+  AP® Chemistry 2022 Free-Response Questions
+
+
+                          Continue your response to QUESTION 3 on this page.
+
+After preparing the solution, the student places some of the solution into a beaker and adds a sample of aluminum.
+The reaction represented by the following equation occurs.
+
+                                    Al(s) + 3 Ag+(aq) → Al3+(aq) + 3 Ag(s)
+
+(d) The following diagram gives an incomplete particulate representation of the reaction. The beaker on the left
+    represents the system before the mixture reacts. Complete the drawing on the right to represent the system
+    after the reaction has occurred. Be sure to include 1) the correct type and number of particles based on the
+    number shown on the left and 2 ) the relative spacing to depict the appropriate phases.
+
+
+
+
+The student finds the standard reduction potentials given in the table, which are related to the reaction that occurs.
+
+
+                                             Half-Reaction            E°
+
+                                        Ag+(aq) + e− → Ag(s)        0.80 V
+
+                                       Al3 +(aq) + 3 e− → Al(s) −1.66 V
+
+
+                                                                                 GO ON TO THE NEXT PAGE.
+
+
+                                               © 2022 College Board.
+                                 Visit College Board on the web: collegeboard.org.
+
+                                                          13
+AP® Chemistry 2022 Free-Response Questions
+
+
+                          Continue your response to QUESTION 3 on this page.
+
+(e) Using the standard reduction potentials, calculate the value of E° for the reaction.
+
+
+
+
+(f) Based on the value of E°, would the standard free energy change of the reaction under standard conditions,
+    ∆G°, be positive, negative, or zero? Justify your answer.
+
+
+
+
+(g) Once the reaction appears to stop progressing, would the change in free energy, ∆G , be positive, negative, or
+    zero? Justify your answer.
+
+
+
+
+                                                                                GO ON TO THE NEXT PAGE.
+
+
+                                             © 2022 College Board.
+                               Visit College Board on the web: collegeboard.org.
+
+                                                        14
+    AP® Chemistry 2022 Free-Response Questions
+
+                                Begin your response to QUESTION 4 on this page.
+
+4. Answer the following questions about the compounds NH2 Cl and NCl3 . The Lewis electron-dot diagrams of the
+   two compounds are shown.
+
+
+
+
+  (a) Calculate the number of moles of NH2 Cl (molar mass 51.48 g/mol ) present in 1.0 L of a solution in which
+      the concentration of NH2 Cl is 0.0016 g/L.
+
+
+
+
+  (b) NH2 Cl is highly soluble in water, whereas NCl3 is nearly insoluble. Explain this observation in terms of the
+      types and relative strengths of the intermolecular forces between each of the solutes and water.
+
+
+
+
+                                                                                 GO ON TO THE NEXT PAGE.
+
+
+                                                © 2022 College Board.
+                                  Visit College Board on the web: collegeboard.org.
+
+                                                          15
+AP® Chemistry 2022 Free-Response Questions
+
+
+                         Continue your response to QUESTION 4 on this page.
+
+
+                   
+(c) The value of ∆Hvaporization for NCl3(l) is 32.9 kJ/mol . Calculate the amount of energy required to vaporize a
+   15.0 g sample of NCl3 (molar mass 120.36 g/mol).
+
+
+
+
+                                                                              GO ON TO THE NEXT PAGE.
+
+
+                                            © 2022 College Board.
+                              Visit College Board on the web: collegeboard.org.
+
+                                                      16
+     AP® Chemistry 2022 Free-Response Questions
+
+                                  Begin your response to QUESTION 5 on this page.
+
+5. The following equation represents the decomposition of N2 O5, for which the rate law is rate = k ⎡⎣N2 O5⎦⎤ .
+
+                                            2 N2 O5( g) → 4 NO 2( g) + O 2( g)
+
+   A sample of pure N2 O5(g) is placed in an evacuated container and allowed to decompose at a constant
+   temperature of 300 K . The concentration of N2 O5(g) in the container is measured over a period of time, and the
+   measurements are recorded in the following table.
+
+
+                                                 Time (hr) ⎡⎣N2 O5⎦⎤ (M )
+
+                                                     0          0.160
+
+                                                    1.67       0.0800
+
+                                                    3.33       0.0400
+
+                                                    5.00       0.0200
+
+   (a) Determine the value of the rate constant, k , for the reaction. Include units in your answer.
+
+
+
+
+   (b) The following mechanism is proposed for the decomposition of N2 O5(g).
+           Step 1: N2 O5( g) → NO 2( g) + NO 3( g)
+           Step 2: NO 2( g) + NO 3( g) → NO 2( g) + NO( g) + O 2( g)
+           Step 3: N2 O5( g) + NO( g) → 3 NO 2( g)
+
+      Identify which step of the proposed mechanism (1, 2 , or 3) is the rate-determining step. Justify your
+      answer in terms of the rate law given.
+
+
+
+
+                                                                                     GO ON TO THE NEXT PAGE.
+
+
+                                                  © 2022 College Board.
+                                    Visit College Board on the web: collegeboard.org.
+
+                                                             17
+AP® Chemistry 2022 Free-Response Questions
+
+
+                         Continue your response to QUESTION 5 on this page.
+
+
+
+(c) If this experiment was repeated at the same temperature but with twice the initial concentration of N2 O5,
+    would the value of k increase, decrease, or remain the same? Explain your reasoning.
+
+
+
+
+                                                                               GO ON TO THE NEXT PAGE.
+
+
+                                            © 2022 College Board.
+                              Visit College Board on the web: collegeboard.org.
+
+                                                       18
+     AP® Chemistry 2022 Free-Response Questions
+
+                                Begin your response to QUESTION 6 on this page.
+
+6. A student wants to determine the concentration of permanganate, MnO4−(aq), in a solution. The student plans to
+   use colorimetric analysis because solutions containing MnO4−(aq) have a purple color.
+
+
+
+
+  (a) To determine the optimum wavelength for an experiment that measures the concentration of MnO4−(aq), the
+      student takes a sample of the solution and measures the amount of light absorbed by the sample over a range of
+      wavelengths. The data are plotted in the graph shown. Identify the optimum wavelength that the student should
+      use for the experimental procedure.
+
+
+  (b) The student uses a stock solution of 2.40 ¥ 10−3 M KMnO4(aq) to prepare the standard solutions of
+      MnO4−(aq) that are needed to construct a calibration curve.
+
+
+
+
+           (i) The student uses a 100.0 mL graduated cylinder to measure a certain volume of KMnO4(aq) stock
+               solution, as shown in the diagram given. What volume should the student record?
+
+          (ii) Calculate the volume, in mL, of 2.40 ¥ 10−3 M KMnO4(aq) that is required to produce 100.0 mL of
+              a standard 1.68 ¥ 10−3 M MnO4−(aq) solution.
+
+
+
+
+                                                                                GO ON TO THE NEXT PAGE.
+
+
+                                                © 2022 College Board.
+                                  Visit College Board on the web: collegeboard.org.
+
+                                                          19
+AP® Chemistry 2022 Free-Response Questions
+
+
+                         Continue your response to QUESTION 6 on this page.
+
+
+The student designs the following procedure to produce a calibration curve.
+       Step 1: Prepare several standard solutions that have known MnO4−(aq) concentrations by dilution of the
+       stock solution.
+       Step 2: Rinse the cuvette with distilled water.
+       Step 3: Rinse the cuvette with the standard solution and fill the cuvette with the standard solution.
+       Step 4: Measure the absorbance of the standard solution with the colorimeter.
+       Step 5: Repeat steps 2-4 for each of the standard solutions.
+The data are plotted in the calibration curve shown. One of the data points (indicated with an arrow) on the
+calibration curve is below the line of best fit.
+
+
+
+
+(c) Assuming that all lab equipment is functioning properly, identify which one of the procedural steps the student
+    could have executed incorrectly that would explain why the marked data point is below the line of best fit.
+    Justify your answer.
+
+
+
+
+                                                                               GO ON TO THE NEXT PAGE.
+
+
+                                            © 2022 College Board.
+                              Visit College Board on the web: collegeboard.org.
+
+                                                       20
+     AP® Chemistry 2022 Free-Response Questions
+
+                                  Begin your response to QUESTION 7 on this page.
+
+
+
+
+7. A Lewis electron-dot diagram of the oxalate ion, C 2 O4 2 −, is shown.
+
+   (a) Identify the hybridization of the valence orbitals of either carbon atom in the oxalate ion.
+
+
+
+
+   (b) Silver oxalate, Ag2 C 2 O4(s), is slightly soluble in water. The value of Ksp for Ag2 C 2 O4 is 5.40 ¥ 10−12 .
+           (i) Write the expression for the solubility-product constant, Ksp, for Ag2 C 2 O4.
+
+
+
+
+           (ii) Calculate the molar solubility of Ag2 C 2 O4 in neutral distilled water.
+
+
+
+
+           (iii) The molar solubility of Ag2 C 2 O4 increases when it is dissolved in 0.5 M HClO4(aq) instead of
+                 neutral distilled water. Write a balanced, net-ionic equation for the process that occurs between
+                 species in solution that contributes to the increased solubility of Ag2 C 2 O4 (aq) in HClO4(aq).
+
+
+
+
+                                                                                      GO ON TO THE NEXT PAGE.
+
+
+                                                  © 2022 College Board.
+                                    Visit College Board on the web: collegeboard.org.
+
+                                                              21
+AP® Chemistry 2022 Free-Response Questions
+
+
+
+
+                                              STOP
+
+
+                                         END OF EXAM
+
+
+
+
+                                       © 2022 College Board.
+                         Visit College Board on the web: collegeboard.org.
+
+                                                22
+

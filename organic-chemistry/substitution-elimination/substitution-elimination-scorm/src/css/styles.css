@@ -880,3 +880,23 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .race .bar span { display: block; height: 100%; width: 0; background: var(--accent); }
 .def { margin: 8px 0 0; padding: 8px 10px; border: 1px solid var(--accent); border-radius: var(--radius); background: var(--note-bg); font-size: 0.86rem; }
 .def b { color: var(--accent); }
+
+/* ===================================================== played mechanisms */
+/* the electron pairs riding the arrows, bonds coming and going (play.js) */
+.e-dot { fill: var(--arrow); stroke: var(--panel); stroke-width: 0.8; }
+.m-bond.partial { stroke-dasharray: 4 3; }
+.m-partial { font: 700 12px system-ui, sans-serif; paint-order: stroke; stroke: var(--panel); stroke-width: 3px; }
+.m-partial.neg { fill: var(--red); }
+.ts-line { fill: none; stroke: var(--muted); stroke-width: 1.6; }
+.ts-mark { font: 700 15px system-ui, sans-serif; fill: var(--muted); }
+.play-wrap { display: flex; justify-content: center; }
+.play-wrap .player { width: auto; max-width: 100%; max-height: min(270px, 42vh); }
+.player-box .range-row { margin-top: 6px; }
+.mol.greek .m-num { font: 700 14px system-ui, sans-serif; fill: var(--accent); }
+/* the sort of Part 4: one reaction at a time, in bond-line formulas */
+.rxn-tray { flex-direction: column; flex-wrap: nowrap; align-items: center; align-content: center; }
+.tray-count { margin: 0; font-size: 0.8rem; color: var(--muted); }
+.tile.rxn-tile { max-width: 100%; padding: 6px 12px; }
+.rxn-tile .rxn { flex-wrap: nowrap; gap: 6px; }
+.rxn-tile .mol-card .mol { max-height: 110px; }
+.rxn-tile .mol-card figcaption { font-size: 0.75rem; }

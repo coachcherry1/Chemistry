@@ -1,0 +1,793 @@
+ 2023
+
+
+
+
+AP Chemistry
+             ®
+
+
+
+
+Free-Response Questions
+
+
+
+
+© 2023 College Board. College Board, Advanced Placement, AP, AP Central, and the acorn logo are registered
+trademarks of College Board. Visit College Board on the web: collegeboard.org.
+AP Central is the official online home for the AP Program: apcentral.collegeboard.org.
+2
+                         AP® CHEMISTRY EQUATIONS AND CONSTANTS
+
+Throughout the exam the following symbols have the definitions specified unless otherwise noted.
+              L, mL =          liter(s), milliliter(s)        mm Hg    =   millimeters of mercury
+              g     =          gram(s)                        J, kJ    =   joule(s), kilojoule(s)
+              nm    =          nanometer(s)                   V        =   volt(s)
+              atm   =          atmosphere(s)                  mol      =   mole(s)
+
+ATOMIC STRUCTURE
+                                                                         E = energy
+   E = h                                                                 = frequency
+   c =                                                                  = wavelength
+                                                             Planck’s constant, h = 6.626  1034 J s
+                                                                Speed of light, c = 2.998  108 m s1
+                                                             Avogadro’s number = 6.022  1023 mol1
+                                                               Electron charge, e = 1.602 × 1019 coulomb
+
+
+EQUILIBRIUM
+
+        [C]c [D]d                                                    Equilibrium Constants
+ Kc =             , where a A + b B  c C + d D
+        [A]a [B]b
+                                                                     Kc (molar concentrations)
+        (PC )c (PD )d                                                Kp (gas pressures)
+ Kp =
+        (PA )a (PB )b                                                Ka (weak acid)
+        [H + ][A - ]                                                 Kb (weak base)
+ Ka =
+          [HA]                                                       Kw (water)
+      [OH - ][HB+ ]
+ Kb =
+           [B]
+ Kw = [H ][OH] = 1.0  1014 at 25C
+        +
+
+    = Ka  Kb
+ pH =  log[H+] , pOH =  log[OH]
+  14 = pH + pOH
+                   [A - ]
+ pH = pKa + log
+                   [HA]
+ pKa =  log Ka , pKb =  log Kb
+
+
+KINETICS
+
+        [A] t  [A] 0 =  kt                                            k = rate constant
+                                                                         t = time
+   ln[A] t  ln[A] 0 =  kt                                           t ½ = half-life
+       1      1
+           -            = kt
+     [ A ]t [ A ]0
+                 t ½ = 0.693
+                         k
+
+
+
+                                                         3
+GASES, LIQUIDS, AND SOLUTIONS
+                                                                          P = pressure
+                                                                          V = volume
+              PV = nRT
+                                                                          T = temperature
+                                              moles A                     n = number of moles
+              PA = Ptotal  XA, where XA =
+                                             total moles                  m = mass
+          Ptotal = PA + PB + PC + . . .                                   M = molar mass
+                                                                          D = density
+                     m
+               n =                                                       KE = kinetic energy
+                     M
+                                                                           v = velocity
+              K = C + 273                                                A = absorbance
+                     m                                                     = molar absorptivity
+              D =
+                     V                                                    b = path length
+                     1                                                    c = concentration
+    KEmolecule =       mv 2
+                     2
+                                                             Gas constant, R = 8.314 J mol1 K1
+  Molarity, M = moles of solute per liter of solution
+                                                                             = 0.08206 L atm mol1 K1
+              A =  bc
+                                                                             = 62.36 L torr mol1 K1
+                                                                      1 atm = 760 mm Hg = 760 torr
+                                                                        STP = 273.15 K and 1.0 atm
+                                                             Ideal gas at STP = 22.4 L mol−1
+
+THERMODYNAMICS / ELECTROCHEMISTRY
+                                                                              q = heat
+   q = mcT                                                                  m = mass
+                                                                              c = specific heat capacity
+  S =Â S products - Â S reactants                                         T = temperature
+                                                                             S = standard entropy
+ H = Â DHf products - Â DHf reactants
+                                                                             H = standard enthalpy
+                                                                             G = standard Gibbs free energy
+ G =    Â DGf products - Â DGf reactants                                  n = number of moles
+                                                                             E = standard reduction potential
+ G = H  TS
+                                                                              I = current (amperes)
+      =  RT ln K                                                             q = charge (coulombs)
+      =  nF E                                                                t = time (seconds)
+                                                                              Q = reaction quotient
+          q
+   I =                                                      Faraday’s constant, F = 96,485 coulombs per mole
+          t
+                   RT                                                                       of electrons
+          o
+ Ecell = Ecell -      lnQ                                                             1 joule
+                   nF                                                      1 volt =
+                                                                                    1 coulomb
+
+
+
+
+                                                        4
+    AP® Chemistry 2023 Free-Response Questions
+
+                             Begin your response to QUESTION 1 on this page.
+
+
+                                                  CHEMISTRY
+                                                   SECTION II
+                                           Time - 1 hour and 45 minutes
+                                                   7 Questions
+
+
+Directions: Questions 1–3 are long free-response questions that require about 23 minutes each to answer and are
+worth 10 points each. Questions 4–7 are short free-response questions that require about 9 minutes each to answer
+and are worth 4 points each.
+For each question, show your work for each part in the space provided after that part. Examples and equations may
+be included in your responses where appropriate. For calculations, clearly show the method used and the steps
+involved in arriving at your answers. You must show your work to receive credit for your answer. Pay attention to
+significant figures.
+
+
+
+1. Answer the following questions related to manganese compounds.
+  (a) Manganese has several common oxidation states.
+        (i) Write the complete electron configuration for an Mn atom in the ground state.
+
+
+
+
+        (ii) When manganese forms cations, electrons are lost from which subshell first? Identify both the number
+             and letter associated with the subshell.
+
+
+  A student performs an experiment to produce a manganese salt of unknown composition, Mn x Cl y(aq), and
+  determine its empirical formula. The student places a sample of Mn(s) in a beaker containing excess HCl(aq), as
+  represented by the following equation.
+                                                                            y
+                                  x Mn(s) + y HCl(aq) → Mn x Cl y (aq) +      H2 (g)
+                                                                            2
+
+
+
+
+                                                                                GO ON TO THE NEXT PAGE.
+
+
+                                                © 2023 College Board.
+                                  Visit College Board on the web: collegeboard.org.
+
+                                                           5
+AP® Chemistry 2023 Free-Response Questions
+
+
+                          Continue your response to QUESTION 1 on this page.
+
+The student heats the resulting mixture until only Mn x Cl y (s) remains in the beaker. The data are given in the
+following table.
+
+
+                    Mass of empty beaker                                               60.169 g
+
+                    Mass of beaker and Mn(s)                                           61.262 g
+
+                    Mass of beaker and Mn x Cl y after heating to constant mass        62.673 g
+
+(b) Calculate the mass of Cl in the sample of Mn x Cl y(s) remaining in the beaker.
+
+
+
+
+(c) Calculate the number of moles of Cl in the sample of Mn x Cl y (s) remaining in the beaker.
+
+
+
+
+(d) The student determines that 0.0199 mol of Mn was used in the experiment. Use the data to determine the
+    empirical formula of the Mn x Cl y (s).
+
+
+
+
+(e) The student repeats the experiment using the same amounts of Mn and HCl and notices that some of the
+    Mn x Cl y splatters out of the beaker as it is heated to dryness. Will the number of moles of Cl calculated for
+    this trial be greater than, less than, or equal to the number calculated in part (c) ? Justify your answer.
+
+
+
+
+                                                                                  GO ON TO THE NEXT PAGE.
+
+
+                                             © 2023 College Board.
+                               Visit College Board on the web: collegeboard.org.
+
+                                                         6
+  AP® Chemistry 2023 Free-Response Questions
+
+
+                          Continue your response to QUESTION 1 on this page.
+
+(f) Another compound of manganese, MnO 2, is used in alkaline batteries, represented by the following diagram.
+    Some half-reactions are given in the table.
+
+
+
+
+     (i) Based on the half-reactions given in the table, write the balanced net ionic equation for the reaction that
+         has the greatest thermodynamic favorability.
+
+
+
+
+                                  
+     (ii) Calculate the value of Ecell for the overall reaction.
+
+
+
+
+     (iii) Calculate the value of ΔG° in kJ/molrxn.
+
+
+
+
+     (iv) A student claims that the total mass of an alkaline battery decreases as the battery operates because the
+          anode loses mass. Do you agree with the student’s claim? Justify your answer.
+
+
+
+
+                                                                                 GO ON TO THE NEXT PAGE.
+
+
+                                               © 2023 College Board.
+                                 Visit College Board on the web: collegeboard.org.
+
+                                                            7
+   AP® Chemistry 2023 Free-Response Questions
+
+
+                                  Begin your response to QUESTION 2 on this page.
+
+2. In the gas phase, AlCl3 is a molecular substance. A reaction of gaseous AlCl3 at high temperature is represented
+   by the following balanced equation.
+                                  Reaction 1: AlCl3(g) → Al(g) + 3 Cl(g) ΔH1 = ?
+
+  (a) How many grams of Cl(g) can be formed from 1.25 mol of AlCl3(g) ?
+
+
+
+
+  Additional reactions that involve Al or Cl are shown in the following table.
+
+
+                                                                                 
+                    Reaction Number                 Equation                  ΔHrxn (kJ/molrxn)
+
+
+                                                 3
+                            2          Al(s) +     Cl2(g) → AlCl3(g)                −583
+                                                 2
+
+
+                            3          Al(s) → Al(g)                                 +326
+
+
+
+                            4          Cl2(g) → 2 Cl(g)                              +243
+
+
+  (b) Calculate the value of ΔH1, in kJ/molrxn, for reaction 1 above using reactions 2, 3, and 4.
+
+
+
+
+                                                                                   GO ON TO THE NEXT PAGE.
+
+
+                                               © 2023 College Board.
+                                 Visit College Board on the web: collegeboard.org.
+
+                                                           8
+  AP® Chemistry 2023 Free-Response Questions
+
+
+                         Continue your response to QUESTION 2 on this page.
+
+(c) A potential energy diagram for Cl2 is shown in the following graph.
+
+
+
+
+     (i) Based on the graph, what is the bond length, in picometers, for Cl2 ?    _________
+
+     (ii) A student finds that the average Al − Cl bond length is 220 picometers and the average bond energy is
+          425 kJ/mol . Draw the potential energy curve for the average Al − Cl bond on the preceding graph.
+
+(d) Three proposed Lewis diagrams for the AlCl3(g) molecule are shown.
+
+
+
+
+     (i) The AlCl3(g) molecule has a trigonal planar geometry. Which diagram (1, 2, or 3) can be eliminated
+         based on geometry? Justify your choice based on VSEPR theory.
+
+
+
+
+                                                                                 GO ON TO THE NEXT PAGE.
+
+
+                                             © 2023 College Board.
+                               Visit College Board on the web: collegeboard.org.
+
+                                                         9
+AP® Chemistry 2023 Free-Response Questions
+
+
+                          Continue your response to QUESTION 2 on this page.
+
+     (ii) Which of the three diagrams is the best representation for the bonding in AlCl3 ? Justify your choice
+          based on formal charges.
+
+
+
+
+AlCl3 is known to dimerize reversibly in the gas phase. The dimerization equilibrium is represented by the
+following equation.
+                                              2 AlCl3(g)  Al2 Cl 6(g)
+
+(e) Write the expression for the equilibrium constant, Kp, for this reaction.
+
+
+
+
+A particle-level diagram of an equilibrium mixture of AlCl3(g) and Al2 Cl 6(g) at 400°C in a 25 L closed
+container is shown.
+
+
+
+
+(f) Using the particle-level diagram, calculate the value of Kp for the reaction if the total pressure in the container
+    is 22.1 atm .
+
+
+
+
+                                                                                  GO ON TO THE NEXT PAGE.
+
+
+                                             © 2023 College Board.
+                               Visit College Board on the web: collegeboard.org.
+
+                                                         10
+    AP® Chemistry 2023 Free-Response Questions
+
+                                  Begin your response to QUESTION 3 on this page.
+
+3. Answer the following questions about an experiment in which CaCO 3(s) is combined with HCl(aq), represented
+   by the following balanced equation.
+                                CaCO 3(s) + 2 HCl(aq) → CaCl2(aq) + CO 2(g) + H2 O(l)
+  (a) Write the balanced net ionic equation for the reaction.
+
+
+
+
+  A student performs an investigation to study factors that affect the rate of the reaction. In each trial the student
+  combines 50.0 mL of HCl(aq) at 21.2° C with 1.00 g of CaCO 3(s) and measures the time required for the
+  reaction to go to completion. The data are given in the following table.
+
+
+                                     Concentration of        Particle Size of      Time of Reaction
+                        Trial
+                                      HCl(aq) (M )             CaCO 3(s)                 (s)
+
+                          1                1.00                 Fine powder                67
+
+                          2                1.00               Small chunks                112
+
+                          3                1.00                 Large chunk               342
+
+                          4                 3.00                Fine powder                22
+
+                          5                 3.00              Small chunks                227
+
+                          6                 3.00                Large chunk               114
+
+  (b) The student correctly identifies that trial 5 is inconsistent with the other trials. Explain why the student’s claim
+      is correct using the data in the table.
+
+
+
+
+                                                                                    GO ON TO THE NEXT PAGE.
+
+
+                                                 © 2023 College Board.
+                                   Visit College Board on the web: collegeboard.org.
+
+                                                             11
+AP® Chemistry 2023 Free-Response Questions
+
+
+                         Continue your response to QUESTION 3 on this page.
+
+(c) Based on the reaction conditions and the collisions that occur between particles, explain the reason for the
+    difference in the reaction times for trial 2 and trial 3.
+
+
+
+
+(d) The student claims that the reaction is zero order with respect to HCl(aq). Do you agree or disagree with the
+    student’s claim? Justify your answer using the student’s data.
+
+
+
+
+(e) The HCl(aq) was present in excess in all trials of the experiment. Determine the molarity of the HCl(aq) in
+    the beaker after the reaction is complete in trial 2. Assume that the volume of the mixture remains constant at
+    50.0 mL throughout the trial. (The molar mass of CaCO 3 is 100.09 g/mol.)
+
+
+
+
+                                                                                GO ON TO THE NEXT PAGE.
+
+
+                                             © 2023 College Board.
+                               Visit College Board on the web: collegeboard.org.
+
+                                                       12
+  AP® Chemistry 2023 Free-Response Questions
+
+
+                         Continue your response to QUESTION 3 on this page.
+
+                              CaCO 3 (s) + 2 HCl(aq) → CaCl2 (aq) + CO 2 (g) + H2 O(l)
+
+In order to measure the enthalpy of the reaction shown, the student repeats trial 1 by mixing 50.0 mL of HCl(aq)
+with 1.00 g of CaCO 3(s) using a coffee cup calorimeter. The student records the temperature of the system every
+20 seconds. The data are given in the following table.
+
+
+                                                 Measured Temperature of
+                                      Time (s)
+                                                     Solution (° C)
+
+                                          0               21.20
+
+                                         20               21.51
+
+                                         40               21.70
+
+                                         60               21.85
+
+                                         80               21.90
+
+                                        100               21.90
+
+(f) Is the reaction endothermic or exothermic? Justify your answer using the information in the table.
+
+
+
+
+                                                                               GO ON TO THE NEXT PAGE.
+
+
+                                              © 2023 College Board.
+                                Visit College Board on the web: collegeboard.org.
+
+                                                        13
+AP® Chemistry 2023 Free-Response Questions
+
+
+
+                          Continue your response to QUESTION 3 on this page.
+
+(g) Based on the experimental data, the mass of the system is 51.0 g , and the specific heat of the reaction mixture
+    is 4.0 J / (g · ° C).
+     (i) Calculate the magnitude of heat transfer, q , in joules.
+
+
+
+
+     (ii) Calculate the enthalpy of reaction in units of kJ/molrxn. Include the algebraic sign on your answer.
+
+
+
+
+                                                                               GO ON TO THE NEXT PAGE.
+
+
+                                            © 2023 College Board.
+                              Visit College Board on the web: collegeboard.org.
+
+                                                        14
+    AP® Chemistry 2023 Free-Response Questions
+
+                                   Begin your response to QUESTION 4 on this page.
+
+4. A student is asked to prepare a buffer solution made with equimolar amounts of CH3 NH2(aq) and CH3 NH3 Cl(s).
+   The student uses 25.00 mL of 0.100 M CH3 NH2(aq), which contains 0.00250 mol of CH3 NH2 , to make the
+   buffer.
+
+  (a) Calculate the mass of CH3 NH3 Cl(s) that contains 0.00250 mol of CH3 NH3 Cl .
+
+
+
+
+  The student has the following materials and equipment available.
+
+
+       • Distilled water             • Electronic balance          • 50 mL beaker                 • Pipets
+
+       • 0.100 M CH3 NH2(aq)         • Weighing paper              • 10.0 mL graduated cylinder   • pH meter
+
+       • Solid CH3 NH3 Cl            • 50.00 mL buret              • Small spatula
+
+  (b) The following table contains a partial procedure for making the buffer solution. Fill in steps 1 and 4 to
+      complete the procedure using only materials and equipment selected from the choices given. (Not all materials
+      listed will be used. Assume that all appropriate safety measures are already in place.)
+
+          Step                                              Procedure
+
+
+          1
+
+
+
+          2      Place the solid in the 50 mL beaker.
+          3      Clean the buret and rinse with distilled water.
+
+
+
+          4
+
+
+
+          5      Use the buret to add 25.00 mL of 0.100 M CH3 NH2 (aq) to the beaker.
+          6      Mix well.
+          7      Check the pH with the pH meter.
+
+
+
+                                                                                     GO ON TO THE NEXT PAGE.
+
+
+                                                  © 2023 College Board.
+                                    Visit College Board on the web: collegeboard.org.
+
+                                                              15
+     AP® Chemistry 2023 Free-Response Questions
+
+
+                                 Continue your response to QUESTION 4 on this page.
+
+    The value of Kb for CH3 NH2(aq) is 4.4 ¥ 10−4, and the pH of the buffer the student prepared is 10.64 .
+
+    (c) The student prepares a second buffer solution. The student uses 25.00 mL of 0.050 M CH3 NH2(aq) instead
+        of 25.00 mL of 0.100 M CH3 NH2(aq), and half the mass of CH3 NH3 Cl(s) that was used in the first buffer. Is
+        the pH of the second buffer greater than, less than, or equal to the pH of the first buffer? Justify your answer.
+
+
+
+
+Unauthorized copying or reuse of this page is illegal.     Page 13                  GO ON TO THE NEXT PAGE.
+
+
+                                                    © 2023 College Board.
+                                      Visit College Board on the web: collegeboard.org.
+
+                                                             16
+     AP® Chemistry 2023 Free-Response Questions
+
+                               Begin your response to QUESTION 5 on this page.
+
+5. HCl is a molecular gas as a pure substance but acts as an acid in aqueous solution.
+
+  (a) A sample of HCl(g) is stored in a rigid 6.00 L container at 7.45 atm and 296 K .
+        (i) Calculate the number of moles of HCl(g) in the container.
+
+
+
+
+        (ii) The rigid 6.00 L container of HCl(g) is cooled to a temperature of 271 K . Calculate the new pressure,
+             in atm, of the HCl(g).
+
+
+
+
+  (b) When HCl ionizes in aqueous solution, Cl−(aq) ions are formed. In the following box, draw three water
+      molecules with proper orientation around the Cl− ion. Use   to represent water molecules.
+
+
+
+
+                                                                                  GO ON TO THE NEXT PAGE.
+
+
+                                                 © 2023 College Board.
+                                   Visit College Board on the web: collegeboard.org.
+
+                                                           17
+AP® Chemistry 2023 Free-Response Questions
+
+
+                         Continue your response to QUESTION 5 on this page.
+
+                                     Acid (HA) Anion (A−)         Ka Value
+
+                                       HNO 2       NO 2−          5.6 ¥ 10−4
+
+                                        HCl          Cl−          2.0 ¥ 107
+
+                                       HClO4       ClO4−          1.6 ¥ 1015
+
+The Ka values for three acids are shown in the preceding table.
+
+(c) The following particulate diagram represents the ionization of one of the acids in the data table. Water
+    molecules have been omitted for clarity. Which acid (HNO 2, HCl , or HClO4) is represented in the diagram?
+    Justify your answer using the information in the table.
+
+
+
+
+                                                                               GO ON TO THE NEXT PAGE.
+
+
+                                            © 2023 College Board.
+                              Visit College Board on the web: collegeboard.org.
+
+                                                      18
+    AP® Chemistry 2023 Free-Response Questions
+
+                                 Begin your response to QUESTION 6 on this page.
+
+6. Answer the following questions related to HBr(l) and HF(l).
+
+  (a) In the following table, list all of the types of intermolecular forces present in pure samples of HBr(l) and
+      HF(l).
+
+
+                   Liquid                         HBr(l)                               HF(l)
+
+
+               Intermolecular
+               forces present
+
+
+
+
+                                      
+  (b) The enthalpy of vaporization, ΔHvap , for each liquid is provided in the following table.
+
+
+                                         Liquid     HBr(l)          HF(l)
+                                           
+                                         ΔHvap 17.3 kJ / mol 25.2 kJ / mol
+                                                                                              
+        (i) Based on the types and relative strengths of intermolecular forces, explain why ΔHvap of HF(l) is greater
+            than that of HBr(l).
+
+
+
+
+        (ii) Calculate the amount of thermal energy, in kJ , required to vaporize 6.85 g of HF(l).
+
+
+
+
+                                                                                   GO ON TO THE NEXT PAGE.
+
+
+                                                 © 2023 College Board.
+                                   Visit College Board on the web: collegeboard.org.
+
+                                                             19
+AP® Chemistry 2023 Free-Response Questions
+
+
+                        Continue your response to QUESTION 6 on this page.
+
+(c) Based on the arrangement of electrons in the Br and F atoms, explain why the bond length in an HBr
+    molecule is greater than that in an HF molecule.
+
+
+
+
+                                                                            GO ON TO THE NEXT PAGE.
+
+
+                                           © 2023 College Board.
+                             Visit College Board on the web: collegeboard.org.
+
+                                                    20
+     AP® Chemistry 2023 Free-Response Questions
+
+                                 Begin your response to QUESTION 7 on this page.
+
+7. Strontium hydroxide dissolves in water according to the following equation. The Ksp expression for strontium
+   hydroxide is provided.
+
+                            Sr(OH)2(s)  Sr 2+(aq) + 2 OH−(aq)          Ksp = [Sr 2+][OH−]2
+
+
+
+
+  (a) A student draws the particulate diagram shown to represent the ions present in an aqueous solution of
+      Sr(OH)2 . (Water molecules are intentionally omitted.) Identify the error in the student’s drawing.
+
+
+
+
+  (b) The student prepares a saturated solution by adding excess Sr(OH)2 (s) to distilled water and stirring until no
+      more solid dissolves. The student then determines that [Sr 2+] = 0.043 M in the solution.
+        (i) Calculate the value of [OH−] in the solution.
+
+
+
+
+        (ii) Calculate the value of Ksp for Sr(OH)2 .
+
+
+
+
+                                                                                  GO ON TO THE NEXT PAGE.
+
+
+                                                 © 2023 College Board.
+                                   Visit College Board on the web: collegeboard.org.
+
+                                                            21
+AP® Chemistry 2023 Free-Response Questions
+
+
+                         Continue your response to QUESTION 7 on this page.
+
+(c) The student prepares a second saturated solution of Sr( OH)2 in aqueous 0.10 M Sr(NO 3)2 instead of water.
+   Will the value of [OH−] in the second solution be greater than, less than, or equal to the value in the first
+   solution? Justify your answer. (Assume constant temperature.)
+
+
+
+
+                                                     STOP
+
+
+                                               END OF EXAM
+
+
+
+
+                                             © 2023 College Board.
+                               Visit College Board on the web: collegeboard.org.
+
+                                                        22
+

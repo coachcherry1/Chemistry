@@ -1,5 +1,7 @@
 # VSEPR: Molecular Geometry and Polarity
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/chemistry/bonding/vsepr-polarity-scorm/src/index.html>
+
 A SCORM 1.2 activity for Schoology, for honors chemistry. Students build Lewis structures with the class's 5
 rules while a 3D window beside the drawing follows along, count the electron domains, watch the domains spread
 out into the real molecule, name its molecular geometry and bond angle, and then decide which molecules are

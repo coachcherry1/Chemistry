@@ -29,13 +29,15 @@ var Mech = (function () {
     shift: 'Carbocation rearrangement'
   };
 
-  /* The species a reagent key stands for, with its attacking atom. */
+  /* The species a reagent key stands for, with its attacking atom and the
+     atom behind it (its H or the rest of it), which points away. */
   function reagent(key) {
     var sp = Mol.parse(React.REAGENTS[key].species);
     var nu = React.nucAtom(sp);
     /* the H on the attacking atom is drawn, so its bond can carry an arrow */
     var h = sp.atoms[nu].h ? sp.explicitH(nu) : null;
-    return { mol: sp, nu: nu, h: h };
+    var back = h != null ? h : (sp.nb(nu)[0] || {}).j;
+    return { mol: sp, nu: nu, h: h, back: back };
   }
 
   /* ------------------------------------------------------------ scenes */
@@ -47,7 +49,8 @@ var Mech = (function () {
     return {
       title: 'SN2',
       species: [
-        { mol: r.mol, opts: { lp: [r.nu], mech: true, orient: r.h != null ? [r.nu, r.h, 180] : null }, anchor: { sp: 1, atom: L.a, dx: -2.6, dy: 0, me: r.nu } },
+        /* the attacking atom faces the substrate: the rest of the nucleophile points away */
+        { mol: r.mol, opts: { lp: [r.nu], mech: true, orient: r.back != null ? [r.nu, r.back, 180] : null }, anchor: { sp: 1, atom: L.a, dx: -2.6, dy: 0, me: r.nu } },
         { mol: m, opts: { lp: [L.x], orient: [L.a, L.x, 0], mech: true } }
       ],
       arrows: [
@@ -62,7 +65,17 @@ var Mech = (function () {
         return null;
       },
       missing: { 'Nucleophilic attack': 'SN2 is concerted: the nucleophile attacks as the leaving group leaves. Add the arrow for nucleophilic attack.',
-                 'Loss of a leaving group': 'SN2 is concerted: the leaving group leaves as the nucleophile attacks. Add the arrow for loss of the leaving group.' }
+                 'Loss of a leaving group': 'SN2 is concerted: the leaving group leaves as the nucleophile attacks. Add the arrow for loss of the leaving group.' },
+      /* played (play.js): the product turned so the nucleophile is where the
+         leaving group was not; back-side attack inverts the configuration */
+      anchor: { a: [1, L.a], b: [0, r.nu], away: [1, L.x] },
+      ts: [[0, r.nu], [1, L.x]],
+      stereo: function (g, idx, g0) {
+        var a = idx(1, L.a), par = g0.atoms[a].parity;
+        if (!par) return;
+        var x = idx(1, L.x), nu = idx(0, r.nu);
+        g.atoms[a].parity = { nb: par.nb.map(function (j) { return j === x ? nu : j; }), sign: -par.sign };
+      }
     };
   }
 
@@ -158,7 +171,7 @@ var Mech = (function () {
       title: 'E2',
       species: [
         { mol: m, opts: { lp: [L.x], orient: [L.a, L.x, 0], mech: true, prefer: [b, hIdx] } },
-        { mol: r.mol, opts: { lp: [r.nu], mech: true }, anchor: { sp: 0, atom: hIdx, out: b, dist: 2.1, me: r.nu } }
+        { mol: r.mol, opts: { lp: [r.nu], mech: true }, anchor: { sp: 0, atom: hIdx, out: b, dist: 2.1, me: r.nu, back: r.back } }
       ],
       arrows: [
         { from: [lk(1, r.nu)], to: [ak(0, hIdx)], pattern: PATTERN.pt },
@@ -175,8 +188,30 @@ var Mech = (function () {
         return null;
       },
       missing: { 'Proton transfer': 'E2 is concerted: proton transfer and loss of the leaving group happen in one step. The proton transfer takes two arrows: base to H, and C–H bond to the C–C bond.',
-                 'Loss of a leaving group': 'E2 is concerted: the leaving group leaves as the base takes the proton. Add the arrow for loss of the leaving group.' }
+                 'Loss of a leaving group': 'E2 is concerted: the leaving group leaves as the base takes the proton. Add the arrow for loss of the leaving group.' },
+      /* played: the alkene that this β H gives (react.js, anti-coplanar) */
+      anchor: { a: [0, L.a], b: [0, b] },
+      ts: [[1, r.nu], [0, L.x]],
+      stereo: function (g, idx) {
+        var made = React.e2From(sub, L.a, b, L.x).filter(function (p) { return p.how !== 'selective-minor'; })[0];
+        if (made) setCfg(g, idx, 0, made.mol, L.a, b);
+      }
     };
+  }
+
+  /* Copy the C=C configuration of product pm (made from the scene's
+     species s, atoms renumbered by pm.map) onto the played graph g. */
+  function setCfg(g, idx, s, pm, a, b) {
+    var inv = {};
+    Object.keys(pm.map).forEach(function (k) { inv[pm.map[k]] = +k; });
+    var k = pm.bondBetween(pm.map[a], pm.map[b]);
+    var cfg = k >= 0 ? pm.bonds[k].cfg : null;
+    if (!cfg) return;
+    var gk = g.bondBetween(idx(s, a), idx(s, b));
+    if (gk < 0) return;
+    var na = idx(s, inv[cfg.na]), nb = idx(s, inv[cfg.nb]);
+    var same = g.bonds[gk].a === idx(s, inv[pm.bonds[k].a]);
+    g.bonds[gk].cfg = same ? { na: na, nb: nb, rel: cfg.rel } : { na: nb, nb: na, rel: cfg.rel };
   }
 
   /* E1, step 2: the solvent takes a β H from the carbocation. */
@@ -188,7 +223,7 @@ var Mech = (function () {
       title: 'Proton transfer',
       species: [
         { mol: m, opts: { mech: true, prefer: [b, hIdx], up: c } },
-        { mol: r.mol, opts: { lp: [r.nu], mech: true }, anchor: { sp: 0, atom: hIdx, out: b, dist: 2.1, me: r.nu } }
+        { mol: r.mol, opts: { lp: [r.nu], mech: true }, anchor: { sp: 0, atom: hIdx, out: b, dist: 2.1, me: r.nu, back: r.back } }
       ],
       arrows: [
         { from: [lk(1, r.nu)], to: [ak(0, hIdx)], pattern: PATTERN.pt },
@@ -201,7 +236,13 @@ var Mech = (function () {
         if (f === bk(0, b, hIdx) && t === ak(0, hIdx)) return 'The C–H electrons move over to form the C=C π bond; the H leaves with the base.';
         return null;
       },
-      missing: { 'Proton transfer': 'This proton transfer takes two arrows: ethanol takes the H, and the C–H bond’s electrons form the π bond.' }
+      missing: { 'Proton transfer': 'This proton transfer takes two arrows: ethanol takes the H, and the C–H bond’s electrons form the π bond.' },
+      /* played: the carbocation is flat, so the larger groups end up trans */
+      anchor: { a: [0, c], b: [0, b] },
+      stereo: function (g, idx) {
+        var C = idx(0, c), B = idx(0, b), k = g.bondBetween(C, B);
+        if (k >= 0 && Mol.isStereoAlkene(g, k)) g.bonds[k].cfg = React.largerCfg(g, C, B, 'trans');
+      }
     };
   }
 

@@ -1,5 +1,7 @@
 # IR and Mass Spectrometry — Two Spectra, One Compound
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/organic-chemistry/spec-nmr/ir-ms-combined-scorm/src/index.html>
+
 A click-and-drag SCORM 1.2 activity for Schoology. Students are given the IR spectrum and
 the mass spectrum of one compound. They label the signals in both, build a case file from
 what each spectrum says, and identify the compound. Four levels take the help away one

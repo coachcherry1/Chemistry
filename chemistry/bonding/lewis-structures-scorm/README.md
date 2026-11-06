@@ -1,5 +1,7 @@
 # Lewis Structures — The 5 Rules
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/chemistry/bonding/lewis-structures-scorm/src/index.html>
+
 A SCORM 1.2 activity for Schoology. Students build Lewis structures one rule at a time:
 
 1. Sum the valence electrons.

@@ -1,0 +1,682 @@
+ 2021
+
+
+
+
+AP Chemistry
+             ®
+
+
+
+
+Free-Response Questions
+
+
+
+
+© 2021 College Board. College Board, Advanced Placement, AP, AP Central, and the acorn logo are registered
+trademarks of College Board. Visit College Board on the web: collegeboard.org.
+AP Central is the official online home for the AP Program: apcentral.collegeboard.org.
+                         AP® CHEMISTRY EQUATIONS AND CONSTANTS
+
+Throughout the exam the following symbols have the definitions specified unless otherwise noted.
+              L, mL =          liter(s), milliliter(s)    mm Hg    =   millimeters of mercury
+              g     =          gram(s)                    J, kJ    =   joule(s), kilojoule(s)
+              nm    =          nanometer(s)               V        =   volt(s)
+              atm   =          atmosphere(s)              mol      =   mole(s)
+
+ATOMIC STRUCTURE
+                                                                     E = energy
+   E = h                                                             = frequency
+   c =                                                              = wavelength
+                                                         Planck’s constant, h = 6.626  1034 J s
+                                                            Speed of light, c = 2.998  108 m s1
+                                                         Avogadro’s number = 6.022  1023 mol1
+                                                           Electron charge, e = 1.602 × 1019 coulomb
+
+
+EQUILIBRIUM
+
+        [C]c [D]d
+ Kc =             , where a A + b B  c C + d D                  Equilibrium Constants
+        [A]a [B]b
+                                                                 Kc (molar concentrations)
+        (PC )c (PD )d                                            Kp (gas pressures)
+ Kp =
+        (PA )a (PB )b                                            Ka (weak acid)
+        [H + ][A - ]                                             Kb (weak base)
+ Ka =
+          [HA]                                                   Kw (water)
+      [OH - ][HB+ ]
+ Kb =
+           [B]
+ Kw = [H ][OH] = 1.0  1014 at 25C
+        +
+
+    = Ka  Kb
+ pH =  log[H+] , pOH =  log[OH]
+  14 = pH + pOH
+                   [A - ]
+ pH = pKa + log
+                   [HA]
+ pKa =  log Ka , pKb =  log Kb
+
+
+KINETICS
+
+        [A] t  [A] 0 =  kt                                        k = rate constant
+                                                                     t = time
+   ln[A] t  ln[A] 0 =  kt                                       t ½ = half-life
+       1      1
+           -            = kt
+     [ A ]t [ A ]0
+                 t ½ = 0.693
+                         k
+GASES, LIQUIDS, AND SOLUTIONS
+                                                                         P = pressure
+                                                                         V = volume
+              PV = nRT
+                                                                         T = temperature
+                                              moles A                    n = number of moles
+              PA = Ptotal  XA, where XA =
+                                             total moles                 m = mass
+          Ptotal = PA + PB + PC + . . .                                  M = molar mass
+                                                                         D = density
+                     m
+               n =                                                      KE = kinetic energy
+                     M
+                                                                          v = velocity
+              K = C + 273                                               A = absorbance
+                     m                                                    = molar absorptivity
+              D =
+                     V                                                   b = path length
+                     1                                                   c = concentration
+    KEmolecule =       mv 2
+                     2
+                                                            Gas constant, R = 8.314 J mol1 K1
+  Molarity, M = moles of solute per liter of solution
+                                                                            = 0.08206 L atm mol1 K1
+              A =  bc
+                                                                            = 62.36 L torr mol1 K1
+                                                                     1 atm = 760 mm Hg = 760 torr
+                                                                       STP = 273.15 K and 1.0 atm
+                                                            Ideal gas at STP = 22.4 L mol−1
+
+THERMODYNAMICS / ELECTROCHEMISTRY
+                                                                             q = heat
+   q = mcT                                                                 m = mass
+                                                                             c = specific heat capacity
+  S =Â S products - Â S reactants                                        T = temperature
+                                                                            S = standard entropy
+ H = Â DHf products - Â DHf reactants
+                                                                            H = standard enthalpy
+                                                                            G = standard Gibbs free energy
+ G =    Â DGf products - Â DGf reactants                                 n = number of moles
+                                                                            E = standard reduction potential
+ G = H  TS
+                                                                             I = current (amperes)
+      =  RT ln K                                                            q = charge (coulombs)
+      =  nF E                                                               t = time (seconds)
+                                                                             Q = reaction quotient
+          q
+   I =                                                     Faraday’s constant, F = 96,485 coulombs per mole
+          t
+                   RT                                                                      of electrons
+          o
+ Ecell = Ecell -      lnQ                                                            1 joule
+                   nF                                                     1 volt =
+                                                                                   1 coulomb
+   AP® Chemistry 2021 Free-Response Questions
+
+
+                           Begin your response to QUESTION 1 on this page.
+
+                                                    CHEMISTRY
+                                                     SECTION II
+                                           Time - 1 hour and 45 minutes
+                                                      7 Questions
+
+
+                         YOU MAY USE YOUR CALCULATOR FOR THIS SECTION.
+
+
+Directions: Questions 1–3 are long free-response questions that require about 23 minutes each to answer and are
+worth 10 points each. Questions 4–7 are short free-response questions that require about 9 minutes each to answer
+and are worth 4 points each.
+For each question, show your work for each part in the space provided after that part. Examples and equations may
+be included in your responses where appropriate. For calculations, clearly show the method used and the steps
+involved in arriving at your answers. You must show your work to receive credit for your answer. Pay attention to
+significant figures.
+
+
+                       HCOOH(aq)  H2 O(l)  H3 O(aq)  HCOO−(aq)                    Ka = 1.8 ¥ 10− 4
+
+1. Methanoic acid, HCOOH , ionizes according to the equation above.
+
+      (a) Write the expression for the equilibrium constant, Ka , for the reaction.
+
+
+
+
+      (b) Calculate the pH of a 0.25 M solution of HCOOH .
+
+
+
+
+                                                                                 GO ON TO THE NEXT PAGE.
+   Use a pencil or pen with black or dark blue ink only. Do NOT write your name. Do NOT write outside the box.
+                                               © 2021 College Board.
+                                 Visit College Board on the web: collegeboard.org.
+
+                                                           2
+AP® Chemistry 2021 Free-Response Questions
+
+
+                     Continue your response to QUESTION 1 on this page.
+
+ (c) In the box below, complete the Lewis electron-dot diagram for HCOOH . Show all bonding and nonbonding
+ valence electrons.
+
+
+
+
+               H2 NNH2(aq)  H2 O(l)  H2 NNH3(aq)  OH−(aq)                   = 1.3  10−6
+                                                                             Kb 
+
+ (d) In aqueous solution, the compound H2 NNH2 reacts according to the equation above. A 50.0 mL sample of
+0.25 M H2 NNH 2(aq) is combined with a 50.0 mL sample of 0.25 M HCOOH(aq).
+       (i) Write the balanced net ionic equation for the reaction that occurs when H2 NNH2 is combined
+          with HCOOH .
+
+
+
+
+       (ii) Is the resulting solution acidic, basic, or neutral? Justify your answer.
+
+
+
+
+                                                                               GO ON TO THE NEXT PAGE.
+Use a pencil or pen with black or dark blue ink only. Do NOT write your name. Do NOT write outside the box.
+                                           © 2021 College Board.
+                             Visit College Board on the web: collegeboard.org.
+
+                                                       3
+AP® Chemistry 2021 Free-Response Questions
+
+                      Continue your response to QUESTION 1 on this page.
+
+
+  When a catalyst is added to a solution of HCOOH(aq), the reaction represented by the following equation
+  occurs.
+                                         HCOOH(aq) → H2( g)  CO 2( g)
+
+  (e) Is the reaction a redox reaction? Justify your answer.
+
+
+
+
+ (f) The reaction occurs in a rigid 4.3 L vessel at 25°C , and the total pressure is monitored, as shown in the
+ graph above. The vessel originally did not contain any gas. Calculate the number of moles of CO 2( g)
+ produced in the reaction. (Assume that the amount of CO 2(g) dissolved in the solution is negligible.)
+
+
+
+
+  (g) After the reaction has proceeded for several minutes, does the amount of catalyst increase, decrease, or
+  remain the same? Justify your answer.
+
+
+
+
+                                                                              GO ON TO THE NEXT PAGE.
+Use a pencil or pen with black or dark blue ink only. Do NOT write your name. Do NOT write outside the box.
+                                            © 2021 College Board.
+                              Visit College Board on the web: collegeboard.org.
+
+                                                        4
+    AP® Chemistry 2021 Free-Response Questions
+
+
+                             Begin your response to QUESTION 2 on this page.
+
+
+2. Answer the following questions about the element Si and some of its compounds.
+     (a) The mass spectrum of a pure sample of Si is shown below.
+
+
+
+
+            (i) How many protons and how many neutrons are in the nucleus of an atom of the most abundant
+               isotope of Si ?
+
+
+            (ii) Write the ground-state electron configuration of Si.
+
+
+
+
+     Two compounds that contain Si are SiO 2 and SiH4 .
+
+     (b) At 161 K , SiH4 boils but SiO 2 remains as a solid. Using principles of interparticle forces, explain the
+     difference in boiling points.
+
+
+
+
+                                                                                 GO ON TO THE NEXT PAGE.
+    Use a pencil or pen with black or dark blue ink only. Do NOT write your name. Do NOT write outside the box.
+                                                © 2021 College Board.
+                                  Visit College Board on the web: collegeboard.org.
+
+                                                            5
+AP® Chemistry 2021 Free-Response Questions
+
+
+                        Continue your response to QUESTION 2 on this page.
+
+ At high temperatures, SiH4 decomposes to form solid silicon and hydrogen gas.
+ (c) Write a balanced equation for the reaction.
+
+
+
+ A table of absolute entropies of some substances is given below.
+
+
+                                         Substance S° (J/(mol  K))
+
+                                           H2( g)           131
+
+                                            Si(s)           18
+
+                                          SiH4( g)          205
+
+
+ (d) Explain why the absolute molar entropy of Si(s) is less than that of H2(g).
+
+
+
+
+ (e) Calculate the value, in J/(mol K), of ∆S° for the reaction.
+
+
+
+
+ (f) The reaction is thermodynamically favorable at all temperatures. Explain why the reaction occurs only at
+ high temperatures.
+
+
+
+
+                                                                              GO ON TO THE NEXT PAGE.
+Use a pencil or pen with black or dark blue ink only. Do NOT write your name. Do NOT write outside the box.
+                                           © 2021 College Board.
+                             Visit College Board on the web: collegeboard.org.
+
+                                                        6
+  AP® Chemistry 2021 Free-Response Questions
+
+
+                           Continue your response to QUESTION 2 on this page.
+
+(g) A partial photoelectron spectrum of pure Si is shown below. On the spectrum, draw the missing peak that
+corresponds to the electrons in the 3p sublevel.
+
+
+
+
+(h) Using principles of atomic structure, explain why the first ionization energy of Ge is lower than that of Si.
+
+
+
+
+(i) A single photon with a wavelength of 4.00  10−7 m is absorbed by the Si sample. Calculate the energy of
+the photon in joules.
+
+
+
+
+                                                                                GO ON TO THE NEXT PAGE.
+  Use a pencil or pen with black or dark blue ink only. Do NOT write your name. Do NOT write outside the box.
+                                               © 2021 College Board.
+                                 Visit College Board on the web: collegeboard.org.
+
+                                                          7
+AP® Chemistry 2021 Free-Response Questions
+
+
+                           Begin your response to QUESTION 3 on this page.
+
+3. A student is given the task of determining the molar concentration of a CuSO4 solution using two different
+   procedures, precipitation and spectrophotometry.
+
+  For the precipitation experiment, the student adds 20.0 mL of 0.200 M Ba(NO 3)2 to 50.0 mL of the CuSO4(aq).
+  The reaction goes to completion, and a white precipitate forms. The student filters the precipitate and dries it
+  overnight. The data are given in the following table.
+
+
+                            Mass of dry filter paper                        0.764 g
+
+                            Volume of CuSO4(aq)                             50.0 mL
+
+                            Volume of 0.200 M Ba(NO 3)2                     20.0 mL
+
+                            Mass of filter paper and dried precipitate      1.136 g
+
+
+
+  (a) Write a balanced net ionic equation for the precipitation reaction.
+
+
+
+
+  (b) Calculate the number of moles of precipitate formed.
+
+
+
+
+  (c) Calculate the molarity of the original CuSO4 solution.
+
+
+
+
+                                                                                GO ON TO THE NEXT PAGE.
+Use a pencil or pen with black or dark blue ink only. Do NOT write your name. Do NOT write outside the box.
+                                           © 2021 College Board.
+                             Visit College Board on the web: collegeboard.org.
+
+                                                          8
+ AP® Chemistry 2021 Free-Response Questions
+
+
+                       Continue your response to QUESTION 3 on this page.
+
+For the spectrophotometry experiment, the student first makes a standard curve. The student uses a 0.1000 M
+solution of CuSO4(aq) to make three more solutions of known concentration (0.0500 M , 0.0300 M , and
+0.0100 M ) in 50.00 mL volumetric flasks.
+
+(d) Calculate the volume of 0.1000 M CuSO4(aq) needed to make 50.00 mL of 0.0500 M CuSO4(aq).
+
+
+
+
+(e) Briefly describe the procedure the student should follow to make 50.00 mL of 0.0500 M CuSO4(aq) using
+0.1000 M CuSO4(aq), a 50.00 mL volumetric flask, and other standard laboratory equipment. Assume that all
+appropriate safety precautions will be taken.
+
+
+
+
+                                                                           GO ON TO THE NEXT PAGE.
+ Use a pencil or pen with black or dark blue ink only. Do NOT write your name. Do NOT write outside the box.
+                                            © 2021 College Board.
+                              Visit College Board on the web: collegeboard.org.
+
+                                                      9
+AP® Chemistry 2021 Free-Response Questions
+
+
+                      Continue your response to QUESTION 3 on this page.
+
+ The standard curve is given below.
+
+
+
+
+ (f) The absorbance of the CuSO4 solution of unknown concentration is 0.219 . Determine the molarity of the
+ solution.
+
+
+
+
+ (g) A second student performs the same experiment. There are a few drops of water in the cuvette before the
+ second student adds the CuSO4(aq) solution of unknown concentration. Will this result in a CuSO4(aq)
+ concentration for the unknown that is greater than, less than, or equal to the concentration determined in
+ part (f) ? Justify your answer.
+
+
+
+
+                                                                            GO ON TO THE NEXT PAGE.
+Use a pencil or pen with black or dark blue ink only. Do NOT write your name. Do NOT write outside the box.
+                                           © 2021 College Board.
+                             Visit College Board on the web: collegeboard.org.
+
+                                                     10
+  AP® Chemistry 2021 Free-Response Questions
+
+
+                            Begin your response to QUESTION 4 on this page.
+
+                        4 Fe(s) + 3 O 2( g) → 2 Fe 2 O 3(s)    ∆H ° = − 1650 kJ / molrxn
+
+4. A student investigates a reaction used in hand warmers, represented above. The student mixes Fe(s) with a
+   catalyst and sand in a small open container. The student measures the temperature of the mixture as the
+   reaction proceeds. The data are given in the following table.
+
+
+
+
+                                Time (min)       Temperature of Mixture (°C)
+
+                                     0                         22.0
+
+                                     1                         25.1
+
+                                     2                         34.6
+
+                                     3                         37.3
+
+                                     4                         39.7
+
+                                     5                         39.4
+
+
+
+  (a) The mixture (Fe(s), catalyst, and sand) has a total mass of 15.0 g and a specific heat capacity of
+  0.72 J/(g°C). Calculate the amount of heat absorbed by the mixture from 0 minutes to 4 minutes.
+
+
+
+
+   (b) Calculate the mass of Fe(s), in grams, that reacted to generate the amount of heat calculated in part (a).
+
+
+
+
+                                                                                GO ON TO THE NEXT PAGE.
+  Use a pencil or pen with black or dark blue ink only. Do NOT write your name. Do NOT write outside the box.
+                                               © 2021 College Board.
+                                 Visit College Board on the web: collegeboard.org.
+
+                                                          11
+AP® Chemistry 2021 Free-Response Questions
+
+
+                         Continue your response to QUESTION 4 on this page.
+
+  (c) In a second experiment, the student uses twice the mass of iron as that calculated in part (b) but the same
+  mass of sand as in the first experiment. Would the maximum temperature reached in the second experiment be
+  greater than, less than, or equal to the maximum temperature in the first experiment? Justify your answer.
+
+
+
+
+                                                                              GO ON TO THE NEXT PAGE.
+Use a pencil or pen with black or dark blue ink only. Do NOT write your name. Do NOT write outside the box.
+                                           © 2021 College Board.
+                             Visit College Board on the web: collegeboard.org.
+
+                                                      12
+    AP® Chemistry 2021 Free-Response Questions
+
+
+                                 Begin your response to QUESTION 5 on this page.
+
+
+
+
+5. Molten MgCl 2 can be decomposed into its elements if a sufficient voltage is applied using inert electrodes. The
+   products of the reaction are liquid Mg (at the cathode) and Cl2 gas (at the anode). A simplified representation
+   of the cell is shown above. The reduction half-reactions related to the overall reaction in the cell are given in the
+   table.
+
+   (a) Draw an arrow on the diagram to show the direction of electron flow through the external circuit as the cell
+   operates.
+
+   (b) Would an applied voltage of 2.0 V be sufficient for the reaction to occur? Support your claim with a
+   calculation as part of your answer.
+
+
+
+
+   (c) If the current in the cell is kept at a constant 5.00 amps, how many seconds does it take to produce 2.00 g
+   of Mg(l) at the cathode?
+
+
+
+
+                                                                                   GO ON TO THE NEXT PAGE.
+    Use a pencil or pen with black or dark blue ink only. Do NOT write your name. Do NOT write outside the box.
+                                                 © 2021 College Board.
+                                   Visit College Board on the web: collegeboard.org.
+
+                                                             13
+   AP® Chemistry 2021 Free-Response Questions
+
+
+                          Begin your response to QUESTION 6 on this page.
+
+ A student is studying the properties of CaSO4 and PbSO4 . The student has samples of both compounds, which are
+   white powders.
+
+   (a) The student tests the electrical conductivity of each solid and observes that neither solid conducts
+   electricity. Describe the structures of the solids that account for their inability to conduct electricity.
+
+
+
+
+    The student places excess CaSO4(s) in a beaker containing 100 mL of water and places excess PbSO4(s) in
+    another beaker containing 100 mL of water. The student stirs the contents of the beakers and then measures the
+    electrical conductivity of the solution in each beaker. The student observes that the conductivity of the solution
+    in the beaker containing the CaSO4(s) is higher than the conductivity of the solution in the beaker containing
+    the PbSO4(s).
+
+
+
+
+    (b) Which compound is more soluble in water, CaSO4(s) or PbSO4(s) ? Justify your answer based on the
+    results of the conductivity test.
+
+
+
+
+                                                                                     GO ON TO THE NEXT PAGE.
+   Use a pencil or pen with black or dark blue ink only. Do NOT write your name. Do NOT write outside the box.
+                                              © 2021 College Board.
+                                Visit College Board on the web: collegeboard.org.
+
+                                                           14
+  AP® Chemistry 2021 Free-Response Questions
+
+
+                             Continue your response to QUESTION 6 on this page.
+
+
+The left side of the diagram below shows a particulate representation of the contents of the beaker containing
+the CaSO4(s) from the solution conductivity experiment.
+
+
+
+
+(c) Draw a particulate representation of PbSO4(s) and the ions dissolved in the solution in the beaker on the
+right in the diagram. Draw the particles to look like those shown to the right of the beaker. Draw an
+appropriate number of dissolved ions relative to the number of dissolved ions in the beaker on the left.
+
+(d) The student attempts to increase the solubility of CaSO4(s) by adding 10.0 mL of 2 M H2 SO4(aq) to the
+beaker, and observes that additional precipitate forms in the beaker. Explain this observation.
+
+
+
+
+                                                                              GO ON TO THE NEXT PAGE.
+Use a pencil or pen with black or dark blue ink only. Do NOT write your name. Do NOT write outside the box.
+                                              © 2021 College Board.
+                                Visit College Board on the web: collegeboard.org.
+
+                                                        15
+ AP® Chemistry 2021 Free-Response Questions
+
+
+                         Begin your response to QUESTION 7 on this page.
+
+
+
+
+ A student investigates gas behavior using a rigid cylinder with a movable piston of negligible mass, as shown in
+   the diagram above. The cylinder contains 0.325mol of O2(g).
+
+   (a) The cylinder has a volume of 7.95L at 25°C and 1.00atm . Calculate the density of the O 2(g), in g/L,
+   under these conditions.
+
+
+
+
+   (b) Attempting to change the density of the O 2(g), the student opens the valve on the side of the cylinder,
+   pushes down on the piston to release some of the gas, and closes the valve again. The temperature of the gas
+   remains constant at 25°C. Will this action change the density of the gas remaining in the cylinder? Justify your
+   answer.
+
+
+
+
+                                                                                GO ON TO THE NEXT PAGE.
+ Use a pencil or pen with black or dark blue ink only. Do NOT write your name. Do NOT write outside the box.
+                                            © 2021 College Board.
+                              Visit College Board on the web: collegeboard.org.
+
+                                                        16
+  AP® Chemistry 2021 Free-Response Questions
+
+
+                            Continue your response to QUESTION 7 on this page.
+
+ (c) The student tries to change the density of the O 2(g) by cooling the cylinder to −55°C , which causes the
+ volume of the gas to decrease. Using principles of kinetic molecular theory, explain why the volume of the
+ O 2(g) decreases when the temperature decreases to −55°C .
+
+
+
+
+ (d) The student further cools the cylinder to −180°C and observes that the measured volume of the O 2(g) is
+ substantially smaller than the volume that is calculated using the ideal gas law. Assume all equipment is
+ functioning properly. Explain why the measured volume of the O 2(g) is smaller than the calculated volume.
+ (The boiling point of O 2(l) is −183°C.)
+
+
+
+
+                                                                              GO ON TO THE NEXT PAGE.
+Use a pencil or pen with black or dark blue ink only. Do NOT write your name. Do NOT write outside the box.
+                                             © 2021 College Board.
+                               Visit College Board on the web: collegeboard.org.
+
+                                                        17
+AP® Chemistry 2021 Free-Response Questions
+
+
+
+
+                                               STOP
+
+
+                                          END OF EXAM
+
+
+
+
+                                       © 2021 College Board.
+                         Visit College Board on the web: collegeboard.org.
+
+                                                18
+

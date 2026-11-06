@@ -1,5 +1,7 @@
 # Acids, Ionic and Covalent — Names & Formulas
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/chemistry/nomenclature/acids-scorm/src/index.html>
+
 A SCORM 1.2 activity for Schoology. It follows the ionic and ionic-or-covalent activities and
 adds binary acids and oxyacids. Level 1 is acids only; Levels 2 and 3 mix all four kinds of
 compound.

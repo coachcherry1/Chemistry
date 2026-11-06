@@ -97,12 +97,17 @@ var QUIZZES = {
                   'Every group moves from left to right'],
         why: 'Whatever points toward you (a wedge) appears in a mirror behind the page pointing away (a dash), and the other ' +
              'way round. Bonds in the page stay where they are. The result is the mirror image.' },
-      { id: 'a-meter',
-        q: 'You turn the mirror image of a molecule every way you can, and at best two of its four atoms line up with the ' +
-           'original. The molecule is…',
-        choices: ['Chiral', 'Achiral', 'Meso', 'Not a real molecule'],
-        why: 'If the mirror image never fits, the molecule is chiral. For an achiral molecule all four atoms line up in some ' +
-             'position, as they did for CH₂BrCl.' },
+      { id: 'a-butanol',
+        q: '2-Butanol is chiral, but 2-propanol is not. Why?',
+        fig: { pair: [{ mol: 'butanol_line', numbers: true }, { mol: 'propanol_line', numbers: true }],
+               captions: ['2-Butanol', '2-Propanol'] },
+        choices: ['C2 of 2-butanol carries four different groups; C2 of 2-propanol carries two CH₃ groups',
+                  '2-Butanol has an OH group on C2',
+                  '2-Butanol has a mirror plane',
+                  '2-Butanol has more carbon atoms, and more carbons always make a molecule chiral'],
+        why: 'A chirality centre needs four different groups on one carbon. C2 of 2-butanol carries H, OH, CH₃ and ' +
+             'CH₂CH₃, so 2-butanol is chiral. C2 of 2-propanol carries H, OH and two identical CH₃ groups, so 2-propanol ' +
+             'has a mirror plane and is achiral. Both have an OH on C2, and more carbons alone never make a molecule chiral.' },
       { id: 'a-sp2',
         q: 'Can a carbon in a C=C double bond be a chirality centre?',
         choices: ['No: it is joined to only three atoms, not four',
@@ -219,7 +224,7 @@ var QUIZZES = {
         q: 'What is the configuration of this chirality centre?',
         fig: { mol: 'chbrclf_w' },
         choices: ['S', 'R', 'It cannot be named while 4 is on a wedge'],
-        why: '4 (the H) is on the wedge, so rotate the molecule first: turned over, the H is on the dash. Then Br → Cl → F ' +
+        why: '4 (the H) is on the wedge, so rotate the molecule first: 180° on the vertical spear puts the H on the dash. Then Br → Cl → F ' +
              'runs counterclockwise. S.' },
       { id: 'c-which-S',
         q: 'Which drawing shows (S)-alanine?',
@@ -257,22 +262,22 @@ var QUIZZES = {
         choices: ['S', 'R', 'R or S, depending on how the image is turned', 'No longer a chirality centre'],
         why: 'A mirror turns clockwise into counterclockwise, so the mirror image is S at that centre.' },
       { id: 'c-rotate-label',
-        q: 'An (R) molecule is rotated a third of a turn around one of its bonds. Its label is now…',
-        choices: ['Still R: rotating never changes R or S', 'S', 'R or S, depending on which bond', 'Unknown until 4 is on the dash'],
+        q: 'An (R) molecule is speared and rotated 90°. Its label is now…',
+        choices: ['Still R: rotating never changes R or S', 'S', 'R or S, depending on the spear', 'Unknown until 4 is on the dash'],
         why: 'Rotating changes how the molecule is drawn, not the molecule itself. Only a reflection (or breaking bonds) ' +
              'turns R into S.' },
       { id: 'c-not-H',
         q: 'Name the chirality centre of this 1-bromo-1-chloro-1-fluoroethane: R or S?',
         fig: { mol: 'bcfe_plane' },
         choices: ['R', 'S', 'It has none, because it has no H'],
-        why: 'Here 4 is the CH₃, attached through carbon. It lies in the page, so rotate until the CH₃ is on the dash: ' +
-             'Br → Cl → F then runs clockwise. R.' },
+        why: 'Here 4 is the CH₃, attached through carbon. It lies in the page, so spear the molecule from the side, between ' +
+             'the two bonds in the page, and rotate it 90°: the CH₃ goes to the dash. Br → Cl → F then runs clockwise. R.' },
       { id: 'c-hidden',
         q: 'What is the configuration of C2 in this drawing of 2-bromobutane?',
         fig: { mol: 'bromobutane_line', numbers: true },
         choices: ['S', 'R', 'It cannot be named, because the H is not drawn'],
-        why: 'The hidden H on C2 is on the wedge, opposite the dashed Br. Rotate so the H is on the dash: Br → CH₂CH₃ → CH₃ ' +
-             'then runs counterclockwise. S.' },
+        why: 'The hidden H on C2 is on the wedge, opposite the dashed Br. Rotate the molecule 180° on the vertical spear so ' +
+             'the H is on the dash: Br → CH₂CH₃ → CH₃ then runs counterclockwise. S.' },
       { id: 'c-steering',
         q: 'Seen with 4 pointing straight away from you, 1 → 2 → 3 runs counterclockwise. The centre is…',
         choices: ['S', 'R', 'Unknown until the molecule is rotated'],

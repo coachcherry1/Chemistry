@@ -314,12 +314,23 @@
 
   /* ============================================================= regio */
 
+  /* The E2 of substrate m with each base, its major product: [{ sc, t, want }] */
+  function regioPlays(m) {
+    return ['NaOEt', 'tBuOK'].map(function (key) {
+      var mj = React.e2Products(m, key).filter(function (p) { return p.role === 'major'; })[0];
+      var nm = Name.name(mj.mol);
+      return { sc: U.scenesFor(m, key, { mech: 'E2', name: nm, mol: mj.mol })[0], t: React.REAGENTS[key].text + ': ' + mj.regio, want: nm, key: key };
+    });
+  }
+  App.regioPlays = regioPlays;
+
   R.regio = function (s) {
     var pr = U.progress(s.id);
     pr.st = pr.st || [0, 0];
     var area = h('div');
     stage().appendChild(area);
     var k = pr.k || 0;
+    var justDone = false;
     function paint() {
       area.innerHTML = '';
       var m = mol(s.mols[k]);
@@ -332,7 +343,15 @@
       var chips = U.chipRow('Substrate', s.mols.map(function (id) { return molName(mol(id)); }), k, function (i) { return pr.st[i] >= 4; },
         function (i) { return i === 0 || pr.st[0] >= 4; }, function (i) { k = i; pr.k = k; U.persist(); paint(); });
       var list = h('div', { class: 'step-list' });
-      area.appendChild(U.panel('Klein’s four steps', molName(m), [chips, h('div', { class: 'work work-wide' }, [list, h('div', null, [klein()])])]));
+      var side = h('div', null, [klein()]);
+      area.appendChild(U.panel('Klein’s four steps', molName(m), [chips, h('div', { class: 'work work-wide' }, [list, side])]));
+      if (st >= 4) {
+        /* each base's major product, played */
+        var plays = regioPlays(m);
+        var cb = U.chainBox(plays.map(function (x) { return x.sc; }), { titles: plays.map(function (x) { return x.t; }), label: 'Base' });
+        side.appendChild(U.panel('Watch it happen', 'E2 with each base', [cb.node]));
+        if (justDone) setTimeout(cb.play, 450);
+      }
       function sub(n, title, body) {
         list.appendChild(h('div', { class: 'substep' + (st === n ? ' open' : st > n ? ' done' : '') }, [h('h4', { text: (n + 1) + '. ' + title })].concat(st >= n ? body : [])));
       }
@@ -353,7 +372,15 @@
       }
       var skip = k === 1;
       if (skip && st < 2) { pr.st[1] = st = 2; U.persist(); }
-      sub(0, 'Identify all β positions bearing protons', skip ? [h('p', { class: 'muted', text: 'Done for you this time.' })] : [h('div', { class: 'mol-wrap' }, [svg])]);
+      /* once found (or done for the student), the α carbon and every β carbon with H, marked */
+      if (st > 0) {
+        var greek = {}, hot = {};
+        greek[L.a] = 'α';
+        betas.forEach(function (b) { greek[b] = 'β'; hot[b] = 'hot'; });
+        svg = Draw.mol(m, { scale: 52, numbers: greek, hot: hot, cls: 'greek', label: 'Bond-line formula of ' + molName(m) + ' with its α carbon and ' + betas.length + ' β carbons marked' });
+      }
+      sub(0, 'Identify all β positions bearing protons', [skip ? h('p', { class: 'muted', text: 'Done for you this time: the β carbons that carry H atoms are marked.' }) : null,
+        h('div', { class: 'mol-wrap' }, [svg])]);
       /* 2: every regiochemical outcome */
       var cands = prods.map(function (p) { return { mol: p.mol, ok: true }; });
       if (k === 0) cands.push({ mol: Mol.fromRing({ 3: { t: 'CH3' } }, [1, 2]), ok: false, why: 'The C=C must form between the α carbon and a β carbon. Here it does not include the α carbon (the one that had the Cl).' });
@@ -414,6 +441,7 @@
               pr.q[k + 'tBuOK'] === opts.indexOf(Name.name(hind.filter(function (p) { return p.role === 'major'; })[0].mol))) {
             pr.st[k] = 4; U.persist();
             if (pr.st[0] >= 4 && pr.st[1] >= 4) U.complete('Both substrates done.');
+            justDone = true; paint(); justDone = false; return;
           }
           paint();
         }));
@@ -466,16 +494,21 @@
       var chips = U.chipRow('Step', ['1  Loss of a leaving group', '2  Proton transfer'], k, function (i) { return !!pr['a' + i]; },
         function (i) { return i === 0 || !!pr.a0; }, function (i) { k = i; paint(); });
       var right = h('div');
+      var here = k, eb = null;
+      var nextBtn = h('div', { class: 'btnrow' });
       var ab = U.arrowBox(scenes[k], pr, 'a' + k, function (fresh) {
-        if (k === 0 && fresh) { U.say('Right: the same slow first step as SN1. Now ethanol acts as a base on the carbocation.', 'good'); k = 1; paint(); return; }
+        if (here === 0) {
+          if (fresh) U.say('Right: the same slow first step as SN1. Watch it happen; then ethanol acts as a base on the carbocation.', 'good');
+          nextBtn.appendChild(h('button', { type: 'button', class: 'primary', text: 'On to step 2 →', onclick: function () { k = 1; paint(); } }));
+        }
         paintRight();
         if (pr.a0 && pr.a1 && !U.isDone(s.id)) U.complete();
-      });
-      area.appendChild(h('div', { class: 'work work-wide' }, [U.panel('E1 of ' + molName(m) + ' in ethanol', null, [chips, ab.node]), right]));
+      }, { onPlay: function (p) { if (eb) eb.draw((here + p) / 2, Math.max((here + p) / 2, ((pr.a0 ? 1 : 0) + (pr.a1 ? 1 : 0)) / 2)); } });
+      area.appendChild(h('div', { class: 'work work-wide' }, [U.panel('E1 of ' + molName(m) + ' in ethanol', null, [chips, ab.node, nextBtn]), right]));
       function paintRight() {
         right.innerHTML = '';
         var n = (pr.a0 ? 1 : 0) + (pr.a1 ? 1 : 0);
-        var eb = U.energyBox(Anim.PROFILES.e1, { p: [0, 0.5, 1][n], upto: [0, 0.5, 1][n] });
+        eb = U.energyBox(Anim.PROFILES.e1, { p: [0, 0.5, 1][n], upto: [0, 0.5, 1][n] });
         var kids = [eb.node];
         if (n === 2) {
           var res = React.predict(m, 'EtOH');
@@ -870,6 +903,24 @@
     ['stereospec', 'Stereospecific', 'the substrate’s configuration decides the only stereoisomer']
   ];
 
+  /* A card as the reaction written out in bond-line formulas: substrate,
+     reagent, and the products with what each one is. */
+  function cardFig(c) {
+    var m = mol(c.sub), r = React.predict(m, c.key);
+    var mainMech = r.mechs[0][0];
+    var list = r.products.filter(function (p) { return p.mech === mainMech; });
+    var maj = list.filter(function (p) { return p.role === 'major'; })[0];
+    var prods;
+    if (c.bin === 'stereospec') prods = [[maj, 'only']];
+    else if (c.bin === 'regiospec') prods = [[maj, 'the only alkene']];
+    else if (c.bin === 'stereosel') prods = [[maj, 'major'], [list.filter(function (p) { return p.how === 'selective-minor'; })[0], 'minor']];
+    else prods = [[maj, 'major'], [list.filter(function (p) { return p !== maj && p.regio && p.regio !== maj.regio; })[0], 'minor']];
+    var cards = prods.map(function (x) {
+      return U.molCard(x[0].mol, { name: x[0].name, note: '(' + x[1] + ')', draw: { scale: 36 } });
+    });
+    return U.rxn(m, React.REAGENTS[c.key].text, cards, { subDraw: { scale: 36 } });
+  }
+
   function cardText(c) {
     var m = mol(c.sub), r = React.predict(m, c.key);
     var rk = React.REAGENTS[c.key].text;
@@ -897,12 +948,14 @@
     function paint() {
       area.innerHTML = '';
       if (picker) { picker.destroy(); picker = null; }
-      var tray = h('div', { class: 'tray' });
-      U.shuffle(SEL_CARDS, U.rng(U.seed() ^ 5)).forEach(function (c) {
-        if (placed.indexOf(c.id) >= 0) return;
-        tray.appendChild(h('button', { type: 'button', class: 'tile card-tile', 'data-tile': c.id, text: cardText(c) }));
-      });
-      if (!tray.children.length) tray.appendChild(h('p', { class: 'tray-empty', text: 'Every reaction is sorted.' }));
+      /* one reaction at a time, written out, so it and the bins fit together */
+      var tray = h('div', { class: 'tray rxn-tray' });
+      var left = U.shuffle(SEL_CARDS, U.rng(U.seed() ^ 5)).filter(function (c) { return placed.indexOf(c.id) < 0; });
+      if (left.length) {
+        var c0 = left[0];
+        tray.appendChild(h('p', { class: 'tray-count', text: 'Reaction ' + (placed.length + 1) + ' of ' + SEL_CARDS.length + ': drag it to a bin, or click it and then a bin.' }));
+        tray.appendChild(h('button', { type: 'button', class: 'tile card-tile rxn-tile', 'data-tile': c0.id, 'aria-label': cardText(c0) }, [cardFig(c0)]));
+      } else tray.appendChild(h('p', { class: 'tray-empty', text: 'Every reaction is sorted.' }));
       var bins = h('div', { class: 'bins' });
       BINS.forEach(function (b) {
         var items = h('div', { class: 'bin-items' });

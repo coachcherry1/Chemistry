@@ -1,0 +1,461 @@
+ 2019
+
+
+
+
+AP Chemistry
+             ®
+
+
+
+
+Free-Response Questions
+
+
+
+
+© 2019 The College Board. College Board, Advanced Placement, AP, AP Central, and the acorn logo are
+registered trademarks of the College Board. Visit the College Board on the web: collegeboard.org.
+AP Central is the official online home for the AP Program: apcentral.collegeboard.org.
+-2-
+                                     AP® CHEMISTRY EQUATIONS AND CONSTANTS
+
+Throughout the exam the following symbols have the definitions specified unless otherwise noted.
+                     L, mL =           liter(s), milliliter(s)          mm Hg    =   millimeters of mercury
+                     g     =           gram(s)                          J, kJ    =   joule(s), kilojoule(s)
+                     nm    =           nanometer(s)                     V        =   volt(s)
+                     atm   =           atmosphere(s)                    mol      =   mole(s)
+
+ATOMIC STRUCTURE
+                                                                                   E = energy
+   E = hν                                                                          ν = frequency
+   c = λν                                                                          λ = wavelength
+                                                                       Planck’s constant, h = 6.626 × 10−34 J s
+                                                                          Speed of light, c = 2.998 × 108 m s−1
+                                                                       Avogadro’s number = 6.022 × 1023 mol−1
+                                                                         Electron charge, e = −1.602 × 10−19 coulomb
+
+
+EQUILIBRIUM
+
+        [C]c [D]d
+ Kc =             , where a A + b B R c C + d D                                Equilibrium Constants
+        [A]a [B]b
+                                                                               Kc (molar concentrations)
+        (PC )c (PD )d
+ Kp =                                                                          Kp (gas pressures)
+        (PA )a (PB )b                                                          Ka (weak acid)
+                     
+ Ka = [H ][A ]                                                                 Kb (weak base)
+             [HA]                                                              Kw (water)
+                           
+ Kb = [OH ][HB ]
+                 [B]
+ Kw = [H ][OH−] = 1.0 × 10−14 at 25°C
+             +
+
+    = Ka × K b
+ pH = −log[H+] , pOH = −log[OH−]
+  14 = pH + pOH
+                                 
+ pH = pKa + log [A ]
+                           [HA]
+ pKa = −logKa , pKb = −logKb
+
+
+KINETICS
+
+   ln[A] t − ln[A] 0 = − kt                                                       k = rate constant
+                                                                                   t = time
+        1  1                   = kt                                            t ½ = half-life
+     >A @t       >A @0
+                          t ½ = 0.693
+                                       k
+
+
+
+
+                                                                 -3-
+GASES, LIQUIDS, AND SOLUTIONS
+                                                                            P = pressure
+                                                                            V = volume
+               PV = nRT
+                                                                            T = temperature
+                                                moles A                     n = number of moles
+               PA = Ptotal × XA, where XA =
+                                              total moles                   m = mass
+             Ptotal = PA + PB + PC + . . .                                  M = molar mass
+                                                                            D = density
+                n = m                                                      KE = kinetic energy
+                      M
+                                                                             v = velocity
+                K = °C + 273
+                                                                            A = absorbance
+                D= m                                                        a = molar absorptivity
+                      V
+                                                                            b = path length
+KE per molecule = 1 mv 2                                                    c = concentration
+                      2
+    Molarity, M = moles of solute per liter of solution        Gas constant, R = 8.314 J mol−1 K−1
+
+                A = abc                                                        = 0.08206 L atm mol−1 K−1
+                                                                               = 62.36 L torr mol−1 K−1
+                                                                        1 atm = 760 mm Hg = 760 torr
+                                                                          STP = 273.15 K and 1.0 atm
+                                                               Ideal gas at STP = 22.4 L molí1
+
+THERMODYNAMICS / ELECTROCHEMISTRY
+                                                                                q = heat
+   q = mc∆T                                                                    m = mass
+                                                                                c = specific heat capacity
+ ∆S° = Ç SD products  Ç SD reactants                                           T = temperature
+                                                                               S° = standard entropy
+ ∆H° =   Ç DHfD products  Ç DHfD reactants                                    H° = standard enthalpy
+                                                                               G° = standard Gibbs free energy
+ ∆G° =   Ç DGfD products  Ç DGfD reactants                                     n = number of moles
+                                                                               E° = standard reduction potential
+ ∆G° = ∆H° − T∆S°                                                               I = current (amperes)
+     = −RT ln K                                                                 q = charge (coulombs)
+     = − n E°                                                                    t = time (seconds)
+         q                                                    Faraday’s constant,  = 96,485 coulombs per mole
+   I =
+         t                                                                                    of electrons
+                                                                                        1 joule
+                                                                             1 volt =
+                                                                                      1 coulomb
+
+
+
+
+                                                        -4-
+                     2019 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+                                                   CHEMISTRY
+                                                   Section II
+                                           Time - 1 hour and 45 minutes
+                                                  7 Questions
+
+                        YOU MAY USE YOUR CALCULATOR FOR THIS SECTION.
+
+Directions: Questions 1–3 are long free-response questions that require about 23 minutes each to answer and are
+worth 10 points each. Questions 4–7 are short free-response questions that require about 9 minutes each to answer
+and are worth 4 points each.
+
+Write your response in the space provided following each question. Examples and equations may be included in
+your responses where appropriate. For calculations, clearly show the method used and the steps involved in arriving
+at your answers. You must show your work to receive credit for your answer. Pay attention to significant figures.
+
+
+
+
+1. The compound urea, H2NCONH2 , is widely used in chemical fertilizers. The complete Lewis electron-dot
+   diagram for the urea molecule is shown above.
+
+    (a) Identify the hybridization of the valence orbitals of the carbon atom in the urea molecule.
+
+    (b) Urea has a high solubility in water, due in part to its ability to form hydrogen bonds. A urea molecule and
+        four water molecules are represented in the box below. Draw ONE dashed line (----) to indicate a possible
+        location of a hydrogen bond between a water molecule and the urea molecule.
+
+
+
+
+                                                     → H NCONH (aq)
+                                         H2NCONH2(s) ←  2     2
+
+   The dissolution of urea is represented by the equation above. A student determines that 5.39 grams of
+   H2NCONH2 (molar mass 60.06 g/mol) can dissolve in water to make 5.00 mL of a saturated solution at 20.°C.
+
+
+
+
+                                                © 2019 The College Board.
+                                  Visit the College Board on the web: collegeboard.org.
+
+                                                                                     GO ON TO THE NEXT PAGE.
+                                                          -5-
+                  2019 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+(c) Calculate the concentration of urea, in mol/L, in the saturated solution at 20.°C.
+(d) The student also determines that the concentration of urea in a saturated solution at 25°C is 19.8 M. Based
+    on this information, is the dissolution of urea endothermic or exothermic? Justify your answer in terms of
+    Le Chatelier’s principle.
+
+
+
+
+(e) The equipment shown above is provided so that the student can determine the value of the molar heat of
+    solution for urea. Knowing that the specific heat of the solution is 4.18 J/(g⋅°C), list the specific
+    measurements that are required to be made during the experiment.
+
+
+                                                            S° (J/(mol⋅K))
+                                      H2NCONH2(s)               104.6
+                                      H2NCONH2(aq)                ?
+
+                                                       , is 70.1 J/(mol⋅K) at 25°C. Using the information in
+(f) The entropy change for the dissolution of urea, DSsoln
+    the table above, calculate the absolute molar entropy, S°, of aqueous urea.
+                                                   is positive for the dissolution of urea in water.
+(g) Using particle-level reasoning, explain why DSsoln
+
+(h) The student claims that ΔS° for the process contributes to the thermodynamic favorability of the dissolution
+    of urea at 25°C. Use the thermodynamic information above to support the student’s claim.
+
+
+
+
+                                            © 2019 The College Board.
+                              Visit the College Board on the web: collegeboard.org.
+
+                                                                                 GO ON TO THE NEXT PAGE.
+                                                      -6-
+                    2019 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+2. Answer the following questions relating to the chemistry of the halogens.
+
+   (a) The molecular formulas of diatomic bromine, chlorine, fluorine, and iodine are written below. Circle the
+       formula of the molecule that has the longest bond length. Justify your choice in terms of atomic structure.
+                         Br2              Cl2               F2                  I2
+
+   A chemistry teacher wants to prepare Br2 . The teacher has access to the following three reagents: NaBr(aq),
+   Cl2(g), and I2(s).
+
+                                          Half-Reaction            E° at 25°C (V)
+                                      Br2 + 2 e− → 2 Br−                 1.07
+
+                                       Cl2 + 2 e− → 2 Cl−                1.36
+
+                                        I2 + 2 e− → 2 I−                 0.53
+
+   (b) Using the data in the table above, write the balanced equation for the thermodynamically favorable
+       reaction that will produce Br2 when the teacher combines two of the reagents. Justify that the reaction is
+       thermodynamically favorable by calculating the value of E° for the reaction.
+
+   Br2 and Cl2 can react to form the compound BrCl.
+
+   (c) The boiling point of Br2 is 332 K, whereas the boiling point of BrCl is 278 K. Explain this difference in
+       boiling point in terms of all the intermolecular forces present between molecules of each substance.
+   The compound BrCl can decompose into Br2 and Cl2 , as represented by the balanced chemical equation below.
+               2 BrCl(g)  Br2(g) + Cl2(g)                ΔH° = 1.6 kJ/molrxn
+
+   A 0.100 mole sample of pure BrCl(g) is placed in a previously evacuated, rigid 2.00 L container at 298 K.
+   Eventually the system reaches equilibrium according to the equation above.
+
+   (d) Calculate the pressure in the container before equilibrium is established.
+   (e) Write the expression for the equilibrium constant, Keq , for the decomposition of BrCl.
+   After the system has reached equilibrium, 42 percent of the original BrCl sample has decomposed.
+   (f) Determine the value of Keq for the decomposition reaction of BrCl at 298 K.
+   (g) Calculate the bond energy of the Br-Cl bond, in kJ/mol, using ΔH° for the reaction (1.6 kJ/molrxn) and the
+       information in the following table.
+
+                                                                Bond Energy
+                                                 Bond
+                                                                  (kJ/mol)
+                                                Br – Br            193
+                                                Cl – Cl            243
+                                                Br – Cl              ?
+
+
+
+                                               © 2019 The College Board.
+                                 Visit the College Board on the web: collegeboard.org.
+
+                                                                                     GO ON TO THE NEXT PAGE.
+                                                          -7-
+                     2019 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+3. A student is given 50.0 mL of a solution of Na2CO3 of unknown concentration. To determine the concentration
+   of the solution, the student mixes the solution with excess 1.0 M Ca(NO3)2(aq), causing a precipitate to form.
+   The balanced equation for the reaction is shown below.
+
+                               Na2CO3(aq) + Ca(NO3)2(aq) → 2 NaNO3(aq) + CaCO3(s)
+   (a) Write the net ionic equation for the reaction that occurs when the solutions of Na2CO3 and Ca(NO3)2 are
+       mixed.
+   (b) The diagram below is incomplete. Draw in the species needed to accurately represent the major ionic species
+       remaining in the solution after the reaction has been completed.
+
+
+
+
+   The student filters and dries the precipitate of CaCO3 (molar mass 100.1 g/mol) and records the data in the table
+   below.
+                                      Volume of Na2CO3 solution                 50.0 mL
+                                   Volume of 1.0 M Ca(NO3)2 added             100.0 mL
+                                 Mass of CaCO3 precipitate collected             0.93 g
+
+   (c) Determine the number of moles of Na2CO3 in the original 50.0 mL of solution.
+   (d) The student realizes that the precipitate was not completely dried and claims that as a result, the
+       calculated Na2CO3 molarity is too low. Do you agree with the student’s claim? Justify your answer.
+   (e) After the precipitate forms and is filtered, the liquid that passed through the filter is tested to see if it can
+       conduct electricity. What would be observed? Justify your answer.
+
+
+
+
+                                                 © 2019 The College Board.
+                                   Visit the College Board on the web: collegeboard.org.
+
+                                                                                      GO ON TO THE NEXT PAGE.
+                                                            -8-
+                  2019 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+The student decides to determine the molarity of the same Na2CO3 solution using a second method. When
+Na2CO3 is dissolved in water, CO32−(aq) hydrolyzes to form HCO3−(aq), as shown by the following equation.
+
+                                                                            [HCO3- ][OH - ]
+        CO32−(aq) + H2O(l)  HCO3−(aq) + OH−(aq)                     Kb =                     = 2.1 × 10−4
+                                                                               [CO32 - ]
+
+(f) The student decides to first determine [OH−] in the solution, then use that result to calculate the initial
+    concentration of CO32−(aq).
+
+      (i) Identify a laboratory method (not titration) that the student could use to collect data to determine [OH−]
+          in the solution.
+     (ii) Explain how the student could use the measured value in part (f)(i) to calculate the initial concentration
+          of CO32−(aq). (Do not do any numerical calculations.)
+
+(g) In the original Na2CO3 solution at equilibrium, is the concentration of HCO3−(aq) greater than, less than, or
+    equal to the concentration of CO32−(aq) ? Justify your answer.
+
+(h) The student needs to make a CO32− /HCO3− buffer. Is the Na2CO3 solution suitable for making a buffer
+    with a pH of 6? Explain why or why not.
+
+
+
+
+                                             © 2019 The College Board.
+                               Visit the College Board on the web: collegeboard.org.
+
+                                                                                  GO ON TO THE NEXT PAGE.
+                                                       -9-
+                     2019 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+4. A student is doing experiments with CO2(g). Originally, a sample of the gas is in a rigid container at 299 K and
+   0.70 atm. The student increases the temperature of the CO2(g) in the container to 425 K.
+
+   (a) Describe the effect of raising the temperature on the motion of the CO2(g) molecules.
+   (b) Calculate the pressure of the CO2(g) in the container at 425 K.
+   (c) In terms of kinetic molecular theory, briefly explain why the pressure of the CO2(g) in the container
+       changes as it is heated to 425 K.
+   (d) The student measures the actual pressure of the CO2(g) in the container at 425 K and observes that it is less
+       than the pressure predicted by the ideal gas law. Explain this observation.
+
+
+
+
+                                               © 2019 The College Board.
+                                 Visit the College Board on the web: collegeboard.org.
+
+                                                                                    GO ON TO THE NEXT PAGE.
+                                                         -10-
+                    2019 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+5. The complete photoelectron spectrum of an element in its ground state is represented below.
+
+
+
+
+   (a) Based on the spectrum,
+         (i) write the ground-state electron configuration of the element, and
+        (ii) identify the element.
+
+   (b) Calculate the wavelength, in meters, of electromagnetic radiation needed to remove an electron from the
+       valence shell of an atom of the element.
+
+
+
+
+                                               © 2019 The College Board.
+                                 Visit the College Board on the web: collegeboard.org.
+
+                                                                                    GO ON TO THE NEXT PAGE.
+                                                         -11-
+                    2019 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+6. Nitrogen dioxide, NO2(g), is produced as a by-product of the combustion of fossil fuels in internal combustion
+   engines. At elevated temperatures NO2(g) decomposes according to the equation below.
+                                          2 NO2(g) → 2 NO(g) + O2(g)
+
+   The concentration of a sample of NO2(g) is monitored as it decomposes and is recorded on the graph directly
+   below. The two graphs that follow it are derived from the original data.
+
+
+
+
+   (a) Explain how the graphs indicate that the reaction is second order.
+   (b) Write the rate law for the decomposition of NO2(g).
+
+
+
+
+                                               © 2019 The College Board.
+                                 Visit the College Board on the web: collegeboard.org.
+
+                                                                                    GO ON TO THE NEXT PAGE.
+                                                         -12-
+                2019 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+(c) Consider two possible mechanisms for the decomposition reaction.
+
+     (i) Is the rate law described by mechanism I shown below consistent with the rate law you wrote in
+         part (b) ? Justify your answer.
+
+                                                Mechanism I
+                   Step 1:    NO2(g) + NO2(g) → NO(g) + NO3(g)                       slow
+                   Step 2:               NO3(g) → NO(g) + O2(g)                      fast
+
+    (ii) Is the rate law described by mechanism II shown below consistent with the rate law you wrote in
+         part (b) ? Justify your answer.
+
+                                                Mechanism II
+                   Step 1:    NO2(g) + NO2(g)  N2O4(g)                        fast equilibrium
+                   Step 2:               N2O4(g) → 2 NO(g) + O2(g)                    slow
+
+
+
+
+                                           © 2019 The College Board.
+                             Visit the College Board on the web: collegeboard.org.
+
+
+                                                                                GO ON TO THE NEXT PAGE.
+                                                     -13-
+                     2019 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+                6 H+(aq) + 2 MnO4−(aq) + 5 H2C2O4(aq) → 10 CO2(g) + 8 H2O(l) + 2 Mn2+(aq)
+
+7. A student dissolved a 0.139 g sample of oxalic acid, H2C2O4 , in water in an Erlenmeyer flask. Then the student
+   titrated the H2C2O4 solution in the flask with a solution of KMnO4 , which has a dark purple color. The
+   balanced chemical equation for the reaction that occurred during the titration is shown above.
+
+   (a) Identify the species that was reduced in the titration reaction. Justify your answer in terms of oxidation
+       numbers.
+   (b) The student used a 50.0 mL buret to add the KMnO4(aq) to the H2C2O4(aq) until a faint lavender color was
+       observed in the flask, an indication that the end point of the titration had been reached. The initial and final
+       volume readings of the solution in the buret are shown below. Write down the initial reading and the final
+       reading and use them to determine the volume of KMnO4(aq) that was added during the titration.
+
+
+
+
+   (c) Given that the concentration of KMnO4(aq) was 0.0235 M, calculate the number of moles of MnO4− ions
+       that completely reacted with the H2C2O4 .
+
+   (d) The student proposes to perform another titration using a 0.139 g sample of H2C2O4 , but this time using
+       0.00143 M KMnO4(aq) in the buret. Would this titrant concentration be a reasonable choice to use if the
+       student followed the same procedure and used the same equipment as before? Justify your response.
+
+
+                                                       STOP
+
+                                                  END OF EXAM
+
+                                               © 2019 The College Board.
+                                 Visit the College Board on the web: collegeboard.org.
+
+
+
+
+                                                         -14-
+

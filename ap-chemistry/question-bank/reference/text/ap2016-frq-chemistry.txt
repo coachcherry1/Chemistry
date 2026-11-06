@@ -1,0 +1,424 @@
+AP Chemistry
+         ®
+
+
+
+2016 Free-Response Questions
+
+
+© 2016 The College Board. College Board, Advanced Placement Program, AP, AP Central, and the acorn logo
+are registered trademarks of the College Board.
+Visit the College Board on the Web: www.collegeboard.org.
+AP Central is the official online home for the AP Program: apcentral.collegeboard.org.
+-2-
+                                           ®
+                                     AP CHEMISTRY EQUATIONS AND CONSTANTS
+
+Throughout the exam the following symbols have the definitions specified unless otherwise noted.
+                     L, mL =           liter(s), milliliter(s)          mm Hg    =   millimeters of mercury
+                     g     =           gram(s)                          J, kJ    =   joule(s), kilojoule(s)
+                     nm    =           nanometer(s)                     V        =   volt(s)
+                     atm   =           atmosphere(s)                    mol      =   mole(s)
+
+ATOMIC STRUCTURE
+                                                                                   E = energy
+   E = hν                                                                          ν = frequency
+   c = λν                                                                          λ = wavelength
+                                                                       Planck’s constant, h = 6.626 × 10−34 J s
+                                                                          Speed of light, c = 2.998 × 108 m s−1
+                                                                       Avogadro’s number = 6.022 × 1023 mol−1
+                                                                         Electron charge, e = −1.602 × 10−19 coulomb
+
+
+EQUILIBRIUM
+
+        [C]c [D]d
+ Kc =             , where a A + b B R c C + d D                                Equilibrium Constants
+        [A]a [B]b
+                                                                               Kc (molar concentrations)
+        (PC )c (PD )d
+ Kp =                                                                          Kp (gas pressures)
+        (PA )a (PB )b                                                          Ka (weak acid)
+                     
+ Ka = [H ][A ]                                                                 Kb (weak base)
+             [HA]                                                              Kw (water)
+                           
+ Kb = [OH ][HB ]
+                 [B]
+ Kw = [H ][OH−] = 1.0 × 10−14 at 25°C
+             +
+
+    = K a × Kb
+ pH = −log[H+] , pOH = −log[OH−]
+  14 = pH + pOH
+                                 
+ pH = pKa + log [A ]
+                           [HA]
+ pKa = −logKa , pKb = −logKb
+
+
+KINETICS
+
+   ln[A] t − ln[A] 0 = − kt                                                       k = rate constant
+                                                                                   t = time
+        1  1                   = kt                                            t ½ = half-life
+     >A @t       >A @0
+                          t ½ = 0.693
+                                       k
+
+
+
+
+                                                                 -3-
+GASES, LIQUIDS, AND SOLUTIONS
+                                                                            P = pressure
+                                                                            V = volume
+               PV = nRT
+                                                                            T = temperature
+                                                moles A                     n = number of moles
+               PA = Ptotal × XA, where XA =
+                                              total moles                   m = mass
+             Ptotal = PA + PB + PC + . . .                                  M = molar mass
+                                                                            D = density
+                n = m                                                      KE = kinetic energy
+                      M
+                                                                             v = velocity
+                K = °C + 273
+                                                                            A = absorbance
+                D= m                                                        a = molar absorptivity
+                      V
+                                                                            b = path length
+KE per molecule = 1 mv 2                                                    c = concentration
+                      2
+    Molarity, M = moles of solute per liter of solution        Gas constant, R = 8.314 J mol−1 K−1
+
+                A = abc                                                        = 0.08206 L atm mol−1 K−1
+                                                                               = 62.36 L torr mol−1 K−1
+                                                                        1 atm = 760 mm Hg = 760 torr
+                                                                          STP = 273.15 K and 1.0 atm
+                                                               Ideal gas at STP = 22.4 L molí1
+
+THERMODYNAMICS / ELECTROCHEMISTRY
+                                                                                q = heat
+   q = mc∆T                                                                    m = mass
+                                                                                c = specific heat capacity
+ ∆S° = Ç SD products  Ç SD reactants                                           T = temperature
+                                                                               S° = standard entropy
+ ∆H° =   Ç DHfD products  Ç DHfD reactants                                    H° = standard enthalpy
+                                                                               G° = standard Gibbs free energy
+ ∆G° =   Ç DGfD products  Ç DGfD reactants                                     n = number of moles
+                                                                               E° = standard reduction potential
+ ∆G° = ∆H° − T∆S°                                                               I = current (amperes)
+     = −RT ln K                                                                 q = charge (coulombs)
+     = − n E°                                                                    t = time (seconds)
+         q                                                    Faraday’s constant,  = 96,485 coulombs per mole
+   I =
+         t                                                                                    of electrons
+                                                                                        1 joule
+                                                                             1 volt =
+                                                                                      1 coulomb
+
+
+
+
+                                                        -4-
+                        "1¥$)&.*453:'3&&3&410/4&26&45*0/4
+
+                                                      CHEMISTRY
+                                                   Section II
+                                                  7 Questions
+                                           Time - 1 hour and 45 minutes
+
+                        YOU MAY USE YOUR CALCULATOR FOR THIS SECTION.
+
+Directions: Questions 1–3 are long free-response questions that require about 23 minutes each to answer and are
+worth 10 points each. Questions 4–7 are short free-response questions that require about 9 minutes each to answer
+and are worth 4 points each.
+Write your response in the space provided following each question. Examples and equations may be included in
+your responses where appropriate. For calculations, clearly show the method used and the steps involved in arriving
+at your answers. You must show your work to receive credit for your answer. Pay attention to significant figures.
+
+1. A student investigates the enthalpy of solution, ΔHsoln , for two alkali metal halides, LiCl and NaCl. In addition
+   to the salts, the student has access to a calorimeter, a balance with a precision of ±0.1 g, and a thermometer with
+   a precision of ±0.1°C.
+
+    (a) To measure ΔHsoln for LiCl, the student adds 100.0 g of water initially at 15.0°C to a calorimeter and adds
+        10.0 g of LiCl(s), stirring to dissolve. After the LiCl dissolves completely, the maximum temperature
+        reached by the solution is 35.6°C.
+         (i) Calculate the magnitude of the heat absorbed by the solution during the dissolution process, assuming
+             that the specific heat capacity of the solution is 4.18 J/(g·°C). Include units with your answer.
+         (ii) Determine the value of ΔHsoln for LiCl in kJ/molrxn .
+
+   To explain why ΔHsoln for NaCl is different than that for LiCl, the student investigates factors that affect
+   ΔHsoln and finds that ionic radius and lattice enthalpy (which can be defined as the ΔH associated with the
+   separation of a solid crystal into gaseous ions) contribute to the process. The student consults references and
+   collects the data shown in the table below.
+
+
+                                               Ion     Ionic Radius (pm)
+                                               Li+            76
+                                                  +
+                                               Na            102
+
+
+
+
+                                                  © 2016 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                                           -5-
+                    "1¥$)&.*453:'3&&3&410/4&26&45*0/4
+
+(b) Write the complete electron configuration for the Na+ ion in the ground state.
+(c) Using principles of atomic structure, explain why the Na+ ion is larger than the Li+ ion.
+(d) Which salt, LiCl or NaCl, has the greater lattice enthalpy? Justify your answer.
+(e) Below is a representation of a portion of a crystal of LiCl. Identify the ions in the representation by writing
+    the appropriate formulas ( Li+ or Cl− ) in the boxes below.
+
+
+
+
+(f) The lattice enthalpy of LiCl is positive, indicating that it takes energy to break the ions apart in LiCl.
+    However, the dissolution of LiCl in water is an exothermic process. Identify all particle-particle interactions
+    that contribute significantly to the dissolution process being exothermic. For each interaction, include the
+    particles that interact and the specific type of intermolecular force between those particles.
+
+
+
+
+                                               © 2016 The College Board.
+                              Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                     GO ON TO THE NEXT PAGE.
+                                                        -6-
+                       "1¥$)&.*453:'3&&3&410/4&26&45*0/4
+
+                        NaHCO3(s) + HC2H3O2(aq) → NaC2H3O2(aq) + H2O(l) + CO2(g)
+
+2. A student designs an experiment to study the reaction between NaHCO3 and HC2H3O2 . The reaction is
+   represented by the equation above. The student places 2.24 g of NaHCO3 in a flask and adds 60.0 mL of
+   0.875 M HC2H3O2 . The student observes the formation of bubbles and that the flask gets cooler as the reaction
+   proceeds.
+
+   (a) Identify the reaction represented above as an acid-base reaction, precipitation reaction, or redox reaction.
+       Justify your answer.
+   (b) Based on the information above, identify the limiting reactant. Justify your answer with calculations.
+   (c) The student observes that the bubbling is rapid at the beginning of the reaction and gradually slows as the
+       reaction continues. Explain this change in the reaction rate in terms of the collisions between reactant
+       particles.
+   (d) In thermodynamic terms, a reaction can be driven by enthalpy, entropy, or both.
+         (i) Considering that the flask gets cooler as the reaction proceeds, what drives the chemical reaction
+             between NaHCO3(s) and HC2H3O2(aq) ? Answer by drawing a circle around one of the choices
+             below.
+               Enthalpy only                     Entropy only                           Both enthalpy and entropy
+
+        (ii) Justify your selection in part (d)(i) in terms of ΔG°.
+
+   (e) The HCO3− ion has three carbon-to-oxygen bonds. Two of the carbon-to-oxygen bonds have the same
+       length and the third carbon-to-oxygen bond is longer than the other two. The hydrogen atom is bonded to
+       one of the oxygen atoms. In the box below, draw a Lewis electron-dot diagram (or diagrams) for the HCO3−
+       ion that is (are) consistent with the given information.
+
+
+
+
+   (f) A student prepares a solution containing equimolar amounts of HC2H3O2 and NaC2H3O2 . The pH of
+       the solution is measured to be 4.7. The student adds two drops of 3.0 M HNO3(aq) and stirs the sample,
+       observing that the pH remains at 4.7. Write a balanced, net-ionic equation for the reaction between
+       HNO3(aq) and the chemical species in the sample that is responsible for the pH remaining at 4.7.
+
+
+
+
+                                                  © 2016 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                                           -7-
+                       "1¥$)&.*453:'3&&3&410/4&26&45*0/4
+
+                                                    M + I2 → MI2
+
+3. To determine the molar mass of an unknown metal, M, a student reacts iodine with an excess of the metal to
+   form the water-soluble compound MI2 , as represented by the equation above. The reaction proceeds until all
+   of the I2 is consumed. The MI2(aq) solution is quantitatively collected and heated to remove the water, and the
+   product is dried and weighed to constant mass. The experimental steps are represented below, followed by a
+   data table.
+
+
+
+
+                                     Data for Unknown Metal Lab
+                         Mass of beaker                               125.457 g
+                         Mass of beaker + metal M                     126.549 g
+                         Mass of beaker + metal M + I2                127.570 g
+                         Mass of MI2 , first weighing                    1.284 g
+                         Mass of MI2 , second weighing                   1.284 g
+
+
+   (a) Given that the metal M is in excess, calculate the number of moles of I2 that reacted.
+
+   (b) Calculate the molar mass of the unknown metal M .
+
+   The student hypothesizes that the compound formed in the synthesis reaction is ionic.
+   (c) Propose an experimental test the student could perform that could be used to support the hypothesis. Explain
+       how the results of the test would support the hypothesis if the substance was ionic.
+
+
+
+                                                  © 2016 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                                           -8-
+                    "1¥$)&.*453:'3&&3&410/4&26&45*0/4
+
+The student hypothesizes that Br2 will react with metal M more vigorously than I2 did because Br2 is a liquid
+at room temperature.
+
+(d) Explain why I2 is a solid at room temperature whereas Br2 is a liquid. Your explanation should clearly
+    reference the types and relative strengths of the intermolecular forces present in each substance.
+
+
+While cleaning up after the experiment, the student wishes to dispose of the unused solid I2 in a responsible
+manner. The student decides to convert the solid I2 to I−(aq) anion. The student has access to three solutions,
+H2O2(aq), Na2S2O3(aq), and Na2S4O6(aq), and the standard reduction table shown below.
+
+
+                                          Half reaction                         E° (V)
+                             S4O62−(aq) + 2 e− → 2 S2O32−(aq)                    0.08
+                                    I2(s) + 2 e− → 2 I−(aq)                      0.54
+                            O2(g) + 2 H+(aq) + 2 e− → H2O2(aq)                   0.68
+
+
+(e) Which solution should the student add to I2(s) to reduce it to I −(aq)? Circle your answer below. Justify
+    your answer, including a calculation of E° for the overall reaction.
+
+            H2O2(aq)                           Na2S2O3(aq)                           Na2S4O6(aq)
+
+(f) Write the balanced net-ionic equation for the reaction between I2 and the solution you selected in part (e).
+
+
+
+
+                                               © 2016 The College Board.
+                              Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                     GO ON TO THE NEXT PAGE.
+                                                        -9-
+                        "1¥$)&.*453:'3&&3&410/4&26&45*0/4
+
+                                        → C H O−(aq) + H O+(aq)
+                    C6H5OH(aq) + H2O(l) ←                                           Ka = 1.12 × 10−10
+                                           6 5          3
+
+4. Phenol is a weak acid that partially dissociates in water according to the equation above.
+
+   (a) What is the pH of a 0.75 M C6H5OH(aq) solution?
+   (b) For a certain reaction involving C6H5OH(aq) to proceed at a significant rate, the phenol must be primarily
+       in its deprotonated form, C6H5O−(aq). In order to ensure that the C6H5OH(aq) is deprotonated, the reaction
+       must be conducted in a buffered solution. On the number scale below, circle each pH for which more than
+       50 percent of the phenol molecules are in the deprotonated form (C6H5O−(aq)). Justify your answer.
+
+   1       2        3       4       5        6         7          8       9        10        11    12   13   14
+
+
+
+
+                                                  © 2016 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                                           -10-
+                        "1¥$)&.*453:'3&&3&410/4&26&45*0/4
+
+                                                2 C4H6(g) → C8H12(g)
+
+
+5. At high temperatures the compound C4H6 (1,3-butadiene) reacts according to the equation above. The rate of
+   the reaction was studied at 625 K in a rigid reaction vessel. Two different trials, each with a different starting
+   concentration, were carried out. The data were plotted in three different ways, as shown below.
+
+
+
+
+                                                   © 2016 The College Board.
+                                  Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                         GO ON TO THE NEXT PAGE.
+                                                           -11-
+                     "1¥$)&.*453:'3&&3&410/4&26&45*0/4
+
+
+(a) For trial 1, calculate the initial pressure, in atm, in the vessel at 625 K. Assume that initially all the gas
+    present in the vessel is C4H6 .
+(b) Use the data plotted in the graphs to determine the order of the reaction with respect to C4H6 .
+
+(c) The initial rate of the reaction in trial 1 is 0.0010 mol/(L ⋅ s). Calculate the rate constant, k, for the reaction
+    at 625 K.
+
+
+
+
+                                                 © 2016 The College Board.
+                                Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                       GO ON TO THE NEXT PAGE.
+                                                         -12-
+                       "1¥$)&.*453:'3&&3&410/4&26&45*0/4
+
+                  Ba2+(aq) + EDTA4 −(aq) R Ba(EDTA)2−(aq)                                    K = 7.7 × 107
+
+6. The polyatomic ion C10H12N2O84− is commonly abbreviated as EDTA4−. The ion can form complexes with
+  metal ions in aqueous solutions. A complex of EDTA4− with Ba2+ ion forms according to the equation
+  above. A 50.0 mL volume of a solution that has an EDTA4 −(aq) concentration of 0.30 M is mixed with 50.0 mL
+  of 0.20 M Ba(NO3)2 to produce 100.0 mL of solution.
+
+   (a) Considering the value of K for the reaction, determine the concentration of Ba(EDTA)2−(aq) in the
+       100.0 mL of solution. Justify your answer.
+   (b) The solution is diluted with distilled water to a total volume of 1.00 L. After equilibrium has been
+       reestablished, is the number of moles of Ba2+(aq) present in the solution greater than, less than, or equal to
+       the number of moles of Ba2+(aq) present in the original solution before it was diluted? Justify your answer.
+
+
+
+
+                                                  © 2016 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                                          -13-
+                       "1¥$)&.*453:'3&&3&410/4&26&45*0/4
+7. A student is given a 25.0 mL sample of a solution of an unknown monoprotic acid and asked to determine the
+   concentration of the acid by titration. The student uses a standardized solution of 0.110 M NaOH(aq), a buret, a
+   flask, an appropriate indicator, and other laboratory equipment necessary for the titration.
+
+   (a) The images below show the buret before the titration begins (below left) and at the end point (below right).
+       What should the student record as the volume of NaOH(aq) delivered to the flask?
+
+
+
+
+   (b) Based on the given information and your answer to part (a), determine the value of the concentration of the
+       acid that should be recorded in the student’s lab report.
+
+   (c) In a second trial, the student accidentally added more NaOH(aq) to the flask than was needed to reach the
+       end point, and then recorded the final volume. Would this error increase, decrease, or have no effect on the
+       calculated acid concentration for the second trial? Justify your answer.
+
+
+
+
+                                                         STOP
+
+                                                   END OF EXAM
+
+
+                                                  © 2016 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+
+
+                                                          -14-
+

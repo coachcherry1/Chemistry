@@ -63,7 +63,7 @@ Molecule: (R)-2-bromobutane.
 - Prediction: Where does HS⁻ attack the α carbon of 2-bromobutane? **From the back side, opposite the Br**
 - Prediction: cis-1-Bromo-4-methylcyclohexane reacts with NaSH by SN2. Is the product cis or trans? **Trans**
 
-### 6. Crowding the back side
+### 6. Steric hindrance
 
 Molecules: bromomethane; 1-bromopropane; 2-bromopropane; 2-bromo-2-methylpropane.
 - Prediction: Which of these reacts fastest by SN2? **Bromomethane**
@@ -247,11 +247,11 @@ Draws 5 of 17; always asks: b-fn-nan3, b-sn2-product.
 - **b-rate**: Rank these alkyl bromides for SN2, fastest first.
   - Answer: **methyl > 1° > 2° > 3°**
   - Other choices: 3° > 2° > 1° > methyl; 2° > 1° > methyl > 3°; all the same
-  - Why: Every carbon on the α carbon crowds the back side, so methyl is fastest and a 3° substrate does not react by SN2 at all.
+  - Why: Every carbon on the α carbon adds steric hindrance at the back side, so methyl is fastest and a 3° substrate does not react by SN2 at all.
 - **b-3deg**: Why does 2-bromo-2-methylpropane not react by SN2? [2-bromo-2-methylpropane]
-  - Answer: **Its three CH₃ groups block the back side**
+  - Answer: **Steric hindrance at the back side**
   - Other choices: It has no β H atoms for the base; Br⁻ is far too poor a leaving group; Its carbocation would be far too unstable
-  - Why: The three CH₃ groups surround the back side of the α carbon, so the nucleophile cannot get in. (It has nine β H atoms, Br⁻ is a good leaving group, and its 3° carbocation is the most stable kind.)
+  - Why: Steric hindrance: the three CH₃ groups surround the back side of the α carbon, so the nucleophile cannot get in. (It has nine β H atoms, Br⁻ is a good leaving group, and its 3° carbocation is the most stable kind.)
 - **b-sn1-order**: In what order do the steps of an SN1 in ethanol happen?
   - Answer: **Loss of a leaving group, nucleophilic attack, proton transfer**
   - Other choices: Nucleophilic attack, loss of a leaving group, proton transfer; Proton transfer, loss of a leaving group, nucleophilic attack; Nucleophilic attack and loss of a leaving group, at once
@@ -438,7 +438,7 @@ Draws 5 of 15; always asks: e-fn-h2o, e-klein.
 - **e-mech-1both**: A 1° alkyl halide reacts with NaOEt. What does Klein’s table predict? [1-bromobutane + NaOEt]
   - Answer: **SN2, some E2**
   - Other choices: E2, some SN2; SN1; E2
-  - Why: Little crowding at a 1° carbon: a strong nucleophile and strong base mostly substitutes (SN2), with some E2.
+  - Why: Little steric hindrance at a 1° carbon: a strong nucleophile and strong base mostly substitutes (SN2), with some E2.
 - **e-mech-2both**: A 2° alkyl halide reacts with NaOMe. What does Klein’s table predict? [2-bromopentane + NaOMe]
   - Answer: **E2, some SN2**
   - Other choices: SN2, some E2; SN1, some E1; SN2

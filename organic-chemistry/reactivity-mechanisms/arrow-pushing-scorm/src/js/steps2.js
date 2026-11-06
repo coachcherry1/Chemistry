@@ -4,7 +4,7 @@
  *   draw        draw the arrows of each scene; when they are right the step
  *               plays (electrons riding the arrows, bonds breaking and
  *               forming, the energy ledger), then a sentence in words
- *   stable      methyl < 1° < 2° < 3°, and hyperconjugation
+ *   stable      methyl < 1° < 2° < 3°: alkyl groups are electron-donating (induction)
  *   rearrange   will this carbocation rearrange? (Klein SkillBuilder 6.6)
  *   name        read the arrows and name the pattern
  *   sequence    Klein Figure 6.31: name and draw each of four steps while
@@ -206,25 +206,30 @@
 
   /* ============================================================ stable */
 
-  function hyperPic() {
-    var s = Render.svg('hyper', 'Hyperconjugation: a neighbouring C–H bond shares electron density with the empty p orbital');
-    s.setAttribute('viewBox', '0 0 300 170');
-    el('ellipse', { cx: 190, cy: 50, rx: 16, ry: 38, class: 'lobe empty' }, s);
-    el('ellipse', { cx: 190, cy: 122, rx: 16, ry: 38, class: 'lobe empty' }, s);
-    el('ellipse', { cx: 140, cy: 56, rx: 14, ry: 30, class: 'lobe full', transform: 'rotate(-12 140 56)' }, s);
-    el('ellipse', { cx: 166, cy: 52, rx: 26, ry: 14, class: 'share' }, s);
-    el('line', { x1: 140, y1: 86, x2: 190, y2: 86, class: 'm-bond' }, s);
-    el('line', { x1: 140, y1: 86, x2: 140, y2: 40, class: 'm-bond' }, s);
-    el('line', { x1: 140, y1: 86, x2: 104, y2: 118, class: 'm-bond' }, s);
-    el('line', { x1: 140, y1: 86, x2: 112, y2: 70, class: 'm-bond' }, s);
-    el('line', { x1: 190, y1: 86, x2: 232, y2: 110, class: 'm-bond' }, s);
-    el('line', { x1: 190, y1: 86, x2: 232, y2: 66, class: 'm-bond' }, s);
-    [[140, 34, 'H'], [100, 126, 'H'], [106, 70, 'H'], [240, 116, 'H'], [240, 66, 'H']].forEach(function (q) {
-      el('text', { x: q[0], y: q[1], 'text-anchor': 'middle', class: 'm-label tone-h' }, s, q[2]);
+  /* Alkyl groups are electron-donating: a tert-butyl cation with an induction
+     arrow on each C–C bond pointing at the C⁺, and electron density drifting in. */
+  function inductionPic() {
+    var s = Render.svg('hyper', 'Induction: each CH₃ group donates electron density toward the C⁺');
+    s.setAttribute('viewBox', '0 0 300 190');
+    var C = [150, 92], arms = [90, 210, 330];
+    el('circle', { cx: C[0], cy: C[1], r: 26, class: 'dens poor' }, s);
+    arms.forEach(function (d, i) {
+      var r = d * Math.PI / 180, ux = Math.cos(r), uy = -Math.sin(r);
+      var M = [C[0] + ux * 70, C[1] + uy * 70];
+      el('line', { x1: C[0], y1: C[1], x2: M[0].toFixed(1), y2: M[1].toFixed(1), class: 'm-bond' }, s);
+      el('text', { x: (M[0] + ux * 18).toFixed(1), y: (M[1] + uy * 18 + 5).toFixed(1), 'text-anchor': 'middle', class: 'm-label tone-c' }, s, 'CH₃');
+      /* the induction arrow beside the bond, from the CH₃ toward the C⁺ */
+      var nx = -uy, ny = ux, off = 11;
+      var a0 = [M[0] - ux * 12 + nx * off, M[1] - uy * 12 + ny * off], a1 = [C[0] + ux * 20 + nx * off, C[1] + uy * 20 + ny * off];
+      el('line', { x1: a0[0].toFixed(1), y1: a0[1].toFixed(1), x2: a1[0].toFixed(1), y2: a1[1].toFixed(1), class: 'ind-arrow' }, s);
+      el('polygon', { points: [[a1[0] - ux * 0, a1[1]], [a1[0] + ux * 8 + nx * 4, a1[1] + uy * 8 + ny * 4], [a1[0] + ux * 8 - nx * 4, a1[1] + uy * 8 - ny * 4]]
+        .map(function (q) { return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' '), class: 'ind-head' }, s);
+      /* electron density drifting in along the bond */
+      el('circle', { cx: (M[0] - ux * 14).toFixed(1), cy: (M[1] - uy * 14).toFixed(1), r: 3, class: 'drift', style: 'animation-delay: ' + (i * 0.4) + 's; --dx: ' + (-ux * 36).toFixed(1) + 'px; --dy: ' + (-uy * 36).toFixed(1) + 'px' }, s);
     });
-    el('circle', { cx: 208, cy: 92, r: 6.2, class: 'm-charge-ring' }, s);
-    el('text', { x: 208, y: 96, class: 'm-charge', 'text-anchor': 'middle' }, s, '+');
-    el('text', { x: 150, y: 162, 'text-anchor': 'middle', class: 'pic-note' }, s, 'the C–H bond leans its electron density into the empty p orbital');
+    el('circle', { cx: C[0] + 14, cy: C[1] - 14, r: 6.2, class: 'm-charge-ring' }, s);
+    el('text', { x: C[0] + 14, y: C[1] - 10, class: 'm-charge', 'text-anchor': 'middle' }, s, '+');
+    el('text', { x: 150, y: 184, 'text-anchor': 'middle', class: 'pic-note' }, s, 'each alkyl group pushes electron density toward the C⁺');
     return s;
   }
 
@@ -232,8 +237,8 @@
     var pr = U.progress(s.id);
     var area = h('div');
     stage().appendChild(U.predictBox(P.order3, pr, 'p',
-      'Tertiary. Each alkyl group on the C⁺ shares a little electron density with its empty p orbital, which stabilizes it (hyperconjugation). ' +
-      'More alkyl groups, more help: methyl < primary < secondary < tertiary.', function () { paint(); U.showArea(area); }));
+      'Tertiary. Alkyl groups are electron-donating: by induction, each one pushes a little electron density toward the C⁺, which spreads out ' +
+      'its positive charge and stabilizes it. More alkyl groups, more help: methyl < primary < secondary < tertiary.', function () { paint(); U.showArea(area); }));
     stage().appendChild(area);
     var ORDER = ['cat0', 'cat1', 'cat2', 'cat3'];
     function paint() {
@@ -254,7 +259,7 @@
           var plus = c.atoms.filter(function (a) { return Chem.isCation(c, a.id); })[0].id;
           if (id === want) {
             got.push(id); U.persist();
-            if (got.length === 4) U.complete('Methyl < 1° < 2° < 3°: the more carbons on the C⁺, the more hyperconjugation, the more stable.');
+            if (got.length === 4) U.complete('Methyl < 1° < 2° < 3°: the more electron-donating alkyl groups on the C⁺, the more stable it is.');
             else U.say('Right: ' + Chem.degree(c, plus) + ' carbon' + (Chem.degree(c, plus) === 1 ? '' : 's') + ' on the C⁺. Next least stable?', 'good');
             paint();
           } else U.say('Not yet: count the carbons bonded to the C⁺ (here ' + Chem.degree(c, plus) + '). Fewer carbons, less stable: start with the fewest.', 'bad');
@@ -262,7 +267,7 @@
         cards.appendChild(b);
       });
       area.appendChild(h('div', { class: 'work' }, [U.panel('Least stable first', 'tap them in order', [cards]),
-        U.panel('Hyperconjugation', 'Klein Figure 6.29', [h('div', { class: 'mol-wrap' }, [hyperPic()])])]));
+        U.panel('Alkyl groups are electron-donating', 'induction', [h('div', { class: 'mol-wrap' }, [inductionPic()])])]));
     }
     paint();
   };

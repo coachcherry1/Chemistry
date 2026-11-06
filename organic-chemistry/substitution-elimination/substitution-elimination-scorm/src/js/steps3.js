@@ -25,15 +25,15 @@
   /* Why a result does not belong in a cell. */
   function reason(deg, fn, got) {
     var sn2 = /SN2/.test(got), sn1 = /SN1/.test(got), e2 = /E2/.test(got);
-    if (deg === 3 && sn2) return 'A 3° carbon is too crowded for back-side attack: never SN2.';
+    if (deg === 3 && sn2) return 'At a 3° carbon, steric hindrance blocks back-side attack: never SN2.';
     if (fn === 'weak' && deg < 3) return 'A weak nucleophile and weak base cannot do SN2 or E2, and a 1° or 2° carbocation is too unstable to form readily. Klein marks these ✗.';
     if (fn === 'weak') return 'A weak nucleophile and weak base waits for the carbocation: SN1, with some E1.';
     if (fn === 'base' && (sn2 || sn1)) return 'A base only is a weak nucleophile, so it cannot substitute. It eliminates: E2.';
     if (fn === 'nuc' && e2) return 'A nucleophile only is a weak base, so it substitutes.' + (deg === 3 ? ' At a 3° carbon it cannot do SN2, so it waits for the carbocation: SN1.' : '');
     if (fn === 'nuc' && deg < 3 && sn1) return 'A strong nucleophile at a 1° or 2° carbon attacks the back side directly: SN2.';
     if (fn === 'nuc' && deg === 3) return 'A nucleophile only cannot do SN2 at a 3° carbon, and it is too weak a base for E2: it waits for the carbocation, SN1.';
-    if (fn === 'both' && deg === 1) return 'At a 1° carbon there is little crowding, so a strong nucleophile and strong base mostly substitutes: SN2, with some E2. (t-BuOK is the exception: sterically hindered, it mostly eliminates.)';
-    if (fn === 'both' && deg === 2) return 'At a 2° carbon the crowding favours acting as a base: E2 is major, SN2 minor.';
+    if (fn === 'both' && deg === 1) return 'At a 1° carbon there is little steric hindrance, so a strong nucleophile and strong base mostly substitutes: SN2, with some E2. (t-BuOK is the exception: sterically hindered, it mostly eliminates.)';
+    if (fn === 'both' && deg === 2) return 'At a 2° carbon, steric hindrance at the back side favours acting as a base: E2 is major, SN2 minor.';
     if (fn === 'both' && deg === 3) return 'No SN2 at a 3° carbon, and a strong base does not wait for a carbocation: E2.';
     if (got === 'No reaction') return 'This reagent can react here. What can it do (its function), and what does the carbon allow?';
     return 'Not this one. What can the reagent do, and does the carbon allow back-side attack or a stable carbocation?';
@@ -121,7 +121,7 @@
     if (sn2 && sn2.mol.atoms.some(function (a, i) { return a.parity && Mol.rs(sn2.mol, i); })) {
       add(React.substitute(m, key, 'ret'), 'SN2 is back-side attack, so the configuration inverts. The product with the same arrangement as the substrate does not form.');
     }
-    if (!hasSub && React.REAGENTS[key].species) add(React.substitute(m, key, 'inv'), r.deg === 3 ? 'A 3° carbon cannot be attacked from the back side, and a strong base does not wait for a carbocation: no substitution.' : 'This reagent is a weak nucleophile: no substitution.');
+    if (!hasSub && React.REAGENTS[key].species) add(React.substitute(m, key, 'inv'), r.deg === 3 ? 'Steric hindrance: a 3° carbon cannot be attacked from the back side, and a strong base does not wait for a carbocation: no substitution.' : 'This reagent is a weak nucleophile: no substitution.');
     if (!hasEl) {
       var z = React.e2Products(m, 'NaOEt').filter(function (p) { return p.role === 'major'; })[0];
       if (z) add(z.mol, 'This reagent is a weak base, so there is no elimination.');
@@ -167,6 +167,7 @@
     var area = h('div');
     stage().appendChild(area);
     var k = pr.k || 0;
+    var playNext = false;
     function allDone() { return pr.s.every(function (x) { return x >= 4; }); }
     function paint() {
       area.innerHTML = '';
@@ -217,9 +218,9 @@
           if (ROLES[v] !== cards[ci].role) { U.say(roleWhy(cards[ci], key), 'bad'); return; }
         }
         pr.s[k] = Math.max(pr.s[k], k === 0 ? 3 : 4); U.persist();
-        U.say(k === 0 ? 'All right. Last part: draw the mechanism of the major product.' : 'All right.', 'good');
+        U.say(k === 0 ? 'All right. Last part: draw the mechanism of the major product.' : 'All right. Watch the major product form.', 'good');
         if (allDone()) U.complete('All five problems done.');
-        paint();
+        playNext = k > 0; paint(); playNext = false;
       } });
       sub(2, 'Step 3: the products. Mark each one major, minor, or not formed.', [row, st === 2 ? h('div', { class: 'btnrow' }, [chk]) : null]);
       /* 4: arrows for the first problem's major product */
@@ -238,15 +239,53 @@
           var ab = U.arrowBox(Mech.e2(m, key, beta), pr.a, 'x', function (fresh) {
             if (pr.s[0] < 4) { pr.s[0] = 4; U.persist(); }
             if (allDone()) U.complete('All five problems done.');
-            /* the next problem opens */
-            if (fresh) setTimeout(paint, 0);
-          });
+            /* the next problem opens; this one plays */
+            if (fresh) setTimeout(function () { playNext = true; paint(); playNext = false; }, 0);
+          }, { autoplay: playNext });
           body.push(ab.node);
         }
         sub(3, 'The mechanism of the major product, ' + maj.name, body);
+      } else if (st >= 4) {
+        /* the other problems: watch the major product form */
+        var mj = r.products.filter(function (p) { return p.role === 'major'; })[0];
+        var cb = U.chainBox(U.scenesFor(m, key, mj));
+        sub(3, 'Watch it happen: ' + mj.mech + ', the major product, ' + mj.name, [cb.node]);
+        if (playNext) setTimeout(cb.play, 450);
       }
     }
     paint();
+  };
+
+  /* Every mechanism the activity plays, with the product its last step
+     must make (tools/validate.js and tools/walkthrough.js check them). */
+  App.playedScenes = function () {
+    var out = [];
+    function major(m, key) { return React.predict(m, key).products.filter(function (p) { return p.role === 'major'; })[0]; }
+    function add(label, scenes, want) { out.push({ label: label, scenes: scenes, want: want }); }
+    var bbR = mol('bbR'), tb = mol('tBuBr');
+    add('sn2arrows', [Mech.sn2(bbR, 'NaSH')], Name.name(React.substitute(bbR, 'NaSH', 'inv')));
+    add('e2arrows', [Mech.e2(tb, 'NaOEt')], major(tb, 'NaOEt').name);
+    var cat = React.cation(tb), ox = React.oxonium(cat, cat.plus, 'EtOH');
+    add('sn1arrows', [Mech.loss(tb), Mech.attack(cat, cat.plus, 'EtOH'), Mech.protonOff(ox.mol, ox.o, ox.h, 'EtOH')], major(tb, 'EtOH').name);
+    ['b3mb', 'b22dmb'].forEach(function (id) {
+      var cp = React.cationPath(mol(id));
+      add('shift ' + id, [Mech.shift(cp.first, cp.c, cp.shift)], null);
+    });
+    var bmb = mol('bmb'), c2 = React.cation(bmb);
+    var zb = c2.carbonsOn(c2.plus).filter(function (x) { return c2.hCount(x.j) === 2; })[0].j;
+    var e1 = React.e1Products(bmb).filter(function (p) { return p.role === 'major'; })[0];
+    add('e1', [Mech.loss(bmb), Mech.e1(c2, c2.plus, zb, 'EtOH')], Name.name(e1.mol));
+    App.STEPS.filter(function (st) { return st.kind === 'regio'; })[0].mols.forEach(function (id) {
+      App.regioPlays(mol(id)).forEach(function (x) {
+        if (x.sc.title !== 'E2') out.push({ label: 'regio ' + id + ' ' + x.key + ' is not an E2', scenes: [x.sc], want: '(an E2)' });
+        add('regio ' + id + ' ' + x.key, [x.sc], x.want);
+      });
+    });
+    App.STEPS.filter(function (st) { return st.kind === 'predict'; })[0].problems.forEach(function (pb, i) {
+      var mm = mol(pb[0]), mj = major(mm, pb[1]);
+      add('predict ' + (i + 1), U.scenesFor(mm, pb[1], mj), mj.name);
+    });
+    return out;
   };
 
   App.RESULTS = RESULTS;

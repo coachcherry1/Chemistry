@@ -8,7 +8,7 @@
  * Every step is opened at each window size, answering every prediction. Then
  * whatever a student works with must be on screen at once, after scrolling
  * the first of it to the top of the window:
- *   - each 3D model, its turn buttons, the drawing beside it and the rule and
+ *   - each 3D model, its spear buttons, the drawing beside it and the rule and
  *     R/S buttons under that drawing;
  *   - each tray of tiles or words and the drawing or table it fills;
  *   - each drawing whose atoms or carbons are clicked;
@@ -40,7 +40,7 @@ function groups() {
     const row = c.closest('.work') || c.closest('.panel');
     const els = [c];
     const own = c.closest('.panel');
-    const bar = own && own.querySelector('.turnbar');
+    const bar = own && own.querySelector('.spearbar, .turnbar');
     if (bar && vis(bar)) els.push(bar);
     if (row) {
       const draw = [...row.querySelectorAll('svg.mol, svg.newman')].filter(vis)[0];

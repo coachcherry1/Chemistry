@@ -1,0 +1,450 @@
+ 2017
+
+
+
+
+AP Chemistry
+Free-Response Questions
+
+
+
+
+© 2017 The College Board. College Board, Advanced Placement Program, AP, AP Central, and the acorn logo
+are registered trademarks of the College Board. Visit the College Board on the Web: www.collegeboard.org.
+AP Central is the official online home for the AP Program: apcentral.collegeboard.org.
+-2-
+                                     AP® CHEMISTRY EQUATIONS AND CONSTANTS
+
+Throughout the exam the following symbols have the definitions specified unless otherwise noted.
+                     L, mL =           liter(s), milliliter(s)          mm Hg    =   millimeters of mercury
+                     g     =           gram(s)                          J, kJ    =   joule(s), kilojoule(s)
+                     nm    =           nanometer(s)                     V        =   volt(s)
+                     atm   =           atmosphere(s)                    mol      =   mole(s)
+
+ATOMIC STRUCTURE
+                                                                                   E = energy
+   E = hν                                                                          ν = frequency
+   c = λν                                                                          λ = wavelength
+                                                                       Planck’s constant, h = 6.626 × 10−34 J s
+                                                                          Speed of light, c = 2.998 × 108 m s−1
+                                                                       Avogadro’s number = 6.022 × 1023 mol−1
+                                                                         Electron charge, e = −1.602 × 10−19 coulomb
+
+
+EQUILIBRIUM
+
+        [C]c [D]d
+ Kc =             , where a A + b B R c C + d D                                Equilibrium Constants
+        [A]a [B]b
+                                                                               Kc (molar concentrations)
+        (PC )c (PD )d
+ Kp =                                                                          Kp (gas pressures)
+        (PA )a (PB )b                                                          Ka (weak acid)
+                     
+ Ka = [H ][A ]                                                                 Kb (weak base)
+             [HA]                                                              Kw (water)
+                           
+ Kb = [OH ][HB ]
+                 [B]
+ Kw = [H ][OH−] = 1.0 × 10−14 at 25°C
+             +
+
+    = K a × Kb
+ pH = −log[H+] , pOH = −log[OH−]
+  14 = pH + pOH
+                                 
+ pH = pKa + log [A ]
+                           [HA]
+ pKa = −logKa , pKb = −logKb
+
+
+KINETICS
+
+   ln[A] t − ln[A] 0 = − kt                                                       k = rate constant
+                                                                                   t = time
+        1  1                   = kt                                            t ½ = half-life
+     >A @t       >A @0
+                          t ½ = 0.693
+                                       k
+
+
+
+
+                                                                 -3-
+GASES, LIQUIDS, AND SOLUTIONS
+                                                                            P = pressure
+                                                                            V = volume
+               PV = nRT
+                                                                            T = temperature
+                                                moles A                     n = number of moles
+               PA = Ptotal × XA, where XA =
+                                              total moles                   m = mass
+             Ptotal = PA + PB + PC + . . .                                  M = molar mass
+                                                                            D = density
+                n = m                                                      KE = kinetic energy
+                      M
+                                                                             v = velocity
+                K = °C + 273
+                                                                            A = absorbance
+                D= m                                                        a = molar absorptivity
+                      V
+                                                                            b = path length
+KE per molecule = 1 mv 2                                                    c = concentration
+                      2
+    Molarity, M = moles of solute per liter of solution        Gas constant, R = 8.314 J mol−1 K−1
+
+                A = abc                                                        = 0.08206 L atm mol−1 K−1
+                                                                               = 62.36 L torr mol−1 K−1
+                                                                        1 atm = 760 mm Hg = 760 torr
+                                                                          STP = 273.15 K and 1.0 atm
+                                                               Ideal gas at STP = 22.4 L molí1
+
+THERMODYNAMICS / ELECTROCHEMISTRY
+                                                                                q = heat
+   q = mc∆T                                                                    m = mass
+                                                                                c = specific heat capacity
+ ∆S° = Ç SD products  Ç SD reactants                                           T = temperature
+                                                                               S° = standard entropy
+ ∆H° =   Ç DHfD products  Ç DHfD reactants                                    H° = standard enthalpy
+                                                                               G° = standard Gibbs free energy
+ ∆G° =   Ç DGfD products  Ç DGfD reactants                                     n = number of moles
+                                                                               E° = standard reduction potential
+ ∆G° = ∆H° − T∆S°                                                               I = current (amperes)
+     = −RT ln K                                                                 q = charge (coulombs)
+     = − n E°                                                                    t = time (seconds)
+         q                                                    Faraday’s constant,  = 96,485 coulombs per mole
+   I =
+         t                                                                                    of electrons
+                                                                                        1 joule
+                                                                             1 volt =
+                                                                                      1 coulomb
+
+
+
+
+                                                        -4-
+                       2017 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+                                                    CHEMISTRY
+                                                    Section II
+                                                   7 Questions
+                                            Time - 1 hour and 45 minutes
+
+                        YOU MAY USE YOUR CALCULATOR FOR THIS SECTION.
+
+Directions: Questions 1–3 are long free-response questions that require about 23 minutes each to answer and are
+worth 10 points each. Questions 4–7 are short free-response questions that require about 9 minutes each to answer
+and are worth 4 points each.
+Write your response in the space provided following each question. Examples and equations may be included in
+your responses where appropriate. For calculations, clearly show the method used and the steps involved in arriving
+at your answers. You must show your work to receive credit for your answer. Pay attention to significant figures.
+
+                                       CS2(g) + 3 Cl2(g) → CCl4(g) + S2Cl2(g)
+
+1. Carbon tetrachloride, CCl4(g), can be synthesized according to the reaction represented above. A chemist runs
+   the reaction at a constant temperature of 120°C in a rigid 25.0 L container.
+
+    (a) Chlorine gas, Cl2(g), is initially present in the container at a pressure of 0.40 atm.
+          (i) How many moles of Cl2(g) are in the container?
+         (ii) How many grams of carbon disulfide, CS2(g), are needed to react completely with the Cl2(g) ?
+
+    (b) At 30°C the reaction is thermodynamically favorable, but no reaction is observed to occur. However, at
+        120°C, the reaction occurs at an observable rate.
+          (i) Explain how the higher temperature affects the collisions between the reactant molecules so that the
+              reaction occurs at an observable rate at 120°C.
+         (ii) The graph below shows a distribution for the collision energies of reactant molecules at 120°C. Draw
+              a second curve on the graph that shows the distribution for the collision energies of reactant molecules
+              at 30°C.
+
+
+
+
+                                                   © 2017 The College Board.
+                                  Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                         GO ON TO THE NEXT PAGE.
+                                                            -5-
+                   2017 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+(c) S2Cl2 is a product of the reaction.
+     (i) In the box below, complete the Lewis electron-dot diagram for the S2Cl2 molecule by drawing in all of
+         the electron pairs.
+
+
+
+
+                                          Cl        S         S      Cl
+
+
+     (ii) What is the approximate value of the Cl−S−S bond angle in the S2Cl2 molecule that you drew in
+          part (c)(i) ? (If the two Cl−S−S bond angles are not equal, include both angles.)
+
+(d) CCl4(g) can also be produced by reacting CHCl3(g) with Cl2(g) at 400°C, as represented by the equation
+    below.
+                                CHCl3(g) + Cl2(g) → CCl4(g) + HCl(g)
+
+    At the completion of the reaction a chemist successfully separates the CCl4(g) from the HCl(g) by cooling
+    the mixture to 70°C, at which temperature the CCl4(g) condenses while the HCl(g) remains in the gaseous
+    state.
+     (i) Identify all types of intermolecular forces present in HCl(l).
+    (ii) What can be inferred about the relative strengths of the intermolecular forces in CCl4(l) and HCl(l) ?
+         Justify your answer in terms of the information above.
+
+
+
+
+                                               © 2017 The College Board.
+                              Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                     GO ON TO THE NEXT PAGE.
+                                                        -6-
+                      2017 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+2. Answer the following questions about the isomers fulminic acid and isocyanic acid.
+
+   Two possible Lewis electron-dot diagrams for fulminic acid, HCNO, are shown below.
+
+
+
+   (a) Explain why the diagram on the left is the better representation for the bonding in fulminic acid. Justify your
+       choice based on formal charges.
+
+   Fulminic acid can convert to isocyanic acid according to the equation below.
+
+                                              HCNO(g) R HNCO(g)
+                                            fulminic acid     isocyanic acid
+
+
+                         Fulminic Acid                                           Isocyanic Acid
+
+
+
+
+   (b) Using the Lewis electron-dot diagrams of fulminic acid and isocyanic acid shown in the boxes above and the
+       table of average bond enthalpies below, determine the value of 'H° for the reaction of HCNO(g) to form
+       HNCO(g).
+
+                                 Enthalpy                         Enthalpy                   Enthalpy
+                      Bond                         Bond                          Bond
+                                 (kJ/mol)                         (kJ/mol)                   (kJ/mol)
+                      N−O          201             C=N              615          H−C           413
+                      C=O          745             C≡N              891          H−N           391
+
+
+   (c) A student claims that ΔS° for the reaction is close to zero. Explain why the student’s claim is accurate.
+
+   (d) Which species, fulminic acid (HCNO) or isocyanic acid (HNCO), is present in higher concentration at
+       equilibrium at 298 K? Justify your answer in terms of thermodynamic favorability and the equilibrium
+       constant.
+
+   The ammonium salt of isocyanic acid is a product of the decomposition of urea, CO(NH2)2 , represented below.
+                                    CO(NH2)2(aq) R NH4+(aq) + OCN−(aq)
+
+
+
+
+                                                  © 2017 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                                            -7-
+                   2017 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+A student studying the decomposition reaction runs the reaction at 90°C. The student collects data on the
+concentration of urea as a function of time, as shown by the data table and the graph below.
+
+
+
+
+(e) The student proposes that the rate law is rate = k[CO(NH2)2].
+     (i) Explain how the data support the student’s proposed rate law.
+     (ii) Using the proposed rate law and the student’s results, determine the value of the rate constant, k.
+          Include units with your answer.
+
+(f) The student learns that the decomposition reaction was run in a solution with a pH of 13. Briefly describe
+    an experiment, including the initial conditions that you would change and the data you would gather, to
+    determine whether the rate of the reaction depends on the concentration of OH −(aq).
+
+
+
+
+                                               © 2017 The College Board.
+                              Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                     GO ON TO THE NEXT PAGE.
+                                                        -8-
+                      2017 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+                                                           → 2 NO(g)
+                                             N2(g) + O2(g) ←
+3. At high temperatures, N2(g) and O2(g) can react to produce nitrogen monoxide, NO(g), as represented by the
+   equation above.
+
+   (a) Write the expression for the equilibrium constant, Kp , for the forward reaction.
+   (b) A student injects N2(g) and O2(g) into a previously evacuated, rigid vessel and raises the temperature of
+       the vessel to 2000°C. At this temperature the initial partial pressures of N2(g) and O2(g) are 6.01 atm and
+       1.61 atm, respectively. The system is allowed to reach equilibrium. The partial pressure of NO(g) at
+       equilibrium is 0.122 atm. Calculate the value of Kp .
+   Nitrogen monoxide, NO(g), can undergo further reactions to produce acids such as HNO2 , a weak acid with a
+   Ka of 4.0 × 10−4 and a pKa of 3.40.
+   (c) A student is asked to make a buffer solution with a pH of 3.40 by using 0.100 M HNO2(aq) and
+       0.100 M NaOH(aq).
+        (i) Explain why the addition of 0.100 M NaOH(aq) to 0.100 M HNO2(aq) can result in the formation of
+            a buffer solution. Include the net ionic equation for the reaction that occurs when the student adds
+            the NaOH(aq) to the HNO2(aq).
+        (ii) Determine the volume, in mL, of 0.100 M NaOH(aq) the student should add to 100. mL of
+             0.100 M HNO2(aq) to make a buffer solution with a pH of 3.40. Justify your answer.
+   (d) A second student makes a buffer by dissolving 0.100 mol of NaNO2(s) in 100. mL of 1.00 M HNO2(aq).
+       Which is more resistant to changes in pH when a strong acid or a strong base is added, the buffer made by
+       the second student or the buffer made by the first student in part (c) ? Justify your answer.
+
+   (e) A new buffer is made using HNO2(aq) as one of the ingredients. A particulate representation of a small
+       representative portion of the buffer solution is shown below. (Cations and water molecules are not shown.)
+       Is the pH of the buffer represented in the diagram greater than, less than, or equal to 3.40 ? Justify your
+       answer.
+
+
+
+
+                                                  © 2017 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                                           -9-
+                      2017 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+
+
+
+4. A student investigates various dyes using paper chromatography. The student has samples of three pure dyes,
+   labeled A, B, and C, and an unknown sample that contains one of the three dyes. The student prepares the
+   chromatography chambers shown above on the left by putting a drop of each dye at the indicated position on
+   the chromatography paper (a polar material) and standing the paper in a nonpolar solvent. The developed
+   chromatograms are shown above on the right.
+
+   (a) Which dye (A, B, or C) is the least polar? Justify your answer in terms of the interactions between the dyes
+       and the solvent or between the dyes and the paper.
+   (b) Which dye is present in the unknown sample? Justify your answer.
+
+
+
+
+                                                 © 2017 The College Board.
+                                Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                       GO ON TO THE NEXT PAGE.
+                                                         -10-
+                      2017 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+                                2 C3H7OH(l) + 9 O2(g) → 6 CO2(g) + 8 H2O(g)
+
+5. A student performs an experiment to determine the enthalpy of combustion of 2-propanol, C3H7OH(l), which
+   combusts in oxygen according to the equation above. The student heats a sample of water by burning some of
+   the C3H7OH(l) that is in an alcohol burner, as represented below. The alcohol burner uses a wick to draw liquid
+   up into the flame. The mass of C3H7OH(l) combusted is determined by weighing the alcohol burner before and
+   after combustion.
+
+
+
+
+   Data from the experiment are given in the table below.
+
+
+                                Mass of C3H7OH(l) combusted                  0.55 g
+                                      Mass of water heated                125.00 g
+                                   Initial temperature of water            22.0°C
+                                   Final temperature of water              51.1°C
+                                     Specific heat of water               4.18 J/(g·°C)
+
+
+   (a) Calculate the magnitude of the heat energy, in kJ, absorbed by the water. (Assume that the energy released
+       from the combustion is completely transferred to the water.)
+
+   (b) Based on the experimental data, if one mole of C3H7OH(l) is combusted, how much heat, in kJ, is released ?
+       Report your answer with the correct number of significant figures.
+   (c) A second student performs the experiment using the same mass of water at the same initial temperature.
+       However, the student uses an alcohol burner containing C3H7OH(l) that is contaminated with water, which
+       is miscible with C3H7OH(l). The difference in mass of the alcohol burner before and after the combustion in
+       this experiment is also 0.55 g. Would the final temperature of the water in the beaker heated by the
+       alcohol burner in this experiment be greater than, less than, or equal to the final temperature of the water
+       in the beaker in the first student’s experiment? Justify your answer.
+
+
+
+
+                                                 © 2017 The College Board.
+                                Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                       GO ON TO THE NEXT PAGE.
+                                                         -11-
+                      2017 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+6. Answer the following questions about Mg(OH)2 . At 25°C, the value of the solubility product constant, Ksp , for
+   Mg(OH)2(s) is 1.8 × 10−11 .
+
+   (a) Calculate the number of grams of Mg(OH)2 (molar mass 58.32 g/mol) that is dissolved in 100. mL of a
+       saturated solution of Mg(OH)2 at 25°C.
+
+   (b) The energy required to separate the ions in the Mg(OH)2 crystal lattice into individual Mg2+(g) and OH−(g)
+       ions, as represented in the table below, is known as the lattice energy of Mg(OH)2(s). As shown in the table,
+       the lattice energy of Sr(OH)2(s) is less than the lattice energy of Mg(OH)2(s). Explain why in terms of
+       periodic properties and Coulomb’s law.
+
+
+                                         Reaction                      Lattice Energy (kJ/mol)
+                         Mg(OH)2(s) → Mg2+(g) + 2 OH−(g)                          2900
+                          Sr(OH)2(s) → Sr2+(g) + 2 OH−(g)                         2300
+
+
+
+
+                                                  © 2017 The College Board.
+                                 Visit the College Board on the Web: www.collegeboard.org.
+
+                                                                                        GO ON TO THE NEXT PAGE.
+                                                          -12-
+                       2017 AP® CHEMISTRY FREE-RESPONSE QUESTIONS
+
+7. A student wants to determine the concentration of H2O2 in a solution of H2O2(aq). The student can use one of
+   two titrants, either dichromate ion, Cr2O72–(aq), or cobalt(II) ion, Co2+(aq). The balanced chemical equations
+   for the two titration reactions are shown below.
+
+       Dichromate as titrant: Cr2O72–(aq) + 3 H2O2(aq) + 8 H+(aq) → 2 Cr3+(aq) + 3 O2(g) + 7 H2O(l)
+       Cobalt(II) as titrant:        2 Co2+(aq) + H2O2(aq) + 2 H+(aq) → 2 Co3+(aq) + 2 H2O(l)
+
+   The half-reactions and the E° values for the systems related to the titrations above are given in the following
+   table.
+
+                                                                                                E° (V)
+                                              Half-Reaction
+                                                                                               at 298 K
+                                      Co3+(aq) + e− → Co2+(aq)                                  1.84
+                                H2O2(aq) + 2 H+(aq) + 2 e− → 2 H2O(l)                           1.77
+                     Cr2O72−(aq) + 14 H+(aq) + 6 e− → 2 Cr3+(aq) + 7 H2O(l)                     1.33
+                                 O2(g) + 2 H+(aq) + 2 e− → H2O2(aq)                             0.70
+
+   (a) Use the information in the table to calculate the following.
+         (i) E° for the reaction between Cr2O72–(aq) and H2O2(aq) at 298 K
+        (ii) E° for the reaction between Co2+(aq) and H2O2(aq) at 298 K
+
+   (b) Based on the calculated values of E°, the student must choose the titrant for which the titration reaction is
+       thermodynamically favorable at 298 K.
+         (i) Which titrant should the student choose? Explain your reasoning.
+        (ii) Calculate the value of ΔG°, in kJ/molrxn , for the reaction between the chosen titrant and H2O2(aq).
+
+
+
+
+                                                           STOP
+
+                                                     END OF EXAM
+
+
+
+
+                                                    © 2017 The College Board.
+                                   Visit the College Board on the Web: www.collegeboard.org.
+
+
+
+                                                            -13-
+

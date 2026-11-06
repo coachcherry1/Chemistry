@@ -1,5 +1,7 @@
 # Resonance — Structures and the Hybrid
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/ap-chemistry/bonding/resonance-scorm/src/index.html>
+
 A SCORM 1.2 activity for Schoology, the follow-up to **Lewis Structures — The 5 Rules** and built the
 same way. Students use the same 5 rules and the same builder; this time Rule 5 has a choice to make.
 

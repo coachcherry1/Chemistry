@@ -1,5 +1,7 @@
 # Ionic or Covalent? — Names & Formulas
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/chemistry/nomenclature/ionic-covalent-scorm/src/index.html>
+
 A SCORM 1.2 activity for Schoology. It follows the ionic-naming activity and adds covalent
 (molecular) compounds. The emphasis is the **decision** of which naming rules to use:
 

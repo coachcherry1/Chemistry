@@ -1,0 +1,674 @@
+  2026
+
+
+
+
+AP Chemistry
+             ®
+
+
+
+
+Free-Response Questions
+
+
+
+
+© 2026 College Board. College Board, Advanced Placement, AP, AP Central, and the acorn logo are registered
+trademarks of College Board. Visit College Board on the web: collegeboard.org.
+AP Central is the official online home for the AP Program: apcentral.collegeboard.org.
+AP CHEMISTRY 2026 n FREE-RESPONSE QUESTIONS
+
+
+                                                     CHEMISTRY
+                                                      SECTION II
+                                             TIME – 1 HOUR AND 45 MINUTES
+
+
+
+
+Directions:
+
+Section II has 7 questions and lasts 1 hour and 45 minutes.
+
+You may use the available paper for scratch work and planning, but only work written in the
+free-response booklet will be scored. Any work done on scratch paper will not be scored. Place
+your answers in the space provided for each part in the booklet (e.g., Part A, Part B, Part C). Label
+sub-parts (e.g., i., ii., iii.) as needed. Use a pencil or a pen with black or dark blue ink to write your
+responses.
+
+For each question, show your work for each part in the space provided for that part in the free-
+response booklet. Examples and equations may be included in your responses where appropriate.
+For calculations, clearly show the method used and the steps involved in arriving at your answers.
+You must show your work to receive credit for your answer. Pay attention to significant figures.
+
+A calculator is allowed in this section. You may use a handheld four-function, scientific, or graphing
+calculator, or the calculator available in this application. Reference information, including a
+periodic table and lists of equations and constants, can be used throughout the exam. A digital
+version is available in this application.
+
+You may pace yourself as you answer the questions in this section, or you may use these optional
+timing recommendations:
+
+Questions 1 through 3 are long free-response questions. It is suggested that you spend about 23
+minutes on each of those questions. Questions 4 through 7 are short free-response questions. It is
+suggested that you spend about 9 minutes on each of those questions.
+
+You can go back and forth between questions in this section until time expires. The clock will turn
+red when 5 minutes remain - the proctor will not give you any time updates or warnings.
+
+
+
+
+   Note: This exam was originally administered digitally. It is presented here in a format optimized for
+   teacher and student use in the classroom.
+
+   During the AP Exam administration, students have access to reference information. To see the
+   reference information for this course, please visit AP Central:
+   https://apcentral.collegeboard.org/exam-administration-ordering-scores/administering-exams/
+   subject-specific/reference-information
+
+© 2026 College Board.
+Visit College Board on the web: collegeboard.org.         2
+AP CHEMISTRY 2026 n FREE-RESPONSE QUESTIONS
+
+
+
+    Question 1
+
+
+ 1. A student performs a calorimetry experiment with KCl .
+
+    Part A
+                          +
+    Consider the K ion in KCl .
+                                                                                                +
+           i. Write the complete ground-state electron configuration for the potassium ion, K .
+                                                           +
+          ii. Which has the larger radius, the K ion or the K atom? Explain your reasoning using
+              principles of atomic structure.
+
+    The following information applies to parts B, C, D, and E.
+
+    A student performs an experiment to determine the enthalpy of solution, DHsoln , of KCl . The
+    student places water in a calorimeter, measures the initial temperature, adds KCl (s) , and stirs
+    until the KCl dissolves completely. The temperature is continuously monitored during the
+    experiment. Data from the experiment are given in the following table.
+
+
+                                         Mass of water                   97.5 g
+                                         Mass of KCl (s)                 6.80 g
+                                         Initial temperature of water    24.5cC
+                                         Final temperature of solution   21.1cC
+
+
+    Part B
+
+    Describe how the student can use the temperature readings during the experiment to
+    determine when the dissolution is complete.
+
+    Part C
+
+    Use the data in the table to do the following.
+
+           i. Calculate the magnitude of the thermal energy, q, in joules, transferred during the
+              dissolution. Show the work that leads to your answer. (Assume that the solution has a
+              specific heat capacity of 3.95 J/ (g·cC) .)
+          ii. Calculate the value of the molar enthalpy of solution, DHsoln , in kJ/mol , for KCl given
+              that 0.0912 mol of KCl dissolved. Show the work that leads to your answer. Include the
+              sign with your answer.
+
+    Part D
+
+    The calorimeter is not perfectly insulated. Would this cause the magnitude of DHsoln calculated
+    in part C (ii) to be greater than, less than, or equal to the accepted value? Justify your answer.
+
+© 2026 College Board.
+Visit College Board on the web: collegeboard.org.              3
+AP CHEMISTRY 2026 n FREE-RESPONSE QUESTIONS
+
+
+
+    Part E
+
+    The student performs a second experiment using the same mass of water but 6.80 g of RbCl (s)
+    instead of 6.80 g of KCl (s) . The magnitude of the molar enthalpy of solution, DHsoln , of RbCl is
+    approximately equal to that of KCl .
+
+    Is the magnitude of DT in the RbCl experiment greater than, less than, or equal to that in the
+    KCl experiment? Justify your answer. (Assume that the specific heat capacities of the solutions
+    are equal.)
+
+    Part F
+
+     RbCl has a Ksp of 57 at 20cC .
+           i. Write the net ionic equation for the dissolution of RbCl in pure water.
+          ii. Calculate the molar solubility of RbCl in a saturated solution at 20cC . Show the work
+              that leads to your answer.
+         iii. A second saturated solution is prepared by dissolving RbCl (s) in 1.0 M KCl (aq) at 20cC
+              instead of in pure water. Will the molar solubility of RbCl in 1.0 M KCl (aq) be greater
+              than, less than, or equal to the molar solubility calculated in part F (ii)? Justify your
+              answer.
+
+
+
+
+© 2026 College Board.
+Visit College Board on the web: collegeboard.org.    4
+AP CHEMISTRY 2026 n FREE-RESPONSE QUESTIONS
+
+
+
+    Question 2: Version J
+
+
+ 2. Answer the following questions about the chromate ion, CrO 42- , and the dichromate ion,
+    Cr2 O72- .
+
+    Part A
+
+    The bonds between chromium and oxygen in CrO 42- can be represented as covalent bonds. One
+    possible Lewis diagram for the CrO 42- ion is shown in Figure 1.
+
+                                                    Figure 1
+
+
+
+
+           i. Based on VSEPR theory, predict the molecular geometry of the CrO 42- ion.
+          ii. On Figure 2, draw a complete Lewis diagram for a resonance structure of CrO 42- that
+              results in a formal charge of zero on two of the O atoms and a formal charge of -1 on the
+              other two O atoms. Your diagram should contain the same number of valence electrons
+              as in Figure 1.
+
+                                                    Figure 2
+
+
+
+
+© 2026 College Board.
+Visit College Board on the web: collegeboard.org.      5
+AP CHEMISTRY 2026 n FREE-RESPONSE QUESTIONS
+
+
+
+    Part B
+
+    When reacted with a strong acid like HNO3 (aq) , CrO 42- ^aqh can be converted to Cr2 O72- ^aqh
+    and H 2 O (l) in a reversible reaction.
+
+           i. Write a balanced net ionic equation for the reaction between CrO 42- ^aqh and a strong
+              acid.
+          ii. Is the reaction a redox reaction? Justify your answer based on the oxidation number of
+              Cr .
+
+    The following information applies to parts C and D.
+
+    In acidic solutions, Cr2 O72- ^aqh reacts to form CrO3 ^aqh according to Equation 1.
+
+                         Equation 1: Cr2 O72 ^aqh + 2 H3 O ^aqh " 2 CrO3 ^aqh + 3 H 2 O ^ l h
+                                                    -           +
+
+
+
+    CrO3 ^aqh can be electrolyzed to plate objects with a thin layer of chromium metal according to
+    Equation 2.
+
+               Equation 2: CrO3 ^aqh + 6 H ^aqh + 6 e " Cr ^ s h + 3 H 2 O ^ l h
+                                                        +   -
+                                                                                      E% = -1.32 V
+
+
+    Part C
+
+    Is the reaction represented by Equation 2 thermodynamically favorable or unfavorable under
+    standard conditions? Justify your answer with a calculation of DGc. Show the work that leads
+    to your answer.
+
+    Part D
+
+    Calculate the number of grams of Cr (s) that could be plated onto the surface of a steel rod
+    when 15.0 A of current is applied for 3250 seconds. Show the work that leads to your answer.
+
+
+
+
+© 2026 College Board.
+Visit College Board on the web: collegeboard.org.           6
+AP CHEMISTRY 2026 n FREE-RESPONSE QUESTIONS
+
+
+
+    Part E
+
+    In a separate experiment, an iron wire is placed directly in a solution of 0.50 M Cr2 O72- ^aqh
+    with pH = 1.99 . The concentration of Cr2 O72- ^aqh remaining is recorded over time, and the
+    results are presented in Figure 3.
+
+                                                    Figure 3
+
+
+
+
+    Explain how the data in Figure 3 support the conclusion that the reaction is first order with
+    respect to Cr2 O72- .
+
+
+
+
+© 2026 College Board.
+Visit College Board on the web: collegeboard.org.      7
+AP CHEMISTRY 2026 n FREE-RESPONSE QUESTIONS
+
+
+
+    The following information applies to parts F and G.
+
+    The student creates a plot of ln 7Cr2 O72-A versus time for a trial with an initial concentration of
+     0.50 M Cr2 O72- ^aqh , as shown in Figure 4.
+
+                                                    Figure 4
+
+
+
+
+    Part F
+
+    Calculate the value of the rate constant, k, for the reaction. Report your answer in units of
+    min-1 . Show the work that leads to your answer.
+
+    Part G
+
+    The student then runs a second trial of the experiment under identical conditions but uses
+    an initial concentration of 0.25 M Cr2 O72- ^aqh instead of 0.50 M Cr2 O72- ^aqh . On Figure 4,
+    carefully draw the plot of ln 7Cr2 O72-A versus time that would be expected for the second
+    experiment. The point at time zero has already been plotted.
+
+
+
+
+© 2026 College Board.
+Visit College Board on the web: collegeboard.org.      8
+AP CHEMISTRY 2026 n FREE-RESPONSE QUESTIONS
+
+
+
+    Question 3: Version J
+
+    The following information applies to all parts.
+
+
+ 3. Nitrous acid, HNO 2 , is a weak acid that ionizes according to Equation 1.
+
+           Equation 1: HNO 2 ^aqh + H 2 O ^ l h E NO 2 ^aqh + H3 O ^aqh
+                                                        -        +
+                                                                          Ka = 5.6×10-4 at 298 K
+
+
+    Part A
+
+    Identify a conjugate acid-base pair in the equation. Be sure to clearly label which is the acid
+    and which is the base.
+
+    Part B
+
+    A solution of HNO 2 (aq) with an initial concentration of 0.125 M has a pH of 2.09.
+
+           i. Calculate the value of 8H3 O B in the solution. Show the work that leads to your answer.
+                                                    +
+
+          ii. Calculate 6HNO 2@ at equilibrium. Show the work that leads to your answer.
+
+    Part C
+
+    In an experiment, the solution of 0.125 M HNO 2 (aq) is heated to 333 K . The new
+    equilibrium concentrations are determined to be 6HNO 2@ = 0.114 M , 6NO 2 @ = 0.0109 M , and
+                                                                                   -
+
+    7H3 O+A = 0.0109 M .
+           i. Calculate the value of Ka for HNO 2 at 333 K . Show the work that leads to your answer.
+          ii. Is the reaction represented by Equation 1 endothermic or exothermic? Justify your
+              answer by comparing Ka values at 298 K and 333 K .
+
+
+
+
+© 2026 College Board.
+Visit College Board on the web: collegeboard.org.           9
+AP CHEMISTRY 2026 n FREE-RESPONSE QUESTIONS
+
+
+
+    The following information applies to parts D, E, and F.
+
+    In a second experiment, a student is given a bottle containing HNO 2 with an unknown molarity.
+    To determine the concentration of the HNO 2 (aq) in the bottle, the student titrates 35.0 mL of the
+    HNO 2 (aq) with 0.16 M NaOH (aq) at 298 K , which reacts according to Equation 2.
+
+                              Equation 2: HNO 2 ^aqh + OH ^aqh " NO 2 ^aqh + H 2 O ^ l h
+                                                           -           -
+
+
+
+    The results of the titration are summarized in Figure 1.
+
+                                                      Figure 1
+
+
+
+
+    Part D
+
+    Using Figure 1, identify the pH at the equivalence point.
+
+    Part E
+
+    Using Figure 1, calculate the molarity of HNO 2 (aq) in the bottle. Show the work that leads to
+    your answer.
+
+    Part F
+
+    Draw an X on Figure 1 to represent a point in the titration where 8HNO 2 B 2 8NO 2 B in the
+                                                                                           -
+
+    reaction mixture.
+
+
+
+
+© 2026 College Board.
+Visit College Board on the web: collegeboard.org.        10
+AP CHEMISTRY 2026 n FREE-RESPONSE QUESTIONS
+
+
+
+    Part G
+
+    Equilibrium constants at 298 K are shown in Table 1 for the acid ionization reaction
+    represented by Equation 1, Ka ; the autoionization of water, Kw ; and the neutralization reaction
+    represented by Equation 2, K2 .
+
+                                                           Table 1
+
+                                        Chemical Equation                       Equilibrium Constant
+
+                     HNO 2 ^aqh + H 2 O ^ l h E NO 2- ^aqh + H3 O+ ^aqh         Ka = 5.6 # 10-4
+
+                     H 2 O ^ l h + H 2 O ^ l h E H3 O+ ^aqh + OH- ^aqh          Kw = 1.0 # 10-14
+                     HNO 2 ^aqh + OH- ^aqh " NO 2- ^aqh + H 2 O ^ l h           K2 = ?
+
+    Calculate the value of K2 for Equation 2 at 298 K . Show the work that leads to your answer.
+
+    Part H
+
+    The student decides to repeat the experiment, this time using an indicator, and has access to the
+    indicators in Table 2.
+
+                                                           Table 2
+
+                  Indicator Name              Acid Color   pH Range of Color Change         Base Color
+
+                  Methyl orange                     Red               3.1–4.4                 Yellow
+
+                  Thymol blue                   Yellow                8.0–9.6                     Blue
+
+                  Clayton yellow                Yellow               12.2–13.2               Orange
+
+
+    The student conducts a second titration by adding two drops of methyl orange indicator to
+    35.0 mL of the HNO 2 (aq) solution and titrating the solution with 0.16 M NaOH (aq) until a color
+    change from red to yellow occurs.
+
+    The student claims that methyl orange was the best choice for the indicator. Do you agree or
+    disagree? Justify your answer.
+
+
+
+
+© 2026 College Board.
+Visit College Board on the web: collegeboard.org.            11
+AP CHEMISTRY 2026 n FREE-RESPONSE QUESTIONS
+
+
+
+    Question 4
+
+
+ 4. White phosphorus, P4 (g) , can decompose into P2 (g) at elevated temperatures. A balanced
+    chemical equation, K p expression, and Lewis diagrams for the chemical species involved in the
+    reaction are given.
+
+                                                                               ^ PP h2
+                                             P4 ^ g h E 2 P2 ^ g h         Kp = P2 = ?
+                                                                                  P4
+
+
+                                      Compound                        P4            P2
+
+
+
+
+                                      Lewis diagram
+
+
+
+
+    Part A
+
+    The average bond length in P4 molecules is 221 pm , whereas the average bond length in P2
+    molecules is 189 pm . Explain why the average bond length in P4 is greater than the average
+    bond length in P2 .
+
+    Part B
+
+    A sample of P4 (s) is placed in a sealed rigid container and heated to 1600. K , at which point
+    the initial partial pressure of P4 (g) is 0.470 atm . Some of the P4 (g) decomposes into P2 (g) as the
+    system reaches equilibrium. At equilibrium, the partial pressure of P2 (g) is determined to be
+    0.630 atm .
+    Calculate the value of the equilibrium constant, K p , for the reaction at 1600. K . Show the work
+    that leads to your answer.
+
+    Part C
+
+    The reaction is thermodynamically favorable under standard conditions only at temperatures
+    above 1500 K . A student claims that the reaction must be endothermic because it is favorable
+                                                                                       %
+    only at high temperatures. Do you agree or disagree? Justify your answer using DS rxn  and
+       %
+    DG rxn .
+
+
+
+
+© 2026 College Board.
+Visit College Board on the web: collegeboard.org.                    12
+AP CHEMISTRY 2026 n FREE-RESPONSE QUESTIONS
+
+
+
+    Question 5
+
+    The following information applies to parts A and B.
+
+
+ 5. The Lewis diagram of CBrClF2 is shown.
+
+
+
+
+    Part A
+
+    Which of the bonds in CBrClF2 ( C-Br , C-Cl , or C-F ) is the most polar? Justify your answer.
+
+    Part B
+
+    In a molecule of CBrClF2 , the F-C-F bond angle is 106.8c and the Br -C-Cl bond angle is 112.3c.
+    Explain the difference in bond angles using principles of atomic structure and VSEPR theory.
+
+    Part C
+
+    Lewis diagrams and boiling points for CBr4 and CBrClF2 are given in the following table.
+
+
+                                   Formula           CBr4             CBrClF2
+
+
+
+
+                                   Lewis diagram
+
+
+
+
+                                   Boiling point     463 K             269 K
+
+           i. Clearly identify all the intermolecular forces in pure CBr4 ^ l h and in pure CBrClF2 ^ l h .
+                   CBr4 ^ l h :
+                   CBrClF2 ^ l h :
+          ii. In terms of the relative strengths of all the intermolecular forces, explain why pure
+              CBr4 ^ l h has a higher boiling point than pure CBrClF2 ^ l h does.
+
+
+
+© 2026 College Board.
+Visit College Board on the web: collegeboard.org.     13
+AP CHEMISTRY 2026 n FREE-RESPONSE QUESTIONS
+
+
+
+    Question 6: Version J
+
+
+ 6. A student performs a spectrophotometry experiment with V 2+ (aq) solutions and produces the
+    calibration curve shown in Figure 1 by measuring the absorbance of several solutions of known
+    concentration.
+
+                                                    Figure 1
+
+
+
+
+    Part A
+
+    The student measures an absorbance of 0.32 for a V 2+ (aq) solution. The concentration of V 2+
+    ions in the solution is represented by the particle diagram in the circle in Figure 2. In the circle
+    in Figure 3, draw the correct number of V 2+ ions to represent the concentration of a solution
+    with an absorbance of 0.08. (Water molecules have been omitted for clarity. Assume that each
+    particle diagram represents the same volume.)
+
+                                                    Figure 2
+
+
+
+
+© 2026 College Board.
+Visit College Board on the web: collegeboard.org.     14
+AP CHEMISTRY 2026 n FREE-RESPONSE QUESTIONS
+
+
+
+                                                    Figure 3
+
+
+
+
+    Part B
+
+    The student measures the absorbance of a different V 2+ (aq) solution with an unknown
+    molarity, but the absorbance is higher than 0.36 (the upper limit of the graph). The student then
+    transfers 3.00 mL of this V 2+ (aq) solution to a 25.0 mL volumetric flask, dilutes to the mark on
+    the flask with distilled water, and measures the absorbance of the diluted solution.
+
+           i. The absorbance of the diluted solution is 0.22. Determine the molarity of V 2+ (aq) in the
+              diluted solution.
+          ii. Determine the molarity of V 2+ (aq) in the original, undiluted solution. Show the work
+              that leads to your answer.
+
+    Part C
+
+    The concentration of V 2+ (aq) calculated in part B (ii) is lower than the actual concentration
+    of the undiluted solution. The student claims that the calculated concentration is too low
+    because during the dilution step, the final level of the solution was higher than the mark on the
+    volumetric flask. Do you agree or disagree? Justify your answer.
+
+
+
+
+© 2026 College Board.
+Visit College Board on the web: collegeboard.org.     15
+AP CHEMISTRY 2026 n FREE-RESPONSE QUESTIONS
+
+
+
+    Question 7
+
+    The following information applies to parts A and B.
+
+
+ 7. Sodium metal reacts with oxygen gas according to Equation 1.
+
+                   Equation 1: 4 Na ^ s h + O 2 ^ g h " 2 Na 2 O ^ s h             %
+                                                                                DH rxn = - 828 kJ/mol rxn
+
+    Standard enthalpies of formation are provided in Table 1.
+
+                                                                 Table 1
+
+                                                Substance           DH %f ^kJ/molh
+                                                     Na (s)                0
+
+                                                     O 2 (g)               0
+
+                                                    Na 2 O (s)             ?
+
+
+    Part A
+
+    Based on the information given, calculate the value of DH %f for Na 2 O (s) . Show the work that
+    leads to your answer.
+
+    Part B
+
+    An 18.4 g sample of Na (s) reacts with 12.8 g of O 2 (g) according to Equation 1. Calculate the
+    total amount of heat, in kilojoules, released during this process. Show the work that leads to
+    your answer.
+
+
+
+
+© 2026 College Board.
+Visit College Board on the web: collegeboard.org.                  16
+AP CHEMISTRY 2026 n FREE-RESPONSE QUESTIONS
+
+
+
+    Part C
+
+    Lattice enthalpy can be defined as the energy required to separate an ionic crystal into gaseous
+    ions. Rb 2 O (s) and Na 2 O (s) have similar crystal structures, and their lattice enthalpies are given
+    in Table 2.
+
+                                                       Table 2
+
+                                      Compound        Lattice Enthalpy ( kJ/mol )
+
+                                        Na 2 O (s)               2481
+
+                                        Rb 2 O (s)               2163
+
+
+    Using Coulomb’s law, explain why the lattice enthalpy of Rb 2 O (s) is smaller than that of
+    Na 2 O (s) .
+
+
+
+
+                                                        STOP
+                                                     END OF EXAM
+
+
+
+
+© 2026 College Board.
+Visit College Board on the web: collegeboard.org.         17
+

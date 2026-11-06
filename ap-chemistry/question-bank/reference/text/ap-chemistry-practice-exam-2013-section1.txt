@@ -1,0 +1,906 @@
+                      Chemistry
+                      Practice Exam and Notes
+
+                      Important note:
+                      Starting with the 2015 exam, Section 2 of the AP Chemistry exam will be
+                      105 minutes long, instead of 90 minutes long. The exam will last 3 hours
+                      and 15 minutes, instead of 3 hours.
+
+                      Exam time per section, as of 2015:
+                       Section     Question type         Number of questions     Timing
+                       I           Multiple choice                60             90 minutes
+                       II          Long free response              3
+                                   Short free response             4             105 minutes or
+                                                                                 one hour and 45 minutes
+
+
+
+
+Effective Fall 2013
+                                              CHEMISTRY
+                                                 Section I
+                                       60 Multiple-Choice Questions
+                                           (Time - 90 minutes)
+                           YOU MAY NOT USE YOUR CALCULATOR FOR SECTION I
+     Note: For all questions, assume that the temperature is 298 K, the pressure is 1.00 atmosphere, and solutions are
+     aqueous unless otherwise specified.
+
+     Directions: Each of the questions or incomplete statements below is followed by four suggested answers or
+     completions. Select the answer that is best in each case and then fill in the corresponding circle on the answer sheet.
+
+
+     1. Complete combustion of a sample of a                                                 Ionic Radius (pm)
+                                                                                    Ion
+        hydrocarbon in excess oxygen produces
+        equimolar quantities of carbon dioxide and water.                          Zn2+              74
+        Which of the following could be the molecular
+        formula of the compound?                                                   Ca2+             100
+
+         (A) C2H2                                                                  Ba2+             135
+         (B) C2H6
+                                                                      3. Based on the data in the table above, which of the
+         (C) C4H8                                                        following correctly predicts the relative strength
+         (D) C6H6                                                        of the attraction of Zn2+, Ca2+, and Ba2+ ions to
+                                                                         water molecules in a solution, from strongest to
+                                                                         weakest, and provides the correct reason?
+                                 Equilibrium Vapor                       (A) Zn2+ > Ca2+ > Ba2+ because the smaller ions
+               Substance          Pressure at 20°C                            have a stronger coulombic attraction to
+                                        (torr)                                water
+                C6H6(l)                  75                              (B) Zn2+ > Ca2+ > Ba2+ because the smaller ions
+                                                                              are more electronegative
+              C2H5OH(l)                  44                              (C) Ba2+ > Ca2+ > Zn2+ because the larger ions
+               CH3OH(l)                  92                                   are more polarizable
+                                                                         (D) Ba2+ > Ca2+ > Zn2+ because the larger ions
+               C2H6O2(l)                  0.06
+                                                                              are less electronegative
+
+     2. Based on the data in the table above, which of                4. Zn(s) is used to reduce other compounds in
+        the following liquid substances has the weakest                  chemical reactions. If a chemist needs a substance
+        intermolecular forces?                                           that is more effective in its reducing ability, which
+         (A) C6H6(l)                                                     of the following species would be the best choice?
+         (B) C2H5OH(l)                                                   (A) Na
+         (C) CH3OH(l)                                                    (B) H+
+         (D) C2H6O2(l)                                                   (C) K+
+                                                                         (D) Cl−
+
+
+
+
+                                                                                          GO ON TO THE NEXT PAGE.
+
+14        Chemistry Practice Exam
+                                                                     H2(g) + I2(g) Æ̈ 2 HI(g)
+
+                                                         7. At 450∞C, 2.0 moles each of H2(g), I2(g), and
+                                                            HI(g) are combined in a 1.0 L rigid container.
+                                                            The value of Kc at 450∞C is 50. Which of the
+                                                            following will occur as the system moves toward
+                                                            equilibrium?
+                                                            (A) More H2(g) and I2(g) will form.
+                                                            (B) More HI(g) will form.
+                                                            (C) The total pressure will decrease.
+                                                            (D) No net reaction will occur, because the
+                                                                 number of molecules is the same on both
+                                                                 sides of the equation.
+
+
+5. In the diagram above, which of the labeled arrows
+   identifies hydrogen bonding in water?
+   (A) A
+   (B) B
+   (C) C
+   (D) D
+
+6. A kinetics experiment is set up to collect the gas
+   that is generated when a sample of chalk,
+   consisting primarily of solid CaCO3 , is added to a
+   solution of ethanoic acid, CH3COOH. The rate of
+   reaction between CaCO3 and CH3COOH is
+   determined by measuring the volume of gas
+   generated at 25∞C and 1 atm as a function of
+   time. Which of the following experimental
+   conditions is most likely to increase the rate of
+   gas production?
+   (A) Decreasing the volume of ethanoic acid
+        solution used in the experiment
+   (B) Decreasing the concentration of the ethanoic
+        acid solution used in the experiment
+   (C) Decreasing the temperature at which the
+        experiment is performed
+   (D) Decreasing the particle size of the CaCO3 by
+        grinding it into a fine powder
+
+
+
+
+                                                                          GO ON TO THE NEXT PAGE.
+
+                                                                                   Chemistry Practice Exam    15
+                                                         9. A 100 g sample of a metal was heated to 100∞C
+                                                            and then quickly transferred to an insulated
+                                                            container holding 100 g of water at 22∞C. The
+                                                            temperature of the water rose to reach a final
+                                                            temperature of 35∞C. Which of the following
+                                                            can be concluded?
+     8. The graph above shows the speed distribution        (A) The metal temperature changed more than the
+        of molecules in a sample of a gas at a certain           water temperature did; therefore the metal
+        temperature. Which of the following graphs               lost more thermal energy than the water
+        shows the speed distribution of the same                 gained.
+        molecules at a lower temperature (as a dashed       (B) The metal temperature changed more than the
+        curve) ?                                                 water temperature did, but the metal lost the
+        (A)                                                      same amount of thermal energy as the water
+                                                                 gained.
+                                                            (C) The metal temperature changed more than the
+                                                                 water temperature did; therefore the heat
+                                                                 capacity of the metal must be greater than
+                                                                 the heat capacity of the water.
+        (B)                                                 (D) The final temperature is less than the average
+                                                                 starting temperature of the metal and the
+                                                                 water; therefore the total energy of the
+                                                                 metal and water decreased.
+
+
+        (C)
+
+
+
+
+        (D)
+
+
+
+
+                                                                           GO ON TO THE NEXT PAGE.
+
+16       Chemistry Practice Exam
+                                                        H2C2O4(aq) + H2O(l) Æ̈ H3O+(aq) + HC2O4−(aq)
+                                                        HC2O4−(aq) + H2O(l) Æ̈ H3O+(aq) + C2O42−(aq)
+                                                            H2O(l) + H2O(l) Æ̈ H3O+(aq) + OH−(aq)
+
+                                                        11. All the reactions represented above occur in an
+                                                            aqueous solution of oxalic acid. Which of the
+                                                            following represent a Brønsted-Lowry conjugate
+                                                            acid-base pair?
+                                                           (A) H2C2O4(aq) and C2O42-(aq)
+                                                           (B) HC2O4−(aq) and C2O42-(aq)
+                                                           (C) HC2O4-(aq) and H2O(aq)
+                                                           (D) H3O+(aq) and OH−(aq)
+10. The elements I and Te have similar average
+    atomic masses. A sample that was believed to be
+    a mixture of I and Te was run through a mass
+    spectrometer, resulting in the data above. All of
+    the following statements are true. Which one
+    would be the best basis for concluding that the
+    sample was pure Te?
+   (A) Te forms ions with a −2 charge, whereas I
+         forms ions with a −1 charge.
+   (B) Te is more abundant than I in the universe.
+   (C) I consists of only one naturally occurring
+         isotope with 74 neutrons, whereas Te has
+         more than one isotope.
+   (D) I has a higher first ionization energy than Te
+         does.
+
+
+
+
+                                                                          GO ON TO THE NEXT PAGE.
+
+                                                                                   Chemistry Practice Exam    17
+     12. Which of the following reactions is not thermodynamically favored at low temperatures but becomes favored as
+         the temperature increases?
+                           Reaction                 DH° (kJ/molrxn)      DS° (J/(molrxnK))
+         (A)   2 CO(g) + O2(g) Æ 2 CO2(g)              −566                  −173
+         (B)   2 H2O(g) Æ 2 H2(g) + O2(g)               484                    90.0
+         (C)   2 N2O(g) Æ 2 N2(g) + O2(g)              −164                   149
+         (D)   PbCl2(s) Æ Pb2+(aq) + 2 Cl¯(aq)           23.4                 −12.5
+
+
+
+
+                                                                                    GO ON TO THE NEXT PAGE.
+
+18        Chemistry Practice Exam
+13. Which of the following particulate diagrams best shows the formation of water vapor from hydrogen gas and
+    oxygen gas in a rigid container at 125∞C ?
+   (A)
+
+
+
+
+   (B)
+
+
+
+
+   (C)
+
+
+
+
+   (D)
+
+
+
+
+                                                                              GO ON TO THE NEXT PAGE.
+
+                                                                                        Chemistry Practice Exam   19
+     Questions 14-17 refer to the following.                   15. Which of the following is the best particulate
+                                                                   representation of the species (other than H2O) that
+                                                                   are present in significant concentrations in the
+                                                                   solution at point U in the titration?
+                                                                  (A)
+
+
+
+
+                                                                  (B)
+     A 50.0 mL sample of an acid, HA, of unknown
+     molarity is titrated, and the pH of the resulting
+     solution is measured with a pH meter and graphed as
+     a function of the volume of 0.100 M NaOH added.
+
+
+     14. At point R in the titration, which of the following
+         species has the highest concentration?
+         (A) HA
+         (B) A-
+         (C) H3O+                                                 (C)
+         (D) OH-
+
+
+
+
+                                                                  (D)
+
+
+
+
+                                                                                  GO ON TO THE NEXT PAGE.
+
+20        Chemistry Practice Exam
+16. At which point on the titration curve is [A-]   17. A student carries out the same titration, but uses
+    closest to twice that of [HA] ?                     an indicator instead of a pH meter. If the indicator
+                                                        changes color slightly past the equivalence point,
+   (A) R                                                what will the student obtain for the calculated
+   (B) S                                                concentration of the acid?
+   (C) T
+   (D) U                                                (A) Slightly less than 0.0800 M
+                                                        (B) Slightly more than 0.0800 M
+                                                        (C) Slightly less than 0.125 M
+                                                        (D) Slightly more than 0.125 M
+
+
+
+
+                                                                       GO ON TO THE NEXT PAGE.
+
+                                                                                 Chemistry Practice Exam       21
+     Questions 18-20 refer to three gases in identical          22. Caffeine (C8H10N4O2) is a weak base with a Kb
+     rigid containers under the conditions given in the            value of 4 ¥ 10-4 . The pH of a 0.01 M solution of
+     table below.
+                                                                   caffeine is in the range of
+          Container           A           B          C             (A) 2–3
+                                                                   (B) 5–6
+             Gas          Methane      Ethane      Butane          (C) 7–8
+           Formula          CH4         C2H6       C4H10           (D) 11–12
+
+         Molar mass
+          (g/mol)           16          30.         58
+
+        Temperature
+           (∞C)             27          27          27          23. Lewis electron-dot diagrams for CO2 and SO2
+       Pressure (atm)         2.0        4.0         2.0            are given above. The molecular geometry and
+                                                                    polarity of the two substances are
+                                                                   (A) the same because the molecular formulas are
+     18. The average kinetic energy of the gas molecules is              similar
+                                                                   (B) the same because C and S have similar
+         (A) greatest in container A
+                                                                         electronegativity values
+         (B) greatest in container B
+                                                                   (C) different because the lone pair of electrons on
+         (C) greatest in container C
+                                                                         the S atom make it the negative end of a
+         (D) the same in all three containers
+                                                                         dipole
+                                                                   (D) different because S has a greater number of
+     19. The density of the gas, in g/L, is
+                                                                         electron domains (regions of electron
+         (A) greatest in container A                                     density) surrounding it than C has
+         (B) greatest in container B
+         (C) greatest in container C
+         (D) the same in all three containers                              2 NO(g) + O2(g) Æ 2 NO2(g)
+
+     20. If the pressure of each gas is increased at constant   24. Consider the following mechanism for the
+         temperature until condensation occurs, which gas           reaction represented above.
+         will condense at the lowest pressure?
+                                                                    Step 1: 2 NO Æ̈ N O (fast reversible)
+                                                                                          2 2
+         (A) Methane
+         (B) Ethane                                                Step 2: N2O2 + O2 Æ 2 NO2           (slow)
+         (C) Butane
+         (D) All the gases will condense at the same               Which of the following statements is true?
+              pressure.
+                                                                   (A) Step 1 represents a unimolecular reaction.
+                                                                   (B) Increasing the concentration of NO will
+                                                                        decrease the overall rate of the reaction.
+     21. The mass percent of carbon in pure glucose,               (C) Raising the temperature will have no effect
+         C6H12O6, is 40.0 percent. A chemist analyzes an                on the numerical value of the rate constant.
+         impure sample of glucose and determines that the          (D) The rate law that is consistent with the
+                                                                        mechanism is rate = k[NO]2[O2].
+         mass percent of carbon is 38.2 percent. Which of
+         the following impurities could account for the low
+         mass percent of carbon in the sample?
+         (A) Water, H2O
+         (B) Ribose, C5H10O5
+         (C) Fructose, C6H12O6, an isomer of glucose
+         (D) Sucrose, C12H22O11
+
+
+
+                                                                                   GO ON TO THE NEXT PAGE.
+
+22        Chemistry Practice Exam
+25. The diagram above shows molecules of Br2 and I2 drawn
+    to the same scale. Which of the following is the best
+    explanation for the difference in the boiling points of liquid
+    Br2 and I2 , which are 59∞C and 184∞C, respectively?
+    (A) Solid iodine is a network covalent solid, whereas solid
+          bromine is a molecular solid.
+    (B) The covalent bonds in I2 molecules are weaker than
+          those in Br2 molecules.
+    (C) I2 molecules have electron clouds that are more
+          polarizable than those of Br2 molecules, thus London
+          dispersion forces are stronger in liquid I2 .
+    (D) Bromine has a greater electronegativity than iodine, thus
+          there are stronger dipole-dipole forces in liquid bromine
+          than in liquid iodine.
+
+
+
+
+                                                          GO ON TO THE NEXT PAGE.
+
+                                                                     Chemistry Practice Exam   23
+     26. The figure above represents three sealed 1.0 L vessels, each containing a different inert gas at 298 K. The
+         pressure of Ar in the first vessel is 2.0 atm. The ratio of the numbers of Ar, Ne, and He atoms in the vessels is
+         2:1:6, respectively. After all the gases are combined in a previously evacuated 2.0 L vessel, what is the total
+         pressure of the gases at 298 K?
+         (A) 3.0 atm
+         (B) 4.5 atm
+         (C) 9.0 atm
+         (D) 18 atm
+
+
+
+
+     27. The dissolution of an ionic solute in a polar solvent can be imagined as occurring in three steps, as shown in the
+         figure above. In step 1, the separation between ions in the solute is greatly increased, just as will occur when the
+         solute dissolves in the polar solvent. In step 2, the polar solvent is expanded to make spaces that the ions will
+         occupy. In the last step, the ions are inserted into the spaces in the polar solvent. Which of the following best
+         describes the enthalpy change, ΔH, for each step?
+         (A) All three steps are exothermic.
+         (B) All three steps are endothermic.
+         (C) Steps 1 and 2 are exothermic, and the final step is endothermic.
+         (D) Steps 1 and 2 are endothermic, and the final step is exothermic.
+
+
+
+
+                                                                                         GO ON TO THE NEXT PAGE.
+
+24        Chemistry Practice Exam
+                                        Ag+(aq) + Cl−(aq) Æ̈ AgCl(s)
+
+28. A student mixes dilute AgNO3(aq) with excess NaCl(aq) to form AgCl(s), as represented by the net ionic
+    equation above. Which of the diagrams below best represents the ions that are present in significant
+    concentrations in the solution? (Ksp for AgCl is 1.8 ¥ 10−10.)
+
+
+
+
+                                                                              GO ON TO THE NEXT PAGE.
+
+                                                                                       Chemistry Practice Exam   25
+     Questions 29-33 refer to the following.                 30. As the reaction progresses toward equilibrium, the
+                                                                 rate of the forward reaction
+                                                                 (A) increases until it becomes the same as the
+                 PCl5(g) Æ̈ PCl3(g) + Cl2(g)
+                                                                       reverse reaction rate at equilibrium
+                                                                 (B) stays constant before and after equilibrium is
+        PCl5(g) decomposes into PCl3(g) and Cl2(g)                     reached
+     according to the equation above. A pure sample of           (C) decreases to become a constant nonzero rate
+     PCl5(g) is placed in a rigid, evacuated 1.00 L                    at equilibrium
+     container. The initial pressure of the PCl5(g) is           (D) decreases to become zero at equilibrium
+     1.00 atm. The temperature is held constant until
+     the PCl5(g) reaches equilibrium with its                31. If the decomposition reaction were to go to
+                                                                 completion, the total pressure in the container
+     decomposition products. The figures below                   would be
+     show the initial and equilibrium conditions of the
+                                                                 (A) 1.4 atm
+     system.                                                     (B) 2.0 atm
+                                                                 (C) 2.8 atm
+                                                                 (D) 3.0 atm
+
+
+
+
+     29. Which of the following is the most likely cause
+         for the increase in pressure observed in the
+         container as the reaction reaches equilibrium?
+        (A) A decrease in the strength of intermolecular
+             attractions among molecules in the flask
+        (B) An increase in the strength of intermolecular
+             attractions among molecules in the flask
+        (C) An increase in the number of molecules,
+             which increases the frequency of collisions
+             with the walls of the container
+        (D) An increase in the speed of the molecules that
+             then collide with the walls of the container
+             with greater force
+
+
+
+
+                                                                                GO ON TO THE NEXT PAGE.
+
+26        Chemistry Practice Exam
+32. Which of the following statements about Kp , the     33. Additional Cl2(g) is injected into the system at
+    equilibrium constant for the reaction, is correct?       equilibrium. Which of the following graphs best
+    (A) Kp > 1                                               shows the rate of the reverse reaction as a function
+    (B) Kp < 1                                               of time? (Assume that the time for injection and
+    (C) Kp = 1                                               mixing of the additional Cl2(g) is negligible.)
+    (D) It cannot be determined whether Kp > 1,              (A)
+          Kp < 1, or Kp = 1 without additional
+          information.
+
+
+
+
+                                                             (B)
+
+
+
+
+                                                             (C)
+
+
+
+
+                                                             (D)
+
+
+
+
+                                                                            GO ON TO THE NEXT PAGE.
+
+                                                                                      Chemistry Practice Exam       27
+     Questions 34-38
+
+                                              1
+                                    K(s) +      Cl (g) Æ KCl(s)        ∆H° = − 437 kJ/molrxn
+                                              2 2
+        The elements K and Cl react directly to form the compound KCl according to the equation above. Refer to the
+     information above and the table below to answer the questions that follow.
+
+                                                                              DH°
+                                                     Process               (kJ/molrxn)
+
+                                                  K(s) → K(g)                   v
+
+                                               K(g) → K+(g) + e−               w
+                                                Cl2(g) → 2 Cl(g)                x
+
+                                              Cl(g) + e− → Cl−(g)               y
+
+                                             K+(g) + Cl−(g) → KCl(s)            z
+
+     34. How much heat is released or absorbed when                 37. It is observed that the reaction producing KCl
+         0.050 mol of Cl2(g) is formed from KCl(s)?                     from its elements goes essentially to completion.
+                                                                        Which of the following is a true statement about
+         (A) 87.4 kJ is released                                        the thermodynamic favorability of the reaction?
+         (B) 43.7 kJ is released
+         (C) 43.7 kJ is absorbed                                         (A) The reaction is favorable and driven by an
+         (D) 87.4 kJ is absorbed                                              enthalpy change only.
+                                                                         (B) The reaction is unfavorable and driven by an
+     35. What remains in the reaction vessel after equal                      entropy change only.
+         masses of K(s) and Cl2(g) have reacted until                    (C) The reaction is favorable and driven by both
+                                                                              enthalpy and entropy changes.
+         either one or both of the reactants have been
+                                                                         (D) The reaction is unfavorable due to both
+         completely consumed?                                                 enthalpy and entropy changes.
+         (A) KCl only
+         (B) KCl and K only
+         (C) KCl and Cl2 only                                                       Cl2(g) + 2 e− Æ 2 Cl−(g)
+         (D) KCl, K, and Cl2                                        38. Which of the following expressions is equivalent
+                                                                        to DH∞ for the reaction represented above?
+     36. Which of the values of DH∞ for a process in the
+                                                                         (A) x + y
+         table is (are) less than zero (i.e., indicate(s) an
+         exothermic process) ?                                           (B) x - y
+         (A) z only
+                                                                         (C) x + 2y
+         (B) y and z only
+         (C) x, y, and z only                                                 x
+                                                                         (D)    -y
+         (D) w, x, y, and z                                                   2
+
+
+
+
+                                                                                         GO ON TO THE NEXT PAGE.
+
+28        Chemistry Practice Exam
+                                                                         Metallic   Melting    Common
+                                                              Element    Radius      Point     Oxidation
+                                                                          (pm)       (∞C)        State
+                                                                Au         144        1064       1+, 3+
+39. The experimental apparatus represented above is              Cu        128        1085       1+, 2+
+    used to demonstrate the rates at which gases                Ag         144         961         1+
+    diffuse. When the cotton balls are placed in the
+    ends of a tube at the same time, the gases diffuse
+                                                         42. To make Au stronger and harder, it is often
+    from each end and meet somewhere in between,
+                                                             alloyed with other metals, such as Cu and Ag.
+    where they react to form a white solid. Which of
+                                                             Consider two alloys, one of Au and Cu and one
+    the following combinations will produce a solid
+                                                             of Au and Ag, each with the same mole fraction
+    closest to the center of the tube?
+                                                             of Au. If the Au/Cu alloy is harder than the
+    (A) HCl and CH3NH2                                       Au/Ag alloy, then which of the following is the
+                                                             best explanation based on the information in the
+    (B) HCl and NH3                                          table above?
+    (C) HBr and CH3NH2                                      (A) Cu has two common oxidation states, but Ag
+    (D) HBr and NH3                                              has only one.
+                                                            (B) Cu has a higher melting point than Au
+40. Silicon crystals are semiconductors. Which of the            has, but Ag has a lower melting point
+    following is a correct reason for the increase in            than Au has.
+    the conductivity of Si crystals when a small            (C) Cu atoms are smaller than Ag atoms, thus
+    fraction of Si atoms are replaced with those of a            they interfere more with the displacement of
+    different element?                                           atoms in the alloy.
+                                                            (D) Cu atoms are less polarizable than are Au or
+    (A) P atoms introduce additional mobile negative             Ag atoms, thus Cu has weaker interparticle
+         charges.                                                forces.
+    (B) P atoms introduce additional mobile positive
+         charges.
+    (C) Ge atoms have more electrons than Si atoms
+         have.
+    (D) Ge atoms are much smaller than Si atoms.
+
+41. N2 molecules absorb ultraviolet light but not
+    visible light. I2 molecules absorb both visible
+    and ultraviolet light. Which of the following
+    statements explains the observations?
+    (A) More energy is required to make N2
+         molecules vibrate than is required to make
+         I2 molecules vibrate.
+    (B) More energy is required to remove an
+         electron from an I2 molecule than is
+         required to remove an electron from a N2
+         molecule.
+    (C) Visible light does not produce transitions
+         between electronic energy levels in the N2
+         molecule but does produce transitions in the
+         I2 molecule.
+    (D) The molecular mass of I2 is greater than the
+         molecular mass of N2 .
+
+
+
+                                                                           GO ON TO THE NEXT PAGE.
+
+                                                                                     Chemistry Practice Exam    29
+                               43. The photoelectron spectra above show the energy required
+                                   to remove a 1s electron from a nitrogen atom and from an
+                                   oxygen atom. Which of the following statements best
+                                   accounts for the peak in the upper spectrum being to the
+                                   right of the peak in the lower spectrum?
+                                  (A) Nitrogen atoms have a half-filled p subshell.
+                                  (B) There are more electron-electron repulsions in
+                                       oxygen atoms than in nitrogen atoms.
+                                  (C) Electrons in the p subshell of oxygen atoms
+                                       provide more shielding than electrons in the p
+                                       subshell of nitrogen atoms.
+                                  (D) Nitrogen atoms have a smaller nuclear charge
+                                       than oxygen atoms.
+
+
+
+
+                                                                                 GO ON TO THE NEXT PAGE.
+
+30   Chemistry Practice Exam
+44. Consider the molecules represented above and the data in the table below.
+
+
+                        Compound             Molecular Formula      Molar Mass      Boiling Point
+                                                                     (g/mol)            (°C)
+                          Nonane                   C9H20               128               151
+                   2,3,4-trifluoropentane          C5H9F3               126               89
+
+
+   Nonane and 2,3,4-trifluoropentane have almost identical molar masses, but nonane has a significantly higher
+   boiling point. Which of the following statements best helps explain this observation?
+   (A) The C–F bond is easier to break than the C–H bond.
+   (B) The C–F bond is more polar than the C–H bond.
+   (C) The carbon chains are longer in nonane than they are in 2,3,4-trifluoropentane.
+   (D) The carbon chains are farther apart in a sample of nonane than they are in 2,3,4-trifluoropentane.
+
+
+
+
+                                                                                 GO ON TO THE NEXT PAGE.
+
+                                                                                          Chemistry Practice Exam   31
+     Questions 45-47 refer to galvanic cells made from different combinations of the three half-cells described
+     below.
+
+                                Half-cell 1: strip of Al(s) in 1.00 M Al(NO3)3(aq)
+                                Half-cell 2: strip of Cu(s) in 1.00 M Cu(NO3)2(aq)
+                                Half-cell 3: strip of Fe(s) in 1.00 M Fe(NO3)2(aq)
+
+       Galvanic                                                                                D (V)
+                    Half-cells                        Cell Reaction                           Ecell
+         Cell
+          X           1 and 2        2 Al(s) + 3 Cu2+(aq) Æ 2 Al3+(aq) + 3 Cu(s)               2.00
+                                                    2+                3+
+          Y           1 and 3        2 Al(s) + 3 Fe (aq) Æ 2 Al (aq) + 3 Fe(s)                 1.22
+           Z          2 and 3           Fe(s) + Cu2+(aq) Æ Fe2+(aq) + Cu(s)                       ?
+
+
+
+
+     45. What is the standard cell potential of galvanic               47. If the half-cell containing 1.00 M Fe(NO3)2(aq)
+         cell Z?                                                           in galvanic cells Y and Z is replaced with a
+         (A) 0.26 V                                                        half-cell containing 5.00 M Fe(NO3)2(aq), what
+         (B) 0.78 V                                                        will be the effect on the cell voltage of the two
+         (C) 2.34 V                                                        galvanic cells?
+         (D) 3.22 V
+                                                                           (A) The voltage will increase in both cells.
+     46. In galvanic cells Y and Z, which of the following                 (B) The voltage will decrease in both cells.
+         takes place in half-cell 3 ?                                      (C) The voltage will increase in cell Y and
+                                                                                decrease in cell Z.
+         (A) Reduction occurs in both cell Y and cell Z.                   (D) The voltage will decrease in cell Y and
+         (B) Oxidation occurs in both cell Y and cell Z.                        increase in cell Z.
+         (C) Reduction occurs in cell Y, and oxidation
+              occurs in cell Z.
+         (D) Oxidation occurs in cell Y, and reduction
+              occurs in cell Z.
+
+
+
+
+                                                                                          GO ON TO THE NEXT PAGE.
+
+32        Chemistry Practice Exam
+Questions 48-52 refer to the following.
+
+                               Concentration         pH of    pH of      pH of     pH of
+                                   (M)               Acid 1   Acid 2     Acid 3    Acid 4
+                                    0.010             3.44     2.00       2.92      2.20
+                                    0.050             3.09     1.30       2.58      1.73
+                                    0.10              2.94     1.00       2.42      1.55
+                                    0.50              2.69     0.30       2.08      1.16
+                                    1.00              2.44     0.00       1.92      0.98
+
+The pH of solutions of four acids prepared at various concentrations were measured and recorded in the table above.
+   The four acids are, in no particular order, chlorous, hydrochloric, lactic, and propanoic.
+48. For which acid is the value of the acid-                     52. A 25 mL sample of a 1.0 M solution of acid 1 is
+    dissociation constant, Ka , the smallest?                        mixed with 25 mL of 0.50 M NaOH. Which of
+                                                                     the following best explains what happens to the
+    (A) Acid 1                                                       pH of the mixture when a few drops of 1.0 M
+    (B) Acid 2                                                       HNO3 are added?
+    (C) Acid 3
+    (D) Acid 4                                                         (A) The pH of the mixture increases sharply,
+                                                                            because HNO3 is a strong acid.
+49. Which of the four acids listed in the table is                     (B) The pH of the mixture decreases sharply,
+    hydrochloric acid?
+                                                                            because H3O+ ions were added.
+    (A) Acid 1                                                         (C) The pH of the mixture stays about the same,
+    (B) Acid 2                                                              because the conjugate base of acid 1 reacts
+    (C) Acid 3                                                              with the added H3O+ ions.
+    (D) Acid 4
+                                                                       (D) The pH of the mixture stays about the same,
+50. Of the following species, which has the greatest                        because the OH− ions in the solution react
+    concentration in a 1.0 M solution of acid 1 at                          with the added H3O+ ions.
+    equilibrium?
+    (A) OH−
+    (B) H3O+
+    (C) Acid 1
+    (D) The conjugate base of acid 1
+
+51. If equal volumes of the four acids at a
+    concentration of 0.50 M are each titrated with
+    a strong base, which will require the greatest
+    volume of base to reach the equivalence point?
+    (A) Acid 1
+    (B) Acid 2
+    (C) Acid 3
+    (D) All the acids will require the same volume of
+         base to reach the equivalence point.
+
+
+
+
+                                                                                     GO ON TO THE NEXT PAGE.
+
+                                                                                               Chemistry Practice Exam    33
+         Step 1: Cl(g) + O3(g) Æ ClO(g) + O2(g)
+         Step 2: ClO(g) + O(g) Æ Cl(g) + O2(g)
+
+     53. A proposed mechanism for destruction of ozone
+         gas in the stratosphere is represented above.
+         Which of the following is evidence that the
+         mechanism is occurring?
+        (A) The presence of Cl(g) increases the rate of
+             the overall reaction.
+        (B) The presence of Cl(g) decreases the rate of
+             the overall reaction.
+        (C) The presence of Cl(g) increases the
+             equilibrium constant of the overall reaction.
+        (D) The presence of Cl(g) decreases the
+             equilibrium constant of the overall reaction.
+
+
+
+
+                                                             GO ON TO THE NEXT PAGE.
+
+34       Chemistry Practice Exam
+                                NaF           MgO
+             Boiling Point
+                                1695          3600
+                 (∞C)
+
+                        Na+    Mg2+     F−     Cl−    O2−
+        Ionic Radius
+                         76      72     133    181    140
+            (pm)
+
+54. Based on the data in the tables above, which of the following
+    statements provides the best prediction for the boiling point
+    of NaCl ?
+   (A) NaCl will have a lower boiling point than NaF because
+        the coulombic attractions are weaker in NaCl than
+        in NaF .
+   (B) NaCl will have a boiling point between that of NaF and
+        MgO because the covalent character of the bonds in
+        NaCl is intermediate between that of MgO and NaF .
+   (C) NaCl will have a higher boiling point than MgO because
+        the ions are spaced farther apart in NaCl.
+   (D) NaCl will have a higher boiling point than MgO because
+        the energy required to transfer electrons from the anion
+        to the cation is larger in NaCl than in MgO .
+
+
+
+
+                                                        GO ON TO THE NEXT PAGE.
+
+                                                                    Chemistry Practice Exam   35
+                                 Acid            Structure              Ka
+
+
+                                HNO2                                 4.0 ¥10−4
+
+
+
+
+                               HC3H5O2                               1.3 ¥10−5
+
+
+
+
+                                HClO                                 3.0 ¥10−8
+
+
+
+                               HOC6H5                                1.6 ¥10−10
+
+
+
+                       55. The table above shows the values of Ka for four weak acids.
+                           Which of the following pairs of chemical species, when
+                           combined in equimolar amounts, results in a buffer with a
+                           pH closest to 7.5 ?
+                           (A) HNO2 and OH−
+                           (B) HC3H5O2 and C3H5O2−
+                           (C) HClO and ClO−
+                           (D) C6H5OH and C6H5O−
+
+
+
+
+                                                                              GO ON TO THE NEXT PAGE.
+
+36   Chemistry Practice Exam
+56. Beaker X and beaker Y each contain 1.0 L of solution, as shown above. A student combines the solutions by
+    pouring them into a larger, previously empty beaker Z and observes the formation of a white precipitate.
+    Assuming that volumes are additive, which of the following sets of solutions could be represented by the
+    diagram above?
+        Beaker X         Beaker Y                Beaker Z
+   (A) 2.0 M AgNO3      2.0 M MgCl2      4.0 M Mg(NO3)2 and AgCl(s)
+   (B) 2.0 M AgNO3      2.0 M MgCl2      2.0 M Mg(NO3)2 and AgCl(s)
+   (C) 2.0 M AgNO3      1.0 M MgCl2      1.0 M Mg(NO3)2 and AgCl(s)
+   (D) 2.0 M AgNO3      1.0 M MgCl2      0.50 M Mg(NO3)2 and AgCl(s)
+
+
+
+
+                                                                              GO ON TO THE NEXT PAGE.
+
+                                                                                       Chemistry Practice Exam   37
+                 2 N2O5(g) Æ 4 NO2(g) + O2(g)
+
+     57. A sample of N2O5 was placed in an evacuated                                                 First
+                                                                                     Atomic
+        container, and the reaction represented above                 Element                     Ionization
+                                                                                     Radius
+                                                                                                    Energy
+        occurred. The value of PN2O5 , the partial pressure
+                                                                      Calcium        194 pm      590 kJ/mol
+        of N2O5(g), was measured during the reaction and
+                                                                     Potassium          -                - 
+        recorded in the table below.
+
+                                                  1           58. Based on periodic trends and the data in the table
+          Time        PN2O5     ln( PN2O5 )     PN2O5             above, which of the following are the most
+          (min)       (atm)                                       probable values of the atomic radius and the first
+                                               (atm−1)            ionization energy for potassium, respectively?
+             0         150             5.0      0.0067           (A) 242 pm, 633 kJ/mol
+                                                                 (B) 242 pm, 419 kJ/mol
+           100          75             4.3      0.013
+                                                                 (C) 120 pm, 633 kJ/mol
+           200          38             3.6      0.027            (D) 120 pm, 419 kJ/mol
+           300          19             2.9      0.053
+
+        Which of the following correctly describes the
+        reaction?
+        (A) The decomposition of N2O5 is a zero-order
+             reaction.
+        (B) The decomposition of N2O5 is a first-order
+             reaction.
+        (C) The decomposition of N2O5 is a second-order
+             reaction.
+        (D) The overall reaction order is 3.
+
+
+
+
+                                                                                 GO ON TO THE NEXT PAGE.
+
+38       Chemistry Practice Exam
+                                                                     COCl2(g) Æ̈ CO(g) + Cl2(g)
+
+                                                         60. COCl2(g) decomposes according to the equation
+                                                             above. When pure COCl2(g) is injected into a
+                                                             rigid, previously evacuated flask at 690 K, the
+59. The figure above shows that in solid hydrogen            pressure in the flask is initially 1.0 atm. After the
+    fluoride there are two different distances between       reaction reaches equilibrium at 690 K, the total
+    H atoms and F atoms. Which of the following              pressure in the flask is 1.2 atm. What is the value
+    best accounts for the two different distances?           of Kp for the reaction at 690 K?
+   (A) Accommodation of the necessary bond angles
+        in the formation of the solid                        (A) 0.040
+   (B) Difference in strength between covalent               (B) 0.050
+        bonds and intermolecular attractions                 (C) 0.80
+   (C) Different isotopes of fluorine present in the         (D) 1.0
+        samples
+   (D) Uneven repulsions among nonbonding
+        electron pairs
+
+
+
+
+                                                  STOP
+                           IF YOU FINISH BEFORE TIME IS CALLED, YOU MAY
+                                         CHECK YOUR WORK.
+
+                    DO NOT TURN TO SECTION II UNTIL YOU ARE TOLD TO DO SO
+
+
+
+
+                                                                                       Chemistry Practice Exam       39
+

@@ -5,8 +5,9 @@
  *   SHOTS=dir node tools/walkthrough.js  # also saves a screenshot per step
  *   DARK=1 ...                           # the same in dark mode
  *
- * It makes every prediction, drags every thermometer past every boiling
- * point (checking the thermometer is locked until the prediction is made),
+ * It makes every prediction, presses Heat on every heating stage (checking
+ * Heat is locked until the prediction is made, Pause holds the temperature
+ * and the step only finishes once the run is over),
  * looks at every noble gas's electron cloud, predicts the halogens' phases
  * (one wrong), clicks a C–H as a donor, draws hydrogen bonds the wrong ways
  * first (a lone pair first, on the same molecule, the wrong donor), counts
@@ -94,8 +95,25 @@ const fakeLMS = () => {
   }
   async function fb(re, what) { const t = await feedback(); expect(re.test(t), what + ': ' + t); }
   const saved = () => page.evaluate(() => JSON.parse(JSON.parse(sessionStorage.getItem('lms'))['cmi.suspend_data']));
-  async function thermo(K) {
-    await page.$eval('.thermo-range', (el, v) => { el.value = v; el.dispatchEvent(new Event('input')); }, String(Math.round(K)));
+  /* press Heat: the step must not finish early, Pause must hold the
+     temperature (checked once), and the run must finish by itself */
+  async function heat(what, pauseTest) {
+    await page.click('.heat-btn');
+    await page.waitForTimeout(3000);
+    expect(await page.isDisabled('#next'), `${what}: finished before the heating ran its course`);
+    if (pauseTest) {
+      await page.click('.heat-btn');
+      const t1 = await page.textContent('.thermo-c');
+      await page.waitForTimeout(700);
+      expect(t1 === await page.textContent('.thermo-c'), `${what}: Pause did not hold the temperature`);
+      expect(/Keep heating/.test(await page.textContent('.heat-btn')), `${what}: no Keep heating after Pause`);
+      await page.click('.heat-btn');
+    }
+    const ok = await page.waitForFunction(() => !document.getElementById('next').disabled, null, { timeout: 15000 })
+      .then(() => true, () => false);
+    expect(ok, `${what}: the heating never finished the step`);
+    await page.waitForFunction(() => /Start again/.test(document.querySelector('.heat-btn').textContent), null, { timeout: 15000 })
+      .catch(() => problems.push(`${what}: the heating did not reach the top`));
   }
   /* name the IMFs of each: the first card gets a wrong set first */
   async function assign() {
@@ -125,13 +143,11 @@ const fakeLMS = () => {
     const s = await step();
     const id = s.id;
     if (s.assign) await assign();
-    const t0 = await page.$('.thermo-range');
-    expect(!t0 || await t0.isDisabled(), `${id}: thermometer works before the prediction`);
+    const t0 = await page.$('.heat-btn');
+    expect(!t0 || await t0.isDisabled(), `${id}: Heat works before the prediction`);
     expect(await page.isDisabled('#next'), `${id}: Next enabled before the race`);
     await page.click(`.pside .predict .choice >> nth=${prefer || 0}`);
-    await thermo(s.minK + (s.maxK - s.minK) * 0.4);
-    expect(await page.isDisabled('#next'), `${id}: finished before every substance boiled`);
-    await thermo(s.maxK);
+    await heat(id, id === 'argon');
     await page.waitForTimeout(200);
     expect(!!(await page.$('.pside .reveal')), `${id}: no reveal after the race`);
   }
@@ -160,9 +176,9 @@ const fakeLMS = () => {
   await startsFresh(null, await page.evaluate(() => App.SCHEMA), 'a browser save inside the LMS');
 
   /* ---- Part 1 */
-  expect(await page.isDisabled('.thermo-range'), 'bubbles: thermometer works before the prediction');
+  expect(await page.isDisabled('.heat-btn'), 'bubbles: Heat works before the prediction');
   await page.click('.pside .predict .choice >> nth=1');
-  await thermo(273.15 + 120);
+  await heat('bubbles');
   await page.waitForTimeout(200);
   expect(/whole H₂O/.test(await page.textContent('.pside')), 'bubbles: no reveal');
   await next();
@@ -302,7 +318,7 @@ const fakeLMS = () => {
   await page.click('.rank-card:has-text("methanol")');
   expect((await fbClass()).includes('bad'), 'ladder: methanol accepted as the lowest');
   for (const n of ['fluorine', 'hydrogen chloride', 'methanol']) await page.click(`.rank-card:has-text("${n}")`);
-  await thermo(273.15 + 75);
+  await heat('ladder');
   await next();
   await quiz();
   await next();

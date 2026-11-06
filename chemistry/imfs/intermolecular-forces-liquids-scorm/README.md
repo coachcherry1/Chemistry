@@ -1,5 +1,7 @@
 # Intermolecular Forces and Properties of Liquids
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/chemistry/imfs/intermolecular-forces-liquids-scorm/src/index.html>
+
 A SCORM 1.2 activity for Schoology, for honors chemistry. It is **Intermolecular Forces**
 (`../intermolecular-forces-scorm/`, which stays as it is) with a sixth part added: **properties of liquids**.
 Students warm real substances on a heating stage and watch them melt and boil at their real temperatures, see
@@ -42,7 +44,8 @@ melting and boiling points agree with it; `tools/validate.js` checks every compa
 | 6 Properties of liquids | 5 | Each step: name the IMFs of each liquid from its Lewis structure (and count its hydrogen bonds), rank them strongest first, predict which has the highest (or lowest) surface tension and viscosity and which evaporates fastest (or most slowly), then **run the liquid bench**: a drop on plastic beads up or spreads, a pipet drains, a drop left out disappears, all paced by the real data. **Three properties of liquids:** pentane and 1-butanol (42 electrons each). **Bigger hydrocarbons:** pentane, heptane, octane and decane (LDF only, by electrons). **About 40 electrons, three forces:** pentane, 2-butanone, 1-butanol. **58 electrons each:** heptane, 1-hexanol (1 hydrogen bond), 1,5-pentanediol (2). **Checkpoint 5** (5), with the rule beside it. |
 
 The substances in every race, count, ranking and the halogens appear in a different order for each student (never lowest boiling point to highest when there are three or more). IMF names, predictions, races, clicks, drawings and counts must be finished to move on, but none is graded. Each race's
-thermometer stays locked until the student has predicted, and the step is done once every substance has boiled.
+Heat button stays locked until the student has predicted; pressing it warms every box together from the cold end
+to the hot end in 10 seconds (Pause holds it), and the step is done once every substance has boiled.
 
 ### The class's rules, and what is left out
 
@@ -83,7 +86,7 @@ hot enough, they break free and fill the box.
   The simulation's reduced temperature runs 0.03 to 0.15 in a solid, 0.33 to 0.38 in a liquid and 1.8 to 2.8 in a
   gas, so the condensed phases stay calm and visibly held together.
 - Particles are drawn as their molecule's shape but move as single balls, and sizes are not to scale.
-- With `prefers-reduced-motion`, each box shows a settled still picture that updates as the thermometer moves.
+- With `prefers-reduced-motion`, each box shows a settled still picture that updates as the thermometer climbs.
 
 The electron-cloud step (`cloud.js`) uses each noble gas atom's real radius and polarizability (`data.js`) for
 the size of each cloud and how far it shifts. Its "attraction right now" bar is a picture of the idea, not a
@@ -109,12 +112,12 @@ it over (`localStorage` is used only without an LMS). A save from another releas
 ```bash
 node tools/validate.js                    # must pass
 node tools/answer-key.js > ANSWER_KEY.md
-./build.sh                                # dist/intermolecular-forces-liquids-v1.zip
+./build.sh                                # dist/intermolecular-forces-liquids-v2.zip
 node tools/walkthrough.js                 # optional, Playwright: plays the whole activity against a fake LMS
 node tools/layout.js                      # optional, Playwright: fits a Chromebook, 1366x650 and 1366x520
 ```
 
-Upload `dist/intermolecular-forces-liquids-v1.zip` in Schoology with **Add Materials → Add File/Link/External Tool → Add
+Upload `dist/intermolecular-forces-liquids-v2.zip` in Schoology with **Add Materials → Add File/Link/External Tool → Add
 File** (or **Package**), enable the gradebook column, and preview as a student: the badge in the top right should
 read **Connected to the LMS**. The SCORM identifiers and the storage key are this package's own.
 
@@ -171,5 +174,5 @@ intermolecular-forces-liquids-scorm/
 ```
 
 No CDN, no web fonts, no WebGL, no network calls. Every action works by mouse, touch and keyboard (Tab and
-Enter; the arrow keys move the thermometer), every drawing and box carries a text description, colour is never
+Enter), every drawing and box carries a text description, colour is never
 the only signal (phases are named, charges read δ+ and δ−), and the page follows the system light or dark setting.

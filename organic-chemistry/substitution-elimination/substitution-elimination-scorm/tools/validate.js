@@ -15,8 +15,10 @@
  *   - E2 stereochemistry that two independent methods disagree on;
  *   - a prediction key, a sort card or a quiz answer the model does not
  *     support.
+ *   - a played mechanism (play.js) whose arrows make something else.
  * It also holds the activity to its house rules: no em dashes anywhere,
- * Klein's wording (anti-coplanar, back-side attack, Zaitsev), a reagent
+ * Klein's wording (anti-coplanar, back-side attack, Zaitsev, steric
+ * hindrance at the back side), a reagent
  * question in every checkpoint, and no right answer that is the longest choice.
  */
 const fs = require('fs');
@@ -27,7 +29,7 @@ global.document = { addEventListener() {} };
 global.localStorage = { getItem() { return null; }, setItem() {}, removeItem() {} };
 const src = path.join(__dirname, '..', 'src', 'js');
 const FILES = ['geom.js', 'mol.js', 'name.js', 'layout.js', 'chair.js', 'draw.js', 'react.js', 'build3d.js', 'viewer3d.js', 'anim.js',
-               'mech.js', 'arrows.js', 'molecules.js', 'picker.js', 'quiz.js', 'scorm.js', 'app.js', 'steps1.js', 'steps2.js', 'steps3.js'];
+               'mech.js', 'arrows.js', 'play.js', 'molecules.js', 'picker.js', 'quiz.js', 'scorm.js', 'app.js', 'steps1.js', 'steps2.js', 'steps3.js'];
 for (const f of FILES) (0, eval)(fs.readFileSync(path.join(src, f), 'utf8'));
 
 const problems = [];
@@ -355,14 +357,39 @@ App.BIG_IDEAS.forEach((t) => studentText.push(t));
 });
 const all = studentText.join('\n');
 const BANNED = [[/antiperiplanar|anti-periplanar/i, 'anti-coplanar (Klein)'], [/\bbackside\b/i, 'back-side'], [/saytze/i, 'Zaitsev'],
-                [/\bSN 2\b|\bS N 2\b/, 'SN2'], [/Walden/i, 'inversion of configuration (Klein)']];
+                [/\bSN 2\b|\bS N 2\b/, 'SN2'], [/Walden/i, 'inversion of configuration (Klein)'],
+                [/crowd(s|ed|ing)? the back side|back side is crowded/i, 'steric hindrance at the back side (the teacher’s wording)']];
 BANNED.forEach(([re, use]) => { const m = all.match(re); if (m) fail(`student text says "${m[0]}": use ${use}`); });
 const MUST = [[/concerted/, 'concerted (SN2 and E2)'], [/back-side attack/, 'back-side attack'], [/anti-coplanar/, 'anti-coplanar'],
               [/proton transfer and loss of the leaving group/, 'E2 as proton transfer and loss of the leaving group'],
               [/nucleophilic attack and loss of the leaving group/, 'SN2 as nucleophilic attack and loss of the leaving group'],
               [/Regiospecific/, 'regiospecific'], [/Stereospecific/, 'stereospecific'], [/Stereoselective/, 'stereoselective'], [/Regioselective/, 'regioselective'],
-              [/trans-diaxial/, 'trans-diaxial'], [/carbocation rearrangement/i, 'carbocation rearrangement']];
+              [/trans-diaxial/, 'trans-diaxial'], [/carbocation rearrangement/i, 'carbocation rearrangement'],
+              [/[Ss]teric hindrance at the back side/, 'steric hindrance at the back side (SN2)']];
 MUST.forEach(([re, what]) => { if (!re.test(all)) fail('student text never says ' + what); });
+
+/* -------------------------------------------- the mechanisms, played */
+
+/* Every mechanism the activity plays (play.js): its arrows must be right,
+   and what they make, step after step, must be what react.js predicts. */
+App.playedScenes().forEach((pl) => {
+  pl.scenes.forEach((sc, k) => {
+    if (!arrowsRight(sc)) fail(`${pl.label}: step ${k + 1}'s own arrows are not judged right`);
+    const oc = Play.outcome(sc);
+    const before = oc.g0.atoms.reduce((t, a) => t + a.charge, 0), after = oc.g1.atoms.reduce((t, a) => t + a.charge, 0);
+    if (before !== after) fail(`${pl.label}: step ${k + 1} changes the total charge`);
+    oc.g1.atoms.forEach((a, i) => {
+      if (a.el !== 'H' && oc.g1.lonePairs(i) * 2 + a.h + oc.g1.nb(i).reduce((t, x) => t + x.order, 0) * 2 > (a.el === 'C' && a.charge > 0 ? 6 : 8))
+        fail(`${pl.label}: step ${k + 1} gives atom ${i} more than an octet`);
+    });
+  });
+  const last = Play.outcome(pl.scenes[pl.scenes.length - 1]).products[0];
+  if (pl.want && name(last) !== pl.want) fail(`${pl.label}: the played mechanism makes ${name(last)}, the model says ${pl.want}`);
+  if (pl.label.indexOf('shift') === 0) {
+    const plus = last.atoms.findIndex((a) => a.charge > 0);
+    if (plus < 0 || Mol.degree(last, plus) !== 3) fail(`${pl.label}: the shift does not end at a 3° carbocation`);
+  }
+});
 
 /* ------------------------------------------------------------- report */
 

@@ -1,5 +1,7 @@
 # Successive Ionization Energies
 
+**Web version** (runs without Schoology; progress saves in the browser): <https://coachcherry1.github.io/Chemistry/chemistry/electrons/ionization-energy-scorm/src/index.html>
+
 A SCORM 1.2 activity for Schoology, about 10 minutes long. Students pull electrons off atoms one
 at a time, read mystery successive ionization energy data, and explain what they see with the
 **two-step rule** from the Atomic Radius and Ionization Energy packet:

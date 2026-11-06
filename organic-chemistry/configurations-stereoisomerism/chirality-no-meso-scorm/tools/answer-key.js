@@ -21,6 +21,7 @@ const order = (m, c) => CIP.rank(m, c).order;
 const pri = (m, c) => order(m, c).map((j) => CIP.groupText(m, c, j)).join(' > ');
 const cfg = (m) => App.configText(m) || 'no chirality centre';
 const SLOT = { ul: 'upper left, in the page', ur: 'upper right, in the page', ll: 'lower left, in the page',
+               lu: 'upper left, in the page', ld: 'lower left, in the page',
                lr: 'lower right, in the page', w: 'wedge', d: 'dash' };
 const four = (m, c) => (STEREO.fourOnDash(m, c) ? '4 on the dash' : '4 ' + ({ wedge: 'on a wedge', plain: 'in the page' })[
   STEREO.bondStyle(m.atoms[c].p, m.atoms[order(m, c)[3]].p)]);
@@ -88,7 +89,8 @@ const pk = (k) => App.PREDICT[k].choices[App.PREDICT[k].answer];
 P('### Mirror, mirror');
 P();
 P(`Predictions: CHBrClF's mirror image fits? **${pk('fit1')}**. CH₂BrCl's? **${pk('fit2')}**. CHBrClF: at most 2 of 4 atoms ` +
-  'ever line up. CH₂BrCl: all 4 line up after **Turn it over** on the image; its mirror plane is the page (through Br, C and Cl).');
+  'ever line up, whatever spear the image is rotated on. CH₂BrCl: all 4 line up after the **vertical spear** (180°) on the ' +
+  'image; its mirror plane is the page (through Br, C and Cl).');
 P();
 P('### Draw the mirror image');
 P();
@@ -122,9 +124,17 @@ for (const id of S('rank').mols.concat(S('ties').mols)) {
 P();
 P('### R and S');
 P();
+/* the spear that takes 4 to the dash, as the rule on screen names it */
+function spearTo4(m, c) {
+  if (STEREO.fourOnDash(m, c)) return 'read as drawn';
+  const sps = STEREO.spears(m, c, m.kind === 'centre' ? null : m.pivot);
+  const hit = sps.find((sp) => STEREO.fourOnDash(STEREO.speared(m, sp), c));
+  if (!hit) return 'no single spear';
+  return `${Math.abs(hit.deg)}° on the ${hit.kind} spear`;
+}
 for (const id of S('wheel').mols.concat(S('rotate').mols)) {
   const m = mol(id), c = CIP.centres(m)[0];
-  P(`- ${m.name}: ${four(m, c)} as drawn; ${pri(m, c)}: **${CIP.label(m, c)}**.`);
+  P(`- ${m.name}: ${four(m, c)} as drawn (${spearTo4(m, c)}); ${pri(m, c)}: **${CIP.label(m, c)}**.`);
 }
 P();
 P(`Prediction (4 on the wedge): can it be read as drawn? **${pk('asis')}**.`);
@@ -134,7 +144,7 @@ P();
   P(`### The hidden H`);
   P();
   P(`The hidden H on C2 points **${pk('hiddenH').toLowerCase()}**. Redrawn with H on the dash, three drawings are accepted ` +
-    '(the molecule turned over, and those two spun about the dash):');
+    '(the molecule rotated 180° on the vertical spear, and that drawing rotated a third of a turn about the bond to the H):');
   P();
   const tiles = ['OH', 'CH3', 'Et', 'H'], slots = MOLECULES.SLOT_ORDER.A;
   for (const perm of STEREO.permutations([0, 1, 2, 3])) {
