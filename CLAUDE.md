@@ -26,6 +26,7 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `chemistry/imfs/intermolecular-forces-scorm/` | IMFs: heating stage with real mp/bp, LDF and polarizability, dipole-dipole, hydrogen bonds (follows VSEPR) |
 | `chemistry/imfs/intermolecular-forces-liquids-scorm/` | The same IMF activity plus a part 6, properties of liquids: surface tension, viscosity, evaporation rate (about 40 min) |
 | `chemistry/imfs/properties-of-liquids-scorm/` | That part 6 on its own: surface tension, viscosity, evaporation rate of bigger molecules (about 15 min) |
+| `chemistry/moles/mole-conversions-scorm/` | Mole conversions by dimensional analysis: typed molar mass (tenths) and ratio blanks, Mole Town map, 12 mixed 1- to 3-step problems (about 25 min) |
 
 **AP chemistry**
 
@@ -53,11 +54,11 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `organic-chemistry/reactivity-mechanisms/arrow-pushing-scorm/` | Klein 6, before SN1/SN2: bond breaking and making, ΔG, energy diagrams, nucleophiles and electrophiles, drawing curved arrows, the four patterns (about 45 min) |
 | `organic-chemistry/substitution-elimination/substitution-elimination-scorm/` | SN1, SN2, E1 and E2: reagent function, mechanisms with curved arrows, regio- and stereochemistry, rings, predicting products (about 50 min) |
 
-**Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions) and arrow pushing contains em
+**Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions), arrow pushing and mole conversions contains em
 dashes (the Lewis, resonance and drawing-tool validators allow them). The mass spec, IR + mass spec, NMR,
 naming, acids and ionization energy packages still load a browser save inside an LMS when
 `cmi.suspend_data` is empty (fixed in IR, Newman, chairs, chirality, Lewis and resonance). Only Newman,
-chairs, chirality, SN1/SN2 and arrow pushing have `tools/layout.js`. Bring a package up to the rules when you next change it.
+chairs, chirality, SN1/SN2, arrow pushing and mole conversions have `tools/layout.js`. Bring a package up to the rules when you next change it.
 
 ## House rules
 
@@ -432,3 +433,25 @@ not the full page.
   (`POL_*`), save key (`properties-of-liquids-state`) and zip. `SUBSTANCES` holds only the eight liquids.
   A fix to part 6 in either package usually belongs in the other.
 
+## mole-conversions-scorm (branch `claude/adoring-gates-n85a6r`, zip v1, SCHEMA 1)
+
+- **Key objective:** fluency with mole conversions by dimensional analysis (no story problems), in the style of the
+  dimensional analysis mixed challenge (`to-merge/.../DimAnalysis-6-Mixed-Challenge/`, the teacher's): tap or drag an
+  equality chip into the chain, left side on top, flip it, units strike through, Check, Hint, Show solution.
+- 7 steps: Mole Town (tap the four roads), four ungraded one-road warm-ups, the graded set of 12 (3 one-step, 5 two-step,
+  4 three-step, mixed order, never starting with a three-step one; at least 4 use the ratio, 2 use 22.4 L), results.
+- **Teacher's choices:** the molar-mass chip has a blank (`___ g X = 1 mol X`), typed **to the tenths place**; the ratio
+  chip has a blank too (`1 mol SBr2 = ___ mol Br`, the teacher's moles-to-moles step). The on-screen periodic table shows
+  masses to tenths; also accepted: full masses rounded at the end (CCl4 153.8 as well as 154.0) and a two-decimal table's
+  tenths (Fe 55.9, Cu 63.6); the answer is checked against the typed molar mass. All equalities exact (sig figs from the
+  given only). A problem counts if right before Show solution (which asks to confirm); hints and re-checks are free.
+- **Teacher's map (Mole Town, `map.js`):** volume at STP above moles of A, particles left, mass right, ratio down to moles
+  of B (an element counted in A). 22.4 L only for gases at STP (boiling points in the validator). Particles: atoms of an
+  element, molecules of a diatomic or molecular substance; ionic compounds are never counted in particles, so "formula
+  unit" never appears (the validator bans it). Units carry their substance: mol SBr2 never cancels mol Br.
+- **One model:** `chem.js` reads formulas, rounds standard atomic weights (strings, exact) to tenths, lists accepted molar
+  masses and likely slips (subscripts, brackets, atomic numbers, an element left out, a miscount), cancels units and judges
+  every blank and answer. `problems.js` builds the set and warm-ups from a seed (`Gen.set`, `Gen.warm`); the validator
+  checks 400 seeds against a direct mole calculation and the teacher's Moles formative quiz worked by hand.
+- **Files:** `elements.js`, `substances.js`, `chem.js`, `problems.js`, `map.js`, `ptable.js` (docked table), `work.js` (one
+  problem), `scorm.js`, `app.js`. Its own SCORM ids (`MOLECONV_*`), save key (`mole-conversions-state`) and zip.
