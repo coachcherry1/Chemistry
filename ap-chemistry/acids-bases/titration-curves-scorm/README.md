@@ -6,6 +6,8 @@ titrated with NaOH, and find out why the equivalence point is exactly pH 7 for t
 A review checkpoint repeats the reasoning with a different weak acid, acetic acid. **Conceptual only**: nobody calculates
 a pH. About 40 minutes. Same look, controls, saving and grading as the other activities in this repository.
 
+**Web address (GitHub Pages, once on `main`):** https://coachcherry1.github.io/Chemistry/ap-chemistry/acids-bases/titration-curves-scorm/src/index.html
+
 **The key objective:** the equivalence point is where moles of base equal moles of acid, and its pH is set by the ions
 left in the flask. Na⁺ and Cl⁻ do not react with water (pH 7). The conjugate base of a weak acid does, and makes OH⁻
 (pH above 7).

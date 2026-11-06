@@ -7,6 +7,8 @@ barely moves. The **Henderson-Hasselbalch equation** is introduced in Part 4, al
 buffer with appreciable amounts of both members. How to *make* a buffer is not the focus. About 40 minutes. This is a **first
 draft**: same look, controls, saving and grading as the other activities in this repository, to be flushed out with the teacher.
 
+**Web address (GitHub Pages, once on `main`):** https://coachcherry1.github.io/Chemistry/ap-chemistry/acids-bases/buffers-scorm/src/index.html
+
 **The key objective:** a buffer has a particle ready for added acid (the base member) AND a particle ready for added base (the
 acid member). Added H⁺ or OH⁻ is used up in a reaction, so almost none stays free, and the ratio of base member to acid member
 changes only a little, so the pH changes only a little.
