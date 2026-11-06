@@ -252,7 +252,7 @@ var Viewer3D = (function () {
     if (!W || !H) return;
     ctx.clearRect(0, 0, W, H);
     var n = this.objects.length;
-    var spanX = n > 1 ? 4.1 : 2.15;
+    var spanX = n > 1 ? 4.5 : 2.15;
     var scale = Math.min(W / (spanX * this.radius), H / (2.15 * this.radius));
     var D = this.radius * 5;
     var cx = W / 2, cy = H / 2;
@@ -307,25 +307,39 @@ var Viewer3D = (function () {
       });
       all = all.concat(pts);
     });
+    /* the mirror between a molecule and its image: a pane of glass standing
+       in the plane x = 0, seen a little from the side, sorted with the atoms */
+    if (this.pane && n > 1) {
+      var ps = this.radius * 1.62;
+      planeTiles([0, 0, 0], [1, 0, 0], ps, 6).forEach(function (tile) {
+        var pz = tile.map(project);
+        items.push({ type: 'tile', pane: true, z: pz.reduce(function (s, q) { return s + q.z; }, 0) / 4, pts: pz, color: paneCol });
+      });
+      var h = ps / 2, corners = [[0, -h, -h], [0, h, -h], [0, h, h], [0, -h, h]];
+      for (var e = 0; e < 4; e++) {
+        var a0 = corners[e], a1 = corners[(e + 1) % 4];
+        for (var k = 0; k < 6; k++) {
+          var w0 = G.add(a0, G.mul(G.sub(a1, a0), k / 6)), w1 = G.add(a0, G.mul(G.sub(a1, a0), (k + 1) / 6));
+          var q0 = project(w0), q1 = project(w1);
+          items.push({ type: 'paneEdge', z: (q0.z + q1.z) / 2, a: q0, b: q1 });
+        }
+      }
+    }
     items.sort(function (p, q) { return p.z - q.z; });
     var spearCol = hex(cssVar('spear', '#b05f00'));
     var rodLabels = [];
     this.rods = [];
     var letters = [];
-    /* the mirror between two molecules is seen edge-on: a band of glass */
-    if (this.pane && n > 1) {
-      var bw = Math.max(6, scale * 0.12);
-      var grd = ctx.createLinearGradient(cx - bw, 0, cx + bw, 0);
-      grd.addColorStop(0, 'rgba(0,0,0,0)');
-      grd.addColorStop(0.5, paneCol);
-      grd.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.globalAlpha = 0.75;
-      ctx.fillStyle = grd;
-      ctx.fillRect(cx - bw, H * 0.1, bw * 2, H * 0.86);
-      ctx.globalAlpha = 1;
-    }
 
     items.forEach(function (it) {
+      if (it.type === 'paneEdge') {
+        ctx.globalAlpha = 0.8;
+        ctx.lineWidth = Math.max(2, scale * 0.04);
+        ctx.strokeStyle = shade(paneCol, -0.3);
+        ctx.beginPath(); ctx.moveTo(it.a.x, it.a.y); ctx.lineTo(it.b.x, it.b.y); ctx.stroke();
+        ctx.globalAlpha = 1;
+        return;
+      }
       if (it.type === 'rod') {
         var lw = Math.max(2.5, scale * (it.sp.hot ? 0.075 : 0.05));
         ctx.globalAlpha = it.sp.idle ? 0.5 : 0.92;
@@ -356,7 +370,7 @@ var Viewer3D = (function () {
         ctx.beginPath();
         it.pts.forEach(function (p, k) { if (k) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); });
         ctx.closePath();
-        ctx.globalAlpha = it.pane ? 0.18 : 0.22;
+        ctx.globalAlpha = it.pane ? 0.3 : 0.22;
         ctx.fillStyle = it.color;
         ctx.fill();
         ctx.globalAlpha = 1;
@@ -506,7 +520,7 @@ var Viewer3D = (function () {
 
   Viewer.MIRROR = MIRROR;
   Viewer.CAM = G.mmul(rotX(14 * Math.PI / 180), rotY(-22 * Math.PI / 180));
-  Viewer.CAM_MIRROR = rotX(16 * Math.PI / 180);
+  Viewer.CAM_MIRROR = G.mmul(rotX(14 * Math.PI / 180), rotY(24 * Math.PI / 180));
   Viewer.reduceMotion = reduceMotion;
   return Viewer;
 })();

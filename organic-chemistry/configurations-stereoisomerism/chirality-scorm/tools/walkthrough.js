@@ -112,6 +112,11 @@ const fakeLMS = () => {
     if (via === 'button') await page.click(`.spearbar button[data-spear="${id}"]`);
     else if (via === 'key') { await page.focus(`.mol-wrap .spear[data-spear="${id}"]`); await page.keyboard.press('Enter'); }
     else if (via === 'rod') {
+      await page.evaluate((sid) => {
+        const c = [...document.querySelectorAll('canvas.c3d')].filter((x) => x._viewer && x._viewer.rods.some((r) => r.id === sid))[0];
+        c.scrollIntoView({ block: 'center' });
+      }, id);
+      await wait(150);
       const at = await page.evaluate((sid) => {
         const c = [...document.querySelectorAll('canvas.c3d')].filter((x) => x._viewer && x._viewer.rods.some((r) => r.id === sid))[0];
         const rs = c._viewer.rods.filter((x) => x.id === sid), r = rs[Math.floor(rs.length * 0.8)];
@@ -121,6 +126,7 @@ const fakeLMS = () => {
       await page.mouse.click(at.x, at.y);
     } else {
       /* a point on the shaft, partway out from the carbon (a vertical line has no width to aim at) */
+      await page.locator(`.mol-wrap .spear[data-spear="${id}"]`).scrollIntoViewIfNeeded();
       const at = await page.$eval(`.mol-wrap .spear[data-spear="${id}"] .spear-shaft`, (l) => {
         const sv = l.ownerSVGElement, pt = sv.createSVGPoint(), t = 0.62;
         pt.x = +l.getAttribute('x1') + (l.getAttribute('x2') - l.getAttribute('x1')) * t;
@@ -167,7 +173,10 @@ const fakeLMS = () => {
   await page.click('.screen .primary');
 
   async function quiz(sideTable) {
-    expect(!!(await page.$('.quiz-table[open] table')) === sideTable,
+    const chart = !!(await page.$('.quiz-table .isomer-chart'));
+    const isD = await page.evaluate(() => /Checkpoint 4/.test(document.querySelector('.quiz-grid h3') ? document.querySelector('.quiz-grid h3').textContent : ''));
+    expect(chart === isD, 'Klein\'s chart of isomers should sit beside checkpoint 4 only');
+    expect(!!(await page.$('.quiz-table details[open] table')) === sideTable,
       'checkpoint ' + (sideTable ? 'has no' : 'should not have an') + ' atomic-number table beside it');
     for (;;) {
       const btn = await page.$('.quiz .choice');
@@ -197,30 +206,32 @@ const fakeLMS = () => {
   await wait(1000);
   expect(/You predicted/.test(await page.textContent('.reveal')), 'mirror: reveal does not mention the wrong prediction');
   expect(/2 of 4/.test(await page.textContent('.meter-text')), 'mirror: CHBrClF should line up 2 of 4 atoms');
-  await page.click('button:has-text("Next molecule")');
-  await predictFig('Bromochloromethane');
-  await predict(0);
-  await spear('v180', 'button');
-  await page.click('button:has-text("Slide them together")');
-  await wait(1000);
-  await fb(/CH₂BrCl is achiral/, 'mirror step did not complete');
-  await page.click('button:has-text("Show the mirror plane")');
+  await fb(/A carbon with four different groups makes a molecule chiral/, 'mirror step did not complete');
+  expect(/four different groups/.test(await page.textContent('.reveal')), 'mirror: the reveal should point to four different groups');
   await next();
 
-  /* drawmirror: the turned-over molecule first (wrong), then both mirrors */
-  await place('Cl', '.slot[data-drop="ul"]'); await place('Br', '.slot[data-drop="ur"]');
-  await place('H', '.slot[data-drop="w"]'); await place('F', '.slot[data-drop="d"]');
-  await page.click('button:has-text("Check")');
-  await fb(/turned over|only turned/, 'turned-over drawing not explained');
-  await page.click('button:has-text("Clear")');
-  await place('Cl', '.slot[data-drop="ul"]'); await place('Br', '.slot[data-drop="ur"]');
-  await place('F', '.slot[data-drop="w"]'); await place('H', '.slot[data-drop="d"]');
-  await page.click('button:has-text("Check")');
-  await fb(/Correct! Now the mirror lies flat behind the page/, 'mirror beside not accepted');
-  await place('Br', '.slot[data-drop="ul"]'); await place('Cl', '.slot[data-drop="ur"]');
-  await place('H', '.slot[data-drop="w"]'); await place('F', '.slot[data-drop="d"]');
-  await page.click('button:has-text("Check")');
-  await fb(/Both mirror images drawn/, 'mirror behind not accepted');
+  /* drawmirror: Klein's three mirrors with amphetamine. Next to: first the
+     rotated drawing (wrong), then the right one; behind: first the image a
+     mirror next to it shows (wrong); beneath: right first time */
+  async function mirrorBuild(flip, bond) {
+    await page.click(`.choice-row button:has-text("${flip}")`);
+    await page.click(`.choice-row button:has-text("${bond}")`);
+    expect(await page.$('.mirror-build .glass-image'), 'drawmirror: the glass does not show the chosen drawing');
+    await page.click('.mirror-build button:has-text("Check")');
+  }
+  expect((await page.$$('.mirror-build .pane-glass')).length === 1, 'drawmirror: no glass pane');
+  await mirrorBuild('Left and right traded', 'Dash');
+  await fb(/rotated 180° on the vertical spear/, 'drawmirror: the rotated drawing not explained');
+  await mirrorBuild('Left and right traded', 'Wedge');
+  await fb(/Correct! A mirror next to the molecule/, 'drawmirror: next to not accepted');
+  await mirrorBuild('Left and right traded', 'Wedge');
+  await fb(/the mirror next to the molecule shows it/, 'drawmirror: another mirror\'s image not explained');
+  await mirrorBuild('As it is', 'Dash');
+  await fb(/Correct! A mirror behind the molecule/, 'drawmirror: behind not accepted');
+  await mirrorBuild('Top and bottom traded', 'Wedge');
+  await fb(/All three mirrors show the same molecule/, 'drawmirror step did not complete');
+  expect(/four different groups/.test((await page.$$eval('.reveal', (els) => els.map((e) => e.textContent))).join(' ')),
+    'drawmirror: the end should point to four different groups');
   await next();
 
   /* centres: one wrong click per molecule where there is one to make */
@@ -232,6 +243,15 @@ const fakeLMS = () => {
   await fb(/two CH₂CH₃ groups/, '3-methylpentane C3 not explained');
   await page.click('button:has-text("It has no chirality centres")');
   await wait(1200);
+  /* 3-chloropentane: two CH₂CH₃ groups; 3-bromohexane: CH₂CH₃ and CH₂CH₂CH₃ differ */
+  await page.click('.cdrop[data-drop="3"]');
+  await fb(/two CH₂CH₃ groups/, '3-chloropentane C3 not explained');
+  await page.click('button:has-text("It has no chirality centres")');
+  await wait(1200);
+  await page.click('button:has-text("It has no chirality centres")');
+  await fb(/Look again/, 'wrong "no chirality centres" accepted');
+  await page.click('.cdrop[data-drop="3"]');
+  await wait(1200);
   await page.click('button:has-text("It has no chirality centres")');
   await fb(/Look again/, 'wrong "no chirality centres" accepted');
   await page.click('.cdrop[data-drop="2"]');
@@ -240,7 +260,30 @@ const fakeLMS = () => {
   await wait(1200);
   await page.click('.cdrop[data-drop="2"]');
   await page.click('.cdrop[data-drop="3"]');
-  await fb(/All four molecules done/, 'centres step did not complete');
+  await fb(/All done: a chirality centre is a carbon with four different groups/, 'centres step did not complete');
+  await next();
+
+  /* chiral: find the centre (or none), then chiral or achiral; one wrong verdict */
+  {
+    const ids = await page.evaluate(() => App.STEPS.find((x) => x.id === 'chiral').mols);
+    let wrongDone = false;
+    for (const id of ids) {
+      const cs = await page.evaluate((x) => { const m = molecule(x); return CIP.centres(m).map((c) => m.atoms[c].num); }, id);
+      if (cs.length) for (const n of cs) await page.click(`.cdrop[data-drop="${n}"]`);
+      else await page.click('button:has-text("It has no chirality centres")');
+      await wait(300);
+      const right = cs.length ? 'Chiral' : 'Achiral', wrong = cs.length ? 'Achiral' : 'Chiral';
+      if (!wrongDone) {
+        await page.click(`.btnrow button:text-is("${wrong}")`);
+        await fb(cs.length ? /one chirality centre makes a molecule chiral/ : /no chirality centre: the molecule is achiral/,
+          'chiral: a wrong verdict not explained');
+        wrongDone = true;
+      }
+      await page.click(`.btnrow button:text-is("${right}")`);
+      await wait(1200);
+    }
+    await fb(/find a carbon with four different groups, and you know the molecule is chiral/, 'chiral step did not complete');
+  }
   await next();
 
   await quiz(false); await next();
@@ -403,6 +446,8 @@ const fakeLMS = () => {
     for (const k of keys) await page.click(`.rel-slot[data-drop="${k}"]`);
     await page.click('button:has-text("Check")');
     await fb(/both centres are opposite/, 'wrong relationship not explained');
+    await page.click('.rel-mirror >> nth=2');
+    expect(await page.$('.mirror-check .pane-glass'), 'four: Mirror does not show the pair in a mirror');
     await page.click('.tray .tile[data-tile="enantiomers"]');
     for (const k of keys) if (rel[k] === 'enantiomers') await page.click(`.rel-slot[data-drop="${k}"]`);
     await page.click('button:has-text("Check")');

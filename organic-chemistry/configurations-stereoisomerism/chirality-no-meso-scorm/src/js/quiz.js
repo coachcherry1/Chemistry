@@ -17,7 +17,7 @@
  * Figures (app.js, figure):
  *   { mol: id }                    a wedge/dash or bond-line drawing
  *     turn: n | 'over' | 'upside'  turned first (n indexes STEREO.orientations)
- *     mirror: 'beside' | 'behind'  reflected first
+ *     mirror: 'beside' | 'behind' | 'beneath'  reflected first (beside: next to)
  *     numbers: true                carbon numbers on a zigzag
  *   { flat: id }                   a ring drawn flat, as in the chairs activity
  *   { pair: [fig, fig], captions } two drawings side by side
@@ -32,7 +32,7 @@ var QUIZZES = {
   A: {
     title: 'Checkpoint 1: chirality',
     draw: 4,
-    core: ['a-chiral', 'a-centre-which'],
+    core: ['a-centre-which', 'a-butanol'],
     pool: [
       { id: 'a-chiral',
         q: 'What does it mean for a molecule to be chiral?',
@@ -87,7 +87,7 @@ var QUIZZES = {
         fig: { mol: 'chbrclf' },
         choices: [{ mol: 'chbrclf', mirror: 'beside' }, { mol: 'chbrclf', turn: 'over' }, { mol: 'chbrclf', turn: 4 },
                   { mol: 'chbrclf', turn: 9 }],
-        why: 'A mirror beside the molecule turns left into right and leaves the wedge and the dash alone. The other three ' +
+        why: 'A mirror next to the molecule turns left into right and leaves the wedge and the dash alone. The other three ' +
              'drawings are the molecule itself, turned: each would fit the original exactly.' },
       { id: 'a-mirror-behind',
         q: 'A mirror lies flat behind the page. What does it do to a drawing’s wedges and dashes?',
@@ -108,6 +108,16 @@ var QUIZZES = {
         why: 'A chirality centre needs four different groups on one carbon. C2 of 2-butanol carries H, OH, CH₃ and ' +
              'CH₂CH₃, so 2-butanol is chiral. C2 of 2-propanol carries H, OH and two identical CH₃ groups, so 2-propanol ' +
              'has a mirror plane and is achiral. Both have an OH on C2, and more carbons alone never make a molecule chiral.' },
+      { id: 'a-glycine',
+        q: 'Glycine is the only amino acid in your body that is achiral. Why?',
+        fig: { mol: 'glycine_line' },
+        choices: ['Its CH₂ carbon carries two H atoms, so no carbon has four different groups',
+                  'It has no oxygen atoms',
+                  'It contains a nitrogen atom',
+                  'It has a mirror image, so it must be achiral'],
+        why: 'Glycine’s only CH₂ carbon carries H, H, NH₂ and COOH: two of its groups are the same, so it is not a chirality ' +
+             'centre. Every other amino acid has a carbon with four different groups there, like alanine’s H, CH₃, NH₂ and ' +
+             'COOH, so they are chiral.' },
       { id: 'a-sp2',
         q: 'Can a carbon in a C=C double bond be a chirality centre?',
         choices: ['No: it is joined to only three atoms, not four',
@@ -288,7 +298,7 @@ var QUIZZES = {
   D: {
     title: 'Checkpoint 4: two centres and rings',
     draw: 4,
-    core: ['d-count', 'd-rel-dia'],
+    core: ['d-chart', 'd-rel-dia'],
     pool: [
       { id: 'd-count',
         q: 'How many stereoisomers does 2-bromo-3-chlorobutane have?',
@@ -303,7 +313,8 @@ var QUIZZES = {
       { id: 'd-rel-enant',
         q: '(2R,3R)-2-Bromo-3-chlorobutane and (2S,3S)-2-bromo-3-chlorobutane are…',
         choices: ['Enantiomers', 'Diastereomers', 'The same molecule', 'Constitutional isomers'],
-        why: 'Every centre is opposite, so they are mirror images that cannot be laid on each other: enantiomers.' },
+        why: 'Are they mirror images? Yes: every centre is opposite, so each is the other reflected. Nonsuperimposable ' +
+             'mirror images: enantiomers.' },
       { id: 'd-rel-pair',
         q: '(2R,3S)-2-Bromo-3-chlorobutane and (2S,3R)-2-bromo-3-chlorobutane are…',
         choices: ['Enantiomers', 'Diastereomers', 'The same molecule', 'Constitutional isomers'],
@@ -312,7 +323,14 @@ var QUIZZES = {
       { id: 'd-rel-dia',
         q: '(2R,3R)-2-Bromo-3-chlorobutane and (2R,3S)-2-bromo-3-chlorobutane are…',
         choices: ['Diastereomers', 'Enantiomers', 'The same molecule', 'Constitutional isomers'],
-        why: 'C2 is the same in both and C3 is opposite. They are stereoisomers but not mirror images: diastereomers.' },
+        why: 'Are they mirror images? No: C2 is the same in both and only C3 is opposite, and a mirror changes every centre. ' +
+             'Stereoisomers that are NOT mirror images: diastereomers.' },
+      { id: 'd-chart',
+        q: 'Two stereoisomers have the same connectivity and are not superimposable, and they are NOT mirror images of each ' +
+           'other. They are…',
+        choices: ['Diastereomers', 'Enantiomers', 'Constitutional isomers', 'The same molecule'],
+        why: 'Follow Klein’s chart: same connectivity and nonsuperimposable makes them stereoisomers. Then one question ' +
+             'decides it: mirror images or not? Mirror images are enantiomers; NOT mirror images, diastereomers.' },
       { id: 'd-which-dia',
         q: 'Which two stereoisomers of 2-bromo-3-chlorobutane are diastereomers?',
         choices: ['(2R,3R) and (2R,3S)', '(2R,3R) and (2S,3S)', '(2R,3S) and (2S,3R)'], compact: true,

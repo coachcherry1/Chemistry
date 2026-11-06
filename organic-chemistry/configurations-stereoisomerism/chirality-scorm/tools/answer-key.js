@@ -88,20 +88,25 @@ const S = (id) => App.STEPS.find((s) => s.id === id);
 const pk = (k) => App.PREDICT[k].choices[App.PREDICT[k].answer];
 P('### Mirror, mirror');
 P();
-P(`Predictions: CHBrClF's mirror image fits? **${pk('fit1')}**. CH₂BrCl's? **${pk('fit2')}**. CHBrClF: at most 2 of 4 atoms ` +
-  'ever line up, whatever spear the image is rotated on. CH₂BrCl: all 4 line up after the **vertical spear** (180°) on the ' +
-  'image; its mirror plane is the page (through Br, C and Cl).');
+P(`Prediction: CHBrClF's mirror image fits? **${pk('fit1')}**. At most 2 of 4 atoms ever line up, whatever spear the image ` +
+  `is rotated on. The reason given: its carbon carries four different groups (${App.groupsOn(mol('chbrclf'), mol('chbrclf').centre)}).`);
 P();
-P('### Draw the mirror image');
+P("### Three mirrors (Klein's figure)");
 P();
 {
   const m = mol(S('drawmirror').mol);
-  for (const w of ['beside', 'behind']) {
-    const a = STEREO.arrangement(STEREO.mirror(m, w));
-    P(`Mirror ${w === 'beside' ? 'beside the molecule' : 'behind the page'}: ` + Object.keys(a).map((s) => `${GROUPS[a[s]].label} ${SLOT[s]}`).join(', ') + '.');
-    P();
+  P(`${m.name} as drawn: ${drawing(m)}. Students build each mirror's image from two choices (which way the drawing faces, ` +
+    'and wedge or dash for the CH₃); exactly one of the six is right for each mirror:');
+  P();
+  const FLIP = { none: 'as it is', lr: 'left and right traded', tb: 'top and bottom traded' };
+  for (const x of App.MIRRORS3) {
+    for (const f of ['none', 'lr', 'tb']) for (const bd of ['wedge', 'dash']) {
+      if (App.judgeMirror(m, x.key, f, bd).ok) P(`- **${x.name}**: ${FLIP[f]}, CH₃ on the ${bd}.`);
+    }
   }
-  P('The mirror-image template is drawn with its wedge on the right, so the right answer looks exactly like the reflection.');
+  P();
+  P('Wrong builds are explained as what they are: the molecule as drawn, the molecule rotated 180° on a spear (it fits ' +
+    'the original), or the image another mirror shows. All three images are one molecule, the enantiomer.');
   P();
 }
 P('### Find the chirality centres');
@@ -110,6 +115,14 @@ for (const id of S('centres').mols) {
   const m = mol(id);
   const cs = CIP.centres(m).map((c) => 'C' + m.atoms[c].num);
   P(`- ${m.name}: **${cs.length ? cs.join(' and ') : 'none'}**`);
+}
+P();
+P('### Chiral or not?');
+P();
+for (const id of S('chiral').mols) {
+  const m = mol(id), cs = CIP.centres(m);
+  P(`- ${m.name} (${m.spec.note}): ${cs.length ? 'C' + m.atoms[cs[0]].num + ' carries ' + App.groupsOn(m, cs[0])
+    : 'no carbon carries four different groups'}: **${STEREO.chiral(m) ? 'chiral' : 'achiral'}**`);
 }
 P();
 P('### Priorities');
@@ -169,7 +182,13 @@ P();
   const L = ['A', 'B', 'C', 'D'];
   P(`Prediction: **${pk('count4')}** stereoisomers. ` + ms.map((m, i) => `${L[i]} ${cfg(m)}`).join(', ') + '.');
   P();
-  for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) P(`- ${L[i]} and ${L[j]}: **${STEREO.relation(ms[i], ms[j])}**`);
+  for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) {
+    const r = STEREO.relation(ms[i], ms[j]);
+    P(`- ${L[i]} and ${L[j]}: mirror images? ${r === 'enantiomers' ? 'yes' : 'no'}: **${r}**`);
+  }
+  P();
+  P('The tiles read "Enantiomers: mirror images" and "Diastereomers: NOT mirror images". Each row\'s Mirror button shows ' +
+    'the first molecule in a mirror behind it, beside the second. Klein\'s chart of the kinds of isomers sits below.');
   P();
 }
 P('### Two centres: chiral or meso?');

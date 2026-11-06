@@ -17,6 +17,11 @@
   --alt:     #c0582b;
   --sketch:  #a879c4;
   --spear:   #b05f00;
+  --glass-a: #f2fafc;
+  --glass-m: #cfe9f1;
+  --glass-b: #8fc6d9;
+  --glass-edge: #4f7f91;
+  --chart-key: #c9281f;
   --good:    #0f7a52;
   --good-bg: #e4f4ec;
   --bad:     #b3261e;
@@ -55,6 +60,11 @@
     --alt:     #f08a5d;
     --sketch:  #c79ae0;
     --spear:   #f5a742;
+    --glass-a: #1d3640;
+    --glass-m: #2a5262;
+    --glass-b: #3f7b90;
+    --glass-edge: #8fc3d4;
+    --chart-key: #ff8a80;
     --good:    #57c99a;
     --good-bg: #123028;
     --bad:     #f08a82;
@@ -92,6 +102,11 @@
   --alt:     #f08a5d;
   --sketch:  #c79ae0;
   --spear:   #f5a742;
+  --glass-a: #1d3640;
+  --glass-m: #2a5262;
+  --glass-b: #3f7b90;
+  --glass-edge: #8fc3d4;
+  --chart-key: #ff8a80;
   --good:    #57c99a;
   --good-bg: #123028;
   --bad:     #f08a82;
@@ -314,6 +329,38 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .with-spears .badge, .with-spears .ctag, .with-spears .zz-num, .with-spears .rs-arrow, .with-spears .rs-arrow-head,
 .with-spears .plane-line, .with-spears .plane-text { pointer-events: none; }
 .with-spears .zz-label { paint-order: stroke; stroke: var(--panel); stroke-width: 4px; stroke-linejoin: round; }
+/* Klein's mirrors: a pane of tinted glass with the mirror image on it */
+.mirror-scene { display: block; max-width: 100%; height: auto; overflow: visible; }
+.glass-a { stop-color: var(--glass-a); }
+.glass-m { stop-color: var(--glass-m); }
+.glass-b { stop-color: var(--glass-b); }
+.pane-glass { stroke: var(--glass-edge); stroke-width: 1; opacity: 0.9; }
+.pane-edge { fill: var(--glass-edge); opacity: 0.85; }
+.pane-label { font-style: italic; font-weight: 700; font-size: 15px; fill: var(--ink); }
+.pane-q { font-size: 44px; font-weight: 700; fill: var(--glass-edge); opacity: 0.6; }
+.mirror-check { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 12px; align-items: center; }
+.mirror-check .mirror-scene { width: 100%; max-height: min(330px, 52vh); }
+.mirror-check .mol-wrap .mol { max-width: 230px; max-height: 150px; }
+.mirror-check figure { margin: 0; text-align: center; }
+.mirror-check figcaption { font-size: 0.8rem; color: var(--muted); }
+.rel-mirror { margin-left: 6px; }
+.enant-pane { align-items: center; }
+.enant-pane .mirror-scene { width: 100%; max-width: 460px; max-height: min(260px, 40vh); justify-self: center; }
+.chart-wrap { margin-top: 10px; }
+/* Klein's chart of the kinds of isomers */
+.isomer-chart { display: block; width: 100%; max-width: 544px; height: auto; }
+.chart-line { stroke: var(--ink); stroke-width: 1.2; }
+.chart-shadow { fill: var(--ink); }
+.chart-rect { fill: var(--panel); stroke: var(--ink); stroke-width: 1.2; }
+.chart-box.hot .chart-rect { stroke: var(--accent); stroke-width: 3; }
+.chart-title { font-weight: 700; font-size: 15px; fill: var(--ink); }
+.chart-note { font-size: 13px; fill: var(--muted); }
+.chart-key { font-size: 13.5px; fill: var(--chart-key); }
+.choice-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 6px 0; }
+.choice-row .lbl { font-size: 0.8rem; color: var(--muted); min-width: 7.5em; }
+.mini.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.scene-wrap { display: flex; justify-content: center; }
+.scene-wrap .mirror-scene { width: 100%; max-width: 640px; max-height: min(320px, 50vh); }
 .spearbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
 .spearbar .lbl { font-size: 0.75rem; color: var(--muted); }
 .spearbar .mini { border-color: var(--spear); }

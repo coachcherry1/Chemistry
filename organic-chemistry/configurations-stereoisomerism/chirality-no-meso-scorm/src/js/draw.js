@@ -148,7 +148,8 @@ var Draw = (function () {
   function layout(m, opts) {
     opts = opts || {};
     var out = { verts: {}, bonds: [], groups: {}, ends: {} };
-    var labelAll = opts.style === 'labels' || (opts.style !== 'skeletal' && (m.kind === 'centre' || !!m.spec.chain.ends));
+    var labelAll = opts.style === 'labels' || (opts.style !== 'skeletal' && !m.spec.skeletal &&
+      (m.kind === 'centre' || !!m.spec.chain.ends));
     var origin = opts.origin || (opts.originAtom != null ? m.atoms[opts.originAtom].p : m.kind === 'centre' ? m.atoms[m.centre].p : [0, 0, 0]);
     function P(p) { return proj(G.sub(p, origin)); }
     var vertices = m.kind === 'centre' ? [m.centre] : m.backbone.slice();
@@ -177,6 +178,11 @@ var Draw = (function () {
       splayPlain(here);
       here.forEach(function (b) {
         var a = m.atoms[b.b];
+        if (a.aryl) {                                              /* a benzene ring: drawn below */
+          b.from = out.verts[v]; b.to = P(a.p); b.labelled = false;
+          out.bonds.push(b); out.groups[b.b] = b;
+          return;
+        }
         var labelled = labelAll || a.el !== 'C';
         if (a.terminal && !labelled) return;                       /* a CH₃ end is just the line */
         var len = b.end ? 1.54 * S * 0.82 : BOND;
@@ -194,6 +200,16 @@ var Draw = (function () {
         }
       });
     });
+    /* a benzene ring, as a hexagon with its three double bonds drawn inside */
+    var ar = m.atoms.filter(function (a) { return a.aryl; });
+    if (ar.length) {
+      var rc = P(G.mul(ar.reduce(function (s, a) { return G.add(s, a.p); }, [0, 0, 0]), 1 / ar.length));
+      m.bonds.forEach(function (bd) {
+        var x = m.atoms[bd[0]], y = m.atoms[bd[1]];
+        if (!x.aryl || !y.aryl) return;
+        out.bonds.push({ a: bd[0], b: bd[1], style: 'plain', ring: true, order: bd[2], from: P(x.p), to: P(y.p), centre: rc });
+      });
+    }
     /* the CH₃ ends of a bond-line zigzag are its last vertices */
     if (m.kind === 'chain') {
       [m.backbone[0], m.backbone[m.backbone.length - 1]].forEach(function (i) {
@@ -400,6 +416,116 @@ var Draw = (function () {
     return node;
   }
 
+  /* ------------------------------------------------------- Klein's mirrors */
+
+  /* A molecule and its mirror, drawn as Klein draws them: a pane of tinted
+     glass in perspective, with the mirror image drawn on it and labelled
+     Enantiomer.
+       kind     'beside' (the mirror next to the molecule), 'behind' or
+                'beneath'
+       molSvg   the molecule's drawing (Draw.mol)
+       imgSvg   the mirror image's drawing, or null for an empty mirror (a
+                question mark on the glass)
+       opts.label  the word on the glass ('Enantiomer'); opts.cls */
+  var paneId = 0;
+  function pane(kind, molSvg, imgSvg, opts) {
+    opts = opts || {};
+    var id = 'glass' + (++paneId);
+    var mw = +molSvg.getAttribute('width'), mh = +molSvg.getAttribute('height');
+    var iw = imgSvg ? +imgSvg.getAttribute('width') : mw, ih = imgSvg ? +imgSvg.getAttribute('height') : mh;
+    /* a drawing's contents moved into a group at (x, y), so the page's styles
+       for drawings cannot resize it */
+    function place(inner, at, cls) {
+      var vb = viewBox(inner);
+      var g = el('g', { class: cls, transform: 'translate(' + (at[0] - vb[0]).toFixed(1) + ' ' + (at[1] - vb[1]).toFixed(1) + ')' }, s);
+      while (inner.firstChild) g.appendChild(inner.firstChild);
+      return g;
+    }
+    var s = svg('mirror-scene ' + (opts.cls || ''), opts.aria || '');
+    var defs = el('defs', null, s);
+    var gr = el('linearGradient', { id: id, x1: 0, y1: 0, x2: 1, y2: 1 }, defs);
+    el('stop', { offset: '0', class: 'glass-a' }, gr);
+    el('stop', { offset: '0.55', class: 'glass-m' }, gr);
+    el('stop', { offset: '1', class: 'glass-b' }, gr);
+    var pad = 14, label = opts.label == null ? 'Enantiomer' : opts.label;
+    var W, H, poly, edge, imgAt, molAt, labelAt;
+    function pts(a) { return a.map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' '); }
+    if (kind === 'beside') {
+      var pw = iw + 2 * pad + 12, ph = Math.max(mh, ih) + 2 * pad + 26, x0 = mw + 34, y0 = 10;
+      poly = [[x0, y0 + 8], [x0 + pw, y0 - 6], [x0 + pw, y0 + ph + 6], [x0, y0 + ph - 8]];
+      edge = [[x0 + pw, y0 - 6], [x0 + pw + 6, y0 - 4], [x0 + pw + 6, y0 + ph + 8], [x0 + pw, y0 + ph + 6]];
+      imgAt = [x0 + pad + 6, y0 + pad + (ph - 2 * pad - 26 - ih) / 2];
+      molAt = [0, y0 + (ph - 26 - mh) / 2];
+      labelAt = [x0 + pad, y0 + ph - 18];
+      W = x0 + pw + 10; H = y0 + ph + 12;
+    } else if (kind === 'behind') {
+      var bw = iw + 2 * pad + 30, bh = ih + 2 * pad + 28, sk = 34, bx = Math.round(mw * 0.42);
+      poly = [[bx + sk, 0], [bx + sk + bw, 0], [bx + bw, bh], [bx, bh]];
+      edge = [[bx, bh], [bx + bw, bh], [bx + bw - 1, bh + 5], [bx - 1, bh + 5]];
+      imgAt = [bx + sk / 2 + pad + 10, pad + 24];
+      labelAt = [bx + sk + pad - 4, 22];
+      molAt = [0, bh - mh * 0.15];
+      W = Math.max(bx + sk + bw, mw) + 8; H = molAt[1] + mh + 4;
+    } else {
+      var tw = Math.max(iw, mw) + 2 * pad + 70, th = ih + 2 * pad + 22, inset = 34, ty = mh + 14;
+      poly = [[inset, ty], [tw - inset, ty], [tw, ty + th], [0, ty + th]];
+      edge = [[0, ty + th], [tw, ty + th], [tw, ty + th + 6], [0, ty + th + 6]];
+      imgAt = [(tw - iw) / 2, ty + pad - 2];
+      molAt = [(tw - mw) / 2, 0];
+      labelAt = [inset - 4, ty + th - 10];
+      W = tw + 4; H = ty + th + 10;
+    }
+    el('polygon', { points: pts(poly), class: 'pane-glass', fill: 'url(#' + id + ')' }, s);
+    el('polygon', { points: pts(edge), class: 'pane-edge' }, s);
+    if (imgSvg) {
+      place(imgSvg, imgAt, 'glass-image');
+    } else {
+      el('text', { x: imgAt[0] + iw / 2, y: imgAt[1] + ih / 2, 'text-anchor': 'middle', 'dominant-baseline': 'central',
+                   class: 'pane-q' }, s, '?');
+    }
+    if (label && imgSvg) el('text', { x: labelAt[0], y: labelAt[1], class: 'pane-label' }, s, label);
+    place(molSvg, molAt, 'glass-molecule');
+    s.setAttribute('viewBox', '0 0 ' + W.toFixed(1) + ' ' + H.toFixed(1));
+    s.setAttribute('width', Math.round(W));
+    s.setAttribute('height', Math.round(H));
+    return s;
+  }
+
+  /* Klein's chart of the kinds of isomers (Fig. 5.11): two words decide it,
+     connectivity and mirror images. `hot` names a box to light up. */
+  function isomerChart(hot) {
+    var s = svg('isomer-chart', 'Kinds of isomers. Isomers are constitutional isomers (different connectivity) or ' +
+      'stereoisomers (same connectivity, nonsuperimposable). Stereoisomers are enantiomers (nonsuperimposable mirror ' +
+      'images) or diastereomers (nonsuperimposable, and NOT mirror images).');
+    var boxes = [
+      { k: 'iso', x: 200, y: 4, w: 110, h: 32, t: ['Isomers'] },
+      { k: 'con', x: 4, y: 62, w: 196, h: 58, t: ['Constitutional isomers', '(Different connectivity)'] },
+      { k: 'ste', x: 300, y: 62, w: 196, h: 76, t: ['Stereoisomers', '(Same connectivity)', '!Nonsuperimposable'] },
+      { k: 'ena', x: 196, y: 170, w: 160, h: 74, t: ['Enantiomers', '!Nonsuperimposable', '!mirror images'] },
+      { k: 'dia', x: 366, y: 170, w: 170, h: 74, t: ['Diastereomers', '!Nonsuperimposable,', '!and NOT mirror images'] }
+    ];
+    function mid(b, side) { return side === 'top' ? [b.x + b.w / 2, b.y] : [b.x + b.w / 2, b.y + b.h]; }
+    var B = {}; boxes.forEach(function (b) { B[b.k] = b; });
+    [['iso', 'con'], ['iso', 'ste'], ['ste', 'ena'], ['ste', 'dia']].forEach(function (e) {
+      var a = mid(B[e[0]], 'bottom'), b = mid(B[e[1]], 'top');
+      el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], class: 'chart-line' }, s);
+    });
+    boxes.forEach(function (b) {
+      var g = el('g', { class: 'chart-box' + (hot === b.k ? ' hot' : '') }, s);
+      el('rect', { x: b.x + 4, y: b.y + 4, width: b.w, height: b.h, class: 'chart-shadow' }, g);
+      el('rect', { x: b.x, y: b.y, width: b.w, height: b.h, class: 'chart-rect' }, g);
+      b.t.forEach(function (line, i) {
+        var key = line.charAt(0) === '!';
+        el('text', { x: b.x + b.w / 2, y: b.y + 20 + i * 18, 'text-anchor': 'middle',
+                     class: i === 0 ? 'chart-title' : key ? 'chart-key' : 'chart-note' }, g, key ? line.slice(1) : line);
+      });
+    });
+    s.setAttribute('viewBox', '0 0 544 250');
+    s.setAttribute('width', 544);
+    s.setAttribute('height', 250);
+    return s;
+  }
+
   /* The viewBox of a drawing, [x, y, w, h]. */
   function viewBox(s) { return s.getAttribute('viewBox').split(' ').map(Number); }
 
@@ -443,6 +569,13 @@ var Draw = (function () {
     var hot = opts.hot || [];
     L.bonds.forEach(function (b) {
       bondEl(b, g, (hot.indexOf(b.b) >= 0 || hot.indexOf(b.a) >= 0 && b.chain && hot.indexOf(b.b) >= 0) ? 'hot' : '');
+      if (b.ring && b.order === 2) {
+        /* the second line of a ring double bond, inside the ring and a little shorter */
+        var f = [b.from[0] + (b.centre[0] - b.from[0]) * 0.2, b.from[1] + (b.centre[1] - b.from[1]) * 0.2];
+        var t = [b.to[0] + (b.centre[0] - b.to[0]) * 0.2, b.to[1] + (b.centre[1] - b.to[1]) * 0.2];
+        var dx = t[0] - f[0], dy = t[1] - f[1];
+        el('line', { x1: f[0] + dx * 0.12, y1: f[1] + dy * 0.12, x2: t[0] - dx * 0.12, y2: t[1] - dy * 0.12, class: 'zz-bond' }, g);
+      }
       pts.push(b.to);
     });
     /* a mirror plane seen edge-on: a dashed line */
@@ -516,6 +649,7 @@ var Draw = (function () {
     /* targets: groups */
     Object.keys(opts.targets || {}).forEach(function (j) {
       var t = opts.targets[j], b = L.groups[j];
+      if (!b && !L.verts[j]) return;                    /* a hidden H: nothing drawn to click */
       var node = el('g', { class: 'drop gdrop ' + (t.cls || ''), 'data-drop': t.key, tabindex: 0, role: 'button',
                            'aria-label': t.aria || '' }, g);
       if (b && b.labelled) {
@@ -740,6 +874,6 @@ var Draw = (function () {
   return {
     mol: mol, template: template, flat: flat, newman: newman, layout: layout, drawnClockwise: drawnClockwise, badgeAt: badgeAt,
     slotLayout: slotLayout, SLOT_WORDS: SLOT_WORDS, where: where, describe: describe, el: el, svg: svg, fit: fit,
-    viewBox: viewBox
+    viewBox: viewBox, pane: pane, isomerChart: isomerChart
   };
 })();
