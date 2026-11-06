@@ -14,13 +14,13 @@
 
   <organizations default="BUFFERS_ORG">
     <organization identifier="BUFFERS_ORG">
-      <title>Buffers</title>
+      <title>Buffer Solution Visualization</title>
       <item identifier="BUFFERS_ITEM" identifierref="BUFFERS_RES" isvisible="true">
         <!-- No masteryscore: the SCO reports a 0-100 score and sets "completed"
              itself, so the LMS should not overwrite the status with passed/failed.
              Identifiers differ from every other package, so all can sit in one
              course. -->
-        <title>Buffers</title>
+        <title>Buffer Solution Visualization</title>
       </item>
     </organization>
   </organizations>

@@ -447,7 +447,7 @@ var App = (function () {
 
   function showIntro() {
     var box = h('div', { class: 'screen-box', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'introTitle' }, [
-      h('h2', { id: 'introTitle', text: 'Buffers: how a solution resists a change in pH' }),
+      h('h2', { id: 'introTitle', text: 'Buffer Solution Visualization' }),
       h('p', { text: 'Add a few drops of strong acid to pure water and the pH crashes. Add the same drops to a buffer and the pH hardly moves. ' +
                      'You will watch the particles to see why.' }),
       h('ul', { class: 'screen-list' }, [

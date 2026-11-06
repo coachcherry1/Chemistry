@@ -1,4 +1,4 @@
-# Buffers: how a solution resists a change in pH
+# Buffer Solution Visualization
 
 A SCORM 1.2 activity for Schoology, for AP Chemistry (Unit 8, acids and bases). It **introduces what a buffer is**: a weak acid
 with its conjugate base, or a weak base with its conjugate acid, with appreciable amounts of both. Students watch **particle

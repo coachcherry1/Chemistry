@@ -33,7 +33,7 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `ap-chemistry/bonding/resonance-scorm/` | Resonance structures and the hybrid, same 5 rules and builder |
 | `ap-chemistry/kinetics/acetone-kinetics-scorm/` | Virtual lab: iodination of acetone by initial rates |
 | `ap-chemistry/acids-bases/titration-curves-scorm/` | Titration curves: a particle diagram at five points, strong acid (HCl) vs weak acid (HF), why the equivalence point differs, acetic acid review (conceptual) |
-| `ap-chemistry/acids-bases/buffers-scorm/` | Buffers: an acid or base added to a buffer, particle diagrams of the reaction, why the pH barely moves, the Henderson-Hasselbalch equation (only for buffers) (first draft) |
+| `ap-chemistry/acids-bases/buffers-scorm/` | Buffer Solution Visualization: an acid or base added to a buffer, particle diagrams of the reaction, why the pH barely moves, the Henderson-Hasselbalch equation (only for buffers) (first draft) |
 
 **Organic chemistry elective (Klein)**
 
@@ -280,7 +280,7 @@ not the full page.
 - **Files:** `chem.js`, `scenes.js`, `judge.js`, `render.js`, `arrows.js`, `energy.js`, `picker.js`, `quiz.js`, `scorm.js`,
   `app.js`, `steps1.js` (Parts 1-2), `steps2.js` (Parts 3-4).
 
-## buffers-scorm (zip v1, SCHEMA 1; first draft, to be flushed out with the teacher)
+## buffers-scorm, "Buffer Solution Visualization" (zip v1, SCHEMA 1; first draft, to be flushed out with the teacher)
 
 - **Key objective:** a buffer has a particle ready for added acid (the base member) and one ready for added base (the acid member);
   added H⁺ or OH⁻ is used up, the ratio changes little, so the pH changes little. Not about making a buffer.
