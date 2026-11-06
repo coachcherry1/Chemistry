@@ -1,9 +1,7 @@
-/* charts.js: the two charts under the controls.
+/* charts.js: the pH graph under the controls.
  *
- *   Charts.graph(...)     pH against drops: this buffer, pure water, and a dot at the beaker
- *   Charts.strength(...)  "Same drops, stronger buffer": the pH change for the same number of
- *                         drops when one species (or both) is multiplied by 1/2, 1, 2 and 4
- * Every number is worked out by Buf, so the chart and the beaker agree.
+ *   Charts.graph(...)   pH against drops: this buffer, pure water (which can be hidden), and a dot at the beaker
+ * Every number is worked out by Buf, so the graph and the beaker agree.
  */
 
 var Charts = (function () {
@@ -74,95 +72,5 @@ var Charts = (function () {
     return { node: node, update: update };
   }
 
-  /* ---------------------------------------------------------------- strength chart */
-
-  var MULTS = [0.5, 1, 2, 4];
-  var CAP = 6;                       /* the tallest bar stands for this many pH units */
-
-  function fmtM(units) { return (units * Buf.U).toFixed(3).replace(/0$/, '') + ' M'; }
-  function f2(v) { return v.toFixed(2); }
-  function signed(v) { return (v < 0 ? '−' : '+') + Math.abs(v).toFixed(2); }
-
-  /* the numbers behind the chart, so a validator can check them: one entry per multiplier */
-  function strengthData(pair, ha, a, dir, n, vary) {
-    return MULTS.map(function (m) {
-      var ha2 = ha * (vary === 'A' ? 1 : m), a2 = a * (vary === 'HA' ? 1 : m);
-      var c = Buf.change(pair, ha2, a2, dir, n);
-      return { mult: m, ha: ha2, a: a2, start: c.start, end: c.end, delta: c.delta, left: Buf.reserve(ha2, a2, dir, n) };
-    });
-  }
-
-  /* strength(onChange) -> { node, update(pair, ha, a), state } */
-  function strength() {
-    var st = { dir: 'acid', n: 5, vary: 'A' };
-    var pairNow = 'HA', haNow = 10, aNow = 10;
-    var bars = h('div', { class: 'bars' });
-    var note = h('p', { class: 'strength-note' });
-    var nOut = h('b', { class: 'n-out' });
-
-    function seg(items, key) {
-      return h('div', { class: 'seg', role: 'group' }, items.map(function (it) {
-        var attrs = { type: 'button', class: 'mini' + (st[key] === it[0] ? ' on' : ''), 'aria-pressed': st[key] === it[0] ? 'true' : 'false',
-          text: it[1], onclick: function () { st[key] = it[0]; paintControls(); draw(); } };
-        attrs['data-' + key] = it[0];
-        return h('button', attrs);
-      }));
-    }
-    var ctlHost = h('div', { class: 'strength-ctl' });
-    function paintControls() {
-      var P = Buf.PAIRS[pairNow];
-      ctlHost.innerHTML = '';
-      ctlHost.appendChild(h('div', { class: 'ctl-row' }, [h('span', { class: 'ctl-name', text: 'Add' }),
-        seg([['acid', 'HCl'], ['base', 'NaOH']], 'dir'),
-        h('button', { type: 'button', class: 'step', 'aria-label': 'Fewer drops', text: '−', onclick: function () { st.n = Math.max(1, st.n - 1); paintControls(); draw(); } }),
-        h('span', { class: 'n-box' }, [nOut]),
-        h('button', { type: 'button', class: 'step', 'aria-label': 'More drops', text: '+', onclick: function () { st.n = Math.min(10, st.n + 1); paintControls(); draw(); } }),
-        h('span', { class: 'ctl-name', text: 'drops' })]));
-      nOut.textContent = String(st.n);
-      ctlHost.firstChild.querySelector('.n-box').appendChild(nOut);
-      ctlHost.appendChild(h('div', { class: 'ctl-row' }, [h('span', { class: 'ctl-name', text: 'Make more' }),
-        seg([['A', P.a], ['HA', P.ha], ['both', 'both']], 'vary')]));
-    }
-
-    function draw() {
-      var P = Buf.PAIRS[pairNow];
-      bars.innerHTML = ''; note.textContent = '';
-      var varied = st.vary === 'A' ? aNow : (st.vary === 'HA' ? haNow : Math.min(haNow, aNow));
-      if (varied <= 0) {
-        bars.appendChild(h('p', { class: 'muted big', text: 'Set the ' + (st.vary === 'HA' ? P.ha : P.a) + ' slider above 0 to compare.' }));
-        return;
-      }
-      var data = strengthData(pairNow, haNow, aNow, st.dir, st.n, st.vary);
-      data.forEach(function (d) {
-        var tall = Math.min(1, Math.abs(d.delta) / CAP);
-        var over = Math.abs(d.delta) > CAP;
-        var col = h('div', { class: 'bar-col' + (d.mult === 1 ? ' now' : ''), 'data-mult': String(d.mult) }, [
-          h('div', { class: 'bar-val', text: signed(d.delta) }),
-          h('div', { class: 'bar-track' }, [h('div', { class: 'bar bar-' + st.dir + (over ? ' bar-over' : ''), style: 'height:' + Math.max(2, Math.round(tall * 100)) + '%' })]),
-          h('div', { class: 'bar-x', text: '×' + (d.mult === 0.5 ? '½' : d.mult) + (d.mult === 1 ? ' (now)' : '') }),
-          h('div', { class: 'bar-conc', text: st.vary === 'both' ? P.ha + ' ' + fmtM(d.ha) + ', ' + P.a + ' ' + fmtM(d.a)
-            : (st.vary === 'A' ? P.a + ' ' + fmtM(d.a) : P.ha + ' ' + fmtM(d.ha)) }),
-          h('div', { class: 'bar-pH', text: 'pH ' + f2(d.start) + ' → ' + f2(d.end) }),
-          h('div', { class: 'bar-left' + (d.left === 0 ? ' gone' : ''), text: (st.dir === 'acid' ? P.a : P.ha) + ' left: ' + (d.left === 0 ? 'none' : (d.left * Buf.U).toFixed(3).replace(/0$/, '') + ' M') })]);
-        bars.appendChild(col);
-      });
-      var one = data[1], two = data[2];
-      var who = st.vary === 'both' ? 'both members' : (st.vary === 'A' ? P.a : P.ha);
-      var strong = st.dir === 'acid' ? 'HCl' : 'NaOH';
-      var reacting = st.dir === 'acid' ? P.a : P.ha;
-      if (one.left === 0) {
-        note.textContent = 'These ' + st.n + ' drops of ' + strong + ' use up all of the ' + reacting + ' in the beaker now, so the pH changes sharply. More of it, and the buffer holds.';
-      } else {
-        note.textContent = 'Same ' + st.n + ' drops of ' + strong + '. Doubling ' + who + (st.vary === 'both' ? '' : ' (the other stays the same)') + ' shrinks the pH change from ' +
-          f2(Math.abs(one.delta)) + ' to ' + f2(Math.abs(two.delta)) + '.';
-      }
-    }
-
-    function update(pair, ha, a) { pairNow = pair; haNow = ha; aNow = a; paintControls(); draw(); }
-    var node = h('div', { class: 'strength' }, [ctlHost, bars, note]);
-    paintControls();
-    return { node: node, update: update, state: st };
-  }
-
-  return { graph: graph, strength: strength, strengthData: strengthData, MULTS: MULTS };
+  return { graph: graph };
 })();

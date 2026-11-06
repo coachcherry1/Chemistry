@@ -32,26 +32,22 @@ A run of 5 drops plays the same sequence five times, faster. With reduced motion
 
 ## Showing that more of each species means a smaller pH change
 
-The **Same drops, stronger buffer** tab (beside **pH vs drops**) answers it directly. Choose HCl or NaOH, the number of drops
-(1 to 10), and what to make more of: **A⁻**, **HA** or **both**. Four bars show the pH change for the same drops with that species at
-**×½, ×1 (what the sliders say now), ×2 and ×4**, with the concentration, the start and end pH, and how much of the reacting
-species is **left**. A sentence under the bars says what doubling does, from the real numbers. Where the species is used up the bar
-is hatched and the sentence says the buffer runs out. The validator checks that, for every slider setting and every drop count where
-the reacting member survives, more of A⁻, of HA or of both always gives a smaller change.
-
-The **pH vs drops** tab draws this buffer's curve against pure water, with a dot for the beaker, so the flat middle and the cliff
-where a member runs out are on screen too.
+Use the two sliders and the meter. Set a small amount of A⁻ (say 0.03 M) and add 5 drops of HCl: the meter shows the change since the
+start (large, and the hatched particles show the A⁻ nearly used up). Reset, raise A⁻ to 0.10 M and add the same 5 drops: the change is
+smaller. Raise it to 0.20 M: smaller again. Do the same with HA and NaOH. The **pH vs drops** graph redraws as the sliders move, so the
+flat middle gets longer (the buffer holds more drops) and the cliff where a member runs out moves outward. The validator checks that, for
+every setting, one more step of A⁻ (for HCl) or of HA (for NaOH) never gives a larger pH change while the member lasts.
 
 ## How it is built
 
 One model (`buffer.js`) makes every number: the exact pH from a charge balance (acid member HA, base member A⁻, Ka 1.8 × 10⁻⁵, pKa
-4.74), the particle counts, the curves and the strength chart. Files: `buffer.js`, `beaker.js` (the beaker, the dropper and the
-animation of one drop), `charts.js` (the graph and the strength chart), `app.js`, `scorm.js`, `util.js`. Offline only, no CDN. Works
+4.74), the particle counts and the curves. Files: `buffer.js`, `beaker.js` (the beaker, the dropper and the
+animation of one drop), `charts.js` (the pH graph), `app.js`, `scorm.js`, `util.js`. Offline only, no CDN. Works
 with a mouse, a touch screen (large targets for a smartboard) or the keyboard. Dark mode. `?speed=0` skips the animation, any other
-number scales it. `?tab=strength` opens the strength chart, `?water=0` starts with pure water hidden.
+number scales it. `?water=0` starts with pure water hidden.
 
 ```bash
-node tools/validate.js                    # the chemistry, every beaker state, the strength chart, packaging
+node tools/validate.js                    # the chemistry, every beaker state, the "more of a species" rule, packaging
 ./build.sh buffer-beaker-demo-v1          # zip into dist/
 node tools/walkthrough.js                 # Playwright, fake LMS; SHOTS=dir DARK=1 optional
 node tools/layout.js                      # Playwright: whole demo on screen at 1280x720 and up

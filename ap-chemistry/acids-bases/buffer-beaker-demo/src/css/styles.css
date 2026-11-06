@@ -121,10 +121,7 @@ h1 { font-size: 1.25rem; margin: 0; letter-spacing: -0.01em; }
 .hh-eq { font-weight: 800; } .hh-line { font-weight: 700; color: var(--accent); } .hh-rule { font-size: 0.85rem; }
 
 /* the charts */
-.charts { flex: 1 1 auto; min-height: 330px; display: flex; flex-direction: column; gap: 6px; }
-.tabs { display: flex; gap: 8px; flex: 0 0 auto; }
-.tab { font: inherit; font-weight: 700; padding: 8px 14px; min-height: 44px; border-radius: 8px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
-.tab.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.charts { flex: 1 1 auto; min-height: 300px; display: flex; flex-direction: column; gap: 6px; }
 .tab-body { flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
 .graph { margin: 0; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
 .g-svg { flex: 1 1 auto; min-height: 0; width: 100%; display: block; }
@@ -145,28 +142,6 @@ h1 { font-size: 1.25rem; margin: 0; letter-spacing: -0.01em; }
 .clegend-sw { display: inline-block; width: 24px; height: 0; border-top: 4px solid var(--muted); }
 .clegend-sw.cl-buf { border-color: var(--c-buf); } .clegend-sw.cl-wtr { border-color: var(--c-wtr); border-top-style: dashed; }
 
-/* strength chart */
-.strength { display: flex; flex-direction: column; gap: 6px; flex: 1 1 auto; min-height: 0; }
-.strength-ctl { display: flex; flex-direction: column; gap: 4px; flex: 0 0 auto; }
-.ctl-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.ctl-name { font-weight: 700; color: var(--muted); font-size: 0.95rem; }
-.seg { display: inline-flex; gap: 6px; }
-.mini { font: inherit; font-weight: 700; padding: 6px 14px; min-height: 42px; border-radius: 8px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
-.mini.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-.step { font: inherit; font-size: 1.4rem; font-weight: 800; width: 44px; height: 42px; border-radius: 8px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
-.n-box { min-width: 28px; text-align: center; font-size: 1.4rem; }
-.bars { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; align-items: stretch; }
-.bar-col { display: flex; flex-direction: column; align-items: center; min-height: 0; padding: 4px 2px; border-radius: 8px; text-align: center; font-size: 0.82rem; }
-.bar-col.now { background: var(--note-bg); outline: 2px solid var(--accent); }
-.bar-val { font-size: 1.3rem; font-weight: 800; font-variant-numeric: tabular-nums; }
-.bar-track { flex: 1 1 auto; min-height: 46px; width: 54%; display: flex; align-items: flex-end; }
-.bar { width: 100%; border-radius: 6px 6px 0 0; transition: height 0.5s ease; }
-.bar-acid { background: var(--acid); } .bar-base { background: var(--base); }
-.bar-over { background-image: repeating-linear-gradient(135deg, transparent 0 8px, rgba(255, 255, 255, 0.35) 8px 16px); }
-.bar-x { font-weight: 800; font-size: 1rem; margin-top: 3px; }
-.bar-conc { color: var(--muted); } .bar-pH { font-variant-numeric: tabular-nums; }
-.bar-left { font-weight: 700; color: var(--good); } .bar-left.gone { color: var(--bad); }
-.strength-note { margin: 0; font-size: 0.95rem; font-weight: 600; flex: 0 0 auto; }
 .muted { color: var(--muted); } .big { font-size: 1.1rem; }
 
 @media (max-width: 900px) { .demo { grid-template-columns: minmax(0, 1fr); } body { overflow-y: auto; } .beaker-wrap { min-height: 360px; } }
@@ -191,6 +166,6 @@ h1 { font-size: 1.25rem; margin: 0; letter-spacing: -0.01em; }
   .eqtoggle { font-size: 0.82rem; margin-top: 0; } .eqbox { font-size: 0.78rem; padding: 3px 8px; }
   .reaction { min-height: 58px; padding: 4px 10px; } .rx { font-size: 1.35rem; } .rx-note { font-size: 0.88rem; } .rx-idle { line-height: 46px; font-size: 1rem; }
   .charts { min-height: 270px; gap: 4px; }
-  .tab, .mini { min-height: 36px; padding: 4px 12px; } .step { height: 36px; } .strength-ctl { gap: 2px; }
-  .bar-col { font-size: 0.74rem; } .bar-val { font-size: 1.1rem; } .bar-track { min-height: 36px; }
-}
+  }
+
+.chart-title { margin: 0 0 2px; font-size: 1.05rem; color: var(--muted); font-weight: 700; flex: 0 0 auto; }

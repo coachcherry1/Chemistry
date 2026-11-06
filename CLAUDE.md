@@ -36,7 +36,7 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `ap-chemistry/kinetics/acetone-kinetics-scorm/` | Virtual lab: iodination of acetone by initial rates |
 | `ap-chemistry/acids-bases/titration-curves-scorm/` | Titration curves: a particle diagram at five points, strong acid (HCl) vs weak acid (HF), why the equivalence point differs, acetic acid review (conceptual) |
 | `ap-chemistry/acids-bases/buffers-scorm/` | Buffer Solution Visualization: an acid or base added to a buffer, particle diagrams of the reaction, why the pH barely moves, the Henderson-Hasselbalch equation (only for buffers) (first draft) |
-| `ap-chemistry/acids-bases/buffer-beaker-demo/` | Buffer Beaker Demo: the teacher's smartboard beaker (no checkpoints, no score): sliders for HA and A⁻, drops of HCl or NaOH with the reaction animated, and a chart of how more of each species shrinks the pH change |
+| `ap-chemistry/acids-bases/buffer-beaker-demo/` | Buffer Beaker Demo: the teacher's smartboard beaker (no checkpoints, no score): sliders for HA and A⁻, drops of HCl or NaOH with the reaction animated, and the pH vs drops graph (the sliders show how more of each species shrinks the pH change) |
 
 **Organic chemistry elective (Klein)**
 
@@ -374,8 +374,8 @@ not the full page.
 
 ## buffer-beaker-demo (zip v1; the teacher's smartboard tool, no score)
 
-- A beaker on the left, two sliders (HA and A⁻, 0 to 0.20 M) and buttons for 1 or 5 drops of HCl or NaOH on the right, a big pH meter,
-  and two tabs: **pH vs drops** and **Same drops, stronger buffer** (the pH change for the same drops at ×½, ×1, ×2, ×4 of A⁻, HA or both).
+- A beaker on the left, two sliders (HA and A⁻, 0 to 0.20 M) and buttons for 1 or 5 drops of HCl or NaOH on the right, a big pH meter
+  and the **pH vs drops** graph (the buffer's curve, pure water's curve and a dot for the beaker; "Show pure water" hides the water curve and meter line).
   No checkpoints; `scorm.js` only marks the SCO completed. Companion to `buffers-scorm/` (which keeps its checkpoints).
 - **Teacher's choices:** the species are written **HA and A⁻** only (never HAc, Ac⁻, no ammonia pair). **Na⁺ and Cl⁻ are not drawn** and
   not mentioned (the model still counts them for the charge balance); the validator fails if the beaker draws them. The equation is only
@@ -383,7 +383,8 @@ not the full page.
 - **Each drop plays:** the reacting particles pulse, the drop falls, H⁺ or OH⁻ travels to one, it flashes as it changes form (H₂O appears for
   NaOH); with nothing left to react, the H⁺ or OH⁻ stays free and the line under the beaker says the pH changes sharply.
 - **One model** (`buffer.js`): `(ha, a, drops of HCl, drops of NaOH)`, real-valued, exact pH from a charge balance; one particle or drop is
-  0.010 M. The validator checks every beaker state and that more of A⁻, HA or both always shrinks the change where the reacting member survives.
+  0.010 M. The validator checks every beaker state and that one more step of A⁻ (for HCl) or of HA (for NaOH) never gives a larger pH change while the member lasts.
+  An earlier "Same drops, stronger buffer" bar chart was removed at the teacher's request (confusing).
 - **Layout:** the whole demo fits at 1280x720 and up (`tools/layout.js`); a shorter window scrolls the right column. Large type and targets.
 - **Files:** `buffer.js`, `beaker.js`, `charts.js`, `app.js`, `scorm.js`, `util.js`.
 

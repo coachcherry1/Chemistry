@@ -1,6 +1,6 @@
 /* app.js: the teacher's beaker (a weak acid HA and its conjugate base A-). A beaker of buffer on the left; on the right two sliders
  * for the acid member and the base member, buttons that add drops of HCl or NaOH, the
- * pH, and two charts (pH against drops, and "same drops, stronger buffer").
+ * pH, and the graph of pH against drops.
  * No checkpoints and no score. Every number comes from Buf.
  */
 
@@ -9,7 +9,7 @@ var App = (function () {
 
   var h = UI.h;
   var state = { pair: 'HA', ha: 10, a: 10, up: 0, dn: 0 };
-  var el = {}, beaker, graph, strength, busy = false, tab = 'graph', showEq = false, showWater = true, baseSpeed = 1;
+  var el = {}, beaker, graph, busy = false, showEq = false, showWater = true, baseSpeed = 1;
 
   function f2(v) { return v.toFixed(2); }
   function P() { return Buf.PAIRS[state.pair]; }
@@ -37,7 +37,6 @@ var App = (function () {
     el.pairs = document.getElementById('pairs');
     beaker = Beaker.create();
     graph = Charts.graph();
-    strength = Charts.strength();
     el.reaction = h('div', { class: 'reaction', role: 'status', 'aria-live': 'polite' });
     el.sHA = slider('ha');
     el.sA = slider('a');
@@ -63,23 +62,18 @@ var App = (function () {
       h('label', { class: 'eqtoggle' }, [h('input', { type: 'checkbox', id: 'showWater', checked: true, onchange: function (e) { showWater = e.target.checked; paint(true); } }), ' Show pure water']),
       h('label', { class: 'eqtoggle' }, [h('input', { type: 'checkbox', id: 'showEq', onchange: function (e) { showEq = e.target.checked; paintEq(); } }), ' Show the equation'])]);
 
-    el.tabBtns = {
-      graph: h('button', { type: 'button', class: 'tab on', 'data-tab': 'graph', text: 'pH vs drops', onclick: function () { setTab('graph'); } }),
-      strength: h('button', { type: 'button', class: 'tab', 'data-tab': 'strength', text: 'Same drops, stronger buffer', onclick: function () { setTab('strength'); } })
-    };
-    el.tabBody = h('div', { class: 'tab-body' });
+    el.chartBody = h('div', { class: 'tab-body' }, [graph.node]);
 
     var left = h('section', { class: 'left' }, [h('div', { class: 'beaker-wrap' }, [beaker.node]), el.reaction]);
     var right = h('section', { class: 'right' }, [
       h('div', { class: 'panel sliders' }, [el.sHA.row, el.sA.row]),
       h('div', { class: 'panel drops' }, [h('div', { class: 'drop-grid' }, el.btns), h('div', { class: 'drop-foot' }, [el.count, el.reset])]),
       h('div', { class: 'panel meter' }, [el.ph, bar, el.phSub, el.phWater, eqToggle, el.eq]),
-      h('div', { class: 'panel charts' }, [h('div', { class: 'tabs' }, [el.tabBtns.graph, el.tabBtns.strength]), el.tabBody])
+      h('div', { class: 'panel charts' }, [h('h2', { class: 'chart-title', text: 'pH vs drops' }), el.chartBody])
     ]);
     el.app.appendChild(left);
     el.app.appendChild(right);
     paintPairs();
-    setTab('graph');
     beaker.build(state.pair);
     paint(false);
   }
@@ -89,19 +83,10 @@ var App = (function () {
     el.pairs.appendChild(h('span', { class: 'pair-label', text: P().name + '   (pKa ' + Buf.pKa(state.pair).toFixed(2) + ')' }));
   }
 
-  function setTab(t) {
-    tab = t;
-    Object.keys(el.tabBtns).forEach(function (k) { el.tabBtns[k].classList.toggle('on', k === t); el.tabBtns[k].setAttribute('aria-pressed', k === t ? 'true' : 'false'); });
-    el.tabBody.innerHTML = '';
-    el.tabBody.appendChild(t === 'graph' ? graph.node : strength.node);
-    paintCharts();
-  }
-
   /* ------------------------------------------------------------------ paint */
 
   function paintCharts() {
     graph.update(state.pair, state.ha, state.a, state.up, state.dn, showWater);
-    strength.update(state.pair, state.ha, state.a);
   }
 
   function paintEq() {
@@ -207,10 +192,9 @@ var App = (function () {
     beaker.setSpeed(baseSpeed);
     setReaction(null);
     if (params.get('water') === '0') { showWater = false; document.getElementById('showWater').checked = false; paint(true); }
-    if (params.has('tab')) setTab(params.get('tab') === 'strength' ? 'strength' : 'graph');
   }
 
-  return { start: start, state: function () { return state; }, busy: function () { return busy; }, addDrops: addDrops, setTab: setTab, strength: function () { return strength; } };
+  return { start: start, state: function () { return state; }, busy: function () { return busy; }, addDrops: addDrops };
 })();
 
 document.addEventListener('DOMContentLoaded', App.start);

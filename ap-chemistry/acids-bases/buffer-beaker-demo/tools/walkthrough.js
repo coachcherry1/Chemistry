@@ -8,8 +8,7 @@
  * It checks that the particles on screen match the model at every moment: the start, after
  * each slider move, after single drops and runs of five (with the real animation, run fast),
  * with both HCl and NaOH, at the limit of 12 drops, and after Reset. It checks the reaction
- * line under the beaker, the pH meter, the pH graph, the "same drops, stronger buffer" chart
- * (numbers and the sentence), the equation (always with its warning, and not applicable when
+ * line under the beaker, the pH meter, the pH graph, the equation (always with its warning, and not applicable when
  * a member is missing), and that the tool reports completion but no score to the "LMS".
  */
 const path = require('path');
@@ -89,33 +88,13 @@ const fakeLMS = () => {
   expect(!/spectator|Cl⁻|Na⁺/.test(await text('.reaction')), 'the reaction line still mentions spectator ions');
   await snap('one-hcl');
 
-  /* ---- five more, then the strength chart and the graph */
+  /* ---- five more, then the graph */
   await page.click('.drop-btn[data-dir="acid"][data-n="5"]');
   await idle();
   await matches('6 HCl');
   expect((await text('.drop-count')).includes('HCl: 6 drops'), 'drop count after 6: ' + (await text('.drop-count')));
   const sub = await text('.ph-sub'), water = await text('.ph-water');
   expect(/Change since the start/.test(sub) && /Pure water with the same drops/.test(water), 'meter lines after drops');
-  await page.click('.tab[data-tab="strength"]');
-  {
-    const data = await page.evaluate(() => { const s = App.state(), st = App.strength().state; return Charts.strengthData(s.pair, s.ha, s.a, st.dir, st.n, st.vary).map((d) => (d.delta < 0 ? '−' : '+') + Math.abs(d.delta).toFixed(2)); });
-    const shown = await page.$$eval('.bar-val', (els) => els.map((e) => e.textContent));
-    expect(JSON.stringify(data) === JSON.stringify(shown), `strength bars show ${shown} but the model gives ${data}`);
-    expect((await page.$$('.bar-col')).length === 4 && (await page.$$('.bar-col.now')).length === 1, 'strength chart needs four bars, one marked now');
-    expect(/shrinks the pH change from/.test(await text('.strength-note')) || /use up all/.test(await text('.strength-note')), 'no sentence under the strength chart');
-  }
-  await snap('strength');
-  /* switch what is varied and the drops */
-  await page.click('.seg .mini[data-vary="HA"]');
-  await page.click('.seg .mini[data-dir="base"]');
-  await page.click('.step[aria-label="More drops"]');
-  {
-    const data = await page.evaluate(() => { const s = App.state(), st = App.strength().state; return Charts.strengthData(s.pair, s.ha, s.a, st.dir, st.n, st.vary).map((d) => (d.delta < 0 ? '−' : '+') + Math.abs(d.delta).toFixed(2)); });
-    const shown = await page.$$eval('.bar-val', (els) => els.map((e) => e.textContent));
-    expect(JSON.stringify(data) === JSON.stringify(shown), `strength bars (HA, NaOH, 6 drops) show ${shown} but the model gives ${data}`);
-    expect(data.every((v) => v[0] === '+'), 'base drops should raise the pH in every bar');
-  }
-  await page.click('.tab[data-tab="graph"]');
   {
     const dot = await page.evaluate(() => { const d = document.querySelector('.g-svg .cdot.cl-buf'); return [+d.getAttribute('cx'), +d.getAttribute('cy')]; });
     expect(dot[0] > 0 && dot[1] > 0, 'the graph dot is not placed');
@@ -176,12 +155,6 @@ const fakeLMS = () => {
   }
   await snap('equation');
   await slide('ha', 10);
-
-  /* ---- the strength chart when the species is zero */
-  await page.click('.tab[data-tab="strength"]');
-  await slide('a', 0);
-  await page.click('.seg .mini[data-vary="A"]');
-  expect(/slider above 0/.test(await text('.strength')), 'no message when the varied species is 0');
 
   /* ---- the LMS: completed, no score */
   const lms = await page.evaluate(() => JSON.parse(sessionStorage.getItem('lms') || '{}'));
