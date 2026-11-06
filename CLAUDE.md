@@ -9,6 +9,8 @@ that has a copy. Everything is on `main`; older work branches were merged in Oct
 `chemistry/`, `ap-chemistry/` and `organic-chemistry/`. Packages elsewhere in this file are named by their folder
 alone; find one with `find . -name <folder> -type d`. All commands run inside the package folder, wherever it sits.
 A new package goes in the topic folder that fits it (make the folder if none does), one level below the class.
+`reference/ap-chemistry-frq/` holds the released AP free-response questions and scoring guidelines (2015 to 2026 except 2020, © College Board)
+for checking each AP activity against how the exam asks; it is not an activity and has its own README.
 
 **Chemistry (honors)**
 
@@ -31,6 +33,8 @@ A new package goes in the topic folder that fits it (make the folder if none doe
 | --- | --- |
 | `ap-chemistry/bonding/resonance-scorm/` | Resonance structures and the hybrid, same 5 rules and builder |
 | `ap-chemistry/kinetics/acetone-kinetics-scorm/` | Virtual lab: iodination of acetone by initial rates |
+| `ap-chemistry/acids-bases/titration-curves-scorm/` | Titration curves: a particle diagram at five points, strong acid (HCl) vs weak acid (HF), why the equivalence point differs, acetic acid review (conceptual) |
+| `ap-chemistry/acids-bases/buffers-scorm/` | Buffer Solution Visualization: an acid or base added to a buffer, particle diagrams of the reaction, why the pH barely moves, the Henderson-Hasselbalch equation (only for buffers) (first draft) |
 
 **Organic chemistry elective (Klein)**
 
@@ -365,6 +369,45 @@ not the full page.
   atoms glide), fills the energy ledger, then a word-tile sentence (`SAY` in `steps2.js`).
 - **Files:** `chem.js`, `scenes.js`, `judge.js`, `render.js`, `arrows.js`, `energy.js`, `picker.js`, `quiz.js`, `scorm.js`,
   `app.js`, `steps1.js` (Parts 1-2), `steps2.js` (Parts 3-4).
+
+## buffers-scorm, "Buffer Solution Visualization" (zip v1, SCHEMA 1; first draft, to be flushed out with the teacher)
+
+- **Key objective:** a buffer has a particle ready for added acid (the base member) and one ready for added base (the acid member);
+  added H⁺ or OH⁻ is used up, the ratio changes little, so the pH changes little. Not about making a buffer.
+- 18 steps in 5 parts; 20 graded questions (4+4+4+4+4) from a pool of 40. The pair table and particle key sit beside every checkpoint;
+  the equation warning sits beside 4 and 5.
+- **The equation rule (teacher's):** pH = pKa + log([base member] / [acid member]) is only for a buffer with appreciable amounts of BOTH
+  members. It always appears with that warning (the validator checks the ratio, "does it work" and use steps). Weak acid alone, conjugate
+  base alone and strong acid are taught as "does not work". "Appreciable" means neither member under a tenth of the other.
+- **Pairs:** acetic acid / acetate (pKa 4.74, Na⁺ spectator) and NH₄⁺ / NH₃ (pKa 9.26, Cl⁻ spectator). HF is left out on purpose (its Ka
+  makes the equation poor after a few additions). One particle is 0.010 M; the buffer is 10 + 10; added strong acid or base is in the same
+  units, dilution ignored. Free H⁺ is not drawn in a working buffer (counts keep charge balanced).
+- **One model** (`buffer.js`): a flask is (pair, acid member, base member, strong acid or base added); the exact pH from a charge balance,
+  particle counts, curves, reactions and every checkpoint answer come from it. `quiz.js` `fact` entries: `pH`, `waterpH`, `count`,
+  `counts`, `hh`. Where a buffer stops (10 particles of acid or base) is taught in the range steps.
+- **Files:** `buffer.js`, `flask.js` (particles, flashes when a particle changes form), `phcurve.js`, `steps.js` (lesson steps),
+  `app.js` (order, saving, checkpoint screen), `quiz.js`, `picker.js`, `scorm.js`.
+- Teacher links: `?step=<id or number>` and `?step=quiz-D&all`. Walkthrough harness: the fake LMS reads and writes sessionStorage on every call.
+
+## titration-curves-scorm (zip v1, SCHEMA 1)
+
+- **Key objective:** the equivalence point is where moles of base equal moles of acid; its pH is set by the ions left.
+  Na⁺ and Cl⁻ do not react with water (pH 7); a weak acid's conjugate base does and makes OH⁻ (pH above 7).
+- 15 steps in 5 parts; 20 graded questions (4+4+4+4+4) from a pool of 54. A Ka and pKa table plus the particle key sit beside
+  every checkpoint (qualitative: nobody calculates a pH). Checkpoint 5 is the review with a different weak acid.
+- **Teacher's choices:** HF is the weak acid because its anion F⁻ is simple (acetic acid, drawn HAc and Ac⁻, only in the
+  review). "Half-equivalence point". Water is not drawn. 24 acid units per diagram; a weak acid is drawn with a true ratio
+  (2 of 24 HF ionized; none for acetic acid, and a note says why). Left out: pH, pKa and Ka calculations, ICE tables,
+  Henderson-Hasselbalch, buffer capacity, indicators, polyprotic acids, weak base titrations.
+- **Five points** (NaOH units of 25/24 mL): start 0, half-equivalence 12, before equivalence 18, equivalence 24, after 30. Each
+  walk asks what is in the flask (the diagram then changes) and what decides the pH (the pH and a numbered dot appear).
+- **One model** (`titration.js`): the exact pH from a charge balance, whole-particle counts (the validator checks the charge
+  balance at every slider position), what decides the pH, the pairs to sort. The diagram, curve, predictions and every
+  checkpoint answer come from it; `fact` entries in `quiz.js` tie answers to it.
+- **Files:** `titration.js`, `particles.js` (flask, fixed place for every particle), `curve.js` (pH curve, numbered points, marker
+  you click, drag or arrow-key), `picker.js` (shared), `quiz.js`, `app.js`.
+- Teacher links: `?step=<id or number>` and `?step=quiz-C&all` (every question of a pool). Walkthrough harness: the fake LMS
+  reads and writes sessionStorage on every call, as in the VSEPR and IMF packages.
 
 ## properties-of-liquids-scorm (zip v2, SCHEMA 2)
 
