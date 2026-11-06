@@ -9,6 +9,7 @@
  *   charge, holds more particles than it has places for, or does not show the reaction
  *   exactly (each drop of HCl turns one base member into one acid member while the base
  *   member lasts; each drop of NaOH turns one acid member into one base member);
+ * - the data table's [HA] and [A-] do not add up to what was put in, or disagree with the particles;
  * - more A- (for HCl) or more HA (for NaOH) ever gives a LARGER pH change while the member lasts;
  * - the equation can be shown without its "only for a buffer" warning;
  * - the tool reports a score or has checkpoints;
@@ -93,6 +94,15 @@ let n = 0;
       if (c.A !== a + k || c.HA !== ha - k) bad(`${p} ${ha}/${a}: ${k} drops of NaOH should make ${ha - k} acid members and ${a + k} base members, the beaker shows ${c.HA}/${c.A}`);
     }
     if (problems.length > 12) return;
+  }
+});
+
+/* the data table's concentrations: HA + A- is always what was put in, and they follow the particle counts */
+['HA'].forEach((p) => {
+  for (let ha = 0; ha <= B.MAXC; ha += 2) for (let a = 0; a <= B.MAXC; a += 2) for (let up = 0; up <= 12; up += 3) for (let dn = 0; dn <= 12; dn += 4) {
+    const c = B.concentrations(p, ha, a, up, dn), k = B.counts(p, ha, a, up, dn);
+    if (!near(c.HA + c.A, (ha + a) * U, 1e-12)) bad(`concentrations ${p} ${ha}/${a}: HA + A- is ${c.HA + c.A}, not ${(ha + a) * U}`);
+    if (Math.abs(c.A - k.A * U) > 0.5 * U + 1e-12) bad(`concentrations ${p} ${ha}/${a} ${up}/${dn}: [A-] ${c.A} is not the beaker's ${k.A} particles`);
   }
 });
 

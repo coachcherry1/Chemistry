@@ -12,11 +12,17 @@ checkpoints.
   circles), plus free **H⁺** and **OH⁻** when there are any. Water, Na⁺ and Cl⁻ are not drawn (the model still counts the spectator
   ions so the pH is exact). The liquid changes colour with the pH, like a universal indicator.
 - **Right, two sliders**: the concentration of **HA** and of **A⁻**, 0.00 to 0.20 M in steps of 0.01 M (one particle is 0.010 M).
-- **Four buttons**: add 1 or 5 drops of **HCl**, or 1 or 5 drops of **NaOH** (one drop is 0.010 M, up to 12 of each; dilution is
+- **Four compact buttons**: add 1 or 5 drops of **HCl**, or 1 or 5 drops of **NaOH** (one drop is 0.010 M, up to 12 of each; dilution is
   ignored). **Reset drops** puts the beaker back. Moving a slider also resets the drops.
 - **A big pH meter** with the change since the start, and the pH pure water would have with the same drops. **Show pure water** (on by default) hides the pure water curve, dot and key on the graph and the pure water line under the meter, for when you want only the buffer. **Show the equation**
   opens pH = pKa + log([A⁻] / [HA]), always with the box *Only for a buffer. It needs appreciable amounts of BOTH ...*, and it says
   the equation does not apply when a member is missing.
+
+- **A running data table** beside the graph, on the main screen. One row for every action: **what was done** (Start, 1 drop of HCl,
+  1 drop of NaOH, Set [A⁻] to 0.16 M, Reset drops; a run of 5 drops is 5 rows), the **pH after**, the **change from the previous
+  pH** (▼ red for a fall, ▲ blue for a rise), and **[HA] and [A⁻]** after the reaction. Rows are added as they happen and the newest
+  scrolls into view. **Clear table** starts a new table from the beaker as it is. The table keeps going when the sliders change, so
+  a teacher can compare a weak buffer with a stronger one in the same table.
 
 ## What students see when a drop goes in
 
@@ -32,9 +38,9 @@ A run of 5 drops plays the same sequence five times, faster. With reduced motion
 
 ## Showing that more of each species means a smaller pH change
 
-Use the two sliders and the meter. Set a small amount of A⁻ (say 0.03 M) and add 5 drops of HCl: the meter shows the change since the
+Use the two sliders, the meter and the data table. Set a small amount of A⁻ (say 0.03 M) and add 5 drops of HCl: the meter shows the change since the
 start (large, and the hatched particles show the A⁻ nearly used up). Reset, raise A⁻ to 0.10 M and add the same 5 drops: the change is
-smaller. Raise it to 0.20 M: smaller again. Do the same with HA and NaOH. The **pH vs drops** graph redraws as the sliders move, so the
+smaller (the table keeps both runs, so the two sets of changes sit one above the other). Raise it to 0.20 M: smaller again. Do the same with HA and NaOH. The **pH vs drops** graph redraws as the sliders move, so the
 flat middle gets longer (the buffer holds more drops) and the cliff where a member runs out moves outward. The validator checks that, for
 every setting, one more step of A⁻ (for HCl) or of HA (for NaOH) never gives a larger pH change while the member lasts.
 

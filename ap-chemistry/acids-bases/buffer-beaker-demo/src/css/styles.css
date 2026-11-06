@@ -169,3 +169,45 @@ h1 { font-size: 1.25rem; margin: 0; letter-spacing: -0.01em; }
   }
 
 .chart-title { margin: 0 0 2px; font-size: 1.05rem; color: var(--muted); font-weight: 700; flex: 0 0 auto; }
+
+/* the chart and the data table side by side */
+.chart-split { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr); gap: 12px; }
+.chart-col, .data-col { min-height: 0; min-width: 0; display: flex; flex-direction: column; }
+.data-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex: 0 0 auto; }
+.data-head .chart-title { margin: 0; }
+.ghostbtn.small { min-height: 34px; padding: 3px 12px; font-size: 0.85rem; }
+.log-wrap { flex: 1 1 auto; min-height: 0; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); }
+.log { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.log th { position: sticky; top: 0; background: var(--note-bg); text-align: left; font-size: 0.8rem; padding: 5px 6px; border-bottom: 2px solid var(--line); color: var(--muted); }
+.log td { padding: 5px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.log .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.log td.act span { font-weight: 700; display: block; }
+.log td.act small { color: var(--muted); font-size: 0.74rem; display: block; line-height: 1.15; }
+.log .chg.down { color: var(--acid); font-weight: 700; } .log .chg.up { color: var(--base); font-weight: 700; }
+@keyframes log-flash { from { background: var(--warn-bg); } to { background: transparent; } }
+.log-new { animation: log-flash 1.6s ease-out 1; }
+@media (prefers-reduced-motion: reduce) { .log-new { animation: none; } }
+@media (max-width: 1250px) { .chart-split { grid-template-columns: minmax(0, 1fr); } .log-wrap { min-height: 180px; } }
+@media (max-height: 820px) { .log { font-size: 0.8rem; } .log td, .log th { padding: 3px 5px; } .log td.act small { font-size: 0.68rem; } }
+
+/* compact controls, so the data table fits on the main screen */
+.drop-grid { gap: 6px; }
+.drop-btn { flex-direction: row; gap: 6px; min-height: 44px; padding: 2px 6px; border-width: 2px; }
+.drop-btn b { font-size: 0.85rem; font-weight: 700; } .drop-btn span { font-size: 1.05rem; }
+.drop-foot { margin-top: 0; } .drop-count { font-size: 0.85rem; } .ghostbtn { min-height: 34px; padding: 3px 12px; font-size: 0.9rem; }
+.drops { gap: 4px; }
+.sliders { gap: 12px; } .sl { height: 26px; } .sl-head { font-size: 0.9rem; } .sl-out { font-size: 1.15rem; }
+.meter { text-align: left; }
+.meter-top { display: flex; align-items: center; gap: 14px; }
+.meter .ph-big { font-size: 2.2rem; flex: 0 0 auto; }
+.ph-info { min-width: 0; }
+.meter .ph-sub { font-size: 1rem; margin: 0; } .meter .ph-water { font-size: 0.85rem; min-height: 0; margin: 0; }
+.phbar { height: 6px; margin: 4px 0 2px; } .marker { top: -5px; height: 16px; width: 5px; margin-left: -2.5px; }
+.toggles { justify-content: flex-start; gap: 18px; } .eqtoggle { font-size: 0.85rem; }
+.eqtoggle input { width: 18px; height: 18px; }
+.panel { padding: 5px 10px; } .right { gap: 6px; }
+@media (max-height: 820px) {
+  .drop-btn { min-height: 38px; } .drop-btn b { font-size: 0.78rem; } .drop-btn span { font-size: 0.95rem; }
+  .meter .ph-big { font-size: 1.8rem; } .meter .ph-sub { font-size: 0.9rem; } .meter .ph-water { font-size: 0.78rem; }
+  .sl { height: 22px; } .sl-out { font-size: 1.05rem; }
+}

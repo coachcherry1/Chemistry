@@ -9,7 +9,7 @@ var App = (function () {
 
   var h = UI.h;
   var state = { pair: 'HA', ha: 10, a: 10, up: 0, dn: 0 };
-  var el = {}, beaker, graph, busy = false, showEq = false, showWater = true, baseSpeed = 1;
+  var el = {}, beaker, graph, busy = false, showEq = false, log = [], showWater = true, baseSpeed = 1;
 
   function f2(v) { return v.toFixed(2); }
   function P() { return Buf.PAIRS[state.pair]; }
@@ -28,6 +28,10 @@ var App = (function () {
       state.up = 0; state.dn = 0;
       setReaction(null);
       paint(false);
+    });
+    input.addEventListener('change', function () {
+      if (busy) return;
+      logRow('Set [' + (which === 'ha' ? P().ha : P().a) + '] to ' + molar(state[which]), 'drops back to 0');
     });
     return { row: row, input: input, out: out, name: name };
   }
@@ -50,7 +54,7 @@ var App = (function () {
     el.count = h('p', { class: 'drop-count' });
     el.reset = h('button', { type: 'button', class: 'ghostbtn', text: 'Reset drops', onclick: function () {
       if (busy) return;
-      state.up = 0; state.dn = 0; setReaction(null); paint(false); } });
+      state.up = 0; state.dn = 0; setReaction(null); paint(false); logRow('Reset drops', 'back to the start of this beaker'); } });
 
     el.ph = h('p', { class: 'ph-big' });
     el.phSub = h('p', { class: 'ph-sub' });
@@ -63,24 +67,54 @@ var App = (function () {
       h('label', { class: 'eqtoggle' }, [h('input', { type: 'checkbox', id: 'showEq', onchange: function (e) { showEq = e.target.checked; paintEq(); } }), ' Show the equation'])]);
 
     el.chartBody = h('div', { class: 'tab-body' }, [graph.node]);
+    el.logBody = h('tbody');
+    el.logWrap = h('div', { class: 'log-wrap' }, [h('table', { class: 'log', 'aria-label': 'Data table of every action' }, [
+      h('thead', null, [h('tr', null, [h('th', { text: 'Action' }), h('th', { class: 'num', text: 'pH after' }), h('th', { class: 'num', text: 'Change' }),
+        h('th', { class: 'num', text: '[HA]' }), h('th', { class: 'num', text: '[A⁻]' })])]), el.logBody])]);
+    el.clearLog = h('button', { type: 'button', class: 'ghostbtn small', text: 'Clear table', onclick: function () { log = []; el.logBody.innerHTML = ''; logRow('Start', 'this beaker now'); } });
 
     var left = h('section', { class: 'left' }, [h('div', { class: 'beaker-wrap' }, [beaker.node]), el.reaction]);
     var right = h('section', { class: 'right' }, [
       h('div', { class: 'panel sliders' }, [el.sHA.row, el.sA.row]),
       h('div', { class: 'panel drops' }, [h('div', { class: 'drop-grid' }, el.btns), h('div', { class: 'drop-foot' }, [el.count, el.reset])]),
-      h('div', { class: 'panel meter' }, [el.ph, bar, el.phSub, el.phWater, eqToggle, el.eq]),
-      h('div', { class: 'panel charts' }, [h('h2', { class: 'chart-title', text: 'pH vs drops' }), el.chartBody])
+      h('div', { class: 'panel meter' }, [h('div', { class: 'meter-top' }, [el.ph, h('div', { class: 'ph-info' }, [el.phSub, el.phWater])]), bar, eqToggle, el.eq]),
+      h('div', { class: 'panel charts' }, [h('div', { class: 'chart-split' }, [
+        h('div', { class: 'chart-col' }, [h('h2', { class: 'chart-title', text: 'pH vs drops' }), el.chartBody]),
+        h('div', { class: 'data-col' }, [h('div', { class: 'data-head' }, [h('h2', { class: 'chart-title', text: 'Data table' }), el.clearLog]), el.logWrap])])])
     ]);
     el.app.appendChild(left);
     el.app.appendChild(right);
     paintPairs();
     beaker.build(state.pair);
     paint(false);
+    logRow('Start', 'this beaker');
   }
 
   function paintPairs() {
     el.pairs.innerHTML = '';
     el.pairs.appendChild(h('span', { class: 'pair-label', text: P().name + '   (pKa ' + Buf.pKa(state.pair).toFixed(2) + ')' }));
+  }
+
+  /* ------------------------------------------------------------------ the data table */
+
+  function conc(v) { return v.toFixed(3); }
+
+  /* add a row: what was done, the pH after, the change from the previous row's pH, and [HA] and [A-] */
+  function logRow(action, sub) {
+    var now = Buf.pH(state.pair, state.ha, state.a, state.up, state.dn);
+    var c = Buf.concentrations(state.pair, state.ha, state.a, state.up, state.dn);
+    var prev = log.length ? log[log.length - 1].pH : null;
+    var row = { action: action, sub: sub || '', pH: now, delta: prev == null ? null : now - prev, HA: c.HA, A: c.A };
+    log.push(row);
+    var dtext = row.delta == null ? '' : (Math.abs(row.delta) < 0.005 ? '0.00' : (row.delta < 0 ? '−' : '+') + f2(Math.abs(row.delta)));
+    var tr = h('tr', { class: 'log-new' }, [
+      h('td', { class: 'act' }, [h('span', { text: action }), sub ? h('small', { text: sub }) : null]),
+      h('td', { class: 'num', text: f2(now) }),
+      h('td', { class: 'num chg ' + (row.delta == null ? '' : (row.delta < -0.004 ? 'down' : (row.delta > 0.004 ? 'up' : ''))), text: row.delta == null ? '–' : (row.delta < -0.004 ? '▼ ' : (row.delta > 0.004 ? '▲ ' : '')) + dtext }),
+      h('td', { class: 'num', text: conc(c.HA) }), h('td', { class: 'num', text: conc(c.A) })]);
+    el.logBody.appendChild(tr);
+    el.logWrap.scrollTop = el.logWrap.scrollHeight;
+    return row;
   }
 
   /* ------------------------------------------------------------------ paint */
@@ -171,6 +205,7 @@ var App = (function () {
         last = { dir: dir, target: r.target };
         setReaction(last);
         paint(true);
+        logRow('1 drop of ' + (dir === 'acid' ? 'HCl' : 'NaOH'), state.up + ' HCl, ' + state.dn + ' NaOH in total');
         i += 1;
         return step();
       });
@@ -194,7 +229,7 @@ var App = (function () {
     if (params.get('water') === '0') { showWater = false; document.getElementById('showWater').checked = false; paint(true); }
   }
 
-  return { start: start, state: function () { return state; }, busy: function () { return busy; }, addDrops: addDrops };
+  return { start: start, log: function () { return log; }, state: function () { return state; }, busy: function () { return busy; }, addDrops: addDrops };
 })();
 
 document.addEventListener('DOMContentLoaded', App.start);

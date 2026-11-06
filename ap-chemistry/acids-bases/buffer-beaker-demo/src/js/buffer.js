@@ -76,6 +76,12 @@ var Buf = (function () {
     return pts;
   }
 
+  /* the concentrations of the acid member and the base member after the reaction and the small ionization, in mol/L */
+  function concentrations(pair, ha, a, up, dn) {
+    var r = solve(pair, ha, a, up || 0, dn || 0), ct = (ha + a) * U;
+    return { HA: ct * (1 - r.fb), A: ct * r.fb };
+  }
+
   /* the change in pH when n drops of acid ('acid') or base ('base') go into a beaker with ha and a */
   function change(pair, ha, a, dir, n) {
     var start = pH(pair, ha, a, 0, 0);
@@ -108,6 +114,6 @@ var Buf = (function () {
     return 'rgb(74,20,140)';
   }
 
-  return { U: U, MAXC: MAXC, MAXD: MAXD, FAM: FAM, PAIRS: PAIRS, pKa: pKa, solve: solve, pH: pH, counts: counts, chargeBalanced: chargeBalanced,
+  return { U: U, MAXC: MAXC, MAXD: MAXD, FAM: FAM, PAIRS: PAIRS, pKa: pKa, solve: solve, pH: pH, concentrations: concentrations, counts: counts, chargeBalanced: chargeBalanced,
            curve: curve, change: change, reserve: reserve, hh: hh, appreciable: appreciable, reactAcid: reactAcid, reactBase: reactBase, colour: colour };
 })();

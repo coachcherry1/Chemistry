@@ -7,7 +7,7 @@
  * At every size the page must not scroll sideways. At 1366x768 and larger (a Chromebook
  * and the usual smartboards) EVERYTHING must be on screen at once without scrolling: the
  * beaker, the reaction line, both sliders, the four drop buttons, the pH meter, and the
- * pH graph (and with the equation open on 1600x900 and up;
+ * pH graph and the data table (and with the equation open on 1600x900 and up;
  * on a laptop the right column scrolls when the equation is open). A shorter window
  * (1366x650) may scroll the right-hand column, which must still reach the chart.
  */
@@ -42,7 +42,7 @@ const MUST_FIT = (w, h) => w >= 1280 && h >= 720;
         const groups = {
           'beaker': [q('.beaker-svg')[0]], 'reaction line': [q('.reaction')[0]], 'sliders': q('.sl'),
           'drop buttons': q('.drop-btn'), 'pH meter': [q('.ph-big')[0], q('.phbar')[0], q('.ph-sub')[0]],
-          'chart': [q('.g-svg')[0]].filter(Boolean)
+          'chart': [q('.g-svg')[0]].filter(Boolean), 'data table': [q('.log-wrap')[0]].filter(Boolean)
         };
         const res = { side: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1, off: [] };
         Object.keys(groups).forEach((k) => groups[k].filter(Boolean).forEach((e) => {

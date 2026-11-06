@@ -375,7 +375,9 @@ not the full page.
 ## buffer-beaker-demo (zip v1; the teacher's smartboard tool, no score)
 
 - A beaker on the left, two sliders (HA and A⁻, 0 to 0.20 M) and buttons for 1 or 5 drops of HCl or NaOH on the right, a big pH meter
-  and the **pH vs drops** graph (the buffer's curve, pure water's curve and a dot for the beaker; "Show pure water" hides the water curve and meter line).
+  the **pH vs drops** graph (the buffer's curve, pure water's curve and a dot for the beaker; "Show pure water" hides the water curve and meter line)
+  and a **running data table** on the main screen (a row per drop, slider move or reset: action, pH after, change from the previous pH, [HA] and [A⁻]).
+  Space is tight, so the drop buttons are compact and the pH strip is thin.
   No checkpoints; `scorm.js` only marks the SCO completed. Companion to `buffers-scorm/` (which keeps its checkpoints).
 - **Teacher's choices:** the species are written **HA and A⁻** only (never HAc, Ac⁻, no ammonia pair). **Na⁺ and Cl⁻ are not drawn** and
   not mentioned (the model still counts them for the charge balance); the validator fails if the beaker draws them. The equation is only

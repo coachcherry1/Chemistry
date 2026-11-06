@@ -21,7 +21,7 @@ var Charts = (function () {
 
   /* ---------------------------------------------------------------- pH graph */
 
-  var VW = 440, VH = 250, X0 = 40, X1 = 428, Y0 = 10, Y1 = 206, M = Buf.MAXD;
+  var VW = 440, VH = 340, X0 = 40, X1 = 428, Y0 = 10, Y1 = 296, M = Buf.MAXD;
   function xs(x) { return X0 + (x + M) / (2 * M) * (X1 - X0); }
   function ys(v) { return Y1 - v / 14 * (Y1 - Y0); }
 

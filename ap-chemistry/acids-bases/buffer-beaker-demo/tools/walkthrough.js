@@ -8,7 +8,7 @@
  * It checks that the particles on screen match the model at every moment: the start, after
  * each slider move, after single drops and runs of five (with the real animation, run fast),
  * with both HCl and NaOH, at the limit of 12 drops, and after Reset. It checks the reaction
- * line under the beaker, the pH meter, the pH graph, the equation (always with its warning, and not applicable when
+ * line under the beaker, the pH meter, the pH graph, the data table (a row per drop, slider move and reset), the equation (always with its warning, and not applicable when
  * a member is missing), and that the tool reports completion but no score to the "LMS".
  */
 const path = require('path');
@@ -100,6 +100,27 @@ const fakeLMS = () => {
     expect(dot[0] > 0 && dot[1] > 0, 'the graph dot is not placed');
   }
   await snap('graph');
+
+  /* a slider move is a row too (the log records it when the slider is released) */
+  await page.evaluate(() => { const s = document.querySelector('.sl-a input'); s.value = '16'; s.dispatchEvent(new Event('input')); s.dispatchEvent(new Event('change')); });
+  await matches('A- set to 0.16 M');
+  await page.evaluate(() => { const s = document.querySelector('.sl-a input'); s.value = '10'; s.dispatchEvent(new Event('input')); s.dispatchEvent(new Event('change')); });
+  await page.click('.drop-btn[data-dir="acid"][data-n="5"]'); await idle();
+
+  /* ---- the data table: a row per action, with pH after, change and [HA] and [A-] */
+  {
+    const rows = await page.$$eval('.log tbody tr', (trs) => trs.map((tr) => [...tr.children].map((td) => td.textContent)));
+    const log = await page.evaluate(() => App.log().map((r) => ({ pH: r.pH, delta: r.delta, HA: r.HA, A: r.A })));
+    expect(rows.length === log.length && rows.length >= 8, 'the data table has ' + rows.length + ' rows for ' + log.length + ' actions');
+    expect(/^Start/.test(rows[0][0]) && rows[0][2] === '–', 'the first row should be the start, with no change: ' + rows[0]);
+    expect(/^1 drop of HCl/.test(rows[1][0]) && rows[1][1] === '4.66' && /−0\.09/.test(rows[1][2]) && rows[1][3] === '0.110' && rows[1][4] === '0.090',
+      'the row for the first drop of HCl is wrong: ' + rows[1]);
+    expect(rows.some((r) => /^Set \[A⁻\] to 0\.16 M/.test(r[0])) && rows.some((r) => /^Set \[A⁻\] to 0\.10 M/.test(r[0])), 'no rows for the slider changes');
+    rows.forEach((r, i) => { if (i) expect(Math.abs(parseFloat(r[1].replace('−', '-')) - log[i].pH) < 0.006, `row ${i}: pH ${r[1]} vs ${log[i].pH.toFixed(2)}`); });
+    log.forEach((r, i) => { if (i && Math.abs(r.pH - log[i - 1].pH - r.delta) > 1e-9) problems.push(`row ${i}: change is not the difference from the previous pH`); });
+    log.forEach((r, i) => { const t = (parseFloat(rows[i][3]) + parseFloat(rows[i][4])); expect(Math.abs(t - (r.HA + r.A)) < 0.002 && t > 0, `row ${i}: [HA] + [A-] = ${t}`); });
+  }
+  await snap('table');
 
   /* ---- hide the pure water line: graph curve, dot, key and the meter line */
   await page.uncheck('#showWater');
