@@ -705,6 +705,10 @@ var App = (function () {
       var j = +key, ord = order();
       if (!onDash()) { say('4 is not on the dash yet, so 1 → 2 → 3 tells you nothing. Spear the molecule and rotate it first.', 'bad'); return; }
       if (clicks.indexOf(j) >= 0) return;
+      var n = ord.indexOf(j) + 1;
+      /* 4 is never part of the reading, whenever it is clicked */
+      if (n === 4) { say('Skip 4: it points away from you. Follow 1, 2 and 3 only.', 'bad'); shake(drawHost, key); return; }
+      if (clicks.length >= 3) { say('That is 1 → 2 → 3 already. Clockwise or counterclockwise?', 'good'); return; }
       var want = ord[clicks.length];
       if (j === want) {
         clicks.push(j);
@@ -712,9 +716,7 @@ var App = (function () {
         paint();
         return;
       }
-      var n = ord.indexOf(j) + 1;
-      say(n === 4 ? 'Skip 4: it points away from you. Follow 1, 2 and 3 only.'
-        : 'That is ' + n + '. Click ' + (clicks.length + 1) + (clicks.length ? ' next.' : ' first.'), 'bad');
+      say('That is ' + n + '. Click ' + (clicks.length + 1) + (clicks.length ? ' next.' : ' first.'), 'bad');
       shake(drawHost, key);
     }
 
