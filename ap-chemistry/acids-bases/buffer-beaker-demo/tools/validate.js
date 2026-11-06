@@ -9,9 +9,8 @@
  *   charge, holds more particles than it has places for, or does not show the reaction
  *   exactly (each drop of HCl turns one base member into one acid member while the base
  *   member lasts; each drop of NaOH turns one acid member into one base member);
- * - the "same drops, stronger buffer" chart does not show a smaller pH change for more of
- *   a species (checked for every slider setting and every drop count where the member that
- *   reacts is not used up);
+ * - the data table's [HA] and [A-] do not add up to what was put in, or disagree with the particles;
+ * - more A- (for HCl) or more HA (for NaOH) ever gives a LARGER pH change while the member lasts;
  * - the equation can be shown without its "only for a buffer" warning;
  * - the tool reports a score or has checkpoints;
  * - the manifest leaves a file out, or its identifiers match another package's;
@@ -37,7 +36,7 @@ const html = fs.readFileSync(path.join(src, 'index.html'), 'utf8');
 [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].forEach((m) => {
   vm.runInContext(fs.readFileSync(path.join(src, m[1]), 'utf8'), ctx, { filename: m[1] });
 });
-const { Buf: B, Charts } = ctx;
+const { Buf: B } = ctx;
 const near = (a, b, tol) => Math.abs(a - b) <= tol;
 const KW = 1e-14, KA = 1.8e-5, U = 0.01;
 
@@ -98,22 +97,31 @@ let n = 0;
   }
 });
 
-/* ------------------------------------------------ the strength chart */
-
-let checked = 0;
+/* the data table's concentrations: HA + A- is always what was put in, and they follow the particle counts */
 ['HA'].forEach((p) => {
-  for (let ha = 1; ha <= B.MAXC; ha++) for (let a = 1; a <= B.MAXC; a++) for (const dir of ['acid', 'base']) for (let k = 1; k <= 10; k++) for (const vary of ['A', 'HA', 'both']) {
-    const d = Charts.strengthData(p, ha, a, dir, k, vary);
-    if (d[0].left <= 0) continue;                       /* the member that reacts is used up even at half strength */
-    const m = d.map((x) => Math.abs(x.delta));
-    checked++;
-    for (let i = 1; i < m.length; i++) if (m[i] > m[i - 1] + 1e-9) { bad(`strength chart: more ${vary} gives a LARGER change (${p} ${ha}/${a} ${dir} ${k} drops: ${m.map((x) => x.toFixed(3)).join(' ')})`); break; }
-    if (dir === 'acid' && d.some((x) => x.delta >= 0)) bad('strength chart: acid drops raised the pH');
-    if (dir === 'base' && d.some((x) => x.delta <= 0)) bad('strength chart: base drops lowered the pH');
-    if (problems.length > 12) return;
+  for (let ha = 0; ha <= B.MAXC; ha += 2) for (let a = 0; a <= B.MAXC; a += 2) for (let up = 0; up <= 12; up += 3) for (let dn = 0; dn <= 12; dn += 4) {
+    const c = B.concentrations(p, ha, a, up, dn), k = B.counts(p, ha, a, up, dn);
+    if (!near(c.HA + c.A, (ha + a) * U, 1e-12)) bad(`concentrations ${p} ${ha}/${a}: HA + A- is ${c.HA + c.A}, not ${(ha + a) * U}`);
+    if (Math.abs(c.A - k.A * U) > 0.5 * U + 1e-12) bad(`concentrations ${p} ${ha}/${a} ${up}/${dn}: [A-] ${c.A} is not the beaker's ${k.A} particles`);
   }
 });
-if (checked < 1000) bad('the strength chart was barely checked');
+
+/* more of the species that reacts always means a smaller pH change (the point the sliders let the teacher make) */
+let pairs = 0;
+['HA'].forEach((p) => {
+  for (let ha = 1; ha <= B.MAXC; ha++) for (let a = 1; a <= B.MAXC; a++) for (let k = 1; k <= B.MAXD; k++) {
+    if (a - k > 0 && a + 1 <= B.MAXC) {
+      pairs++;
+      const d0 = Math.abs(B.change(p, ha, a, 'acid', k).delta), d1 = Math.abs(B.change(p, ha, a + 1, 'acid', k).delta);
+      if (d1 > d0 + 1e-9) bad(`more A- gave a LARGER change for ${k} drops of HCl (${p} ${ha}/${a})`);
+    }
+    if (ha - k > 0 && ha + 1 <= B.MAXC) {
+      pairs++;
+      const d0 = Math.abs(B.change(p, ha, a, 'base', k).delta), d1 = Math.abs(B.change(p, ha + 1, a, 'base', k).delta);
+      if (d1 > d0 + 1e-9) bad(`more HA gave a LARGER change for ${k} drops of NaOH (${p} ${ha}/${a})`);
+    }
+  }
+});
 
 /* ------------------------------------------------------------ the page text */
 
@@ -173,4 +181,4 @@ if (problems.length) {
   console.error('FAILED:\n - ' + problems.slice(0, 20).join('\n - ') + (problems.length > 20 ? `\n ... and ${problems.length - 20} more` : ''));
   process.exit(1);
 }
-console.log(`OK: model, ${n} beaker states, ${checked} strength-chart settings and packaging check out.`);
+console.log(`OK: model, ${n} beaker states and packaging check out.`);
