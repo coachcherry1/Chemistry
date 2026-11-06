@@ -54,8 +54,10 @@ var Charts = (function () {
     function line(pair, ha, a) {
       return Buf.curve(pair, ha, a).map(function (q) { return xs(q[0]).toFixed(1) + ',' + ys(Math.max(0, Math.min(14, q[1]))).toFixed(1); }).join(' ');
     }
-    function update(pair, ha, a, up, dn) {
+    function update(pair, ha, a, up, dn, showWater) {
       var k = Buf.pKa(pair);
+      var wOn = showWater !== false;
+      water.style.display = wOn ? '' : 'none'; dotW.style.display = wOn ? '' : 'none'; waterKey.style.display = wOn ? '' : 'none';
       pkaLine.setAttribute('x1', X0); pkaLine.setAttribute('x2', X1); pkaLine.setAttribute('y1', ys(k)); pkaLine.setAttribute('y2', ys(k));
       pkaText.setAttribute('x', X0 + 5); pkaText.setAttribute('y', ys(k) - 5); pkaText.textContent = 'pKa ' + k.toFixed(2);
       water.setAttribute('points', line(pair, 0, 0));
@@ -66,9 +68,9 @@ var Charts = (function () {
       dotB.style.display = (ha + a) > 0 ? '' : 'none';
       dotW.setAttribute('cx', xs(net).toFixed(1)); dotW.setAttribute('cy', ys(Buf.pH(pair, 0, 0, up, dn)).toFixed(1));
     }
+    var waterKey = h('span', { class: 'clegend-item' }, [h('i', { class: 'clegend-sw cl-wtr' }), 'Pure water']);
     var node = h('figure', { class: 'graph' }, [svg, h('div', { class: 'clegend' }, [
-      h('span', { class: 'clegend-item' }, [h('i', { class: 'clegend-sw cl-buf' }), 'This buffer']),
-      h('span', { class: 'clegend-item' }, [h('i', { class: 'clegend-sw cl-wtr' }), 'Pure water'])])]);
+      h('span', { class: 'clegend-item' }, [h('i', { class: 'clegend-sw cl-buf' }), 'This buffer']), waterKey])]);
     return { node: node, update: update };
   }
 

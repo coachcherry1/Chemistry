@@ -113,6 +113,7 @@ h1 { font-size: 1.25rem; margin: 0; letter-spacing: -0.01em; }
 .marker { position: absolute; top: -6px; width: 6px; height: 24px; margin-left: -3px; background: var(--ink); border: 2px solid var(--paper); border-radius: 3px; transition: left 0.5s ease; }
 .ph-sub { margin: 2px 0 0; font-size: 1.1rem; font-weight: 700; }
 .ph-water { margin: 0; font-size: 0.95rem; color: var(--muted); min-height: 1.3em; }
+.toggles { display: flex; justify-content: center; gap: 22px; flex-wrap: wrap; }
 .eqtoggle { display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; color: var(--muted); cursor: pointer; margin-top: 2px; }
 .eqtoggle input { width: 20px; height: 20px; }
 .eqbox { text-align: left; margin-top: 4px; padding: 6px 10px; border-left: 4px solid var(--warn); background: var(--warn-bg); border-radius: 6px; font-size: 0.9rem; }

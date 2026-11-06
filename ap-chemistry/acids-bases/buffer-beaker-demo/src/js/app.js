@@ -9,7 +9,7 @@ var App = (function () {
 
   var h = UI.h;
   var state = { pair: 'HA', ha: 10, a: 10, up: 0, dn: 0 };
-  var el = {}, beaker, graph, strength, busy = false, tab = 'graph', showEq = false, baseSpeed = 1;
+  var el = {}, beaker, graph, strength, busy = false, tab = 'graph', showEq = false, showWater = true, baseSpeed = 1;
 
   function f2(v) { return v.toFixed(2); }
   function P() { return Buf.PAIRS[state.pair]; }
@@ -59,7 +59,9 @@ var App = (function () {
     el.marker = h('i', { class: 'marker', 'aria-hidden': 'true' });
     var bar = h('div', { class: 'phbar', 'aria-hidden': 'true' }, [el.marker]);
     el.eq = h('div', { class: 'eqbox' });
-    var eqToggle = h('label', { class: 'eqtoggle' }, [h('input', { type: 'checkbox', id: 'showEq', onchange: function (e) { showEq = e.target.checked; paintEq(); } }), ' Show the equation']);
+    var eqToggle = h('div', { class: 'toggles' }, [
+      h('label', { class: 'eqtoggle' }, [h('input', { type: 'checkbox', id: 'showWater', checked: true, onchange: function (e) { showWater = e.target.checked; paint(true); } }), ' Show pure water']),
+      h('label', { class: 'eqtoggle' }, [h('input', { type: 'checkbox', id: 'showEq', onchange: function (e) { showEq = e.target.checked; paintEq(); } }), ' Show the equation'])]);
 
     el.tabBtns = {
       graph: h('button', { type: 'button', class: 'tab on', 'data-tab': 'graph', text: 'pH vs drops', onclick: function () { setTab('graph'); } }),
@@ -98,7 +100,7 @@ var App = (function () {
   /* ------------------------------------------------------------------ paint */
 
   function paintCharts() {
-    graph.update(state.pair, state.ha, state.a, state.up, state.dn);
+    graph.update(state.pair, state.ha, state.a, state.up, state.dn, showWater);
     strength.update(state.pair, state.ha, state.a);
   }
 
@@ -135,7 +137,7 @@ var App = (function () {
     } else {
       var d = now - start;
       el.phSub.textContent = 'Change since the start: ' + (d < 0 ? '−' : '+') + f2(Math.abs(d)) + '  (' + f2(start) + ' → ' + f2(now) + ')';
-      el.phWater.textContent = 'Pure water with the same drops: pH ' + f2(Buf.pH(state.pair, 0, 0, state.up, state.dn));
+      el.phWater.textContent = showWater ? 'Pure water with the same drops: pH ' + f2(Buf.pH(state.pair, 0, 0, state.up, state.dn)) : '';
     }
     el.count.textContent = 'HCl: ' + state.up + ' drops   NaOH: ' + state.dn + ' drops';
     el.btns.forEach(function (b) {
@@ -204,6 +206,7 @@ var App = (function () {
     build();
     beaker.setSpeed(baseSpeed);
     setReaction(null);
+    if (params.get('water') === '0') { showWater = false; document.getElementById('showWater').checked = false; paint(true); }
     if (params.has('tab')) setTab(params.get('tab') === 'strength' ? 'strength' : 'graph');
   }
 

@@ -122,6 +122,18 @@ const fakeLMS = () => {
   }
   await snap('graph');
 
+  /* ---- hide the pure water line: graph curve, dot, key and the meter line */
+  await page.uncheck('#showWater');
+  {
+    const gone = await page.evaluate(() => ['.g-svg .cline.cl-wtr', '.g-svg .cdot.cl-wtr'].every((s) => getComputedStyle(document.querySelector(s)).display === 'none'));
+    expect(gone, 'hiding pure water left its curve or dot on the graph');
+    expect((await text('.ph-water')) === '', 'hiding pure water left the meter line');
+    expect(!/Pure water/.test(await page.evaluate(() => document.querySelector('.clegend').textContent)) || (await page.evaluate(() => getComputedStyle(document.querySelector('.clegend-item:nth-child(2)')).display)) === 'none', 'hiding pure water left it in the key');
+  }
+  await snap('no-water');
+  await page.check('#showWater');
+  expect(/Pure water with the same drops/.test(await text('.ph-water')), 'showing pure water again did not bring back the meter line');
+
   /* ---- NaOH, a run of five, then the limit of 12 */
   await page.click('.drop-btn[data-dir="base"][data-n="5"]');
   await idle();

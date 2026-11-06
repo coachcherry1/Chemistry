@@ -14,7 +14,7 @@ checkpoints.
 - **Right, two sliders**: the concentration of **HA** and of **A⁻**, 0.00 to 0.20 M in steps of 0.01 M (one particle is 0.010 M).
 - **Four buttons**: add 1 or 5 drops of **HCl**, or 1 or 5 drops of **NaOH** (one drop is 0.010 M, up to 12 of each; dilution is
   ignored). **Reset drops** puts the beaker back. Moving a slider also resets the drops.
-- **A big pH meter** with the change since the start, and the pH pure water would have with the same drops. **Show the equation**
+- **A big pH meter** with the change since the start, and the pH pure water would have with the same drops. **Show pure water** (on by default) hides the pure water curve, dot and key on the graph and the pure water line under the meter, for when you want only the buffer. **Show the equation**
   opens pH = pKa + log([A⁻] / [HA]), always with the box *Only for a buffer. It needs appreciable amounts of BOTH ...*, and it says
   the equation does not apply when a member is missing.
 
@@ -48,7 +48,7 @@ One model (`buffer.js`) makes every number: the exact pH from a charge balance (
 4.74), the particle counts, the curves and the strength chart. Files: `buffer.js`, `beaker.js` (the beaker, the dropper and the
 animation of one drop), `charts.js` (the graph and the strength chart), `app.js`, `scorm.js`, `util.js`. Offline only, no CDN. Works
 with a mouse, a touch screen (large targets for a smartboard) or the keyboard. Dark mode. `?speed=0` skips the animation, any other
-number scales it. `?tab=strength` opens the strength chart.
+number scales it. `?tab=strength` opens the strength chart, `?water=0` starts with pure water hidden.
 
 ```bash
 node tools/validate.js                    # the chemistry, every beaker state, the strength chart, packaging
