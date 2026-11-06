@@ -46,7 +46,8 @@ for (const id of ids) {
     /* bond lengths */
     ns.forEach((x) => {
       if (x.j < i) return;
-      const want = bondLength(a.el, m.atoms[x.j].el, x.order);
+      /* benzene ring bonds are all 1.39 Å, whichever line is drawn double */
+      const want = bondLength(a.el, m.atoms[x.j].el, a.aryl && m.atoms[x.j].aryl ? 'ar' : x.order);
       const got = G.dist(a.p, m.atoms[x.j].p);
       if (!near(got, want, 0.01)) fail(`${id}: ${a.el}–${m.atoms[x.j].el} bond is ${got.toFixed(3)} Å, not ${want}`);
     });
@@ -269,49 +270,68 @@ const P = App.PREDICT;
 const key = (p) => p.choices[p.answer];
 const m0 = (id) => mol(S(id).mols ? S(id).mols[0] : S(id).mol);
 
-/* mirror: CHBrClF never fits (two atoms at most), CH₂BrCl fits after Turn it over */
+/* mirror: CHBrClF never fits (two atoms at most); its carbon carries four different groups */
 {
-  const x = mol('chbrclf'), img = STEREO.mirror(x, 'beside');
+  const x = mol(S('mirror').mol), img = STEREO.mirror(x, 'beside');
   const best = Math.max(...STEREO.orientations(img).map((O) => STEREO.matchCount(STEREO.apply(img, O), x).n));
   if (best !== 2) fail(`mirror: the best fit of CHBrClF's mirror image should be 2 atoms, not ${best}`);
-  const y = mol('ch2brcl'), imgY = STEREO.mirror(y, 'beside');
-  const fit = STEREO.matchCount(STEREO.apply(imgY, STEREO.OVER), y);
-  if (fit.n !== fit.total) fail('mirror: CH₂BrCl\'s mirror image should fit after Turn it over (the step says so)');
-  const plane = STEREO.centrePlane(y);
-  if (!plane || Math.abs(plane.n[2]) < 0.999) fail('mirror: CH₂BrCl\'s mirror plane should be the page itself (the step says so)');
-  if (key(P.fit1) !== 'No, never' || !STEREO.chiral(x) || key(P.fit2) !== 'Yes' || STEREO.chiral(y)) fail('mirror: a prediction key is wrong');
+  if (key(P.fit1) !== 'No, never' || !STEREO.chiral(x)) fail('mirror: the prediction key is wrong');
+  if (CIP.centres(x).length !== 1 || !/Br, Cl, F and H|and/.test(App.groupsOn(x, x.centre))) fail('mirror: CHBrClF should have one chirality centre');
+  /* CH₂BrCl (in the checkpoints): its mirror image fits, and its mirror plane is the page */
+  const y = mol('ch2brcl'), fit = STEREO.matchCount(STEREO.apply(STEREO.mirror(y, 'beside'), STEREO.OVER), y);
+  if (fit.n !== fit.total || STEREO.chiral(y)) fail('CH₂BrCl\'s mirror image should fit it');
 }
-/* drawmirror: of the 24 drawings, exactly the reflection is accepted, and every other one is explained */
+/* drawmirror: Klein's three mirrors. Of the six drawings a student can build
+   (three ways to face times wedge or dash), exactly the reflection is accepted
+   for each mirror; the others are explained as what they are (the molecule
+   itself, the molecule rotated on a spear, or another mirror's image), and
+   the model agrees with each explanation. */
 {
-  const m = mol(S('drawmirror').mol), slots = MOLECULES.SLOT_ORDER[m.tpl];
-  const gs = slots.map((s) => STEREO.arrangement(m)[s]);
-  for (const where of ['beside', 'behind']) {
+  const m = mol(S('drawmirror').mol), c = CIP.centres(m);
+  if (c.length !== 1 || !STEREO.chiral(m)) fail('drawmirror: amphetamine should have one chirality centre');
+  const order3 = App.MIRRORS3.map((x) => x.key).join();
+  if (order3 !== 'beside,behind,beneath') fail(`drawmirror: the mirrors should be next to, behind and beneath (Klein), not ${order3}`);
+  for (const where of ['beside', 'behind', 'beneath']) {
     let ok = 0;
-    for (const perm of STEREO.permutations([0, 1, 2, 3])) {
-      const got = {};
-      slots.forEach((s, i) => { got[s] = gs[perm[i]]; });
-      const r = App.judgeMirror(m, where, got);
+    for (const flip of ['none', 'lr', 'tb']) for (const bond of ['wedge', 'dash']) {
+      const r = App.judgeMirror(m, where, flip, bond), built = STEREO.apply(m, App.flipMatrix(flip, bond));
+      const rel = STEREO.relation(built, m);
       if (r.ok) {
         ok++;
-        if (STEREO.relation(STEREO.fromSlots(m.tpl, got), m) !== 'enantiomers') fail(`drawmirror ${where}: the accepted drawing is not the mirror image`);
+        if (rel !== 'enantiomers') fail(`drawmirror ${where}: the accepted drawing is not the mirror image`);
+        if (G.gap(App.flipMatrix(flip, bond), STEREO.MIRRORS[where]) > 0.01) fail(`drawmirror ${where}: accepted the wrong reflection`);
       } else if (!r.msg) fail(`drawmirror ${where}: a wrong drawing gets no feedback`);
+      else if (r.kind === 'turned' && rel !== 'identical') fail(`drawmirror ${where}: called ${flip}/${bond} rotated, but it is ${rel}`);
+      else if (r.kind === 'other' && rel !== 'enantiomers') fail(`drawmirror ${where}: called ${flip}/${bond} another mirror's image, but it is ${rel}`);
     }
     if (ok !== 1) fail(`drawmirror ${where}: ${ok} drawings accepted, not exactly 1`);
   }
-  const beh = STEREO.arrangement(STEREO.mirror(m, 'behind')), orig = STEREO.arrangement(m);
-  if (beh.w !== orig.d || beh.d !== orig.w || beh.ul !== orig.ul) fail('a mirror behind the page should exchange only wedge and dash');
-}
-/* centres: what the step expects in each molecule */
-{
-  const want = { butanol_line: [2], methylpentane: [], dimethylpentane: [3], bcb_line: [2, 3] };
-  for (const id of S('centres').mols) {
-    const m = mol(id), got = CIP.centres(m).map((c) => m.atoms[c].num);
-    if (got.join() !== (want[id] || []).join()) fail(`centres: ${id} has chirality centres at ${got.join() || 'none'}`);
-    m.backbone.forEach((i) => {
-      const num = m.atoms[i].num;
-      if (got.indexOf(num) < 0 && !App.whyNotCentre(m, num)) fail(`centres: no explanation for C${num} of ${id}`);
-    });
+  /* the closing claim: the image next to it, rotated 180° on the vertical spear, is the image behind it */
+  const next = STEREO.mirror(m, 'beside'), beh = STEREO.mirror(m, 'behind');
+  if (G.gap(G.mmul(STEREO.OVER, STEREO.MIRRORS.beside), STEREO.MIRRORS.behind) > 0.01 || STEREO.relation(next, beh) !== 'identical') {
+    fail('drawmirror: the images next to and behind it should be one molecule, a 180° turn apart');
   }
+  if (STEREO.relation(STEREO.mirror(m, 'beneath'), next) !== 'identical') fail('drawmirror: all three images should be one molecule');
+}
+/* centres and chiral: what each step expects in each molecule */
+{
+  const want = { butanol_line: [2], methylpentane: [], chloropentane3: [], bromohexane3: [3], dimethylpentane: [3], bcb_line: [2, 3],
+                 lactic_line: [2], glycine_line: [], alanine_line: [2], glycerol_line: [], propanol_rub: [] };
+  for (const sid of ['centres', 'chiral']) {
+    for (const id of S(sid).mols) {
+      const m = mol(id), got = CIP.centres(m).map((c) => m.atoms[c].num);
+      if (!(id in want)) fail(`${sid}: no expected answer for ${id}`);
+      if (got.join() !== (want[id] || []).join()) fail(`${sid}: ${id} has chirality centres at ${got.join() || 'none'}`);
+      m.backbone.forEach((i) => {
+        const num = m.atoms[i].num;
+        if (got.indexOf(num) < 0 && !App.whyNotCentre(m, num)) fail(`${sid}: no explanation for C${num} of ${id}`);
+      });
+      /* one centre or none: the verdict follows from the rule */
+      if (sid === 'chiral' && (got.length > 1 || STEREO.chiral(m) !== (got.length === 1))) fail(`chiral: ${id} does not follow the one-centre rule`);
+      if (sid === 'chiral' && !m.spec.note) fail(`chiral: ${id} has no everyday note`);
+    }
+  }
+  if (!S('chiral').verdict) fail('chiral: the step should ask chiral or achiral');
 }
 /* rank and ties */
 {
@@ -478,6 +498,9 @@ const checks = {
       CIP.centres(p).length === 0 && !STEREO.chiral(p) && /OH/.test(on2(p)) && /two CH₃ groups/.test(on2(p)) &&
       Qn('a-butanol').fig.captions.join() === [b.name, p.name].join();
   },
+  'a-glycine': () => { const g = mol('glycine_line'), a = mol('alanine_line');
+    return CIP.centres(g).length === 0 && !STEREO.chiral(g) && /two H atoms/.test(App.groupsOn(g, g.carbonAt[2])) &&
+      CIP.centres(a).length === 1 && STEREO.chiral(a); },
   'a-sp2': () => true,
   'b-top': () => texts(mol('chloroethanol'), mol('chloroethanol').centre)[0] === 'Cl',
   'b-why-br': () => ELEMENTS.Br.z > ELEMENTS.F.z,
@@ -502,6 +525,7 @@ const checks = {
   'c-steering': () => true,
   'd-count': () => distinct(S('four').mols) === 4,
   'd-max3': () => true,   /* 2 × 2 × 2: each centre R or S */
+  'd-chart': () => true,
   'd-rel-enant': () => STEREO.relation(mol(bcbBy('(2R,3R)')), mol(bcbBy('(2S,3S)'))) === 'enantiomers',
   'd-rel-pair': () => STEREO.relation(mol(bcbBy('(2R,3S)')), mol(bcbBy('(2S,3R)'))) === 'enantiomers',
   'd-rel-dia': () => STEREO.relation(mol(bcbBy('(2R,3R)')), mol(bcbBy('(2R,3S)'))) === 'diastereomers',

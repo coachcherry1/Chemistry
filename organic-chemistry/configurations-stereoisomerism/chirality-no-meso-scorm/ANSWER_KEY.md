@@ -13,6 +13,7 @@ Nothing is calculated. The atomic numbers are open beside checkpoints 2 to 4.
 | --- | --- | --- | --- |
 | Bromochlorofluoromethane (`chbrclf`) | Br upper left, in the page, Cl upper right, in the page, F wedge, H dash | Br > Cl > F > H (4 on the dash) | R |
 | Bromochloromethane (`ch2brcl`) | Br upper left, in the page, Cl upper right, in the page, H wedge, H dash | none | no chirality centre, achiral |
+| Amphetamine (`amphetamine`) | C2: H (wedge), H (dash); C3: CH₃ (wedge), H (dash) | C3: NH₂ > CH₂C₆H₅ > CH₃ > H (4 on the dash) | (3S) |
 | 2-Butanol (`butanol_line`) | C2: OH (plain), H (dash); C3: H (wedge), H (dash) | C2: OH > CH₂CH₃ > CH₃ > H (4 on the dash) | (2R) |
 | 2-Propanol (`propanol_line`) | C2: OH (plain), H (dash) | none | no chirality centre, achiral |
 | 3-Methylpentane (`methylpentane`) | C2: H (wedge), H (dash); C3: CH₃ (plain), H (dash); C4: H (wedge), H (dash) | none | no chirality centre, achiral |
@@ -21,6 +22,13 @@ Nothing is calculated. The atomic numbers are open beside checkpoints 2 to 4.
 | 3-Methylhexane (`methylhexane`) | C2: H (wedge), H (dash); C3: CH₃ (plain), H (dash); C4: H (wedge), H (dash); C5: H (wedge), H (dash) | C3: CH₂CH₂CH₃ > CH₂CH₃ > CH₃ > H (4 on the dash) | (3S) |
 | 2,2-Dimethylbutane (`dimethylbutane`) | C2: CH₃ (plain), CH₃ (plain); C3: H (wedge), H (dash) | none | no chirality centre, achiral |
 | 1,2-Dichloropropane (`chloropropane`) | C2: Cl (plain), H (dash) | C2: Cl > CH₂Cl > CH₃ > H (4 on the dash) | (2S) |
+| 3-Chloropentane (`chloropentane3`) | C2: H (wedge), H (dash); C3: Cl (plain), H (dash); C4: H (wedge), H (dash) | none | no chirality centre, achiral |
+| 3-Bromohexane (`bromohexane3`) | C2: H (wedge), H (dash); C3: Br (plain), H (dash); C4: H (wedge), H (dash); C5: H (wedge), H (dash) | C3: Br > CH₂CH₂CH₃ > CH₂CH₃ > H (4 on the dash) | (3S) |
+| Lactic acid (`lactic_line`) | C2: OH (plain), H (dash) | C2: OH > COOH > CH₃ > H (4 on the dash) | (2S) |
+| Alanine (`alanine_line`) | C2: NH₂ (plain), H (dash) | C2: NH₂ > COOH > CH₃ > H (4 on the dash) | (2S) |
+| Glycine (`glycine_line`) | C2: H (wedge), H (dash) | none | no chirality centre, achiral |
+| Glycerol (`glycerol_line`) | C2: OH (plain), H (dash) | none | no chirality centre, achiral |
+| 2-Propanol (`propanol_rub`) | C2: OH (plain), H (dash) | none | no chirality centre, achiral |
 | 1-Bromo-1-chloro-1-fluoroethane (`bcfe`) | Br upper left, in the page, F upper right, in the page, Cl wedge, CH₃ dash | Br > Cl > F > CH₃ (4 on the dash) | S |
 | 2-Butanol (`butanol`) | CH₃ upper left, in the page, CH₂CH₃ upper right, in the page, OH wedge, H dash | OH > CH₂CH₃ > CH₃ > H (4 on the dash) | S |
 | 2,3,3-Trimethyl-1-butanol (`tmb`) | CH₂OH upper left, in the page, C(CH₃)₃ upper right, in the page, CH₃ wedge, H dash | CH₂OH > C(CH₃)₃ > CH₃ > H (4 on the dash) | R |
@@ -71,22 +79,34 @@ Nothing is calculated. The atomic numbers are open beside checkpoints 2 to 4.
 
 ### Mirror, mirror
 
-Predictions: CHBrClF's mirror image fits? **No, never**. CH₂BrCl's? **Yes**. CHBrClF: at most 2 of 4 atoms ever line up, whatever spear the image is rotated on. CH₂BrCl: all 4 line up after the **vertical spear** (180°) on the image; its mirror plane is the page (through Br, C and Cl).
+Prediction: CHBrClF's mirror image fits? **No, never**. At most 2 of 4 atoms ever line up, whatever spear the image is rotated on. The reason given: its carbon carries four different groups (Br, Cl, F and H).
 
-### Draw the mirror image
+### Three mirrors (Klein's figure)
 
-Mirror beside the molecule: Br upper right, in the page, Cl upper left, in the page, F wedge, H dash.
+Amphetamine as drawn: C2: H (wedge), H (dash); C3: CH₃ (wedge), H (dash). Students build each mirror's image from two choices (which way the drawing faces, and wedge or dash for the CH₃); exactly one of the six is right for each mirror:
 
-Mirror behind the page: Br upper left, in the page, Cl upper right, in the page, F dash, H wedge.
+- **Next to the molecule**: left and right traded, CH₃ on the wedge.
+- **Behind the molecule**: as it is, CH₃ on the dash.
+- **Beneath the molecule**: top and bottom traded, CH₃ on the wedge.
 
-The mirror-image template is drawn with its wedge on the right, so the right answer looks exactly like the reflection.
+Wrong builds are explained as what they are: the molecule as drawn, the molecule rotated 180° on a spear (it fits the original), or the image another mirror shows. All three images are one molecule, the enantiomer.
 
 ### Find the chirality centres
 
 - 2-Butanol: **C2**
 - 3-Methylpentane: **none**
+- 3-Chloropentane: **none**
+- 3-Bromohexane: **C3**
 - 2,3-Dimethylpentane: **C3**
 - 2-Bromo-3-chlorobutane: **C2 and C3**
+
+### Chiral or not?
+
+- Lactic acid (sour milk and tired muscles): C2 carries CH₃, COOH, OH and H: **chiral**
+- Glycine (the simplest amino acid): no carbon carries four different groups: **achiral**
+- Alanine (an amino acid in every protein): C2 carries CH₃, COOH, NH₂ and H: **chiral**
+- Glycerol (in soaps and lotions): no carbon carries four different groups: **achiral**
+- 2-Propanol (rubbing alcohol): no carbon carries four different groups: **achiral**
 
 ### Priorities
 
@@ -140,12 +160,14 @@ Moving only the H and the OH (OH wedge, H dash, CH₃ and CH₂CH₃ unmoved) dr
 
 Prediction: **4** stereoisomers. A (2R,3S), B (2S,3R), C (2R,3R), D (2S,3S).
 
-- A and B: **enantiomers**
-- A and C: **diastereomers**
-- A and D: **diastereomers**
-- B and C: **diastereomers**
-- B and D: **diastereomers**
-- C and D: **enantiomers**
+- A and B: mirror images? yes: **enantiomers**
+- A and C: mirror images? no: **diastereomers**
+- A and D: mirror images? no: **diastereomers**
+- B and C: mirror images? no: **diastereomers**
+- B and D: mirror images? no: **diastereomers**
+- C and D: mirror images? yes: **enantiomers**
+
+The tiles read "Enantiomers: mirror images" and "Diastereomers: NOT mirror images". Each row's Mirror button shows the first molecule in a mirror behind it, beside the second. Klein's chart of the kinds of isomers sits below.
 
 ### Rings
 
@@ -159,9 +181,9 @@ Prediction (trans-1,3 chiral?): **No: it is chiral**.
 
 ★ = core question, asked in every attempt. The others are drawn at random to make up the checkpoint. The correct answer is listed first; on screen the choices are shuffled. Question ids are the SCORM interaction ids.
 
-### Checkpoint 1: chirality (4 of 11)
+### Checkpoint 1: chirality (4 of 12)
 
-**★ `a-chiral`** What does it mean for a molecule to be chiral?
+**`a-chiral`** What does it mean for a molecule to be chiral?
 
 - ✓ It cannot be turned to fit exactly onto its mirror image
 - It has a mirror plane
@@ -241,7 +263,7 @@ Figure: Bromochlorofluoromethane: Br upper left, in the page, Cl upper right, in
 - Bromochlorofluoromethane, turned (4): Br upper right, in the page, Cl wedge, F upper left, in the page, H dash = R
 - Bromochlorofluoromethane, turned (9): Br dash, Cl upper left, in the page, F wedge, H upper right, in the page = R
 
-> A mirror beside the molecule turns left into right and leaves the wedge and the dash alone. The other three drawings are the molecule itself, turned: each would fit the original exactly.
+> A mirror next to the molecule turns left into right and leaves the wedge and the dash alone. The other three drawings are the molecule itself, turned: each would fit the original exactly.
 
 **`a-mirror-behind`** A mirror lies flat behind the page. What does it do to a drawing’s wedges and dashes?
 
@@ -252,7 +274,7 @@ Figure: Bromochlorofluoromethane: Br upper left, in the page, Cl upper right, in
 
 > Whatever points toward you (a wedge) appears in a mirror behind the page pointing away (a dash), and the other way round. Bonds in the page stay where they are. The result is the mirror image.
 
-**`a-butanol`** 2-Butanol is chiral, but 2-propanol is not. Why?
+**★ `a-butanol`** 2-Butanol is chiral, but 2-propanol is not. Why?
 
 Figure: 2-Butanol: C2: OH (plain), H (dash); C3: H (wedge), H (dash) = (2R) | beside it: 2-Propanol: C2: OH (plain), H (dash) = no chirality centre.
 
@@ -262,6 +284,17 @@ Figure: 2-Butanol: C2: OH (plain), H (dash); C3: H (wedge), H (dash) = (2R) | be
 - 2-Butanol has more carbon atoms, and more carbons always make a molecule chiral
 
 > A chirality centre needs four different groups on one carbon. C2 of 2-butanol carries H, OH, CH₃ and CH₂CH₃, so 2-butanol is chiral. C2 of 2-propanol carries H, OH and two identical CH₃ groups, so 2-propanol has a mirror plane and is achiral. Both have an OH on C2, and more carbons alone never make a molecule chiral.
+
+**`a-glycine`** Glycine is the only amino acid in your body that is achiral. Why?
+
+Figure: Glycine: C2: H (wedge), H (dash) = no chirality centre.
+
+- ✓ Its CH₂ carbon carries two H atoms, so no carbon has four different groups
+- It has no oxygen atoms
+- It contains a nitrogen atom
+- It has a mirror image, so it must be achiral
+
+> Glycine’s only CH₂ carbon carries H, H, NH₂ and COOH: two of its groups are the same, so it is not a chirality centre. Every other amino acid has a carbon with four different groups there, like alanine’s H, CH₃, NH₂ and COOH, so they are chiral.
 
 **`a-sp2`** Can a carbon in a C=C double bond be a chirality centre?
 
@@ -507,9 +540,9 @@ Figure: 2-Bromobutane: C2: H (wedge), Br (dash); C3: H (wedge), H (dash) = (2S).
 
 > With 4 pointing away, read it as it is: counterclockwise is S.
 
-### Checkpoint 4: two centres and rings (4 of 12)
+### Checkpoint 4: two centres and rings (4 of 13)
 
-**★ `d-count`** How many stereoisomers does 2-bromo-3-chlorobutane have?
+**`d-count`** How many stereoisomers does 2-bromo-3-chlorobutane have?
 
 - ✓ 4
 - 2
@@ -534,7 +567,7 @@ Figure: 2-Bromobutane: C2: H (wedge), Br (dash); C3: H (wedge), H (dash) = (2S).
 - The same molecule
 - Constitutional isomers
 
-> Every centre is opposite, so they are mirror images that cannot be laid on each other: enantiomers.
+> Are they mirror images? Yes: every centre is opposite, so each is the other reflected. Nonsuperimposable mirror images: enantiomers.
 
 **`d-rel-pair`** (2R,3S)-2-Bromo-3-chlorobutane and (2S,3R)-2-bromo-3-chlorobutane are…
 
@@ -552,7 +585,16 @@ Figure: 2-Bromobutane: C2: H (wedge), Br (dash); C3: H (wedge), H (dash) = (2S).
 - The same molecule
 - Constitutional isomers
 
-> C2 is the same in both and C3 is opposite. They are stereoisomers but not mirror images: diastereomers.
+> Are they mirror images? No: C2 is the same in both and only C3 is opposite, and a mirror changes every centre. Stereoisomers that are NOT mirror images: diastereomers.
+
+**★ `d-chart`** Two stereoisomers have the same connectivity and are not superimposable, and they are NOT mirror images of each other. They are…
+
+- ✓ Diastereomers
+- Enantiomers
+- Constitutional isomers
+- The same molecule
+
+> Follow Klein’s chart: same connectivity and nonsuperimposable makes them stereoisomers. Then one question decides it: mirror images or not? Mirror images are enantiomers; NOT mirror images, diastereomers.
 
 **`d-which-dia`** Which two stereoisomers of 2-bromo-3-chlorobutane are diastereomers?
 

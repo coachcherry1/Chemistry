@@ -51,6 +51,12 @@ var MOLECULES = (function () {
   def('chbrclf', { name: 'Bromochlorofluoromethane', formula: 'CHBrClF', centre: { tpl: 'V', ul: 'Br', ur: 'Cl', w: 'F', d: 'H' } });
   def('ch2brcl', { name: 'Bromochloromethane', formula: 'CH₂BrCl', centre: { tpl: 'V', ul: 'Br', ur: 'Cl', w: 'H', d: 'H' } });
 
+  /* Part 1: Klein's three mirrors. Amphetamine drawn as in Klein's figure:
+     the ring at the left, CH₂ at the top of the zigzag, the chirality centre
+     at the bottom with NH₂ continuing the zigzag and CH₃ on a wedge. */
+  def('amphetamine', { name: 'Amphetamine', skeletal: true, chain: { first: 2, n: 2, ends: ['Ph', 'NH2'],
+    subs: { 3: { w: 'CH3' } } } });
+
   /* Part 1: finding chirality centres in bond-line formulas (no wedges) */
   def('butanol_line', { name: '2-Butanol', chain: { n: 4, subs: { 2: { w: 'OH', plain: true } } } });
   def('propanol_line', { name: '2-Propanol', chain: { n: 3, subs: { 2: { w: 'OH', plain: true } } } });
@@ -60,6 +66,19 @@ var MOLECULES = (function () {
   def('methylhexane', { name: '3-Methylhexane', chain: { n: 6, subs: { 3: { w: 'CH3', plain: true } } } });
   def('dimethylbutane', { name: '2,2-Dimethylbutane', chain: { n: 4, subs: { 2: { w: 'CH3', d: 'CH3', plain: true } } } });
   def('chloropropane', { name: '1,2-Dichloropropane', chain: { n: 3, subs: { 2: { w: 'Cl', plain: true } }, endSub: { 1: 'Cl' } } });
+  /* look further along the chain: two CH₂CH₃ groups, or CH₂CH₃ and CH₂CH₂CH₃ */
+  def('chloropentane3', { name: '3-Chloropentane', chain: { n: 5, subs: { 3: { w: 'Cl', plain: true } } } });
+  def('bromohexane3', { name: '3-Bromohexane', chain: { n: 6, subs: { 3: { w: 'Br', plain: true } } } });
+
+  /* Part 1: chiral or not? Molecules from everyday life, in bond-line form */
+  def('lactic_line', { name: 'Lactic acid', chain: { first: 2, n: 2, ends: ['COOH', null], subs: { 2: { w: 'OH', plain: true } } },
+    note: 'sour milk and tired muscles' });
+  def('alanine_line', { name: 'Alanine', chain: { first: 2, n: 2, ends: ['COOH', null], subs: { 2: { w: 'NH2', plain: true } } },
+    note: 'an amino acid in every protein' });
+  def('glycine_line', { name: 'Glycine', chain: { first: 2, n: 1, ends: ['COOH', 'NH2'] }, note: 'the simplest amino acid' });
+  def('glycerol_line', { name: 'Glycerol', chain: { n: 3, subs: { 2: { w: 'OH', plain: true } }, endSub: { 1: 'OH', 3: 'OH' } },
+    note: 'in soaps and lotions' });
+  def('propanol_rub', { name: '2-Propanol', chain: { n: 3, subs: { 2: { w: 'OH', plain: true } } }, note: 'rubbing alcohol' });
 
   /* Part 2: priorities */
   def('bcfe', { name: '1-Bromo-1-chloro-1-fluoroethane', formula: 'CBrClF–CH₃', centre: { tpl: 'V', ul: 'Br', ur: 'F', w: 'Cl', d: 'CH3' } });
@@ -156,6 +175,7 @@ var MOLECULES = (function () {
     var idx = m.add(a);
     m.bond(parent, idx, g.order || 1);
     var pp = m.atoms[parent].p;
+    if (g.ring6) { benzene(m, idx, pp, id); return idx; }
     (g.kids || []).forEach(function (k, j) {
       var kg = GROUPS[k];
       var r = bondLength(g.el, kg.el, kg.order);
@@ -164,6 +184,30 @@ var MOLECULES = (function () {
       grow(m, k, idx, kp, pp, id + '.' + j, { sub: true, owner: a.owner, slot: a.slot });
     });
     return idx;
+  }
+
+  /* A benzene ring on atom `ipso` (already placed), flat in the plane of the
+     page and pointing away from `pp`, the atom it hangs from. Its bonds are
+     written as alternating double and single bonds, as Klein draws it, and
+     every ring bond is 1.39 Å; the priority rules read the double bonds. */
+  var AR = 1.39;
+  function benzene(m, ipso, pp, id) {
+    var p0 = m.atoms[ipso].p, u = G.unit(G.sub(p0, pp));
+    var v = G.unit(G.cross([0, 0, 1], u));
+    var c = G.add(p0, G.mul(u, AR));
+    var ring = [ipso];
+    m.atoms[ipso].aryl = true;
+    m.atoms[ipso].ringCentre = c;
+    for (var i = 1; i < 6; i++) {
+      var t = i * Math.PI / 3;
+      var q = G.add(c, G.add(G.mul(u, -AR * Math.cos(t)), G.mul(v, AR * Math.sin(t))));
+      ring.push(m.add({ id: id + '.r' + i, el: 'C', p: q, aryl: true, ringCentre: c, owner: ipso }));
+    }
+    for (var k = 0; k < 6; k++) m.bond(ring[k], ring[(k + 1) % 6], k % 2 ? 1 : 2);
+    for (var j = 1; j < 6; j++) {
+      var qq = m.atoms[ring[j]].p;
+      m.bond(ring[j], m.add({ id: id + '.h' + j, el: 'H', p: G.add(qq, G.mul(G.unit(G.sub(qq, c)), 1.09)), owner: ipso, arylH: true }), 1);
+    }
   }
 
   function buildCentre(spec) {
@@ -378,6 +422,7 @@ var MOLECULES = (function () {
     seen = seen || [from];
     var a = m.atoms[to];
     if (a.ringC) return 'ring carbon C' + a.num;
+    if (a.aryl) return 'C₆H₅';
     if (seen.indexOf(to) >= 0) return '';
     var seen2 = seen.concat([to]);
     var nb = neighbours(m);

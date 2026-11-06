@@ -12,7 +12,8 @@
  *     R/S buttons under that drawing;
  *   - each tray of tiles or words and the drawing or table it fills;
  *   - each drawing whose atoms or carbons are clicked;
- *   - the mirror-plane slider, its 3D model and its Newman projection.
+ *   - the mirror-plane slider, its 3D model and its Newman projection;
+ *   - each of Klein's mirrors and the choices that build the image on it.
  * Students should never have to zoom out or scroll while they work. No step
  * may scroll sideways.
  *
@@ -63,7 +64,17 @@ function groups() {
   });
   document.querySelectorAll('svg .drop').forEach((p) => {
     const s = p.closest('svg');
-    if (vis(s) && !out.some((g) => g.els.includes(s))) out.push({ name: 'clickable drawing', els: [s] });
+    if (!vis(s) || out.some((g) => g.els.includes(s))) return;
+    /* a molecule to sort as chiral or achiral: its drawing and the buttons that decide */
+    const row = s.closest('.panel') && s.closest('.panel').querySelector('.btnrow');
+    out.push({ name: 'clickable drawing', els: row && vis(row) ? [s, row] : [s] });
+  });
+  /* Klein's mirrors: the glass and the choices that build the image on it */
+  document.querySelectorAll('.mirror-build').forEach((mb) => {
+    const els = [mb.querySelector('.mirror-scene')].concat([...mb.querySelectorAll('.choice-row')]).filter(vis);
+    const chk = [...mb.querySelectorAll('button.primary')].find(vis);
+    if (chk) els.push(chk);
+    if (els.length > 1) out.push({ name: 'mirror and its choices', els });
   });
   return out;
 }

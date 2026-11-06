@@ -33,10 +33,10 @@ var ELEMENT_ORDER = ['H', 'C', 'N', 'O', 'F', 'Cl', 'Br', 'I'];
 
 /* Bond lengths in ångströms. */
 function bondLength(a, b, order) {
-  var k = [a, b].sort().join('-') + (order === 2 ? '=' : '');
+  var k = [a, b].sort().join('-') + (order === 2 ? '=' : order === 'ar' ? '~' : '');
   var L = {
     'C-C': 1.54, 'C-C=': 1.34, 'C-H': 1.09, 'C-O': 1.43, 'C-O=': 1.21, 'H-O': 0.96, 'C-N': 1.47,
-    'H-N': 1.01, 'C-F': 1.35, 'C-Cl': 1.78, 'Br-C': 1.94, 'C-I': 2.14
+    'H-N': 1.01, 'C-F': 1.35, 'C-Cl': 1.78, 'Br-C': 1.94, 'C-I': 2.14, 'C-C~': 1.39
   };
   return L[k] || 1.5;
 }
@@ -59,6 +59,8 @@ var GROUPS = {
   CHO:   { el: 'C',  kids: ['Oxo', 'H'], flat: true, label: 'CHO', left: 'OHC', name: 'CHO' },
   COOH:  { el: 'C',  kids: ['Oxo', 'OH'], flat: true, label: 'COOH', left: 'HOOC', name: 'COOH' },
   Vinyl: { el: 'C',  kids: ['Methylene', 'H'], flat: true, label: 'CH=CH₂', left: 'H₂C=CH', name: 'CH=CH₂' },
+  /* a benzene ring, built flat in the page and drawn as a hexagon (molecules.js) */
+  Ph:    { el: 'C',  ring6: true, flat: true, label: 'C₆H₅', left: 'C₆H₅', name: 'C₆H₅' },
   /* parts of the groups above, never on a chirality centre themselves */
   Oxo:       { el: 'O', order: 2, label: 'O', name: '=O' },
   Methylene: { el: 'C', order: 2, kids: ['H', 'H'], flat: true, label: 'CH₂', name: '=CH₂' }

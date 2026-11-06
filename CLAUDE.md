@@ -179,17 +179,31 @@ not the full page.
   - `app.js`: `STEPS`, `PREDICT`, renderers
   - `quiz.js`: question bank
 
-## chirality-scorm (branch `claude/hopeful-feynman-fuhl6t`, zip v1, SCHEMA 4)
+## chirality-scorm (branch `claude/hopeful-feynman-fuhl6t`, zip v1, SCHEMA 5)
 
 - **Key objective:** name a chirality centre R or S by rotating the molecule until 4 is on the dash, never by swapping
   groups; then tell enantiomers, diastereomers and meso compounds apart.
-- 18 steps in 4 parts; 16 graded questions (4+4+4+4) from a pool of 51. The atomic-number table is open beside checkpoints 2–4.
+- 19 steps in 4 parts; 16 graded questions (4+4+4+4) from a pool of 53. The atomic-number table is open beside checkpoints 2–4,
+  Klein's chart of the kinds of isomers beside checkpoint 4.
 - **Teacher's wording:** the rule on screen is "If 4 is not on the dash, rotate the molecule." R is "rockwise" and S
   "sountersockwise" (the teacher's joke, credited to them) in exactly three places: the steering-wheel step, Big ideas and
   Vocabulary, never in `quiz.js`. Swap, switch, interchange and reverse never appear in student text. The validator checks all of it.
 - **Scope:** no calculations, no optical activity, no Fischer projections (the validator uses Fischer only for its textbook
   anchors). The mirror image is drawn both beside the molecule and behind the page. Rings: cis/trans 1,3- and
   1,4-dimethylcyclohexane from the chairs activity. Molecules A and B (2,3-dibromobutane) come from the Newman activity.
+- **Four different groups is the working test** (the teacher: the mirror image is the fun part, the practical test
+  needs stressing). Mirror, mirror is CHBrClF only and its reveal names the four groups; Find the chirality centres has
+  six molecules; **Chiral or not?** (`chiral`, `RENDER.centres` with `verdict`) sorts lactic acid, glycine, alanine,
+  glycerol and 2-propanol (one centre or none, each with an everyday `note`). `CENTRE_RULE` is on screen in both
+  steps. Checkpoint 1's core is `a-centre-which` and `a-butanol`.
+- **Klein's mirrors** (`Draw.pane`: a tinted glass pane in perspective, the image drawn on it, "Enantiomer"): the
+  `drawmirror` step is Klein's figure with amphetamine (`Ph` group: a flat benzene ring, 1.39 Å bonds, drawn as a
+  hexagon) and his three mirrors, next to (`beside`), behind and beneath; students build each image from a flip and
+  wedge/dash (`flipMatrix`, `judgeMirror`). The 3D mirror scenes have a real glass pane (camera turned 24°).
+- **Enantiomers vs diastereomers by mirror images:** Klein's chart (`Draw.isomerChart`, Fig. 5.11) in the four step,
+  Vocabulary and beside checkpoint 4; tiles "Enantiomers: mirror images" / "Diastereomers: NOT mirror images"; each
+  pair has a Mirror button (the first in a mirror behind it, beside the second); feedback and explanations lead with
+  "are they mirror images?"; checkpoint 4's core includes `d-chart`.
 - **Meso is recognised by an internal mirror plane**, taught in the `mesotut` step before Molecules A and B: two centres
   give at most 2ⁿ; cut between the centres and the halves must match (`STEREO.halves`); turn to eclipsed and every group
   must face its twin (`STEREO.facing`). R,S only confirms it. Not by laying the molecule on its mirror image (a guided
@@ -222,11 +236,12 @@ not the full page.
   - `app.js`: `STEPS`, `PREDICT`, renderers
   - `quiz.js`: question bank
 
-## chirality-no-meso-scorm (zip v1, SCHEMA 4)
+## chirality-no-meso-scorm (zip v1, SCHEMA 5)
 
 - A copy of `chirality-scorm/` for weaker years: Parts 1–3 identical; Part 4 keeps the four stereoisomers and Rings
   (trans-1,3, cis- and trans-1,4 only: chiral or no chirality centres). No meso tutorial, no Molecules A and B, no cis-1,3.
-- 16 steps; 16 graded questions (4+4+4+4) from a pool of 46. Checkpoint 4 is enantiomers, diastereomers, counting and rings.
+- 17 steps; 16 graded questions (4+4+4+4) from a pool of 48. Checkpoint 4 is enantiomers, diastereomers, counting and rings
+  (core `d-chart`, `d-rel-dia`).
 - The validator fails if "meso" appears in student text. Its own SCORM ids (`CHIRALITY_NOMESO_*`), save key
   (`chirality-no-meso-state`) and zip. A fix to shared code in `chirality-scorm/` usually belongs here too.
 

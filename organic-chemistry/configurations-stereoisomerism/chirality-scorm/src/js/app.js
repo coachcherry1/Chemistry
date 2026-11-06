@@ -23,7 +23,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a molecule changes: a save
      from an older build is then discarded and the student starts fresh. */
-  var SCHEMA = 4;
+  var SCHEMA = 5;
 
   var PARTS = [
     { n: 1, name: 'Chirality' },
@@ -34,19 +34,26 @@ var App = (function () {
   ];
 
   var STEPS = [
-    { id: 'mirror', part: 1, kind: 'mirror', mols: ['chbrclf', 'ch2brcl'],
+    { id: 'mirror', part: 1, kind: 'mirror', mol: 'chbrclf',
       title: 'Mirror, mirror',
       text: 'Your two hands are mirror images: alike in every way, yet you cannot lay one exactly on top of the other. ' +
-            'Molecules can be like that too. For each molecule, predict, then try to make its mirror image fit onto it.' },
-    { id: 'drawmirror', part: 1, kind: 'drawmirror', mol: 'chbrclf',
-      title: 'Draw the mirror image',
-      text: 'Draw what the mirror shows. First the mirror stands beside the molecule; then it lies flat behind the ' +
-            'page. Put each atom in its place, then press Check.' },
-    { id: 'centres', part: 1, kind: 'centres', mols: ['butanol_line', 'methylpentane', 'dimethylpentane', 'bcb_line'],
+            'Molecules can be like that too. Predict, then try to make the mirror image fit onto the molecule.' },
+    { id: 'drawmirror', part: 1, kind: 'drawmirror', mol: 'amphetamine',
+      title: 'Three mirrors',
+      text: 'Your textbook holds a mirror up to amphetamine in three places: next to it, behind it and beneath it. For ' +
+            'each mirror, build what the mirror shows: which way the drawing faces, and whether the CH₃ is on a wedge or a dash.' },
+    { id: 'centres', part: 1, kind: 'centres', mols: ['butanol_line', 'methylpentane', 'chloropentane3', 'bromohexane3',
+      'dimethylpentane', 'bcb_line'],
       title: 'Find the chirality centres',
       text: 'A carbon carrying four different groups is a chirality centre (also called a stereocentre). In a ' +
             'bond-line drawing every corner and every end is a carbon, with enough hidden H atoms to make four bonds. ' +
-            'Click every chirality centre in each molecule.' },
+            'Click every chirality centre in each molecule. Look all the way along each group: CH₂CH₃ and CH₂CH₂CH₃ differ.' },
+    { id: 'chiral', part: 1, kind: 'centres', verdict: true,
+      mols: ['lactic_line', 'glycine_line', 'alanine_line', 'glycerol_line', 'propanol_rub'],
+      title: 'Chiral or not?',
+      text: 'This is how chemists decide whether a molecule is chiral: look for a carbon with four different groups. ' +
+            'For each molecule from everyday life, find its chirality centre (or decide it has none), then say whether ' +
+            'the molecule is chiral.' },
     { id: 'quiz-A', part: 1, kind: 'quiz', quiz: 'A', title: 'Checkpoint 1', text: '' },
 
     { id: 'rank', part: 2, kind: 'rank', mols: ['chbrclf', 'bcfe'],
@@ -107,8 +114,6 @@ var App = (function () {
   var PREDICT = {
     fit1: { q: 'Can the mirror image of CHBrClF be turned so that it lies exactly on the original, every atom on its partner?',
       choices: ['No, never', 'Yes, if you turn it the right way'], answer: 0 },
-    fit2: { q: 'CH₂BrCl has two H atoms where CHBrClF had an H and an F. Can its mirror image be turned to fit exactly?',
-      choices: ['Yes', 'No'], answer: 0 },
     top: { q: 'Which atom of CHBrClF gets priority 1?',
       choices: ['Br: it has the highest atomic number', 'F: it is the most electronegative', 'H: it is the smallest'],
       answer: 0 },
@@ -783,7 +788,7 @@ var App = (function () {
     opts = opts || {};
     var img = STEREO.mirror(m, 'beside');
     var r = radiusOf(m);
-    var off = r + 0.4;
+    var off = r + 0.7;
     var together = false, busy = false;
     var canvas = h('canvas', { class: 'c3d nodrag', tabindex: 0, role: 'img',
       'aria-label': m.name + ' on the left and its mirror image on the right, with a mirror between them. Click a spear on the ' +
@@ -920,26 +925,21 @@ var App = (function () {
 
   RENDER.mirror = function (s) {
     var pr = progress('mirror');
-    pr.p = pr.p || {}; pr.ok = pr.ok || {};
-    var k = pr.k || 0;
-    var KEYS = ['fit1', 'fit2'], NAMES = ['CHBrClF', 'CH₂BrCl'];
+    pr.ok = pr.ok || {};
+    var P = PREDICT.fit1;
+    var m = molecule(s.mol);
     var top = h('div'), area = h('div');
     el.stage.appendChild(top);
     el.stage.appendChild(area);
-    function save() { pr.k = k; state.pr.mirror = pr; persist(); }
-    function isOpen(i) { return i === 0 || !!pr.ok[s.mols[i - 1]]; }
+    function save() { state.pr.mirror = pr; persist(); }
 
     function paint() {
       top.innerHTML = '';
-      top.appendChild(chipRow('Molecule:', NAMES, k, function (i) { return !!pr.ok[s.mols[i]]; }, isOpen,
-        function (i) { k = i; save(); paint(); }));
-      var P = PREDICT[KEYS[k]];
-      top.appendChild(panel('Your prediction', null, [predictCard(P, pr.p[k], function (i) {
-        pr.p[k] = i; save(); paint(); showArea(area);
-      }, { mol: s.mols[k] })]));
+      top.appendChild(panel('Your prediction', null, [predictCard(P, pr.p, function (i) {
+        pr.p = i; save(); paint(); showArea(area);
+      }, { mol: m.id })]));
       area.innerHTML = '';
-      if (pr.p[k] == null) return;
-      var m = molecule(s.mols[k]);
+      if (pr.p == null) return;
       var side = h('div');
       var sc = mirrorScene(m, { needTry: true, onTry: function () { say(''); }, onSlide: function (n, total) { slid(n, total); } });
       area.appendChild(h('div', { class: 'work work-wide' }, [sc.node,
@@ -952,223 +952,136 @@ var App = (function () {
             'its button) and try to make every atom line up with its partner. Then slide them together.' }));
           return;
         }
-        if (k === 0) {
-          side.appendChild(reveal([verdict(PREDICT.fit1, pr.p[0]) + 'However you turn it, at most two atoms line up and the ' +
-            'other two trade places. The mirror image is a different molecule: CHBrClF is chiral, like a hand.',
-            'Its carbon carries four different atoms: Br, Cl, F and H.']));
-          if (!pr.ok.ch2brcl) {
-            side.appendChild(h('div', { class: 'btnrow' }, [h('button', { type: 'button', class: 'primary', text: 'Next molecule →',
-              onclick: function () { k = 1; save(); paint(); } })]));
-          }
-        } else {
-          var plane = STEREO.centrePlane(m);
-          side.appendChild(reveal([verdict(PREDICT.fit2, pr.p[1]) + 'Every atom lines up: the mirror image is the same ' +
-            'molecule. CH₂BrCl is achiral.', 'It has a mirror plane: the plane through Br, C and Cl cuts it into two halves ' +
-            'that are mirror images of each other, one H on each side. Here that plane is the page itself.']));
-          side.appendChild(h('div', { class: 'btnrow' }, [h('button', { type: 'button', class: 'ghostbtn', text: 'Show the mirror plane',
-            onclick: function () { sc.showPlane({ o: plane.o, n: plane.n, size: 3.4 }); } })]));
-        }
+        side.appendChild(reveal([verdict(P, pr.p) + 'However you turn it, at most two atoms line up and the other two trade ' +
+          'places. The mirror image is a different molecule: CHBrClF is chiral, like a hand.',
+          'Why? Its carbon carries four different groups: ' + groupsOn(m, m.centre) + '. That is the test chemists use: ' +
+          'a carbon with four different groups is a chirality centre, and a molecule with one chirality centre is chiral.']));
       }
       function slid(n, total) {
-        if (k === 0) {
-          if (!pr.ok[m.id]) { pr.ok[m.id] = 1; save(); }
-          say(n + ' of ' + total + ' atoms line up. Try other spears if you like: two is the most that ever will.', 'good');
-          paintSide();
-          paint2();
-        } else if (n === total) {
-          if (!pr.ok[m.id]) { pr.ok[m.id] = 1; save(); }
-          paintSide();
-          paint2();
-        } else {
-          say('Only ' + n + ' of ' + total + ' line up so far. Go back to the mirror, rotate the image on a spear and slide ' +
-              'again. Try the vertical spear.', 'bad');
-        }
+        if (!pr.ok[m.id]) { pr.ok[m.id] = 1; save(); }
+        paintSide();
+        if (!state.done[s.id]) {
+          complete(n + ' of ' + total + ' atoms line up: the mirror image never fits. A carbon with four different groups ' +
+                   'makes a molecule chiral.');
+        } else say(n + ' of ' + total + ' atoms line up. Try other spears if you like: two is the most that ever will.', 'good');
       }
       paintSide();
     }
 
-    function paint2() {
-      top.firstChild.replaceWith(chipRow('Molecule:', NAMES, k, function (i) { return !!pr.ok[s.mols[i]]; }, isOpen,
-        function (i) { k = i; save(); paint(); }));
-      if (pr.ok.chbrclf && pr.ok.ch2brcl && !state.done[s.id]) {
-        complete('CHBrClF is chiral: its mirror image never fits. CH₂BrCl is achiral: its mirror image fits, and it has a ' +
-                 'mirror plane.');
-      } else if (pr.ok.chbrclf && k === 0) {
-        say('Now try CH₂BrCl.', 'good');
-      }
-    }
-
     paint();
-    if (state.done[s.id]) say('Done. Turn the models as much as you like, or move on.', 'good');
+    if (state.done[s.id]) say('Done. Rotate the image as much as you like, or move on.', 'good');
   };
 
-  /* ---- drawmirror: draw what a mirror shows */
+  /* ---- drawmirror: Klein's three mirrors */
 
+  /* The three mirrors of Klein's figure, in order, with what each does to a
+     drawing. */
+  var MIRRORS3 = [
+    { key: 'beside', name: 'Next to the molecule', chip: 'Next to' },
+    { key: 'behind', name: 'Behind the molecule', chip: 'Behind' },
+    { key: 'beneath', name: 'Beneath the molecule', chip: 'Beneath' }
+  ];
   var MIRROR_WORDS = {
-    beside: 'A mirror beside the molecule turns left into right. Nothing moves toward you or away: a wedge stays a ' +
-            'wedge and a dash stays a dash.',
-    behind: 'A mirror behind the page turns toward you into away from you: a wedge becomes a dash and a dash becomes a ' +
-            'wedge. Left and right stay where they are.'
+    beside: 'A mirror next to the molecule turns left into right. Nothing moves toward you or away: a wedge stays a wedge.',
+    behind: 'A mirror behind the molecule turns toward you into away from you: a wedge becomes a dash. Left and right ' +
+            'stay where they are.',
+    beneath: 'A mirror beneath the molecule turns up into down. A wedge stays a wedge, and left stays left.'
   };
+  function mirrorName(key) { return MIRRORS3.filter(function (x) { return x.key === key; })[0].name.toLowerCase(); }
 
-  /* Judge a drawn mirror image: `got` maps slots to groups. */
-  function judgeMirror(m, where, got) {
-    function same(a, b) { return Object.keys(b).every(function (x) { return a[x] === b[x]; }); }
-    var want = STEREO.arrangement(STEREO.mirror(m, where));
-    if (same(got, want)) return { ok: true };
-    var orig = STEREO.arrangement(m);
-    if (same(got, orig)) return { kind: 'copy', msg: 'That is the molecule just as it is drawn. ' + MIRROR_WORDS[where] };
-    var otherWhere = where === 'beside' ? 'behind' : 'beside';
-    if (same(got, STEREO.arrangement(STEREO.mirror(m, otherWhere)))) {
-      return { kind: 'other', msg: 'That is a mirror image, but the one a mirror ' + (otherWhere === 'beside' ? 'beside the molecule' :
-        'behind the page') + ' would show. ' + MIRROR_WORDS[where] };
+  /* A student's mirror image is two choices: which way the drawing faces and
+     whether the CH₃ bond is a wedge or a dash. Each is a reflection or turn of
+     the model, so the drawing on the glass is always a real drawing. */
+  var FLIPS = [
+    { key: 'none', text: 'As it is' },
+    { key: 'lr', text: 'Left and right traded' },
+    { key: 'tb', text: 'Top and bottom traded' }
+  ];
+  function flipMatrix(flip, bond) {
+    return [[flip === 'lr' ? -1 : 1, 0, 0], [0, flip === 'tb' ? -1 : 1, 0], [0, 0, bond === 'dash' ? -1 : 1]];
+  }
+  function judgeMirror(m, where, flip, bond) {
+    var D = flipMatrix(flip, bond), want = STEREO.MIRRORS[where];
+    var same = function (A, B) { return G.gap(A, B) < 0.01; };
+    if (same(D, want)) return { ok: true };
+    if (same(D, G.ident())) return { kind: 'copy', msg: 'That is amphetamine just as it is drawn. ' + MIRROR_WORDS[where] };
+    if (G.mdet(D) > 0) {
+      return { kind: 'turned', msg: 'That drawing is amphetamine rotated 180° on the ' + (flip === 'lr' ? 'vertical' : 'side') +
+        ' spear. Rotate it back and it lies exactly on the original, so it is not the mirror image. ' + MIRROR_WORDS[where] };
     }
-    var built = STEREO.fromSlots(m.tpl, got);
-    if (STEREO.relation(built, m) === 'identical') {
-      var over = same(got, STEREO.arrangement(STEREO.apply(m, STEREO.OVER)));
-      return { kind: 'turned', msg: (over ? 'You moved every group from left to right and changed the wedge and the dash: ' +
-        'that is the original molecule rotated 180° on the vertical spear (turned over). ' : 'That drawing is the original ' +
-        'molecule, only rotated. ') +
-        'It would fit the original exactly, so it is not the mirror image. ' + MIRROR_WORDS[where] };
-    }
-    var slots = MOLECULES.SLOT_ORDER[m.tpl];
-    for (var i = 0; i < slots.length; i++) {
-      var sl = slots[i];
-      if (got[sl] === want[sl]) continue;
-      var g = want[sl], from = slots.filter(function (t) { return orig[t] === g; })[0];
-      return { kind: 'slot', slot: sl, msg: GROUPS[g].name + ' is ' + Draw.SLOT_WORDS[from] + ' in the molecule, so its image is ' +
-        Draw.SLOT_WORDS[sl] + '. ' + MIRROR_WORDS[where] };
-    }
-    return { kind: 'other', msg: 'Not quite. ' + MIRROR_WORDS[where] };
+    var other = Object.keys(STEREO.MIRRORS).filter(function (x) { return same(STEREO.MIRRORS[x], D); })[0];
+    return { kind: 'other', msg: 'That is the enantiomer, but drawn the way the mirror ' + mirrorName(other) + ' shows it. ' +
+      MIRROR_WORDS[where] };
   }
 
   RENDER.drawmirror = function (s) {
     var m = molecule(s.mol);
     var pr = progress('drawmirror');
-    pr.ok = pr.ok || {};
-    var WHERE = ['beside', 'behind'];
+    pr.ok = pr.ok || {}; pr.sel = pr.sel || {};
     var k = pr.k || 0;
     var host = h('div');
     el.stage.appendChild(host);
-    var picker = null, fill = {}, wrong = 0;
     function save() { pr.k = k; state.pr.drawmirror = pr; persist(); }
+    function isOpen(i) { return i === 0 || !!pr.ok[MIRRORS3[i - 1].key]; }
 
     function paint() {
-      if (picker) picker.destroy();
       host.innerHTML = '';
-      var where = WHERE[k];
-      var done = !!pr.ok[where];
-      if (done) fill = STEREO.arrangement(STEREO.mirror(m, where));
-      host.appendChild(chipRow('Mirror:', ['Beside the molecule', 'Behind the page'], k,
-        function (i) { return !!pr.ok[WHERE[i]]; }, function (i) { return i === 0 || !!pr.ok.beside; },
-        function (i) { k = i; fill = {}; wrong = 0; save(); paint(); }));
-      var tplHost = h('div', { class: 'mol-wrap big' });
-      var tray = h('div', { class: 'tray', 'aria-label': 'Atoms to place' });
-      var check = h('button', { type: 'button', class: 'primary', text: 'Check' });
-      var clear = h('button', { type: 'button', class: 'ghostbtn', text: 'Clear' });
-      var show = h('button', { type: 'button', class: 'ghostbtn', text: 'Show me in 3D', hidden: true });
-      var tip = h('p', { class: 'tip', hidden: true });
-      var help = h('div');
-      var orig = h('figure', null, [molWrap(Draw.mol(m, {}), true), h('figcaption', { text: 'The molecule' })]);
-      var mine = h('figure', null, [tplHost, h('figcaption', { text: 'Its mirror image' })]);
-      var row = where === 'beside'
-        ? h('div', { class: 'mirror-row' }, [orig, h('div', { class: 'mirror-bar', 'aria-hidden': 'true' }, [h('div', { class: 'glass' }),
-            h('span', { text: 'mirror' }), h('div', { class: 'glass' })]), mine])
-        : h('div', null, [h('p', { class: 'behind-note' }, [h('span', { class: 'glass', 'aria-hidden': 'true' }),
-            'The mirror lies flat behind the page. Draw the image you would see in it, looking through the molecule from the front.']),
-            h('div', { class: 'pair-row' }, [orig, mine])]);
-      host.appendChild(panel(where === 'beside' ? 'A mirror beside the molecule' : 'A mirror behind the page', null,
-        [row, tray, h('div', { class: 'btnrow' }, [check, clear, show]), tip]));
-      host.appendChild(help);
-
-      function paintTpl() {
-        tplHost.innerHTML = '';
-        tplHost.appendChild(Draw.template(m.tpl, fill, { targets: !done, wedgeRight: true,
-          label: 'Template for the mirror image: two bonds in the page, one wedge and one dash.' }));
-        tray.innerHTML = '';
-        var left = Object.keys(m.slots).map(function (sl) { return m.atoms[m.slots[sl]].group; }).filter(function (g) {
-          return !Object.keys(fill).some(function (x) { return fill[x] === g; });
-        });
-        left.forEach(function (g) {
-          tray.appendChild(h('button', { type: 'button', class: 'tile tone-' + groupTone(g), 'data-tile': g,
-            'aria-label': 'Atom ' + GROUPS[g].name }, [GROUPS[g].label]));
-        });
-        if (!left.length) tray.appendChild(h('p', { class: 'tray-empty', text: done ? 'Drawn.' : 'All placed. Press Check.' }));
+      var M = MIRRORS3[k], where = M.key, done = !!pr.ok[where];
+      var sel = done ? { flip: pr.ok[where].flip, bond: pr.ok[where].bond } : (pr.sel[where] = pr.sel[where] || {});
+      host.appendChild(chipRow('Mirror:', MIRRORS3.map(function (x) { return x.chip; }), k,
+        function (i) { return !!pr.ok[MIRRORS3[i].key]; }, isOpen, function (i) { k = i; save(); paint(); }));
+      var ready = sel.flip && sel.bond;
+      var img = ready ? Draw.mol(STEREO.apply(m, flipMatrix(sel.flip, sel.bond)), {}) : null;
+      var scene = Draw.pane(where, Draw.mol(m, {}), img, { label: done ? 'Enantiomer' : '',
+        aria: 'Amphetamine and a mirror ' + M.name.toLowerCase().replace('the molecule', 'it') + '.' +
+          (img ? ' On the glass: ' + img.getAttribute('aria-label') : ' The glass is empty.') });
+      function row(label, items, key) {
+        return h('div', { class: 'choice-row' }, [h('span', { class: 'lbl', text: label })].concat(items.map(function (it) {
+          return h('button', { type: 'button', class: 'mini' + (sel[key] === it.key ? ' on' : ''), disabled: done,
+            'aria-pressed': sel[key] === it.key ? 'true' : 'false', text: it.text,
+            onclick: function () { sel[key] = it.key; save(); say(''); paint(); } });
+        })));
       }
-
-      picker = Picker({
-        tray: tray, stage: tplHost,
-        label: function (g) { return GROUPS[g].label; },
-        prompt: function (g) { return 'Now choose a position for ' + GROUPS[g].name + '.'; },
-        say: function (t) { say(t); },
-        drop: function (slot, g) {
-          if (done) return;
-          Object.keys(fill).forEach(function (x) { if (fill[x] === g) delete fill[x]; });
-          fill[slot] = g;
-          paintTpl();
-          say('');
-        },
-        empty: function (slot) {
-          if (done) return;
-          if (!fill[slot]) { say('Choose an atom first, then a position.'); return; }
-          delete fill[slot];
-          paintTpl();
-          say('Removed. Pick an atom to put there instead.');
-        }
-      });
-
+      var check = h('button', { type: 'button', class: 'primary', text: 'Check', disabled: done || !ready });
+      var after = h('div');
+      host.appendChild(h('div', { class: 'work work-wide mirror-build' }, [
+        panel('Mirror ' + M.name.toLowerCase().replace('the molecule', 'the molecule'), done ? null : 'build the image', [
+          h('div', { class: 'scene-wrap' }, [scene])]),
+        panel('The mirror image', null, [
+          h('p', { class: 'muted', text: 'What does this mirror show? Choose both, and watch the glass.' }),
+          row('The drawing:', FLIPS, 'flip'),
+          row('The CH₃ bond:', [{ key: 'wedge', text: 'Wedge' }, { key: 'dash', text: 'Dash' }], 'bond'),
+          h('div', { class: 'btnrow' }, [check]), after])]));
+      if (done) after.appendChild(reveal([MIRROR_WORDS[where]]));
       check.addEventListener('click', function () {
-        if (done) return;
-        if (Object.keys(fill).length < 4) { say('Fill every position first.', 'bad'); return; }
-        var r = judgeMirror(m, where, fill);
-        if (r.ok) {
-          pr.ok[where] = 1;
-          done = true;
-          save();
-          paintTpl();
-          check.disabled = true; clear.disabled = true; tip.hidden = true; show.hidden = true;
-          help.innerHTML = '';
-          if (pr.ok.beside && pr.ok.behind) {
-            complete('Both mirror images drawn. They are the same molecule, just turned: the one mirror image of CHBrClF.');
-          } else {
-            k = pr.ok.beside ? 1 : 0;
-            fill = {}; wrong = 0;
-            save();
-            paint();
-            say('Correct! Now the mirror lies flat behind the page.', 'good');
+        if (done || !ready) return;
+        var r = judgeMirror(m, where, sel.flip, sel.bond);
+        if (!r.ok) { say(r.msg, 'bad'); return; }
+        pr.ok[where] = { flip: sel.flip, bond: sel.bond };
+        save();
+        var all = MIRRORS3.every(function (x) { return pr.ok[x.key]; });
+        if (all) {
+          if (!state.done[s.id]) {
+            complete('All three mirrors show the same molecule: the enantiomer of amphetamine, drawn three ways. Rotate the ' +
+                     'image next to it 180° on the vertical spear and you get the image behind it.');
           }
-          return;
+        } else {
+          say('Correct! ' + MIRROR_WORDS[where] + ' Now the next mirror.', 'good');
+          k = Math.min(k + 1, MIRRORS3.length - 1);
+          save();
         }
-        wrong++;
-        say(r.msg, 'bad');
-        if (r.slot) shake(tplHost, r.slot);
-        tip.hidden = false;
-        tip.textContent = where === 'beside'
-          ? 'Tip: stand each atom in front of the mirror and find its reflection. An atom on the upper left appears on the ' +
-            'upper right, as far behind the mirror as the atom is in front of it.'
-          : 'Tip: an atom on the wedge sticks out of the page toward you, so in a mirror behind the page its image is as far ' +
-            'behind the page: on the dash. Atoms in the page stay put.';
-        if (wrong >= 2) show.hidden = false;
+        paint();
       });
-      clear.addEventListener('click', function () { if (!done) { fill = {}; paintTpl(); say(''); } });
-      show.addEventListener('click', function () {
-        help.innerHTML = '';
-        var sc = mirrorScene(m, {});
-        help.appendChild(h('div', { class: 'work work-wide' }, [sc.node, panel('In 3D', null, [h('p', { class: 'muted', text: where === 'beside'
-          ? 'The mirror stands between the molecule and its image. Turn the molecule and watch the image: every atom keeps its ' +
-            'height and its distance from the page; only left and right change.'
-          : 'Here the mirror stands beside the molecule, but the image is the same molecule as the one a mirror behind the page ' +
-            'shows, just rotated. Rotate the image on its vertical spear to see the drawing you need.' })])]));
-        sc.start();
-        showArea(help);
-      });
-      paintTpl();
-      if (done) { check.disabled = true; clear.disabled = true; }
+      if (MIRRORS3.every(function (x) { return pr.ok[x.key]; })) paintEnd();
+      function paintEnd() {
+        host.appendChild(reveal(['All three mirrors show one molecule, the enantiomer of amphetamine, just drawn three ways: ' +
+          'rotate any one and it lies on the others. That is why a molecule has only one enantiomer.',
+          'Amphetamine is chiral because one carbon carries four different groups: ' + groupsOn(m, CIP.centres(m)[0]) + '.']));
+      }
     }
 
     paint();
-    if (state.done[s.id]) say('Drawn. Move on when you are ready.', 'good');
-    return { destroy: function () { if (picker) picker.destroy(); } };
+    if (state.done[s.id]) say('Done. Look at the mirrors again, or move on.', 'good');
   };
 
   /* ---- centres: find the chirality centres */
@@ -1195,15 +1108,21 @@ var App = (function () {
 
   var TINTS = ['g1', 'g2', 'g3', 'g4'];
 
+  /* The rule the whole of Part 1 comes back to. */
+  var CENTRE_RULE = 'A carbon with four different groups is a chirality centre. One chirality centre makes a molecule chiral.';
+
+  /* Find the chirality centres (and, with s.verdict, then say chiral or
+     achiral): one molecule after another. */
   RENDER.centres = function (s) {
-    var pr = progress('centres');
-    pr.f = pr.f || {}; pr.ok = pr.ok || {};
+    var pr = progress(s.id);
+    pr.f = pr.f || {}; pr.ok = pr.ok || {}; pr.v = pr.v || {};
     var k = pr.k || 0;
     var host = h('div');
     el.stage.appendChild(host);
     var picker = null, viewer = null;
-    function save() { pr.k = k; state.pr.centres = pr; persist(); }
-    function isOpen(i) { return i === 0 || !!pr.ok[s.mols[i - 1]]; }
+    function save() { pr.k = k; state.pr[s.id] = pr; persist(); }
+    function finished(id) { return !!pr.ok[id] && (!s.verdict || !!pr.v[id]); }
+    function isOpen(i) { return i === 0 || finished(s.mols[i - 1]); }
 
     function paint() {
       if (picker) picker.destroy();
@@ -1212,16 +1131,19 @@ var App = (function () {
       var want = CIP.centres(m).map(function (c) { return m.atoms[c].num; });
       var found = pr.f[id] = pr.f[id] || [];
       host.appendChild(chipRow('Molecule:', s.mols.map(function (x) { return MOLECULES[x].name; }), k,
-        function (i) { return !!pr.ok[s.mols[i]]; }, isOpen, function (i) { k = i; save(); paint(); }));
+        function (i) { return finished(s.mols[i]); }, isOpen, function (i) { k = i; save(); paint(); }));
       var drawHost = h('div', { class: 'mol-wrap big' });
       var none = h('button', { type: 'button', class: 'ghostbtn', text: 'It has no chirality centres' });
       var status = h('p', { class: 'status' });
+      var verdictRow = h('div', { class: 'btnrow' });
+      var note = m.spec.note ? h('p', { class: 'mol-name', text: m.name + ': ' + m.spec.note + '.' }) : null;
       var canvas = h('canvas', { class: 'c3d', tabindex: 0, role: 'img',
         'aria-label': '3D model of ' + m.name + '. Click a carbon in the drawing to colour its four groups here.' });
       var key = h('p', { class: 'view-note', text: 'Click a carbon in the drawing: its four groups light up here, one colour ' +
         'each. Two groups in the same colour are the same group.' });
       host.appendChild(h('div', { class: 'work' }, [
-        panel('Bond-line drawing', 'click the chirality centres', [drawHost, h('div', { class: 'btnrow' }, [none]), status]),
+        panel('Bond-line drawing', 'click the chirality centres', [h('p', { class: 'rule ok', text: CENTRE_RULE }), note, drawHost,
+          h('div', { class: 'btnrow' }, [none]), status, verdictRow]),
         panel('3D model', 'drag to rotate', [h('div', { class: 'c3d-wrap' }, [canvas]), key])]));
       viewer = new Viewer3D(canvas, { objects: [{ model: m, R: G.mmul(G.rot([1, 0, 0], 18), G.rot([0, 1, 0], -20)) }],
         radius: radiusOf(m) * 0.92 });
@@ -1238,6 +1160,32 @@ var App = (function () {
         status.textContent = pr.ok[id] ? (want.length ? 'Found ' + (want.length === 1 ? 'it' : 'both') + '.' : 'None: right.')
           : 'Found ' + found.length + '.';
         none.disabled = !!pr.ok[id];
+        paintVerdict();
+      }
+
+      /* chiral or achiral, once the centres are found */
+      function paintVerdict() {
+        verdictRow.innerHTML = '';
+        if (!s.verdict || !pr.ok[id]) return;
+        var right = want.length ? 'chiral' : 'achiral';
+        verdictRow.appendChild(h('span', { class: 'lbl', text: 'So ' + m.name.charAt(0).toLowerCase() + m.name.slice(1) + ' is:' }));
+        ['chiral', 'achiral'].forEach(function (w) {
+          verdictRow.appendChild(h('button', { type: 'button', text: w.charAt(0).toUpperCase() + w.slice(1),
+            class: 'ghostbtn' + (pr.v[id] === w ? ' right' : ''), disabled: !!pr.v[id],
+            onclick: function () {
+              if (w !== right) {
+                say(want.length ? 'Look at the star: one carbon carries four different groups, and one chirality centre makes ' +
+                  'a molecule chiral. Its mirror image will never fit on it.'
+                  : 'No carbon carries four different groups, so there is no chirality centre: the molecule is achiral. Its ' +
+                  'mirror image fits on it exactly.', 'bad');
+                return;
+              }
+              pr.v[id] = w;
+              save();
+              next(m.name + ' is ' + w + (want.length ? ': one carbon carries four different groups.'
+                : ': no carbon carries four different groups.'));
+            } }));
+        });
       }
 
       /* colour carbon c's four groups in 3D; identical groups share a colour */
@@ -1273,9 +1221,17 @@ var App = (function () {
         pr.ok[id] = 1;
         save();
         paintDrawing();
-        if (s.mols.every(function (x) { return pr.ok[x]; })) {
-          if (!state.done[s.id]) complete(msg + ' All four molecules done: a chirality centre is a carbon with four different groups.');
-          else say(msg, 'good');
+        if (s.verdict) { say(msg + ' Now: chiral or achiral?', 'good'); return; }
+        next(msg);
+      }
+
+      function next(msg) {
+        if (s.mols.every(finished)) {
+          if (!state.done[s.id]) {
+            complete(msg + (s.verdict ? ' All done: find a carbon with four different groups, and you know the molecule is chiral.'
+              : ' All done: a chirality centre is a carbon with four different groups.'));
+          } else say(msg, 'good');
+          paintDrawing();
           return;
         }
         say(msg + ' On to the next molecule.', 'good');
@@ -1286,7 +1242,10 @@ var App = (function () {
 
       none.addEventListener('click', function () {
         if (pr.ok[id]) return;
-        if (!want.length) { done('Right: no carbon here carries four different groups. 3-Methylpentane is achiral.'); return; }
+        if (!want.length) {
+          done('Right: no carbon in ' + m.name.charAt(0).toLowerCase() + m.name.slice(1) + ' carries four different groups.');
+          return;
+        }
         say('Look again: ' + (want.length - found.length === 1 ? 'one carbon here does' : 'some carbons here do') +
             ' carry four different groups.', 'bad');
       });
@@ -1740,9 +1699,11 @@ var App = (function () {
       area.innerHTML = '';
       if (pr.p == null) return;
       if (!pr.read) {
-        area.appendChild(h('p', { class: 'behind-note' }, [h('span', { class: 'glass', 'aria-hidden': 'true' }),
-          'Here is its mirror image in a mirror behind the page: every wedge became a dash and every dash a wedge. So the H ' +
-          'is now on the wedge.']));
+        area.appendChild(h('div', { class: 'grid2 enant-pane' }, [
+          Draw.pane('behind', Draw.mol(m, {}), Draw.mol(img, {}), { aria: '(R)-2-butanol and its mirror image in a mirror behind it.' }),
+          h('p', { class: 'behind-note', text: 'Here is its mirror image, in a mirror behind the molecule: every wedge became a ' +
+            'dash and every dash a wedge. So the H is now on the wedge. These two are enantiomers: nonsuperimposable mirror ' +
+            'images.' })]));
         rot = rotator(img, { read: true, title3: '3D model of the mirror image', title2: 'The mirror image',
           onRead: function (c, label) { pr.read = label; save(); say('Correct! The mirror image is ' + label + '.', 'good'); paint(); } });
         area.appendChild(rot.node);
@@ -1840,27 +1801,46 @@ var App = (function () {
           h('figcaption', null, [h('span', { class: 'iso-tag', text: LETTERS[i] + ' ' }), configText(m)])]);
       }));
       var tbody = h('tbody');
+      var TILE_TEXT = { enantiomers: 'Enantiomers: mirror images', diastereomers: 'Diastereomers: NOT mirror images' };
       var tray = h('div', { class: 'tray', 'aria-label': 'Relationships' }, ['enantiomers', 'diastereomers'].map(function (w) {
-        return h('button', { type: 'button', class: 'tile term', 'data-tile': w, 'aria-label': w }, [w]);
+        return h('button', { type: 'button', class: 'tile term', 'data-tile': w, 'aria-label': TILE_TEXT[w] }, [TILE_TEXT[w]]);
       }));
+      var mirrorHost = h('div');
       var check = h('button', { type: 'button', class: 'primary', text: 'Check' });
       var done = !!pr.relOk;
       var rows = h('table', { class: 'rel-table' }, [h('thead', null, [h('tr', null, [h('th', { text: 'Pair' }), h('th', { text: 'Their centres' }),
         h('th', { text: 'Relationship' })])]), tbody]);
       table.appendChild(panel('How are they related?', 'put a word on each pair', [cards, h('div', { class: 'grid2' }, [rows,
-        h('div', null, [tray, h('div', { class: 'btnrow' }, [check]), h('p', { class: 'muted', text: 'Enantiomers are mirror ' +
-          'images: every centre opposite. Diastereomers are stereoisomers that are not mirror images: some centres the same, ' +
-          'some opposite.' })])])]));
+        h('div', null, [tray, h('div', { class: 'btnrow' }, [check]), h('p', { class: 'muted', text: 'Ask one question about ' +
+          'each pair: are they mirror images? Press Mirror on a row to hold the first one up to a mirror behind it.' })])]),
+        mirrorHost,
+        h('details', { class: 'reference chart-wrap', open: true }, [h('summary', { text: 'Kinds of isomers (Klein)' }),
+          Draw.isomerChart()])]));
+      /* the first of a pair in a mirror behind it, beside the second: do they match? */
+      function showMirror(pq) {
+        var a = mols[pq[0]], b = mols[pq[1]];
+        mirrorHost.innerHTML = '';
+        mirrorHost.appendChild(h('div', { class: 'mirror-check' }, [
+          h('figure', null, [Draw.pane('behind', Draw.mol(a, { numbers: true }), Draw.mol(STEREO.mirror(a, 'behind'), { numbers: true }),
+            { label: 'Mirror image of ' + LETTERS[pq[0]], aria: LETTERS[pq[0]] + ' and its mirror image in a mirror behind it.' }),
+            h('figcaption', { text: LETTERS[pq[0]] + ' ' + configText(a) + ', and its mirror image on the glass' })]),
+          h('figure', null, [molWrap(Draw.mol(b, { numbers: true, cls: 'fig' })),
+            h('figcaption', { text: LETTERS[pq[1]] + ' ' + configText(b) + '. Is it the mirror image on the glass?' })])]));
+        showArea(mirrorHost);
+      }
       function paintRows(marks) {
         tbody.innerHTML = '';
         pairs().forEach(function (pq) {
           var key = LETTERS[pq[0]] + LETTERS[pq[1]];
           var w = pr.rel[key];
           var cls = 'rel-slot drop' + (w ? ' filled' : '') + (marks && marks[key] ? ' ' + marks[key] : '');
-          tbody.appendChild(h('tr', null, [h('td', { text: LETTERS[pq[0]] + ' and ' + LETTERS[pq[1]] }),
+          tbody.appendChild(h('tr', null, [h('td', null, [LETTERS[pq[0]] + ' and ' + LETTERS[pq[1]],
+              h('button', { type: 'button', class: 'mini rel-mirror', text: 'Mirror', 'aria-label': 'Hold ' + LETTERS[pq[0]] +
+                ' up to a mirror and compare with ' + LETTERS[pq[1]], onclick: function () { showMirror(pq); } })]),
             h('td', { text: configText(mols[pq[0]]) + ' and ' + configText(mols[pq[1]]) }),
             h('td', null, [h('span', { class: cls, 'data-drop': key, tabindex: 0, role: 'button',
-              'aria-label': LETTERS[pq[0]] + ' and ' + LETTERS[pq[1]] + ': ' + (w || 'empty') }, [w || 'drop a word'])])]));
+              'aria-label': LETTERS[pq[0]] + ' and ' + LETTERS[pq[1]] + ': ' + (w ? TILE_TEXT[w] : 'empty') },
+              [w ? TILE_TEXT[w] : 'drop a word'])])]));
         });
       }
       function answer(pq) { return STEREO.relation(mols[pq[0]], mols[pq[1]]); }
@@ -1887,15 +1867,17 @@ var App = (function () {
           done = true; pr.relOk = 1; save();
           tray.classList.add('locked');
           check.disabled = true;
-          complete('Mirror images (every centre opposite) are enantiomers; every other pair is diastereomers. Four ' +
-                   'stereoisomers: two pairs of enantiomers.');
+          complete('Mirror images are enantiomers; stereoisomers that are NOT mirror images are diastereomers. Four ' +
+                   'stereoisomers: two pairs of enantiomers, and every other pair diastereomers.');
           return;
         }
         var a = mols[first[0]], b = mols[first[1]];
         var diff = CIP.centres(a).filter(function (c, i) { return CIP.label(a, c) !== CIP.label(b, CIP.centres(b)[i]); }).length;
         say(LETTERS[first[0]] + ' ' + configText(a) + ' and ' + LETTERS[first[1]] + ' ' + configText(b) + ': ' +
-          (diff === 2 ? 'both centres are opposite, so they are mirror images: enantiomers.'
-                      : 'one centre is the same and one is opposite, so they are not mirror images: diastereomers.'), 'bad');
+          (diff === 2 ? 'are they mirror images? Yes: a mirror changes every centre, and both centres are opposite. Mirror ' +
+                        'images: enantiomers.'
+                      : 'are they mirror images? No: a mirror changes every centre, and only one centre is opposite. NOT ' +
+                        'mirror images: diastereomers.') + ' Press Mirror on that row to see it.', 'bad');
       });
       paintRows(done ? (function () { var mk = {}; pairs().forEach(function (pq) { mk[LETTERS[pq[0]] + LETTERS[pq[1]]] = 'right'; }); return mk; })() : null);
       if (done) { tray.classList.add('locked'); check.disabled = true; }
@@ -2528,7 +2510,9 @@ var App = (function () {
     var ids = state.draws[s.quiz];
     var box = h('div', { class: 'quiz' });
     var side = s.quiz !== 'A'
-      ? h('details', { class: 'reference quiz-table', open: true }, [h('summary', { text: 'Atomic numbers' }), zTable()])
+      ? h('div', { class: 'quiz-table' }, [h('details', { class: 'reference', open: true }, [h('summary', { text: 'Atomic numbers' }), zTable()]),
+          s.quiz === 'D' ? h('details', { class: 'reference chart-wrap', open: true }, [h('summary', { text: 'Kinds of isomers (Klein)' }),
+            Draw.isomerChart()]) : null])
       : null;
     el.stage.appendChild(h('div', { class: 'quiz-grid' + (side ? '' : ' single') }, [panel(Q.title, null, [box]), side]));
 
@@ -2720,15 +2704,15 @@ var App = (function () {
   var VOCAB = [
     ['Chiral', 'Cannot be turned to fit exactly onto its mirror image, like a hand.'],
     ['Achiral', 'Can be turned to fit onto its mirror image. A molecule with a mirror plane is achiral.'],
-    ['Chirality centre (stereocentre)', 'A carbon carrying four different groups.'],
+    ['Chirality centre (stereocentre)', 'A carbon carrying four different groups. One chirality centre makes a molecule chiral.'],
     ['Mirror plane', 'A plane that cuts a molecule into two halves that are mirror images of each other.'],
     ['Priority', 'The rank of a group on a chirality centre, from 1 (highest) to 4 (lowest), by atomic number first.'],
     ['First point of difference', 'Comparing two groups atom by atom, the first place their lists of atoms differ. That place decides; the totals do not.'],
     ['R', 'With 4 on the dash, 1 → 2 → 3 runs clockwise. Rockwise, if you like.'],
     ['S', 'With 4 on the dash, 1 → 2 → 3 runs counterclockwise. Sountersockwise.'],
     ['Stereoisomers', 'Molecules with the same atoms bonded in the same order, arranged differently in space.'],
-    ['Enantiomers', 'Stereoisomers that are mirror images of each other. Every chirality centre is opposite: R in one, S in the other.'],
-    ['Diastereomers', 'Stereoisomers that are not mirror images: some centres the same, some opposite. Cis and trans rings are diastereomers too.'],
+    ['Enantiomers', 'Stereoisomers that are nonsuperimposable mirror images of each other. Every chirality centre is opposite: R in one, S in the other.'],
+    ['Diastereomers', 'Stereoisomers that are nonsuperimposable and NOT mirror images: some centres the same, some opposite. Cis and trans rings are diastereomers too.'],
     ['Meso compound', 'A molecule that has chirality centres but is achiral, because it has a mirror plane. To spot one: ' +
       'at least two chirality centres; cut between them, and the two halves carry the same groups; then turn the middle bond ' +
       'until matching groups are eclipsed, and every group faces its twin across a mirror plane.'],
@@ -2744,6 +2728,7 @@ var App = (function () {
         'the page, and rotate it 180° if 4 is on the wedge, 90° if 4 is in the page.',
       'Follow 1 → 2 → 3: clockwise is R, counterclockwise is S.'
     ].map(function (t) { return h('li', { text: t }); })));
+    el.vocabBody.appendChild(h('div', { class: 'chart-wrap' }, [Draw.isomerChart()]));
     var dl = h('dl', { class: 'vocab' });
     VOCAB.forEach(function (p) {
       dl.appendChild(h('dt', { text: p[0] }));
@@ -2812,7 +2797,7 @@ var App = (function () {
   }
 
   return { start: start, SCHEMA: SCHEMA, STEPS: STEPS, GRADED: GRADED, QZ: QZ, PREDICT: PREDICT, figure: figure, figModel: figModel,
-           judgeMirror: judgeMirror, judgeRedraw: judgeRedraw, HIDDEN_AS_DRAWN: HIDDEN_AS_DRAWN, ringAnswer: ringAnswer,
+           judgeMirror: judgeMirror, flipMatrix: flipMatrix, MIRRORS3: MIRRORS3, judgeRedraw: judgeRedraw, HIDDEN_AS_DRAWN: HIDDEN_AS_DRAWN, ringAnswer: ringAnswer,
            whyNotCentre: whyNotCentre, groupsOn: groupsOn, BIG_IDEAS: BIG_IDEAS, VOCAB: VOCAB, configText: configText,
            sideTurn: sideTurn, wheelTurn: wheelTurn, halfAnswer: halfAnswer, halfWhy: halfWhy, MESO_CHECKS: MESO_CHECKS };
 })();
