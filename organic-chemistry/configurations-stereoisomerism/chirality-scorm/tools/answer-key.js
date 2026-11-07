@@ -91,24 +91,11 @@ P();
 P(`Prediction: CHBrClF's mirror image fits? **${pk('fit1')}**. At most 2 of 4 atoms ever line up, whatever spear the image ` +
   `is rotated on. The reason given: its carbon carries four different groups (${App.groupsOn(mol('chbrclf'), mol('chbrclf').centre)}).`);
 P();
-P("### Three mirrors (Klein's figure)");
+P("### Three mirrors, one enantiomer (Klein's figure)");
 P();
-{
-  const m = mol(S('drawmirror').mol);
-  P(`${m.name} as drawn: ${drawing(m)}. Students build each mirror's image from two choices (which way the drawing faces, ` +
-    'and wedge or dash for the CH₃); exactly one of the six is right for each mirror:');
-  P();
-  const FLIP = { none: 'as it is', lr: 'left and right traded', tb: 'top and bottom traded' };
-  for (const x of App.MIRRORS3) {
-    for (const f of ['none', 'lr', 'tb']) for (const bd of ['wedge', 'dash']) {
-      if (App.judgeMirror(m, x.key, f, bd).ok) P(`- **${x.name}**: ${FLIP[f]}, CH₃ on the ${bd}.`);
-    }
-  }
-  P();
-  P('Wrong builds are explained as what they are: the molecule as drawn, the molecule rotated 180° on a spear (it fits ' +
-    'the original), or the image another mirror shows. All three images are one molecule, the enantiomer.');
-  P();
-}
+P('Students build the image in the mirror behind amphetamine: the CH₃ wedge becomes a **dash**, nothing else moves. ' +
+  `Then Klein's three mirrors (next to, behind, beneath) side by side. Prediction: how many molecules? **${pk('threeSame')}**.`);
+P();
 P('### Find the chirality centres');
 P();
 for (const id of S('centres').mols) {

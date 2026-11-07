@@ -39,9 +39,9 @@ var App = (function () {
       text: 'Your two hands are mirror images: alike in every way, yet you cannot lay one exactly on top of the other. ' +
             'Molecules can be like that too. Predict, then try to make the mirror image fit onto the molecule.' },
     { id: 'drawmirror', part: 1, kind: 'drawmirror', mol: 'amphetamine',
-      title: 'Three mirrors',
-      text: 'Your textbook holds a mirror up to amphetamine in three places: next to it, behind it and beneath it. For ' +
-            'each mirror, build what the mirror shows: which way the drawing faces, and whether the CH₃ is on a wedge or a dash.' },
+      title: 'Three mirrors, one enantiomer',
+      text: 'Your textbook holds a mirror up to amphetamine in three places: next to it, behind it and beneath it. First ' +
+            'build one image yourself, in the mirror behind it. Then compare all three.' },
     { id: 'centres', part: 1, kind: 'centres', mols: ['butanol_line', 'methylpentane', 'chloropentane3', 'bromohexane3',
       'dimethylpentane', 'bcb_line'],
       title: 'Find the chirality centres',
@@ -114,6 +114,9 @@ var App = (function () {
   var PREDICT = {
     fit1: { q: 'Can the mirror image of CHBrClF be turned so that it lies exactly on the original, every atom on its partner?',
       choices: ['No, never', 'Yes, if you turn it the right way'], answer: 0 },
+    threeSame: { q: 'The three mirrors show three different-looking drawings. How many different molecules are on the glass?',
+      choices: ['One: the same enantiomer, drawn three ways', 'Three: one for each mirror', 'Two: the one behind is different'],
+      answer: 0 },
     top: { q: 'Which atom of CHBrClF gets priority 1?',
       choices: ['Br: it has the highest atomic number', 'F: it is the most electronegative', 'H: it is the smallest'],
       answer: 0 },
@@ -985,8 +988,8 @@ var App = (function () {
   ];
   var MIRROR_WORDS = {
     beside: 'A mirror next to the molecule turns left into right. Nothing moves toward you or away: a wedge stays a wedge.',
-    behind: 'A mirror behind the molecule turns toward you into away from you: a wedge becomes a dash. Left and right ' +
-            'stay where they are.',
+    behind: 'In a mirror behind the molecule, whatever points toward you points away from you: the wedge becomes a dash. ' +
+            'Nothing moves left or right, or up or down.',
     beneath: 'A mirror beneath the molecule turns up into down. A wedge stays a wedge, and left stays left.'
   };
   function mirrorName(key) { return MIRRORS3.filter(function (x) { return x.key === key; })[0].name.toLowerCase(); }
@@ -1019,67 +1022,60 @@ var App = (function () {
   RENDER.drawmirror = function (s) {
     var m = molecule(s.mol);
     var pr = progress('drawmirror');
-    pr.ok = pr.ok || {}; pr.sel = pr.sel || {};
-    var k = pr.k || 0;
+    var P = PREDICT.threeSame;
     var host = h('div');
     el.stage.appendChild(host);
-    function save() { pr.k = k; state.pr.drawmirror = pr; persist(); }
-    function isOpen(i) { return i === 0 || !!pr.ok[MIRRORS3[i - 1].key]; }
+    function save() { state.pr.drawmirror = pr; persist(); }
 
     function paint() {
       host.innerHTML = '';
-      var M = MIRRORS3[k], where = M.key, done = !!pr.ok[where];
-      var sel = done ? { flip: pr.ok[where].flip, bond: pr.ok[where].bond } : (pr.sel[where] = pr.sel[where] || {});
-      host.appendChild(chipRow('Mirror:', MIRRORS3.map(function (x) { return x.chip; }), k,
-        function (i) { return !!pr.ok[MIRRORS3[i].key]; }, isOpen, function (i) { k = i; save(); paint(); }));
-      var ready = sel.flip && sel.bond;
-      var img = ready ? Draw.mol(STEREO.apply(m, flipMatrix(sel.flip, sel.bond)), {}) : null;
-      var scene = Draw.pane(where, Draw.mol(m, {}), img, { label: done ? 'Enantiomer' : '',
-        aria: 'Amphetamine and a mirror ' + M.name.toLowerCase().replace('the molecule', 'it') + '.' +
-          (img ? ' On the glass: ' + img.getAttribute('aria-label') : ' The glass is empty.') });
-      function row(label, items, key) {
-        return h('div', { class: 'choice-row' }, [h('span', { class: 'lbl', text: label })].concat(items.map(function (it) {
-          return h('button', { type: 'button', class: 'mini' + (sel[key] === it.key ? ' on' : ''), disabled: done,
-            'aria-pressed': sel[key] === it.key ? 'true' : 'false', text: it.text,
-            onclick: function () { sel[key] = it.key; save(); say(''); paint(); } });
+      /* 1. build one image: the mirror behind it, one choice */
+      var done = !!pr.built, bond = done ? 'dash' : pr.bond;
+      var img = bond ? Draw.mol(STEREO.apply(m, flipMatrix('none', bond)), {}) : null;
+      var scene = Draw.pane('behind', Draw.mol(m, {}), img, { label: done ? 'Enantiomer' : '',
+        aria: 'Amphetamine and a mirror behind it.' + (img ? ' On the glass: ' + img.getAttribute('aria-label') : ' The glass is empty.') });
+      var check = h('button', { type: 'button', class: 'primary', text: 'Check', disabled: done || !bond });
+      var row = h('div', { class: 'choice-row' }, [h('span', { class: 'lbl', text: 'The CH₃ bond:' })].concat(
+        [['wedge', 'Wedge'], ['dash', 'Dash']].map(function (o) {
+          return h('button', { type: 'button', class: 'mini' + (bond === o[0] ? ' on' : ''), disabled: done, text: o[1],
+            'aria-pressed': bond === o[0] ? 'true' : 'false', onclick: function () { pr.bond = o[0]; save(); say(''); paint(); } });
         })));
-      }
-      var check = h('button', { type: 'button', class: 'primary', text: 'Check', disabled: done || !ready });
-      var after = h('div');
+      var side = h('div', null, [
+        h('p', { class: 'muted', text: 'The CH₃ points toward you, on a wedge. In a mirror behind the molecule, how is it drawn? ' +
+          'Choose, and watch the glass.' }), row, h('div', { class: 'btnrow' }, [check])]);
+      if (done) side.appendChild(reveal([MIRROR_WORDS.behind]));
       host.appendChild(h('div', { class: 'work work-wide mirror-build' }, [
-        panel('Mirror ' + M.name.toLowerCase().replace('the molecule', 'the molecule'), done ? null : 'build the image', [
-          h('div', { class: 'scene-wrap' }, [scene])]),
-        panel('The mirror image', null, [
-          h('p', { class: 'muted', text: 'What does this mirror show? Choose both, and watch the glass.' }),
-          row('The drawing:', FLIPS, 'flip'),
-          row('The CH₃ bond:', [{ key: 'wedge', text: 'Wedge' }, { key: 'dash', text: 'Dash' }], 'bond'),
-          h('div', { class: 'btnrow' }, [check]), after])]));
-      if (done) after.appendChild(reveal([MIRROR_WORDS[where]]));
+        panel('A mirror behind the molecule', done ? null : 'build the image', [h('div', { class: 'scene-wrap' }, [scene])]),
+        panel('The mirror image', null, [side])]));
       check.addEventListener('click', function () {
-        if (done || !ready) return;
-        var r = judgeMirror(m, where, sel.flip, sel.bond);
+        if (done || !bond) return;
+        var r = judgeMirror(m, 'behind', 'none', bond);
         if (!r.ok) { say(r.msg, 'bad'); return; }
-        pr.ok[where] = { flip: sel.flip, bond: sel.bond };
+        pr.built = 1;
         save();
-        var all = MIRRORS3.every(function (x) { return pr.ok[x.key]; });
-        if (all) {
-          if (!state.done[s.id]) {
-            complete('All three mirrors show the same molecule: the enantiomer of amphetamine, drawn three ways. Rotate the ' +
-                     'image next to it 180° on the vertical spear and you get the image behind it.');
-          }
-        } else {
-          say('Correct! ' + MIRROR_WORDS[where] + ' Now the next mirror.', 'good');
-          k = Math.min(k + 1, MIRRORS3.length - 1);
-          save();
-        }
+        say('Correct! The wedge became a dash; nothing moved left or right.', 'good');
         paint();
+        showArea(host.lastChild);
       });
-      if (MIRRORS3.every(function (x) { return pr.ok[x.key]; })) paintEnd();
-      function paintEnd() {
-        host.appendChild(reveal(['All three mirrors show one molecule, the enantiomer of amphetamine, just drawn three ways: ' +
-          'rotate any one and it lies on the others. That is why a molecule has only one enantiomer.',
-          'Amphetamine is chiral because one carbon carries four different groups: ' + groupsOn(m, CIP.centres(m)[0]) + '.']));
-      }
+      if (done) paintThree();
+    }
+
+    /* 2. Klein's three mirrors side by side: one molecule, three drawings */
+    function paintThree() {
+      var figs = MIRRORS3.map(function (x) {
+        return h('figure', { class: 'three-fig' }, [Draw.pane(x.key, Draw.mol(m, {}), Draw.mol(STEREO.mirror(m, x.key), {}),
+          { aria: 'Amphetamine and its image in a mirror ' + x.name.toLowerCase().replace('the molecule', 'it') + '.' }),
+          h('figcaption', { text: 'Mirror ' + x.name.toLowerCase() })]);
+      });
+      var box = h('div');
+      host.appendChild(panel('Klein’s three mirrors', null, [h('div', { class: 'three-mirrors' }, figs), box]));
+      box.appendChild(predictCard(P, pr.p, function (i) { pr.p = i; save(); paint(); }));
+      if (pr.p == null) return;
+      box.appendChild(reveal([verdict(P, pr.p) + 'One molecule: the enantiomer of amphetamine, drawn three ways. The drawings ' +
+        'differ only because each mirror shows the molecule from a different side. Rotate the image next to it 180° on the ' +
+        'vertical spear and you get the image behind it, so whichever mirror you use, you get the same enantiomer.',
+        'Amphetamine is chiral because one carbon carries four different groups: ' + groupsOn(m, CIP.centres(m)[0]) + '.']));
+      if (!state.done[s.id]) complete('Every mirror shows the same enantiomer. A molecule has only one.');
     }
 
     paint();

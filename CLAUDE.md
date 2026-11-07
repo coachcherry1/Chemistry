@@ -200,8 +200,9 @@ not the full page.
   steps. Checkpoint 1's core is `a-centre-which` and `a-butanol`.
 - **Klein's mirrors** (`Draw.pane`: a tinted glass pane in perspective, the image drawn on it, "Enantiomer"): the
   `drawmirror` step is Klein's figure with amphetamine (`Ph` group: a flat benzene ring, 1.39 Å bonds, drawn as a
-  hexagon) and his three mirrors, next to (`beside`), behind and beneath; students build each image from a flip and
-  wedge/dash (`flipMatrix`, `judgeMirror`). The 3D mirror scenes have a real glass pane (camera turned 24°).
+  hexagon) and his three mirrors, next to (`beside`), behind and beneath. Students build only the mirror behind (one
+  choice: wedge or dash), then see all three side by side and predict how many molecules (`threeSame`: one). Building
+  all three by flipping the drawing was tried and dropped: a chemist found it a drawing puzzle, and confusing. The 3D mirror scenes have a real glass pane (camera turned 24°).
 - **Enantiomers vs diastereomers by mirror images:** Klein's chart (`Draw.isomerChart`, Fig. 5.11) in the four step,
   Vocabulary and beside checkpoint 4; tiles "Enantiomers: mirror images" / "Diastereomers: NOT mirror images"; each
   pair has a Mirror button (the first in a mirror behind it, beside the second); feedback and explanations lead with

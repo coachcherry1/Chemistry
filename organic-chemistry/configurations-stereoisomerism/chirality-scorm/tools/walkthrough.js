@@ -210,26 +210,18 @@ const fakeLMS = () => {
   expect(/four different groups/.test(await page.textContent('.reveal')), 'mirror: the reveal should point to four different groups');
   await next();
 
-  /* drawmirror: Klein's three mirrors with amphetamine. Next to: first the
-     rotated drawing (wrong), then the right one; behind: first the image a
-     mirror next to it shows (wrong); beneath: right first time */
-  async function mirrorBuild(flip, bond) {
-    await page.click(`.choice-row button:has-text("${flip}")`);
-    await page.click(`.choice-row button:has-text("${bond}")`);
-    expect(await page.$('.mirror-build .glass-image'), 'drawmirror: the glass does not show the chosen drawing');
-    await page.click('.mirror-build button:has-text("Check")');
-  }
+  /* drawmirror: build the image in the mirror behind (wrong first), then Klein's three mirrors and one prediction */
   expect((await page.$$('.mirror-build .pane-glass')).length === 1, 'drawmirror: no glass pane');
-  await mirrorBuild('Left and right traded', 'Dash');
-  await fb(/rotated 180° on the vertical spear/, 'drawmirror: the rotated drawing not explained');
-  await mirrorBuild('Left and right traded', 'Wedge');
-  await fb(/Correct! A mirror next to the molecule/, 'drawmirror: next to not accepted');
-  await mirrorBuild('Left and right traded', 'Wedge');
-  await fb(/the mirror next to the molecule shows it/, 'drawmirror: another mirror\'s image not explained');
-  await mirrorBuild('As it is', 'Dash');
-  await fb(/Correct! A mirror behind the molecule/, 'drawmirror: behind not accepted');
-  await mirrorBuild('Top and bottom traded', 'Wedge');
-  await fb(/All three mirrors show the same molecule/, 'drawmirror step did not complete');
+  await page.click('.choice-row button:has-text("Wedge")');
+  expect(await page.$('.mirror-build .glass-image'), 'drawmirror: the glass does not show the chosen drawing');
+  await page.click('.mirror-build button:has-text("Check")');
+  await fb(/just as it is drawn/, 'drawmirror: the unreflected drawing not explained');
+  await page.click('.choice-row button:has-text("Dash")');
+  await page.click('.mirror-build button:has-text("Check")');
+  await fb(/Correct! The wedge became a dash/, 'drawmirror: the mirror behind not accepted');
+  expect((await page.$$('.three-mirrors .pane-glass')).length === 3, 'drawmirror: Klein\'s three mirrors not shown');
+  await predict(1);
+  await fb(/Every mirror shows the same enantiomer/, 'drawmirror step did not complete');
   expect(/four different groups/.test((await page.$$eval('.reveal', (els) => els.map((e) => e.textContent))).join(' ')),
     'drawmirror: the end should point to four different groups');
   await next();

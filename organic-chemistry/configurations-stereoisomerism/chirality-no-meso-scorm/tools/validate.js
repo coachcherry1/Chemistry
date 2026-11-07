@@ -281,37 +281,21 @@ const m0 = (id) => mol(S(id).mols ? S(id).mols[0] : S(id).mol);
   const y = mol('ch2brcl'), fit = STEREO.matchCount(STEREO.apply(STEREO.mirror(y, 'beside'), STEREO.OVER), y);
   if (fit.n !== fit.total || STEREO.chiral(y)) fail('CH₂BrCl\'s mirror image should fit it');
 }
-/* drawmirror: Klein's three mirrors. Of the six drawings a student can build
-   (three ways to face times wedge or dash), exactly the reflection is accepted
-   for each mirror; the others are explained as what they are (the molecule
-   itself, the molecule rotated on a spear, or another mirror's image), and
-   the model agrees with each explanation. */
+/* drawmirror: students build the image in the mirror behind (one choice:
+   the CH₃ wedge or dash); exactly the reflection is accepted. Then Klein's
+   three mirrors side by side: the prediction's key, one molecule, must hold. */
 {
   const m = mol(S('drawmirror').mol), c = CIP.centres(m);
   if (c.length !== 1 || !STEREO.chiral(m)) fail('drawmirror: amphetamine should have one chirality centre');
   const order3 = App.MIRRORS3.map((x) => x.key).join();
   if (order3 !== 'beside,behind,beneath') fail(`drawmirror: the mirrors should be next to, behind and beneath (Klein), not ${order3}`);
-  for (const where of ['beside', 'behind', 'beneath']) {
-    let ok = 0;
-    for (const flip of ['none', 'lr', 'tb']) for (const bond of ['wedge', 'dash']) {
-      const r = App.judgeMirror(m, where, flip, bond), built = STEREO.apply(m, App.flipMatrix(flip, bond));
-      const rel = STEREO.relation(built, m);
-      if (r.ok) {
-        ok++;
-        if (rel !== 'enantiomers') fail(`drawmirror ${where}: the accepted drawing is not the mirror image`);
-        if (G.gap(App.flipMatrix(flip, bond), STEREO.MIRRORS[where]) > 0.01) fail(`drawmirror ${where}: accepted the wrong reflection`);
-      } else if (!r.msg) fail(`drawmirror ${where}: a wrong drawing gets no feedback`);
-      else if (r.kind === 'turned' && rel !== 'identical') fail(`drawmirror ${where}: called ${flip}/${bond} rotated, but it is ${rel}`);
-      else if (r.kind === 'other' && rel !== 'enantiomers') fail(`drawmirror ${where}: called ${flip}/${bond} another mirror's image, but it is ${rel}`);
-    }
-    if (ok !== 1) fail(`drawmirror ${where}: ${ok} drawings accepted, not exactly 1`);
-  }
-  /* the closing claim: the image next to it, rotated 180° on the vertical spear, is the image behind it */
-  const next = STEREO.mirror(m, 'beside'), beh = STEREO.mirror(m, 'behind');
-  if (G.gap(G.mmul(STEREO.OVER, STEREO.MIRRORS.beside), STEREO.MIRRORS.behind) > 0.01 || STEREO.relation(next, beh) !== 'identical') {
-    fail('drawmirror: the images next to and behind it should be one molecule, a 180° turn apart');
-  }
-  if (STEREO.relation(STEREO.mirror(m, 'beneath'), next) !== 'identical') fail('drawmirror: all three images should be one molecule');
+  const ok = ['wedge', 'dash'].filter((bd) => App.judgeMirror(m, 'behind', 'none', bd).ok);
+  if (ok.join() !== 'dash') fail(`drawmirror: the mirror behind should accept only the dash, not ${ok.join() || 'nothing'}`);
+  if (STEREO.relation(STEREO.apply(m, App.flipMatrix('none', 'dash')), m) !== 'enantiomers') fail('drawmirror: the accepted image is not the mirror image');
+  if (!App.judgeMirror(m, 'behind', 'none', 'wedge').msg) fail('drawmirror: the wrong choice gets no feedback');
+  const imgs = App.MIRRORS3.map((x) => STEREO.mirror(m, x.key));
+  if (!/^One/.test(key(P.threeSame)) || imgs.some((x) => STEREO.relation(x, imgs[0]) !== 'identical')) fail('drawmirror: the three images should be one molecule');
+  if (G.gap(G.mmul(STEREO.OVER, STEREO.MIRRORS.beside), STEREO.MIRRORS.behind) > 0.01) fail('drawmirror: next to, rotated 180° on the vertical spear, should give behind');
 }
 /* centres and chiral: what each step expects in each molecule */
 {
