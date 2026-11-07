@@ -230,9 +230,9 @@ def build(T):
             ["4", "Mass of crucible + lid + product, after the reaction", f4(FINAL) + " g" if T else "                              g"],
             ["5", "Mass of oxygen added   (Box 4 − Box 3)", f4(OXY) + " g" if T else "                              g"]]
     table(d, rows, [0.55, 4.55, 2.2], size=10, height=0.29)
-    para(d, "**Observations** (the flame, the magnesium, the product, what you see and smell when you add water):", 10, after=1)
+    para(d, "**Observations** (the flame, the magnesium, the product, what you see when you add water):", 10, after=1)
     if T:
-        ans(d, "Bright white glow when the Mg burns; a white powder, sometimes with pale yellow-green bits (magnesium nitride); hissing and steam when the water goes on; a sharp smell (ammonia); a white, dry powder at the end.")
+        ans(d, "Bright white glow when the Mg burns; a white powder, sometimes with pale yellow-green bits (magnesium nitride); hissing and steam when the water goes on; gas wisps rising from the crucible (the magnifier shows NH₃; in the real lab there is also a sharp ammonia smell); a white, dry powder at the end.")
     else:
         for _ in range(2):
             para(d, "_" * 104, 10, after=4)
@@ -244,7 +244,7 @@ def build(T):
         ("Mass the clean, dry crucible and lid.", "Record it in **Box 1**."),
         ("Mass the piece of magnesium.", "Record it in **Box 2**. Put it in the crucible, then mass the crucible + lid + Mg and record it in **Box 3**. Check: Box 1 + Box 2 should equal Box 3."),
         ("Heat the magnesium with the Bunsen burner.", "Turn the bottom of the burner until the tip of the flame touches the bottom of the crucible. The lid goes on for you, with a slight crack, once the Mg glows. Write what you see in Observations."),
-        ("Once the Mg stops glowing, add 6 to 7 drops of DI water", "and reheat to boil the water off. Write what you see and smell."),
+        ("Once the Mg stops glowing, add 6 to 7 drops of DI water", "and reheat to boil the water off. Write what you see. (In the real lab you will also notice a sharp smell.)"),
         ("Once the product is dry, turn the heat off and cool for 5 minutes.", "The simulation speeds up the clock. Do the **While Cooling** questions."),
         ("Mass the crucible + lid + product.", "Record it in **Box 4**. Then calculate **Box 5**."),
     ]
@@ -283,8 +283,8 @@ def build(T):
              "3 Mg + 1 N₂ → 1 Mg₃N₂")
     question(d, T, "N3", "Balance the reaction of the water with magnesium nitride:    _____ Mg₃N₂  +  _____ H₂O  →  _____ Mg(OH)₂  +  _____ NH₃", 0.25,
              "1 Mg₃N₂ + 6 H₂O → 3 Mg(OH)₂ + 2 NH₃")
-    question(d, T, "N4", "One product in N3 is a gas with a sharp smell. Which one is it? What happens to it in the crucible?", 0.55,
-             "**Ammonia, NH₃.** It escapes from the crucible as a gas (you smell it), so it is not part of the final mass.")
+    question(d, T, "N4", "One product in N3 is a gas. Which one is it? (In the real lab you will notice its sharp smell.) Where does it go?", 0.55,
+             "**Ammonia, NH₃.** It leaves the crucible as a gas (the simulation shows it rising; in the lab you smell it), so it is not part of the final mass.")
     question(d, T, "N5", "Balance the change that happens when you reheat:    _____ Mg(OH)₂  →  _____ MgO  +  _____ H₂O.   In one sentence, why does the water step let us treat the final product as all MgO?", 0.7,
              "1 Mg(OH)₂ → 1 MgO + 1 H₂O.   The water turns any Mg₃N₂ into Mg(OH)₂, and heating turns the Mg(OH)₂ into MgO, so no nitrogen is left in the product.")
 

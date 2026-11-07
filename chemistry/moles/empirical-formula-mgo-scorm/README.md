@@ -27,7 +27,7 @@ a small scatter (within about 1%).
   whose **flame height is set by turning the bottom of the barrel**, an analytical balance with its door open, a DI water dropper and a wire
   gauze pad. No goggles, scissors or tongs.
 - Students drag the equipment into place, read the balance, set the flame, watch the magnesium glow inside the crucible, add 6 to 7 drops of
-  water (steam, the magnifier shows Mg₃N₂ + H₂O → Mg(OH)₂ + NH₃), reheat, and fast-forward the 5-minute cool.
+  water (steam; the magnifier shows Mg₃N₂ + H₂O → Mg(OH)₂ + NH₃ and the ammonia gas rising from the crucible, since a simulation can show the gas but not its smell), reheat, and fast-forward the 5-minute cool.
 - "What if" buttons show the lid too wide, the lid too tight, and the water step skipped.
 - A slim bar across the top gives the step and says which box on the sheet to fill in.
 
