@@ -453,7 +453,7 @@ not the full page.
   (`POL_*`), save key (`properties-of-liquids-state`) and zip. `SUBSTANCES` holds only the eight liquids.
   A fix to part 6 in either package usually belongs in the other.
 
-## mole-conversions-scorm (zip v2, SCHEMA 2) and mole-conversions-molarity-scorm (zip v1, SCHEMA 2)
+## mole-conversions-scorm (zip v3, SCHEMA 2) and mole-conversions-molarity-scorm (zip v2, SCHEMA 2)
 
 - **Key objective:** fluency with mole conversions by dimensional analysis (no story problems), in the style of the
   dimensional analysis mixed challenge (`to-merge/.../DimAnalysis-6-Mixed-Challenge/`, the teacher's): tap or drag an
@@ -472,6 +472,11 @@ not the full page.
   6.02 × 10²³** (the class's rounding; the validator bans 6.022). All equalities exact (sig figs from the given only),
   except a molarity, which is always given with the volume's sig figs. A problem counts if right before Show solution
   (which asks to confirm); hints and re-checks are free.
+- **1.5% tolerance (the teacher's choice; `Chem.TOL`):** students use different periodic tables, so an answer with the right
+  sig figs counts if a value within 1.5% of the right one (from the typed or the class molar masses) rounds to it, and a
+  molar mass to tenths counts within 1.5% of the class's. Named slips are caught first, even inside 1.5%. `tools/tables.js`
+  plays five tables (two decimals H 1.01, full H 1.008/Cl 35.45, class with H 1.008, whole numbers with Cl 35.5 or 35)
+  through the judges; the validator fails if any answer is refused (1% was tried and refused H 1.01 and Mg 24, Cl 35).
 - **Words:** "the mole map", never "Mole Town" (the teacher shares it with peers); "L of gas" (22.4 L, STP) and "L of
   solution" (mol/L), never "L at STP"; molarity written mol/L, its chip printed from the prompt
   (`1 L KCl solution = 0.350 mol KCl`); mL as on the class sheet (350. mL), 1000 mL = 1 L. Every prompt names the

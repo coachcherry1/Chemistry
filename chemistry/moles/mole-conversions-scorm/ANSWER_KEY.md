@@ -21,6 +21,7 @@ rules, every substance and a worked sample set. Answers are computed by the acti
   the equalities use formulas.
 - **Significant figures:** every equality counts as exact; the given quantity decides. A right
   number with the wrong significant figures is not marked correct; the student is told the rule and tries again.
+- **Tolerance:** answers and molar masses within 1.5% of the class’s count, for students using other periodic tables (below).
 - **Scoring:** a graded problem counts when it is right before Show solution (Show solution asks to confirm). Hints and
   checking again are free. Score = problems right / 12, to `cmi.core.score.raw`; retakes keep the best.
 - **Worked solutions** are typeset from LaTeX: each factor a fraction, cancelled units struck through.
@@ -150,6 +151,26 @@ A is the substance; B is an element counted in it. Warm-ups (ungraded, one road 
 | 132.3 | Count the O atoms again. Mg(NO₃)₂ has 1 Mg, 2 N and 6 O. |
 
 Ratio blank, Mg(NO₃)₂ to O (6): 3 gets "The number after the brackets multiplies every atom inside them. Count the O atoms in Mg(NO₃)₂ again."; 2 gets "That is the number of N atoms in one Mg(NO₃)₂. This ratio is about O."; 9 gets "That counts every atom in Mg(NO₃)₂. Count only the O atoms."
+
+## Other periodic tables: the 1.5% tolerance
+
+A molar mass written to tenths, or an answer with the right significant figures, counts when it is within 1.5% of the
+class’s value (an answer may also be within 1.5% of the value from the molar masses the student typed). A rounded answer
+stands for everything that rounds to it, so a last digit that tips the other way still counts. Slips (a skipped subscript,
+a miscounted H) are still named, even when they land within 1.5%. Every problem of 100 sets and their warm-ups was worked
+with each table below: their own molar mass typed in the blank (to tenths) or the class’s, their own masses in the
+calculator, the answer rounded to the right significant figures.
+
+| Periodic table the student uses | Molar masses refused | Answers refused (own molar mass) | Answers refused (class molar mass) |
+| --- | --- | --- | --- |
+| Two decimals (H 1.01, C 12.01, Cl 35.45) | 0 of 897 | 0 of 1600 | 0 of 1600 |
+| Full masses (H 1.008, C 12.011, Cl 35.45) | 0 of 897 | 0 of 1600 | 0 of 1600 |
+| The class table but H 1.008 | 0 of 897 | 0 of 1600 | 0 of 1600 |
+| Whole numbers, Cl 35.5 (Mg 24, Fe 56) | 0 of 897 | 0 of 1600 | 0 of 1600 |
+| Whole numbers, Cl 35 | 0 of 897 | 0 of 1600 | 0 of 1600 |
+
+At 1% the two-decimal table (H 1.01 in grams of hydrogen) and the whole-number tables (Mg 24, Cl 35) were refused now and then;
+the teacher chose 1.5%. `Chem.TOL` in `src/js/chem.js` is the one number to change, and `tools/validate.js` replays these tables.
 
 ## The formative quiz, worked the activity’s way
 

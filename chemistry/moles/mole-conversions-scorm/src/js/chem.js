@@ -16,6 +16,12 @@
  * - In the molarity version, the molarity in the prompt (0.350 mol/L) is the
  *   equality 1 L solution = 0.350 mol, and 1000 mL = 1 L. Volumes are "L of
  *   gas" or "L of solution", never just L.
+ * - Answers within 1.5% (TOL) of the right one count, rounding allowed for,
+ *   and so does a molar mass within 1.5% written to tenths: periodic tables
+ *   differ. tools/tables.js plays five tables (two decimals, full masses, H
+ *   1.008, whole numbers with Cl 35.5 or 35) through the judges; at 1% the
+ *   two-decimal table (H 1.01) and whole numbers (Mg 24, Cl 35) were refused.
+ *   Significant figures still have to be right.
  * - Every equality counts as exact: the given quantity alone decides the
  *   significant figures. A molarity is a measurement too, so it is always
  *   given with the same number of significant figures as the volume.
@@ -25,6 +31,12 @@ var Chem = (function () {
 
   var AV = 6.02e23;
   var STP = 22.4;
+  /* The class's tolerance: a molar mass or an answer within 1.5% of the
+     class's own value counts, so a student working from a periodic table with
+     other masses (Cl 35.45, H 1.008 or 1.01, Mg 24) is not marked wrong. One
+     number to change; every message reads it (TOL_TEXT). */
+  var TOL = 0.015;
+  var TOL_TEXT = String(Math.round(TOL * 1000) / 10) + '%';
 
   /* ------------------------------------------------------------ numbers */
 
@@ -312,16 +324,20 @@ var Chem = (function () {
     var near = function (a, tol) { return Math.abs(x10 - a) <= tol; };
     var tenths = /^\d+\.\d$/.test(str);
     if (tenths && acc.some(function (a) { return near(a, 1e-6); })) return { ok: true, kind: 'ok', v: x };
-    if (!tenths && acc.some(function (a) { return near(a, 5 - 1e-6); })) {
-      return { ok: false, kind: 'tenths',
-        msg: 'Close: write it to the tenths place, with one digit after the decimal point. The class rounds every molar mass to tenths.' };
-    }
+    /* a slip is named even when it lands within TOL (a miscounted H in sucrose) */
     var slips = mmSlips(key);
     for (var i = 0; i < slips.length; i++) {
       if (near(slips[i].v10, 0.6)) return { ok: false, kind: slips[i].kind, msg: slips[i].msg };
     }
-    if (acc.some(function (a) { return near(a, 3 + 1e-6); })) {
-      return { ok: false, kind: 'close', msg: 'Close, but not quite. Use each atomic mass rounded to the tenths place, as the ' +
+    var canon = mm10(key);
+    var within = function (tol) { return Math.abs(x10 - canon) <= canon * tol + 1e-6; };
+    if (tenths && within(TOL)) return { ok: true, kind: 'near', v: x };
+    if (!tenths && (within(TOL) || acc.some(function (a) { return near(a, 5 - 1e-6); }))) {
+      return { ok: false, kind: 'tenths',
+        msg: 'Close: write it to the tenths place, with one digit after the decimal point. The class rounds every molar mass to tenths.' };
+    }
+    if (within(3 * TOL)) {
+      return { ok: false, kind: 'close', msg: 'Close, but more than ' + TOL_TEXT + ' away. Use each atomic mass rounded to the tenths place, as the ' +
         'periodic table here shows it, then add them up: ' + s.disp + ' has ' + hasText(key) + '.' };
     }
     if (s.compound && s.order.some(function (e) { return near(t10(e), 0.6); })) {
@@ -498,21 +514,35 @@ var Chem = (function () {
 
   /* raw: what the student typed; exact: the chain's value with their molar
      masses; sig: the given quantity's significant figures. */
+  /* Could this rounded answer come from a value within TOL of the exact one?
+     The typed number stands for everything that rounds to it at the figures
+     it shows (2.5 is 2.45 to 2.55), so a right answer whose last digit tips
+     the other way still counts. */
+  function withinTol(val, digits, exact) {
+    if (!(digits > 0) || val === 0 || exact === 0 || (val < 0) !== (exact < 0)) return false;
+    var a = Math.abs(val), x = Math.abs(exact);
+    var e = Math.floor(Math.log10(a) + 1e-12);
+    var half = 0.5 * Math.pow(10, e - digits + 1);
+    var eps = x * 1e-9;
+    return a + half >= x * (1 - TOL) - eps && a - half <= x * (1 + TOL) + eps;
+  }
+
+  /* raw: what the student typed; exact: the chain's value with their molar
+     masses; sig: the significant figures the answer must show; info.also:
+     the chain's value with the class's molar masses. An answer within TOL of
+     either counts: a student may type a molar mass rounded to tenths but keep
+     their own table's masses in the calculator. */
   function judgeAnswer(raw, exact, sig, info) {
     info = info || {};
     var val = parseNum(raw);
     if (isNaN(val)) return { ok: false, kind: 'unreadable' };
     var given = sigFigsIn(raw);
-    var want = roundSig(exact, sig);
-    var same = function (a, b) { return Math.abs(a - b) <= Math.abs(b || 1) * 1e-9; };
     var rel = function (a) { return Math.abs(a - exact) / Math.abs(exact || 1); };
-    var atTheirs = given > 0 ? roundSig(exact, given) : null;
-    var close = (atTheirs !== null && same(val, atTheirs)) || rel(val) <= 0.02;
-    if (close) {
-      if (given === sig && same(val, want)) return { ok: true, kind: 'ok' };
-      if (given === sig) return { ok: false, kind: 'last-digit' };
+    if (withinTol(val, given, exact) || (info.also != null && withinTol(val, given, info.also))) {
+      if (given === sig) return { ok: true, kind: rel(val) <= Math.abs(roundSig(exact, sig) - exact) / Math.abs(exact) + 1e-9 ? 'ok' : 'near' };
       return { ok: false, kind: 'sigfigs', given: given };
     }
+    if (rel(val) <= 3 * TOL) return { ok: false, kind: 'close' };
     if (val !== 0 && Math.abs(1 / val - exact) / Math.abs(exact) <= 0.02) return { ok: false, kind: 'reciprocal' };
     if (info.ratio > 1 && (rel(val * info.ratio) <= 0.02 || rel(val / info.ratio) <= 0.02)) return { ok: false, kind: 'ratio' };
     if (val !== 0) {
@@ -567,7 +597,7 @@ var Chem = (function () {
   }
 
   return {
-    AV: AV, AV_TEXT: AV_TEXT, STP: STP, TIMES: TIMES,
+    AV: AV, AV_TEXT: AV_TEXT, STP: STP, TIMES: TIMES, TOL: TOL, TOL_TEXT: TOL_TEXT, withinTol: withinTol,
     sup: sup, subs: subs, scaled: scaled, tenthsText: tenthsText,
     roundSig: roundSig, sigFigsIn: sigFigsIn, parseNum: parseNum, fmtSig: fmtSig, fmtLong: fmtLong,
     el: el, t10: t10, alt10: alt10, tableMass: tableMass, radioactive: radioactive,
