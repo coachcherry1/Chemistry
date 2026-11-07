@@ -81,15 +81,9 @@ Nothing is calculated. The atomic numbers are open beside checkpoints 2 to 4.
 
 Prediction: CHBrClF's mirror image fits? **No, never**. At most 2 of 4 atoms ever line up, whatever spear the image is rotated on. The reason given: its carbon carries four different groups (Br, Cl, F and H).
 
-### Three mirrors (Klein's figure)
+### Three mirrors, one enantiomer (Klein's figure)
 
-Amphetamine as drawn: C2: H (wedge), H (dash); C3: CH₃ (wedge), H (dash). Students build each mirror's image from two choices (which way the drawing faces, and wedge or dash for the CH₃); exactly one of the six is right for each mirror:
-
-- **Next to the molecule**: left and right traded, CH₃ on the wedge.
-- **Behind the molecule**: as it is, CH₃ on the dash.
-- **Beneath the molecule**: top and bottom traded, CH₃ on the wedge.
-
-Wrong builds are explained as what they are: the molecule as drawn, the molecule rotated 180° on a spear (it fits the original), or the image another mirror shows. All three images are one molecule, the enantiomer.
+Students build the image in the mirror behind amphetamine: the CH₃ wedge becomes a **dash**, nothing else moves. Then Klein's three mirrors (next to, behind, beneath) side by side. Prediction: how many molecules? **One: the same enantiomer, drawn three ways**.
 
 ### Find the chirality centres
 
