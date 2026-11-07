@@ -29,11 +29,13 @@
     <resource identifier="MOLECONV_RES" type="webcontent" adlcp:scormtype="sco" href="index.html">
       <file href="index.html"/>
       <file href="css/styles.css"/>
+      <file href="js/config.js"/>
       <file href="js/util.js"/>
       <file href="js/elements.js"/>
       <file href="js/substances.js"/>
       <file href="js/chem.js"/>
       <file href="js/problems.js"/>
+      <file href="js/tex.js"/>
       <file href="js/map.js"/>
       <file href="js/ptable.js"/>
       <file href="js/work.js"/>

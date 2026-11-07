@@ -127,7 +127,7 @@ h3 { font-size: 0.74rem; margin: 0; text-transform: uppercase; letter-spacing: 0
 /* --------------------------------------------------------------- workspace */
 
 .work { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 10px; align-items: start; }
-@media (max-width: 1100px) { .work { grid-template-columns: minmax(0, 1fr); } .work-side { max-width: 420px; } }
+@media (max-width: 1300px) { .work { grid-template-columns: minmax(0, 1fr); } .work-side { max-width: 420px; } }
 
 .work-main, .work-side { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 10px 10px; min-width: 0; }
 .work-side h3 { margin-bottom: 2px; }
@@ -143,17 +143,18 @@ h3 { font-size: 0.74rem; margin: 0; text-transform: uppercase; letter-spacing: 0
 
 .chain-scroll { overflow-x: auto; overflow-y: hidden; padding: 3px 2px 5px; border-radius: 10px; }
 .chain-scroll.drop-active { background: var(--accent-soft); outline: 2px dashed var(--accent); outline-offset: 2px; }
-.chain { display: flex; align-items: stretch; gap: 5px; min-height: 88px; min-width: min-content; }
+/* a long chain (four steps on a narrow screen) wraps onto a second row instead of scrolling */
+.chain { display: flex; flex-wrap: wrap; align-items: stretch; gap: 5px 4px; min-height: 88px; }
 .op { display: flex; align-items: center; font-size: 1.2rem; color: var(--muted); padding: 0 1px; user-select: none; }
 
 .cell {
   background: var(--panel); border: 1.5px solid var(--tile-line); border-radius: 8px; padding: 5px 9px;
-  min-width: 86px; max-width: 182px; display: flex; flex-direction: column; justify-content: center; position: relative; text-align: center;
+  min-width: 80px; max-width: 170px; display: flex; flex-direction: column; justify-content: center; position: relative; text-align: center;
 }
 .cell.start { background: var(--accent-soft); border-color: var(--accent); border-width: 2px; }
 .cell.factor { padding-top: 26px; cursor: grab; touch-action: none; }
 .work.done .cell.factor { cursor: default; }
-/* a long side (6.022 x 10^23 molecules NH3) wraps its unit under its number */
+/* a long side (6.02 x 10^23 molecules NH3) wraps its unit under its number */
 .cell .num, .cell .den { padding: 1px 2px; font-size: 0.95rem; line-height: 1.3; }
 .cell .val, .cell .tok, .cell input.blank { white-space: nowrap; }
 .cell .bar { height: 1.5px; background: var(--ink); margin: 2px 0; opacity: 0.75; }
@@ -182,8 +183,8 @@ input.blank.wrong { border-style: solid; border-color: var(--bad); background: v
 input.blank::placeholder { font-weight: 500; font-size: 0.72rem; color: var(--muted); }
 
 .slot-empty {
-  border: 2px dashed var(--tile-line); border-radius: 8px; min-width: 120px; display: flex; align-items: center; justify-content: center;
-  padding: 0 10px; font-size: 0.78rem; color: var(--muted); text-align: center;
+  border: 2px dashed var(--tile-line); border-radius: 8px; min-width: 84px; max-width: 130px; display: flex; align-items: center; justify-content: center;
+  padding: 0 8px; font-size: 0.78rem; color: var(--muted); text-align: center;
 }
 .ins-bar { width: 4px; border-radius: 2px; background: var(--accent); }
 
@@ -205,9 +206,16 @@ input.ans {
 .fb.good { background: var(--good-bg); border-color: var(--good); }
 .fb.bad { background: var(--bad-bg); border-color: var(--bad); }
 .fb.tip { background: var(--note-bg); border-color: var(--accent); }
-.worklines {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.78rem; white-space: pre-wrap;
-  background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; margin: 5px 0;
+/* worked solutions: LaTeX typeset by the browser as MathML (tex.js) */
+.solution { margin: 6px 0 2px; padding: 6px 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
+.solution .eq { overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
+.solution .eq.small math { font-size: 1rem; }
+.solution .note { margin: 3px 0 0; font-size: 0.8rem; color: var(--muted); }
+math { font-family: "Cambria Math", "STIX Two Math", "Latin Modern Math", "Noto Serif", serif; font-size: 1.12rem; color: var(--ink); }
+math[display="block"] { margin: 4px 0; text-align: left; }
+/* \cancel: a red stroke from lower left to upper right (Chrome draws no MathML strike of its own) */
+math .cx {
+  background: linear-gradient(to top right, transparent calc(50% - 1px), var(--bad) calc(50% - 1px), var(--bad) calc(50% + 0.6px), transparent calc(50% + 0.6px));
 }
 
 .poolcard { margin-top: 6px; border-top: 1px solid var(--line); padding-top: 6px; }
@@ -308,6 +316,9 @@ input.ans {
 
 .q-review { margin: 0; padding-left: 0; list-style: none; font-size: 0.85rem; }
 .q-review li { display: flex; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--line); }
+.review-body { min-width: 0; flex: 1; }
+.review-body details { margin-top: 2px; }
+.review-body summary { cursor: pointer; font-size: 0.8rem; color: var(--accent); }
 .q-review .mark { font-weight: 700; min-width: 1.2em; }
 .q-review .right .mark { color: var(--good); }
 .q-review .wrong .mark { color: var(--bad); }

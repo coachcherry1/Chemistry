@@ -1,25 +1,33 @@
-/* map.js: the Mole Town map, laid out as the class's paper copy (turned to
- * landscape): volume at STP above moles of A, particles to the left, mass to
- * the right, the ratio road down to moles of B, and the same again for B.
+/* map.js: the mole map, laid out as the class's paper copy (turned to
+ * landscape): L of gas above moles of A, particles to the left, mass to the
+ * right, the ratio road down to moles of B, and the same again for B. In the
+ * molarity version L of solution sits beside L of gas, joined to moles of A
+ * by the molarity road.
  *
  * In a problem, A is the substance and B the element counted in it; each
  * node names its unit (g SBr2, atoms Br). The start is blue, the target
  * yellow, the unit the chain has reached so far is ringed, and every road a
  * placed factor uses is lit. Roads a substance does not have (22.4 L for a
- * liquid, particles of an ionic compound) are greyed. In the first step the
- * roads are buttons.
+ * liquid, particles of an ionic compound, a molarity the problem does not
+ * give) are greyed. In the first step the roads are buttons.
  */
 var MoleMap = (function () {
   'use strict';
 
   var NS = 'http://www.w3.org/2000/svg';
   var W = 420, H = 280, RX = 50, RY = 23;
-  var POS = {
+  var POS1 = {
     'A:L': [210, 26], 'A:part': [52, 102], 'A:mol': [210, 102], 'A:g': [368, 102],
+    'B:part': [52, 178], 'B:mol': [210, 178], 'B:g': [368, 178], 'B:L': [210, 254]
+  };
+  /* with L of solution: the two volumes share the top row */
+  var POS2 = {
+    'A:L': [112, 26], 'A:Lsol': [308, 26], 'A:part': [52, 102], 'A:mol': [210, 102], 'A:g': [368, 102],
     'B:part': [52, 178], 'B:mol': [210, 178], 'B:g': [368, 178], 'B:L': [210, 254]
   };
   var ROADS = [
     { id: 'A:stp', a: 'A:L', b: 'A:mol', label: ['22.4 L = 1 mol'] },
+    { id: 'A:sol', a: 'A:Lsol', b: 'A:mol', label: ['mol/L'], solution: true },
     { id: 'A:av', a: 'A:part', b: 'A:mol', label: ['Avogadro’s', 'number'] },
     { id: 'A:mm', a: 'A:mol', b: 'A:g', label: ['periodic', 'table'] },
     { id: 'ratio', a: 'A:mol', b: 'B:mol', label: ['ratio'] },
@@ -28,8 +36,8 @@ var MoleMap = (function () {
     { id: 'B:stp', a: 'B:mol', b: 'B:L', label: ['22.4 L = 1 mol'] }
   ];
   var GENERIC = {
-    'A:L': ['Volume of A', 'at STP'], 'A:part': ['Particles', 'of A'], 'A:mol': ['Moles', 'of A'], 'A:g': ['Mass', 'of A'],
-    'B:L': ['Volume of B', 'at STP'], 'B:part': ['Particles', 'of B'], 'B:mol': ['Moles', 'of B'], 'B:g': ['Mass', 'of B']
+    'A:L': ['L of gas', 'of A'], 'A:Lsol': ['L of solution', 'of A'], 'A:part': ['Particles', 'of A'], 'A:mol': ['Moles', 'of A'],
+    'A:g': ['Mass', 'of A'], 'B:L': ['L of gas', 'of B'], 'B:part': ['Particles', 'of B'], 'B:mol': ['Moles', 'of B'], 'B:g': ['Mass', 'of B']
   };
 
   function svg(tag, attrs, text) {
@@ -39,26 +47,33 @@ var MoleMap = (function () {
     return n;
   }
 
-  /* Where a road's line runs: between the two ellipses' edges. */
-  function ends(r) {
+  /* Where a road's line runs: between the two ellipses' edges, along the
+     line joining their centres. */
+  function ends(r, POS) {
     var a = POS[r.a], b = POS[r.b];
-    if (a[1] === b[1]) return [a[0] + RX, a[1], b[0] - RX, b[1]];
-    return [a[0], a[1] + RY, b[0], b[1] - RY];
+    var dx = b[0] - a[0], dy = b[1] - a[1];
+    var t = 1 / Math.sqrt((dx / RX) * (dx / RX) + (dy / RY) * (dy / RY));
+    return [a[0] + dx * t, a[1] + dy * t, b[0] - dx * t, b[1] - dy * t];
   }
 
-  /* opts: { A, B, interactive, onRoad(id) } */
+  /* opts: { A, B, solution (the molarity version), sol (this problem gives a
+     molarity), interactive, onRoad(id) } */
   function create(opts) {
     opts = opts || {};
+    var POS = opts.solution ? POS2 : POS1;
+    var roads = ROADS.filter(function (r) { return opts.solution || !r.solution; });
     var A = opts.A ? Chem.sp(opts.A) : null, B = opts.B ? Chem.sp(opts.B) : null;
     var root = svg('svg', { viewBox: '0 0 ' + W + ' ' + H, class: 'molemap' + (opts.interactive ? ' interactive' : ''),
       role: opts.interactive ? 'group' : 'img',
-      'aria-label': 'Mole Town map: mass, particles and volume at STP of A all join moles of A; the ratio joins moles of A to moles of B.' });
+      'aria-label': 'Mole map: mass, particles and L of gas' + (opts.solution ? ', and L of solution,' : '') +
+        ' of A all join moles of A; the ratio joins moles of A to moles of B.' });
 
     function labelFor(node) {
       var role = node.split(':')[0], kind = node.split(':')[1];
       var s = role === 'A' ? A : B;
       if (!s) return { lines: GENERIC[node], off: !!A };
-      if (kind === 'L') return { lines: ['L at STP', s.gas ? s.disp : (role === 'B' ? 'not used' : 'not a gas')], off: !s.gas || role === 'B' };
+      if (kind === 'L') return { lines: ['L of gas', s.gas && role === 'A' ? s.disp : (role === 'B' ? 'not used' : 'not a gas')], off: !s.gas || role === 'B' };
+      if (kind === 'Lsol') return { lines: ['L of solution', opts.sol ? s.disp : 'no mol/L given'], off: !opts.sol };
       if (kind === 'part') return { lines: [s.part || 'particles', s.part ? s.disp : 'not used'], off: !s.part };
       return { lines: [kind, s.disp], off: false };
     }
@@ -69,20 +84,26 @@ var MoleMap = (function () {
       var s = role === 'A' ? A : B;
       if (!s) return true;
       if (type === 'stp') return !s.gas || role === 'B';
+      if (type === 'sol') return !opts.sol;
       if (type === 'av') return !s.part;
       return false;
     }
 
     var roadEls = {}, nodeEls = {};
-    ROADS.forEach(function (r) {
-      var e = ends(r), g = svg('g', { class: 'road' + (roadOff(r) ? ' off' : ''), 'data-road': r.id });
+    roads.forEach(function (r) {
+      var e = ends(r, POS), g = svg('g', { class: 'road' + (roadOff(r) ? ' off' : ''), 'data-road': r.id });
       g.appendChild(svg('line', { x1: e[0], y1: e[1], x2: e[2], y2: e[3], class: 'road-hit' }));
       g.appendChild(svg('line', { x1: e[0], y1: e[1], x2: e[2], y2: e[3], class: 'road-line' }));
-      var horiz = e[1] === e[3];
+      var horiz = Math.abs(e[1] - e[3]) < 1, vert = Math.abs(e[0] - e[2]) < 1;
+      /* a slanted road is labelled on its outer side */
+      var left = !horiz && !vert && (e[0] + e[2]) / 2 < POS['A:mol'][0];
       r.label.forEach(function (t, i) {
-        var x = horiz ? (e[0] + e[2]) / 2 : e[0] + 7;
-        var y = horiz ? e[1] - 6 - (r.label.length - 1 - i) * 12 : (e[1] + e[3]) / 2 + 4 + (i - (r.label.length - 1) / 2) * 12;
-        g.appendChild(svg('text', { x: x, y: y, class: 'road-label', 'text-anchor': horiz ? 'middle' : 'start' }, t));
+        /* a slanted road's label sits near its top end, clear of the labels beside moles */
+        var k = horiz || vert ? 0.5 : 0.4;
+        var mx = e[0] + (e[2] - e[0]) * k, my = e[1] + (e[3] - e[1]) * k;
+        var x = horiz ? mx : vert ? e[0] + 7 : mx + (left ? -8 : 8);
+        var y = horiz ? e[1] - 6 - (r.label.length - 1 - i) * 12 : my + 4 + (i - (r.label.length - 1) / 2) * 12;
+        g.appendChild(svg('text', { x: x, y: y, class: 'road-label', 'text-anchor': horiz ? 'middle' : (vert || !left ? 'start' : 'end') }, t));
       });
       if (opts.interactive && !roadOff(r)) {
         g.setAttribute('role', 'button');
@@ -115,6 +136,7 @@ var MoleMap = (function () {
     function roadOf(edgeId) {
       var e = Chem.edge(edgeId);
       if (e.type === 'ratio') return 'ratio';
+      if (e.type === 'ml') return null;
       var role = A && e.s === A.key ? 'A' : 'B';
       return role + ':' + e.type;
     }
@@ -123,7 +145,7 @@ var MoleMap = (function () {
     function update(st) {
       st = st || {};
       var lit = {};
-      (st.lit || []).forEach(function (id) { lit[roadOf(id)] = 1; });
+      (st.lit || []).forEach(function (id) { var r = roadOf(id); if (r) lit[r] = 1; });
       Object.keys(roadEls).forEach(function (id) {
         roadEls[id].classList.toggle('lit', !!lit[id]);
         roadEls[id].classList.toggle('seen', !!(st.seen && st.seen[id]));
@@ -136,7 +158,7 @@ var MoleMap = (function () {
       });
     }
 
-    return { el: root, update: update, roadOf: roadOf, ROADS: ROADS };
+    return { el: root, update: update, roadOf: roadOf, ROADS: roads };
   }
 
   return { create: create, ROADS: ROADS };

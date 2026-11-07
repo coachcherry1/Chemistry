@@ -1,7 +1,7 @@
 /* chem.js: the model. Formulas, molar masses to the tenths place, the roads
- * of Mole Town (the equalities), unit cancelling and the judging of every
- * typed blank and answer. Nothing here touches the page, so tools/validate.js
- * runs all of it in node.
+ * of the mole map (the equalities), unit cancelling, the judging of every
+ * typed blank and answer, and the LaTeX of every worked solution. Nothing
+ * here touches the page, so tools/validate.js runs all of it in node.
  *
  * The class's rules, as the teacher set them:
  * - Molar masses to the tenths place. The atomic masses on screen are rounded
@@ -10,15 +10,20 @@
  *   too, and so is the tenths value of a two-decimal table (Fe 55.85 gives
  *   55.9, where the full 55.845 gives 55.8). The answer is then checked
  *   against the molar mass the student typed.
- * - 22.4 L = 1 mol for a gas at STP, 6.022 x 10^23 particles = 1 mol, and the
- *   ratio from the formula (1 mol SBr2 = 2 mol Br).
+ * - 22.4 L = 1 mol for a gas at STP, 6.02 x 10^23 particles = 1 mol (the
+ *   class rounds Avogadro's number to 6.02), and the ratio from the formula
+ *   (1 mol SBr2 = 2 mol Br).
+ * - In the molarity version, the molarity in the prompt (0.350 mol/L) is the
+ *   equality 1 L solution = 0.350 mol, and 1000 mL = 1 L. Volumes are "L of
+ *   gas" or "L of solution", never just L.
  * - Every equality counts as exact: the given quantity alone decides the
- *   significant figures.
+ *   significant figures. A molarity is a measurement too, so it is always
+ *   given with the same number of significant figures as the volume.
  */
 var Chem = (function () {
   'use strict';
 
-  var AV = 6.022e23;
+  var AV = 6.02e23;
   var STP = 22.4;
 
   /* ------------------------------------------------------------ numbers */
@@ -32,7 +37,7 @@ var Chem = (function () {
   function subs(f) { return f.replace(/\d/g, function (d) { return SUBS[+d]; }); }
 
   var TIMES = '×';
-  var AV_TEXT = '6.022 ' + TIMES + ' 10' + sup(23);
+  var AV_TEXT = '6.02 ' + TIMES + ' 10' + sup(23);
 
   /* A decimal string scaled to an integer number of 10^-dp units, rounded half
      up: scaled('55.845', 1) is 558 (55.8), scaled('55.85', 1) is 559. Exact,
@@ -189,24 +194,30 @@ var Chem = (function () {
   /* --------------------------------------------------------- species */
 
   var SP = {};
-  function makeSpecies(f, kind, gas) {
+  function makeSpecies(f, kind, extra) {
+    extra = extra || {};
     var items = parse(f);
     var c = countAtoms(items, 'normal');
+    var only = c.order.length === 1 ? c.order[0] : null;
     return {
-      key: f, f: f, disp: subs(f), kind: kind, gas: !!gas, items: items, counts: c.counts, order: c.order,
+      key: f, f: f, disp: subs(f), kind: kind, gas: !!extra.gas, items: items, counts: c.counts, order: c.order,
       part: kind === 'ionic' ? null : (kind === 'element' ? 'atoms' : 'molecules'),
-      compound: kind !== 'element'
+      compound: kind !== 'element',
+      /* an element (or diatomic element) is named after the element */
+      name: extra.name || (only ? el(only).name : f),
+      aq: !!extra.aq, maxM: extra.maxM || 0
     };
   }
-  SUBSTANCES.forEach(function (s) { SP[s.f] = makeSpecies(s.f, s.kind, s.gas); });
+  SUBSTANCES.forEach(function (s) { SP[s.f] = makeSpecies(s.f, s.kind, s); });
 
   /* A substance, or an element counted inside one (O in CO2: atoms O, never a gas here). */
   function sp(key) {
     if (SP[key]) return SP[key];
-    if (ELEMENTS[key]) return (SP[key] = makeSpecies(key, 'element', false));
+    if (ELEMENTS[key]) return (SP[key] = makeSpecies(key, 'element'));
     throw new Error('no substance ' + key);
   }
   function disp(key) { return sp(key).disp; }
+  function nameOf(key) { return sp(key).name; }
 
   /* "1 S and 2 Br" */
   function hasText(key) {
@@ -355,17 +366,26 @@ var Chem = (function () {
 
   /* -------------------------------------------------------- the roads */
 
-  /* A unit is a node of Mole Town for one substance: 'g|SBr2', 'mol|Br'. */
+  /* A unit is a node of the mole map for one substance: 'g|SBr2', 'mol|Br'.
+     Nodes: g, mol, part (atoms or molecules), L (L of gas), Lsol (L of
+     solution) and mLsol (mL of solution). */
   function tok(node, key) { return node + '|' + key; }
   function untok(t) { var i = t.indexOf('|'); return { node: t.slice(0, i), key: t.slice(i + 1) }; }
-  function unitWord(node, key) { return node === 'part' ? sp(key).part : node; }
-  function unitText(t) { var u = untok(t); return unitWord(u.node, u.key) + ' ' + disp(u.key); }
+  function unitWord(node, key) {
+    return node === 'part' ? sp(key).part : node === 'Lsol' ? 'L' : node === 'mLsol' ? 'mL' : node;
+  }
+  /* what follows the formula: L He gas, L KCl solution */
+  function unitTail(node) { return node === 'L' ? ' gas' : node === 'Lsol' || node === 'mLsol' ? ' solution' : ''; }
+  function unitText(t) { var u = untok(t); return unitWord(u.node, u.key) + ' ' + disp(u.key) + unitTail(u.node); }
 
   /* One equality per road, written the way the map writes it, left side first:
        mm     ___ g X = 1 mol X              (the blank: the molar mass)
-       av     6.022 x 10^23 atoms X = 1 mol X
-       stp    22.4 L X = 1 mol X             (gases at STP only)
-       ratio  1 mol A = ___ mol B            (the blank: the count from the formula) */
+       av     6.02 x 10^23 atoms X = 1 mol X
+       stp    22.4 L X gas = 1 mol X         (gases at STP only)
+       ratio  1 mol A = ___ mol B            (the blank: the count from the formula)
+       sol    1 L X solution = 0.350 mol X   (the molarity, printed from the prompt;
+                                              the id carries it: sol:KCl:0.350)
+       ml     1000 mL X solution = 1 L X solution */
   function edge(id) {
     var p = id.split(':'), type = p[0];
     if (type === 'ratio') {
@@ -376,6 +396,11 @@ var Chem = (function () {
     if (type === 'mm') return { id: id, type: type, s: key, L: { t: tok('g', key), v: mmValue(key), blank: 'mm' }, R: { t: tok('mol', key), v: 1 } };
     if (type === 'av') return { id: id, type: type, s: key, L: { t: tok('part', key), v: AV }, R: { t: tok('mol', key), v: 1 } };
     if (type === 'stp') return { id: id, type: type, s: key, L: { t: tok('L', key), v: STP }, R: { t: tok('mol', key), v: 1 } };
+    if (type === 'sol') {
+      return { id: id, type: type, s: key, M: p[2],
+        L: { t: tok('Lsol', key), v: 1 }, R: { t: tok('mol', key), v: parseFloat(p[2]), text: p[2] } };
+    }
+    if (type === 'ml') return { id: id, type: type, s: key, L: { t: tok('mLsol', key), v: 1000 }, R: { t: tok('Lsol', key), v: 1 } };
     throw new Error('no road ' + id);
   }
   function edgesOf(key) {
@@ -388,13 +413,14 @@ var Chem = (function () {
     var s = sp(key);
     return s.compound ? s.order.map(function (b) { return 'ratio:' + key + ':' + b; }) : [];
   }
-  function valueText(v) {
+  function valueText(v, side) {
+    if (side && side.text) return side.text;
     if (v === AV) return AV_TEXT;
     return String(v);
   }
   /* what is written on one side of an equality; blank shows as ___ */
   function sideText(side, blankText) {
-    var v = side.blank ? (blankText != null ? blankText : '___') : valueText(side.v);
+    var v = side.blank ? (blankText != null ? blankText : '___') : valueText(side.v, side);
     return v + ' ' + unitText(side.t);
   }
   function edgeText(id, blanks) {
@@ -402,7 +428,8 @@ var Chem = (function () {
     return sideText(e.L, blanks && blanks.L) + ' = ' + sideText(e.R, blanks && blanks.R);
   }
   /* the road name, for hints and the map */
-  var ROAD_NAME = { mm: 'molar mass', av: 'Avogadro’s number', stp: '22.4 L at STP', ratio: 'ratio' };
+  var ROAD_NAME = { mm: 'molar mass', av: 'Avogadro’s number', stp: '22.4 L of gas', ratio: 'ratio',
+                    sol: 'molarity (mol/L)', ml: '1000 mL = 1 L' };
 
   /* A factor in a chain: {e: edge id, f: 0 or 1}. f 0 puts the left side of
      the equality on top, as the student first places it. */
@@ -495,15 +522,60 @@ var Chem = (function () {
     return { ok: false, kind: 'arithmetic' };
   }
 
+  /* ------------------------------------------------------------ LaTeX */
+
+  /* Text with formula digits as subscripts: "g Mg(NO3)2 solution" becomes
+     \text{g Mg(NO}_{3}\text{)}_{2}\text{ solution}. Units have no other digits. */
+  function texText(str) {
+    return ('\\text{' + str.replace(/(\d+)/g, '}_{$1}\\text{') + '}').replace(/\\text\{\}/g, '');
+  }
+  function texFormula(f) { return texText(f); }
+  function texUnit(t) {
+    var u = untok(t);
+    return texText(unitWord(u.node, u.key) + ' ' + u.key + unitTail(u.node));
+  }
+  /* "5.862 × 10²²" to 5.862 \times 10^{22} */
+  function texNum(str) {
+    return String(str).replace(/\s*\u00D7\s*10([\u2070\u00B9\u00B2\u00B3\u2074-\u2079\u207B]+)/, function (m, e) {
+      return ' \\times 10^{' + e.split('').map(function (c) { return SUP_BACK[c]; }).join('') + '}';
+    });
+  }
+  /* The worked chain: the given quantity times each factor as a fraction,
+     cancelled units struck through (opts.cancel false leaves them plain),
+     then "= answer". vals: typed blank values by edge id. */
+  function texChain(given, fromTok, tiles, vals, opts) {
+    opts = opts || {};
+    var an = cancel(fromTok, tiles);
+    var unit = function (k, t) { var u = texUnit(t); return opts.cancel !== false && an.struck[k] ? '\\cancel{' + u + '}' : u; };
+    var parts = [texNum(given) + '\\ ' + unit('0:top', fromTok)];
+    tiles.forEach(function (tl, i) {
+      var e = edge(tl.e), T = top(tl), B = bottom(tl);
+      var num = function (sd) {
+        if (!sd.blank) return texNum(valueText(sd.v, sd));
+        var v = vals && vals[tl.e] != null ? vals[tl.e] : sd.v;
+        return e.type === 'mm' ? Number(v).toFixed(1) : String(v);
+      };
+      parts.push('\\frac{' + num(T) + '\\ ' + unit((i + 1) + ':top', T.t) + '}{' + num(B) + '\\ ' + unit((i + 1) + ':bottom', B.t) + '}');
+    });
+    return parts.join(' \\times ') + (opts.answer != null ? ' = ' + texNum(opts.answer) + '\\ ' + texUnit(opts.toTok) : '');
+  }
+  /* \text{molar mass of SBr}_{2} = 32.1 + 2(79.9) = 191.9\ \text{g/mol} */
+  function texMM(key) {
+    var single = sp(key).order.length === 1 && sp(key).counts[sp(key).order[0]] === 1;
+    return texText('molar mass of ' + key) + ' = ' + (single ? '' : mmWork(key).replace(/ = .*$/, '') + ' = ') + mmText(key) +
+      '\\ \\text{g/mol}';
+  }
+
   return {
     AV: AV, AV_TEXT: AV_TEXT, STP: STP, TIMES: TIMES,
     sup: sup, subs: subs, scaled: scaled, tenthsText: tenthsText,
     roundSig: roundSig, sigFigsIn: sigFigsIn, parseNum: parseNum, fmtSig: fmtSig, fmtLong: fmtLong,
     el: el, t10: t10, alt10: alt10, tableMass: tableMass, radioactive: radioactive,
-    parse: parse, countAtoms: countAtoms, sp: sp, disp: disp, hasText: hasText,
+    parse: parse, countAtoms: countAtoms, sp: sp, disp: disp, nameOf: nameOf, hasText: hasText,
     mm10: mm10, mmText: mmText, mmValue: mmValue, mmAccepted: mmAccepted, mmWork: mmWork, mmSlips: mmSlips, judgeMM: judgeMM,
     ratio: ratio, judgeRatio: judgeRatio,
-    tok: tok, untok: untok, unitWord: unitWord, unitText: unitText,
+    tok: tok, untok: untok, unitWord: unitWord, unitTail: unitTail, unitText: unitText,
+    texText: texText, texFormula: texFormula, texUnit: texUnit, texNum: texNum, texChain: texChain, texMM: texMM,
     edge: edge, edgesOf: edgesOf, ratiosOf: ratiosOf, edgeText: edgeText, sideText: sideText, valueText: valueText,
     ROAD_NAME: ROAD_NAME, top: top, bottom: bottom,
     cancel: cancel, unitsReach: unitsReach, leftText: leftText, chainValue: chainValue, route: route,

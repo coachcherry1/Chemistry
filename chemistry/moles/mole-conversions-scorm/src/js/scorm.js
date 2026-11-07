@@ -22,7 +22,7 @@ var SCORM = (function () {
   var api = null, connected = false, finished = false;
   var started = Date.now();
   /* its own key: no other package's save may be resumed here */
-  var STORE = 'mole-conversions-state';
+  var STORE = CONFIG.store;
 
   function findAPI(win, depth) {
     while (win && depth-- > 0) {
