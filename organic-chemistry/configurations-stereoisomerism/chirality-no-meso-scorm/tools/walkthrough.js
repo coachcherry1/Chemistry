@@ -342,7 +342,17 @@ const fakeLMS = () => {
     const o = await ranks("molecule('bromobutane')", 2);
     await page.click(`.gdrop[data-drop="${o[1]}"]`);
     await fb(/That is 2\. Click 1 first/, 'wrong first click not explained');
-    await read123(o);
+    /* 4 is never counted: clicked first, in the middle or after 3, reading still works */
+    await page.click(`.gdrop[data-drop="${o[3]}"]`);
+    await fb(/Skip 4/, 'a click on 4 not explained');
+    await page.click(`.gdrop[data-drop="${o[0]}"]`);
+    await page.click(`.gdrop[data-drop="${o[3]}"]`);
+    await fb(/Skip 4/, 'a click on 4 between 1 and 2 not explained');
+    await page.click(`.gdrop[data-drop="${o[1]}"]`);
+    await page.click(`.gdrop[data-drop="${o[2]}"]`);
+    await page.click(`.gdrop[data-drop="${o[3]}"]`);
+    await fb(/Skip 4/, 'a click on 4 after 1, 2, 3 not explained');
+    expect(await page.isEnabled('button:has-text("Counterclockwise: S")'), 'clicking 4 after 1, 2, 3 locked the R and S buttons');
     await page.click('button:has-text("Counterclockwise: S")');
     await fb(/clockwise, the way a clock/, 'wrong reading not explained');
     await page.click('button:has-text("Clockwise: R")');
