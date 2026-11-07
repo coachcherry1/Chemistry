@@ -27,6 +27,9 @@
  * - a worked solution's LaTeX does not typeset (Tex.toMathML) to balanced
  *   MathML;
  * - the judges refuse a right molar mass, ratio or answer, or accept a slip;
+ *   an answer or molar mass within 1.5% (Chem.TOL) is refused, or one 2% off
+ *   accepted; or a student working from any of five other periodic tables
+ *   (tools/tables.js) is marked wrong on any problem;
  * - the manifest, the storage key or the SCORM identifiers clash, a path is
  *   absolute, something loads from the network, or any file contains an em
  *   dash, the words "formula unit", "Mole Town" (it is the mole map) or
@@ -254,6 +257,32 @@ if (Chem.judgeRatio('Mg(NO3)2', 'O', '3').kind !== 'brackets') bad('Mg(NO3)2 O r
   if (Chem.sigFigsIn(t) !== sf) bad('sigFigsIn("' + t + '") gave ' + Chem.sigFigsIn(t) + ', expected ' + sf);
 });
 ['5.86e22x', '5.86 10 22', 'abc', '1..2'].forEach((t) => { if (!isNaN(Chem.parseNum(t))) bad('parseNum("' + t + '") should not read'); });
+
+/* ------------------------------------------------------------ tolerance */
+
+/* Answers and molar masses within Chem.TOL (1.5%) count; significant figures
+   still have to be right; slips are still named; and every periodic table in
+   tools/tables.js gets every problem through the real judges. */
+if (Chem.TOL !== 0.015) bad('the tolerance is ' + Chem.TOL + ', the teacher chose 0.015 (1.5%)');
+/* (a rounded answer stands for its whole rounding interval: 102 is 101.5 to 102.5, which touches 1.5%) */
+[['101', 100, 3, true], ['98.6', 100, 3, true], ['102', 100, 3, true], ['103', 100, 3, false], ['97.9', 100, 3, false],
+ ['101.0', 100, 3, false], ['1.1', 1.049, 2, true], ['1.0', 1.049, 2, true], ['5.94e22', 5.86e22, 3, true], ['5.96e22', 5.86e22, 3, false],
+ ['5.9e22', 5.86e22, 2, true], ['6.0e22', 5.86e22, 2, false]].forEach(([raw, ex, sig, ok]) => {
+  if (Chem.judgeAnswer(raw, ex, sig).ok !== ok) bad('tolerance: ' + raw + ' for ' + ex + ' (' + sig + ' s.f.) should ' + (ok ? '' : 'not ') + 'count');
+});
+if (Chem.judgeAnswer('101.0', 100, 3).kind !== 'sigfigs') bad('tolerance: a near answer with the wrong significant figures is not told so');
+if (Chem.judgeAnswer('103', 100, 3).kind !== 'close') bad('tolerance: an answer 3% off is not called close');
+if (!Chem.judgeAnswer('103', 100, 3, { also: 101.6 }).ok) bad('tolerance: an answer near the class value is refused');
+[['NaCl', '57.7', true], ['NaCl', '59.3', true], ['NaCl', '57.5', false], ['NaCl', '57.70', false], ['MgCl2', '94.0', true]].forEach(([k, raw, ok]) => {
+  if (Chem.judgeMM(k, raw).ok !== ok) bad('tolerance: molar mass ' + raw + ' for ' + k + ' should ' + (ok ? '' : 'not ') + 'count');
+});
+if (Chem.judgeMM('C6H12O6', '181.0').kind !== 'count') bad('tolerance: a miscounted H in glucose is accepted instead of named');
+if (Chem.judgeMM('SBr2', '112.0').kind !== 'subscripts') bad('tolerance: SBr2 112.0 is not named a subscript slip');
+require('./tables.js')(ctx).run(150).forEach((r) => {
+  if (r.blanks || r.own || r.cls) {
+    bad('periodic table "' + r.name + '": ' + r.blanks + ' molar masses and ' + (r.own + r.cls) + ' answers refused, e.g. ' + r.examples.join('; '));
+  }
+});
 
 /* ------------------------------------------------------------ the problems */
 

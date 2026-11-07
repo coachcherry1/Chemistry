@@ -49,7 +49,10 @@ var Work = (function () {
       if (e.type === 'mm') {
         out += '<div class="eq small">' + Tex.toMathML(Chem.texMM(e.s), true) + '</div>';
         var typed = vals[t.e] != null ? Number(vals[t.e]).toFixed(1) : Chem.mmText(e.s);
-        if (typed !== Chem.mmText(e.s)) notes.push('You used ' + typed + ' g/mol for ' + Chem.disp(e.s) + ', which is also accepted.');
+        if (typed !== Chem.mmText(e.s)) {
+          notes.push('You used ' + typed + ' g/mol for ' + Chem.disp(e.s) + '; the class value is ' + Chem.mmText(e.s) +
+            '. Within ' + Chem.TOL_TEXT + ', so it counts (periodic tables differ a little).');
+        }
       } else if (e.type === 'ratio') {
         notes.push('1 ' + Chem.disp(e.a) + ' holds ' + Chem.hasText(e.a) + ', so 1 mol ' + Chem.disp(e.a) + ' = ' + e.R.v + ' mol ' + e.b + '.');
       } else if (e.type === 'sol') {
@@ -352,9 +355,9 @@ var Work = (function () {
     function answerMessage(j, exact) {
       var hasAv = chain.some(function (t) { return Chem.edge(t.e).type === 'av'; });
       switch (j.kind) {
-        case 'last-digit':
-          return '<b>Almost: the last digit is off.</b> Round only once, at the end: do the whole chain on the calculator in one go, ' +
-            'without rounding in between, then round to ' + plural(p.given.sig, 'significant figure') + '.';
+        case 'close':
+          return '<b>Close, but more than ' + Chem.TOL_TEXT + ' from the answer.</b> Check the numbers you typed into the calculator, especially the molar ' +
+            'mass, and round only once, at the end: do the whole chain in one go, then round to ' + plural(p.given.sig, 'significant figure') + '.';
         case 'sigfigs': return sigMessage(work.a, j.given, exact);
         case 'reciprocal':
           return '<b>Units are right, but your number looks upside down.</b> Multiply by every number on top and divide by every number on the bottom.';
@@ -421,7 +424,8 @@ var Work = (function () {
           'scientific notation press <b>' + T + '10ⁿ</b> and type the power after it, or write it as <b>5.86e22</b> or <b>5.86 x 10^22</b>.');
       }
       var exact = Chem.chainValue(p.given.v, chain, vals);
-      var verdict = Chem.judgeAnswer(raw, exact, p.given.sig, { ratio: chain.some(function (t) { return Chem.edge(t.e).type === 'ratio'; }) ? p.ratioN : 0 });
+      var verdict = Chem.judgeAnswer(raw, exact, p.given.sig, { also: Chem.chainValue(p.given.v, chain, {}),
+        ratio: chain.some(function (t) { return Chem.edge(t.e).type === 'ratio'; }) ? p.ratioN : 0 });
       mark();
       if (verdict.ok) {
         var longer = chain.length > p.steps ? ' You got there in ' + chain.length + ' factors; the shortest route is ' + p.steps + '.' : '';

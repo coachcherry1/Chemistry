@@ -49,6 +49,13 @@ which GitHub typesets.
   marked wrong: the full masses added and rounded at the end (153.8), and the tenths value of a two-decimal table
   (Fe 55.85 gives 55.9; Cu 63.55 gives 63.6). The answer is checked against the molar mass the student typed.
 - **Avogadro's number is 6.02 × 10²³**, as the class rounds it.
+- **1.5% tolerance.** Students use different periodic tables, so an answer within 1.5% of the right one counts (the
+  significant figures must still be right), and so does a molar mass written to tenths within 1.5% of the class's.
+  A rounded answer stands for everything that rounds to it, so a last digit that tips the other way still counts.
+  Slips such as a skipped subscript are still named. `tools/tables.js` works every problem with five other tables
+  (two decimals with H 1.01, full masses with H 1.008 and Cl 35.45, whole numbers with Cl 35.5 or 35) and the
+  validator fails if any answer is refused; at 1% the H 1.01 and whole-number tables were sometimes refused. The
+  results are in `ANSWER_KEY.md`; `Chem.TOL` in `src/js/chem.js` is the one number to change.
 - **Significant figures:** 22.4 L, 6.02 × 10²³, the molar mass and the ratio all count as exact; the given quantity
   decides. A right number with the wrong count is not marked correct: the rule is explained and they try again.
 - **Particles:** atoms of an element, molecules of a diatomic element or a molecular compound. Ionic compounds are
@@ -82,12 +89,12 @@ whenever the steps, the problem plan, a substance or an atomic mass changes (SCH
 ```bash
 node tools/validate.js                    # must pass
 node tools/answer-key.js > ANSWER_KEY.md
-./build.sh                                # dist/mole-conversions-v2.zip
+./build.sh                                # dist/mole-conversions-v3.zip
 node tools/walkthrough.js                 # Playwright: plays the whole activity against a fake LMS
 node tools/layout.js                      # Playwright: fits a Chromebook, 1366x650 and 1366x520
 ```
 
-Upload `dist/mole-conversions-v2.zip` in Schoology with **Add Materials → Add File/Link/External Tool → Add File**
+Upload `dist/mole-conversions-v3.zip` in Schoology with **Add Materials → Add File/Link/External Tool → Add File**
 (or **Package**). `src/index.html?step=set&seed=5&problem=3` opens a step (ids in `ANSWER_KEY.md`, or numbers 1 to
 7), a given set and one of its problems without saving anything.
 

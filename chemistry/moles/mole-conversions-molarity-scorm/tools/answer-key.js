@@ -13,7 +13,7 @@ const path = require('path');
 const vm = require('vm');
 
 const src = path.join(__dirname, '..', 'src');
-const ctx = { console, Math, JSON, window: { addEventListener() {} }, document: { addEventListener() {} } };
+const ctx = { console, Math, JSON, parseFloat, window: { addEventListener() {} }, document: { addEventListener() {} } };
 vm.createContext(ctx);
 const html = fs.readFileSync(path.join(src, 'index.html'), 'utf8');
 [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].forEach((m) => {
@@ -62,6 +62,7 @@ w('- **Names:** every prompt names the substance and gives its formula ("9.340 g
 w('  the equalities use formulas.');
 w('- **Significant figures:** every equality counts as exact' + (MOL ? ' except the molarity' : '') + '; the given quantity decides. A right');
 w('  number with the wrong significant figures is not marked correct; the student is told the rule and tries again.');
+w('- **Tolerance:** answers and molar masses within ' + Chem.TOL_TEXT + ' of the class\u2019s count, for students using other periodic tables (below).');
 w('- **Scoring:** a graded problem counts when it is right before Show solution (Show solution asks to confirm). Hints and');
 w('  checking again are free. Score = problems right / ' + App.GRADED + ', to `cmi.core.score.raw`; retakes keep the best.');
 w('- **Worked solutions** are typeset from LaTeX: each factor a fraction, cancelled units struck through.');
@@ -104,6 +105,24 @@ Chem.mmSlips('Mg(NO3)2').forEach((sl) => w('| ' + (sl.v10 / 10).toFixed(1) + ' |
 w();
 w('Ratio blank, Mg(NO₃)₂ to O (6): 3 gets "' + Chem.judgeRatio('Mg(NO3)2', 'O', '3').msg + '"; 2 gets "' +
   Chem.judgeRatio('Mg(NO3)2', 'O', '2').msg + '"; 9 gets "' + Chem.judgeRatio('Mg(NO3)2', 'O', '9').msg + '"');
+w();
+w('## Other periodic tables: the ' + Chem.TOL_TEXT + ' tolerance');
+w();
+w('A molar mass written to tenths, or an answer with the right significant figures, counts when it is within ' + Chem.TOL_TEXT + ' of the');
+w('class\u2019s value (an answer may also be within ' + Chem.TOL_TEXT + ' of the value from the molar masses the student typed). A rounded answer');
+w('stands for everything that rounds to it, so a last digit that tips the other way still counts. Slips (a skipped subscript,');
+w('a miscounted H) are still named, even when they land within ' + Chem.TOL_TEXT + '. Every problem of 100 sets and their warm-ups was worked');
+w('with each table below: their own molar mass typed in the blank (to tenths) or the class\u2019s, their own masses in the');
+w('calculator, the answer rounded to the right significant figures.');
+w();
+w('| Periodic table the student uses | Molar masses refused | Answers refused (own molar mass) | Answers refused (class molar mass) |');
+w('| --- | --- | --- | --- |');
+require('./tables.js')(ctx).run(100).forEach((r) => {
+  w('| ' + r.name + ' | ' + r.blanks + ' of ' + r.nBlanks + ' | ' + r.own + ' of ' + r.n + ' | ' + r.cls + ' of ' + r.n + ' |');
+});
+w();
+w('At 1% the two-decimal table (H 1.01 in grams of hydrogen) and the whole-number tables (Mg 24, Cl 35) were refused now and then;');
+w('the teacher chose 1.5%. `Chem.TOL` in `src/js/chem.js` is the one number to change, and `tools/validate.js` replays these tables.');
 w();
 w('## The formative quiz, worked the activity’s way');
 w();

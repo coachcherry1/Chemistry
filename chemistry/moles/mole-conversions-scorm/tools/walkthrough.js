@@ -225,7 +225,8 @@ const fakeLMS = () => {
     if (i === 0) {
       for (const t of p.path) await place(t);
       await fillBlanks(p);
-      await page.fill('input.ans', String(1 / p.ans));
+      /* 25% too big: wrong whatever the answer (a reciprocal can land within 1.5% of an answer near 1) */
+      await page.fill('input.ans', await page.evaluate((x) => Chem.fmtSig(x.ans * 1.25, x.given.sig, true), p));
       await page.click('.work .primary');
       expect(/upside down|arithmetic|off/.test(await fb()), 'a wrong number says ' + (await fb()));
       await page.fill('input.ans', p.ansAscii);
