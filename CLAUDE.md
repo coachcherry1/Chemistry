@@ -28,6 +28,7 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `chemistry/imfs/properties-of-liquids-scorm/` | That part 6 on its own: surface tension, viscosity, evaporation rate of bigger molecules (about 15 min) |
 | `chemistry/moles/mole-conversions-scorm/` | Mole conversions by dimensional analysis: typed molar mass (tenths) and ratio blanks, the mole map, 12 mixed 1- to 3-step problems, typeset (LaTeX) solutions (about 25 min) |
 | `chemistry/moles/mole-conversions-molarity-scorm/` | The same with molarity: L and mL of solution, the mol/L from the prompt as an equality, 14 mixed 1- to 4-step problems (about 30 min) |
+| `chemistry/moles/empirical-formula-mgo-scorm/` | Virtual lab (pre-lab, with a paper sheet): empirical formula of MgO, the nitride side reaction and the water fix (about 20 min, no score) |
 
 **AP chemistry**
 
@@ -452,6 +453,20 @@ not the full page.
   (8 from 19, core 3), with parts 1 to 5, the heating stage, clouds, picker and explore mode removed. Its own SCORM ids
   (`POL_*`), save key (`properties-of-liquids-state`) and zip. `SUBSTANCES` holds only the eight liquids.
   A fix to part 6 in either package usually belongs in the other.
+
+## empirical-formula-mgo-scorm (zip v1, SCHEMA 1; the teacher's pre-lab, no score)
+
+- **Key objective:** practice the setup and the calculations of the magnesium oxide lab; magnesium also makes Mg₃N₂ with the nitrogen of the
+  air, and a few drops of water (Mg₃N₂ + 6 H₂O → 3 Mg(OH)₂ + 2 NH₃, then heat: Mg(OH)₂ → MgO + H₂O) fix it. "Nitride", never "nitrate".
+- **Data and calculations are on paper** (`lab-sheet/`, built by `build_sheet.py`, student 2 pages, teacher edition 3). The sim has no tables,
+  typed answers or score; `scorm.js` only marks it completed at the last step; `suspend_data` holds the seed. Random masses per student
+  (crucible + lid 25 to 35 g, Mg 0.1 to 0.2 g, scatter within 1%); the class's roundings (Mg 24.3, O 16.0, 6.02 × 10²³) on the sheet.
+- **Bench (`scene.js`):** 2D SVG from the approved sketch (`design/`). Drag, or click a tile and then the place. No goggles, scissors or tongs.
+  Flame height is set by turning the bottom of the burner (a slider); the tip must touch the crucible's bottom or the Mg does not ignite.
+  The lid is placed automatically with a crack; "What if" buttons show the lid too wide, too tight and the water step skipped.
+- **Water step:** one drop converts one of six nitride Mg (the magnifier, `lens.js`); NH₃ gas is drawn rising (the smell is only in the real lab).
+  `data.js` gives the product mass from the drops, so skipping the water gives an O : Mg ratio near 0.93.
+- **Files:** `data.js`, `scene.js`, `lens.js`, `app.js`, `picker.js`, `scorm.js`, `util.js`. Walkthrough, layout and validator in `tools/`.
 
 ## mole-conversions-scorm (zip v2, SCHEMA 2) and mole-conversions-molarity-scorm (zip v1, SCHEMA 2)
 
