@@ -203,6 +203,7 @@ const fakeLMS = () => {
       const q = await page.$('.quiz .choice');
       if (!q) break;
       await page.click(`.quiz .choice[data-choice="${WRONG.has(qid) ? 1 : 0}"]`);
+      await page.click('.quiz .submit-answer:not([hidden])');
       await page.click('.quiz .btnrow .primary');
     }
     expect(/Checkpoint finished/.test(await feedback()), `${id}: checkpoint did not finish`);

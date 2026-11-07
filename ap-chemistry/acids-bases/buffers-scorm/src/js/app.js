@@ -342,12 +342,33 @@ var App = (function () {
         var letter = String.fromCharCode(65 + pos);
         var b = h('button', { type: 'button', class: 'choice', 'data-choice': ci }, [
           h('span', { class: 'choice-letter', text: letter }), h('span', { class: 'choice-text', text: q.choices[ci] })]);
-        b.addEventListener('click', function () { answer(ci); });
+        b.addEventListener('click', function () { choose(ci); });
         rowN.appendChild(b);
       });
       box.appendChild(rowN);
       box.appendChild(why);
-      box.appendChild(h('div', { class: 'btnrow' }, [nextBtn]));
+      /* Graded, so a click only selects; Submit answer grades it (the first submit counts). */
+      var selCi = null;
+      var submit = h('button', { type: 'button', class: 'primary submit-answer', disabled: true, text: 'Submit answer' });
+      function choose(ci) {
+        if (state.ans[id] != null) return;
+        selCi = ci;
+        var nodes = rowN.querySelectorAll('.choice');
+        for (var i = 0; i < nodes.length; i++) {
+          var on = +nodes[i].getAttribute('data-choice') === ci;
+          nodes[i].classList.toggle('selected', on);
+          nodes[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+        }
+        submit.disabled = false;
+      }
+      submit.addEventListener('click', function () {
+        if (selCi == null || state.ans[id] != null) return;
+        if (submit.parentNode) submit.parentNode.removeChild(submit);
+        var nodes = rowN.querySelectorAll('.choice');
+        for (var i = 0; i < nodes.length; i++) { nodes[i].classList.remove('selected'); nodes[i].removeAttribute('aria-pressed'); }
+        answer(selCi);
+      });
+      box.appendChild(h('div', { class: 'btnrow' }, [submit, nextBtn]));
       function answer(ci) {
         if (state.ans[id] != null) return;
         var right = ci === 0;

@@ -58,7 +58,9 @@ for checking each AP activity against how the exam asks; it is not an activity a
 dashes (the Lewis, resonance and drawing-tool validators allow them). The mass spec, IR + mass spec, NMR,
 naming, acids and ionization energy packages still load a browser save inside an LMS when
 `cmi.suspend_data` is empty (fixed in IR, Newman, chairs, chirality, Lewis and resonance). Only Newman,
-chairs, chirality, SN1/SN2, arrow pushing and mole conversions have `tools/layout.js`. Bring a package up to the rules when you next change it.
+chairs, chirality, SN1/SN2, arrow pushing and mole conversions have `tools/layout.js`. The IR, mass spec, IR + mass spec and NMR
+packages (retry-until-right labelling games) and the acetone kinetics lab still grade a choice on the click, with no
+Submit answer button. Bring a package up to the rules when you next change it.
 
 ## House rules
 
@@ -71,6 +73,13 @@ chairs, chirality, SN1/SN2, arrow pushing and mole conversions have `tools/layou
   no masteryscore, retakes keep the best score, saves only in `cmi.suspend_data` (localStorage only when
   standalone), a `SCHEMA` version in `app.js` (bump when steps, pools or molecules change), its own SCORM
   identifiers and storage key.
+- **Submit answer on every graded question** (the teacher: it is too easy to click a choice without reading it all the way
+  through). Clicking a choice only selects it (class `selected`, `aria-pressed`) and can be changed freely; a **Submit answer**
+  button (`.submit-answer`, disabled until something is selected) grades it, and that first submit is what counts. The button
+  removes itself once used, then Next appears. Ungraded predictions and builds may still answer on the click. Typed or built
+  answers already have a Check button, which is their submit. In the checkpoint shell this is `choose()` and the `submit`
+  button in `RENDER.quiz`'s `ask()`; in the nomenclature and ionization energy packages it is the `checksubmit` action. Walkthroughs
+  click the choice and then `.quiz .submit-answer`.
 - Offline only: no CDN, web fonts or WebGL. Keyboard, touch and drag for every action; dark mode; reduced motion.
 - Answers are computed from the model, never typed twice, and the validator checks them.
 - Every package also runs as a plain web page (see **Web version** below).

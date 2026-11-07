@@ -688,3 +688,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .ratio-cell b { font-variant-numeric: tabular-nums; color: var(--accent); }
 .bca-table { max-width: 280px; }
 .pwalk .predict .q-text, .pflask .reveal { font-size: 0.86rem; }
+
+/* A graded checkpoint choice that is selected but not yet submitted */
+.choice.selected { border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); }
+.choice.selected .choice-letter { border-color: var(--accent); background: var(--accent); color: #fff; }
