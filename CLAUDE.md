@@ -58,9 +58,8 @@ for checking each AP activity against how the exam asks; it is not an activity a
 dashes (the Lewis, resonance and drawing-tool validators allow them). The mass spec, IR + mass spec, NMR,
 naming, acids and ionization energy packages still load a browser save inside an LMS when
 `cmi.suspend_data` is empty (fixed in IR, Newman, chairs, chirality, Lewis and resonance). Only Newman,
-chairs, chirality, SN1/SN2, arrow pushing and mole conversions have `tools/layout.js`. The IR, mass spec, IR + mass spec and NMR
-packages (retry-until-right labelling games) and the acetone kinetics lab still grade a choice on the click, with no
-Submit answer button. Bring a package up to the rules when you next change it.
+chairs, chirality, SN1/SN2, arrow pushing and mole conversions have `tools/layout.js`. The acetone kinetics lab still grades a choice on the
+click, with no Submit answer button. Bring a package up to the rules when you next change it.
 
 ## House rules
 
@@ -78,7 +77,10 @@ Submit answer button. Bring a package up to the rules when you next change it.
   button (`.submit-answer`, disabled until something is selected) grades it, and that first submit is what counts. The button
   removes itself once used, then Next appears. Ungraded predictions and builds may still answer on the click. Typed or built
   answers already have a Check button, which is their submit. In the checkpoint shell this is `choose()` and the `submit`
-  button in `RENDER.quiz`'s `ask()`; in the nomenclature and ionization energy packages it is the `checksubmit` action. Walkthroughs
+  button in `RENDER.quiz`'s `ask()`; in the nomenclature and ionization energy packages it is the `checksubmit` action. In the IR, mass spec, IR + mass
+  spec and NMR packages it is `Submit.pick()` in `game.js` (class `to-submit`) for the compound choices, the mass spec routes and
+  m/z, and the IR + mass spec case file; a wrong submit there is struck out and the student picks again. Their labelling (tile, then
+  peak) is already two steps and is unchanged. Walkthroughs
   click the choice and then `.quiz .submit-answer`.
 - Offline only: no CDN, web fonts or WebGL. Keyboard, touch and drag for every action; dark mode; reduced motion.
 - Answers are computed from the model, never typed twice, and the validator checks them.
