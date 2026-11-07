@@ -273,10 +273,20 @@ if (Chem.TOL !== 0.015) bad('the tolerance is ' + Chem.TOL + ', the teacher chos
 if (Chem.judgeAnswer('101.0', 100, 3).kind !== 'sigfigs') bad('tolerance: a near answer with the wrong significant figures is not told so');
 if (Chem.judgeAnswer('103', 100, 3).kind !== 'close') bad('tolerance: an answer 3% off is not called close');
 if (!Chem.judgeAnswer('103', 100, 3, { also: 101.6 }).ok) bad('tolerance: an answer near the class value is refused');
-[['NaCl', '57.7', true], ['NaCl', '59.3', true], ['NaCl', '57.5', false], ['NaCl', '57.70', false], ['MgCl2', '94.0', true]].forEach(([k, raw, ok]) => {
+[['NaCl', '57.7', true], ['NaCl', '59.3', true], ['NaCl', '57.5', false], ['NaCl', '57.70', true], ['MgCl2', '94.0', true]].forEach(([k, raw, ok]) => {
   if (Chem.judgeMM(k, raw).ok !== ok) bad('tolerance: molar mass ' + raw + ' for ' + k + ' should ' + (ok ? '' : 'not ') + 'count');
 });
 if (Chem.judgeMM('C6H12O6', '181.0').kind !== 'count') bad('tolerance: a miscounted H in glucose is accepted instead of named');
+/* the zero in the tenths place need not be typed: 71 is 71.0 */
+[['Cl2', '71', true], ['Cl2', '71.0', true], ['Cl2', '71.00', true], ['Cl2', '71.', true], ['H2O', '18', true], ['He', '4', true],
+ ['SBr2', '192', true], ['SBr2', '191.87', false], ['NaCl', '58.50', true], ['NaCl', '58.55', false]].forEach(([k, raw, ok]) => {
+  if (Chem.judgeMM(k, raw).ok !== ok) bad('molar mass ' + raw + ' for ' + k + ' should ' + (ok ? '' : 'not ') + 'count (trailing zeros)');
+});
+if (Chem.judgeMM('SBr2', '191.87').kind !== 'tenths') bad('191.87 for SBr2 is not told to round to tenths');
+SUBSTANCES.forEach((sub) => {
+  const t = Chem.mmText(sub.f);
+  if (/\.0$/.test(t) && !Chem.judgeMM(sub.f, t.replace(/\.0$/, '')).ok) bad(sub.f + ': the whole number ' + t.replace(/\.0$/, '') + ' is refused');
+});
 if (Chem.judgeMM('SBr2', '112.0').kind !== 'subscripts') bad('tolerance: SBr2 112.0 is not named a subscript slip');
 require('./tables.js')(ctx).run(150).forEach((r) => {
   if (r.blanks || r.own || r.cls) {

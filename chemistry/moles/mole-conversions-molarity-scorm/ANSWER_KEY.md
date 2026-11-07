@@ -24,6 +24,7 @@ rules, every substance and a worked sample set. Answers are computed by the acti
   the equalities use formulas.
 - **Significant figures:** every equality counts as exact except the molarity; the given quantity decides. A right
   number with the wrong significant figures is not marked correct; the student is told the rule and tries again.
+- **No trailing zero needed:** a molar mass whose tenths digit is 0 can be typed as a whole number (71 for Cl₂ is 71.0).
 - **Tolerance:** answers and molar masses within 1.5% of the class’s count, for students using other periodic tables (below).
 - **Scoring:** a graded problem counts when it is right before Show solution (Show solution asks to confirm). Hints and
   checking again are free. Score = problems right / 14, to `cmi.core.score.raw`; retakes keep the best.
@@ -142,7 +143,7 @@ A is the substance; B is an element counted in it. Warm-ups (ungraded, one road 
 
 | Typed | What it gets |
 | --- | --- |
-| 148.31 or 148 | Close: write it to the tenths place, with one digit after the decimal point. The class rounds every molar mass to tenths. |
+| 148.31 | Close: round it to the tenths place, one digit after the decimal point. The class rounds every molar mass to tenths (a whole number like 71 is fine when the tenths digit is 0). |
 | 86.3 | The 2 after the brackets multiplies every atom inside them. Mg(NO₃)₂ has 1 Mg, 2 N and 6 O. |
 | 134.3 | The 2 after the brackets multiplies every atom inside them. Mg(NO₃)₂ has 1 Mg, 2 N and 6 O. |
 | 54.3 | Count every atom: a subscript tells how many of the atom just before it. Mg(NO₃)₂ has 1 Mg, 2 N and 6 O. |

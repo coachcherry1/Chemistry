@@ -468,7 +468,7 @@ not the full page.
   `data.js` gives the product mass from the drops, so skipping the water gives an O : Mg ratio near 0.93.
 - **Files:** `data.js`, `scene.js`, `lens.js`, `app.js`, `picker.js`, `scorm.js`, `util.js`. Walkthrough, layout and validator in `tools/`.
 
-## mole-conversions-scorm (zip v3, SCHEMA 2) and mole-conversions-molarity-scorm (zip v2, SCHEMA 2)
+## mole-conversions-scorm (zip v4, SCHEMA 2) and mole-conversions-molarity-scorm (zip v3, SCHEMA 2)
 
 - **Key objective:** fluency with mole conversions by dimensional analysis (no story problems), in the style of the
   dimensional analysis mixed challenge (`to-merge/.../DimAnalysis-6-Mixed-Challenge/`, the teacher's): tap or drag an
@@ -489,7 +489,8 @@ not the full page.
   (which asks to confirm); hints and re-checks are free.
 - **1.5% tolerance (the teacher's choice; `Chem.TOL`):** students use different periodic tables, so an answer with the right
   sig figs counts if a value within 1.5% of the right one (from the typed or the class molar masses) rounds to it, and a
-  molar mass to tenths counts within 1.5% of the class's. Named slips are caught first, even inside 1.5%. `tools/tables.js`
+  molar mass to tenths counts within 1.5% of the class's. A zero in the tenths place need not be typed (71 is 71.0; the
+  teacher: no frustration over a zero); only a real second decimal is told to round. Named slips are caught first, even inside 1.5%. `tools/tables.js`
   plays five tables (two decimals H 1.01, full H 1.008/Cl 35.45, class with H 1.008, whole numbers with Cl 35.5 or 35)
   through the judges; the validator fails if any answer is refused (1% was tried and refused H 1.01 and Mg 24, Cl 35).
 - **Words:** "the mole map", never "Mole Town" (the teacher shares it with peers); "L of gas" (22.4 L, STP) and "L of

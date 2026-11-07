@@ -24,7 +24,8 @@ shared files are still identical, so a fix made in one is copied to the other.
   significant figures as the volume, and the answer keeps that many. The other equalities count as exact.
 - **1.5% tolerance**, as in the basic version: answers and molar masses within 1.5% of the class's count, so
   students using other periodic tables (H 1.008 or 1.01, Cl 35.45, whole numbers) are not marked wrong; significant
-  figures still count. `ANSWER_KEY.md` shows five tables played through every problem.
+  figures still count. `ANSWER_KEY.md` shows five tables played through every problem. A molar mass whose tenths
+  digit is 0 can be typed as a whole number (71 for Cl₂).
 - **Only substances that dissolve** are made into solutions (25 of them, from sodium chloride to sucrose), at no more
   than half their real solubility; the validator holds the solubilities.
 
@@ -60,11 +61,11 @@ keep the best score, progress only in `cmi.suspend_data`. Its own SCORM identifi
 ```bash
 node tools/validate.js                    # must pass
 node tools/answer-key.js > ANSWER_KEY.md
-./build.sh                                # dist/mole-conversions-molarity-v2.zip
+./build.sh                                # dist/mole-conversions-molarity-v3.zip
 node tools/walkthrough.js                 # Playwright: plays the whole activity against a fake LMS
 node tools/layout.js                      # Playwright: fits a Chromebook, 1366x650 and 1366x520
 ```
 
-Upload `dist/mole-conversions-molarity-v2.zip` in Schoology with **Add Materials → Add File/Link/External Tool → Add
+Upload `dist/mole-conversions-molarity-v3.zip` in Schoology with **Add Materials → Add File/Link/External Tool → Add
 File** (or **Package**). `src/index.html?step=set&seed=5&problem=3` opens a step, a given set and one of its problems
 without saving anything. See `../mole-conversions-scorm/README.md` for the files, the feedback and the class's rules.

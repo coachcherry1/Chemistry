@@ -62,6 +62,7 @@ w('- **Names:** every prompt names the substance and gives its formula ("9.340 g
 w('  the equalities use formulas.');
 w('- **Significant figures:** every equality counts as exact' + (MOL ? ' except the molarity' : '') + '; the given quantity decides. A right');
 w('  number with the wrong significant figures is not marked correct; the student is told the rule and tries again.');
+w('- **No trailing zero needed:** a molar mass whose tenths digit is 0 can be typed as a whole number (71 for Cl\u2082 is 71.0).');
 w('- **Tolerance:** answers and molar masses within ' + Chem.TOL_TEXT + ' of the class\u2019s count, for students using other periodic tables (below).');
 w('- **Scoring:** a graded problem counts when it is right before Show solution (Show solution asks to confirm). Hints and');
 w('  checking again are free. Score = problems right / ' + App.GRADED + ', to `cmi.core.score.raw`; retakes keep the best.');
@@ -100,7 +101,7 @@ w('## Feedback on a wrong molar mass (example: Mg(NO₃)₂, 148.3)');
 w();
 w('| Typed | What it gets |');
 w('| --- | --- |');
-w('| 148.31 or 148 | ' + Chem.judgeMM('Mg(NO3)2', '148.31').msg + ' |');
+w('| 148.31 | ' + Chem.judgeMM('Mg(NO3)2', '148.31').msg + ' |');
 Chem.mmSlips('Mg(NO3)2').forEach((sl) => w('| ' + (sl.v10 / 10).toFixed(1) + ' | ' + sl.msg + ' |'));
 w();
 w('Ratio blank, Mg(NO₃)₂ to O (6): 3 gets "' + Chem.judgeRatio('Mg(NO3)2', 'O', '3').msg + '"; 2 gets "' +

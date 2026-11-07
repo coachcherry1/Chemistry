@@ -49,6 +49,8 @@ which GitHub typesets.
   marked wrong: the full masses added and rounded at the end (153.8), and the tenths value of a two-decimal table
   (Fe 55.85 gives 55.9; Cu 63.55 gives 63.6). The answer is checked against the molar mass the student typed.
 - **Avogadro's number is 6.02 × 10²³**, as the class rounds it.
+- **No trailing zero needed:** a molar mass whose tenths digit is 0 can be typed as a whole number (71 for Cl₂ counts
+  as 71.0); only a real second decimal (191.87) is told to round to tenths.
 - **1.5% tolerance.** Students use different periodic tables, so an answer within 1.5% of the right one counts (the
   significant figures must still be right), and so does a molar mass written to tenths within 1.5% of the class's.
   A rounded answer stands for everything that rounds to it, so a last digit that tips the other way still counts.
@@ -89,12 +91,12 @@ whenever the steps, the problem plan, a substance or an atomic mass changes (SCH
 ```bash
 node tools/validate.js                    # must pass
 node tools/answer-key.js > ANSWER_KEY.md
-./build.sh                                # dist/mole-conversions-v3.zip
+./build.sh                                # dist/mole-conversions-v4.zip
 node tools/walkthrough.js                 # Playwright: plays the whole activity against a fake LMS
 node tools/layout.js                      # Playwright: fits a Chromebook, 1366x650 and 1366x520
 ```
 
-Upload `dist/mole-conversions-v3.zip` in Schoology with **Add Materials → Add File/Link/External Tool → Add File**
+Upload `dist/mole-conversions-v4.zip` in Schoology with **Add Materials → Add File/Link/External Tool → Add File**
 (or **Package**). `src/index.html?step=set&seed=5&problem=3` opens a step (ids in `ANSWER_KEY.md`, or numbers 1 to
 7), a given set and one of its problems without saving anything.
 

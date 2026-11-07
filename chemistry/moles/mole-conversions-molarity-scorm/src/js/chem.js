@@ -322,7 +322,12 @@ var Chem = (function () {
     var x10 = x * 10;
     var acc = mmAccepted(key);
     var near = function (a, tol) { return Math.abs(x10 - a) <= tol; };
-    var tenths = /^\d+\.\d$/.test(str);
+    /* To the tenths place, but a zero there need not be written: 71, 71.0 and
+       71.00 are all 71.0 (the teacher: students should not be marked wrong
+       for leaving off a zero). Only a real second decimal (191.87) is told to
+       round. */
+    var trimmed = str.indexOf('.') >= 0 ? str.replace(/0+$/, '').replace(/\.$/, '') : str;
+    var tenths = /^\d+(\.\d)?$/.test(trimmed);
     if (tenths && acc.some(function (a) { return near(a, 1e-6); })) return { ok: true, kind: 'ok', v: x };
     /* a slip is named even when it lands within TOL (a miscounted H in sucrose) */
     var slips = mmSlips(key);
@@ -334,7 +339,8 @@ var Chem = (function () {
     if (tenths && within(TOL)) return { ok: true, kind: 'near', v: x };
     if (!tenths && (within(TOL) || acc.some(function (a) { return near(a, 5 - 1e-6); }))) {
       return { ok: false, kind: 'tenths',
-        msg: 'Close: write it to the tenths place, with one digit after the decimal point. The class rounds every molar mass to tenths.' };
+        msg: 'Close: round it to the tenths place, one digit after the decimal point. The class rounds every molar mass to tenths ' +
+          '(a whole number like 71 is fine when the tenths digit is 0).' };
     }
     if (within(3 * TOL)) {
       return { ok: false, kind: 'close', msg: 'Close, but more than ' + TOL_TEXT + ' away. Use each atomic mass rounded to the tenths place, as the ' +
