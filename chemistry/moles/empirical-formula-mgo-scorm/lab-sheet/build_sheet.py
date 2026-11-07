@@ -16,6 +16,7 @@ from docx.oxml.ns import qn
 HERE = os.path.dirname(os.path.abspath(__file__))
 FONT = "Calibri"
 MG, O, N, NA = 24.31, 16.00, 14.01, 6.022e23
+SPACE = 0.56            # writing space is scaled so the student sheet fits one sheet, front and back
 
 # ------------------------------------------------------------ the worked example (teacher edition)
 CRUC, MGM = 28.4127, 0.1523
@@ -97,11 +98,11 @@ def rule(p):
 
 def new_doc():
     d = Document()
-    st = d.styles["Normal"]; st.font.name = FONT; st.element.rPr.rFonts.set(qn("w:eastAsia"), FONT); st.font.size = Pt(10.5)
+    st = d.styles["Normal"]; st.font.name = FONT; st.element.rPr.rFonts.set(qn("w:eastAsia"), FONT); st.font.size = Pt(10)
     s = d.sections[0]
     s.page_width, s.page_height = Inches(8.5), Inches(11)
-    s.left_margin = s.right_margin = Inches(0.7)
-    s.top_margin = s.bottom_margin = Inches(0.6)
+    s.left_margin = s.right_margin = Inches(0.6)
+    s.top_margin = Inches(0.5); s.bottom_margin = Inches(0.5)
     return d
 
 
@@ -116,7 +117,7 @@ def footer(d, text):
             it = OxmlElement("w:instrText"); it.set(qn("xml:space"), "preserve"); it.text = txt; r._r.append(it)
 
 
-def heading(d, text, size=12.5, before=8, brk=False):
+def heading(d, text, size=11.5, before=5, brk=False):
     p = fmt(d.add_paragraph(), before=before, after=3, keep=True)
     if brk:
         p.paragraph_format.page_break_before = True
@@ -124,7 +125,7 @@ def heading(d, text, size=12.5, before=8, brk=False):
     return p
 
 
-def para(d, text, size=10.5, before=0, after=4, left=None, hang=None, italic=False, color=None):
+def para(d, text, size=10, before=0, after=3, left=None, hang=None, italic=False, color=None):
     p = fmt(d.add_paragraph(), before=before, after=after, left=left, hang=hang)
     rich(p, text, size, color=color, italic=italic)
     return p
@@ -158,25 +159,25 @@ def ans(d, text, size=10):
         rich(p, ln, size)
 
 
-def question(d, T, n, text, space, key=None, size=10.5):
-    p = fmt(d.add_paragraph(), before=5, after=1, left=0.3, hang=0.3, keep=True)
+def question(d, T, n, text, space, key=None, size=10):
+    p = fmt(d.add_paragraph(), before=3, after=1, left=0.3, hang=0.3, keep=True)
     run(p, "%s." % n, size, bold=True); rich(p, "\t" + text, size)
     if T and key:
         ans(d, key)
     elif not T:
         sp = fmt(d.add_paragraph(), after=0)
-        sp.paragraph_format.line_spacing = Pt(max(space * 72 - 12, 6))
+        sp.paragraph_format.line_spacing = Pt(max(space * 72 * SPACE - 12, 6))
         run(sp, " ", 4)
 
 
 def box(d, label, lines, fill="EDEDED"):
     t = d.add_table(rows=1, cols=1); t.style = "Table Grid"
-    c = t.cell(0, 0); c.width = Inches(7.1); cell_shade(c, fill); c.text = ""
+    c = t.cell(0, 0); c.width = Inches(7.3); cell_shade(c, fill); c.text = ""
     p = c.paragraphs[0]; fmt(p, before=2, after=2); run(p, label, 9.5, bold=True)
     for ln in lines:
         q = c.add_paragraph(); fmt(q, before=0, after=3, left=0.0)
-        rich(q, ln, 10)
-    fmt(d.add_paragraph(), after=2)
+        rich(q, ln, 9.5)
+    fmt(d.add_paragraph(), after=0)
 
 
 # ------------------------------------------------------------ the sheet
@@ -211,10 +212,10 @@ def build(T):
     # ---------------- page: title and header
     p = fmt(d.add_paragraph(), after=2); run(p, "Virtual Lab Pre-Lab: Empirical Formula of Magnesium Oxide", 16, bold=True)
     p = fmt(d.add_paragraph(), after=4); run(p, "Name: ______________________________      Date: ______________      Period: ______", 11); rule(p)
-    para(d, "**Goal:** Use experimental data to determine the ratio at which two or more elements combine.", 10.5, before=3)
-    para(d, "**Introduction:** In the real lab you will react magnesium metal with the oxygen gas in the air. The goal is to find the ratio at which magnesium atoms and oxygen atoms combine to form a compound. "
-            "Before you do it for real, you will practice the setup and the calculations in a virtual lab. Run the simulation with this sheet beside you. "
-            "**Write every reading, observation and calculation on this sheet.** The simulation will tell you which box to fill in.", 10.5)
+    para(d, "**Goal:** Use experimental data to determine the ratio at which two or more elements combine.", 10, before=2)
+    para(d, "**Introduction:** In the real lab you will react magnesium metal with the oxygen gas in the air to find the ratio at which magnesium atoms and oxygen atoms combine. "
+            "First you will practice the setup and the calculations in a virtual lab. Run the simulation with this sheet beside you and "
+            "**write every reading, observation and calculation here.** The simulation tells you which box to fill in.", 10)
 
     question(d, T, "Question 1", "Write the chemical reaction you expect to happen between magnesium and oxygen gas. Balance it.", 0.5,
              "2 Mg + 1 O₂ → 2 MgO   (magnesium oxide, from Mg²⁺ and O²⁻)")
@@ -228,16 +229,16 @@ def build(T):
             ["3", "Mass of crucible + lid + Mg", f4(TOTAL3) + " g" if T else "                              g"],
             ["4", "Mass of crucible + lid + product, after the reaction", f4(FINAL) + " g" if T else "                              g"],
             ["5", "Mass of oxygen added   (Box 4 − Box 3)", f4(OXY) + " g" if T else "                              g"]]
-    table(d, rows, [0.55, 4.35, 2.2], size=10.5, height=0.36)
-    para(d, "**Observations** (the flame, the magnesium, the white product, what you see and smell when you add water):", 10.5, after=1)
+    table(d, rows, [0.55, 4.55, 2.2], size=10, height=0.29)
+    para(d, "**Observations** (the flame, the magnesium, the product, what you see and smell when you add water):", 10, after=1)
     if T:
         ans(d, "Bright white glow when the Mg burns; a white powder, sometimes with pale yellow-green bits (magnesium nitride); hissing and steam when the water goes on; a sharp smell (ammonia); a white, dry powder at the end.")
     else:
-        for _ in range(3):
-            para(d, "_" * 98, 10, after=5)
+        for _ in range(2):
+            para(d, "_" * 104, 10, after=4)
 
     # ---------------- procedure
-    heading(d, "Procedure (what you do in the simulation)", 12.5, before=8)
+    heading(d, "Procedure (what you do in the simulation)", 11.5, before=4)
     steps = [
         ("Set up the bench.", "Place the crucible in the clay triangle on the ring stand, with the Bunsen burner underneath."),
         ("Mass the clean, dry crucible and lid.", "Record it in **Box 1**."),
@@ -248,11 +249,11 @@ def build(T):
         ("Mass the crucible + lid + product.", "Record it in **Box 4**. Then calculate **Box 5**."),
     ]
     for i, (a, b) in enumerate(steps, 1):
-        p = fmt(d.add_paragraph(), before=1, after=3, left=0.3, hang=0.3)
-        run(p, "%d)\t" % i, 10.5, bold=True); run(p, a + " ", 10.5, bold=True); rich(p, b, 10.5)
+        p = fmt(d.add_paragraph(), before=0, after=2, left=0.3, hang=0.3)
+        run(p, "%d)\t" % i, 10, bold=True); run(p, a + " ", 10, bold=True); rich(p, b, 10)
 
     # ---------------- while cooling
-    heading(d, "While Cooling", 12.5, before=8)
+    heading(d, "While Cooling", 11.5, before=5)
     question(d, T, "1", "Calculate the number of moles of Mg used in this experiment. Show your work with units.", 0.85,
              "%s g Mg × (1 mol Mg / 24.31 g Mg) = **%s mol Mg**   (24.3 g/mol also accepted)" % (f4(MGM), sf(N_MG, 4)))
     question(d, T, "2", "Calculate the number of Mg atoms that were in the ribbon.", 0.85,
@@ -261,7 +262,7 @@ def build(T):
              "**Larger.** The magnesium combined with oxygen from the air. The oxygen adds mass, and no mass was lost (conservation of mass).")
 
     # ---------------- after cooling
-    heading(d, "After Cooling", 12.5, before=8)
+    heading(d, "After Cooling", 11.5, before=5)
     question(d, T, "1", "Calculate the moles of oxygen present in the product. (Use 16 g/mol for the molar mass of oxygen, not 32 g/mol.)", 0.85,
              "%s g O × (1 mol O / 16.0 g O) = **%s mol O**" % (f4(OXY), sf(N_O, 4)))
     question(d, T, "2", "Compare the number of moles of magnesium to the moles of oxygen. What do you notice?", 0.75,
@@ -270,12 +271,12 @@ def build(T):
              "**MgO**   (1 Mg : 1 O)")
 
     # ---------------- the nitrogen problem
-    heading(d, "Look closer: magnesium and nitrogen (use the magnifier)", 12.5, before=8)
+    heading(d, "Look closer: magnesium and nitrogen (use the magnifier)", 11.5, before=5)
     box(d, "Why do we add water?", [
-        "Air is about 78% nitrogen gas, N₂. When magnesium burns it reacts with some of the nitrogen as well as the oxygen. It makes a pale yellow-green powder called magnesium **nitride**. "
-        "If any nitride were left, the product would not be only MgO, and the mass you measure would not match what you calculate for MgO.",
+        "Air is about 78% nitrogen gas, N₂. When magnesium burns it reacts with some nitrogen as well as the oxygen, making a pale yellow-green powder called magnesium **nitride**. "
+        "Any nitride left would spoil the result: the product would not be only MgO.",
         "That is why you add water after the Mg stops glowing. The water reacts with magnesium nitride and **converts it to magnesium hydroxide**, Mg(OH)₂, and ammonia gas. "
-        "When you reheat, the water boils off and the magnesium hydroxide changes into MgO, so everything left in the crucible is MgO."])
+        "When you reheat, the water boils off and the magnesium hydroxide changes into MgO, so everything left is MgO."])
     question(d, T, "N1", "Magnesium forms Mg²⁺ and nitrogen forms N³⁻. Write the formula for magnesium nitride and explain how the charges decide the subscripts.", 0.7,
              "**Mg₃N₂.** 3 Mg²⁺ gives +6 and 2 N³⁻ gives −6, so the charges cancel.")
     question(d, T, "N2", "Balance the reaction of magnesium with nitrogen gas:    _____ Mg  +  _____ N₂  →  _____ Mg₃N₂", 0.25,
@@ -288,8 +289,8 @@ def build(T):
              "1 Mg(OH)₂ → 1 MgO + 1 H₂O.   The water turns any Mg₃N₂ into Mg(OH)₂, and heating turns the Mg(OH)₂ into MgO, so no nitrogen is left in the product.")
 
     # ---------------- what if
-    heading(d, "What if...? (use the \"what if\" buttons in the simulation)", 12.5, before=8)
-    para(d, "For each mistake, circle what would happen to your numbers and explain in one sentence. Assume everything else is done correctly.", 10.5, after=3).paragraph_format.keep_with_next = True
+    heading(d, "What if...? (use the \"what if\" buttons in the simulation)", 11.5, before=5)
+    para(d, "For each mistake, circle what would happen to your numbers and explain in one sentence. Assume everything else is done correctly.", 10, after=2).paragraph_format.keep_with_next = True
     wi = [["What goes wrong", "Mass of crucible + lid + product would be:", "The calculated O : Mg ratio would be:", "Why?"],
           ["a) The lid is on **too wide**: white smoke escapes", "too high   /   too low" if not T else "**too low**",
            "too high   /   too low" if not T else "**too low**",
@@ -300,7 +301,7 @@ def build(T):
           ["c) You **skip the water** step", "too high   /   too low" if not T else "**too low**",
            "too high   /   too low" if not T else "**too low**",
            "" if not T else "Mg₃N₂ is left. Each Mg in it holds only 2/3 of a nitrogen (about %s g per mol Mg), far less than the 16.0 g of oxygen in MgO, so the mass is low and the ratio would come out near %s." % (sf(NITRIDE_PER_MG, 3), sf(NITRIDE_RATIO, 2))]]
-    table(d, wi, [1.9, 1.45, 1.45, 2.3], size=9.5, height=0.95)
+    table(d, wi, [1.9, 1.4, 1.4, 2.6], size=9.5, height=0.62)
     return d
 
 
