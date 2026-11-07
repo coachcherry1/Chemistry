@@ -2,7 +2,7 @@
 
 Student sheet (students write every reading and calculation on paper) and a teacher edition (a worked example with
 sample data, how to check the random numbers each student gets in the simulation, and the answers to the rest).
-Every number in the teacher edition is computed here (Mg 24.31 g/mol or 24.3, O 16.0, N 14.01, N_A 6.022e23).
+Every number in the teacher edition is computed here (Mg 24.3 g/mol, O 16.0, N 14.01, N_A 6.02e23).
 
 Run:  python3 build_sheet.py     (needs python-docx)
 """
@@ -15,13 +15,13 @@ from docx.oxml.ns import qn
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FONT = "Calibri"
-MG, O, N, NA = 24.31, 16.00, 14.01, 6.022e23
+MG, O, N, NA = 24.3, 16.0, 14.01, 6.02e23     # the class's roundings: molar masses to the tenths, Avogadro 6.02 x 10^23
 SPACE = 0.56            # writing space is scaled so the student sheet fits one sheet, front and back
 
 # ------------------------------------------------------------ the worked example (teacher edition)
 CRUC, MGM = 28.4127, 0.1523
 TOTAL3 = CRUC + MGM
-MGO = MGM * (MG + O) / MG
+MGO = MGM * (24.31 + 16.00) / 24.31
 PRODUCT = round(MGO * 0.9985, 4)             # a little scatter, as the simulation gives
 FINAL = CRUC + PRODUCT
 OXY = FINAL - TOTAL3
@@ -192,7 +192,7 @@ def build(T):
         for t in [
             "**Students write everything on this sheet.** The simulation only shows the bench and the action (the balance display, the flame, the glow, the water drops, the steam, the magnifier). It has no data tables, no typed answers and no score. The slim bar across the top of the simulation names each step and says which box to fill in.",
             "**Every student gets different numbers.** The simulation chooses them, so check the math, not the numbers. Ranges used: mass of crucible + lid **25.000 to 35.000 g**, mass of magnesium **0.100 to 0.200 g** (the cap stands in for what fits in a real crucible), all read to 0.0001 g. The product mass is the ideal MgO mass with a small realistic scatter (within about 1%), so the O : Mg ratio comes out between about 0.98 and 1.02.",
-            "**Check the math in this order:** Box 1 + Box 2 = Box 3 (within 0.0001 g); Box 5 = Box 4 − Box 3; moles Mg = Box 2 ÷ 24.3 (24.31 accepted); atoms Mg = moles × 6.022 × 10²³; moles O = Box 5 ÷ 16.0; ratio O : Mg = moles O ÷ moles Mg ≈ 1 : 1, so the formula is MgO. Accept answers that follow from the student's own boxes, rounded to 3 or 4 significant figures.",
+            "**Check the math in this order:** Box 1 + Box 2 = Box 3 (within 0.0001 g); Box 5 = Box 4 − Box 3; moles Mg = Box 2 ÷ 24.3 (24.31 also accepted); atoms Mg = moles × 6.02 × 10²³; moles O = Box 5 ÷ 16.0; ratio O : Mg = moles O ÷ moles Mg ≈ 1 : 1, so the formula is MgO. Accept answers that follow from the student's own boxes, rounded to 3 or 4 significant figures.",
             "**Nitride, not nitrate.** The side product is magnesium **nitride**, Mg₃N₂ (Mg²⁺ and N³⁻). The water step converts it to magnesium hydroxide and ammonia; the reheating turns the hydroxide into MgO.",
         ]:
             para(d, "•\t" + t, 10, left=0.25, hang=0.25, after=3)
@@ -204,7 +204,7 @@ def build(T):
                   ["4", "Mass of crucible + lid + product after the reaction", f4(FINAL) + " g"],
                   ["5", "Mass of oxygen added (Box 4 − Box 3)", f4(OXY) + " g"]],
               [0.6, 4.4, 2.1], size=9.5)
-        para(d, "While cooling: moles of Mg = %s g ÷ 24.31 g/mol = **%s mol**; atoms of Mg = %s mol × 6.022 × 10²³ = **%s atoms**. The mass will be **larger** (oxygen has been added). "
+        para(d, "While cooling: moles of Mg = %s g ÷ 24.3 g/mol = **%s mol**; atoms of Mg = %s mol × 6.02 × 10²³ = **%s atoms**. The mass will be **larger** (oxygen has been added). "
                 "After cooling: moles of O = %s g ÷ 16.0 g/mol = **%s mol**; O : Mg = %s ÷ %s = **%s ≈ 1 : 1**; formula **MgO**." %
              (f4(MGM), sf(N_MG, 4), sf(N_MG, 4), sci(ATOMS, 4), f4(OXY), sf(N_O, 4), sf(N_O, 4), sf(N_MG, 4), sf(RATIO, 3)), 10, after=4)
         d.add_page_break()
@@ -240,9 +240,9 @@ def build(T):
     # ---------------- procedure
     heading(d, "Procedure (what you do in the simulation)", 11.5, before=4)
     steps = [
-        ("Set up the bench.", "Place the crucible in the clay triangle on the ring stand, with the Bunsen burner underneath."),
         ("Mass the clean, dry crucible and lid.", "Record it in **Box 1**."),
-        ("Mass the piece of magnesium.", "Record it in **Box 2**. Put it in the crucible, then mass the crucible + lid + Mg and record it in **Box 3**. Check: Box 1 + Box 2 should equal Box 3."),
+        ("Mass the piece of magnesium.", "Record it in **Box 2**. Put the Mg in the crucible, then mass the crucible + lid + Mg and record it in **Box 3**. Check: Box 1 + Box 2 should equal Box 3."),
+        ("Set up the heating.", "Place the crucible in the clay triangle on the ring stand, with the Bunsen burner underneath."),
         ("Heat the magnesium with the Bunsen burner.", "Turn the bottom of the burner until the tip of the flame touches the bottom of the crucible. The lid goes on for you, with a slight crack, once the Mg glows. Write what you see in Observations."),
         ("Once the Mg stops glowing, add 6 to 7 drops of DI water", "and reheat to boil the water off. Write what you see. (In the real lab you will also notice a sharp smell.)"),
         ("Once the product is dry, turn the heat off and cool for 5 minutes.", "The simulation speeds up the clock. Do the **While Cooling** questions."),
@@ -255,9 +255,9 @@ def build(T):
     # ---------------- while cooling
     heading(d, "While Cooling", 11.5, before=5)
     question(d, T, "1", "Calculate the number of moles of Mg used in this experiment. Show your work with units.", 0.85,
-             "%s g Mg × (1 mol Mg / 24.31 g Mg) = **%s mol Mg**   (24.3 g/mol also accepted)" % (f4(MGM), sf(N_MG, 4)))
+             "%s g Mg × (1 mol Mg / 24.3 g Mg) = **%s mol Mg**   (24.31 g/mol also accepted)" % (f4(MGM), sf(N_MG, 4)))
     question(d, T, "2", "Calculate the number of Mg atoms that were in the ribbon.", 0.85,
-             "%s mol Mg × (6.022 × 10²³ atoms / 1 mol) = **%s atoms Mg**" % (sf(N_MG, 4), sci(ATOMS, 4)))
+             "%s mol Mg × (6.02 × 10²³ atoms / 1 mol) = **%s atoms Mg**" % (sf(N_MG, 4), sci(ATOMS, 4)))
     question(d, T, "3", "Do you expect the mass of the crucible + lid + product to be smaller, larger, or the same as before the reaction? Explain your answer.", 0.9,
              "**Larger.** The magnesium combined with oxygen from the air. The oxygen adds mass, and no mass was lost (conservation of mass).")
 

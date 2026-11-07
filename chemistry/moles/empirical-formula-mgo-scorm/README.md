@@ -4,12 +4,12 @@ A virtual lab for regular chemistry, done as a **pre-lab on paper** before the r
 practice the setup and the calculations in the simulation and **write every reading and calculation on a paper lab sheet**. The
 simulation has no data tables, no typed answers and **reports no score** (opened from the LMS it only marks itself completed).
 
-**Status:** the lab sheet is drafted (`lab-sheet/`). The simulation (`src/`) is not built yet; its bench drawing was sketched with the
-teacher and is described below.
+**Status:** zip v1 (SCHEMA 1). The lab sheet is in `lab-sheet/`; the simulation is in `src/`. Web version:
+`https://coachcherry1.github.io/Chemistry/chemistry/moles/empirical-formula-mgo-scorm/src/index.html` (live once merged to `main`).
 
 ## The lab sheet (`lab-sheet/`)
 
-- `Empirical Formula of MgO - Virtual Lab Pre-Lab Sheet - STUDENT.docx` (and a `.pdf` to print): three pages. The teacher's data table
+- `Empirical Formula of MgO - Virtual Lab Pre-Lab Sheet - STUDENT.docx` (and a `.pdf` to print): two pages, front and back. The teacher's data table
   (Boxes 1 to 5), the procedure paired with what to do in the simulation, While Cooling, After Cooling, **Look closer: magnesium and
   nitrogen** (why we add water: magnesium nitride, Mg₃N₂, is converted to magnesium hydroxide and ammonia, and reheating turns the
   hydroxide into MgO), and a **What if...?** table (lid too wide, lid too tight, water step skipped).
@@ -17,7 +17,7 @@ teacher and is described below.
   and every answer.
 - `build_sheet.py` builds both from one script (python-docx). Every number in the teacher edition is computed there.
 
-## What the simulation will do
+## What the simulation does
 
 Every student gets **different random masses**, so the teacher checks the math, not the numbers: crucible + lid **25.000 to 35.000 g**,
 magnesium **0.100 to 0.200 g** (a stand-in for what fits in a real crucible), read to 0.0001 g. The product mass is the ideal MgO mass with
@@ -35,4 +35,14 @@ a small scatter (within about 1%).
 
 Offline only, no CDN or WebGL; keyboard, touch and drag for every action; dark mode; reduced motion; no em dashes; its own SCORM
 identifiers; a web version on GitHub Pages: `https://coachcherry1.github.io/Chemistry/chemistry/moles/empirical-formula-mgo-scorm/src/index.html`
-(once the simulation is built and merged).
+(once merged to `main`).
+
+## How it works (for the code reader)
+
+- `data.js` (`Lab`): the masses from a seed, and the product mass worked out from what happened in the crucible (MgO, a sixth of the
+  magnesium as Mg₃N₂ before the water, each drop converting one of the six nitride magnesium atoms). The balance, the magnifier and the
+  validator all use it, so they agree.
+- `scene.js`: the bench, one SVG; `lens.js`: the magnifier (36 magnesium atoms and what each becomes); `app.js`: the steps and the heat model
+  (the flame must touch the crucible for the magnesium to ignite; a short flame does not).
+- `?seed=<n>` gives a particular student's masses; `?step=<n>` jumps to a step (for teachers and the tools).
+- Tools: `node tools/validate.js`, `node tools/answer-key.js > ANSWER_KEY.md`, `./build.sh mgo-lab-v1`, `node tools/walkthrough.js`, `node tools/layout.js`.
