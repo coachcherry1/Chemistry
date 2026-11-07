@@ -23,6 +23,42 @@ var Work = (function () {
   }
   function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
 
+  /* A worked solution, typeset: the chain as fractions with the cancelled
+     units struck through, then how each blank was found. vals: the typed
+     values of the blanks by edge id (the model's own when left out). */
+  function solutionHTML(p, tiles, vals) {
+    vals = vals || {};
+    var exact = Chem.chainValue(p.given.v, tiles, vals);
+    var rounded = Chem.fmtSig(exact, p.given.sig);
+    /* a long chain gets its answer on a line of its own */
+    var long = tiles.length >= 3;
+    var answerTex = '= ' + Chem.texNum(rounded) + '\\ ' + Chem.texUnit(p.toTok);
+    var out = '<div class="solution"><div class="eq">' +
+      Tex.toMathML(Chem.texChain(p.given.str, p.fromTok, tiles, vals, long ? {} : { answer: rounded, toTok: p.toTok }), true) + '</div>' +
+      (long ? '<div class="eq answer">' + Tex.toMathML(answerTex, true) + '</div>' : '');
+    var notes = [];
+    if (rounded !== Chem.fmtLong(exact)) {
+      notes.push('The calculator shows ' + Chem.fmtLong(exact) + '. Rounded to ' + plural(p.given.sig, 'significant figure') +
+        ', from ' + p.given.str + (p.M ? ' and ' + p.M.str + ' mol/L' : '') + '.');
+    }
+    var seen = {};
+    tiles.forEach(function (t) {
+      if (seen[t.e]) return;
+      seen[t.e] = 1;
+      var e = Chem.edge(t.e);
+      if (e.type === 'mm') {
+        out += '<div class="eq small">' + Tex.toMathML(Chem.texMM(e.s), true) + '</div>';
+        var typed = vals[t.e] != null ? Number(vals[t.e]).toFixed(1) : Chem.mmText(e.s);
+        if (typed !== Chem.mmText(e.s)) notes.push('You used ' + typed + ' g/mol for ' + Chem.disp(e.s) + ', which is also accepted.');
+      } else if (e.type === 'ratio') {
+        notes.push('1 ' + Chem.disp(e.a) + ' holds ' + Chem.hasText(e.a) + ', so 1 mol ' + Chem.disp(e.a) + ' = ' + e.R.v + ' mol ' + e.b + '.');
+      } else if (e.type === 'sol') {
+        notes.push(e.M + ' mol/L means 1 L ' + Chem.disp(e.s) + ' solution = ' + e.M + ' mol ' + Chem.disp(e.s) + '.');
+      }
+    });
+    return out + notes.map(function (n) { return '<p class="note">' + esc(n) + '</p>'; }).join('') + '</div>';
+  }
+
   function create(host, p, work, opts) {
     opts = opts || {};
     work.c = work.c || [];
@@ -39,10 +75,9 @@ var Work = (function () {
 
     /* ---------------------------------------------------------- the page */
 
-    var prompt = h('p', { class: 'prompt' }, [
-      'Convert ', h('span', { class: 'q', text: p.fromText }), ' to ', h('span', { class: 'q', text: p.toText }),
-      h('span', { class: 'badge', text: p.steps + '-step' })
-    ]);
+    var prompt = h('p', { class: 'prompt' }, p.prompt.map(function (x) {
+      return typeof x === 'string' ? x : h('span', { class: 'q', text: x.q });
+    }).concat([h('span', { class: 'badge', text: p.steps + '-step' })]));
     var sfnote = h('p', { class: 'sfnote', text: 'Molar masses to the tenths place. Round the answer to the significant figures of the quantity you were given.' });
     var chainEl = h('div', { class: 'chain', 'aria-label': 'Your conversion factors' });
     var chainScroll = h('div', { class: 'chain-scroll' }, [chainEl]);
@@ -72,9 +107,9 @@ var Work = (function () {
       h('h3', { text: 'Equalities: tap one to add it, flip it if its units do not cancel. Each can be used more than once.' }),
       poolEl
     ]);
-    var map = MoleMap.create({ A: p.A, B: p.B });
+    var map = MoleMap.create({ A: p.A, B: p.B, solution: CONFIG.molarity, sol: !!p.M });
     var side = h('div', { class: 'work-side' }, [
-      h('h3', { text: 'Mole Town' }), map.el,
+      h('h3', { text: 'Mole map' }), map.el,
       h('p', { class: 'map-key' }, [h('span', { class: 'key start' }), 'start ', h('span', { class: 'key target' }), 'target ',
         h('span', { class: 'key here' }), 'reached so far'])
     ]);
@@ -134,7 +169,7 @@ var Work = (function () {
         inp.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') { ev.preventDefault(); check(); } });
         kids.push(inp);
       } else {
-        kids.push(h('span', { class: 'val', text: Chem.valueText(side.v) }));
+        kids.push(h('span', { class: 'val', text: Chem.valueText(side.v, side) }));
       }
       kids.push(' ');
       kids.push(h('span', { class: 'tok' + (struck[cell + ':' + where] ? ' cx' : ''), text: U(side.t) }));
@@ -286,6 +321,9 @@ var Work = (function () {
         if (here.key !== want.key && here.node === 'part' && want.node === 'part') {
           return msg + '<br>Particles never jump straight from one substance to another: go through moles.';
         }
+        if (here.key === want.key && /^m?Lsol$/.test(here.node) && /^m?Lsol$/.test(want.node)) {
+          return msg + '<br>' + b(U(an.top[0])) + ' and ' + b(p.toText) + ' are different units: use <b>1000 mL = 1 L</b>.';
+        }
         return msg + '<br>That is a stop on the way. Keep going from ' + b(U(an.top[0])) + '.';
       }
       var strayTop = an.top.filter(function (t) { return t !== p.toTok; });
@@ -300,8 +338,12 @@ var Work = (function () {
       if (given > need) m += 'You wrote ' + b(raw.trim()) + ', which shows ' + plural(given, 'significant figure') + '. An answer can’t be more precise than the measurement it came from.';
       else m += 'You wrote ' + b(raw.trim()) + ', which shows only ' + plural(given, 'significant figure') + '. Rounding away a figure you measured throws away real precision.';
       m += '<br><b>The rule.</b> When you multiply and divide, the answer keeps as many significant figures as the measurement with ' +
-        'the fewest. Here the only measurement is the ' + b(p.fromText) + ' you were given: ' + plural(need, 'significant figure') +
-        '. The equalities (molar mass, 6.022 ' + T + ' 10²³, 22.4 L, the ratio) count as exact and never limit you.';
+        'the fewest. ' + (p.M
+          ? 'Here the measurements are the ' + b(p.fromText) + ' you were given and the molarity, ' + b(p.M.str + ' mol/L') + ': ' +
+            plural(need, 'significant figure') + ' each. The other equalities (molar mass, 6.02 ' + T + ' 10²³, 1000 mL = 1 L, the ratio) ' +
+            'count as exact and never limit you.'
+          : 'Here the only measurement is the ' + b(p.fromText) + ' you were given: ' + plural(need, 'significant figure') +
+            '. The equalities (molar mass, 6.02 ' + T + ' 10²³, 22.4 L, the ratio) count as exact and never limit you.');
       m += '<br>Rounded to ' + plural(need, 'significant figure') + ', your answer is ' + b(Chem.fmtSig(exact, need) + ' ' + p.toText) +
         '. Enter that and check again.';
       return m;
@@ -320,8 +362,8 @@ var Work = (function () {
           return '<b>Units are right, but your number is off by the ratio.</b> Did the ' + p.ratioN + ' from the ratio make it into the arithmetic?';
         case 'power':
           if (hasAv) {
-            return '<b>Units are right, but you are off by a factor of 10' + Chem.sup(j.k) + '.</b> Check how 6.022 ' + T + ' 10²³ went ' +
-              'into the calculator: use the EE (or ' + T + '10ˣ) key, as 6.022E23, or put it in brackets. And check the power you typed in your answer.';
+            return '<b>Units are right, but you are off by a factor of 10' + Chem.sup(j.k) + '.</b> Check how 6.02 ' + T + ' 10²³ went ' +
+              'into the calculator: use the EE (or ' + T + '10ˣ) key, as 6.02E23, or put it in brackets. And check the power you typed in your answer.';
           }
           return '<b>Units are right, but you are off by a factor of 10' + Chem.sup(j.k) + '.</b> Check the decimal point and any power of ten you typed.';
         default:
@@ -339,33 +381,7 @@ var Work = (function () {
       return vals;
     }
 
-    function workText(vals) {
-      var parts = [p.given.str + ' ' + U(p.fromTok)];
-      chain.forEach(function (t) {
-        var e = Chem.edge(t.e), top = Chem.top(t), bot = Chem.bottom(t);
-        var sv = function (s) {
-          if (!s.blank) return Chem.valueText(s.v);
-          var v = vals[t.e] != null ? vals[t.e] : s.v;
-          return e.type === 'mm' ? Number(v).toFixed(1) : String(v);
-        };
-        parts.push('(' + sv(top) + ' ' + U(top.t) + ' / ' + sv(bot) + ' ' + U(bot.t) + ')');
-      });
-      var exact = Chem.chainValue(p.given.v, chain, vals);
-      var out = parts.join('  ' + T + '  ') + '\n= ' + Chem.fmtLong(exact) + ' ' + p.toText;
-      var rounded = Chem.fmtSig(exact, p.given.sig);
-      if (rounded !== Chem.fmtLong(exact)) out += '\n= ' + rounded + ' ' + p.toText + '   (' + plural(p.given.sig, 'significant figure') + ', from ' + p.given.str + ')';
-      blankIds().forEach(function (id) {
-        var e = Chem.edge(id);
-        if (e.type === 'mm') {
-          var typed = vals[id] != null ? Number(vals[id]).toFixed(1) : Chem.mmText(e.s);
-          out += '\nmolar mass of ' + Chem.disp(e.s) + ': ' + Chem.mmWork(e.s) + ' g/mol' +
-            (typed !== Chem.mmText(e.s) ? ' (you used ' + typed + ', which is also accepted)' : '');
-        } else {
-          out += '\n1 ' + Chem.disp(e.a) + ' holds ' + Chem.hasText(e.a) + ', so 1 mol ' + Chem.disp(e.a) + ' = ' + e.R.v + ' mol ' + e.b;
-        }
-      });
-      return out;
-    }
+    function workText(vals) { return solutionHTML(p, chain, vals); }
 
     /* ------------------------------------------------------------ check */
 
@@ -411,7 +427,7 @@ var Work = (function () {
         var longer = chain.length > p.steps ? ' You got there in ' + chain.length + ' factors; the shortest route is ' + p.steps + '.' : '';
         resolve(work.k === 1 ? 2 : 1);
         return say('good', '<b>Correct.</b> ' + esc(Chem.fmtSig(exact, p.given.sig)) + ' ' + esc(p.toText) + '.' + longer +
-          '<div class="worklines">' + esc(workText(vals)) + '</div>');
+          workText(vals));
       }
       say('bad', answerMessage(verdict, exact));
     }
@@ -443,6 +459,10 @@ var Work = (function () {
         var rest = Chem.route(here, p.toTok, p.pool);
         if (rest && rest.length) {
           var t = rest[0], next = Chem.top(t).t;
+          if (Chem.edge(t.e).type === 'ml') {
+            return say('tip', 'You are at ' + b(U(here)) + '. mL is not on the map: first change it to L with <b>1000 mL = 1 L</b>, ' +
+              'turned so ' + b(U(here)) + ' is on the bottom.');
+          }
           return say('tip', 'You are at ' + b(U(here)) + '. On the map, take the <b>' + esc(road(t.e)) + '</b> road next, to ' + b(U(next)) +
             ': use the equality with ' + esc(U(here)) + ' and ' + esc(U(next)) + ', turned so ' + b(U(here)) + ' is on the bottom.');
         }
@@ -477,7 +497,7 @@ var Work = (function () {
       resolve(3);
       render();
       say('tip', '<b>Worked solution.</b> Every unit cancels except ' + esc(p.toText) + '.' +
-        '<div class="worklines">' + esc(workText({})) + '</div>' + (opts.graded ? 'This one does not count toward your score.' : ''));
+        workText({}) + (opts.graded ? 'This one does not count toward your score.' : ''));
     }
 
     function resolve(r) {
@@ -603,10 +623,10 @@ var Work = (function () {
     if (resolved()) {
       lock();
       var vals = currentValues();
-      if (work.r === 3) say('tip', '<b>Worked solution.</b><div class="worklines">' + esc(workText({})) + '</div>' +
+      if (work.r === 3) say('tip', '<b>Worked solution.</b>' + workText({}) +
         (opts.graded ? 'This one does not count toward your score.' : ''));
       else say('good', '<b>Correct.</b> ' + esc(Chem.fmtSig(Chem.chainValue(p.given.v, chain, vals), p.given.sig)) + ' ' + esc(p.toText) +
-        '.<div class="worklines">' + esc(workText(vals)) + '</div>');
+        '.' + workText(vals));
     }
 
     return {
@@ -628,5 +648,5 @@ var Work = (function () {
     };
   }
 
-  return { create: create };
+  return { create: create, solutionHTML: solutionHTML };
 })();

@@ -1,11 +1,12 @@
 /* app.js: the steps, their order, saving, scoring.
  *
  * Mole conversions by dimensional analysis, for honors chemistry. Part 1 is
- * Mole Town (the map and its four roads) and four ungraded warm-ups, one per
- * road. Part 2 is the graded set: 12 problems of 1 to 3 steps in a mixed
- * order. A problem counts when it is right before Show solution is pressed
- * (as in the dimensional analysis mixed challenge); hints and checking again
- * are free. Part 3 is the results.
+ * the mole map (its roads) and an ungraded warm-up per road (four, or five
+ * with the molarity road). Part 2 is the graded set in a mixed order: 12
+ * problems of 1 to 3 steps, or 14 of 1 to 4 in the molarity version. A
+ * problem counts when it is right before Show solution is pressed (as in the
+ * dimensional analysis mixed challenge); hints and checking again are free.
+ * Part 3 is the results, with every problem's worked solution typeset.
  */
 
 var App = (function () {
@@ -14,41 +15,46 @@ var App = (function () {
   /* Bump whenever the steps, the problem plan, a substance or an atomic mass
      changes: a save from an older release is then discarded and the student
      starts fresh. */
-  var SCHEMA = 1;
+  var SCHEMA = 2;
 
   var h = UI.h;
 
   var PARTS = [
-    { n: 1, name: 'Mole Town warm-up' },
+    { n: 1, name: 'Mole map warm-up' },
     { n: 2, name: 'Mixed problems' },
     { n: 3, name: 'Results' }
   ];
 
   var STEPS = [
-    { id: 'map', part: 1, kind: 'map', title: 'Mole Town',
-      text: 'Every road in Mole Town goes through moles. Tap each of the four roads around moles of CO₂ to see the ' +
-            'equality it stands for. Those equalities are the conversion factors you will use.' },
+    { id: 'map', part: 1, kind: 'map', title: 'The mole map',
+      text: 'Every road on the mole map goes through moles. Tap each road around moles of ' + (CONFIG.molarity ? 'NH₃' : 'CO₂') +
+            ' to see the equality it stands for. Those equalities are the conversion factors you will use.' },
     { id: 'w-mass', part: 1, kind: 'warm', title: 'The mass road',
       text: 'Mass and moles: ___ g = 1 mol, where the blank is the molar mass. Tap the equality to put it in the chain, flip it ' +
             'if g does not cancel, then type the molar mass in its blank: the atomic masses added up, each to the tenths place ' +
             '(Periodic table button). Then work out the number. Not graded.' },
     { id: 'w-part', part: 1, kind: 'warm', title: 'The particle road',
-      text: 'Particles and moles: 6.022 × 10²³ particles = 1 mol. Atoms for an element like Fe, molecules for O₂ or a ' +
+      text: 'Particles and moles: 6.02 × 10²³ particles = 1 mol. Atoms for an element like Fe, molecules for O₂ or a ' +
             'molecular compound like H₂O. For a big number press ×10ⁿ and type the power. Not graded.' },
-    { id: 'w-stp', part: 1, kind: 'warm', title: 'The 22.4 L road',
-      text: 'Volume and moles: 22.4 L = 1 mol, for a gas at STP (0 °C and 1 atm) only. Not graded.' },
+    { id: 'w-stp', part: 1, kind: 'warm', title: 'The L of gas road',
+      text: 'L of gas and moles: 22.4 L = 1 mol, for a gas at STP (0 °C and 1 atm) only. Not graded.' },
     { id: 'w-ratio', part: 1, kind: 'warm', title: 'The ratio road',
       text: 'Moles of a compound and moles of an element in it: the formula gives the ratio. SBr₂ has 2 Br atoms, so ' +
             '1 mol SBr₂ = 2 mol Br. Type the number from the formula in the blank. Units of different substances never ' +
             'cancel: mol SBr₂ is not mol Br. Not graded.' },
+    CONFIG.molarity ? { id: 'w-sol', part: 1, kind: 'warm', title: 'The molarity road',
+      text: 'L of solution and moles: the molarity in the problem is the equality. 0.350 mol/L means 1 L of solution = 0.350 mol. ' +
+            'It is printed on the equality for you; flip it if L of solution does not cancel. L of solution is not L of gas: only a gas ' +
+            'uses 22.4 L. Not graded.' } : null,
     { id: 'set', part: 2, kind: 'set', title: 'Mixed problems',
-      text: '12 problems of 1, 2 and 3 steps, in a mixed order. A problem counts if you get it right before you press Show ' +
-            'solution. Hints are free, and so is checking again.' },
+      text: Gen.SET_PLAN.length + ' problems of 1 to ' + (CONFIG.molarity ? 4 : 3) + ' steps, in a mixed order. A problem counts if you ' +
+            'get it right before you press Show solution. Hints are free, and so is checking again.' },
     { id: 'results', part: 3, kind: 'results', title: 'Results', text: '' }
-  ];
+  ].filter(Boolean);
 
   var GRADED = Gen.SET_PLAN.length;
-  var ROAD_GOAL = ['A:mm', 'A:av', 'A:stp', 'ratio'];
+  var ROAD_GOAL = ['A:mm', 'A:av', 'A:stp', 'ratio'].concat(CONFIG.molarity ? ['A:sol'] : []);
+  var ROAD_WORD = ROAD_GOAL.length === 4 ? 'four' : 'five';
 
   var el = {};
   var state = null;
@@ -194,24 +200,28 @@ var App = (function () {
 
   var RENDER = {};
 
-  /* ---- Mole Town: tap each road */
+  /* ---- the mole map: tap each road */
 
   RENDER.map = function () {
-    var A = 'CO2', B = 'O';
+    /* the example substance has every road: CO2 (or NH3, which also dissolves) */
+    var mol = CONFIG.molarity;
+    var A = mol ? 'NH3' : 'CO2', B = mol ? 'H' : 'O', a = Chem.disp(A), n = Chem.ratio(A, B);
     var EQ = {
-      'A:mm': ['44.0 g CO₂ = 1 mol CO₂', 'The periodic table road. The molar mass is the atomic masses added up, each to the tenths place: ' +
-               '12.0 + 2(16.0) = 44.0. In the problems this number is a blank that you fill in.'],
-      'A:av': [Chem.AV_TEXT + ' molecules CO₂ = 1 mol CO₂', 'Avogadro’s number road. 1 mol of anything is 6.022 × 10²³ of its ' +
-               'particles: molecules of CO₂, atoms of O.'],
-      'A:stp': ['22.4 L CO₂ = 1 mol CO₂', 'The 22.4 L road. 1 mol of any gas at STP (0 °C and 1 atm) takes up 22.4 L. Only a gas ' +
-                'has this road.'],
-      'ratio': ['1 mol CO₂ = 2 mol O', 'The ratio road. The formula CO₂ has 2 O atoms, so 1 mol CO₂ holds 2 mol O. In the ' +
-                'problems this number is a blank that you fill in.'],
-      'B:mm': ['16.0 g O = 1 mol O', 'The periodic table road again, for the element: the atomic mass of O to the tenths place.'],
-      'B:av': [Chem.AV_TEXT + ' atoms O = 1 mol O', 'Avogadro’s number again: 1 mol of O atoms.']
+      'A:mm': [Chem.mmText(A) + ' g ' + a + ' = 1 mol ' + a, 'The periodic table road. The molar mass is the atomic masses added up, ' +
+               'each to the tenths place: ' + Chem.mmWork(A) + '. In the problems this number is a blank that you fill in.'],
+      'A:av': [Chem.AV_TEXT + ' molecules ' + a + ' = 1 mol ' + a, 'Avogadro’s number road. 1 mol of anything is 6.02 × 10²³ of its ' +
+               'particles: molecules of ' + a + ', atoms of ' + B + '.'],
+      'A:stp': ['22.4 L ' + a + ' gas = 1 mol ' + a, 'The L of gas road. 1 mol of any gas at STP (0 °C and 1 atm) takes up 22.4 L. ' +
+                'Only a gas has this road.'],
+      'A:sol': ['1 L ' + a + ' solution = 1.50 mol ' + a, 'The molarity road. A problem gives the molarity, here 1.50 mol/L: every ' +
+                '1 L of solution holds 1.50 mol. L of solution is not L of gas.'],
+      'ratio': ['1 mol ' + a + ' = ' + n + ' mol ' + B, 'The ratio road. The formula ' + a + ' has ' + n + ' ' + B + ' atoms, so 1 mol ' + a +
+                ' holds ' + n + ' mol ' + B + '. In the problems this number is a blank that you fill in.'],
+      'B:mm': [Chem.mmText(B) + ' g ' + B + ' = 1 mol ' + B, 'The periodic table road again, for the element: the atomic mass of ' + B + ' to the tenths place.'],
+      'B:av': [Chem.AV_TEXT + ' atoms ' + B + ' = 1 mol ' + B, 'Avogadro’s number again: 1 mol of ' + B + ' atoms.']
     };
     var list = h('ul', { class: 'roadlist' });
-    var map = MoleMap.create({ A: A, B: B, interactive: true, onRoad: function (id) {
+    var map = MoleMap.create({ A: A, B: B, solution: mol, sol: mol, interactive: true, onRoad: function (id) {
       if (!EQ[id]) return;
       state.seen[id] = 1;
       paint();
@@ -228,12 +238,12 @@ var App = (function () {
         list.appendChild(h('li', null, [h('b', { text: EQ[id][0] })]));
       });
       var left = ROAD_GOAL.filter(function (r) { return !state.seen[r]; }).length;
-      count.textContent = left ? left + ' of the four roads around moles of CO₂ still to tap.' :
-        'All four roads found. Every conversion today is a trip along these roads, one factor per road.';
+      count.textContent = left ? left + ' of the ' + ROAD_WORD + ' roads around moles of ' + a + ' still to tap.' :
+        'All ' + ROAD_WORD + ' roads found. Every conversion today is a trip along these roads, one factor per road.';
     }
     var count = h('p', { class: 'muted' });
     el.stage.appendChild(h('div', { class: 'mapstep' }, [
-      panel('The map', 'A is CO₂, B is O, an element in it', [map.el]),
+      panel('The mole map', 'A is ' + a + ', B is ' + B + ', an element in it', [map.el]),
       panel('Equalities found', null, [count, list, h('p', { class: 'muted', text: 'Each road is one conversion factor. To get anywhere ' +
         'you go through moles: mass to particles is two roads, mass of a compound to atoms of an element in it is three.' })])
     ]));
@@ -319,7 +329,7 @@ var App = (function () {
     }
     var list = problems();
     var right = correctCount(), pct = Math.round(100 * right / GRADED), best = Math.round(state.best || 0);
-    var bySteps = [1, 2, 3].map(function (n) {
+    var bySteps = [1, 2, 3, 4].filter(function (n) { return list.some(function (p) { return p.steps === n; }); }).map(function (n) {
       var idx = list.map(function (p, i) { return p.steps === n ? i : -1; }).filter(function (i) { return i >= 0; });
       var r = idx.filter(solved).length;
       return h('tr', null, [h('td', { text: n + '-step problems' }), h('td', { class: 'num', text: r + ' / ' + idx.length })]);
@@ -336,26 +346,34 @@ var App = (function () {
     var review = h('ol', { class: 'q-review' }, list.map(function (p, i) {
       var w = state.p[i] || {};
       var ok = w.r === 1 || w.r === 2;
+      var how = h('div', { class: 'review-solution' });
+      how.innerHTML = Work.solutionHTML(p, p.path, {});
       return h('li', { class: ok ? 'right' : 'wrong' }, [
         h('span', { class: 'mark', text: w.r === 2 ? '★' : ok ? '✓' : '–' }),
-        h('span', null, ['Convert ' + p.fromText + ' to ' + p.toText + ': ', h('b', { text: p.ansStr + ' ' + p.toText }),
-          ok ? '' : h('span', { class: 'muted', text: '  (solution shown)' })])
+        h('div', { class: 'review-body' }, [
+          h('span', null, [p.promptText + ' ', h('b', { text: p.ansStr + ' ' + p.toText }),
+            ok ? '' : h('span', { class: 'muted', text: '  (solution shown)' })]),
+          h('details', null, [h('summary', { text: 'Worked solution' }), how])
+        ])
       ]);
     }));
     var ideas = panel('Big ideas', null, [h('ul', { class: 'keylist' }, [
-      'Moles are the centre of Mole Town: every road goes through moles.',
+      'Moles are the centre of the mole map: every road goes through moles.',
       'Mass and moles: ___ g = 1 mol, the molar mass, which is the atomic masses added up to the tenths place.',
-      'Particles and moles: 6.022 × 10²³ particles = 1 mol (atoms of an element, molecules of a molecular substance).',
-      'Volume and moles: 22.4 L = 1 mol, for a gas at STP only.',
+      'Particles and moles: 6.02 × 10²³ particles = 1 mol (atoms of an element, molecules of a molecular substance).',
+      'L of gas and moles: 22.4 L = 1 mol, for a gas at STP only.',
+      CONFIG.molarity ? 'L of solution and moles: the molarity is the equality, 0.350 mol/L means 1 L of solution = 0.350 mol. ' +
+        'Change mL to L first (1000 mL = 1 L).' : null,
       'Moles of a compound and moles of an element in it: the ratio from the formula, 1 mol SBr₂ = 2 mol Br.',
       'Turn each equality so the unit you have is on the bottom; it cancels the same unit on top. Different substances never cancel.',
-      'Every equality counts as exact: the quantity you were given decides the significant figures.'
-    ].map(function (t) { return h('li', { text: t }); }))]);
+      CONFIG.molarity ? 'Every equality counts as exact except the molarity, a measurement: the answer keeps the significant figures ' +
+        'of the quantity and the molarity you were given.' : 'Every equality counts as exact: the quantity you were given decides the significant figures.'
+    ].filter(Boolean).map(function (t) { return h('li', { text: t }); }))]);
     el.stage.appendChild(h('div', { class: 'grid2' }, [box, ideas]));
     el.stage.appendChild(panel('Your problems', '★ right on the first check, ✓ right, – solution shown', [review]));
     var again = h('button', { type: 'button', class: 'primary', text: 'Start a new attempt' });
     var sure = h('div', { class: 'confirm', hidden: true }, [
-      h('p', { text: 'This gives you 12 new problems and new warm-ups. Your best score so far (' + Math.max(best, pct) +
+      h('p', { text: 'This gives you ' + GRADED + ' new problems and new warm-ups. Your best score so far (' + Math.max(best, pct) +
                      '%) stays in the gradebook.' }),
       h('div', { class: 'btnrow' }, [
         h('button', { type: 'button', class: 'primary', text: 'Yes, start again', onclick: newAttempt }),
@@ -373,17 +391,20 @@ var App = (function () {
 
   function showIntro() {
     var box = h('div', { class: 'screen-box', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'introTitle' }, [
-      h('h2', { id: 'introTitle', text: 'Mole conversions: dimensional analysis' }),
-      h('p', { text: 'Convert grams, particles and litres of gas at STP to moles and back, and use the ratio from a formula to go ' +
-                     'from a compound to an element in it. Build each conversion from equalities: tap one to put it in the chain, ' +
-                     'flip it until its units cancel, fill in its blank, then work out the number.' }),
+      h('h2', { id: 'introTitle', text: document.title }),
+      h('p', { text: 'Convert grams, particles and L of gas at STP' + (CONFIG.molarity ? ', and L or mL of a solution of known molarity,' : '') +
+                     ' to moles and back, and use the ratio from a formula to go from a compound to an element in it. Build each ' +
+                     'conversion from equalities: tap one to put it in the chain, flip it until its units cancel, fill in its blank, ' +
+                     'then work out the number.' }),
       h('ul', { class: 'screen-list' }, [
         h('li', { text: 'The molar mass equality has a blank: type the molar mass, to the tenths place, from the periodic table.' }),
         h('li', { text: 'The ratio equality has a blank too: the number from the formula (1 mol SBr₂ = 2 mol Br).' }),
-        h('li', { text: 'Round your answer to the significant figures of the quantity you were given. The equalities count as exact.' })
+        CONFIG.molarity ? h('li', { text: 'A molarity in the problem (0.350 mol/L) is printed on its equality: 1 L solution = 0.350 mol.' }) : null,
+        h('li', { text: 'Round your answer to the significant figures of the quantity you were given' + (CONFIG.molarity ? ' (and its molarity)' : '') +
+                        '. The other equalities count as exact.' })
       ]),
-      h('p', { text: 'The map and four warm-ups are not graded. Then 12 mixed problems are: each counts if you get it right before ' +
-                     'pressing Show solution. About 25 minutes. Your progress is saved if you leave.' }),
+      h('p', { text: 'The map and ' + Gen.WARM.length + ' warm-ups are not graded. Then ' + GRADED + ' mixed problems are: each counts if ' +
+                     'you get it right before pressing Show solution. About ' + CONFIG.minutes + ' minutes. Your progress is saved if you leave.' }),
       h('p', { class: 'screen-note', text: 'Everything works with a mouse, a touch screen or the keyboard (Tab to an equality, Enter to add it).' })
     ]);
     var go = h('button', { type: 'button', class: 'primary', text: state.max > 0 ? 'Continue where you left off' : 'Start' });

@@ -26,7 +26,8 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `chemistry/imfs/intermolecular-forces-scorm/` | IMFs: heating stage with real mp/bp, LDF and polarizability, dipole-dipole, hydrogen bonds (follows VSEPR) |
 | `chemistry/imfs/intermolecular-forces-liquids-scorm/` | The same IMF activity plus a part 6, properties of liquids: surface tension, viscosity, evaporation rate (about 40 min) |
 | `chemistry/imfs/properties-of-liquids-scorm/` | That part 6 on its own: surface tension, viscosity, evaporation rate of bigger molecules (about 15 min) |
-| `chemistry/moles/mole-conversions-scorm/` | Mole conversions by dimensional analysis: typed molar mass (tenths) and ratio blanks, Mole Town map, 12 mixed 1- to 3-step problems (about 25 min) |
+| `chemistry/moles/mole-conversions-scorm/` | Mole conversions by dimensional analysis: typed molar mass (tenths) and ratio blanks, the mole map, 12 mixed 1- to 3-step problems, typeset (LaTeX) solutions (about 25 min) |
+| `chemistry/moles/mole-conversions-molarity-scorm/` | The same with molarity: L and mL of solution, the mol/L from the prompt as an equality, 14 mixed 1- to 4-step problems (about 30 min) |
 
 **AP chemistry**
 
@@ -54,7 +55,7 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `organic-chemistry/reactivity-mechanisms/arrow-pushing-scorm/` | Klein 6, before SN1/SN2: bond breaking and making, ΔG, energy diagrams, nucleophiles and electrophiles, drawing curved arrows, the four patterns (about 45 min) |
 | `organic-chemistry/substitution-elimination/substitution-elimination-scorm/` | SN1, SN2, E1 and E2: reagent function, mechanisms with curved arrows, regio- and stereochemistry, rings, predicting products (about 50 min) |
 
-**Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions), arrow pushing and mole conversions contains em
+**Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions), arrow pushing and mole conversions (both) contains em
 dashes (the Lewis, resonance and drawing-tool validators allow them). The mass spec, IR + mass spec, NMR,
 naming, acids and ionization energy packages still load a browser save inside an LMS when
 `cmi.suspend_data` is empty (fixed in IR, Newman, chairs, chirality, Lewis and resonance). Only Newman,
@@ -452,25 +453,44 @@ not the full page.
   (`POL_*`), save key (`properties-of-liquids-state`) and zip. `SUBSTANCES` holds only the eight liquids.
   A fix to part 6 in either package usually belongs in the other.
 
-## mole-conversions-scorm (branch `claude/adoring-gates-n85a6r`, zip v1, SCHEMA 1)
+## mole-conversions-scorm (zip v2, SCHEMA 2) and mole-conversions-molarity-scorm (zip v1, SCHEMA 2)
 
 - **Key objective:** fluency with mole conversions by dimensional analysis (no story problems), in the style of the
   dimensional analysis mixed challenge (`to-merge/.../DimAnalysis-6-Mixed-Challenge/`, the teacher's): tap or drag an
   equality chip into the chain, left side on top, flip it, units strike through, Check, Hint, Show solution.
-- 7 steps: Mole Town (tap the four roads), four ungraded one-road warm-ups, the graded set of 12 (3 one-step, 5 two-step,
-  4 three-step, mixed order, never starting with a three-step one; at least 4 use the ratio, 2 use 22.4 L), results.
+- **Two packages, one code base.** Every file in `src/js` (except `config.js`), `src/css` and `tools/` is identical in
+  both, and each validator fails if they differ: make a fix in one and copy it to the other. `config.js` holds
+  `molarity`, the save key and the minutes; the page title, manifest (`MOLECONV_*`, `MOLECONVM_*`), README, answer key
+  and zip are per package.
+- **Basic:** 7 steps: the mole map (tap the four roads), four ungraded one-road warm-ups, the graded set of 12 (3 one-,
+  5 two-, 4 three-step), results. **Molarity:** 8 steps (a fifth road and warm-up, mol/L) and 14 graded (4, 5, 4 and one
+  four-step), 4 of them with a molarity and 2 of those in mL. Mixed order, never starting with more than one step.
 - **Teacher's choices:** the molar-mass chip has a blank (`___ g X = 1 mol X`), typed **to the tenths place**; the ratio
   chip has a blank too (`1 mol SBr2 = ___ mol Br`, the teacher's moles-to-moles step). The on-screen periodic table shows
   masses to tenths; also accepted: full masses rounded at the end (CCl4 153.8 as well as 154.0) and a two-decimal table's
-  tenths (Fe 55.9, Cu 63.6); the answer is checked against the typed molar mass. All equalities exact (sig figs from the
-  given only). A problem counts if right before Show solution (which asks to confirm); hints and re-checks are free.
-- **Teacher's map (Mole Town, `map.js`):** volume at STP above moles of A, particles left, mass right, ratio down to moles
-  of B (an element counted in A). 22.4 L only for gases at STP (boiling points in the validator). Particles: atoms of an
-  element, molecules of a diatomic or molecular substance; ionic compounds are never counted in particles, so "formula
-  unit" never appears (the validator bans it). Units carry their substance: mol SBr2 never cancels mol Br.
+  tenths (Fe 55.9, Cu 63.6, Ar 40.0); the answer is checked against the typed molar mass. **Avogadro's number is
+  6.02 × 10²³** (the class's rounding; the validator bans 6.022). All equalities exact (sig figs from the given only),
+  except a molarity, which is always given with the volume's sig figs. A problem counts if right before Show solution
+  (which asks to confirm); hints and re-checks are free.
+- **Words:** "the mole map", never "Mole Town" (the teacher shares it with peers); "L of gas" (22.4 L, STP) and "L of
+  solution" (mol/L), never "L at STP"; molarity written mol/L, its chip printed from the prompt
+  (`1 L KCl solution = 0.350 mol KCl`); mL as on the class sheet (350. mL), 1000 mL = 1 L. Every prompt names the
+  substance and gives its formula ("9.340 g of sulfur dibromide, SBr2"), as on the class's practice sheets; the chain
+  and chips use formulas. Names: prefixes, Roman numerals only for Fe and Cu, "sodium hydrogen carbonate", American
+  spelling; the validator names every compound again. Particles: atoms or molecules; ionic compounds are never counted
+  in particles, so "formula unit" never appears.
+- **The mole map (`map.js`):** L of gas above moles of A (L of solution beside it in the molarity version, slanted
+  roads), particles left, mass right, ratio down to moles of B (an element counted in A). 22.4 L only for gases at STP
+  (boiling points in the validator); solutions only for the 25 substances marked `aq`, at no more than `maxM`, half the
+  real solubility (held in the validator). Units carry their substance: mol SBr2 never cancels mol Br.
+- **Worked solutions in LaTeX:** `Chem.texChain` and `Chem.texMM` write them; `tex.js` turns that LaTeX subset into
+  MathML for the browser to typeset (no library, no fonts; `\cancel` is a CSS stroke because Chrome has no MathML
+  strike). Shown after a right answer, after Show solution and on the results page; `ANSWER_KEY.md` has `$$ ... $$` blocks.
+  The validator renders every solution and checks two cancelled units per step.
 - **One model:** `chem.js` reads formulas, rounds standard atomic weights (strings, exact) to tenths, lists accepted molar
   masses and likely slips (subscripts, brackets, atomic numbers, an element left out, a miscount), cancels units and judges
-  every blank and answer. `problems.js` builds the set and warm-ups from a seed (`Gen.set`, `Gen.warm`); the validator
-  checks 400 seeds against a direct mole calculation and the teacher's Moles formative quiz worked by hand.
-- **Files:** `elements.js`, `substances.js`, `chem.js`, `problems.js`, `map.js`, `ptable.js` (docked table), `work.js` (one
-  problem), `scorm.js`, `app.js`. Its own SCORM ids (`MOLECONV_*`), save key (`mole-conversions-state`) and zip.
+  every blank and answer. `problems.js` builds the set and warm-ups from a seed (`Gen.set`, `Gen.warm`; plans in
+  `PLANS`); the validator checks 400 seeds against a direct mole calculation and the teacher's Moles formative quiz.
+- **Layout:** a long chain wraps onto a second row; below 1300 px the mole map goes under the work. Pools hold at most 8.
+- **Files:** `config.js`, `elements.js`, `substances.js`, `chem.js`, `problems.js`, `tex.js`, `map.js`, `ptable.js` (docked
+  table), `work.js` (one problem, `Work.solutionHTML`), `scorm.js` (save key from config), `app.js`.

@@ -7,21 +7,32 @@
  *   tenths place (the textbook values below), or an accepted alternative is
  *   not what a two-decimal table gives (Fe 55.9, Cu 63.6);
  * - a formula is read differently from the independent count below, or a
- *   molar mass differs from the tenths added up by hand;
+ *   molar mass differs from the tenths added up by hand, or a name differs
+ *   from the one built again here from its ions or prefixes;
  * - a substance is called a gas without boiling below 0 °C (or the other way
  *   round), or its kind (element, diatomic, molecular, ionic) is wrong;
- * - the teacher's formative quiz does not come out as worked by hand;
+ * - the teacher's formative quiz does not come out as worked by hand (with
+ *   Avogadro's number as the class rounds it, 6.02 x 10^23);
+ * - a substance offered as a solution is not soluble enough: every maxM must
+ *   be half of the real solubility or less, and every molarity at most maxM,
+ *   with as many significant figures as the volume;
  * - over many seeds, a set is not 3 one-step, 5 two-step and 4 three-step
  *   problems starting with a one-step one, uses the ratio fewer than 4 times
  *   or 22.4 L fewer than 2, repeats a substance, offers an untrue equality
  *   (22.4 L for a non-gas, particles of an ionic compound, a wrong ratio),
  *   has a shorter route than its step count, or an answer that differs from
  *   a direct mole calculation; or a given quantity or an answer shows the
- *   wrong number of significant figures;
+ *   wrong number of significant figures (in the molarity version: 14 problems,
+ *   4 one-, 5 two-, 4 three- and 1 four-step, 4 with a molarity, 2 in mL);
+ * - a worked solution's LaTeX does not typeset (Tex.toMathML) to balanced
+ *   MathML;
  * - the judges refuse a right molar mass, ratio or answer, or accept a slip;
  * - the manifest, the storage key or the SCORM identifiers clash, a path is
  *   absolute, something loads from the network, or any file contains an em
- *   dash or the words "formula unit".
+ *   dash, the words "formula unit", "Mole Town" (it is the mole map) or
+ *   "L at STP" (it is L of gas), or 6.022;
+ * - a file the two mole conversion packages share differs between them
+ *   (everything in src/js and tools except config.js, and the stylesheet).
  */
 const fs = require('fs');
 const path = require('path');
@@ -41,18 +52,19 @@ vm.createContext(ctx);
 const html = fs.readFileSync(path.join(src, 'index.html'), 'utf8');
 const scripts = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map((m) => m[1]);
 scripts.forEach((f) => vm.runInContext(fs.readFileSync(path.join(src, f), 'utf8'), ctx, { filename: f }));
-const { ELEMENTS, SUBSTANCES, Chem, Gen, App } = ctx;
+const { ELEMENTS, SUBSTANCES, Chem, Gen, App, Tex, CONFIG } = ctx;
+const AVO = 6.02e23;
 
 /* ------------------------------------------------------------- elements */
 
 /* Tenths values from a standard periodic table, for every element used. */
 const TENTHS = {
   H: 1.0, He: 4.0, C: 12.0, N: 14.0, O: 16.0, F: 19.0, Ne: 20.2, Na: 23.0, Mg: 24.3, Al: 27.0, Si: 28.1, P: 31.0,
-  S: 32.1, Cl: 35.5, K: 39.1, Ca: 40.1, Fe: 55.8, Ni: 58.7, Cu: 63.5, Zn: 65.4, Br: 79.9, Kr: 83.8, Ag: 107.9,
-  Sn: 118.7, I: 126.9, Au: 197.0, Pb: 207.2
+  S: 32.1, Cl: 35.5, Ar: 39.9, K: 39.1, Ca: 40.1, Cr: 52.0, Fe: 55.8, Ni: 58.7, Cu: 63.5, Zn: 65.4, Ga: 69.7, Br: 79.9,
+  Kr: 83.8, Ag: 107.9, Sn: 118.7, I: 126.9, Ba: 137.3, Au: 197.0, Pb: 207.2
 };
-/* where a two-decimal table (55.85, 63.55) rounds to a different tenth */
-const ALT = { Fe: 55.9, Cu: 63.6 };
+/* where a two-decimal table (55.85, 63.55, 39.95) rounds to a different tenth */
+const ALT = { Fe: 55.9, Cu: 63.6, Ar: 40.0 };
 
 const used = new Set();
 SUBSTANCES.forEach((s) => Object.keys(Chem.sp(s.f).counts).forEach((x) => used.add(x)));
@@ -98,11 +110,11 @@ const same = (a, b) => JSON.stringify(Object.keys(a).sort().map((k) => [k, a[k]]
 
 /* Boiling (or subliming) point at 1 atm, °C: below 0 means a gas at STP. */
 const BP = {
-  He: -269, Ne: -246, Kr: -153, H2: -253, N2: -196, O2: -183, F2: -188, Cl2: -34, Br2: 59, I2: 184,
+  He: -269, Ne: -246, Ar: -186, Kr: -153, H2: -253, N2: -196, O2: -183, F2: -188, Cl2: -34, Br2: 59, I2: 184,
   CO2: -78, CO: -191, CH4: -162, NH3: -33, SO2: -10, N2O: -88, C2H6: -89, C3H8: -42, H2S: -60, HCl: -85, SF6: -64,
   H2O: 100, PCl3: 76, SBr2: 60, CCl4: 77, N2O5: 33, P4O10: 360, C8H18: 126
 };
-const METALS = new Set(['Li', 'Na', 'K', 'Mg', 'Ca', 'Al', 'Fe', 'Ni', 'Cu', 'Zn', 'Ag', 'Sn', 'Au', 'Pb']);
+const METALS = new Set(['Li', 'Na', 'K', 'Mg', 'Ca', 'Ba', 'Al', 'Ga', 'Cr', 'Fe', 'Ni', 'Cu', 'Zn', 'Ag', 'Sn', 'Au', 'Pb']);
 const DIATOMIC = new Set(['H2', 'N2', 'O2', 'F2', 'Cl2', 'Br2', 'I2']);
 
 const keys = new Set();
@@ -133,6 +145,61 @@ SUBSTANCES.forEach((s) => {
   if (sp.kind === 'ionic' && sp.part) bad(s.f + ': an ionic compound must not be counted in particles');
 });
 
+
+/* ---------------------------------------------------------------- names */
+
+const CATION = { Na: 'sodium', K: 'potassium', Mg: 'magnesium', Ca: 'calcium', Ba: 'barium', Al: 'aluminum', Ga: 'gallium',
+  Zn: 'zinc', Fe: 'iron', Cu: 'copper', NH4: 'ammonium' };
+const CHARGE = { Na: 1, K: 1, Mg: 2, Ca: 2, Ba: 2, Al: 3, Ga: 3, Zn: 2, NH4: 1 };
+const ANION = { Cl: ['chloride', 1], Br: ['bromide', 1], F: ['fluoride', 1], O: ['oxide', 2], SO4: ['sulfate', 2],
+  CO3: ['carbonate', 2], HCO3: ['hydrogen carbonate', 1], NO3: ['nitrate', 1], PO4: ['phosphate', 3], OH: ['hydroxide', 1],
+  C2H3O2: ['acetate', 1] };
+const ROMAN = ['', 'I', 'II', 'III', 'IV'];
+function ionicName(f) {
+  const m = /^(\(NH4\)|[A-Z][a-z]?)(\d*)(.+)$/.exec(f);
+  const cat = m[1].replace(/[()]/g, ''), nc = +(m[2] || 1);
+  let an, na;
+  const g = /^\(([^()]+)\)(\d+)$/.exec(m[3]);
+  if (g) { an = g[1]; na = +g[2]; }
+  else if (ANION[m[3]]) { an = m[3]; na = 1; }
+  else { const e = /^([A-Z][a-z]?)(\d*)$/.exec(m[3]); an = e[1]; na = +(e[2] || 1); }
+  if (!CATION[cat] || !ANION[an]) return null;
+  const charge = ANION[an][1] * na / nc;
+  if (CHARGE[cat] && CHARGE[cat] !== charge) return 'charges do not balance';
+  return CATION[cat] + (CHARGE[cat] ? '' : '(' + ROMAN[charge] + ')') + ' ' + ANION[an][0];
+}
+const PREFIX = ['', 'mono', 'di', 'tri', 'tetra', 'penta', 'hexa', 'hepta', 'octa', 'nona', 'deca'];
+const ROOT = { O: 'ox', S: 'sulf', Cl: 'chlor', Br: 'brom', F: 'fluor', N: 'nitr', P: 'phosph' };
+function prefixName(f) {
+  const parts = [...f.matchAll(/([A-Z][a-z]?)(\d*)/g)].map((m) => [m[1], +(m[2] || 1)]);
+  if (parts.length !== 2) return null;
+  const [[a, na], [b, nb]] = parts;
+  const second = (PREFIX[nb] + ROOT[b] + 'ide').replace(/([ao])oxide$/, 'oxide');
+  return (na > 1 ? PREFIX[na] : '') + ELEMENTS[a].name + ' ' + second;
+}
+const COMMON = { H2O: 'water', NH3: 'ammonia', CH4: 'methane', C2H6: 'ethane', C3H8: 'propane', C8H18: 'octane',
+  C6H12O6: 'glucose', C12H22O11: 'sucrose', H2S: 'hydrogen sulfide', HCl: 'hydrogen chloride' };
+SUBSTANCES.forEach((s) => {
+  const sp = Chem.sp(s.f);
+  const want = s.kind === 'element' || s.kind === 'diatomic' ? ELEMENTS[Object.keys(sp.counts)[0]].name
+    : COMMON[s.f] || (s.kind === 'ionic' ? ionicName(s.f) : prefixName(s.f));
+  if (sp.name !== want) bad(s.f + ' is named "' + sp.name + '", expected "' + want + '"');
+});
+
+/* ------------------------------------------------------------ solubility */
+
+/* Solubility in water near 20 \u00B0C, mol per litre of saturated solution (rounded down). */
+const SOL = {
+  NH3: 15, C6H12O6: 3.2, C12H22O11: 2.6, NaCl: 5.4, KCl: 4.0, CaCl2: 5.0, MgCl2: 4.5, AlCl3: 3.0, GaCl3: 5.0, KBr: 4.5,
+  Na2SO4: 1.8, K2SO4: 0.6, Na2CO3: 1.8, K2CO3: 5.5, NaHCO3: 1.1, NaNO3: 6.5, CuSO4: 1.2, K3PO4: 3.0, 'Mg(NO3)2': 3.6,
+  'Ca(NO3)2': 5.0, 'Zn(NO3)2': 4.0, 'Ba(NO3)2': 0.4, 'Al(NO3)3': 2.6, 'Ca(C2H3O2)2': 2.0, '(NH4)2SO4': 4.0
+};
+SUBSTANCES.forEach((s) => {
+  if (!s.aq) return;
+  if (!(s.f in SOL)) bad(s.f + ' is offered as a solution with no solubility to check');
+  else if (!(s.maxM > 0 && s.maxM <= SOL[s.f] / 2 + 1e-9)) bad(s.f + ': maxM ' + s.maxM + ' is over half its solubility, ' + SOL[s.f] + ' mol/L');
+});
+
 /* ---------------------------------------------------- the teacher's quiz */
 
 function solveText(fromTok, toTok, given, sig) {
@@ -145,7 +212,7 @@ function solveText(fromTok, toTok, given, sig) {
   ['L|He', 'mol|He', 21.55, 4, 1, '0.9621'],
   ['g|Mg(NO3)2', 'mol|Mg(NO3)2', 53.0, 3, 1, '0.357'],
   ['part|PCl3', 'g|PCl3', 8.15e25, 3, 2, '1.86 × 10⁴'],
-  ['g|SBr2', 'part|Br', 9.340, 4, 3, '5.862 × 10²²']
+  ['g|SBr2', 'part|Br', 9.340, 4, 3, '5.860 \u00D7 10\u00B2\u00B2']
 ].forEach(([f, t, g, sig, steps, want]) => {
   const r = solveText(f, t, g, sig);
   if (r.text !== want || r.steps !== steps) bad('quiz anchor ' + f + ' to ' + t + ': ' + r.steps + ' steps, ' + r.text + '; expected ' + steps + ', ' + want);
@@ -190,17 +257,20 @@ if (Chem.judgeRatio('Mg(NO3)2', 'O', '3').kind !== 'brackets') bad('Mg(NO3)2 O r
 
 /* ------------------------------------------------------------ the problems */
 
-const plan = { 1: 3, 2: 5, 3: 4 };
+const plan = CONFIG.molarity ? { 1: 4, 2: 5, 3: 4, 4: 1 } : { 1: 3, 2: 5, 3: 4 };
 function direct(p) {
   /* moles of the start substance, across the ratio if needed, then the target unit */
   const f = Chem.untok(p.fromTok), t = Chem.untok(p.toTok);
   const M = (k) => Object.entries(countIndependent(k)).reduce((s, [x, n]) => s + n * TENTHS[x], 0);
-  let n = f.node === 'g' ? p.given.v / M(f.key) : f.node === 'part' ? p.given.v / 6.022e23 : f.node === 'L' ? p.given.v / 22.4 : p.given.v;
+  const molar = p.M ? parseFloat(p.M.str) : NaN;
+  let n = f.node === 'g' ? p.given.v / M(f.key) : f.node === 'part' ? p.given.v / AVO : f.node === 'L' ? p.given.v / 22.4
+    : f.node === 'Lsol' ? p.given.v * molar : f.node === 'mLsol' ? p.given.v / 1000 * molar : p.given.v;
   if (f.key !== t.key) {
     if (f.key === p.A) n = n * countIndependent(p.A)[t.key];
     else n = n / countIndependent(p.A)[f.key];
   }
-  return t.node === 'g' ? n * M(t.key) : t.node === 'part' ? n * 6.022e23 : t.node === 'L' ? n * 22.4 : n;
+  return t.node === 'g' ? n * M(t.key) : t.node === 'part' ? n * AVO : t.node === 'L' ? n * 22.4
+    : t.node === 'Lsol' ? n / molar : t.node === 'mLsol' ? n / molar * 1000 : n;
 }
 function checkProblem(p, where) {
   const A = Chem.sp(p.A);
@@ -218,7 +288,35 @@ function checkProblem(p, where) {
     if (e.type === 'stp' && !SUBSTANCES.some((s) => s.f === e.s)) bad(where + ': 22.4 L offered for an element inside a compound');
     if (e.type === 'av' && !Chem.sp(e.s).part) bad(where + ': particles offered for ' + e.s);
     if (e.type === 'ratio' && e.R.v !== countIndependent(e.a)[e.b]) bad(where + ': wrong ratio ' + id);
+    if (e.type === 'sol' && (!p.M || e.M !== p.M.str || e.s !== p.A)) bad(where + ': a molarity equality that is not the prompt\u2019s');
+    if (e.type === 'av' && e.L.v !== AVO) bad(where + ': Avogadro\u2019s number is not 6.02 x 10^23');
   });
+  const nodes = [Chem.untok(p.fromTok).node, Chem.untok(p.toTok).node];
+  const sol = nodes.some((x) => x === 'Lsol' || x === 'mLsol'), ml = nodes.includes('mLsol');
+  if (sol !== !!p.M) bad(where + ': a molarity without a solution, or the other way round');
+  if (sol !== p.pool.some((id) => /^sol:/.test(id))) bad(where + ': the molarity equality is missing or not needed');
+  if (ml !== p.pool.some((id) => /^ml:/.test(id))) bad(where + ': the 1000 mL = 1 L equality is missing or not needed');
+  if (sol && !CONFIG.molarity) bad(where + ': a solution problem in the basic version');
+  if (p.M) {
+    if (!Chem.sp(p.A).aq) bad(where + ': ' + p.A + ' is not offered as a solution');
+    if (Chem.sigFigsIn(p.M.str) !== p.given.sig) bad(where + ': the molarity ' + p.M.str + ' does not have ' + p.given.sig + ' significant figures');
+    if (!(p.M.v <= Chem.sp(p.A).maxM && p.M.v >= 0.01)) bad(where + ': molarity ' + p.M.str + ' out of range for ' + p.A);
+    if (p.promptText.indexOf(p.M.str + ' mol/L') < 0) bad(where + ': the prompt does not give the molarity');
+  }
+  if (!/^Convert /.test(p.promptText) || p.promptText.indexOf(Chem.sp(p.A).name) < 0) bad(where + ': the prompt does not name ' + p.A + ': ' + p.promptText);
+  /* the worked solution typesets */
+  try {
+    const tex = Chem.texChain(p.given.str, p.fromTok, p.path, {}, { answer: p.ansStr, toTok: p.toTok });
+    const mml = Tex.toMathML(tex, true);
+    const stack = [];
+    for (const m of mml.matchAll(/<(\/?)([a-z]+)[^>]*>/g)) {
+      if (!m[1]) stack.push(m[2]);
+      else if (stack.pop() !== m[2]) { bad(where + ': unbalanced MathML'); break; }
+    }
+    if (stack.length) bad(where + ': unclosed MathML');
+    if ((tex.match(/\\cancel/g) || []).length !== 2 * p.steps) bad(where + ': ' + (tex.match(/\\cancel/g) || []).length + ' cancelled units for ' + p.steps + ' steps');
+    p.path.forEach((t) => { if (Chem.edge(t.e).type === 'mm') Tex.toMathML(Chem.texMM(Chem.edge(t.e).s)); });
+  } catch (e) { bad(where + ': ' + e.message); }
   [p.fromTok, p.toTok].forEach((t) => {
     const u = Chem.untok(t);
     if (u.node === 'part' && !Chem.sp(u.key).part) bad(where + ': counts particles of ' + u.key);
@@ -248,8 +346,8 @@ function checkProblem(p, where) {
       if (!Chem.judgeAnswer(Chem.fmtSig(ex, p.given.sig), ex, p.given.sig).ok) bad(where + ': refused with molar mass ' + a / 10);
     });
   });
-  if (/—/.test(p.fromText + p.toText)) bad(where + ': em dash in a prompt');
-  if (/ L /.test(p.fromText + ' ') !== /at STP/.test(p.fromText)) bad(where + ': "at STP" missing or misplaced in ' + p.fromText);
+  if (/\u2014/.test(p.promptText)) bad(where + ': em dash in a prompt');
+  if (nodes.includes('L') !== /at STP/.test(p.promptText)) bad(where + ': "at STP" missing or misplaced in ' + p.promptText);
 }
 
 const SEEDS = 400;
@@ -257,9 +355,11 @@ for (let seed = 1; seed <= SEEDS; seed++) {
   const set = Gen.set(seed);
   if (JSON.stringify(set) !== JSON.stringify(Gen.set(seed))) bad('seed ' + seed + ': the set is not the same twice');
   if (set.length !== App.GRADED) bad('seed ' + seed + ': ' + set.length + ' problems');
-  const by = { 1: 0, 2: 0, 3: 0 };
+  const by = { 1: 0, 2: 0, 3: 0, 4: 0 };
   set.forEach((p) => { by[p.steps]++; });
-  [1, 2, 3].forEach((n) => { if (by[n] !== plan[n]) bad('seed ' + seed + ': ' + by[n] + ' problems of ' + n + ' steps'); });
+  [1, 2, 3, 4].forEach((n) => { if (by[n] !== (plan[n] || 0)) bad('seed ' + seed + ': ' + by[n] + ' problems of ' + n + ' steps'); });
+  const withM = set.filter((p) => p.M).length, withML = set.filter((p) => p.pool.some((id) => /^ml:/.test(id))).length;
+  if (withM !== (CONFIG.molarity ? 4 : 0) || withML !== (CONFIG.molarity ? 2 : 0)) bad('seed ' + seed + ': ' + withM + ' molarity problems, ' + withML + ' in mL');
   if (set[0].steps !== 1) bad('seed ' + seed + ': starts with a ' + set[0].steps + '-step problem');
   const ratio = set.filter((p) => p.path.some((t) => Chem.edge(t.e).type === 'ratio')).length;
   const stp = set.filter((p) => p.path.some((t) => Chem.edge(t.e).type === 'stp')).length;
@@ -274,7 +374,7 @@ for (let seed = 1; seed <= SEEDS; seed++) {
   Gen.WARM.forEach((w) => {
     const p = Gen.warm(seed, w);
     checkProblem(p, 'seed ' + seed + ' ' + w);
-    const road = { 'w-mass': 'mm', 'w-part': 'av', 'w-stp': 'stp', 'w-ratio': 'ratio' }[w];
+    const road = { 'w-mass': 'mm', 'w-part': 'av', 'w-stp': 'stp', 'w-ratio': 'ratio', 'w-sol': 'sol' }[w];
     if (p.steps !== 1 || Chem.edge(p.path[0].e).type !== road) bad('seed ' + seed + ' ' + w + ': not one step on the ' + road + ' road');
   });
 }
@@ -307,12 +407,30 @@ const repo = path.join(root, '..', '..', '..');
     else if (f === 'imsmanifest.xml' && path.resolve(p) !== path.resolve(src, 'imsmanifest.xml')) {
       const other = fs.readFileSync(p, 'utf8');
       ids.forEach((id) => { if (other.includes('"' + id + '"')) bad('SCORM identifier ' + id + ' is also in ' + p); });
-    } else if (f === 'scorm.js' && !p.startsWith(src)) {
-      if (fs.readFileSync(p, 'utf8').includes("'mole-conversions-state'")) bad('storage key also used in ' + p);
+    } else if ((f === 'scorm.js' || f === 'config.js') && !p.startsWith(src)) {
+      if (fs.readFileSync(p, 'utf8').includes("'" + CONFIG.store + "'")) bad('storage key ' + CONFIG.store + ' also used in ' + p);
     }
   });
 })(repo);
-if (!fs.readFileSync(path.join(src, 'js', 'scorm.js'), 'utf8').includes("'mole-conversions-state'")) bad('scorm.js does not use its own storage key');
+if (!/STORE = CONFIG\.store/.test(fs.readFileSync(path.join(src, 'js', 'scorm.js'), 'utf8'))) bad('scorm.js does not take its storage key from config.js');
+
+/* The two mole conversion packages share every file but config.js, the
+   page, the manifest and the docs: a fix in one belongs in the other. */
+const SIBLINGS = ['mole-conversions-scorm', 'mole-conversions-molarity-scorm'];
+const me = path.basename(path.resolve(root));
+const sib = SIBLINGS.filter((x) => x !== me)[0];
+const sibRoot = path.join(root, '..', sib);
+if (SIBLINGS.includes(me) && fs.existsSync(sibRoot)) {
+  const shared = [];
+  fs.readdirSync(path.join(src, 'js')).forEach((f) => { if (f !== 'config.js') shared.push('src/js/' + f); });
+  fs.readdirSync(path.join(root, 'tools')).forEach((f) => shared.push('tools/' + f));
+  shared.push('src/css/styles.css');
+  shared.forEach((rel) => {
+    const other = path.join(sibRoot, rel);
+    if (!fs.existsSync(other)) bad(rel + ' is missing from ' + sib);
+    else if (fs.readFileSync(other, 'utf8') !== fs.readFileSync(path.join(root, rel), 'utf8')) bad(rel + ' differs from ' + sib + '/' + rel);
+  });
+}
 
 const texts = [];
 (function walk(d) {
@@ -327,6 +445,7 @@ texts.forEach((p) => {
   const rel = path.relative(root, p);
   if (/—|\\u2014|&mdash;/.test(t) && rel !== path.join('tools', 'validate.js')) bad(rel + ' contains an em dash');
   if (/formula units?/i.test(t) && rel.startsWith('src')) bad(rel + ' says "formula unit"');
+  if (/Mole Town|L at STP|6\.022/.test(t) && rel.startsWith('src')) bad(rel + ' says ' + /Mole Town|L at STP|6\.022/.exec(t)[0]);
   if (rel.startsWith('src') && /(src|href)="\//.test(t)) bad(rel + ' has an absolute path');
   if (rel.startsWith('src') && /(src|href)="https?:|url\(["']?https?:|@import/.test(t)) bad(rel + ' loads something from the network');
 });
@@ -336,4 +455,4 @@ if (problems.length) {
   process.exit(1);
 }
 console.log('validate: ok (' + SUBSTANCES.length + ' substances, ' + used.size + ' elements, ' + SEEDS + ' seeds of ' +
-  App.GRADED + ' problems and 4 warm-ups, the teacher’s quiz anchors, judges and packaging)');
+  App.GRADED + ' problems and ' + Gen.WARM.length + ' warm-ups, the teacher’s quiz anchors, judges and packaging)');

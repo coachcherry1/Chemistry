@@ -10,7 +10,7 @@
  * strip, the chain, every equality, the answer box and the Check button must
  * be on screen at once after scrolling the problem to the top of the window;
  * with the periodic table open, the chain (and its blanks) must sit above
- * the table. In Mole Town the whole map must be on screen. No step may
+ * the table. On the mole map step the whole map must be on screen. No step may
  * scroll sideways.
  *
  * 1366x650 is a Chromebook's browser tab; 1366x520 and 1280x560 allow for the
@@ -42,7 +42,7 @@ const SEEDS = [1, 2, 3];
   for (const seed of SEEDS) {
     const list = await page0.evaluate((s) => Gen.set(s).map((p, i) => ({ i: i + 1, steps: p.steps, n: p.pool.length })), seed);
     /* the longest chain and the biggest pool of each set */
-    const pick = list.filter((p) => p.steps === 3).sort((x, y) => y.n - x.n).slice(0, 2).concat(list.filter((p) => p.steps === 1).slice(0, 1));
+    const pick = list.filter((p) => p.steps >= 3).sort((x, y) => y.steps - x.steps || y.n - x.n).slice(0, 3).concat(list.filter((p) => p.steps === 1).slice(0, 1));
     pick.forEach((p) => views.push({ id: 'set', q: '&seed=' + seed + '&problem=' + p.i, name: 'set seed ' + seed + ' problem ' + p.i }));
   }
   steps.filter((s) => s.kind !== 'set').forEach((s) => views.push({ id: s.id, q: '&seed=1', name: s.id }));

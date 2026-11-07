@@ -6,11 +6,12 @@
  *   DARK=1 ...                           # the same in dark mode
  *
  * It checks that a save from another release, or one the browser kept, is
- * ignored inside the LMS; taps the four roads of Mole Town; and in each
+ * ignored inside the LMS; taps every road of the mole map; and in each
  * warm-up makes the usual mistakes first (Check with nothing placed, a factor
  * upside down, a molar mass or ratio slip, too many significant figures) and
  * reads the feedback each gets. It reloads in the middle of a warm-up and of
- * the set and checks the work comes back. In the graded set it misses one
+ * the set and checks the work comes back. In the graded set (12 problems, or
+ * 14 in the molarity version: config.js decides) it misses one
  * problem first, builds one with the keyboard and one by dragging, asks for a
  * hint, shows one solution (after the confirmation) and solves the rest,
  * then checks what reached the "LMS": the score, the completion status and
@@ -27,7 +28,7 @@ catch (e) {
 }
 
 const URL = 'file://' + path.join(__dirname, '..', 'src', 'index.html');
-const STORE = 'mole-conversions-state';
+const STORE = fs.readFileSync(path.join(__dirname, '..', 'src', 'js', 'config.js'), 'utf8').match(/store: '([^']+)'/)[1];
 const SHOTS = process.env.SHOTS;
 
 /* The fake LMS keeps its data in sessionStorage and reads and writes it on
@@ -97,7 +98,7 @@ const fakeLMS = () => {
   await snap('intro');
   await page.click('.screen-box .primary');
 
-  /* -------------------------------------------------------- Mole Town */
+  /* ------------------------------------------------------- the mole map */
 
   expect(await page.isDisabled('#next'), 'Next is open before the roads are tapped');
   const roads = page.locator('.molemap .road[role="button"]');
@@ -106,7 +107,7 @@ const fakeLMS = () => {
     const r = roads.nth(i);
     const id = await r.getAttribute('data-road');
     if (i % 2) { await r.focus(); await page.keyboard.press('Enter'); } else await r.click();
-    if (['A:mm', 'A:av', 'A:stp', 'ratio'].includes(id)) expect(/=/.test(await page.textContent('#feedback')), 'tapping ' + id + ' shows no equality');
+    if (['A:mm', 'A:av', 'A:stp', 'ratio', 'A:sol'].includes(id)) expect(/=/.test(await page.textContent('#feedback')), 'tapping ' + id + ' shows no equality');
   }
   await next();
 
@@ -152,12 +153,15 @@ const fakeLMS = () => {
     await page.fill('input.ans', p.ansAscii);
     await page.click('.work .primary');
     expect(/^Correct/.test(await fb()), p.id + ': not marked correct: ' + (await fb()));
+    expect((await page.locator('.work .fb .solution mfrac').count()) === p.steps, p.id + ': the worked solution is not typeset with ' + p.steps + ' fractions');
     return p;
   }
 
   /* ----------------------------------------------------------- warm-ups */
 
-  for (const id of ['w-mass', 'w-part', 'w-stp', 'w-ratio']) {
+  const WARM = await page.evaluate(() => Gen.WARM);
+  const G = await page.evaluate(() => App.GRADED);
+  for (const id of WARM) {
     expect((await stepId()) === id, 'expected the ' + id + ' step, got ' + (await stepId()));
     expect(await page.isDisabled('#next'), id + ': Next is open before the problem is done');
     const p = await problem();
@@ -214,8 +218,8 @@ const fakeLMS = () => {
   /* -------------------------------------------------------- the graded set */
 
   expect((await stepId()) === 'set', 'the graded set does not follow the warm-ups');
-  expect((await page.locator('.pnum').count()) === 12, 'the problem strip does not show 12 problems');
-  for (let i = 0; i < 12; i++) {
+  expect((await page.locator('.pnum').count()) === G, 'the problem strip does not show ' + G + ' problems');
+  for (let i = 0; i < G; i++) {
     const p = await problem();
     expect(p.id === (await page.evaluate((k) => App.problems()[k].id, i)), 'problem ' + (i + 1) + ' is not the one in the strip');
     if (i === 0) {
@@ -257,13 +261,17 @@ const fakeLMS = () => {
   expect((await stepId()) === 'results', 'the last problem does not lead to the results');
   const data = await lms();
   expect(data['cmi.core.lesson_status'] === 'completed', 'lesson_status is ' + data['cmi.core.lesson_status']);
-  expect(data['cmi.core.score.raw'] === '92', 'score.raw is ' + data['cmi.core.score.raw'] + ', expected 92 (11 of 12)');
+  const want = String(Math.round(100 * (G - 1) / G));
+  expect(data['cmi.core.score.raw'] === want, 'score.raw is ' + data['cmi.core.score.raw'] + ', expected ' + want + ' (' + (G - 1) + ' of ' + G + ')');
   const n = Object.keys(data).filter((k) => /^cmi\.interactions\.\d+\.id$/.test(k)).length;
-  expect(n === 12, n + ' interaction records, expected 12');
+  expect(n === G, n + ' interaction records, expected ' + G);
   const wrong = Object.keys(data).filter((k) => /\.result$/.test(k) && data[k] === 'wrong').length;
   expect(wrong === 1, wrong + ' interactions marked wrong, expected 1 (the solution shown)');
-  expect(/11 \/ 12/.test(await page.textContent('.big-score')), 'the results do not say 11 / 12');
-  expect(/10 right on the first check/.test(await page.textContent('#stage')), 'the first-try count is not 10');
+  expect(new RegExp((G - 1) + ' / ' + G).test(await page.textContent('.big-score')), 'the results do not say ' + (G - 1) + ' / ' + G);
+  expect(new RegExp((G - 2) + ' right on the first check').test(await page.textContent('#stage')), 'the first-try count is not ' + (G - 2));
+  /* every problem's worked solution is typeset on the results page */
+  const typeset = await page.locator('.review-solution math').count();
+  expect(typeset >= G, typeset + ' typeset solutions on the results page, expected ' + G);
   expect((data['cmi.suspend_data'] || '').length < 4000, 'suspend_data is ' + (data['cmi.suspend_data'] || '').length + ' characters');
   await snap('results');
 
@@ -273,7 +281,7 @@ const fakeLMS = () => {
   await page.click('text=Start a new attempt');
   await page.click('text=Yes, start again');
   expect((await page.evaluate(() => App.state().seed)) !== seed1, 'a new attempt kept the same problems');
-  expect((await lms())['cmi.core.score.raw'] === '92', 'a new attempt lowered the gradebook score');
+  expect((await lms())['cmi.core.score.raw'] === want, 'a new attempt lowered the gradebook score');
   expect((await page.locator('.tab:not(.locked)').count()) === 3, 'parts reached are not kept open on a new attempt');
 
   await browser.close();
@@ -281,6 +289,7 @@ const fakeLMS = () => {
     console.error('walkthrough: ' + problems.length + ' problem(s)\n  ' + problems.join('\n  '));
     process.exit(1);
   }
-  console.log('walkthrough: ok (stale saves ignored, Mole Town, 4 warm-ups with their slips, reloads, 12 graded problems by tap, ' +
-    'keyboard and drag, hint, a solution shown, score 92 and 12 interactions, a second attempt keeps the best)');
+  console.log('walkthrough: ok (stale saves ignored, the mole map, ' + WARM.length + ' warm-ups with their slips, reloads, ' + G +
+    ' graded problems by tap, keyboard and drag, hint, a solution shown, typeset solutions, score ' + want + ' and ' + G +
+    ' interactions, a second attempt keeps the best)');
 })();
