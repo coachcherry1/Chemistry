@@ -21,6 +21,7 @@ var Scene = (function () {
   var BURNER_TOP = 428;                       /* the top of the barrel, where the flame starts */
   var FLAME_TOUCH = BURNER_TOP - TRI.y;       /* flame height (px) at which the tip touches the crucible's bottom: 144 */
   var FLAME_MAX = 232;
+  var CRUC_SCALE = 0.7;                       /* a crucible is small next to the balance and the ring stand */
   var NS = 'http://www.w3.org/2000/svg';
 
   var MARKUP = [
@@ -138,7 +139,8 @@ var Scene = (function () {
     off: { t: 'translate(-60,-130) rotate(-30 322 200)', o: 0 },
     closed: { t: '', o: 1 },
     crack: { t: 'translate(-20,3) rotate(5 280 214)', o: 1 },
-    wide: { t: 'translate(-44,9) rotate(12 280 214)', o: 1 }
+    wide: { t: 'translate(-44,9) rotate(12 280 214)', o: 1 },
+    pad: { t: '', o: 0 }                       /* the lid is on the ceramic pad, not on the crucible */
   };
 
   function svg(tag, attrs) {
@@ -181,12 +183,23 @@ var Scene = (function () {
       var p = loc === 'tri' ? TRI : (loc === 'pan' ? PAN : BENCH);
       var target = loc === 'tri' ? layerTri : layerBench;
       if (cruc.parentNode !== target) target.appendChild(cruc);
-      cruc.setAttribute('transform', 'translate(' + p.x + ' ' + p.y + ')');
+      cruc.setAttribute('transform', 'translate(' + p.x + ' ' + p.y + ') scale(' + CRUC_SCALE + ')');
     }
     place('bench');
 
+    /* the lid set down on the ceramic pad (the oval on the wire gauze) */
+    var padLid = svg('g', { transform: 'translate(519 650) scale(0.7) translate(-322 -212)', opacity: 0 });
+    (function () {
+      var c = lidT.cloneNode(true);
+      Array.prototype.forEach.call(c.querySelectorAll('[id]'), function (n) { n.removeAttribute('id'); });
+      c.removeAttribute('id'); c.setAttribute('transform', '');
+      padLid.appendChild(c);
+      layerBench.appendChild(padLid);
+    })();
+
     function setLid(state) {
       lidState = state;
+      padLid.setAttribute('opacity', state === 'pad' ? 1 : 0);
       var s = LID_STATES[state] || LID_STATES.closed;
       lidT.setAttribute('transform', s.t);
       lidG.style.transition = speed === 0 ? 'none' : 'opacity 0.5s ease';
@@ -242,7 +255,7 @@ var Scene = (function () {
     function setNitride(a) { $('sc-nitride').setAttribute('opacity', a); }
 
     /* ---- effects: steam puffs, white smoke, ammonia wisps, a drop ---- */
-    function tipPoint() { return { x: TRI.x, y: TRI.y - 118 }; }
+    function tipPoint() { return { x: TRI.x, y: TRI.y - 84 }; }
     function animate(el, frames, ms, done) {
       if (speed === 0 || !el.animate) { if (done) done(); return; }
       var a = el.animate(frames, { duration: ms * speed, fill: 'forwards', easing: 'ease-out' });
@@ -288,13 +301,13 @@ var Scene = (function () {
       var d = svg('path', { d: 'M0 -9 C6 0 7 5 0 7 C-7 5 -6 0 0 -9 Z', fill: '#3a8ee8', stroke: '#1d5fae', 'stroke-width': 1 });
       d.setAttribute('transform', 'translate(322 154)');
       fx.appendChild(d);
-      animate(d, [{ transform: 'translate(322px,156px)' }, { transform: 'translate(322px,' + (TRI.y - 112) + 'px)' }], 420, function () { if (d.parentNode) d.parentNode.removeChild(d); if (done) done(); });
+      animate(d, [{ transform: 'translate(322px,156px)' }, { transform: 'translate(322px,' + (TRI.y - 80) + 'px)' }], 420, function () { if (d.parentNode) d.parentNode.removeChild(d); if (done) done(); });
       if (speed === 0 && done) done();
     }
 
     /* ---- drop targets (invisible until the student is carrying something) ---- */
     var TARGETS = {
-      pan: [836, 330, 248, 166], stand: [440, 40, 250, 570], tri: [190, 190, 270, 140], seat: [236, 120, 170, 190],
+      pan: [836, 330, 248, 166], seat: [236, 150, 170, 150], over: [236, 30, 170, 170], pad: [430, 610, 190, 80],
       burner: [236, 410, 180, 195], bench: [640, 520, 160, 90]
     };
     Object.keys(TARGETS).forEach(function (k) {
@@ -306,6 +319,34 @@ var Scene = (function () {
     }
     showTargets([]);
 
+
+    /* a picture of the thing being carried, for the drag (the real drawing, cut out of the bench) */
+    function ghost(key) {
+      var map = { cruc: [cruc], mgcruc: [cruc], mg: [mgLoose], stand: [$('sc-stand'), $('sc-ring-front')], tri: [$('sc-tri-back'), $('sc-tri-front')], burner: [$('sc-burner')], lid: [lidT], bottle: [diBody] };
+      var els = map[key];
+      if (!els) return null;
+      var wrap = svg('g');
+      els.forEach(function (e) {
+        var c = e.cloneNode(true);
+        Array.prototype.forEach.call(c.querySelectorAll('[id]'), function (n) { n.removeAttribute('id'); });
+        c.removeAttribute('id'); c.setAttribute('opacity', 1); c.style.opacity = 1;
+        if (e === cruc) c.setAttribute('transform', 'scale(' + CRUC_SCALE + ')');
+        else if (e === mgLoose) c.setAttribute('transform', 'translate(0 0)');
+        else if (e === lidT) c.setAttribute('transform', 'scale(' + CRUC_SCALE + ')');
+        else if (e === diBody) c.setAttribute('transform', '');
+        c.removeAttribute('data-tile');
+        wrap.appendChild(c);
+      });
+      fx.appendChild(wrap);
+      var b = wrap.getBBox();
+      fx.removeChild(wrap);
+      var k = (root.getScreenCTM() ? root.getScreenCTM().a : 0.7) || 0.7, pad = 6;
+      var g = svg('svg', { viewBox: (b.x - pad) + ' ' + (b.y - pad) + ' ' + (b.width + 2 * pad) + ' ' + (b.height + 2 * pad), width: Math.max(24, (b.width + 2 * pad) * k), height: Math.max(24, (b.height + 2 * pad) * k) });
+      g.setAttribute('overflow', 'visible');
+      g.appendChild(wrap);
+      return g;
+    }
+
     /* hot crucible: red glow of the whole group when very hot */
     function setSpeed(v) { speed = v; }
 
@@ -313,7 +354,7 @@ var Scene = (function () {
       node: holder, root: root, place: place, where: function () { return where; }, setLid: setLid, lid: function () { return lidState; }, setMg: setMg,
       setPlaced: setPlaced, setReading: setReading, setCollar: setCollar, setFlame: setFlame, turnHint: turnHint, setGlow: setGlow, setHot: setHot,
       setAsh: setAsh, setNitride: setNitride, puff: puff, wisps: wisps, clearFx: clearFx, bottle: bottle, dropWater: dropWater, showTargets: showTargets,
-      setSpeed: setSpeed, TRI: TRI, PAN: PAN, FLAME_TOUCH: FLAME_TOUCH, FLAME_MAX: FLAME_MAX, BURNER_TOP: BURNER_TOP
+      setSpeed: setSpeed, ghost: ghost, nodes: { cruc: cruc, mg: mgLoose, lid: lidG, bottle: diBody }, TRI: TRI, PAN: PAN, FLAME_TOUCH: FLAME_TOUCH, FLAME_MAX: FLAME_MAX, BURNER_TOP: BURNER_TOP
     };
   }
 

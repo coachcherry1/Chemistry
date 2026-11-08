@@ -23,11 +23,11 @@ Every student gets **different random masses**, so the teacher checks the math, 
 magnesium **0.100 to 0.200 g** (a stand-in for what fits in a real crucible), read to 0.0001 g. The product mass is the ideal MgO mass with
 a small scatter (within about 1%).
 
-- A 2D bench drawn in code: ring stand with ring, clay triangle, crucible with the lid cracked open (placed automatically), Bunsen burner
-  whose **flame height is set by turning the bottom of the barrel**, an analytical balance with its door open, a DI water dropper and a wire
+- A 2D bench drawn in code: the ring stand and clay triangle already set up, crucible with the lid cracked open (placed automatically), Bunsen burner
+  whose **flame height is set by turning the bottom of the barrel** (the end of the scale is the perfect height: the tip just touches the crucible), an analytical balance with its door open, a DI water dropper and a wire
   gauze pad. No goggles, scissors or tongs.
-- Students drag the equipment into place, read the balance, set the flame, watch the magnesium glow inside the crucible, add 6 to 7 drops of
-  water (steam; the magnifier shows Mg₃N₂ + H₂O → Mg(OH)₂ + NH₃ and the ammonia gas rising from the crucible, since a simulation can show the gas but not its smell), reheat, and fast-forward the 5-minute cool.
+- Students drag the equipment into place, read the balance, set the flame, watch the magnesium glow inside the crucible, take the lid off onto the ceramic pad, bring the DI bottle above the open crucible and add 6 to 7 drops of
+  water (steam and ammonia gas rising; a simulation can show the gas but not its smell), reheat, and fast-forward the 5-minute cool.
 - "What if" buttons show the lid too wide, the lid too tight, and the water step skipped.
 - A slim bar across the top gives the step and says which box on the sheet to fill in.
 
@@ -42,7 +42,7 @@ identifiers; a web version on GitHub Pages: `https://coachcherry1.github.io/Chem
 - `data.js` (`Lab`): the masses from a seed, and the product mass worked out from what happened in the crucible (MgO, a sixth of the
   magnesium as Mg₃N₂ before the water, each drop converting one of the six nitride magnesium atoms). The balance, the magnifier and the
   validator all use it, so they agree.
-- `scene.js`: the bench, one SVG; `lens.js`: the magnifier (36 magnesium atoms and what each becomes); `app.js`: the steps and the heat model
+- `scene.js`: the bench, one SVG; `lens.js`: the magnifier above the balance (36 magnesium atoms; O₂ and N₂ fly in and join them while it burns, water frees NH₃ from the nitride, heating turns Mg(OH)₂ back into MgO); `app.js`: the steps and the heat model
   (the flame must touch the crucible for the magnesium to ignite; a short flame does not).
 - `?seed=<n>` gives a particular student's masses; `?step=<n>` jumps to a step (for teachers and the tools).
 - Tools: `node tools/validate.js`, `node tools/answer-key.js > ANSWER_KEY.md`, `./build.sh mgo-lab-v1`, `node tools/walkthrough.js`, `node tools/layout.js`.
