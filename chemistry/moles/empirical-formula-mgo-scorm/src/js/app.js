@@ -17,7 +17,7 @@ var App = (function () {
   var seed, d, scene, lens, picker;
   var st = {
     step: 0, w1: false, mgOnPan: false, mgInCruc: false, placed: { burner: false }, seated: false, lidOff: false, bottleOver: false,
-    v: 0, T: 0, ignited: false, burn: 0, burnDone: false, glow: 0, drops: 0, wetness: 0, dried: false, cooled: false, clock: 0, w8: false, whatIf: null
+    v: 0, T: 0, ignited: false, burn: 0, burnDone: false, glow: 0, drops: 0, wetness: 0, dried: false, cooled: false, clock: 0, w8: false
   };
   var el = {}, busy = false, tickN = 0;
 
@@ -94,14 +94,14 @@ var App = (function () {
       if (n === 3 && !st.seated) scene.setLid('closed');
       else if (n >= 8) scene.setLid('closed');
       else if (id === 'water' && st.lidOff) scene.setLid('pad');
-      else scene.setLid(st.whatIf === 'wide' ? 'wide' : (st.whatIf === 'tight' ? 'closed' : 'crack'));
+      else scene.setLid('crack');
       scene.setMg(st.burn > 0.3 || n > 4 ? 'hidden' : 'cruc');
       scene.setAsh(st.burn > 0 ? Math.min(1, st.burn * 1.2) : 0, st.drops > 0 && !st.dried);
       var left = lens.nitrideLeft('water', st.drops);
       scene.setNitride(st.burnDone && !st.dried ? 0.8 * (left / 6) : 0);
     }
     scene.bottle(id === 'water' && st.bottleOver);
-    scene.setGlow(st.glow * (st.whatIf === 'tight' ? 0.3 : 1));
+    scene.setGlow(st.glow);
 
     var targets = { weigh1: ['pan'], weigh2: ['pan'], setup: ['seat', 'burner'], weigh3: ['pan'], water: !st.lidOff ? ['pad'] : (!st.bottleOver ? ['over'] : []) }[id] || [];
     scene.showTargets(targets);
@@ -114,15 +114,7 @@ var App = (function () {
     else if (n === 4) lens.show(st.burnDone ? 'burned' : 'burn', st.burn);
     else if (n === 5) lens.show('water', st.drops);
     else lens.show(st.dried ? 'dried' : 'water', st.drops);
-    if (n === 4 && st.whatIf === 'nowater') lens.note(noWaterNote());
   }
-
-  function noWaterNote() {
-    var r = Lab.ratio(d, 0).ratio;
-    return 'No water: the Mg₃N₂ stays. The oxygen found from the mass is too low, and your O : Mg would be about ' + r.toFixed(2) + ' instead of 1.0.';
-  }
-
-  /* ------------------------------------------------------------ steps: the text and controls */
 
   function p(t) { return h('p', { text: t }); }
 
@@ -138,32 +130,6 @@ var App = (function () {
     var box = h('div', { class: 'ctl' }, [h('label', { for: 'collar', text: 'Turn the bottom of the burner (flame height)' }), rng, out]);
     el.rng = rng; el.flameOut = out; upd();
     return box;
-  }
-
-  function whatIfControl() {
-    var wrap = h('div', { class: 'whatif' }, [h('span', { class: 'wi-label', text: 'What if...' })]);
-    var set = function (k) { st.whatIf = st.whatIf === k ? null : k; if (st.whatIf === 'wide') scene.puff('smoke', 5); renderWhatIf(); paint(); };
-    [['wide', 'lid too wide'], ['tight', 'lid too tight'], ['nowater', 'skip the water']].forEach(function (a) {
-      var b = h('button', { type: 'button', class: 'btn small wi', 'data-wi': a[0], text: a[1], 'aria-pressed': st.whatIf === a[0] ? 'true' : 'false' });
-      b.addEventListener('click', function () { set(a[0]); });
-      wrap.appendChild(b);
-    });
-    el.wiNote = h('p', { class: 'wi-note' });
-    wrap.appendChild(el.wiNote);
-    el.wi = wrap;
-    renderWhatIf();
-    return wrap;
-  }
-  function renderWhatIf() {
-    if (!el.wi) return;
-    Array.prototype.forEach.call(el.wi.querySelectorAll('.wi'), function (b) { b.setAttribute('aria-pressed', st.whatIf === b.getAttribute('data-wi') ? 'true' : 'false'); });
-    lens.note(st.whatIf === 'nowater' ? noWaterNote() : null);
-    el.wiNote.textContent = {
-      wide: 'White smoke escapes (some of the MgO leaves the crucible). The product is too light.',
-      tight: 'Too little air gets in, the glow dims and some Mg does not burn. The product is too light.',
-      nowater: noWaterNote(),
-      '': 'Try one: it shows what would go wrong, not your run.'
-    }[st.whatIf || ''];
   }
 
   function waterControl() {
@@ -213,7 +179,7 @@ var App = (function () {
       return [p('Set up the heating. Put the ring stand, the clay triangle and the burner in place. Then set the crucible in the clay triangle.')];
     },
     burn: function () {
-      return [p('Turn the bottom of the burner up to the end of the scale. That puts the tip of the flame just on the bottom of the crucible. The lid is on with a small crack so air can get in.'), burnerControl(), whatIfControl()];
+      return [p('Turn the bottom of the burner up to the end of the scale. That puts the tip of the flame just on the bottom of the crucible. The lid is on with a small crack so air can get in.'), burnerControl()];
     },
     water: function () {
       return [p(!st.lidOff ? 'Let the crucible cool. Take the lid off and set it on the ceramic pad.' : (!st.bottleOver ? 'Now bring the DI water bottle right above the open crucible.' : 'Add 6 to 7 drops of DI water, one at a time. Watch the gas rise.')), waterControl()];
@@ -302,11 +268,11 @@ var App = (function () {
         if (burning) {
           st.burn = Math.min(1, st.burn + 0.012);
           st.glow = 0.55 + 0.45 * Math.sin(Date.now() / 140);
-          if (tickN % 8 === 0) scene.puff('smoke', st.whatIf === 'wide' ? 3 : 1);
+          if (tickN % 8 === 0) scene.puff('smoke', 1);
           if (st.burn >= 1) { st.burnDone = true; say('The glow has died away: the magnesium has burned. Look through the magnifier.', 'good'); setNav(); }
           scene.setAsh(Math.min(1, st.burn * 1.2), false);
           scene.setMg(st.burn > 0.3 ? 'hidden' : 'cruc');
-          scene.setGlow(st.glow * (st.whatIf === 'tight' ? 0.3 : 1));
+          scene.setGlow(st.glow);
           lens.burn(st.burn);
         } else if (st.glow > 0.01) { st.glow *= 0.85; scene.setGlow(st.glow); }
       } else if (st.glow > 0.01) { st.glow *= 0.8; scene.setGlow(st.glow); }
@@ -347,7 +313,6 @@ var App = (function () {
     n = Math.max(0, Math.min(last, n));
     var prev = st.step;
     st.step = n;
-    el.wi = null;
     if (n === 5) { st.v = 0; st.T = Math.min(st.T, 0.2); }
     if (n === 6 && st.step !== prev) st.v = 0;
     if (n === 7) { st.v = 0; if (!st.cooled) st.clock = 0; }

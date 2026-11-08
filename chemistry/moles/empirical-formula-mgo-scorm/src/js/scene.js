@@ -291,7 +291,7 @@ var Scene = (function () {
 
     /* ---- the DI water bottle: over the crucible, inverted, and a drop that falls ---- */
     var diBody = $('sc-di-body');
-    var OVER = 'translate(322 150) scale(0.8) rotate(180) translate(-95 -440)';
+    var OVER = 'translate(382 150) scale(0.8) rotate(180) translate(-95 -440)';
     function bottle(over) {
       diBody.style.transition = speed === 0 ? 'none' : 'opacity 0.3s';
       if (over) { diBody.setAttribute('transform', OVER); }
