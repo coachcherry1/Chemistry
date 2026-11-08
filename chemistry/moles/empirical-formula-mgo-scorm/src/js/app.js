@@ -283,7 +283,6 @@ var App = (function () {
         if (burning) {
           st.burn = Math.min(1, st.burn + 0.012);
           st.glow = 0.55 + 0.45 * Math.sin(Date.now() / 140);
-          if (tickN % 8 === 0) scene.puff('smoke', 1);
           if (st.burn >= 1) { st.burnDone = true; say('The glow has died away: the magnesium has burned. Look through the magnifier.', 'good'); setNav(); }
           scene.setAsh(Math.min(1, st.burn * 1.2), false);
           scene.setMg(st.burn > 0.3 ? 'hidden' : 'cruc');
