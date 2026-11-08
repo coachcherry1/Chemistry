@@ -12,7 +12,7 @@ simulation has no data tables, no typed answers and **reports no score** (opened
 - `Empirical Formula of MgO - Virtual Lab Pre-Lab Sheet - STUDENT.docx` (and a `.pdf` to print): two pages, front and back. The teacher's data table
   (Boxes 1 to 5), the procedure paired with what to do in the simulation, While Cooling, After Cooling, **Look closer: magnesium and
   nitrogen** (why we add water: magnesium nitride, Mg₃N₂, is converted to magnesium hydroxide and ammonia, and reheating turns the
-  hydroxide into MgO), and a **What if...?** table (lid too wide, lid too tight, water step skipped).
+  hydroxide into MgO) and a **What if...?** table (lid too wide, lid too tight, water step skipped) answered on paper.
 - `... TEACHER EDITION.docx`: how the simulation and the sheet fit together, how to check each student's random numbers, a worked example,
   and every answer.
 - `build_sheet.py` builds both from one script (python-docx). Every number in the teacher edition is computed there.
@@ -28,7 +28,6 @@ a small scatter (within about 1%).
   gauze pad. No goggles, scissors or tongs.
 - Students drag the equipment into place, read the balance, set the flame, watch the magnesium glow inside the crucible, take the lid off onto the ceramic pad, bring the DI bottle above the open crucible and add 6 to 7 drops of
   water (steam and ammonia gas rising; a simulation can show the gas but not its smell), reheat, and fast-forward the 5-minute cool.
-- "What if" buttons show the lid too wide, the lid too tight, and the water step skipped.
 - A slim bar across the top gives the step and says which box on the sheet to fill in.
 
 ## Rules this package follows

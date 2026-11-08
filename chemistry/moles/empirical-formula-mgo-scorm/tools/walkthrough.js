@@ -52,7 +52,6 @@ function check(c, m) { if (!c) { bad++; console.log('FAIL: ' + m); } else consol
   await pg.fill('#collar', '100'); await pg.dispatchEvent('#collar', 'input'); await pg.evaluate(() => App.tick(40)); await shot('4');
   await pg.evaluate(() => App.tick(200));
   check(await pg.evaluate(() => App.state.burnDone), 'the magnesium burns with the flame touching'); await shot('4b');
-  for (const w of ['wide', 'tight', 'nowater']) { await pg.click('[data-wi="' + w + '"]'); check((await pg.textContent('.wi-note')).length > 20, 'what-if ' + w); await pg.click('[data-wi="' + w + '"]'); }
   await next();
   /* 5 water */
   check(await pg.locator('.topnav .btn.primary').isDisabled(), 'Next waits for a drop');
