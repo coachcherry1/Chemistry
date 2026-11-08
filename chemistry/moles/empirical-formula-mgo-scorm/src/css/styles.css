@@ -53,6 +53,10 @@ h1 { font-size: 1.05rem; margin: 0; }
 .tile { font: inherit; font-weight: 700; padding: 8px 12px; min-height: 44px; border-radius: 10px; border: 2px dashed var(--accent); background: var(--note-bg); color: var(--ink); cursor: grab; touch-action: none; }
 .tile.selected { background: var(--accent); color: var(--on-accent); }
 .tile.dragging { opacity: 0.35; }
+.ghost.ghost-obj { background: none; padding: 0; border-radius: 0; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.35)); }
+.ghost-obj svg { display: block; }
+.grab { cursor: grab; touch-action: none; }
+.tile { touch-action: none; }
 .ghost { position: fixed; z-index: 50; transform: translate(-50%, -50%); pointer-events: none; padding: 8px 12px; border-radius: 10px; background: var(--accent); color: var(--on-accent); font-weight: 700; }
 .say { min-height: 2.4em; margin: 0; padding: 4px 8px; border-radius: 8px; font-weight: 600; }
 .say.good { background: var(--good-bg); color: var(--good); }

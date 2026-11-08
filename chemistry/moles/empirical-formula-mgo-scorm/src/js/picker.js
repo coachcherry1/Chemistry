@@ -19,8 +19,10 @@ function Picker(opts) {
   var selected = null, drag = null, suppressClick = false;
 
   function tileKey(node) {
-    var t = node && node.closest ? node.closest('.tile') : null;
-    return t && !t.disabled ? t.getAttribute('data-tile') : null;
+    var t = node && node.closest ? node.closest('[data-tile]') : null;
+    if (!t || t.disabled) return null;
+    var k = t.getAttribute('data-tile');
+    return !opts.can || opts.can(k) ? k : null;
   }
 
   function dropAt(x, y) {
@@ -64,7 +66,7 @@ function Picker(opts) {
     suppressClick = false;
     var key = tileKey(ev.target);
     if (key == null) return;
-    var node = ev.target.closest('.tile');
+    var node = ev.target.closest('[data-tile]');
     drag = { key: key, from: node, x0: ev.clientX, y0: ev.clientY, ghost: null };
     try { node.setPointerCapture(ev.pointerId); } catch (e) { /* not capturable */ }
   }
@@ -73,9 +75,10 @@ function Picker(opts) {
     if (!drag) return;
     if (!drag.ghost) {
       if (Math.hypot(ev.clientX - drag.x0, ev.clientY - drag.y0) < 6) return;
+      var pic = opts.ghost ? opts.ghost(drag.key) : null;
       var g = document.createElement('div');
-      g.className = 'ghost';
-      g.textContent = opts.label(drag.key);
+      g.className = pic ? 'ghost ghost-obj' : 'ghost';
+      if (pic) g.appendChild(pic); else g.textContent = opts.label(drag.key);
       document.body.appendChild(g);
       drag.ghost = g;
       drag.from.classList.add('dragging');
@@ -117,6 +120,10 @@ function Picker(opts) {
   }
 
   function onStageClick(ev) {
+    if (suppressClick) { suppressClick = false; return; }
+    var src = ev.target.closest && ev.target.closest('[data-tile]');
+    var key = src && stage.contains(src) && !(ev.target.closest('.drop')) ? tileKey(src) : null;
+    if (key != null && selected == null) { select(key); return; }
     var d = ev.target.closest && ev.target.closest('.drop');
     if (d && stage.contains(d)) activate(d);
   }
@@ -138,6 +145,10 @@ function Picker(opts) {
   tray.addEventListener('pointerup', onUp);
   tray.addEventListener('pointercancel', onUp);
   tray.addEventListener('click', onTrayClick);
+  stage.addEventListener('pointerdown', onDown);
+  stage.addEventListener('pointermove', onMove);
+  stage.addEventListener('pointerup', onUp);
+  stage.addEventListener('pointercancel', onUp);
   stage.addEventListener('click', onStageClick);
   stage.addEventListener('keydown', onStageKey);
   document.addEventListener('keydown', onKey);
@@ -151,6 +162,10 @@ function Picker(opts) {
       tray.removeEventListener('pointerup', onUp);
       tray.removeEventListener('pointercancel', onUp);
       tray.removeEventListener('click', onTrayClick);
+      stage.removeEventListener('pointerdown', onDown);
+      stage.removeEventListener('pointermove', onMove);
+      stage.removeEventListener('pointerup', onUp);
+      stage.removeEventListener('pointercancel', onUp);
       stage.removeEventListener('click', onStageClick);
       stage.removeEventListener('keydown', onStageKey);
       document.removeEventListener('keydown', onKey);

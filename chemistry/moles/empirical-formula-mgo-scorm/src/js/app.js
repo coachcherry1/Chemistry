@@ -367,7 +367,14 @@ var App = (function () {
     tilesFor(id).forEach(function (k) { el.tray.appendChild(h('button', { type: 'button', class: 'tile', 'data-tile': k, text: TILES[k] })); });
     el.tray.hidden = !el.tray.firstChild;
     el.drops = null;
-    picker = Picker({ tray: el.tray, stage: scene.node,
+    var tl = tilesFor(id), ck = tl.indexOf('cruc') >= 0 ? 'cruc' : (tl.indexOf('mgcruc') >= 0 ? 'mgcruc' : null);
+    /* the pieces on the bench can be picked up directly, as well as from the tray */
+    [['cruc', ck], ['mg', tl.indexOf('mg') >= 0 ? 'mg' : null]].forEach(function (a) {
+      var nd = scene.nodes[a[0]];
+      if (a[1]) nd.setAttribute('data-tile', a[1]); else nd.removeAttribute('data-tile');
+      nd.classList.toggle('grab', !!a[1]);
+    });
+    picker = Picker({ tray: el.tray, stage: scene.node, can: function (k) { return tilesFor(STEPS[st.step].id).indexOf(k) >= 0; }, ghost: function (k) { return scene.ghost(k); },
       prompt: function (key) { return 'Now click the highlighted place for the ' + TILES[key].toLowerCase() + '.'; },
       label: function (key) { return TILES[key]; }, drop: drop });
     if (!el.say.textContent || st.step !== el.lastStep) say('');
