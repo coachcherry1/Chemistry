@@ -16,7 +16,7 @@ var App = (function () {
 
   var seed, d, scene, lens, picker;
   var st = {
-    step: 0, w1: false, mgOnPan: false, mgInCruc: false, placed: { stand: false, tri: false, burner: false }, seated: false,
+    step: 0, w1: false, mgOnPan: false, mgInCruc: false, placed: { burner: false }, seated: false, lidOff: false, bottleOver: false,
     v: 0, T: 0, ignited: false, burn: 0, burnDone: false, glow: 0, drops: 0, wetness: 0, dried: false, cooled: false, clock: 0, w8: false, whatIf: null
   };
   var el = {}, busy = false, tickN = 0;
@@ -37,13 +37,14 @@ var App = (function () {
 
   var TILES = {
     cruc: 'Crucible and lid', mg: 'Piece of magnesium', mgcruc: 'Crucible and lid, with the magnesium in it',
-    stand: 'Ring stand and ring', tri: 'Clay triangle', burner: 'Bunsen burner'
+    burner: 'Bunsen burner', lid: 'Crucible lid', bottle: 'DI water bottle'
   };
 
   /* ------------------------------------------------------------ helpers */
 
-  function flameH() { return st.v < 0.02 ? 0 : 60 + st.v * (Scene.FLAME_MAX - 60); }
-  function touching() { return flameH() >= Scene.FLAME_TOUCH; }
+  /* the end of the scale is the perfect height: the tip of the flame just touches the bottom of the crucible, never inside it */
+  function flameH() { return st.v < 0.02 ? 0 : 30 + st.v * (Scene.FLAME_TOUCH - 30); }
+  function touching() { return st.v >= 0.9; }
   function say(text, kind) { if (!el.say) return; el.say.textContent = text || ''; el.say.className = 'say' + (kind ? ' ' + kind : ''); }
   function save() { SCORM.saveState({ schema: SCHEMA, seed: seed }); }
 
@@ -74,8 +75,8 @@ var App = (function () {
   function paint() {
     var n = st.step, id = STEPS[n].id;
     var early = n <= 2, heating = n >= 3;
-    scene.setPlaced('stand', st.placed.stand || n > 3);
-    scene.setPlaced('tri', st.placed.tri || n > 3);
+    scene.setPlaced('stand', true);
+    scene.setPlaced('tri', true);
     scene.setPlaced('burner', st.placed.burner || n > 3);
     scene.setReading(Lab.fmt(reading()));
     scene.turnHint((id === 'burn' || id === 'dry') && st.v < 0.02);
@@ -92,23 +93,28 @@ var App = (function () {
       scene.place((n === 3 && !st.seated) ? 'bench' : (n === 8 && st.w8 ? 'pan' : (n === 8 || n === 9 ? (st.w8 ? 'pan' : 'tri') : 'tri')));
       if (n === 3 && !st.seated) scene.setLid('closed');
       else if (n >= 8) scene.setLid('closed');
+      else if (id === 'water' && st.lidOff) scene.setLid('pad');
       else scene.setLid(st.whatIf === 'wide' ? 'wide' : (st.whatIf === 'tight' ? 'closed' : 'crack'));
       scene.setMg(st.burn > 0.3 || n > 4 ? 'hidden' : 'cruc');
       scene.setAsh(st.burn > 0 ? Math.min(1, st.burn * 1.2) : 0, st.drops > 0 && !st.dried);
       var left = lens.nitrideLeft('water', st.drops);
       scene.setNitride(st.burnDone && !st.dried ? 0.8 * (left / 6) : 0);
     }
-    scene.bottle(id === 'water');
+    scene.bottle(id === 'water' && st.bottleOver);
     scene.setGlow(st.glow * (st.whatIf === 'tight' ? 0.3 : 1));
 
-    /* the magnifier */
-    if (n <= 3) lens.set('start', 0);
-    else if (n === 4) lens.set(st.burnDone ? 'burned' : (st.burn > 0 ? 'burning' : 'start'), 0, st.whatIf === 'nowater' ? noWaterNote() : null);
-    else if (n === 5) lens.set('water', st.drops);
-    else lens.set(st.dried ? 'dried' : 'water', st.drops);
-
-    var targets = { weigh1: ['pan'], weigh2: ['pan'], setup: ['stand', 'tri', 'seat', 'burner'], weigh3: ['pan'] }[id] || [];
+    var targets = { weigh1: ['pan'], weigh2: ['pan'], setup: ['seat', 'burner'], weigh3: ['pan'], water: !st.lidOff ? ['pad'] : (!st.bottleOver ? ['over'] : []) }[id] || [];
     scene.showTargets(targets);
+  }
+
+  /* the magnifier jumps to the right state when a step is entered; during play it animates (burn, water, dry) */
+  function lensSync() {
+    var n = st.step;
+    if (n <= 3) lens.show('start', 0);
+    else if (n === 4) lens.show(st.burnDone ? 'burned' : 'burn', st.burn);
+    else if (n === 5) lens.show('water', st.drops);
+    else lens.show(st.dried ? 'dried' : 'water', st.drops);
+    if (n === 4 && st.whatIf === 'nowater') lens.note(noWaterNote());
   }
 
   function noWaterNote() {
@@ -151,6 +157,7 @@ var App = (function () {
   function renderWhatIf() {
     if (!el.wi) return;
     Array.prototype.forEach.call(el.wi.querySelectorAll('.wi'), function (b) { b.setAttribute('aria-pressed', st.whatIf === b.getAttribute('data-wi') ? 'true' : 'false'); });
+    lens.note(st.whatIf === 'nowater' ? noWaterNote() : null);
     el.wiNote.textContent = {
       wide: 'White smoke escapes (some of the MgO leaves the crucible). The product is too light.',
       tight: 'Too little air gets in, the glow dims and some Mg does not burn. The product is too light.',
@@ -162,6 +169,7 @@ var App = (function () {
   function waterControl() {
     var count = h('output', { class: 'drops', 'aria-live': 'polite', text: st.drops + ' drops' });
     var b = h('button', { type: 'button', class: 'btn primary', id: 'drop', text: 'Add 1 drop of DI water' });
+    b.disabled = !st.bottleOver;
     b.addEventListener('click', addDrop);
     return h('div', { class: 'ctl' }, [b, count]);
   }
@@ -205,13 +213,13 @@ var App = (function () {
       return [p('Set up the heating. Put the ring stand, the clay triangle and the burner in place. Then set the crucible in the clay triangle.')];
     },
     burn: function () {
-      return [p('Turn the bottom of the burner until the tip of the flame touches the bottom of the crucible. The lid is on with a small crack so air can get in.'), burnerControl(), whatIfControl()];
+      return [p('Turn the bottom of the burner up to the end of the scale. That puts the tip of the flame just on the bottom of the crucible. The lid is on with a small crack so air can get in.'), burnerControl(), whatIfControl()];
     },
     water: function () {
-      return [p('Let it cool, then add 6 to 7 drops of DI water with the burner off. Watch the gas rise. Stop when you have added the drops your sheet calls for.'), waterControl()];
+      return [p(!st.lidOff ? 'Let the crucible cool. Take the lid off and set it on the ceramic pad.' : (!st.bottleOver ? 'Now bring the DI water bottle right above the open crucible.' : 'Add 6 to 7 drops of DI water, one at a time. Watch the gas rise.')), waterControl()];
     },
     dry: function () {
-      return [p('Heat again to drive off the water. Raise the flame until the crucible is dry and the steam stops.'), burnerControl()];
+      return [p('The lid goes back on with a small crack. Heat again to drive off the water: raise the flame to the end of the scale until the steam stops.'), burnerControl()];
     },
     cool: function () {
       return [p('Turn the burner off and let the crucible cool for 5 minutes. Here the 5 minutes can be skipped.'), clockControl()];
@@ -230,11 +238,8 @@ var App = (function () {
   function tilesFor(id) {
     if (id === 'weigh1') return st.w1 ? [] : ['cruc'];
     if (id === 'weigh2') return st.mgInCruc ? [] : (st.mgOnPan ? ['mgcruc'] : ['mg']);
-    if (id === 'setup') {
-      var t = ['stand', 'tri', 'burner'].filter(function (k) { return !st.placed[k]; });
-      if (!t.length && !st.seated) t = ['cruc'];
-      return t;
-    }
+    if (id === 'setup') return !st.placed.burner ? ['burner'] : (!st.seated ? ['cruc'] : []);
+    if (id === 'water') return !st.lidOff ? ['lid'] : (!st.bottleOver ? ['bottle'] : []);
     if (id === 'weigh3') return st.w8 ? [] : ['cruc'];
     return [];
   }
@@ -251,11 +256,14 @@ var App = (function () {
       if (key === 'mg') { st.mgOnPan = true; say('Write the mass of the magnesium in Box 2.', 'good'); }
       else if (key === 'mgcruc') { st.mgInCruc = true; say('Write this reading in Box 3. It is the crucible, lid and magnesium together.', 'good'); }
     } else if (id === 'setup') {
-      var map = { stand: ['stand'], tri: ['tri', 'seat'], burner: ['burner'], cruc: ['seat', 'tri'] };
-      if (map[key].indexOf(target) < 0) { say(key === 'burner' ? 'The burner goes under the ring, on the bench.' : 'Not there. Try the highlighted place.', 'bad'); return; }
-      if (key === 'tri' && !st.placed.stand) { say('Set up the ring stand first. The triangle rests on its ring.', 'bad'); return; }
+      var map = { burner: ['burner'], cruc: ['seat'] };
+      if (map[key].indexOf(target) < 0) { say(key === 'burner' ? 'The burner goes under the ring, on the bench.' : 'The crucible goes in the clay triangle.', 'bad'); return; }
       if (key === 'cruc') { st.seated = true; say('The crucible sits in the triangle with its lid on, a small crack open.', 'good'); }
-      else { st.placed[key] = true; say('Good.', 'good'); }
+      else { st.placed.burner = true; say('Good. Now set the crucible in the clay triangle.', 'good'); }
+    } else if (id === 'water') {
+      if (key === 'lid' && target === 'pad') { st.lidOff = true; say('The lid is on the ceramic pad, so the crucible is open.', 'good'); }
+      else if (key === 'bottle' && target === 'over') { st.bottleOver = true; say('The bottle is above the open crucible. Press Add 1 drop.', 'good'); }
+      else { say(key === 'lid' ? 'Set the lid on the ceramic pad, the oval on the wire gauze.' : 'Hold the bottle right above the open crucible.', 'bad'); return; }
     } else if (id === 'weigh3' && key === 'cruc') {
       if (target !== 'pan') { say('Put it on the balance pan.', 'bad'); return; }
       st.w8 = true; say('Write this reading in Box 4, then do Box 5 on your sheet.', 'good');
@@ -264,18 +272,17 @@ var App = (function () {
   }
 
   function addDrop() {
-    if (busy || st.drops >= 12) return;
+    if (busy || st.drops >= 12 || !st.bottleOver) return;
     busy = true;
     var finished = false;
     scene.bottle(true);
     scene.dropWater(function () {
       if (finished) return; finished = true;
-      var before = lens.nitrideLeft('water', st.drops);
       st.drops++;
-      var after = lens.nitrideLeft('water', st.drops);
       scene.puff('steam', 2);
-      if (before > after) { scene.wisps(2); say('Hiss! NH₃ gas rises as the nitride changes to Mg(OH)₂.', 'good'); }
-      else say(st.drops <= 6 ? 'Steam rises.' : 'The nitride is all used up: more water gives only steam and will take longer to dry.', st.drops <= 6 ? 'good' : '');
+      var gas = lens.water(st.drops);
+      if (gas) { scene.wisps(2); say('Hiss! NH₃ gas rises as the nitride changes to Mg(OH)₂.', 'good'); }
+      else say(st.drops <= 6 ? 'Steam rises. The nitride keeps changing to Mg(OH)₂.' : 'The nitride is all used up: more water gives only steam and will take longer to dry.', st.drops <= 6 ? 'good' : '');
       st.wetness = 1;
       if (el.drops) el.drops.textContent = st.drops + (st.drops === 1 ? ' drop' : ' drops');
       var dropsOut = document.querySelector('.drops'); if (dropsOut) dropsOut.textContent = st.drops + (st.drops === 1 ? ' drop' : ' drops');
@@ -286,7 +293,7 @@ var App = (function () {
   /* the heat model: 10 ticks a second */
   function tick(n) {
     for (var i = 0; i < (n || 1); i++) {
-      var id = STEPS[st.step].id, hgt = flameH(), touch = hgt >= Scene.FLAME_TOUCH;
+      var id = STEPS[st.step].id, hgt = flameH(), touch = touching();
       if (hgt > 0) st.T = Math.min(touch ? 1 : 0.45, st.T + (touch ? 0.025 : 0.004)); else if (id !== 'cool') st.T = Math.max(0, st.T - 0.012);
       scene.setHot(st.T);
       if (id === 'burn' && !st.burnDone) {
@@ -300,18 +307,18 @@ var App = (function () {
           scene.setAsh(Math.min(1, st.burn * 1.2), false);
           scene.setMg(st.burn > 0.3 ? 'hidden' : 'cruc');
           scene.setGlow(st.glow * (st.whatIf === 'tight' ? 0.3 : 1));
-          if (tickN % 10 === 0) paintLensOnly();
+          lens.burn(st.burn);
         } else if (st.glow > 0.01) { st.glow *= 0.85; scene.setGlow(st.glow); }
       } else if (st.glow > 0.01) { st.glow *= 0.8; scene.setGlow(st.glow); }
       if (id === 'dry' && !st.dried && touch && st.T > 0.6) {
         st.wetness = Math.max(0, st.wetness - 0.02);
+        lens.dry(1 - st.wetness);
         if (tickN % 6 === 0) scene.puff('steam', 1);
         if (st.wetness <= 0) { st.dried = true; scene.setAsh(1, false); scene.setNitride(0); say('Dry. The Mg(OH)₂ has become MgO.', 'good'); paint(); setNav(); }
       }
       tickN++;
     }
   }
-  function paintLensOnly() { if (st.step === 4) lens.set(st.burnDone ? 'burned' : (st.burn > 0 ? 'burning' : 'start'), 0, st.whatIf === 'nowater' ? noWaterNote() : null); }
 
   /* ------------------------------------------------------------ the page */
 
@@ -346,7 +353,8 @@ var App = (function () {
     if (n === 7) { st.v = 0; if (!st.cooled) st.clock = 0; }
     if (n === 4 && !st.burnDone) st.v = st.v;
     if (n === 9) SCORM.markComplete();
-    if (n > 3 && !st.seated) { st.placed = { stand: true, tri: true, burner: true }; st.seated = true; }
+    if (n > 3 && !st.seated) { st.placed = { burner: true }; st.seated = true; }
+    if (n === 5) { st.lidOff = st.drops > 0; st.bottleOver = st.drops > 0; } else { st.lidOff = false; st.bottleOver = false; }
     if (n >= 1 && !st.w1 && n > 1) st.w1 = true;
     if (n > 2) { st.mgOnPan = true; st.mgInCruc = true; }
     if (n > 4 && !st.burnDone) { st.burnDone = true; st.burn = 1; }
@@ -369,7 +377,7 @@ var App = (function () {
     el.drops = null;
     var tl = tilesFor(id), ck = tl.indexOf('cruc') >= 0 ? 'cruc' : (tl.indexOf('mgcruc') >= 0 ? 'mgcruc' : null);
     /* the pieces on the bench can be picked up directly, as well as from the tray */
-    [['cruc', ck], ['mg', tl.indexOf('mg') >= 0 ? 'mg' : null]].forEach(function (a) {
+    [['cruc', ck], ['mg', tl.indexOf('mg') >= 0 ? 'mg' : null], ['lid', tl.indexOf('lid') >= 0 ? 'lid' : null], ['bottle', tl.indexOf('bottle') >= 0 ? 'bottle' : null]].forEach(function (a) {
       var nd = scene.nodes[a[0]];
       if (a[1]) nd.setAttribute('data-tile', a[1]); else nd.removeAttribute('data-tile');
       nd.classList.toggle('grab', !!a[1]);
@@ -379,7 +387,7 @@ var App = (function () {
       label: function (key) { return TILES[key]; }, drop: drop });
     if (!el.say.textContent || st.step !== el.lastStep) say('');
     el.lastStep = st.step;
-    paint(); setNav();
+    lensSync(); paint(); setNav();
   }
 
   function init() {
@@ -394,15 +402,15 @@ var App = (function () {
     save();
 
     scene = Scene.create({ speed: reduced ? 0 : 1 });
-    lens = Lens.create();
+    lens = Lens.create({ speed: reduced ? 0 : 1 });
     el.stepname = document.getElementById('stepname');
     el.navs = [navBar(), navBar()];
     el.body = h('div', { class: 'body' });
     el.tray = h('div', { class: 'tray', 'aria-label': 'Equipment to place' });
     el.say = h('p', { class: 'say', role: 'status', 'aria-live': 'polite' });
-    var left = h('div', { class: 'left' }, [h('div', { class: 'scenewrap' }, [scene.node])]);
+    var left = h('div', { class: 'left' }, [h('div', { class: 'scenewrap' }, [h('div', { class: 'scenebox' }, [scene.node, lens.node])])]);
     document.getElementById('topnav').appendChild(el.navs[0].node);
-    var right = h('div', { class: 'right' }, [el.body, el.tray, el.say, h('div', { class: 'lenswrap' }, [lens.node]), el.navs[1].node]);
+    var right = h('div', { class: 'right' }, [el.body, el.tray, el.say, el.navs[1].node]);
     app.appendChild(left); app.appendChild(right);
 
     var start = parseInt(q.get('step'), 10);

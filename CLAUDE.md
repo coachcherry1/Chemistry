@@ -461,10 +461,12 @@ not the full page.
 - **Data and calculations are on paper** (`lab-sheet/`, built by `build_sheet.py`, student 2 pages, teacher edition 3). The sim has no tables,
   typed answers or score; `scorm.js` only marks it completed at the last step; `suspend_data` holds the seed. Random masses per student
   (crucible + lid 25 to 35 g, Mg 0.1 to 0.2 g, scatter within 1%); the class's roundings (Mg 24.3, O 16.0, 6.02 × 10²³) on the sheet.
-- **Bench (`scene.js`):** 2D SVG from the approved sketch (`design/`). Drag, or click a tile and then the place. No goggles, scissors or tongs.
-  Flame height is set by turning the bottom of the burner (a slider); the tip must touch the crucible's bottom or the Mg does not ignite.
+- **Bench (`scene.js`):** 2D SVG from the approved sketch (`design/`). The ring stand and clay triangle are already set up; drag the burner and the crucible,
+  or click a tile and then the place; bench pieces (crucible, Mg, lid, DI bottle) can be dragged directly and the drag shows the piece, not a label. No goggles, scissors or tongs.
+  Flame height is set by turning the bottom of the burner (a slider); the end of the scale is the perfect height (tip just touches the crucible's bottom, never inside it); the Mg does not ignite below it.
   The lid is placed automatically with a crack; "What if" buttons show the lid too wide, too tight and the water step skipped.
-- **Water step:** one drop converts one of six nitride Mg (the magnifier, `lens.js`); NH₃ gas is drawn rising (the smell is only in the real lab).
+- **Water step:** drag the lid onto the ceramic pad, then the DI bottle above the open crucible, then press Add 1 drop. One drop converts one of six nitride Mg
+  (the magnifier above the balance, `lens.js`, also shows O₂ and N₂ flying in and joining Mg during the burn, and Mg(OH)₂ turning to MgO on reheating); NH₃ gas is drawn rising (the smell is only in the real lab).
   `data.js` gives the product mass from the drops, so skipping the water gives an O : Mg ratio near 0.93.
 - **Files:** `data.js`, `scene.js`, `lens.js`, `app.js`, `picker.js`, `scorm.js`, `util.js`. Walkthrough, layout and validator in `tools/`.
 

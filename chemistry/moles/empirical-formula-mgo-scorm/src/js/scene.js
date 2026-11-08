@@ -139,7 +139,8 @@ var Scene = (function () {
     off: { t: 'translate(-60,-130) rotate(-30 322 200)', o: 0 },
     closed: { t: '', o: 1 },
     crack: { t: 'translate(-20,3) rotate(5 280 214)', o: 1 },
-    wide: { t: 'translate(-44,9) rotate(12 280 214)', o: 1 }
+    wide: { t: 'translate(-44,9) rotate(12 280 214)', o: 1 },
+    pad: { t: '', o: 0 }                       /* the lid is on the ceramic pad, not on the crucible */
   };
 
   function svg(tag, attrs) {
@@ -186,8 +187,19 @@ var Scene = (function () {
     }
     place('bench');
 
+    /* the lid set down on the ceramic pad (the oval on the wire gauze) */
+    var padLid = svg('g', { transform: 'translate(519 650) scale(0.7) translate(-322 -212)', opacity: 0 });
+    (function () {
+      var c = lidT.cloneNode(true);
+      Array.prototype.forEach.call(c.querySelectorAll('[id]'), function (n) { n.removeAttribute('id'); });
+      c.removeAttribute('id'); c.setAttribute('transform', '');
+      padLid.appendChild(c);
+      layerBench.appendChild(padLid);
+    })();
+
     function setLid(state) {
       lidState = state;
+      padLid.setAttribute('opacity', state === 'pad' ? 1 : 0);
       var s = LID_STATES[state] || LID_STATES.closed;
       lidT.setAttribute('transform', s.t);
       lidG.style.transition = speed === 0 ? 'none' : 'opacity 0.5s ease';
@@ -295,7 +307,7 @@ var Scene = (function () {
 
     /* ---- drop targets (invisible until the student is carrying something) ---- */
     var TARGETS = {
-      pan: [836, 330, 248, 166], stand: [440, 40, 250, 570], tri: [190, 190, 270, 140], seat: [236, 120, 170, 190],
+      pan: [836, 330, 248, 166], seat: [236, 150, 170, 150], over: [236, 30, 170, 170], pad: [430, 610, 190, 80],
       burner: [236, 410, 180, 195], bench: [640, 520, 160, 90]
     };
     Object.keys(TARGETS).forEach(function (k) {
@@ -310,7 +322,7 @@ var Scene = (function () {
 
     /* a picture of the thing being carried, for the drag (the real drawing, cut out of the bench) */
     function ghost(key) {
-      var map = { cruc: [cruc], mgcruc: [cruc], mg: [mgLoose], stand: [$('sc-stand'), $('sc-ring-front')], tri: [$('sc-tri-back'), $('sc-tri-front')], burner: [$('sc-burner')] };
+      var map = { cruc: [cruc], mgcruc: [cruc], mg: [mgLoose], stand: [$('sc-stand'), $('sc-ring-front')], tri: [$('sc-tri-back'), $('sc-tri-front')], burner: [$('sc-burner')], lid: [lidT], bottle: [diBody] };
       var els = map[key];
       if (!els) return null;
       var wrap = svg('g');
@@ -320,6 +332,8 @@ var Scene = (function () {
         c.removeAttribute('id'); c.setAttribute('opacity', 1); c.style.opacity = 1;
         if (e === cruc) c.setAttribute('transform', 'scale(' + CRUC_SCALE + ')');
         else if (e === mgLoose) c.setAttribute('transform', 'translate(0 0)');
+        else if (e === lidT) c.setAttribute('transform', 'scale(' + CRUC_SCALE + ')');
+        else if (e === diBody) c.setAttribute('transform', '');
         c.removeAttribute('data-tile');
         wrap.appendChild(c);
       });
@@ -340,7 +354,7 @@ var Scene = (function () {
       node: holder, root: root, place: place, where: function () { return where; }, setLid: setLid, lid: function () { return lidState; }, setMg: setMg,
       setPlaced: setPlaced, setReading: setReading, setCollar: setCollar, setFlame: setFlame, turnHint: turnHint, setGlow: setGlow, setHot: setHot,
       setAsh: setAsh, setNitride: setNitride, puff: puff, wisps: wisps, clearFx: clearFx, bottle: bottle, dropWater: dropWater, showTargets: showTargets,
-      setSpeed: setSpeed, ghost: ghost, nodes: { cruc: cruc, mg: mgLoose }, TRI: TRI, PAN: PAN, FLAME_TOUCH: FLAME_TOUCH, FLAME_MAX: FLAME_MAX, BURNER_TOP: BURNER_TOP
+      setSpeed: setSpeed, ghost: ghost, nodes: { cruc: cruc, mg: mgLoose, lid: lidG, bottle: diBody }, TRI: TRI, PAN: PAN, FLAME_TOUCH: FLAME_TOUCH, FLAME_MAX: FLAME_MAX, BURNER_TOP: BURNER_TOP
     };
   }
 
