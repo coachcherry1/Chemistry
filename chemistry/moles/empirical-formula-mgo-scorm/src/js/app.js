@@ -89,7 +89,7 @@ var App = (function () {
       var cloc = id === 'weigh1' ? (st.w1 && !st.back1 ? 'pan' : 'padloc') : (id === 'weigh2' && st.w2 ? 'pan' : 'padloc');
       scene.setMg(id === 'weigh2' ? (st.mgInCruc ? 'cruc' : (st.mgOnPan ? 'pan' : 'bench')) : 'bench');
       scene.place(cloc);
-      scene.setLid('closed');
+      scene.setLid(st.lidLift ? 'lift' : 'closed');
       scene.setAsh(0); scene.setNitride(0);
     } else {
       scene.place((n === 3 && !st.seated) ? 'pan' : (n === 8 && st.w8 ? 'pan' : (n === 8 || n === 9 ? (st.w8 ? 'pan' : 'tri') : 'tri')));
@@ -231,7 +231,9 @@ var App = (function () {
         st.mgOnPan = true; say('Write the mass of the magnesium in Box 2.', 'good');
       } else if (key === 'mgin') {
         if (target !== 'cruc') { say('Put the magnesium in the crucible on the ceramic pad.', 'bad'); return; }
-        st.mgInCruc = true; say('The magnesium is in the crucible. Now put the crucible, lid and magnesium on the balance.', 'good');
+        st.mgInCruc = true; st.lidLift = true;
+        setTimeout(function () { st.lidLift = false; if (STEPS[st.step].id === 'weigh2') paint(); }, reduced ? 0 : 1400);
+        say('The magnesium is in the crucible. Now put the crucible, lid and magnesium on the balance.', 'good');
       } else if (key === 'cruc') {
         if (target !== 'pan') { say('Put it on the balance pan.', 'bad'); return; }
         st.w2 = true; say('Write this reading in Box 3. It is the crucible, lid and magnesium together.', 'good');
