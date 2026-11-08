@@ -30,7 +30,7 @@ CuSO₄·xH₂O, so the student finds x. Every student gets **different random m
   poured into the crucible (a little stays behind, as in life) and the crucible is massed again.
 - Then heat, cool (the 5 minutes can be skipped) and mass, **repeated until two masses in a row agree within 0.01 g** (at least 3 heatings, at
   most 5; usually 3, sometimes 4). The simulation says when the mass is constant. Water leaves the crucible as gas wisps; the crucible reddens
-  as it heats; the magnifier shows six CuSO₄ units with their water molecules, and the molecules leave one by one as the crystal turns white.
+  as it heats; the magnifier shows fifteen small CuSO₄ units with 83 small water molecules scattered among them (so the ratio cannot be counted off the picture), and the molecules leave one by one as the crystal turns white.
 - **Real data:** the water : CuSO₄ mole ratio from a student's readings is 0.10 to 0.15 away from 5, above or below (4.85 to 4.90 or 5.10 to
   5.15), so it rounds to 5 but is never perfect. Heating removes most of the water the first time and little after that.
 

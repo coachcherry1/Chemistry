@@ -85,6 +85,7 @@ h1 { font-size: 1.05rem; margin: 0; }
 .lens-h { fill: #ffffff; stroke: #8795a1; stroke-width: 1; }
 .lens-unit { stroke: #164b93; stroke-width: 1.4; }
 .lens-unit + .lens-lab { paint-order: stroke; stroke: #ffffff; stroke-width: 3px; fill: #12212e; }
+.lens-lab-s { font-size: 8.5px; stroke-width: 2.4px; }
 .lens-divider { stroke: var(--line); stroke-dasharray: 4 4; }
 .press { cursor: pointer; }
 .lens-clus { fill: none; stroke: var(--lens-n); stroke-width: 1.6; stroke-dasharray: 4 3; }
