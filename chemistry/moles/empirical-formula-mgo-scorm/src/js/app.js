@@ -13,6 +13,8 @@ var App = (function () {
   var SCHEMA = 1;
   var q = new URLSearchParams(location.search);
   var reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) || q.get('speed') === '0';
+  /* the teaching motions (an O flying to a Mg, a drop falling) stay on even with reduced motion, only a little quicker: without them the reaction just happens. ?speed=0 skips them (for the tools). */
+  var motion = q.get('speed') === '0' ? 0 : (reduced ? 0.7 : 1);
 
   var seed, d, scene, lens, picker;
   var st = {
@@ -232,7 +234,7 @@ var App = (function () {
       } else if (key === 'mgin') {
         if (target !== 'cruc') { say('Put the magnesium in the crucible on the ceramic pad.', 'bad'); return; }
         st.mgInCruc = true; st.lidLift = true;
-        setTimeout(function () { st.lidLift = false; if (STEPS[st.step].id === 'weigh2') paint(); }, reduced ? 0 : 1400);
+        setTimeout(function () { st.lidLift = false; if (STEPS[st.step].id === 'weigh2') paint(); }, motion === 0 ? 0 : 1400);
         say('The magnesium is in the crucible. Now put the crucible, lid and magnesium on the balance.', 'good');
       } else if (key === 'cruc') {
         if (target !== 'pan') { say('Put it on the balance pan.', 'bad'); return; }
@@ -283,7 +285,6 @@ var App = (function () {
         if (burning) {
           st.burn = Math.min(1, st.burn + 0.012);
           st.glow = 0.55 + 0.45 * Math.sin(Date.now() / 140);
-          if (tickN % 8 === 0) scene.puff('smoke', 1);
           if (st.burn >= 1) { st.burnDone = true; say('The glow has died away: the magnesium has burned. Look through the magnifier.', 'good'); setNav(); }
           scene.setAsh(Math.min(1, st.burn * 1.2), false);
           scene.setMg(st.burn > 0.3 ? 'hidden' : 'cruc');
@@ -412,8 +413,8 @@ var App = (function () {
     lms.className = 'lms ' + (connected ? 'on' : 'off');
     save();
 
-    scene = Scene.create({ speed: reduced ? 0 : 1 });
-    lens = Lens.create({ speed: reduced ? 0 : 1 });
+    scene = Scene.create({ speed: motion });
+    lens = Lens.create({ speed: motion });
     el.stepname = document.getElementById('stepname');
     el.navs = [navBar(), navBar()];
     el.body = h('div', { class: 'body' });
