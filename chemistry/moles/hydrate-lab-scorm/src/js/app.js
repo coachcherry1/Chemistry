@@ -122,7 +122,7 @@ var App = (function () {
     scene.placeBoat(id === 'dispense' ? (st.boatOnPan ? 'pan' : 'bench') : (id === 'pour' && !st.poured && st.boatOnPan ? 'pan' : 'bench'));
     scene.bottle(id === 'dispense' && st.bottleOver);
     syncPile();
-    lens.node.style.display = n >= 5 ? '' : 'none';
+    lens.node.style.display = (id === 'heat' && st.k === 1) ? '' : 'none';   /* the picture is only for the first heating */
 
     var targets = {
       weigh1: [st.w1 ? 'pad' : 'pan'],
@@ -134,9 +134,28 @@ var App = (function () {
     scene.showTargets(targets);
   }
 
+  /* the readings so far, in the order they were taken */
+  function dataRows() {
+    var rows = [];
+    if (st.w1) rows.push(['Crucible + lid', d.cruc]);
+    if (st.w2) rows.push(['Crucible + lid + hydrate', Lab.r4(d.cruc + mh())]);
+    if (st.w2) {
+      var id = STEPS[st.step].id, upto = id === 'done' ? R().K : (st.wk ? st.k : st.k - 1);
+      for (var k = 1; k <= upto; k++) rows.push(['After heating ' + k, Lab.reading(d, mh(), k)]);
+    }
+    return rows;
+  }
+  function paintTable() {
+    var rows = dataRows(), body = el.dataBody;
+    if (!body) return;
+    body.innerHTML = '';
+    if (!rows.length) { body.appendChild(h('tr', {}, [h('td', { colspan: 2, class: 'dt-empty', text: 'Your readings will appear here.' })])); return; }
+    rows.forEach(function (r) { body.appendChild(h('tr', {}, [h('td', { text: r[0] }), h('td', { class: 'dt-num', text: Lab.fmt(r[1]) })])); });
+  }
+
   function lensSync() {
     var n = st.step;
-    if (n >= 5) lens.show(hydration()); else lens.show(1);
+    if (n === 5 && st.k === 1) lens.show(hydration()); else lens.show(1);
   }
 
   function p(t) { return h('p', { text: t }); }
@@ -206,7 +225,7 @@ var App = (function () {
       return [p('The ring stand, clay triangle and burner are set up for you. Lift the crucible off the balance and set it, with its lid, in the clay triangle.')];
     },
     heat: function () {
-      return [p('Turn the bottom of the burner up to the end of the scale. That puts the tip of the flame just on the bottom of the crucible. The lid is on with a small crack so the water can escape. Heat until the water stops leaving.'), burnerControl()];
+      return [p('Turn the bottom of the burner up to the end of the scale. That puts the tip of the flame just on the bottom of the crucible. The lid is on with a small crack so the water can escape. The simulation tells you when this heating is done.'), burnerControl()];
     },
     cool: function () {
       return [p('Turn the burner off and let the crucible cool for 5 minutes (a hot crucible would make the balance drift). Here the 5 minutes can be skipped.'), clockControl()];
@@ -219,7 +238,7 @@ var App = (function () {
       return [p('All the readings are on your sheet. Use them to do the calculations.'),
         h('ul', { class: 'recap' }, [
           h('li', { text: 'The blue hydrate lost its water as a gas when it was heated. The white solid left is CuSO₄ with no water.' }),
-          h('li', { text: 'You heated, cooled and massed until the last two masses agreed. If the mass is still dropping, there is still water in the solid.' }),
+          h('li', { text: 'You heated, cooled and massed until the last two masses agreed: that is constant mass.' }),
           h('li', { text: 'The water lost is the mass before heating minus the mass after the last heating. Real data are never exact, so your ratio will be near a whole number, not exactly one.' })
         ])];
     }
@@ -275,8 +294,8 @@ var App = (function () {
       if (!st.wk) {
         if (target !== 'pan') { say('Put it on the balance pan.', 'bad'); return; }
         st.wk = true;
-        say(final() ? 'The last two readings agree within 0.01 g: the mass is constant, so the water is all gone. Do the calculations on your sheet.' :
-          'The mass is still dropping, so there is still water in the solid. Heat again.', final() ? 'good' : '');
+        say(final() ? 'The last two readings agree within 0.01 g, so the mass is constant. Do the calculations on your sheet.' :
+          'Write it in your table. Put the crucible back in the triangle and heat again.', final() ? 'good' : '');
       } else {
         if (target !== 'seat') { say('Put the crucible back in the clay triangle.', 'bad'); return; }
         st.ret = true; say('Good. The crucible is back in the triangle.', 'good');
@@ -315,7 +334,7 @@ var App = (function () {
         if (left > 0 && tickN % 3 === 0) scene.wisps(1, 'H₂O');
         else if (tickN % 14 === 0 && st.heatP < 0.9) scene.wisps(1, 'H₂O');
         if (tickN % 5 === 0 && st.heatP < 0.97) scene.puff('steam', 1);
-        if (st.heatP >= 1) { st.heatDone = true; say('The water has stopped leaving. Turn the burner off and let it cool.', 'good'); setNav(); }
+        if (st.heatP >= 1) { st.heatDone = true; say('Heating ' + st.k + ' is done. Turn the burner off and let it cool.', 'good'); setNav(); }
       }
       tickN++;
     }
@@ -333,7 +352,7 @@ var App = (function () {
       case 'setup': return 'Drag the crucible into the clay triangle.';
       case 'heat': return st.heatDone ? 'Heating ' + st.k + ' is done.' : 'Heating ' + st.k + ': raise the flame to the end of the scale.';
       case 'cool': return st.cooled ? 'The crucible has cooled.' : 'Skip ahead 5 minutes while it cools.';
-      case 'weigh': return !st.wk ? 'Drag the crucible onto the balance.' : (final() ? 'The mass is constant.' : 'Still dropping: drag the crucible back to the triangle.');
+      case 'weigh': return !st.wk ? 'Drag the crucible onto the balance.' : (final() ? 'The mass is constant.' : 'Drag the crucible back to the triangle to heat again.');
       default: return 'Finished: do the calculations on your sheet.';
     }
   }
@@ -433,7 +452,7 @@ var App = (function () {
       label: function (key) { return TILES[key]; }, drop: drop });
     if (!el.say.textContent || st.step !== el.lastStep) say('');
     el.lastStep = st.step;
-    lensSync(); paint(); setNav();
+    lensSync(); paint(); paintTable(); setNav();
   }
 
   function init() {
@@ -457,7 +476,9 @@ var App = (function () {
     el.goal = h('div', { class: 'goal', 'aria-live': 'polite' });
     var left = h('div', { class: 'left' }, [h('div', { class: 'scenewrap' }, [h('div', { class: 'scenebox' }, [scene.node, el.goal, lens.node])])]);
     document.getElementById('topnav').appendChild(el.navs[0].node);
-    var right = h('div', { class: 'right' }, [el.body, el.tray, el.say, el.navs[1].node]);
+    el.dataBody = h('tbody');
+    var dataTable = h('div', { class: 'datatable' }, [h('div', { class: 'dt-title', text: 'Your data so far' }), h('table', { 'aria-label': 'Readings from the balance so far' }, [el.dataBody])]);
+    var right = h('div', { class: 'right' }, [el.body, el.tray, el.say, el.navs[1].node, dataTable]);
     app.appendChild(left); app.appendChild(right);
 
     /* clicking the bottle shakes out solid (the picker takes over while it can still be dragged) */
