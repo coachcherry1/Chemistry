@@ -14,14 +14,14 @@ let bad = 0;
         const vis = sel => { const e = document.querySelector(sel); if (!e) return null; const b = e.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, right: b.right, h: b.height }; };
         const right = document.querySelector('.right');
         return { page: document.documentElement.scrollHeight - innerHeight, scroll: right.scrollHeight - right.clientHeight,
-          scene: vis('.scene-svg'), lens: vis('.lens'), tray: vis('.tray:not([hidden])'), ctl: vis('.ctl'), say: vis('.say'), vh: innerHeight, vw: innerWidth,
+          scene: vis('.scene-svg'), lens: vis('.lens'), tray: vis('.tray:not([hidden])'), table: vis('.datatable'), ctl: vis('.ctl'), say: vis('.say'), vh: innerHeight, vw: innerWidth,
           hscroll: document.documentElement.scrollWidth - innerWidth };
       });
       const probs = [];
       if (r.page > 1) probs.push('page scrolls ' + r.page);
       if (r.hscroll > 1) probs.push('sideways scroll');
       if (r.scene.h < 330) probs.push('scene only ' + Math.round(r.scene.h) + 'px tall');
-      ['lens', 'tray', 'ctl'].forEach(k => { if (r[k] && r[k].bottom > r.vh + 1) probs.push(k + ' below the screen'); });
+      ['lens', 'tray', 'ctl', 'table'].forEach(k => { if (r[k] && r[k].bottom > r.vh + 1) probs.push(k + ' below the screen'); });
       if (r.scroll > 1 && hgt >= 650) probs.push('right column scrolls ' + r.scroll);
       console.log((probs.length ? 'FAIL' : 'ok') + ': ' + w + 'x' + hgt + ' step ' + s + (probs.length ? ' ' + probs.join(', ') : ''));
       if (probs.length) bad++;

@@ -77,15 +77,17 @@ function Lab_d(d, c) { let s = 0; for (let i = 0; i < c; i++) s += d.amounts[i];
     await pg.fill('#collar', '100'); await pg.dispatchEvent('#collar', 'input'); await pg.evaluate(() => App.tick(60)); if (k === 1) await shot('5a');
     await pg.evaluate(() => App.tick(200));
     check(await pg.evaluate(() => App.state.heatDone), 'heating ' + k + ' finishes'); if (k === 1) await shot('5');
+    check((await pg.locator('.lens').isVisible()) === (k === 1), k === 1 ? 'the particle diagram shows on the first heating' : 'the particle diagram is hidden after the first heating');
     await auto('Cool after heating ' + k);
     await pg.click('#skip'); await pg.waitForFunction(() => App.state.cooled, null, { timeout: 15000 });
     await auto('Mass after heating ' + k);
     await place('cruc', 'pan');
     const want = Math.round((d.cruc + run.contents[k - 1]) * 10000) / 10000;
     check((await reading()) === want.toFixed(4) + ' g', 'mass after heating ' + k + ': ' + await reading());
-    if (k < run.K) { check(/still dropping/i.test(await pg.textContent('.say')), 'it says the mass is still dropping'); await place('cruc', 'seat'); await auto('Heating ' + (k + 1)); }
+    if (k < run.K) { check(!/water (is )?(still|left)|still dropping/i.test(await pg.textContent('.say')), 'it never says there is water left'); await place('cruc', 'seat'); await auto('Heating ' + (k + 1)); }
     else { check(/constant/i.test(await pg.textContent('.say')), 'it says the mass is constant'); await shot('7'); await auto('Finished'); }
   }
+  check((await pg.locator('.datatable tbody tr').count()) === 2 + run.K, 'the running table has every reading: ' + (2 + run.K) + ' rows');
   check((await pg.textContent('#stepname')) === 'Finished', 'reaches the last step'); await shot('8');
   const sets = await pg.evaluate(() => window.__sets);
   check(sets.indexOf('cmi.core.lesson_status') >= 0, 'marks the lab completed');

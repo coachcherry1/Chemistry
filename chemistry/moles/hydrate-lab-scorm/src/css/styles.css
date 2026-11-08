@@ -105,3 +105,12 @@ h1 { font-size: 1.05rem; margin: 0; }
   .scenewrap { min-height: 260px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* the running data table */
+.datatable { flex: 0 0 auto; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 4px 8px; }
+.dt-title { font-weight: 700; font-size: 0.85rem; color: var(--muted); margin-bottom: 2px; }
+.datatable table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.datatable td { padding: 1px 4px; border-top: 1px solid var(--line); }
+.datatable tr:first-child td { border-top: none; }
+.dt-num { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+.dt-empty { color: var(--muted); font-style: italic; }
