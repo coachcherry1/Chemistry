@@ -486,8 +486,8 @@ not the full page.
   CuSO₄·xH₂O so the student finds x) above the boat, **click the bottle** (or the button) to shake out 0.10 to 0.32 g at a time as blue crystals that fall and heap up; about 2 g
   (at least 1.5 g, at most 3 g). Pour the boat into the crucible (a few mg stay behind), mass it, set it in the triangle (the burner is pre-placed).
 - **Heat, cool, mass, repeat until constant mass** (two masses in a row within 0.01 g): at least 3 heatings, at most 5 (usually 3, sometimes 4); the sim says when the mass is
-  constant. The flame must touch the crucible's bottom (end of the scale). Water leaves the crucible as H₂O gas wisps; the crucible reddens; the magnifier shows six CuSO₄ units
-  with 5 water molecules each, leaving one by one as the crystals go from blue to white (the diagram shows 5, the sheet and bottle do not say so).
+  constant. The flame must touch the crucible's bottom (end of the scale). Water leaves the crucible as H₂O gas wisps; the crucible reddens; the magnifier shows 15 small CuSO₄ units
+  with 83 small waters scattered among them, deliberately not a countable ratio (the teacher: the diagram need not show the right ratio), leaving one by one as the crystals go from blue to white.
 - **Real data (`data.js`):** the water : CuSO₄ ratio from a student's own readings is always 0.10 to 0.15 from 5 (above or below), never exact; heating removes about 80 to 88%
   of the water, then about 93 to 97%, and so on; masses never rise between heatings; the validator checks 2000 runs (heatings, ratio error, monotone masses, constant at the end).
 - **Files:** `data.js` (`Lab.make`, `Lab.run`), `scene.js` (bench, boat, bottle, crystals), `lens.js` (the lattice), `app.js`, `picker.js`, `scorm.js`, `util.js`. Teacher links:

@@ -1,22 +1,21 @@
-/* lens.js: the magnifier above the balance. Six CuSO4 units of the crystal, each with its water molecules held in the
- * crystal structure (the hydrate). Heating drives the water out one molecule at a time; each leaves as a gas and
+/* lens.js: the magnifier above the balance. Fifteen CuSO4 units of the crystal with many small water molecules held between them in the
+ * crystal structure (the hydrate). The waters are scattered, not grouped, so the diagram does not give the ratio away:
+ * the student finds it from the masses. Heating drives the water out one molecule at a time; each leaves as a gas and
  * floats away, and the blue crystal turns white as the water goes.
  *
  *   show(h)   jump to a state, h = how hydrated the solid still is (1 = all its water, 0 = none)
  *   heat(h)   play the water leaving until only that fraction is left
  *   note(t)   replace the caption (null puts it back)
  *
- * The molecules shown follow the data: UNITS units with PER water each (the lab's true ratio), so the number that
- * leaves matches the mass the balance reports.
+ * How many are left follows the data (the hydration after each heating), so the molecules leaving match the masses.
  */
 
 var Lens = (function () {
   'use strict';
 
   var NS = 'http://www.w3.org/2000/svg';
-  var UNITS = 6, PER = 5, TOTAL = UNITS * PER;
-  var COLS = 3, CW = 104, CH = 92, X0 = 14, Y0 = 26;
-  var OFFS = [[-37, -25], [0, -34], [37, -25], [-27, 27], [27, 27]];       /* where a unit's 5 waters sit around it */
+  var UNITS = 15, TOTAL = 83;                     /* many small units with many waters packed among them: the ratio cannot be read off the picture */
+  var COLS = 5, CW = 62, CH = 58, X0 = 9, Y0 = 26;
   var BLUE = '#2a73d1', WHITE = '#f1f3f3';
 
   function el(tag, attrs, parent) {
@@ -31,8 +30,8 @@ var Lens = (function () {
     return 'rgb(' + [0, 1, 2].map(function (i) { return Math.round(a[i] + (b[i] - a[i]) * t); }).join(',') + ')';
   }
 
-  function waterMol(g, x, y) {
-    var m = el('g', { transform: 'translate(' + x + ' ' + y + ')' }, g);
+  function waterMol(g, x, y, sc) {
+    var m = el('g', { transform: 'translate(' + x + ' ' + y + ') scale(' + (sc || 0.6) + ')' }, g);
     el('circle', { r: 6.5, class: 'lens-o' }, m);
     el('circle', { cx: -6.5, cy: 5.5, r: 4, class: 'lens-h' }, m);
     el('circle', { cx: 6.5, cy: 5.5, r: 4, class: 'lens-h' }, m);
@@ -50,37 +49,43 @@ var Lens = (function () {
 
     var svg = el('svg', { viewBox: '0 0 500 215', class: 'lens-svg', role: 'img', 'aria-label': 'Magnifier: water molecules held in the crystal' });
     el('rect', { x: 2, y: 2, width: 496, height: 211, rx: 14, class: 'lens-bg' }, svg);
-    el('text', { x: 24, y: 18, class: 'lens-title', text: 'Inside the crystal' }, svg);
+    el('text', { x: 24, y: 18, class: 'lens-title', text: 'Inside the crystal (boxes: CuSO₄)' }, svg);
     el('text', { x: 346, y: 18, class: 'lens-title', text: 'Water gas leaving' }, svg);
     el('line', { x1: 336, y1: 8, x2: 336, y2: 205, class: 'lens-divider' }, svg);
     var gUnits = el('g', {}, svg), gFly = el('g', {}, svg);
     wrap.appendChild(svg);
 
-    /* the six units and their 30 waters */
-    var boxes = [], slots = [], present = [];
+    /* the six units, and the waters scattered in the spaces between them */
+    var boxes = [], slots = [], present = [], centres = [], gW = el('g', {}, gUnits);
     for (var u = 0; u < UNITS; u++) {
       var cx = X0 + CW / 2 + (u % COLS) * CW, cy = Y0 + CH / 2 + Math.floor(u / COLS) * CH + 4;
+      centres.push([cx, cy]);
       var g = el('g', {}, gUnits);
-      var box = el('rect', { x: cx - 19, y: cy - 11, width: 38, height: 22, rx: 5, class: 'lens-unit' }, g);
-      el('text', { x: cx, y: cy + 4, 'text-anchor': 'middle', class: 'lens-lab', text: 'CuSO₄' }, g);
-      boxes.push(box);
-      for (var k = 0; k < PER; k++) {
-        slots.push({ x: cx + OFFS[k][0], y: cy + OFFS[k][1], node: waterMol(g, cx + OFFS[k][0], cy + OFFS[k][1]) });
-        present.push(true);
-      }
+      boxes.push(el('rect', { x: cx - 15, y: cy - 8, width: 30, height: 16, rx: 4, class: 'lens-unit' }, g));
+      el('text', { x: cx, y: cy + 3, 'text-anchor': 'middle', class: 'lens-lab lens-lab-s', text: 'CuSO₄' }, g);
     }
-    /* the order the waters leave in: spread over the units, the same every time */
+    function rnd(i, salt) { var x = Math.sin(i * 127.1 + salt * 311.7) * 43758.5453; return x - Math.floor(x); }
+    var cand = [];
+    for (var gy = 0; gy < 13; gy++) for (var gx = 0; gx < 21; gx++) {
+      var px = 18 + gx * 15 + (rnd(gx * 21 + gy, 1) - 0.5) * 9, py = 34 + gy * 14 + (rnd(gx * 21 + gy, 2) - 0.5) * 8, ok = true;
+      centres.forEach(function (c) { if (Math.abs(px - c[0]) < 21 && Math.abs(py - c[1]) < 13) ok = false; });
+      if (px > 324 || py > 206) ok = false;
+      if (ok) cand.push([px, py, rnd(gx * 21 + gy, 3)]);
+    }
+    cand.sort(function (a, b) { return a[2] - b[2]; });
+    cand = cand.slice(0, TOTAL); TOTAL = cand.length;
+    for (var w = 0; w < cand.length; w++) { slots.push({ x: cand[w][0], y: cand[w][1], node: waterMol(gW, cand[w][0], cand[w][1]) }); present.push(true); }
+    /* the order the waters leave in: spread over the diagram, the same every time */
     var order = [];
-    for (k = 0; k < PER; k++) for (u = 0; u < UNITS; u++) order.push(u * PER + ((k * 2 + u) % PER));
-    var seen = {}; order = order.filter(function (i) { if (seen[i]) return false; seen[i] = 1; return true; });
-    for (var i2 = 0; i2 < TOTAL; i2++) if (!seen[i2]) order.push(i2);
+    for (var o = 0; o < slots.length; o++) order.push(o);
+    order.sort(function (a, b) { return rnd(a, 7) - rnd(b, 7); });
 
     var h = 1, noteText = null, waters = TOTAL, epoch = 0;
 
     function paintBoxes(hh) { boxes.forEach(function (b) { b.setAttribute('fill', blend(WHITE, BLUE, Math.max(0, Math.min(1, hh)))); }); }
     function captionNow() {
       if (noteText) { cap.textContent = noteText; return; }
-      cap.textContent = waters >= TOTAL ? 'In the blue crystal every CuSO₄ has water molecules held in the crystal structure.' :
+      cap.textContent = waters >= TOTAL ? 'In the blue crystal, many water molecules are held in the crystal structure among the CuSO₄ units.' :
         (waters > 0 ? 'Heat drives the water out of the crystal as a gas. The crystal loses its blue colour.' : 'All the water has left. The white solid that is left is CuSO₄ with no water (anhydrous).');
     }
     function setWaters(n) {            /* jump: exactly n waters in the crystal */
@@ -104,7 +109,7 @@ var Lens = (function () {
       if (speed === 0) return;
       var from = { x: s.x, y: s.y }, to = { x: 345 + (slotNo % 4) * 36 + 10, y: 40 + (slotNo * 23) % 120 };
       var outer = el('g', {}, gFly);
-      waterMol(outer, from.x, from.y);
+      waterMol(outer, from.x, from.y, 1);
       if (!outer.animate) { gFly.removeChild(outer); return; }
       var a = outer.animate([{ transform: 'translate(0px,0px)', opacity: 1 }, { transform: 'translate(' + (to.x - from.x) + 'px,' + (to.y - from.y) + 'px)', opacity: 0 }],
         { duration: 1800 * speed, easing: 'ease-out', fill: 'forwards' });
@@ -127,5 +132,5 @@ var Lens = (function () {
     return { node: holder, show: show, heat: heat, note: note, waters: function () { return waters; }, TOTAL: TOTAL, setSpeed: function (v) { speed = v; } };
   }
 
-  return { create: create, UNITS: UNITS, PER: PER };
+  return { create: create, UNITS: UNITS };
 })();
