@@ -23,6 +23,7 @@ function check(c, m) { if (!c) { bad++; console.log('FAIL: ' + m); } else consol
   const errs = []; pg.on('pageerror', e => errs.push(e.message)); pg.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
   const shot = async n => { if (process.env.SHOTS) await pg.screenshot({ path: path.join(process.env.SHOTS, n + '.png') }); };
   const next = async () => { await pg.locator('.right .nav .btn.primary').click(); };
+  const auto = async name => { await pg.waitForFunction(n => document.getElementById('stepname').textContent === n, name, { timeout: 9000 }); };
   const place = async (tile, target) => {
     await pg.click('.tile[data-tile="' + tile + '"]');
     await pg.click('[data-drop="' + target + '"]', { force: true });
@@ -37,22 +38,22 @@ function check(c, m) { if (!c) { bad++; console.log('FAIL: ' + m); } else consol
   /* 1 crucible */
   check(await pg.locator('.topnav .btn.primary').isDisabled(), 'Next waits for the weighing');
   await place('cruc', 'pan'); check((await reading()) === d.cruc.toFixed(4) + ' g', 'crucible mass shown: ' + await reading()); check(await pg.locator('.topnav .btn.primary').isDisabled(), 'Next waits until the crucible is back on the pad');
-  await place('cruc', 'pad'); check((await reading()) === '0.0000 g', 'the balance is empty again'); await shot('1'); await next();
+  await place('cruc', 'pad'); check((await reading()) === '0.0000 g', 'the balance is empty again'); await shot('1'); await auto('Mass the magnesium');
   /* 2 magnesium */
   await place('mg', 'pan'); check((await reading()) === d.mg.toFixed(4) + ' g', 'magnesium mass shown');
   await place('mgin', 'cruc'); check((await reading()) === '0.0000 g', 'the magnesium left the balance');
-  await place('cruc', 'pan'); check((await reading()) === (Math.round((d.cruc + d.mg) * 10000) / 10000).toFixed(4) + ' g', 'crucible and magnesium shown'); await shot('2'); await next();
+  await place('cruc', 'pan'); check((await reading()) === (Math.round((d.cruc + d.mg) * 10000) / 10000).toFixed(4) + ' g', 'crucible and magnesium shown'); await shot('2'); await auto('Set up the heating');
   /* 3 set up: the ring stand and triangle are already in place */
   check(await pg.locator('.tile[data-tile="burner"]').count() === 0, 'the burner is already in place');
   await place('cruc', 'seat'); await shot('3');
-  check(!(await pg.locator('.topnav .btn.primary').isDisabled()), 'set-up complete'); await next();
+  await auto('Burn the magnesium');
   /* 4 burn: too small a flame first, and the end of the scale is the perfect height */
   await pg.fill('#collar', '20'); await pg.dispatchEvent('#collar', 'input'); await pg.evaluate(() => App.tick(300));
   check(await pg.evaluate(() => App.state.burn) === 0, 'a short flame does not ignite the magnesium');
   await pg.fill('#collar', '100'); await pg.dispatchEvent('#collar', 'input'); await pg.evaluate(() => App.tick(40)); await shot('4');
   await pg.evaluate(() => App.tick(200));
   check(await pg.evaluate(() => App.state.burnDone), 'the magnesium burns with the flame touching'); await shot('4b');
-  await next();
+  await auto('Add water');
   /* 5 water */
   check(await pg.locator('.topnav .btn.primary').isDisabled(), 'Next waits for a drop');
   check(await pg.locator('#drop').isDisabled(), 'no drops until the lid is off and the bottle is above the crucible');
@@ -63,15 +64,15 @@ function check(c, m) { if (!c) { bad++; console.log('FAIL: ' + m); } else consol
   check(/0 of 6|\(0 of 6/.test(await pg.textContent('.lens-cap')) || /0 of 6/.test(await pg.textContent('.lens-cap')), 'six drops use up the nitride'); await next();
   /* 6 dry */
   await pg.fill('#collar', '100'); await pg.dispatchEvent('#collar', 'input'); await pg.evaluate(() => App.tick(300));
-  check(await pg.evaluate(() => App.state.dried), 'the crucible dries'); await shot('6'); await next();
+  check(await pg.evaluate(() => App.state.dried), 'the crucible dries'); await shot('6'); await auto('Cool');
   /* 7 cool */
-  await pg.click('#skip'); await pg.waitForFunction(() => App.state.cooled, null, { timeout: 15000 }); await shot('7'); await next();
+  await pg.click('#skip'); await pg.waitForFunction(() => App.state.cooled, null, { timeout: 15000 }); await shot('7'); await auto('Mass the product');
   /* 8 product */
   await place('cruc', 'pan');
   const fin = await pg.evaluate(() => { const d = App.data(); return Lab.finalTotal(d, App.state.drops); }).catch(() => null);
   const shown = await reading();
   const want = await pg.evaluate(() => { const d = App.data(); const dd = d; return (window.Lab ? Lab : null) && Lab.finalTotal(dd, 6).toFixed(4) + ' g'; });
-  check(shown === want, 'product mass shown: ' + shown); await shot('8'); await next();
+  check(shown === want, 'product mass shown: ' + shown); await shot('8'); await auto('Finished');
   /* 9 done */
   check((await pg.textContent('#stepname')) === 'Finished', 'reaches the last step'); await shot('9');
   const sets = await pg.evaluate(() => window.__sets);

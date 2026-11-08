@@ -467,7 +467,8 @@ not the full page.
 - **Bench (`scene.js`):** 2D SVG from the approved sketch (`design/`). The ring stand and clay triangle are already set up; drag the burner and the crucible,
   or click a tile and then the place; bench pieces (crucible, Mg, lid, DI bottle) can be dragged directly and the drag shows the piece, not a label. No goggles, scissors or tongs.
   Flame height is set by turning the bottom of the burner (a slider); the end of the scale is the perfect height (tip just touches the crucible's bottom, never inside it); the Mg does not ignite below it.
-  The lid is placed automatically with a crack (the "what if" buttons were removed at the teacher's request).
+  The lid is placed automatically with a crack (the "what if" buttons were removed at the teacher's request). A big bold summary of the current job sits top left of the bench
+  (`goalText()` in `app.js`); a finished step moves on by itself after a pause (`AUTO`; the water step stays manual because the drop count is the student's), and Next stays as a fallback.
 - **Water step:** drag the lid onto the ceramic pad, then the DI bottle above the open crucible, then press Add 1 drop. One drop converts one of six nitride Mg
   (the magnifier above the balance, `lens.js`, also shows O₂ and N₂ flying in and joining Mg during the burn, and Mg(OH)₂ turning to MgO on reheating); NH₃ gas is drawn rising (the smell is only in the real lab).
   `data.js` gives the product mass from the drops, so skipping the water gives an O : Mg ratio near 0.93.

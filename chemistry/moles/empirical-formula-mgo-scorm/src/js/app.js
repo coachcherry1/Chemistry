@@ -52,7 +52,7 @@ var App = (function () {
     if (st.step === 1) return st.w1 && !st.back1 ? d.cruc : 0;
     if (st.step === 2) return st.w2 ? Lab.r4(d.cruc + d.mg) : (st.mgOnPan && !st.mgInCruc ? d.mg : 0);
     if (st.step === 3) return st.seated ? 0 : Lab.r4(d.cruc + d.mg);
-    if (st.step === 8) return st.w8 ? Lab.finalTotal(d, st.drops) : 0;
+    if (st.step === 8 || st.step === 9) return st.w8 ? Lab.finalTotal(d, st.drops) : 0;
     return 0;
   }
 
@@ -303,6 +303,34 @@ var App = (function () {
 
   /* ------------------------------------------------------------ the page */
 
+  /* the big summary on the bench: what to do right now */
+  function goalText() {
+    switch (STEPS[st.step].id) {
+      case 'intro': return 'Read the plan, then press Begin.';
+      case 'weigh1': return !st.w1 ? 'Drag the crucible and lid onto the balance.' : 'Drag the crucible back to the ceramic pad.';
+      case 'weigh2': return !st.mgOnPan ? 'Drag the magnesium onto the balance.' : (!st.mgInCruc ? 'Drag the magnesium into the crucible.' : 'Drag the crucible onto the balance.');
+      case 'setup': return 'Drag the crucible into the clay triangle.';
+      case 'burn': return st.burnDone ? 'The magnesium has burned.' : 'Raise the flame to the end of the scale and heat until the glow stops.';
+      case 'water': return !st.lidOff ? 'Drag the lid onto the ceramic pad.' : (!st.bottleOver ? 'Drag the DI bottle above the crucible.' : 'Add 6 to 7 drops of water.');
+      case 'dry': return st.dried ? 'The crucible is dry.' : 'Raise the flame again until the steam stops.';
+      case 'cool': return st.cooled ? 'The crucible has cooled.' : 'Skip ahead 5 minutes while it cools.';
+      case 'weigh3': return 'Drag the crucible onto the balance.';
+      default: return 'Finished: do Box 5 on your sheet.';
+    }
+  }
+
+  /* when a step's job is done, move on by itself after a pause (long enough to read the balance or watch the result) */
+  var AUTO = { weigh1: 900, weigh2: 1600, setup: 900, burn: 3000, dry: 2200, cool: 1500, weigh3: 2500 };
+  var advTimer = null;
+  function checkAdvance() {
+    var id = STEPS[st.step].id, at = st.step;
+    if (advTimer || AUTO[id] == null || !canNext()) return;
+    advTimer = setTimeout(function () {
+      advTimer = null;
+      if (st.step === at && canNext()) go(at + 1);
+    }, AUTO[id]);
+  }
+
   function setNav() {
     var id = STEPS[st.step].id;
     el.navs.forEach(function (n) {
@@ -313,6 +341,8 @@ var App = (function () {
       n.pos.textContent = (st.step + 1) + ' of ' + STEPS.length;
     });
     el.stepname.textContent = STEPS[st.step].name;
+    if (el.goal) el.goal.textContent = goalText();
+    checkAdvance();
   }
 
   function navBar() {
@@ -328,6 +358,7 @@ var App = (function () {
     n = Math.max(0, Math.min(last, n));
     var prev = st.step;
     st.step = n;
+    if (advTimer) { clearTimeout(advTimer); advTimer = null; }
     if (n === 5) { st.v = 0; st.T = Math.min(st.T, 0.2); }
     if (n === 6 && st.step !== prev) st.v = 0;
     if (n === 7) { st.v = 0; if (!st.cooled) st.clock = 0; }
@@ -388,7 +419,8 @@ var App = (function () {
     el.body = h('div', { class: 'body' });
     el.tray = h('div', { class: 'tray', 'aria-label': 'Equipment to place' });
     el.say = h('p', { class: 'say', role: 'status', 'aria-live': 'polite' });
-    var left = h('div', { class: 'left' }, [h('div', { class: 'scenewrap' }, [h('div', { class: 'scenebox' }, [scene.node, lens.node])])]);
+    el.goal = h('div', { class: 'goal', 'aria-live': 'polite' });
+    var left = h('div', { class: 'left' }, [h('div', { class: 'scenewrap' }, [h('div', { class: 'scenebox' }, [scene.node, el.goal, lens.node])])]);
     document.getElementById('topnav').appendChild(el.navs[0].node);
     var right = h('div', { class: 'right' }, [el.body, el.tray, el.say, el.navs[1].node]);
     app.appendChild(left); app.appendChild(right);
