@@ -219,9 +219,9 @@ var Scene = (function () {
     layerBench.appendChild(mgLoose);
     function setMg(where_) {
       var inCruc = where_ === 'cruc';
-      $('sc-mgpaper').setAttribute('opacity', where_ === 'bench' ? 1 : 0);
+      $('sc-mgpaper').setAttribute('opacity', 1);          /* the paper stays on the bench */
       $('sc-mg-in').setAttribute('opacity', inCruc ? 1 : 0);
-      $('sc-paper').setAttribute('opacity', where_ === 'pan' ? 1 : 0);
+      $('sc-paper').setAttribute('opacity', 0);
       var s = mgSlot[where_];
       if (s) { mgLoose.setAttribute('transform', 'translate(' + s[0] + ' ' + s[1] + ')'); mgLoose.setAttribute('opacity', 1); }
       else mgLoose.setAttribute('opacity', 0);
