@@ -483,6 +483,18 @@ var App = (function () {
     /* clicking the bottle shakes out solid (the picker takes over while it can still be dragged) */
     scene.nodes.bottle.addEventListener('click', function () { if (STEPS[st.step].id === 'dispense' && st.bottleOver) shake(); });
 
+    /* keep the bench the drawing's shape (1280 x 700) in whatever room there is, so the magnifier and the job line sit on it exactly */
+    var wrap = left.firstChild, box = wrap.firstChild;
+    function fit() {
+      var w = wrap.clientWidth - 4, hh = wrap.clientHeight - 4, ratio = 1280 / 700;
+      if (w <= 0 || hh <= 0) return;
+      var bw = Math.min(w, hh * ratio);
+      box.style.width = bw + 'px'; box.style.height = (bw / ratio) + 'px';
+    }
+    window.addEventListener('resize', fit);
+    if (window.ResizeObserver) new ResizeObserver(fit).observe(wrap);
+    fit();
+
     var start = parseInt(q.get('step'), 10);
     var kk = parseInt(q.get('k'), 10);
     setInterval(function () { tick(1); }, 100);
