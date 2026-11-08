@@ -333,7 +333,6 @@ var App = (function () {
         scene.setPowder(1, hy);
         if (left > 0 && tickN % 3 === 0) scene.wisps(1, 'H₂O');
         else if (tickN % 14 === 0 && st.heatP < 0.9) scene.wisps(1, 'H₂O');
-        if (tickN % 5 === 0 && st.heatP < 0.97) scene.puff('steam', 1);
         if (st.heatP >= 1) { st.heatDone = true; say('Heating ' + st.k + ' is done. Turn the burner off and let it cool.', 'good'); setNav(); }
       }
       tickN++;
