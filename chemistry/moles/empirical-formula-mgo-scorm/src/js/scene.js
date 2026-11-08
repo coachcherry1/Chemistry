@@ -142,6 +142,7 @@ var Scene = (function () {
     closed: { t: '', o: 1 },
     crack: { t: 'translate(-20,3) rotate(5 280 214)', o: 1 },
     wide: { t: 'translate(-44,9) rotate(12 280 214)', o: 1 },
+    lift: { t: 'translate(-86,-46) rotate(-28 322 205)', o: 1 },   /* held up and to the side for a moment */
     pad: { t: '', o: 0 }                       /* the lid is on the ceramic pad, not on the crucible */
   };
 
