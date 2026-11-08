@@ -41,10 +41,8 @@ function check(c, m) { if (!c) { bad++; console.log('FAIL: ' + m); } else consol
   await place('mg', 'pan'); check((await reading()) === d.mg.toFixed(4) + ' g', 'magnesium mass shown');
   await place('mgcruc', 'pan'); check((await reading()) === (Math.round((d.cruc + d.mg) * 10000) / 10000).toFixed(4) + ' g', 'crucible and magnesium shown'); await shot('2'); await next();
   /* 3 set up: the ring stand and triangle are already in place */
-  check(await pg.locator('.tile[data-tile="stand"]').count() === 0, 'no ring stand tile (already set up)');
-  await pg.click('.tile[data-tile="burner"]'); await pg.click('[data-drop="seat"]', { force: true });
-  check(/burner goes/i.test(await pg.textContent('.say')), 'the burner goes first');
-  await place('burner', 'burner'); await place('cruc', 'seat'); await shot('3');
+  check(await pg.locator('.tile[data-tile="burner"]').count() === 0, 'the burner is already in place');
+  await place('cruc', 'seat'); await shot('3');
   check(!(await pg.locator('.topnav .btn.primary').isDisabled()), 'set-up complete'); await next();
   /* 4 burn: too small a flame first, and the end of the scale is the perfect height */
   await pg.fill('#collar', '20'); await pg.dispatchEvent('#collar', 'input'); await pg.evaluate(() => App.tick(300));

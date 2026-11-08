@@ -77,7 +77,7 @@ var App = (function () {
     var early = n <= 2, heating = n >= 3;
     scene.setPlaced('stand', true);
     scene.setPlaced('tri', true);
-    scene.setPlaced('burner', st.placed.burner || n > 3);
+    scene.setPlaced('burner', n >= 3);
     scene.setReading(Lab.fmt(reading()));
     scene.turnHint((id === 'burn' || id === 'dry') && st.v < 0.02);
     scene.setCollar(st.v);
@@ -103,7 +103,7 @@ var App = (function () {
     scene.bottle(id === 'water' && st.bottleOver);
     scene.setGlow(st.glow);
 
-    var targets = { weigh1: ['pan'], weigh2: ['pan'], setup: ['seat', 'burner'], weigh3: ['pan'], water: !st.lidOff ? ['pad'] : (!st.bottleOver ? ['over'] : []) }[id] || [];
+    var targets = { weigh1: ['pan'], weigh2: ['pan'], setup: ['seat'], weigh3: ['pan'], water: !st.lidOff ? ['pad'] : (!st.bottleOver ? ['over'] : []) }[id] || [];
     scene.showTargets(targets);
   }
 
@@ -176,7 +176,7 @@ var App = (function () {
           'Put the piece of magnesium on the balance. Write its mass in Box 2 on your sheet.'))];
     },
     setup: function () {
-      return [p('Set up the heating. Put the ring stand, the clay triangle and the burner in place. Then set the crucible in the clay triangle.')];
+      return [p('The ring stand, clay triangle and burner are set up for you. Set the crucible, with its lid, in the clay triangle.')];
     },
     burn: function () {
       return [p('Turn the bottom of the burner up to the end of the scale. That puts the tip of the flame just on the bottom of the crucible. The lid is on with a small crack so air can get in.'), burnerControl()];
@@ -204,7 +204,7 @@ var App = (function () {
   function tilesFor(id) {
     if (id === 'weigh1') return st.w1 ? [] : ['cruc'];
     if (id === 'weigh2') return st.mgInCruc ? [] : (st.mgOnPan ? ['mgcruc'] : ['mg']);
-    if (id === 'setup') return !st.placed.burner ? ['burner'] : (!st.seated ? ['cruc'] : []);
+    if (id === 'setup') return !st.seated ? ['cruc'] : [];
     if (id === 'water') return !st.lidOff ? ['lid'] : (!st.bottleOver ? ['bottle'] : []);
     if (id === 'weigh3') return st.w8 ? [] : ['cruc'];
     return [];
@@ -222,10 +222,8 @@ var App = (function () {
       if (key === 'mg') { st.mgOnPan = true; say('Write the mass of the magnesium in Box 2.', 'good'); }
       else if (key === 'mgcruc') { st.mgInCruc = true; say('Write this reading in Box 3. It is the crucible, lid and magnesium together.', 'good'); }
     } else if (id === 'setup') {
-      var map = { burner: ['burner'], cruc: ['seat'] };
-      if (map[key].indexOf(target) < 0) { say(key === 'burner' ? 'The burner goes under the ring, on the bench.' : 'The crucible goes in the clay triangle.', 'bad'); return; }
-      if (key === 'cruc') { st.seated = true; say('The crucible sits in the triangle with its lid on, a small crack open.', 'good'); }
-      else { st.placed.burner = true; say('Good. Now set the crucible in the clay triangle.', 'good'); }
+      if (key !== 'cruc' || target !== 'seat') { say('The crucible goes in the clay triangle.', 'bad'); return; }
+      st.seated = true; say('The crucible sits in the triangle with its lid on, a small crack open.', 'good');
     } else if (id === 'water') {
       if (key === 'lid' && target === 'pad') { st.lidOff = true; say('The lid is on the ceramic pad, so the crucible is open.', 'good'); }
       else if (key === 'bottle' && target === 'over') { st.bottleOver = true; say('The bottle is above the open crucible. Press Add 1 drop.', 'good'); }

@@ -40,7 +40,7 @@ var Scene = (function () {
     '<linearGradient id="sc-plastic" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e8eef2"/><stop offset="0.4" stop-color="#ffffff"/><stop offset="1" stop-color="#d7e0e6"/></linearGradient>',
     '<linearGradient id="sc-flame" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2f6bd8" stop-opacity="0.9"/><stop offset="0.6" stop-color="#78b4ff" stop-opacity="0.7"/><stop offset="1" stop-color="#cfe6ff" stop-opacity="0.15"/></linearGradient>',
     '<linearGradient id="sc-mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f6f8"/><stop offset="0.5" stop-color="#aeb8c0"/><stop offset="1" stop-color="#e3e8ec"/></linearGradient>',
-    '<linearGradient id="sc-hot" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff7a1a" stop-opacity="0.95"/><stop offset="0.55" stop-color="#ff5a1a" stop-opacity="0.35"/><stop offset="1" stop-color="#ff5a1a" stop-opacity="0"/></linearGradient>',
+    '<linearGradient id="sc-hot" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff2d12" stop-opacity="1"/><stop offset="0.45" stop-color="#ff4a14" stop-opacity="0.7"/><stop offset="1" stop-color="#ff5a1a" stop-opacity="0.05"/></linearGradient>',
     '<radialGradient id="sc-glow"><stop offset="0" stop-color="#ffffff"/><stop offset="0.35" stop-color="#fffbe6" stop-opacity="0.95"/><stop offset="1" stop-color="#fff3b0" stop-opacity="0"/></radialGradient>',
     '<filter id="sc-soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2"/></filter>',
     '<filter id="sc-blur6" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>',
@@ -109,6 +109,7 @@ var Scene = (function () {
     '<g id="sc-turn-hint" opacity="0"><path d="M296 574 Q322 588 348 574" fill="none" stroke="#2f6bd8" stroke-width="2.5" stroke-linecap="round"/><path d="M296 574 l2 -9 l7 6 z" fill="#2f6bd8"/><path d="M348 574 l-2 -9 l-7 6 z" fill="#2f6bd8"/></g>',
     '</g>',
 
+    '<g id="sc-mgpaper"><path d="M768 640 L836 640 L848 660 L756 660 Z" fill="#ffffff" stroke="#b8c3cc" stroke-width="1.4"/><path d="M756 660 L848 660 L848 663 L756 663 Z" fill="#cfd8df"/></g>',
     '<g id="sc-layer-bench"></g>',
     '<g id="sc-fx"></g>',
     '<g id="sc-bottle-over" opacity="0"></g>',
@@ -122,13 +123,13 @@ var Scene = (function () {
       '<g class="cruc" id="sc-cruc"><g class="cruc-in" transform="translate(-322 -330)">',
       '<ellipse cx="322" cy="331" rx="30" ry="6" fill="#000" opacity="0.18"/>',
       '<path d="M270 220 C 274 262, 284 306, 298 330 L 346 330 C 360 306, 370 262, 374 220" fill="url(#sc-porc)" stroke="#5f5f5f" stroke-width="2" stroke-linejoin="round"/>',
-      '<path id="sc-hot" d="M270 220 C 274 262, 284 306, 298 330 L 346 330 C 360 306, 370 262, 374 220" fill="url(#sc-hot)" opacity="0"/>',
+      '<path id="sc-hotbody" d="M270 220 C 274 262, 284 306, 298 330 L 346 330 C 360 306, 370 262, 374 220" fill="url(#sc-hot)" opacity="0"/>',
       '<ellipse cx="322" cy="220" rx="52" ry="11" fill="url(#sc-rimIn)" stroke="#5f5f5f" stroke-width="2"/>',
       '<ellipse cx="322" cy="222" rx="42" ry="7" fill="#d4d4d4" opacity="0.55"/>',
       '<ellipse id="sc-ash" cx="322" cy="223" rx="40" ry="6.5" fill="#f5f5f1" opacity="0"/>',
       '<g id="sc-nitride" opacity="0"><circle cx="304" cy="224" r="3" fill="#b7c23f"/><circle cx="311" cy="222" r="2.2" fill="#c4cf4a"/><circle cx="338" cy="224" r="3.2" fill="#b7c23f"/><circle cx="330" cy="226" r="2.2" fill="#a9b535"/><circle cx="322" cy="222" r="2" fill="#c4cf4a"/></g>',
       '<g id="sc-mg-in" opacity="0"><path d="M300 224 q8 -7 14 -1 q6 6 12 -1 q6 -6 12 0" fill="none" stroke="#6f7a83" stroke-width="3.4" stroke-linecap="round"/><path d="M300 223.4 q8 -7 14 -1 q6 6 12 -1 q6 -6 12 0" fill="none" stroke="url(#sc-mg)" stroke-width="1.8" stroke-linecap="round"/></g>',
-      '<g id="sc-glow-g" opacity="0"><ellipse cx="322" cy="214" rx="110" ry="70" fill="url(#sc-glow)" filter="url(#sc-blur6)"/><circle cx="322" cy="222" r="22" fill="url(#sc-glow)"/></g>',
+      '<g id="sc-glow-g" opacity="0"><ellipse cx="322" cy="222" rx="34" ry="6" fill="url(#sc-glow)"/><ellipse cx="322" cy="222" rx="16" ry="3.5" fill="#ffffff"/></g>',
       '<g id="sc-lid" class="lid"><g id="sc-lid-t"><path d="M268 211 Q268 200 322 198 Q376 200 376 211 L376 215 Q376 224 322 226 Q268 224 268 215 Z" fill="url(#sc-porc)" stroke="#5f5f5f" stroke-width="2"/>',
       '<ellipse cx="322" cy="203" rx="50" ry="6.5" fill="#f4f4f4" stroke="#8a8a8a" stroke-width="1.2"/><ellipse cx="322" cy="201" rx="7" ry="3" fill="#e6e6e6" stroke="#8a8a8a"/></g></g>',
       '</g></g>'
@@ -211,10 +212,12 @@ var Scene = (function () {
     var mgLoose = svg('g', { id: 'sc-mg-loose' });
     mgLoose.innerHTML = '<path d="M-16 0 q6 -9 12 -2 q6 8 12 -2 q6 -8 12 -1 q4 4 8 1" fill="none" stroke="#6f7a83" stroke-width="5" stroke-linecap="round"/>' +
       '<path d="M-16 -1.5 q6 -9 12 -2 q6 8 12 -2 q6 -8 12 -1 q4 4 8 1" fill="none" stroke="url(#sc-mg)" stroke-width="2.6" stroke-linecap="round"/>';
-    var mgSlot = { bench: [672, 590], pan: [962, 466], hidden: null };
+    var mgSlot = { bench: [802, 649], pan: [962, 466], hidden: null };
+    mgLoose.insertAdjacentHTML('beforeend', '<rect x="-28" y="-20" width="56" height="34" fill="transparent"/>');
     layerBench.appendChild(mgLoose);
     function setMg(where_) {
       var inCruc = where_ === 'cruc';
+      $('sc-mgpaper').setAttribute('opacity', where_ === 'bench' ? 1 : 0);
       $('sc-mg-in').setAttribute('opacity', inCruc ? 1 : 0);
       $('sc-paper').setAttribute('opacity', where_ === 'pan' ? 1 : 0);
       var s = mgSlot[where_];
@@ -250,7 +253,7 @@ var Scene = (function () {
 
     /* ---- the crucible's glow, heat and contents ---- */
     function setGlow(a) { $('sc-glow-g').setAttribute('opacity', a); }
-    function setHot(t) { $('sc-hot').setAttribute('opacity', Math.max(0, Math.min(1, t)) * 0.7); }
+    function setHot(t) { $('sc-hotbody').setAttribute('opacity', Math.max(0, Math.min(1, t)) * 0.9); }
     function setAsh(a, wet) { var e = $('sc-ash'); e.setAttribute('opacity', a); e.setAttribute('fill', wet ? '#d3d8d4' : '#f5f5f1'); }
     function setNitride(a) { $('sc-nitride').setAttribute('opacity', a); }
 
