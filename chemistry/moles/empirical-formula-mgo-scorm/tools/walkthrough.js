@@ -32,14 +32,16 @@ function check(c, m) { if (!c) { bad++; console.log('FAIL: ' + m); } else consol
   const d = await pg.evaluate(() => App.data());
   const reading = () => pg.textContent('#sc-reading');
   check((await pg.textContent('#stepname')) === 'Start', 'starts at the first step');
-  check(await pg.locator('.topnav .btn.primary').isDisabled() === false, 'Begin is enabled'); await shot('0'); await pg.locator('.topnav .btn.primary').click();
+  check(await pg.locator('.topnav .btn.primary').isDisabled() === false, 'Begin is enabled'); check(!(await pg.locator('.lens').isVisible()), 'no particle diagram before the heating'); await shot('0'); await pg.locator('.topnav .btn.primary').click();
 
   /* 1 crucible */
   check(await pg.locator('.topnav .btn.primary').isDisabled(), 'Next waits for the weighing');
-  await place('cruc', 'pan'); check((await reading()) === d.cruc.toFixed(4) + ' g', 'crucible mass shown: ' + await reading()); await shot('1'); await next();
+  await place('cruc', 'pan'); check((await reading()) === d.cruc.toFixed(4) + ' g', 'crucible mass shown: ' + await reading()); check(await pg.locator('.topnav .btn.primary').isDisabled(), 'Next waits until the crucible is back on the pad');
+  await place('cruc', 'pad'); check((await reading()) === '0.0000 g', 'the balance is empty again'); await shot('1'); await next();
   /* 2 magnesium */
   await place('mg', 'pan'); check((await reading()) === d.mg.toFixed(4) + ' g', 'magnesium mass shown');
-  await place('mgcruc', 'pan'); check((await reading()) === (Math.round((d.cruc + d.mg) * 10000) / 10000).toFixed(4) + ' g', 'crucible and magnesium shown'); await shot('2'); await next();
+  await place('mgin', 'cruc'); check((await reading()) === '0.0000 g', 'the magnesium left the balance');
+  await place('cruc', 'pan'); check((await reading()) === (Math.round((d.cruc + d.mg) * 10000) / 10000).toFixed(4) + ' g', 'crucible and magnesium shown'); await shot('2'); await next();
   /* 3 set up: the ring stand and triangle are already in place */
   check(await pg.locator('.tile[data-tile="burner"]').count() === 0, 'the burner is already in place');
   await place('cruc', 'seat'); await shot('3');
