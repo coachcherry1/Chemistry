@@ -32,6 +32,7 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `chemistry/moles/hydrate-formula-scorm/` | Formula of a hydrate by the same four steps: heating a hydrate, percent water, masses before and after heating, crucible data, the Greek prefix, 6 graded problems (about 25 min) |
 | `chemistry/moles/combustion-analysis-scorm/` | Combustion analysis by the same four steps: a hydrocarbon (C and H only) from its grams of CO₂ and H₂O, × 2 H per H₂O, empirical and molecular formula, 6 graded problems (about 30 min) |
 | `chemistry/moles/empirical-formula-mgo-scorm/` | Virtual lab (pre-lab, with a paper sheet): empirical formula of MgO, the nitride side reaction and the water fix (about 20 min, no score) |
+| `chemistry/moles/hydrate-lab-scorm/` | Virtual lab (pre-lab, with a paper sheet): formula of a hydrate, CuSO₄·5H₂O heated to constant mass in a crucible, realistic data (about 25 min, no score) |
 
 **AP chemistry**
 
@@ -473,6 +474,24 @@ not the full page.
   (the magnifier above the balance, `lens.js`, also shows O₂ and N₂ flying in and joining Mg during the burn, and Mg(OH)₂ turning to MgO on reheating); NH₃ gas is drawn rising (the smell is only in the real lab).
   `data.js` gives the product mass from the drops, so skipping the water gives an O : Mg ratio near 0.93.
 - **Files:** `data.js`, `scene.js`, `lens.js`, `app.js`, `picker.js`, `scorm.js`, `util.js`. Walkthrough, layout and validator in `tools/`.
+
+## hydrate-lab-scorm (zip v1, SCHEMA 1; the teacher's pre-lab, no score)
+
+- **Key objective:** practice the setup and the calculations of the hydrate lab: heat a hydrate to constant mass, water lost by mass, moles, the water : salt ratio, the formula
+  and name (Greek prefix). Sister of `empirical-formula-mgo-scorm/` (same bench graphics, same paper-sheet approach, copied code: a fix to shared pieces such as `picker.js`,
+  the heat model and the scene drawing usually belongs in both). The other `hydrate-formula-scorm/` is the graded four-step tutorial, a different activity.
+- **Data and calculations are on paper** (`lab-sheet/`, built by `build_sheet.py`, student 2 pages, teacher edition 3). The sim has no tables, typed answers or score; `scorm.js`
+  only marks it completed at the last step; `suspend_data` holds the seed. Class roundings: Cu 63.5, S 32.1, O 16.0, H 1.0 (CuSO₄ 159.6, H₂O 18.0).
+- **Open balance and weigh boat** (no glass doors). The student shakes out the solid: drag the weigh boat onto the balance, drag the bottle of hydrate (mouth down, labelled
+  CuSO₄·xH₂O so the student finds x) above the boat, **click the bottle** (or the button) to shake out 0.10 to 0.32 g at a time as blue crystals that fall and heap up; about 2 g
+  (at least 1.5 g, at most 3 g). Pour the boat into the crucible (a few mg stay behind), mass it, set it in the triangle (the burner is pre-placed).
+- **Heat, cool, mass, repeat until constant mass** (two masses in a row within 0.01 g): at least 3 heatings, at most 5 (usually 3, sometimes 4); the sim says when the mass is
+  constant. The flame must touch the crucible's bottom (end of the scale). Water leaves the crucible as H₂O gas wisps; the crucible reddens; the magnifier shows six CuSO₄ units
+  with 5 water molecules each, leaving one by one as the crystals go from blue to white (the diagram shows 5, the sheet and bottle do not say so).
+- **Real data (`data.js`):** the water : CuSO₄ ratio from a student's own readings is always 0.10 to 0.15 from 5 (above or below), never exact; heating removes about 80 to 88%
+  of the water, then about 93 to 97%, and so on; masses never rise between heatings; the validator checks 2000 runs (heatings, ratio error, monotone masses, constant at the end).
+- **Files:** `data.js` (`Lab.make`, `Lab.run`), `scene.js` (bench, boat, bottle, crystals), `lens.js` (the lattice), `app.js`, `picker.js`, `scorm.js`, `util.js`. Teacher links:
+  `?seed=<n>`, `?step=<n>` and `?step=<n>&k=<heating>`. Walkthrough, layout and validator in `tools/`.
 
 ## mole-conversions-scorm (zip v4, SCHEMA 2) and mole-conversions-molarity-scorm (zip v3, SCHEMA 2)
 
