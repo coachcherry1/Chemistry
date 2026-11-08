@@ -28,6 +28,9 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `chemistry/imfs/properties-of-liquids-scorm/` | That part 6 on its own: surface tension, viscosity, evaporation rate of bigger molecules (about 15 min) |
 | `chemistry/moles/mole-conversions-scorm/` | Mole conversions by dimensional analysis: typed molar mass (tenths) and ratio blanks, the mole map, 12 mixed 1- to 3-step problems, typeset (LaTeX) solutions (about 25 min) |
 | `chemistry/moles/mole-conversions-molarity-scorm/` | The same with molarity: L and mL of solution, the mol/L from the prompt as an equality, 14 mixed 1- to 4-step problems (about 30 min) |
+| `chemistry/moles/empirical-molecular-formula-scorm/` | Empirical and molecular formulas by the teacher's four steps (percents to grams, grams to moles, divide by small, multiply if not whole): from percents or grams, the fraction finder and decimals-as-fractions drills, n from the molar mass, 8 graded problems (about 35 min) |
+| `chemistry/moles/hydrate-formula-scorm/` | Formula of a hydrate by the same four steps: heating a hydrate, percent water, masses before and after heating, crucible data, the Greek prefix, 6 graded problems (about 25 min) |
+| `chemistry/moles/combustion-analysis-scorm/` | Combustion analysis by the same four steps: a hydrocarbon (C and H only) from its grams of CO₂ and H₂O, × 2 H per H₂O, empirical and molecular formula, 6 graded problems (about 30 min) |
 | `chemistry/moles/empirical-formula-mgo-scorm/` | Virtual lab (pre-lab, with a paper sheet): empirical formula of MgO, the nitride side reaction and the water fix (about 20 min, no score) |
 
 **AP chemistry**
@@ -56,11 +59,11 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `organic-chemistry/reactivity-mechanisms/arrow-pushing-scorm/` | Klein 6, before SN1/SN2: bond breaking and making, ΔG, energy diagrams, nucleophiles and electrophiles, drawing curved arrows, the four patterns (about 45 min) |
 | `organic-chemistry/substitution-elimination/substitution-elimination-scorm/` | SN1, SN2, E1 and E2: reagent function, mechanisms with curved arrows, regio- and stereochemistry, rings, predicting products (about 50 min) |
 
-**Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions), arrow pushing and mole conversions (both) contains em
+**Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions), arrow pushing, mole conversions (both) and the formula packages (all three) contains em
 dashes (the Lewis, resonance and drawing-tool validators allow them). The mass spec, IR + mass spec, NMR,
 naming, acids and ionization energy packages still load a browser save inside an LMS when
 `cmi.suspend_data` is empty (fixed in IR, Newman, chairs, chirality, Lewis and resonance). Only Newman,
-chairs, chirality, SN1/SN2, arrow pushing and mole conversions have `tools/layout.js`. Bring a package up to the rules when you next change it.
+chairs, chirality, SN1/SN2, arrow pushing, mole conversions and the formula packages have `tools/layout.js`. Bring a package up to the rules when you next change it.
 
 ## House rules
 
@@ -515,3 +518,38 @@ not the full page.
 - **Layout:** a long chain wraps onto a second row; below 1300 px the mole map goes under the work. Pools hold at most 8.
 - **Files:** `config.js`, `elements.js`, `substances.js`, `chem.js`, `problems.js`, `tex.js`, `map.js`, `ptable.js` (docked
   table), `work.js` (one problem, `Work.solutionHTML`), `scorm.js` (save key from config), `app.js`.
+
+## empirical-molecular-formula-scorm, hydrate-formula-scorm and combustion-analysis-scorm (zip v1, SCHEMA 1)
+
+- **Key objective:** fluency with the teacher's four steps, on screen in the teacher's words in every problem: **Percents to grams**
+  (assume 100 g), **Grams to moles**, **Divide by small**, **Multiply if not whole**. The teacher's named hurdle is reading a
+  decimal as a fraction. Three packages, one code base: `config.js` `mode` is `empirical`, `hydrate` or `combustion`.
+- **One code base.** Every file in `src/js` (except `config.js`), `src/css` and `tools/` is identical in the three, and each validator
+  fails if they differ (copy a fix to all three). `config.js` holds the mode, save key and minutes; the page title and h1, manifest
+  (`EMPMOLFORMULA_*`, `HYDRATEFORMULA_*`, `COMBUSTANALYSIS_*`), `build.sh`, README and answer key are per package.
+- **Steps:** a worked example (`four`: Fe2O3 from percents, CuSO4.5H2O from crucible data, C3H8 from CO2 and H2O) filled one column
+  at a time with Show step; ungraded warm-ups; Part 2 "Multiply if not whole" (the fraction finder, Name the fraction, Whole or not?,
+  Multiply them all, then a warm-up); for empirical and combustion a molecular-formula part (n = molar mass ÷ empirical formula mass);
+  the graded set (8, 6, 6) and results. Hydrate opens with `heat` (heat CuSO4.5H2O to constant mass, predict first), combustion
+  with `burn` (propane's atoms go into 3 CO2 and 4 H2O: × 1 C per CO2, × 2 H per H2O).
+- **The work table (`work.js`):** a row per element (hydrate: anhydrous salt and water; combustion: C from CO2 and H from H2O), a
+  column per step, each with its own Check; a step opens when the one before is right. Step 1 asks "percents or grams?" first
+  (grams given: the column fills itself; hydrate masses: subtract). Step 2 types the molar mass to tenths and the moles (combustion
+  also the atoms per molecule and mol C or H). Step 3 taps the smallest, then quotients to 2 decimals. Step 4 one multiplier for every
+  row and the whole numbers. Step 5: molecular formula (empirical formula mass, n, the subscripts) or the hydrate's Greek prefix.
+- **Teacher's choices:** the first Check of every step counts (score = steps right first / all steps; one interaction per step).
+  Not an answer (told, check again): empty boxes, the right number rounded too far (moles under 3 significant figures, quotients under
+  2 decimals, 3.99 for 4). Within 0.1 of a whole number rounds; otherwise halves, thirds, fourths and fifths only (`Chem.FRACS`), and
+  the multiplier is the smallest that makes all whole. Hints free; Show me after two misses in a step. Combustion includes the
+  molecular formula (the teacher asked). Hydrate names: salt name + mono to deca + hydrate.
+- **Fraction finder (`finder.js`):** a ruler of the decimal part with rows for halves to fifths and shaded "round" ends, plus a chart.
+  Interactive in the drills and warm-ups (tap a quotient, the fraction lights up); a reference only in graded problems.
+- **One model:** `compounds.js` holds real compounds only (65 formulas, 29 hydrates, 26 hydrocarbons); `problems.js` computes every
+  percent, gram, crucible reading and CO2/H2O mass from standard atomic weights, and keeps a problem only when its quotients sit within
+  0.07 of a whole number or nearer their fraction than halfway to the next (`Gen.clean`) with the class's, full and whole-number tables.
+  `chem.js` judges every box against the student's own earlier boxes (1.5% `TOL` for molar masses and moles, `QTOL` for quotients) and
+  names the slips. `tools/tables.js` works 120 sets with six periodic tables; the validator fails on any refusal. Worked solutions are
+  LaTeX (`Gen.solution`) typeset by `tex.js` (added `\to`, `\cdot`, `\div`, `\%`).
+- **Files:** `config.js`, `util.js`, `elements.js`, `compounds.js`, `chem.js`, `problems.js`, `tex.js`, `ptable.js`, `finder.js`, `work.js`,
+  `drills.js`, `scenes.js`, `scorm.js`, `app.js`. Walkthrough harness as in the VSEPR and IMF packages (the fake LMS reads and writes
+  sessionStorage on every call).
