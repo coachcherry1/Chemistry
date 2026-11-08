@@ -16,7 +16,7 @@ var App = (function () {
 
   var seed, d, scene, lens, picker;
   var st = {
-    step: 0, w1: false, mgOnPan: false, mgInCruc: false, placed: { burner: false }, seated: false, lidOff: false, bottleOver: false,
+    step: 0, w1: false, back1: false, mgOnPan: false, mgInCruc: false, w2: false, placed: { burner: false }, seated: false, lidOff: false, bottleOver: false,
     v: 0, T: 0, ignited: false, burn: 0, burnDone: false, glow: 0, drops: 0, wetness: 0, dried: false, cooled: false, clock: 0, w8: false
   };
   var el = {}, busy = false, tickN = 0;
@@ -36,7 +36,7 @@ var App = (function () {
   var last = STEPS.length - 1;
 
   var TILES = {
-    cruc: 'Crucible and lid', mg: 'Piece of magnesium', mgcruc: 'Crucible and lid, with the magnesium in it',
+    cruc: 'Crucible and lid', mg: 'Piece of magnesium', mgin: 'Magnesium into the crucible',
     burner: 'Bunsen burner', lid: 'Crucible lid', bottle: 'DI water bottle'
   };
 
@@ -49,16 +49,17 @@ var App = (function () {
   function save() { SCORM.saveState({ schema: SCHEMA, seed: seed }); }
 
   function reading() {
-    if (st.step === 1) return st.w1 ? d.cruc : 0;
-    if (st.step === 2) return st.mgInCruc ? Lab.r4(d.cruc + d.mg) : (st.mgOnPan ? d.mg : 0);
+    if (st.step === 1) return st.w1 && !st.back1 ? d.cruc : 0;
+    if (st.step === 2) return st.w2 ? Lab.r4(d.cruc + d.mg) : (st.mgOnPan && !st.mgInCruc ? d.mg : 0);
+    if (st.step === 3) return st.seated ? 0 : Lab.r4(d.cruc + d.mg);
     if (st.step === 8) return st.w8 ? Lab.finalTotal(d, st.drops) : 0;
     return 0;
   }
 
   function canNext() {
     switch (STEPS[st.step].id) {
-      case 'weigh1': return st.w1;
-      case 'weigh2': return st.mgInCruc;
+      case 'weigh1': return st.back1;
+      case 'weigh2': return st.w2;
       case 'setup': return st.seated;
       case 'burn': return st.burnDone;
       case 'water': return st.drops > 0;
@@ -85,12 +86,13 @@ var App = (function () {
     scene.setHot(st.T);
 
     if (early) {
+      var cloc = id === 'weigh1' ? (st.w1 && !st.back1 ? 'pan' : 'padloc') : (id === 'weigh2' && st.w2 ? 'pan' : 'padloc');
       scene.setMg(id === 'weigh2' ? (st.mgInCruc ? 'cruc' : (st.mgOnPan ? 'pan' : 'bench')) : 'bench');
-      scene.place(id === 'weigh1' && st.w1 ? 'pan' : (id === 'weigh2' && st.mgInCruc ? 'pan' : 'bench'));
+      scene.place(cloc);
       scene.setLid('closed');
       scene.setAsh(0); scene.setNitride(0);
     } else {
-      scene.place((n === 3 && !st.seated) ? 'bench' : (n === 8 && st.w8 ? 'pan' : (n === 8 || n === 9 ? (st.w8 ? 'pan' : 'tri') : 'tri')));
+      scene.place((n === 3 && !st.seated) ? 'pan' : (n === 8 && st.w8 ? 'pan' : (n === 8 || n === 9 ? (st.w8 ? 'pan' : 'tri') : 'tri')));
       if (n === 3 && !st.seated) scene.setLid('closed');
       else if (n >= 8) scene.setLid('closed');
       else if (id === 'water' && st.lidOff) scene.setLid('pad');
@@ -100,10 +102,11 @@ var App = (function () {
       var left = lens.nitrideLeft('water', st.drops);
       scene.setNitride(st.burnDone && !st.dried ? 0.8 * (left / 6) : 0);
     }
+    lens.node.style.display = n >= 4 ? '' : 'none';
     scene.bottle(id === 'water' && st.bottleOver);
     scene.setGlow(st.glow);
 
-    var targets = { weigh1: ['pan'], weigh2: ['pan'], setup: ['seat'], weigh3: ['pan'], water: !st.lidOff ? ['pad'] : (!st.bottleOver ? ['over'] : []) }[id] || [];
+    var targets = { weigh1: [st.w1 ? 'pad' : 'pan'], weigh2: !st.mgOnPan ? ['pan'] : (!st.mgInCruc ? ['cruc'] : (!st.w2 ? ['pan'] : [])), setup: ['seat'], weigh3: ['pan'], water: !st.lidOff ? ['pad'] : (!st.bottleOver ? ['over'] : []) }[id] || [];
     scene.showTargets(targets);
   }
 
@@ -169,14 +172,14 @@ var App = (function () {
         p('Keep your lab sheet beside you. Every number goes on the paper: this lab only shows what you would do and see.')
       ];
     },
-    weigh1: function () { return [p('Put the crucible and its lid on the balance pan. Write the reading in Box 1 on your sheet.')]; },
+    weigh1: function () { return [p(!st.w1 ? 'Put the crucible and its lid on the balance pan. Write the reading in Box 1 on your sheet.' : 'Now take the crucible and lid off the balance and set them back on the ceramic pad.')]; },
     weigh2: function () {
-      return [p(st.mgInCruc ? 'The magnesium is in the crucible. Write the reading in Box 3 on your sheet.' :
-        (st.mgOnPan ? 'Write the mass of the magnesium in Box 2. Then put the magnesium in the crucible and weigh them together.' :
-          'Put the piece of magnesium on the balance. Write its mass in Box 2 on your sheet.'))];
+      return [p(!st.mgOnPan ? 'Put the piece of magnesium on the balance. Write its mass in Box 2 on your sheet.' :
+        (!st.mgInCruc ? 'Now pick the magnesium up and put it in the crucible.' :
+          (!st.w2 ? 'Put the crucible, lid and magnesium on the balance. Write the reading in Box 3 on your sheet.' : 'Write the reading in Box 3 on your sheet.')))];
     },
     setup: function () {
-      return [p('The ring stand, clay triangle and burner are set up for you. Set the crucible, with its lid, in the clay triangle.')];
+      return [p('The ring stand, clay triangle and burner are set up for you. Lift the crucible off the balance and set it, with its lid, in the clay triangle.')];
     },
     burn: function () {
       return [p('Turn the bottom of the burner up to the end of the scale. That puts the tip of the flame just on the bottom of the crucible. The lid is on with a small crack so air can get in.'), burnerControl()];
@@ -202,8 +205,8 @@ var App = (function () {
   };
 
   function tilesFor(id) {
-    if (id === 'weigh1') return st.w1 ? [] : ['cruc'];
-    if (id === 'weigh2') return st.mgInCruc ? [] : (st.mgOnPan ? ['mgcruc'] : ['mg']);
+    if (id === 'weigh1') return st.back1 ? [] : ['cruc'];
+    if (id === 'weigh2') return !st.mgOnPan ? ['mg'] : (!st.mgInCruc ? ['mgin'] : (!st.w2 ? ['cruc'] : []));
     if (id === 'setup') return !st.seated ? ['cruc'] : [];
     if (id === 'water') return !st.lidOff ? ['lid'] : (!st.bottleOver ? ['bottle'] : []);
     if (id === 'weigh3') return st.w8 ? [] : ['cruc'];
@@ -215,12 +218,24 @@ var App = (function () {
   function drop(target, key) {
     var id = STEPS[st.step].id;
     if (id === 'weigh1' && key === 'cruc') {
-      if (target !== 'pan') { say('The balance pan is on the right. Put the crucible there.', 'bad'); return; }
-      st.w1 = true; say('Write this reading in Box 1.', 'good');
+      if (!st.w1) {
+        if (target !== 'pan') { say('The balance pan is on the right. Put the crucible there.', 'bad'); return; }
+        st.w1 = true; say('Write this reading in Box 1. Then set the crucible back on the ceramic pad.', 'good');
+      } else {
+        if (target !== 'pad') { say('Set the crucible back on the ceramic pad, the oval on the wire gauze.', 'bad'); return; }
+        st.back1 = true; say('Good. The crucible is back on the pad.', 'good');
+      }
     } else if (id === 'weigh2') {
-      if (target !== 'pan') { say('Put it on the balance pan.', 'bad'); return; }
-      if (key === 'mg') { st.mgOnPan = true; say('Write the mass of the magnesium in Box 2.', 'good'); }
-      else if (key === 'mgcruc') { st.mgInCruc = true; say('Write this reading in Box 3. It is the crucible, lid and magnesium together.', 'good'); }
+      if (key === 'mg') {
+        if (target !== 'pan') { say('Put the magnesium on the balance pan.', 'bad'); return; }
+        st.mgOnPan = true; say('Write the mass of the magnesium in Box 2.', 'good');
+      } else if (key === 'mgin') {
+        if (target !== 'cruc') { say('Put the magnesium in the crucible on the ceramic pad.', 'bad'); return; }
+        st.mgInCruc = true; say('The magnesium is in the crucible. Now put the crucible, lid and magnesium on the balance.', 'good');
+      } else if (key === 'cruc') {
+        if (target !== 'pan') { say('Put it on the balance pan.', 'bad'); return; }
+        st.w2 = true; say('Write this reading in Box 3. It is the crucible, lid and magnesium together.', 'good');
+      }
     } else if (id === 'setup') {
       if (key !== 'cruc' || target !== 'seat') { say('The crucible goes in the clay triangle.', 'bad'); return; }
       st.seated = true; say('The crucible sits in the triangle with its lid on, a small crack open.', 'good');
@@ -318,8 +333,8 @@ var App = (function () {
     if (n === 9) SCORM.markComplete();
     if (n > 3 && !st.seated) { st.placed = { burner: true }; st.seated = true; }
     if (n === 5) { st.lidOff = st.drops > 0; st.bottleOver = st.drops > 0; } else { st.lidOff = false; st.bottleOver = false; }
-    if (n >= 1 && !st.w1 && n > 1) st.w1 = true;
-    if (n > 2) { st.mgOnPan = true; st.mgInCruc = true; }
+    if (n > 1) { st.w1 = true; st.back1 = true; }
+    if (n > 2) { st.mgOnPan = true; st.mgInCruc = true; st.w2 = true; }
     if (n > 4 && !st.burnDone) { st.burnDone = true; st.burn = 1; }
     if (n > 5 && st.drops === 0) st.drops = 6;
     if (n > 6 && !st.dried) { st.dried = true; st.wetness = 0; }
@@ -338,9 +353,9 @@ var App = (function () {
     tilesFor(id).forEach(function (k) { el.tray.appendChild(h('button', { type: 'button', class: 'tile', 'data-tile': k, text: TILES[k] })); });
     el.tray.hidden = !el.tray.firstChild;
     el.drops = null;
-    var tl = tilesFor(id), ck = tl.indexOf('cruc') >= 0 ? 'cruc' : (tl.indexOf('mgcruc') >= 0 ? 'mgcruc' : null);
+    var tl = tilesFor(id), ck = tl.indexOf('cruc') >= 0 ? 'cruc' : null;
     /* the pieces on the bench can be picked up directly, as well as from the tray */
-    [['cruc', ck], ['mg', tl.indexOf('mg') >= 0 ? 'mg' : null], ['lid', tl.indexOf('lid') >= 0 ? 'lid' : null], ['bottle', tl.indexOf('bottle') >= 0 ? 'bottle' : null]].forEach(function (a) {
+    [['cruc', ck], ['mg', tl.indexOf('mg') >= 0 ? 'mg' : (tl.indexOf('mgin') >= 0 ? 'mgin' : null)], ['lid', tl.indexOf('lid') >= 0 ? 'lid' : null], ['bottle', tl.indexOf('bottle') >= 0 ? 'bottle' : null]].forEach(function (a) {
       var nd = scene.nodes[a[0]];
       if (a[1]) nd.setAttribute('data-tile', a[1]); else nd.removeAttribute('data-tile');
       nd.classList.toggle('grab', !!a[1]);

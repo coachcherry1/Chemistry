@@ -17,7 +17,8 @@ var Scene = (function () {
 
   var TRI = { x: 322, y: 284 };               /* the crucible's base centre in the clay triangle */
   var PAN = { x: 962, y: 466 };               /* on the balance pan */
-  var BENCH = { x: 740, y: 598 };             /* on the bench, beside the balance */
+  var BENCH = { x: 740, y: 598 };
+  var PADLOC = { x: 519, y: 656 };            /* on the ceramic pad, on the wire gauze */
   var BURNER_TOP = 428;                       /* the top of the barrel, where the flame starts */
   var FLAME_TOUCH = BURNER_TOP - TRI.y;       /* flame height (px) at which the tip touches the crucible's bottom: 144 */
   var FLAME_MAX = 232;
@@ -181,7 +182,7 @@ var Scene = (function () {
 
     function place(loc) {
       where = loc;
-      var p = loc === 'tri' ? TRI : (loc === 'pan' ? PAN : BENCH);
+      var p = loc === 'tri' ? TRI : (loc === 'pan' ? PAN : (loc === 'padloc' ? PADLOC : BENCH));
       var target = loc === 'tri' ? layerTri : layerBench;
       if (cruc.parentNode !== target) target.appendChild(cruc);
       cruc.setAttribute('transform', 'translate(' + p.x + ' ' + p.y + ') scale(' + CRUC_SCALE + ')');
@@ -310,7 +311,7 @@ var Scene = (function () {
 
     /* ---- drop targets (invisible until the student is carrying something) ---- */
     var TARGETS = {
-      pan: [836, 330, 248, 166], seat: [236, 150, 170, 150], over: [236, 30, 170, 170], pad: [430, 610, 190, 80],
+      pan: [836, 330, 248, 166], cruc: [466, 548, 106, 118], seat: [236, 150, 170, 150], over: [236, 30, 170, 170], pad: [430, 610, 190, 80],
       burner: [236, 410, 180, 195], bench: [640, 520, 160, 90]
     };
     Object.keys(TARGETS).forEach(function (k) {
@@ -325,7 +326,7 @@ var Scene = (function () {
 
     /* a picture of the thing being carried, for the drag (the real drawing, cut out of the bench) */
     function ghost(key) {
-      var map = { cruc: [cruc], mgcruc: [cruc], mg: [mgLoose], stand: [$('sc-stand'), $('sc-ring-front')], tri: [$('sc-tri-back'), $('sc-tri-front')], burner: [$('sc-burner')], lid: [lidT], bottle: [diBody] };
+      var map = { cruc: [cruc], mgcruc: [cruc], mg: [mgLoose], mgin: [mgLoose], stand: [$('sc-stand'), $('sc-ring-front')], tri: [$('sc-tri-back'), $('sc-tri-front')], burner: [$('sc-burner')], lid: [lidT], bottle: [diBody] };
       var els = map[key];
       if (!els) return null;
       var wrap = svg('g');
