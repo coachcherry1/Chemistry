@@ -560,9 +560,10 @@ var SCENES = (function () {
   });
   def('dSN2', {
     title: 'Bromomethane and HS⁻',
-    atoms: [['C', 'C', [0, 0], { label: 'H₃C' }], ['Br', 'Br', ['C', 0]], ['S', 'S', [-2.3, 0], { c: -1, label: 'HS' }]],
+    atoms: [['C', 'C', [0, 0], { label: 'C', h: 1 }], ['Br', 'Br', ['C', 0]], ['H1', 'H', ['C', 110]], ['H2', 'H', ['C', 250]],
+            ['S', 'S', [-2.4, 0], { c: -1, label: 'HS' }]],
     arrows: [['lp:S', 'C'], ['b:Br-C', 'Br']],
-    moves: [['Br', 1.3, 0]], after: { S: ['C', 180] },
+    moves: [['Br', 1.3, 0], ['S', 1.4, 0]], after: { H1: ['C', 70], H2: ['C', 290] },
     product: 'CS.[Br-]', klein: ['nuc', 'lg'],
     who: { S: 'the S of HS⁻', C: 'the carbon', Br: 'Br' }
   });
@@ -575,6 +576,150 @@ var SCENES = (function () {
     product: 'CC([O-])(O)Cl', klein: ['nuc'],
     who: { Oh: 'the O of hydroxide', C: 'the C of the C=O', O: 'the O of the C=O' }
   });
+
+  /* ================================================== the final check */
+
+  /* New reactions, none of them met earlier in the activity: the same four
+     patterns on molecules the student has not seen (Klein 6.15, 6.27, 6.29,
+     6.33, 6.41, 6.49, 6.54). */
+  def('xIodAttack', {
+    title: 'Iodide and a carbocation',
+    atoms: [['C2', 'C', [0, 0], { c: 1 }], ['C1', 'C', ['C2', 210]], ['C3', 'C', ['C2', 330]], ['C4', 'C', ['C3', 30]],
+            ['I', 'I', [-0.3, 2.4], { c: -1 }]],
+    arrows: [['lp:I', 'C2']], after: { I: ['C2', 90] },
+    product: 'CCC(C)I', klein: ['nuc'],
+    who: { I: 'iodide', C2: 'the carbocation' }, role: { nuc: 'I', elec: 'C2' }
+  });
+  def('xIodLoss', {
+    title: '2-Iodo-2-methylbutane',
+    atoms: [['C2', 'C', [0, 0]], ['I', 'I', ['C2', 90]], ['M1', 'C', ['C2', 180]], ['M2', 'C', ['C2', 270]], ['C3', 'C', ['C2', 0]],
+            ['C4', 'C', ['C3', 300]]],
+    arrows: [['b:C2-I', 'I']], after: { I: [-1.9, 1.7], M1: ['C2', 150], C3: ['C2', 30], C4: ['C3', 330] },
+    product: 'CC[C+](C)C.[I-]', klein: ['lg'],
+    who: { C2: 'the carbon', I: 'I' }
+  });
+  def('xRingShift', {
+    title: 'A carbocation on a ring',
+    atoms: HEX.map(function (p, i) { return ['R' + i, 'C', p, i === 0 ? { c: 1 } : {}]; })
+      .concat([['Me1', 'C', ['R5', 60], { label: 'CH₃' }], ['Me2', 'C', ['R5', 0]]]),
+    bonds: [['R0', 'R1'], ['R1', 'R2'], ['R2', 'R3'], ['R3', 'R4'], ['R4', 'R5'], ['R5', 'R0']],
+    arrows: [['b:R5-Me1', 'R0']], after: { Me1: ['R0', 90] },
+    product: 'C[C+]1CCCCC1C', klein: ['shift'],
+    who: { Me1: 'a CH₃ on the next carbon', R0: 'the carbocation', R5: 'the carbon next to it' }
+  });
+  def('xAcidOH', {
+    title: 'Acetic acid and hydroxide',
+    atoms: [['C', 'C', [0, 0]], ['O1', 'O', ['C', 90], { o: 2 }], ['Me', 'C', ['C', 210]], ['O2', 'O', ['C', 330]], ['H', 'H', ['O2', 30]],
+            ['Oh', 'O', [3.9, 0.3], { c: -1, label: 'OH' }]],
+    arrows: [['lp:Oh', 'H'], ['b:H-O2', 'O2']], after: { H: ['Oh', 180] },
+    product: 'CC(=O)[O-].O', klein: ['pt'],
+    who: { Oh: 'the O of hydroxide', H: 'the H of the acid', O2: 'the O it was on' }
+  });
+  /* Klein 6.29: ethoxide and iodomethane, concerted */
+  def('k629', {
+    title: 'Ethoxide and iodomethane',
+    atoms: [['C', 'C', [0, 0], { label: 'C', h: 1 }], ['I', 'I', ['C', 0]], ['H1', 'H', ['C', 110]], ['H2', 'H', ['C', 250]],
+            ['Oe', 'O', [-2.5, 0], { c: -1 }], ['E1', 'C', ['Oe', 150]], ['E2', 'C', ['E1', 210]]],
+    arrows: [['lp:Oe', 'C'], ['b:C-I', 'I']],
+    moves: [['I', 1.3, 0], ['Oe E1 E2', 1.5, 0]], after: { H1: ['C', 70], H2: ['C', 290] },
+    product: 'CCOC.[I-]', klein: ['nuc', 'lg'],
+    who: { Oe: 'the O of ethoxide', C: 'the carbon of CH₃I', I: 'I' }, role: { nuc: 'Oe', elec: 'C' }
+  });
+  def('xNH3Acyl', {
+    title: 'Ammonia and acetyl chloride',
+    atoms: [['C', 'C', [0, 0]], ['O', 'O', ['C', 90], { o: 2 }], ['Me', 'C', ['C', 210]], ['Cl', 'Cl', ['C', 330]],
+            ['N', 'N', [-1.9, -1.8]]],
+    arrows: [['lp:N', 'C'], ['b:C-O', 'O']],
+    after: { Me: ['C', 180], Cl: ['C', 0], N: ['C', 270] },
+    product: 'CC([O-])(Cl)[NH3+]', klein: ['nuc'],
+    who: { N: 'the N of ammonia', C: 'the C of the C=O', O: 'the O of the C=O' }, role: { nuc: 'N', elec: 'C' }
+  });
+
+  /* Klein 6.49: an allylic alcohol and HBr */
+  chain('k649', {
+    atoms: [['C1', 'C', [0, 0]], ['C2', 'C', ['C1', 30], { o: 2 }], ['C3', 'C', ['C2', 330]], ['O', 'O', ['C3', 30]], ['Ho', 'H', ['O', 330]],
+            ['Hb', 'H', [2.6, 1.9]], ['Br', 'Br', ['Hb', 90]]],
+    who: { O: 'the O', Hb: 'the H of HBr', Br: 'Br', C3: 'C3' }
+  }, [
+    { title: 'Proton transfer', arrows: [['lp:O', 'Hb'], ['b:Br-Hb', 'Br']], moves: [['Br', 0, 0.5]], after: { Hb: ['O', 90] },
+      product: 'C=CC[OH2+].[Br-]', klein: ['pt'] },
+    { title: 'Loss of a leaving group', arrows: [['b:C3-O', 'O']], moves: [['O Ho Hb', 0.9, 0.7]],
+      product: 'C=C[CH2+].O.[Br-]', klein: ['lg'] }
+  ]);
+  /* Klein 6.33, reaction 1: an acid chloride and hydroxide */
+  chain('k633', {
+    atoms: [['C', 'C', [0, 0]], ['O', 'O', ['C', 90], { o: 2 }], ['Me', 'C', ['C', 210]], ['Cl', 'Cl', ['C', 330]],
+            ['Oh', 'O', [-2.0, 1.3], { c: -1, label: 'HO' }]],
+    who: { Oh: 'the O of hydroxide', C: 'the C of the C=O', O: 'the O of the C=O', Cl: 'Cl' }
+  }, [
+    { title: 'Nucleophilic attack', arrows: [['lp:Oh', 'C'], ['b:C-O', 'O']], after: { Oh: ['C', 270], Me: ['C', 180], Cl: ['C', 0] },
+      product: 'CC([O-])(O)Cl', klein: ['nuc'] },
+    { title: 'Loss of a leaving group', arrows: [['lp:O', 'b:C-O'], ['b:C-Cl', 'Cl']], after: { Cl: [2.6, 0.4], Me: ['C', 210], Oh: ['C', 330] },
+      product: 'CC(=O)O.[Cl-]', klein: ['lg'] }
+  ]);
+  /* 2-methylpropan-2-ol and HCl: Figure 6.31 without the rearrangement */
+  chain('xTbuOH', {
+    atoms: [['C', 'C', [0, 0]], ['M1', 'C', ['C', 180]], ['M2', 'C', ['C', 0]], ['M3', 'C', ['C', 270]], ['O', 'O', ['C', 90]],
+            ['Ho', 'H', ['O', 150]], ['Hc', 'H', [1.4, 1.6]], ['Cl', 'Cl', ['Hc', 0]]],
+    who: { O: 'the O', Hc: 'the H of HCl', Cl: 'Cl', C: 'the central carbon' }
+  }, [
+    { title: 'Proton transfer', arrows: [['lp:O', 'Hc'], ['b:Cl-Hc', 'Cl']], moves: [['Cl', 0.7, 0]], after: { Hc: ['O', 30] },
+      product: 'CC(C)(C)[OH2+].[Cl-]', klein: ['pt'] },
+    { title: 'Loss of a leaving group', arrows: [['b:C-O', 'O']], moves: [['O Ho Hc', -1.5, 0.8]], after: { M1: ['C', 150], M2: ['C', 30] },
+      product: 'C[C+](C)C.O.[Cl-]', klein: ['lg'] },
+    { title: 'Nucleophilic attack', arrows: [['lp:Cl', 'C']], after: { Cl: ['C', 90], M1: ['C', 180], M2: ['C', 0] },
+      product: 'CC(C)(C)Cl.O', klein: ['nuc'] }
+  ]);
+
+  /* read the arrows: one of each pattern */
+  def('yAlkeneCation', {
+    title: 'An alkene and a carbocation',
+    atoms: [['A1', 'C', [0, 0]], ['A2', 'C', ['A1', 0], { o: 2 }], ['Ma', 'C', ['A2', 60]], ['Mb', 'C', ['A2', 300]],
+            ['Ct', 'C', [-2.3, 0], { c: 1 }], ['T1', 'C', ['Ct', 60]], ['T2', 'C', ['Ct', 180]], ['T3', 'C', ['Ct', 300]]],
+    arrows: [['b:A1-A2', 'Ct']],
+    after: { Ct: ['A1', 150], T1: ['Ct', 60], T2: ['Ct', 150], T3: ['Ct', 240] },
+    product: 'CC(C)(C)C[C+](C)C', klein: ['nuc'],
+    who: { A1: 'the CH₂ carbon', A2: 'the other carbon of the C=C', Ct: 'the carbocation' }
+  });
+  def('yOxLoss2', {
+    title: 'A protonated alcohol',
+    atoms: [['C2', 'C', [0, 0]], ['C1', 'C', ['C2', 210]], ['C3', 'C', ['C2', 330]], ['C4', 'C', ['C3', 30]], ['O', 'O', ['C2', 90], { c: 1 }],
+            ['H1', 'H', ['O', 30]], ['H2', 'H', ['O', 150]]],
+    arrows: [['b:C2-O', 'O']], moves: [['O H1 H2', 0.3, 1.3]],
+    product: 'C[CH+]CC.O', klein: ['lg'],
+    who: { O: 'the O⁺', C2: 'C2' }
+  });
+  /* Klein 6.54 */
+  def('yAmineHCl', {
+    title: 'An amine and HCl',
+    atoms: [['N', 'N', [0, 0]], ['M1', 'C', ['N', 180]], ['M2', 'C', ['N', 270]], ['M3', 'C', ['N', 0]],
+            ['Hc', 'H', [0, 1.8]], ['Cl', 'Cl', ['Hc', 90]]],
+    arrows: [['lp:N', 'Hc'], ['b:Cl-Hc', 'Cl']], moves: [['Cl', 0, 0.6]], after: { Hc: ['N', 90] },
+    product: 'C[NH+](C)C.[Cl-]', klein: ['pt'],
+    who: { N: 'the N', Hc: 'the H of HCl', Cl: 'Cl' }
+  });
+  /* Klein 6.41(b) */
+  def('yRingHShift', {
+    title: 'A carbocation on a five-membered ring',
+    atoms: PENT.map(function (p, i) { return ['R' + i, 'C', p, i === 0 ? { c: 1 } : {}]; })
+      .concat([['Me', 'C', ['R1', 197]], ['H', 'H', ['R1', 127]]]),
+    bonds: [['R0', 'R1'], ['R1', 'R2'], ['R2', 'R3'], ['R3', 'R4'], ['R4', 'R0']],
+    arrows: [['b:R1-H', 'R0']], after: { H: ['R0', 90], Me: ['R1', 162] },
+    product: 'C[C+]1CCCC1', klein: ['shift'],
+    who: { H: 'the H on the next carbon', R0: 'the carbocation', R1: 'the carbon with the CH₃' }
+  });
+  /* Klein 6.41(a) and (c) */
+  def('r8', { title: '2,2-Dimethylcyclopentyl cation', atoms: PENT.map(function (p, i) { return ['R' + i, 'C', p, i === 0 ? { c: 1 } : {}]; })
+    .concat([['Me1', 'C', ['R1', 197]], ['Me2', 'C', ['R1', 127]]]),
+    bonds: [['R0', 'R1'], ['R1', 'R2'], ['R2', 'R3'], ['R3', 'R4'], ['R4', 'R0']] });
+  def('r9', { title: 'Cyclopentyl cation', atoms: PENT.map(function (p, i) { return ['R' + i, 'C', p, i === 0 ? { c: 1 } : {}]; }),
+    bonds: [['R0', 'R1'], ['R1', 'R2'], ['R2', 'R3'], ['R3', 'R4'], ['R4', 'R0']] });
+  SHIFT_KLEIN.r8 = 'CH3';
+  SHIFT_KLEIN.r9 = null;
+  /* a drawing with an arrow missing, for a final-check question only */
+  var QUIZ_RULES = [
+    { id: 'rHalf2', scene: 'yAmineHCl', arrows: [['lp:N', 'Hc']], label: 'The amine takes the H of HCl, one arrow' }
+  ].map(function (r) { r.arrows = arrowsOf(r.arrows); return r; });
 
   /* =============================================== energy diagrams */
 
@@ -589,7 +734,7 @@ var SCENES = (function () {
     endo: [{ E: 0, t: 'Reactants' }, { E: 1, t: '', ts: true }, { E: 0.45, t: 'Products' }]
   };
 
-  return { S: S, RULES: RULES, SHIFT_KLEIN: SHIFT_KLEIN, PROFILES: PROFILES, shiftScene: shiftScene,
+  return { S: S, RULES: RULES, QUIZ_RULES: QUIZ_RULES, SHIFT_KLEIN: SHIFT_KLEIN, PROFILES: PROFILES, shiftScene: shiftScene,
            arrowsOf: arrowsOf, key: key };
 })();
 

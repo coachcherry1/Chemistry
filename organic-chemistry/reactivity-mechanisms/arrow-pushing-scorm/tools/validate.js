@@ -68,7 +68,7 @@ for (const [id, sc] of Object.entries(S)) {
 ok(nSteps >= 30, `only ${nSteps} mechanism steps`);
 
 /* chains: each step starts where the last one ended */
-for (const c of ['f623', 'f631', 'ester']) {
+for (const c of ['f623', 'f631', 'ester', 'k649', 'k633', 'xTbuOH']) {
   const list = S[c];
   ok(Array.isArray(list) && list.length >= 2, `${c}: not a chain`);
   for (let k = 1; k < list.length; k++) ok(Chem.same(list[k].before, list[k - 1].after), `${c}: step ${k + 1} does not start where step ${k} ended`);
@@ -205,7 +205,7 @@ ok(typeof App.SCHEMA === 'number', 'no SCHEMA');
 
 let total = 0;
 const seen = new Set();
-const VOCAB_CORE = { A: ['a-break', 'a-favor'], B: ['b-nuc'], C: ['c-tail'], D: ['d-energy'] };
+const VOCAB_CORE = { A: ['a-break', 'a-favor'], B: ['b-nuc'], C: ['c-tail'], D: ['d-energy'], E: ['e-not'] };
 for (const k of Object.keys(QUIZZES)) {
   const Q = QUIZZES[k];
   total += Q.draw;
@@ -216,7 +216,7 @@ for (const k of Object.keys(QUIZZES)) {
   ok(Q.core.length + (Q.pick || []).length <= Q.draw, `${k}: core and picks exceed draw`);
   ok(qids.length >= Q.draw + 4, `${k}: pool too small for a retry to differ`);
   VOCAB_CORE[k].forEach((id) => ok(Q.core.indexOf(id) >= 0, `${k}: vocabulary question ${id} is not core`));
-  if (k === 'C' || k === 'D') {
+  if (k === 'C' || k === 'D' || k === 'E') {
     ok((Q.pick || []).some((g) => g.every((id) => Q.pool.find((q) => q.id === id).draw)), `${k}: no graded drawing in every attempt`);
     ok((Q.pick || []).some((g) => g.every((id) => { const q = Q.pool.find((x) => x.id === id); return q.check && (q.check.pattern || q.check.seq); })), `${k}: no pattern or sequence question in every attempt`);
   }
@@ -256,17 +256,50 @@ for (const k of Object.keys(QUIZZES)) {
     }
     if (c.ints) ok(+q.choices[0] === kinds(c.ints).int, `${q.id}: intermediates in ${c.ints}`);
     if (c.steps) ok(/^One transition state, no intermediate/.test(q.choices[0]) === (S[c.steps].patterns.length === 2), `${q.id}: ${c.steps} is not one step`);
+    if (c.roleIn) {
+      const sc = S[c.roleIn[0]];
+      ok(sc.role.nuc === c.roleIn[1] && Chem.centres(sc.before).nuc.indexOf(c.roleIn[1]) >= 0, `${q.id}: ${c.roleIn[1]} is not the nucleophile of ${c.roleIn[0]}`);
+      ok(/ethoxide/i.test(q.choices[0]) === (c.roleIn[1] === 'Oe'), `${q.id}: the first choice does not name the nucleophile`);
+    }
+    if (c.elecAt) {
+      const e = Chem.centres(S[c.elecAt[0]].before).elec;
+      ok(e.length === 1 && e[0] === c.elecAt[1] && /^The carbon of the C=O/.test(q.choices[0]), `${q.id}: electrophilic atom of ${c.elecAt[0]}`);
+    }
+    if (c.onlyBreaks) {
+      const L = Chem.ledger(S[c.onlyBreaks].before, S[c.onlyBreaks].after);
+      ok(L.broken.length > 0 && L.formed.length === 0 && /^Endothermic/.test(q.choices[0]), `${q.id}: ${c.onlyBreaks} is not a step that only breaks a bond`);
+    }
+    if (c.arrows) ok(S[c.arrows[0]].arrows.length === c.arrows[1] && q.choices[0] === ['', 'One', 'Two', 'Three'][c.arrows[1]], `${q.id}: arrows of ${c.arrows[0]}`);
+    if (c.chainLen) {
+      const n = S[c.chainLen[0]].length, W = ['', 'one', 'two', 'three', 'four'];
+      ok(n === c.chainLen[1] && q.choices[0].toLowerCase() === `${W[n]} transition states and ${W[n - 1]} intermediates`, `${q.id}: steps of ${c.chainLen[0]}`);
+    }
     if (c.rule) {
       q.choices.forEach((ch, i) => {
         const sc = S[ch.mech];
-        const arr = ch.rule ? SCENES.RULES.find((r) => r.id === ch.rule).arrows : sc.arrows;
+        const arr = ch.rule ? SCENES.RULES.concat(SCENES.QUIZ_RULES).find((r) => r.id === ch.rule).arrows : sc.arrows;
         ok(!!Chem.apply(sc.before, arr).err === (i === 0), `${q.id}: choice ${i} ${i === 0 ? 'breaks no rule' : 'breaks a rule'}`);
       });
     }
   }
 }
+/* the final check uses only reactions no step has shown (the one molecule it reuses is acetone, as a plain drawing) */
+{
+  const used = new Set();
+  App.STEPS.forEach((st) => { (st.scenes || []).forEach((x) => used.add(x)); (st.mols || []).forEach((x) => used.add(x)); if (st.chain) used.add(st.chain); });
+  ['demoPT', 'sn2', 'ester', 'f622', 'f623', 'bdeA', 'bdeB'].forEach((x) => used.add(x));
+  SCENES.RULES.forEach((r) => used.add(r.scene));
+  Object.keys(QUIZZES).filter((k) => k !== 'E').forEach((k) => QUIZZES[k].pool.forEach((q) => {
+    if (q.draw) used.add(q.draw);
+    if (q.fig) used.add(q.fig.mech || q.fig.chain || q.fig.mol);
+  }));
+  QUIZZES.E.pool.forEach((q) => {
+    const ids = [q.draw, q.fig && (q.fig.mech || q.fig.chain)].concat((q.choices || []).filter((c) => typeof c !== 'string').map((c) => c.mech)).filter(Boolean);
+    ids.forEach((id) => ok(!used.has(id), `${q.id}: ${id} was already shown earlier in the activity`));
+  });
+}
 ok(total === App.GRADED, 'GRADED does not match the checkpoints');
-ok(total === 18, `${total} graded questions, the plan has 18`);
+ok(total === 25, `${total} graded questions, expected 25 (18 in the checkpoints, 7 in the final check)`);
 const poolSize = Object.values(QUIZZES).reduce((t, Q) => t + Q.pool.length, 0);
 ok(poolSize >= 50, `pool of ${poolSize}`);
 

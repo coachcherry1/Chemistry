@@ -1,11 +1,13 @@
 /* quiz.js: the graded checkpoint questions.
  *
- * Four checkpoints, one at the end of each part. Each draws `draw`
- * questions: every `core` question, one from each `pick` group, then a
- * random fill from the rest, so a retry sees a different mix. Every
- * checkpoint has a vocabulary question in its core; Checkpoints 3 and 4 each
- * have one graded arrow drawing (`draw: scene`), judged on the first Check,
- * and one question naming a pattern or a sequence of patterns.
+ * Four checkpoints, one at the end of each part, and a final check on
+ * reactions the student has not seen. Each draws `draw` questions: every
+ * `core` question, one from each `pick` group, then a random fill from the
+ * rest, so a retry sees a different mix. Every one has a vocabulary question
+ * in its core; Checkpoints 3 and 4 each have one graded arrow drawing
+ * (`draw: scene`), judged on the first Check, and one question naming a
+ * pattern or a sequence of patterns; the final check has two drawings, a
+ * pattern and a sequence.
  *
  * Nothing here asks for a calculation. The correct choice is always written
  * FIRST; the order is shuffled on screen. `why` is shown after the student
@@ -21,6 +23,11 @@
  *   ints: profile     the first choice is the number of intermediates
  *   rule: true        figure choices: only the first breaks one of Klein's rules
  *   steps: id         the first choice counts the scene's transition states
+ *   roleIn: [id, atom] the first choice names the step's nucleophile
+ *   elecAt: [id, atom] the first choice names the molecule's electrophilic atom
+ *   onlyBreaks: id    the step breaks a bond and makes none
+ *   arrows: [id, n]   the step takes n curved arrows
+ *   chainLen: [id, n] the chain has n steps (n peaks, n − 1 valleys)
  * Figures (app.js): { mech: id, arrows }, { mol: id }, { energy: profile, dG },
  * { chain: id }.
  */
@@ -180,6 +187,63 @@ var QUIZZES = (function () {
           why: 'The 2° carbocation on C2 takes a CH₃ (with its pair) from C3, which becomes a 3° carbocation.' },
         { id: 'd-ints', q: 'How many intermediates does this energy diagram show?', fig: { energy: 'f631' }, choices: ['3', '4', '2', '1'], compact: true, check: { ints: 'f631' },
           why: 'Four steps, four hills (transition states), and a valley between each pair of hills: three intermediates.' }
+      ]
+    },
+
+    E: {
+      title: 'Final check: all four patterns',
+      draw: 7,
+      core: ['e-not'],
+      pick: [['e-d1', 'e-d2', 'e-d3'], ['e-d4', 'e-d5', 'e-d6'], ['e-s1', 'e-s2', 'e-s3'], ['e-n1', 'e-n2', 'e-n3', 'e-n4']],
+      pool: [
+        { id: 'e-not', q: 'Which of these is not one of the four patterns of arrow pushing?', compact: true,
+          choices: ['Homolytic cleavage', 'Proton transfer', 'Loss of a leaving group', 'Carbocation rearrangement'],
+          why: 'The four patterns are nucleophilic attack, loss of a leaving group, proton transfer and carbocation rearrangement. All four move electrons in pairs. Homolytic cleavage moves one electron to each atom and makes radicals.' },
+        { id: 'e-d1', draw: 'xIodAttack', q: 'Draw the curved arrow for this step: iodide attacks the carbocation.', why: 'One arrow, from a lone pair on I⁻ to the carbocation: nucleophilic attack. A bond forms, so energy is released.' },
+        { id: 'e-d2', draw: 'xIodLoss', q: 'Draw the curved arrow for this step: iodide leaves.', why: 'One arrow, from the C–I bond onto I: loss of a leaving group. It leaves a 3° carbocation. A bond breaks, so the step takes energy in.' },
+        { id: 'e-d3', draw: 'xRingShift', q: 'This carbocation rearranges. Draw the curved arrow.', why: 'One arrow, from the bond to a CH₃ on the next carbon to the carbocation: a methyl shift. The 2° carbocation becomes 3°.' },
+        { id: 'e-d4', draw: 'xAcidOH', q: 'Draw the curved arrows for this step: hydroxide takes the proton of acetic acid.', why: 'Two arrows: a lone pair on hydroxide to the H, and the O–H pair onto the O of the acid. A proton transfer.' },
+        { id: 'e-d5', draw: 'k629', q: 'Draw the curved arrows for this concerted step (Klein 6.29).', why: 'Two arrows at once: a lone pair on the O of ethoxide attacks the carbon (nucleophilic attack) as the C–I pair goes onto I (loss of a leaving group).' },
+        { id: 'e-d6', draw: 'xNH3Acyl', q: 'Draw the curved arrows for ammonia attacking acetyl chloride.', why: 'Two arrows: the lone pair on N attacks the C of the C=O, and the pi bond’s pair moves onto the O, so the carbon never has five bonds. One pattern: nucleophilic attack.' },
+        { id: 'e-s1', q: 'What is the sequence of patterns in this mechanism (Klein 6.49)?', fig: { chain: 'k649' }, check: { seq: 'k649' },
+          choices: ['Proton transfer, loss of a leaving group', 'Loss of a leaving group, proton transfer', 'Nucleophilic attack, proton transfer', 'Proton transfer, nucleophilic attack'],
+          why: 'First the O takes the H of HBr (two arrows: a proton transfer). Then the C–O bond breaks and water leaves: loss of a leaving group.' },
+        { id: 'e-s2', q: 'What is the sequence of patterns in this mechanism (Klein 6.33)?', fig: { chain: 'k633' }, check: { seq: 'k633' },
+          choices: ['Nucleophilic attack, loss of a leaving group', 'Loss of a leaving group, nucleophilic attack', 'Proton transfer, loss of a leaving group', 'Nucleophilic attack, proton transfer'],
+          why: 'Hydroxide attacks the C of the C=O (the pi pair moves onto O). Then the O⁻ pushes a pair back down and Cl⁻ is pushed out: loss of a leaving group.' },
+        { id: 'e-s3', q: 'What is the sequence of patterns in this mechanism?', fig: { chain: 'xTbuOH' }, check: { seq: 'xTbuOH' },
+          choices: ['Proton transfer, loss of a leaving group, nucleophilic attack', 'Loss of a leaving group, proton transfer, nucleophilic attack',
+                    'Proton transfer, nucleophilic attack, loss of a leaving group', 'Nucleophilic attack, loss of a leaving group, proton transfer'],
+          why: 'HCl protonates the OH, water leaves to give a 3° carbocation, and Cl⁻ attacks it. It is Klein’s Figure 6.31 without the rearrangement: the carbocation is already 3°.' },
+        { id: 'e-n1', q: 'Read the arrow. Which pattern is this?', fig: { mech: 'yAlkeneCation' }, choices: pat(P[0]), check: { pattern: 'yAlkeneCation' },
+          why: 'The pi bond is the nucleophile: its pair makes a new C–C bond to the carbocation. That is nucleophilic attack. The carbon that lost its share of the pi bond becomes the new carbocation.' },
+        { id: 'e-n2', q: 'Read the arrow. Which pattern is this?', fig: { mech: 'yOxLoss2' }, choices: pat(P[1]), check: { pattern: 'yOxLoss2' },
+          why: 'The C–O bond breaks and its pair goes onto the O: water leaves. Loss of a leaving group, which leaves a carbocation.' },
+        { id: 'e-n3', q: 'Read the arrows. Which pattern is this?', fig: { mech: 'yAmineHCl' }, choices: pat(P[2]), check: { pattern: 'yAmineHCl' },
+          why: 'The lone pair on N takes the H, and the H–Cl pair goes onto Cl. An H moving from one atom to another without its electrons is a proton transfer.' },
+        { id: 'e-n4', q: 'Read the arrow. Which pattern is this?', fig: { mech: 'yRingHShift' }, choices: pat(P[3]), check: { pattern: 'yRingHShift' },
+          why: 'An H on the next carbon moves over with its bonding pair: a hydride shift, which is a carbocation rearrangement. The 2° carbocation becomes 3°.' },
+        { id: 'e-nuc', q: 'In this step, which is the nucleophile (Klein 6.29)?', fig: { mech: 'k629' }, check: { roleIn: ['k629', 'Oe'] },
+          choices: ['Ethoxide, CH₃CH₂O⁻', 'Iodomethane, CH₃I', 'Neither: both are electrophiles'],
+          why: 'Ethoxide has a negative charge on an O with lone pairs: it is electron-rich and gives a pair. The carbon of CH₃I is δ+ because I pulls electron density away: it is the electrophile.' },
+        { id: 'e-elec', q: 'A nucleophile attacks acetone. Which atom does it attack?', fig: { mol: 'kAcetone' }, check: { elecAt: ['kAcetone', 'C'] },
+          choices: ['The carbon of the C=O', 'The oxygen of the C=O', 'A CH₃ carbon'],
+          why: 'The carbon of a C=O is δ+: O pulls electron density away from it. A nucleophile is attracted to that electron-poor carbon.' },
+        { id: 'e-in', q: 'A step in which a bond breaks and no bond forms, such as iodide leaving a carbon, is:', check: { onlyBreaks: 'xIodLoss' },
+          choices: ['Endothermic: energy goes in', 'Exothermic: energy comes out', 'Neither: no energy changes hands'],
+          why: 'Bond breaking is endothermic. With no new bond to give energy back out, the step is uphill.' },
+        { id: 'e-r8', q: 'Will this carbocation rearrange?', fig: { mol: 'r8' }, choices: ['Yes: a methyl shift', 'Yes: a hydride shift', 'No'], compact: true, check: { shift: 'r8' },
+          why: 'It is 2°. The carbon next door has two CH₃ groups and no H; if one CH₃ shifts over, the new carbocation is 3°. A methyl shift (Klein 6.41).' },
+        { id: 'e-r9', q: 'Will this carbocation rearrange?', fig: { mol: 'r9' }, choices: ['No', 'Yes: a hydride shift', 'Yes: a methyl shift'], compact: true, check: { shift: 'r9' },
+          why: 'It is 2°, and a hydride shift from either neighbour would only make another 2° carbocation. Nothing is gained, so it does not rearrange.' },
+        { id: 'e-two', q: 'A concerted nucleophilic attack and loss of a leaving group takes how many curved arrows?', choices: ['Two', 'One', 'Three'], compact: true, check: { arrows: ['k629', 2] },
+          why: 'Two: one from the nucleophile’s lone pair to the carbon, and one from the bond to the leaving group onto the leaving group. One arrow alone would give carbon five bonds.' },
+        { id: 'e-miss', q: 'Which drawing is missing a curved arrow?', rule: true,
+          choices: [{ mech: 'yAmineHCl', rule: 'rHalf2' }, { mech: 'yAmineHCl' }, { mech: 'yOxLoss2' }, { mech: 'yAlkeneCation' }], check: { rule: true },
+          why: 'With only the arrow to the H, that H would have two bonds. A proton transfer always takes two arrows: the second moves the H–Cl pair onto Cl.' },
+        { id: 'e-three', q: 'A mechanism has three steps. Its energy diagram has:', check: { chainLen: ['xTbuOH', 3] },
+          choices: ['Three transition states and two intermediates', 'Two transition states and three intermediates', 'Three transition states and three intermediates'],
+          why: 'Every step has one hill, so three transition states. An intermediate sits in each valley between two hills: two of them.' }
       ]
     }
   };

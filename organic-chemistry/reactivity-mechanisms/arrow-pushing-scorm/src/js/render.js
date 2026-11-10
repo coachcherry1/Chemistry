@@ -107,10 +107,13 @@ var Render = (function () {
      Returns geo { P, lp: { id: [[x, y, dir]] }, labels, box }. */
   function paint(st, g, o) {
     var sc = o.sc || S, P = o.P;
+    /* directions (lone pairs, charges, which way a label reads) can be taken from
+       another set of positions, so nothing hops about while atoms glide */
+    var LP = o.layoutP || P;
     var geo = { P: P, lp: {}, labels: {}, charge: {}, box: [Infinity, Infinity, -Infinity, -Infinity] };
     function grow(x, y, r) { r = r || 0; var b = geo.box; b[0] = Math.min(b[0], x - r); b[1] = Math.min(b[1], y - r); b[2] = Math.max(b[2], x + r); b[3] = Math.max(b[3], y + r); }
     var labels = {};
-    st.atoms.forEach(function (a) { var l = labelOf(st, a, P); if (l) labels[a.id] = l; grow(P[a.id][0], P[a.id][1], 6); });
+    st.atoms.forEach(function (a) { var l = labelOf(st, a, LP); if (l) labels[a.id] = l; grow(P[a.id][0], P[a.id][1], 6); });
     function shrink(id) { return labels[id] ? 0.34 * sc : 0; }
 
     /* bonds */
@@ -135,6 +138,12 @@ var Render = (function () {
       if (b.centred) { off = (b.k === 1 ? 0.5 : -0.5) * gap; trim = 0; }
       var q0 = [p0[0] + nx * off + ux * (labels[b.a] ? 0 : trim), p0[1] + ny * off + uy * (labels[b.a] ? 0 : trim)];
       var q1 = [p1[0] + nx * off - ux * (labels[b.b] ? 0 : trim), p1[1] + ny * off - uy * (labels[b.b] ? 0 : trim)];
+      if (b.grow != null) {
+        /* a bond being made: drawn out from the atom the electrons come from */
+        if (b.from === b.b) { var tmp = q0; q0 = q1; q1 = tmp; }
+        q1 = [q0[0] + (q1[0] - q0[0]) * b.grow, q0[1] + (q1[1] - q0[1]) * b.grow];
+        if (b.grow < 0.02) return;
+      }
       el('line', { class: 'm-bond' + (b.dash ? ' partial' : '') + (b.cls ? ' ' + b.cls : ''), x1: f1(q0[0]), y1: f1(q0[1]), x2: f1(q1[0]), y2: f1(q1[1]),
         opacity: b.op != null && b.op < 0.999 ? b.op.toFixed(2) : null }, gb);
     });
@@ -156,7 +165,7 @@ var Render = (function () {
     });
 
     function usedDirs(id) {
-      return Chem.neighbours(st, id).map(function (n) { return Math.atan2(P[n.id][1] - P[id][1], P[n.id][0] - P[id][0]); })
+      return Chem.neighbours(st, id).map(function (n) { return Math.atan2(LP[n.id][1] - LP[id][1], LP[n.id][0] - LP[id][0]); })
         .concat((o.extraUsed && o.extraUsed[id]) || []);
     }
 
@@ -169,20 +178,32 @@ var Render = (function () {
       if (lab && lab.text.length > a.el.length) block = lab.at > 0 ? -1 : 1;
       var dirs = lpDirs(usedDirs(a.id), n, block);
       geo.lp[a.id] = [];
-      dirs.forEach(function (d) {
+      var spots = dirs.map(function (d) {
         var r = (lab ? 0.5 : 0.36) * sc;
         if (lab && Math.abs(d[0]) > 0.5) {
           /* clear the letters on that side */
           var L = geo.labels[a.id];
           r = Math.max(r, (d[0] > 0 ? L.x1 - p[0] : p[0] - L.x0) + 5);
         }
-        var x = p[0] + d[0] * r, y = p[1] + d[1] * r * 0.92 + (Math.abs(d[1]) < 0.5 ? -1 : 0);
-        var nx = -d[1], ny = d[0];
-        var gp = el('g', { class: 'm-lp' }, gl);
-        el('circle', { cx: f1(x + nx * 3.4), cy: f1(y + ny * 3.4), r: 2.1, class: 'm-lp-dot' }, gp);
-        el('circle', { cx: f1(x - nx * 3.4), cy: f1(y - ny * 3.4), r: 2.1, class: 'm-lp-dot' }, gp);
-        geo.lp[a.id].push([x, y, d]);
-        grow(x, y, 5);
+        return [p[0] + d[0] * r, p[1] + d[1] * r * 0.92 + (Math.abs(d[1]) < 0.5 ? -1 : 0), d];
+      });
+      /* pairs that have left on an arrow are not drawn; pairs that have just landed are marked */
+      function nearest(pt, taken) {
+        var best = -1, bd = Infinity;
+        spots.forEach(function (q, i) { if (taken[i]) return; var dd = Math.hypot(q[0] - pt[0], q[1] - pt[1]); if (dd < bd) { bd = dd; best = i; } });
+        return best;
+      }
+      var gone = {}, fresh = {};
+      ((o.lpSkip && o.lpSkip[a.id]) || []).forEach(function (pt) { var i = nearest(pt, gone); if (i >= 0) gone[i] = 1; });
+      ((o.lpMark && o.lpMark[a.id]) || []).forEach(function (pt) { var i = nearest(pt, fresh); if (i >= 0) fresh[i] = 1; });
+      spots.forEach(function (q, i) {
+        geo.lp[a.id].push(q);
+        if (gone[i]) return;
+        var nx = -q[2][1], ny = q[2][0], rr = fresh[i] ? 2.1 * (o.pop || 1) : 2.1;
+        var gp = el('g', { class: 'm-lp' + (fresh[i] ? ' new' : '') }, gl);
+        el('circle', { cx: f1(q[0] + nx * 3.4), cy: f1(q[1] + ny * 3.4), r: f1(rr), class: 'm-lp-dot' }, gp);
+        el('circle', { cx: f1(q[0] - nx * 3.4), cy: f1(q[1] - ny * 3.4), r: f1(rr), class: 'm-lp-dot' }, gp);
+        grow(q[0], q[1], 5);
       });
     });
 
@@ -192,6 +213,11 @@ var Render = (function () {
       var busy = usedDirs(id);
       (geo.lp[id] || []).forEach(function (q) { busy.push(Math.atan2(q[2][1], q[2][0])); });
       var cand = [-45, -135, 45, 135, -90, 0, 180, 90].map(function (d) { return d * RAD; });
+      /* never across the letters of a longer label (HO, H₃C) */
+      if (lab && lab.text.length > Chem.atom(st, id).el.length) {
+        var side = lab.at > 0 ? -1 : 1;
+        cand = cand.filter(function (c) { return Math.cos(c) * side < 0.3; });
+      }
       var best = cand[0], bd = -1;
       cand.forEach(function (c) {
         var d = busy.length ? Math.min.apply(null, busy.map(function (u) { return angDist(c, u); })) : 9;
@@ -209,8 +235,8 @@ var Render = (function () {
     (o.charges || []).forEach(function (q) {
       if (!q.c) return;
       var at = freeSpot(q.id);
-      var gq = el('g', { class: 'm-charge-g', opacity: q.op != null && q.op < 0.999 ? q.op.toFixed(2) : null }, gl);
-      el('circle', { cx: f1(at[0]), cy: f1(at[1]), r: 6.2, class: 'm-charge-ring' }, gq);
+      var gq = el('g', { class: 'm-charge-g' + (q.fresh ? ' new' : '') }, gl);
+      el('circle', { cx: f1(at[0]), cy: f1(at[1]), r: f1(6.2 * (q.fresh ? (o.pop || 1) : 1)), class: 'm-charge-ring' }, gq);
       el('text', { x: f1(at[0]), y: f1(at[1] + 4), class: 'm-charge', 'text-anchor': 'middle' }, gq, q.c > 0 ? '+' : '−');
       geo.charge[q.id] = at;
       grow(at[0], at[1], 7);
@@ -439,16 +465,38 @@ var Render = (function () {
   /* --------------------------------------------------------- animation */
 
   /* One step, played. sc: a scene (before, after, arrows, picks).
-     o: scale, label, ts (show the transition state bracket near p = 0.5),
-     arrows (draw these instead of the scene's own, e.g. a student's),
-     picks/after (with them). Returns { node (svg), set(p), p() }. */
+     o: scale, label, ts (Klein's transition-state brackets just before the
+     electrons land), arrows/picks/after (to play a student's own arrows).
+     Returns { node (svg), set(p), p() }.
+
+     The step is played in beats, each a clean cut, with nothing fading:
+       0 to TAKEOFF     the drawing and its arrows, still
+       TAKEOFF to LAND  each pair of electrons rides its arrow; a bond that is
+                        breaking is dashed, a bond being made is drawn out,
+                        dashed, from the atom the electrons come from
+       LAND             the electrons arrive: the new bonds and lone pairs are
+                        there (in the arrow colour), the old ones are gone, the
+                        charges have changed, and the arrows are no longer needed
+       GLIDE to SETTLE  the atoms move to where the product is drawn
+     Before LAND the drawing is laid out as the reactants, afterwards as the
+     products, so lone pairs and charges never hop about on the way. */
+  var TAKEOFF = 0.08, LAND = 0.54, GLIDE = 0.62, SETTLE = 0.94;
+
+  function easeOut(t) { t = Math.max(0, Math.min(1, t)); return 1 - Math.pow(1 - t, 3); }
+
+  /* the first part (0 to u) of an arrow's curve, as a path */
+  function partPath(A, u) {
+    var c = [lerp(A.T[0], A.C[0], u), lerp(A.T[1], A.C[1], u)], e = bez(A, u);
+    return 'M' + f1(A.T[0]) + ' ' + f1(A.T[1]) + ' Q' + f1(c[0]) + ' ' + f1(c[1]) + ' ' + f1(e[0]) + ' ' + f1(e[1]);
+  }
+
   function Player(sc, o) {
     o = o || {};
     var scale = o.scale || S;
     var before = sc.before, after = o.after || sc.after, arrows = o.arrows || sc.arrows, picks = o.picks || sc.picks || [];
     var root = svg('mol player ' + (o.cls || ''), o.label || (sc.title || 'Mechanism') + ': animation');
     var P0 = screen(before, scale), P1 = screen(after, scale);
-    /* the arrows and where the electrons start, from the first frame */
+    /* the arrows, and the room the whole step needs, from the first and last frames */
     var probe = el('g', {}, root);
     var geo0 = paint(before, probe, { sc: scale, P: P0, bonds: bondLines(before, P0), charges: charges(before) });
     root.removeChild(probe);
@@ -461,7 +509,7 @@ var Render = (function () {
     if (o.ts) { box[0] -= 16; box[2] += 22; box[1] -= 8; box[3] += 8; }
     fit(root, box, o.pad != null ? o.pad : 10);
 
-    /* bonds on either side */
+    /* what each bond does: stays, breaks or is made; and which atom a new one is drawn from */
     var pairs = {};
     before.bonds.forEach(function (b) { pairs[Chem.keys.pair(b.a, b.b)] = { a: b.a, b: b.b, o0: b.o, o1: 0 }; });
     after.bonds.forEach(function (b) {
@@ -469,82 +517,94 @@ var Render = (function () {
       if (pairs[k]) pairs[k].o1 = b.o;
       else pairs[k] = { a: b.a, b: b.b, o0: 0, o1: b.o };
     });
-    var srcLp = {}, dstLp = {};
-    picks.forEach(function (m) {
-      if (m.src.lp != null) srcLp[m.src.lp] = (srcLp[m.src.lp] || 0) + 1;
-      if (m.dst.lp != null) dstLp[m.dst.lp] = (dstLp[m.dst.lp] || 0) + 1;
+    var lpSkip = {}, lpLand = {};
+    picks.forEach(function (m, i) {
+      var A = paths[i];
+      if (!A) return;
+      if (m.src.lp != null) (lpSkip[m.src.lp] = lpSkip[m.src.lp] || []).push(A.T);
+      if (m.dst.lp != null) (lpLand[m.dst.lp] = lpLand[m.dst.lp] || []).push([A.H[0] - P0[m.dst.lp][0], A.H[1] - P0[m.dst.lp][1]]);
+      if (m.dst.bond) {
+        var src = m.src.lp != null ? [m.src.lp] : m.src.bond;
+        var x = pairs[Chem.keys.pair(m.dst.bond[0], m.dst.bond[1])];
+        if (x) x.from = src.indexOf(m.dst.bond[0]) >= 0 ? m.dst.bond[0] : src.indexOf(m.dst.bond[1]) >= 0 ? m.dst.bond[1] : m.dst.bond[0];
+      }
     });
+    var changed = {};
+    before.atoms.forEach(function (a) { if (Chem.charge(before, a.id) !== Chem.charge(after, a.id)) changed[a.id] = 1; });
+    var newBond = {};
+    Object.keys(pairs).forEach(function (k) { if (pairs[k].o1 > pairs[k].o0) newBond[k] = pairs[k].o0; });
     var cur = 0;
     var g = el('g', { class: 'm-g' }, root);
 
     function frame(p) {
       cur = p;
       g.innerHTML = '';
-      var s = seg(p, 0.45, 0.95);
+      var geo;
+      if (p < LAND) {
+        /* the reactants, with the electrons on their way */
+        var u = seg(p, TAKEOFF, LAND), off = p > TAKEOFF;
+        var lines = [];
+        Object.keys(pairs).forEach(function (k) {
+          var x = pairs[k], n = Math.max(x.o0, x.o1);
+          var side = n === 2 ? doubleSide(x.o0 === 2 ? before : after, P0, x.a, x.b) : null;
+          for (var q = 1; q <= n; q++) {
+            var in0 = q <= x.o0, in1 = q <= x.o1;
+            var line = { a: x.a, b: x.b, k: q, n: n, side: side, centred: n === 2 && side === 0 };
+            if (in0 && !in1) { if (off) { line.dash = true; line.cls = 'breaking'; } }
+            else if (!in0 && in1) { if (!off) continue; line.dash = true; line.cls = 'forming'; line.grow = u; line.from = x.from || x.a; }
+            lines.push(line);
+          }
+        });
+        var partial = null;
+        if (o.ts && p > LAND - 0.16) { partial = {}; (o.ts.partial || []).forEach(function (id) { partial[id] = '-'; }); }
+        /* in the transition state the charge is shared: δ− on both ends, no full charge on either */
+        var chA = charges(before).filter(function (c) { return !(partial && partial[c.id]); });
+        geo = paint(before, g, { sc: scale, P: P0, bonds: lines, charges: chA, lpSkip: off ? lpSkip : null, hot: o.hot, partial: partial });
+        var ga = el('g', { class: 'arrows' }, g);
+        paths.forEach(function (A) { drawArrow(ga, A); });
+        if (off) {
+          /* the pairs riding the arrows, each with the path it has covered behind it */
+          var ge = el('g', { class: 'e-pairs' }, g);
+          paths.forEach(function (A) {
+            el('path', { d: partPath(A, u), class: 'e-trail' }, ge);
+            var q = bez(A, u), q2 = bez(A, Math.min(1, u + 0.02)), q0 = bez(A, Math.max(0, u - 0.02));
+            var t = unit([q2[0] - q0[0], q2[1] - q0[1]]), nn = [-t[1], t[0]];
+            el('circle', { cx: f1(q[0] + nn[0] * 3.6), cy: f1(q[1] + nn[1] * 3.6), r: 3, class: 'e-dot' }, ge);
+            el('circle', { cx: f1(q[0] - nn[0] * 3.6), cy: f1(q[1] - nn[1] * 3.6), r: 3, class: 'e-dot' }, ge);
+          });
+        }
+        if (o.ts && p > LAND - 0.16) {
+          /* Klein's transition state: both bonds partial, in brackets */
+          var gt = el('g', { class: 'ts-bracket' }, g);
+          var x0 = box[0] - 6, x1 = box[2] + 4, y0 = box[1], y1 = box[3];
+          el('path', { d: 'M' + f1(x0 + 8) + ' ' + f1(y0) + ' H' + f1(x0) + ' V' + f1(y1) + ' H' + f1(x0 + 8), class: 'ts-line' }, gt);
+          el('path', { d: 'M' + f1(x1 - 8) + ' ' + f1(y0) + ' H' + f1(x1) + ' V' + f1(y1) + ' H' + f1(x1 - 8), class: 'ts-line' }, gt);
+          el('text', { x: f1(x1 + 4), y: f1(y0 + 12), class: 'ts-mark' }, gt, '‡');
+        }
+        return geo;
+      }
+      /* the products: what is new stays in the arrow colour until the atoms have settled */
+      var s = easeOut((p - GLIDE) / (SETTLE - GLIDE));
       var P = {};
       before.atoms.forEach(function (a) { P[a.id] = [lerp(P0[a.id][0], P1[a.id][0], s), lerp(P0[a.id][1], P1[a.id][1], s)]; });
-      var mid = p > 0.5 ? after : before;
-      /* the bonds: kept, fading, or growing; dashed while partly there */
-      var lines = [];
-      var fadeOut = 1 - seg(p, 0.2, 0.6), fadeIn = seg(p, 0.42, 0.85);
-      Object.keys(pairs).forEach(function (k) {
-        var x = pairs[k], n = Math.max(x.o0, x.o1);
-        var side = n === 2 ? doubleSide(p < 0.5 ? before : after, P, x.a, x.b) : null;
-        if (n === 2 && side === 0 && x.o0 === 2 && x.o1 < 2) side = doubleSide(before, P, x.a, x.b);
-        for (var q = 1; q <= n; q++) {
-          var in0 = q <= x.o0, in1 = q <= x.o1;
-          var op = in0 && in1 ? 1 : in0 ? fadeOut : fadeIn;
-          if (op < 0.02) continue;
-          lines.push({ a: x.a, b: x.b, k: q, n: n, side: side, centred: n === 2 && side === 0, op: Math.max(op, in0 && in1 ? 1 : 0.15),
-            dash: !(in0 && in1) && op < 0.98 && op > 0.02 });
-        }
-      });
-      /* lone pairs: the ones that move leave at the start; new ones land */
-      var lp = {};
-      before.atoms.forEach(function (a) {
-        var a1 = Chem.atom(after, a.id);
-        if (p < 0.04) lp[a.id] = a.lp;
-        else if (p < 0.55) lp[a.id] = a.lp - (srcLp[a.id] || 0);
-        else lp[a.id] = a1.lp;
-      });
-      var ch = [];
-      before.atoms.forEach(function (a) {
-        var c0 = Chem.charge(before, a.id), c1 = Chem.charge(after, a.id);
-        if (c0 === c1) { if (c0) ch.push({ id: a.id, c: c0 }); return; }
-        if (c0) ch.push({ id: a.id, c: c0, op: 1 - seg(p, 0.42, 0.58) });
-        if (c1) ch.push({ id: a.id, c: c1, op: seg(p, 0.6, 0.8) });
-      });
-      var stNow = { atoms: before.atoms, bonds: lines.filter(function (l) { return l.k === 1 && l.op > 0.5; }).map(function (l) { return { a: l.a, b: l.b, o: 1 }; }) };
-      var partial = null;
-      if (o.ts && Math.abs(p - 0.5) < 0.14) {
-        partial = {};
-        (o.ts.partial || []).forEach(function (id) { partial[id] = '-'; });
+      var fresh = p < SETTLE + 0.03;
+      var pop = 1 + 0.3 * (1 - seg(p, LAND, LAND + 0.07));
+      var lpMark = null;
+      if (fresh) {
+        lpMark = {};
+        Object.keys(lpLand).forEach(function (id) { lpMark[id] = lpLand[id].map(function (d) { return [P[id][0] + d[0], P[id][1] + d[1]]; }); });
       }
-      var geo = paint(stNow, g, { sc: scale, P: P, bonds: lines, lp: lp, charges: ch, hot: o.hot, partial: partial });
-      /* the arrows fade as the electrons arrive */
-      var aop = 1 - seg(p, 0.42, 0.6);
-      if (aop > 0.02) {
-        var ga = el('g', { class: 'arrows', opacity: aop < 0.999 ? aop.toFixed(2) : null }, g);
-        paths.forEach(function (A) { drawArrow(ga, A); });
-      }
-      /* the electron pairs riding the arrows */
-      if (p > 0.02 && p < 0.56) {
-        var u = seg(p, 0.04, 0.5);
-        var ge = el('g', { class: 'e-pairs' }, g);
-        paths.forEach(function (A) {
-          var q = bez(A, u), q2 = bez(A, Math.min(1, u + 0.02));
-          var t = unit([q2[0] - q[0], q2[1] - q[1]]), n = [-t[1], t[0]];
-          el('circle', { cx: f1(q[0] + n[0] * 3.4), cy: f1(q[1] + n[1] * 3.4), r: 2.8, class: 'e-dot' }, ge);
-          el('circle', { cx: f1(q[0] - n[0] * 3.4), cy: f1(q[1] - n[1] * 3.4), r: 2.8, class: 'e-dot' }, ge);
-        });
-      }
-      /* Klein's transition-state brackets */
-      if (o.ts && Math.abs(p - 0.5) < 0.14) {
-        var b = box, gt = el('g', { class: 'ts-bracket' }, g);
-        var x0 = b[0] - 6, x1 = b[2] + 4, y0 = b[1], y1 = b[3];
-        el('path', { d: 'M' + f1(x0 + 8) + ' ' + f1(y0) + ' H' + f1(x0) + ' V' + f1(y1) + ' H' + f1(x0 + 8), class: 'ts-line' }, gt);
-        el('path', { d: 'M' + f1(x1 - 8) + ' ' + f1(y0) + ' H' + f1(x1) + ' V' + f1(y1) + ' H' + f1(x1 - 8), class: 'ts-line' }, gt);
-        el('text', { x: f1(x1 + 4), y: f1(y0 + 12), class: 'ts-mark' }, gt, '‡');
+      var linesB = bondLines(after, P1, function (line) {
+        var nb = newBond[Chem.keys.pair(line.a, line.b)];
+        if (fresh && nb != null && line.k > nb) line.cls = 'new';
+      });
+      geo = paint(after, g, { sc: scale, P: P, layoutP: P1, bonds: linesB, lpMark: lpMark, pop: pop, hot: o.hot,
+        charges: charges(after).map(function (c) { return { id: c.id, c: c.c, fresh: fresh && !!changed[c.id] }; }) });
+      /* a ring where each pair landed, for a moment */
+      if (p < LAND + 0.09) {
+        var w = seg(p, LAND, LAND + 0.09);
+        var gf = el('g', { class: 'e-land' }, g);
+        paths.forEach(function (A) { el('circle', { cx: f1(A.H[0]), cy: f1(A.H[1]), r: f1(4 + 12 * w), class: 'e-ring', 'stroke-width': f1(3 * (1 - w) + 0.5) }, gf); });
       }
       return geo;
     }
@@ -578,5 +638,6 @@ var Render = (function () {
   }
 
   return { S: S, el: el, svg: svg, fit: fit, draw: draw, paint: paint, bondLines: bondLines, screen: screen, charges: charges,
-           arrowPath: arrowPath, drawArrow: drawArrow, pointOf: pointOf, Player: Player, ChainPlayer: ChainPlayer, smooth: smooth, seg: seg };
+           arrowPath: arrowPath, drawArrow: drawArrow, pointOf: pointOf, Player: Player, ChainPlayer: ChainPlayer, smooth: smooth, seg: seg,
+           BEATS: { TAKEOFF: TAKEOFF, LAND: LAND, GLIDE: GLIDE, SETTLE: SETTLE } };
 })();

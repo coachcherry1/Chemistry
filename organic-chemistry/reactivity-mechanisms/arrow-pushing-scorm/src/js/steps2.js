@@ -166,7 +166,7 @@
     stage().appendChild(h('div', { class: 'work work-wide' }, [left, right]));
     var live = [];
     if (s.hole) {
-      var hp = holePic(), hs = U.slider(hp.set, { from: '', to: '', ms: 2600 });
+      var hp = holePic(), hs = U.slider(hp.set, { from: 'A hole', to: 'Filled', ms: 2200 });
       live.push(hs);
       top.appendChild(U.panel('Klein’s analogy', 'a hole in the ground', [h('div', { class: 'work' }, [h('div', { class: 'mol-wrap' }, [hp.node]),
         h('p', { class: 'muted', text: 'A carbocation is a hole: a place where electron density is missing. Digging a new hole next door, and using its dirt to fill the first, leaves a new hole. In a hydride shift the H moves over with its pair of electrons and fills the empty p orbital; the carbon it left becomes the new C⁺. It only happens when the new carbocation is more stable.' })]), hs.node]));

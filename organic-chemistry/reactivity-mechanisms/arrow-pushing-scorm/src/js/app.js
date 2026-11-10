@@ -9,8 +9,9 @@
  * Part 3  The four patterns: nucleophilic attack, loss of a leaving group,
  *         proton transfer, carbocation rearrangement
  * Part 4  Combining the patterns: sequences and concerted steps
+ * Part 5  Final check: the four patterns on reactions not seen before
  *
- * Only the four checkpoints are graded (first answer counts; a graded
+ * Only the four checkpoints and the final check are graded (first answer counts; a graded
  * arrow drawing counts on its first Check). Arrows, sorts and predictions
  * must be finished to move on but are never scored: a wrong one gets an
  * explanation and another try.
@@ -21,14 +22,15 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a scene changes: a save
      from an older build is then discarded and the student starts fresh. */
-  var SCHEMA = 3;
+  var SCHEMA = 4;
 
   var PARTS = [
     { n: 1, name: 'Energy and bonds' },
     { n: 2, name: 'Nucleophiles and electrophiles' },
     { n: 3, name: 'The four patterns' },
     { n: 4, name: 'Putting them together' },
-    { n: 5, name: 'Results' }
+    { n: 5, name: 'Final check' },
+    { n: 6, name: 'Results' }
   ];
 
   var STEPS = [
@@ -79,7 +81,9 @@ var App = (function () {
       text: 'Sometimes one step does two patterns at the same time. Draw it, then read a three-step mechanism and name its sequence.' },
     { id: 'quiz-D', part: 4, kind: 'quiz', quiz: 'D', title: 'Checkpoint 4', text: '' },
 
-    { id: 'results', part: 5, kind: 'results', title: 'Results', text: '' }
+    { id: 'quiz-E', part: 5, kind: 'quiz', quiz: 'E', title: 'Final check', text: '' },
+
+    { id: 'results', part: 6, kind: 'results', title: 'Results', text: '' }
   ];
 
   /* Every prediction the steps ask, with its key. Predictions are never
@@ -248,7 +252,7 @@ var App = (function () {
         type: 'button', class: 'tab' + (p.n === cur ? ' current' : '') + (open ? '' : ' locked'),
         disabled: !open, 'aria-current': p.n === cur ? 'step' : null,
         onclick: function () { if (open) goTo(first); }
-      }, [p.n < 5 ? p.n + '  ' + p.name : p.name]));
+      }, [p.n < PARTS.length ? p.n + '  ' + p.name : p.name]));
     });
     el.score.textContent = 'Checkpoint score: ' + correctCount() + ' / ' + GRADED +
       (state.att > 1 ? '  ·  best ' + Math.round(state.best || 0) + '%' : '');
@@ -263,7 +267,7 @@ var App = (function () {
     var s = STEPS[i];
     el.stepTitle.textContent = s.title;
     el.counter.textContent = 'Step ' + (i + 1) + ' of ' + STEPS.length;
-    var text = s.kind === 'quiz' ? 'Graded: your first answer to each question counts, and a drawing counts on its first Check. Read the explanation after each one.' : s.text;
+    var text = s.kind === 'quiz' ? (s.quiz === 'E' ? 'New reactions, the same four patterns. ' : '') + 'Graded: your first answer to each question counts, and a drawing counts on its first Check. Read the explanation after each one.' : s.text;
     el.instructions.textContent = text;
     el.instructions.hidden = !text;
     el.stage.innerHTML = '';
@@ -354,9 +358,10 @@ var App = (function () {
       if (anim) { stop(); return; }
       if (+range.value >= 100) { range.value = 0; onInput(0); }
       if (reduceMotion) {
-        /* no motion: still frames, one per press */
-        var stepN = o.frames || 4;
-        var next = Math.min(100, (Math.floor(+range.value * stepN / 100 + 1e-6) + 1) * 100 / stepN);
+        /* no motion: still frames, one per press (at o.stops, or evenly spaced) */
+        var stepN = o.frames || 4, next;
+        if (o.stops) next = 100 * o.stops.filter(function (t) { return t * 100 > +range.value + 0.5; }).concat([1])[0];
+        else next = Math.min(100, (Math.floor(+range.value * stepN / 100 + 1e-6) + 1) * 100 / stepN);
         range.value = next; onInput(next / 100);
         if (next >= 100 && o.done) o.done();
         return;
@@ -395,11 +400,11 @@ var App = (function () {
     var list = h('ul', { class: 'ledger' });
     L.broken.forEach(function (b) {
       var li = h('li', { class: 'in' }, [h('span', { class: 'ledger-tag', text: 'energy in' }), bondName(sc.before, b) + ' broken: endothermic']);
-      rows.push({ li: li, at: 0.3 }); list.appendChild(li);
+      rows.push({ li: li, at: 0.3 }); list.appendChild(li);   /* its pair has left */
     });
     L.formed.forEach(function (b) {
       var li = h('li', { class: 'out' }, [h('span', { class: 'ledger-tag', text: 'energy out' }), bondName(after || sc.after, b) + ' formed: exothermic']);
-      rows.push({ li: li, at: 0.7 }); list.appendChild(li);
+      rows.push({ li: li, at: Render.BEATS.LAND }); list.appendChild(li);
     });
     function set(p) { rows.forEach(function (r) { r.li.classList.toggle('on', p >= r.at); }); }
     set(0);
@@ -411,8 +416,16 @@ var App = (function () {
     o = o || {};
     var pl = Render.Player(sc, { scale: o.scale, ts: o.ts, arrows: o.arrows, picks: o.picks, after: o.after });
     var led = o.noLedger ? null : ledgerBox(sc, o.after);
-    var sl = slider(function (p) { pl.set(p); if (led) led.set(p); if (o.onInput) o.onInput(p); }, { from: 'Arrows', to: 'Products', ms: o.ms || 3600, done: o.done });
-    var node = h('div', { class: 'player-box' }, [h('div', { class: 'mol-wrap anim' }, [pl.node]), sl.node, led ? led.node : null]);
+    var B = Render.BEATS;
+    var note = h('p', { class: 'beat-note', 'aria-live': 'off' });
+    function beat(p) {
+      note.textContent = p <= B.TAKEOFF ? 'The curved arrows' : p < B.LAND ? 'Each pair of electrons follows its arrow'
+        : p < B.SETTLE ? 'The electrons have landed: new bonds, new charges' : 'The product of this step';
+    }
+    beat(0);
+    var sl = slider(function (p) { pl.set(p); beat(p); if (led) led.set(p); if (o.onInput) o.onInput(p); },
+      { from: 'Arrows', to: 'Products', ms: o.ms || 3400, done: o.done, stops: [0.3, B.LAND - 0.01, B.LAND + 0.04, 1] });
+    var node = h('div', { class: 'player-box' }, [h('div', { class: 'mol-wrap anim' }, [pl.node]), note, sl.node, led ? led.node : null]);
     return { node: node, player: pl, slider: sl, ledger: led };
   }
 
@@ -485,7 +498,7 @@ var App = (function () {
     if (spec.mech) {
       var sc = SC[spec.mech];
       var arrows = sc.arrows;
-      if (spec.rule) arrows = SCENES.RULES.filter(function (r) { return r.id === spec.rule; })[0].arrows;
+      if (spec.rule) arrows = SCENES.RULES.concat(SCENES.QUIZ_RULES).filter(function (r) { return r.id === spec.rule; })[0].arrows;
       return Arrows.figure(sc, arrows, { label: spec.label || sc.title + ' with curved arrows' });
     }
     if (spec.energy) {
@@ -773,10 +786,11 @@ var App = (function () {
         h('li', { text: 'Part 1, Energy and bonds: breaking and making bonds, ΔG, energy diagrams.' }),
         h('li', { text: 'Part 2, Nucleophiles and electrophiles.' }),
         h('li', { text: 'Part 3, The four patterns, with curved arrows.' }),
-        h('li', { text: 'Part 4, Putting the patterns together.' })
+        h('li', { text: 'Part 4, Putting the patterns together.' }),
+        h('li', { text: 'Part 5, Final check: the same four patterns on reactions you have not seen.' })
       ]),
-      h('p', { text: 'Arrows, sorts and predictions are never graded, so try things. The four checkpoints are graded: your ' +
-                     'first answer to each question counts, and a drawing counts on its first Check. About 45 minutes. Your progress is saved if you leave.' }),
+      h('p', { text: 'Arrows, sorts and predictions are never graded, so try things. The four checkpoints and the final check are graded: your ' +
+                     'first answer to each question counts, and a drawing counts on its first Check. About 50 minutes. Your progress is saved if you leave.' }),
       h('p', { class: 'screen-note', text: 'Everything works with a mouse, a touch screen or the keyboard (Tab and Enter).' })
     ]);
     var go = h('button', { type: 'button', class: 'primary', text: state.max > 0 ? 'Continue where you left off' : 'Start' });
