@@ -190,7 +190,7 @@ def build(T):
         p = fmt(d.add_paragraph(), after=4); run(p, "How the simulation and the sheet fit together, how to check each student's random numbers, and the answers. The student sheet follows.", 9.5, color="555555"); rule(p)
         heading(d, "How it works", 11.5, before=2)
         for t in [
-            "**Students write everything on this sheet.** The simulation only shows the bench and the action (the balance display, the flame, the glow, the water drops, the steam, the magnifier). It has no data tables, no typed answers and no score. The slim bar across the top of the simulation names each step and says which box to fill in.",
+            "**Students write everything on this sheet.** The simulation only shows the bench and the action (the balance display, the flame, the glow, the water drops, the steam, the magnifier). It has no data tables, no typed answers and no score. The big line at the top of the bench says what to do next, and a finished step moves on by itself.",
             "**Every student gets different numbers.** The simulation chooses them, so check the math, not the numbers. Ranges used: mass of crucible + lid **25.000 to 35.000 g**, mass of magnesium **0.100 to 0.200 g** (the cap stands in for what fits in a real crucible), all read to 0.0001 g. The product mass is the ideal MgO mass with a small realistic scatter (within about 1%), so the O : Mg ratio comes out between about 0.98 and 1.02.",
             "**Check the math in this order:** Box 1 + Box 2 = Box 3 (within 0.0001 g); Box 5 = Box 4 − Box 3; moles Mg = Box 2 ÷ 24.3 (24.31 also accepted); atoms Mg = moles × 6.02 × 10²³; moles O = Box 5 ÷ 16.0; ratio O : Mg = moles O ÷ moles Mg ≈ 1 : 1, so the formula is MgO. Accept answers that follow from the student's own boxes, rounded to 3 or 4 significant figures.",
             "**Nitride, not nitrate.** The side product is magnesium **nitride**, Mg₃N₂ (Mg²⁺ and N³⁻). The water step converts it to magnesium hydroxide and ammonia; the reheating turns the hydroxide into MgO.",
@@ -240,11 +240,11 @@ def build(T):
     # ---------------- procedure
     heading(d, "Procedure (what you do in the simulation)", 11.5, before=4)
     steps = [
-        ("Mass the clean, dry crucible and lid.", "Record it in **Box 1**."),
-        ("Mass the piece of magnesium.", "Record it in **Box 2**. Put the Mg in the crucible, then mass the crucible + lid + Mg and record it in **Box 3**. Check: Box 1 + Box 2 should equal Box 3."),
-        ("Set up the heating.", "Place the crucible in the clay triangle on the ring stand, with the Bunsen burner underneath."),
-        ("Heat the magnesium with the Bunsen burner.", "Turn the bottom of the burner until the tip of the flame touches the bottom of the crucible. The lid goes on for you, with a slight crack, once the Mg glows. Write what you see in Observations."),
-        ("Once the Mg stops glowing, add 6 to 7 drops of DI water", "and reheat to boil the water off. Write what you see. (In the real lab you will also notice a sharp smell.)"),
+        ("Mass the clean, dry crucible and lid.", "Drag them onto the balance. Record the reading in **Box 1**, then set them back on the ceramic pad."),
+        ("Mass the piece of magnesium.", "Drag it onto the balance and record it in **Box 2**. Put the Mg in the crucible, then mass the crucible + lid + Mg and record it in **Box 3**. Check: Box 1 + Box 2 should equal Box 3."),
+        ("Set up the heating.", "The ring stand, clay triangle and Bunsen burner are set up for you. Set the crucible, with its lid, in the clay triangle."),
+        ("Heat the magnesium with the Bunsen burner.", "Turn the bottom of the burner up to the end of the scale, so the tip of the flame touches the bottom of the crucible. The lid is on with a slight crack so air can get in. Watch the magnifier and write what you see in Observations."),
+        ("Once the Mg stops glowing, add 6 to 7 drops of DI water.", "Set the lid on the ceramic pad, hold the DI water bottle above the open crucible and add the drops one at a time. Then reheat to boil the water off. Write what you see. (In the real lab you will also notice a sharp smell.)"),
         ("Once the product is dry, turn the heat off and cool for 5 minutes.", "The simulation speeds up the clock. Do the **While Cooling** questions."),
         ("Mass the crucible + lid + product.", "Record it in **Box 4**. Then calculate **Box 5**."),
     ]
@@ -289,7 +289,7 @@ def build(T):
              "1 Mg(OH)₂ → 1 MgO + 1 H₂O.   The water turns any Mg₃N₂ into Mg(OH)₂, and heating turns the Mg(OH)₂ into MgO, so no nitrogen is left in the product.")
 
     # ---------------- what if
-    heading(d, "What if...? (use the \"what if\" buttons in the simulation)", 11.5, before=5)
+    heading(d, "What if...?", 11.5, before=5)
     para(d, "For each mistake, circle what would happen to your numbers and explain in one sentence. Assume everything else is done correctly.", 10, after=2).paragraph_format.keep_with_next = True
     wi = [["What goes wrong", "Mass of crucible + lid + product would be:", "The calculated O : Mg ratio would be:", "Why?"],
           ["a) The lid is on **too wide**: white smoke escapes", "too high   /   too low" if not T else "**too low**",
