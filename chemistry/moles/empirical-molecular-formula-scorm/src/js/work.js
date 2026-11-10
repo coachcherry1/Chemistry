@@ -8,8 +8,10 @@
  * student's own earlier boxes (Chem.judge*), so a slip is named once.
  *
  *   1 Percents to grams      say what the problem gives, then the grams
- *   2 Grams to moles         the molar mass (tenths) and the moles
- *                            (combustion: mol CO2 x 1 C, mol H2O x 2 H)
+ *   2 Grams to moles         a dimensional analysis setup: g x (1 mol over
+ *                            the molar mass, a blank) = mol; combustion adds
+ *                            the mole ratio (a blank on top: 1 C per CO2, 2 H
+ *                            per H2O)
  *   3 Divide by small        tap the smallest moles, type each quotient
  *   4 Multiply if not whole  one multiplier for every row, the whole numbers
  *   5 Molecular formula      the empirical formula mass, n, the subscripts
@@ -155,22 +157,32 @@ var Work = (function () {
       return pre.concat([field('g' + i, 'w-g', 'grams of ' + r.label, 'g'), t(' g', 'unit')]);
     }
 
+    /* Step 2 as a dimensional analysis setup, the way the class writes it:
+         40.0 g C x (1 mol C / ___ g C) = ___ mol C
+         5.704 g CO2 x (1 mol CO2 / ___ g CO2) x (___ mol C / 1 mol CO2) = ___ mol C
+       The molar mass is the blank on the bottom, the mole ratio the blank on
+       top; the units that cancel are struck through. */
+    function unit(text, cancels) { return h('span', { class: 'tok' + (cancels ? ' cx' : '') }, [sub(text)]); }
+    function frac(top, bottom) {
+      return h('span', { class: 'da-frac' }, [h('span', { class: 'da-num' }, top), h('span', { class: 'da-den' }, bottom)]);
+    }
+    function op(x) { return h('span', { class: 'da-op', 'aria-hidden': 'true', text: x }); }
     function molesCell(r, i) {
       var st = colState('moles');
       if (st === 'later') return [t('…', 'muted')];
-      var gText = gShown(i);
-      var unitM = sub(r.mmF);
-      if (st === 'done') {
-        var line = [t(gText + ' g ÷ ' + Chem.fmtDec(work.n.mm[i], 1) + ' = ', 'muted'), t(Chem.fmtMol(work.n.molM ? work.n.molM[i] : work.n.mol[i]) + ' mol ' + unitM)];
-        if (!r.per) return line;
-        return [h('div', null, line), h('div', null, [t('× ' + r.per + ' = ', 'muted'), t(Chem.fmtMol(work.n.mol[i]) + ' mol ' + r.atom)])];
+      var done = st === 'done';
+      var X = r.mmF, to = r.per ? r.atom : X;
+      var mmBox = done ? t(Chem.fmtDec(work.n.mm[i], 1)) : field('mm' + i, 'w-mm', 'molar mass of ' + r.label + ': grams of 1 mol', 'molar mass');
+      /* pieces that never split; a long setup (a hydrate's long formula, a narrow window) wraps between them */
+      var piece = function (kids) { return h('span', { class: 'da-piece' }, kids); };
+      var parts = [piece([t(gShown(i)), ' ', unit('g ' + X, true)]),
+        piece([op('×'), frac(['1 ', unit('mol ' + X, !!r.per)], [mmBox, ' ', unit('g ' + X, true)])])];
+      if (r.per) {
+        var perBox = done ? t(String(r.per)) : field('per' + i, 'w-per', 'mol ' + r.atom + ' in 1 mol ' + r.label + ', from the formula', '');
+        parts.push(piece([op('×'), frac([perBox, ' ', unit('mol ' + r.atom)], ['1 ', unit('mol ' + X, true)])]));
       }
-      var l1 = [t(gText + ' g ' + (p.mode === 'empirical' ? '' : unitM + ' ') + '÷ ', 'muted'), field('mm' + i, 'w-mm', 'molar mass of ' + r.label, 'g/mol'),
-                t(' g/mol = ', 'unit'), field(r.per ? 'mM' + i : 'mol' + i, 'w-mol', 'moles of ' + r.label, 'mol'), t(' mol ' + unitM, 'unit')];
-      if (!r.per) return l1;
-      return [h('div', { class: 'cline' }, l1), h('div', { class: 'cline' }, [
-        t('× ', 'muted'), field('per' + i, 'w-per', r.atom + ' atoms in one ' + unitM, ''), t(' ' + r.atom + ' per ' + unitM + ' = ', 'unit'),
-        field('mol' + i, 'w-mol', 'moles of ' + r.atom, 'mol'), t(' mol ' + r.atom, 'unit')])];
+      parts.push(piece([op('='), done ? t(Chem.fmtMol(work.n.mol[i])) : field('mol' + i, 'w-mol', 'moles of ' + to, ''), ' ', unit('mol ' + to)]));
+      return [h('span', { class: 'da' + (done ? ' small' : '') }, parts)];
     }
 
     function divideCell(r, i) {
@@ -275,8 +287,9 @@ var Work = (function () {
         return 'The grams are given.';
       }
       if (s === 'moles') {
-        return p.mode === 'combustion' ? 'Divide by the molar mass (to the tenths place). Then count: every C ends up in a CO₂, every H in an H₂O.' :
-          'Divide each row’s grams by its molar mass (to the tenths place). Keep at least 3 significant figures.';
+        return p.mode === 'combustion' ? 'Dimensional analysis: type the molar mass on the bottom of the first fraction (to the tenths place) so g cancels, ' +
+            'and the mole ratio from the formula on top of the second (mol C per mol CO₂, mol H per mol H₂O). Then the moles, to 3 significant figures.' :
+          'Dimensional analysis: type the molar mass on the bottom of the fraction (to the tenths place) so g cancels, then the moles, to 3 significant figures.';
       }
       if (s === 'divide') return work.sm == null ? 'Tap the smallest mole value.' : 'Divide every row by the smallest moles, to two decimal places.';
       if (s === 'multiply') {
@@ -495,25 +508,19 @@ var Work = (function () {
           list.push(['mm' + i, jm]);
           var typedMM = jm.ok ? jm.v : null;
           var cls = Chem.mmValue(r.mmF);
-          if (!r.per) {
-            list.push(['mol' + i, typedMM == null && !jm.empty ? { neutral: true } : Chem.judgeMoles(val('mol' + i), g, typedMM || cls, cls, r.atom)]);
-            return;
-          }
-          var jM = typedMM == null && !jm.empty ? { neutral: true } : Chem.judgeMoles(val('mM' + i), g, typedMM || cls, cls, null);
-          list.push(['mM' + i, jM]);
-          var jp = Chem.judgePer(val('per' + i), r.atom, r.molecule);
-          list.push(['per' + i, jp]);
-          var molM = jM.ok ? jM.v : null;
-          list.push(['mol' + i, molM == null || !jp.ok ? (val('mol' + i) ? { neutral: true } : { empty: true }) :
-            Chem.judgeAtomMoles(val('mol' + i), molM, jp.v, r.atom, r.molecule)]);
+          var jp = null;
+          if (r.per) { jp = Chem.judgePer(val('per' + i), r.atom, r.molecule); list.push(['per' + i, jp]); }
+          /* a wrong molar mass or ratio is named; the moles from it are not marked again */
+          var blocked = (typedMM == null && !jm.empty) || (jp && !jp.ok && !jp.empty);
+          list.push(['mol' + i, blocked ? (val('mol' + i) ? { neutral: true } : { empty: true }) :
+            Chem.judgeMoles(val('mol' + i), g, typedMM || cls, cls, r.atom, r.per, r.molecule)]);
         });
         var res = tally(list);
         res.accept = function () {
           work.n.mm = p.rows.map(function (r, i) { return num0('mm' + i); });
           work.n.mol = p.rows.map(function (r, i) { return num0('mol' + i); });
-          if (p.mode === 'combustion') work.n.molM = p.rows.map(function (r, i) { return num0('mM' + i); });
         };
-        res.good = p.mode === 'combustion' ? 'Right: moles of C and of H.' : 'Right: grams to moles.';
+        res.good = p.mode === 'combustion' ? 'Right: g cancels, mol CO₂ and mol H₂O cancel, and moles of C and of H are left.' : 'Right: g cancels and moles are left.';
         return res;
       },
       divide: function () {
@@ -577,9 +584,11 @@ var Work = (function () {
           p.choice === 'pct' ? (p.mode === 'hydrate' ? 'In 100 g of the hydrate there are ' + p.rows[1].pct + ' g of water. The anhydrous salt is the rest: 100 − ' + p.rows[1].pct + '.' :
             'In 100 g of the compound there are ' + r0.pct + ' g of ' + Chem.el(r0.atom).name + '. Do the same for every row.') :
           (p.rows.filter(function (r) { return r.typed; })[0] || {}).ctx ? p.rows.filter(function (r) { return r.typed; })[0].ctx.how : 'The grams are given.',
-        moles: p.mode === 'combustion' ? 'Molar mass of CO₂: 12.0 + 2(16.0). Of H₂O: 2(1.0) + 16.0. Then mol C = mol CO₂ × 1 (one C in CO₂), mol H = mol H₂O × 2 (two H in H₂O).' :
-          p.mode === 'hydrate' ? 'Molar mass of ' + p.saltDisp + ': add up its atoms (Periodic table button). Water: 2(1.0) + 16.0. Then grams ÷ molar mass.' :
-          'The molar mass of one element is its atomic mass from the periodic table, to the tenths place (' + r0.atom + ' is ' + Chem.tableMass(r0.atom) + '). Then grams ÷ molar mass.',
+        moles: (p.mode === 'combustion' ? 'The grams of 1 mol go on the bottom so g cancels: CO₂ is 12.0 + 2(16.0), H₂O is 2(1.0) + 16.0. The mole ratio ' +
+            'comes from the formula: one CO₂ holds 1 C, one H₂O holds 2 H, so mol CO₂ and mol H₂O cancel.' :
+          p.mode === 'hydrate' ? 'The grams of 1 mol go on the bottom so g cancels: add up the atoms of ' + p.saltDisp + ' (Periodic table button); water is 2(1.0) + 16.0.' :
+          'The grams of 1 mol go on the bottom so g cancels. For one element that is its atomic mass from the periodic table, to the tenths place (' +
+            r0.atom + ' is ' + Chem.tableMass(r0.atom) + ').') + ' Then multiply across the top and divide by the bottom.',
         divide: 'Look down the moles column: tap the smallest one. Then every row’s moles ÷ that number. The smallest row comes out 1.00.',
         multiply: 'Is every quotient within 0.1 of a whole number? Then type 1. If one is not, put it on the Fraction finder: its decimal is a fraction, and the bottom number of the fraction is what to multiply EVERY row by.',
         molecular: 'Empirical formula mass of ' + p.efDisp + ': ' + (p.mol ? Chem.mmWork(p.ef).replace(/ = .*$/, '') : '') + '. n = ' + (p.mol ? p.mol.Mstr : '') + ' ÷ that. Then each subscript × n.',
@@ -597,9 +606,8 @@ var Work = (function () {
         p.rows.forEach(function (r, i) {
           var mm = Chem.mmValue(r.mmF);
           work.v['mm' + i] = Chem.fmtDec(mm, 1);
-          var molM = work.n.g[i] / mm;
-          if (r.per) { work.v['mM' + i] = Chem.fmtMol(molM); work.v['per' + i] = String(r.per); work.v['mol' + i] = Chem.fmtMol(Chem.roundSig(molM, 3) * r.per); }
-          else work.v['mol' + i] = Chem.fmtMol(molM);
+          if (r.per) work.v['per' + i] = String(r.per);
+          work.v['mol' + i] = Chem.fmtMol(work.n.g[i] * (r.per || 1) / mm);
         });
       } else if (s === 'divide') {
         var mol = work.n.mol, min = Math.min.apply(null, mol);

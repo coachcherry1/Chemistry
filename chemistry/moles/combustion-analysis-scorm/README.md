@@ -20,8 +20,9 @@ No story problems: fluency with the routine, from real compounds.
 | Graded problems | 6: three for the empirical formula, three with a molar mass for the molecular formula too |
 | Results | Score, steps right on the first check by step, every problem with its worked solution |
 
-Step 1 has no percents: the student says so and the grams of CO2 and H2O are used as they are. Step 2 is grams of CO2 / 44.0 = mol
-CO2, x 1 C per CO2 = mol C; grams of H2O / 18.0 = mol H2O, x 2 H per H2O = mol H (the box for the 2 is the key slip). The worked
+Step 1 has no percents: the student says so and the grams of CO2 and H2O are used as they are. Step 2 is one dimensional analysis setup
+per row: g CO2 x (1 mol CO2 / 44.0 g CO2) x (1 mol C / 1 mol CO2) = mol C, and g H2O x (1 mol H2O / 18.0 g H2O) x (2 mol H / 1 mol H2O)
+= mol H; the molar mass and the mole ratio are the blanks (the 2 is the key slip, and leaving the ratio out gets its own message). The worked
 solution checks g C + g H against the mass burned. Hydrocarbons: 26 real ones (`HYDROCARBONS` in `compounds.js`), from methane to
 anthracene, with every multiplier (propane x 3, butane x 2, octane x 4, pentane and biphenyl x 5, naphthalene with H the smallest).
 Every set has a problem needing x 1, x 2, x 3 and x 4 or x 5, and at least two molecular formulas with n above 1.
@@ -29,8 +30,10 @@ Every set has a problem needing x 1, x 2, x 3 and x 4 or x 5, and at least two m
 ## The four steps (on screen in the teacher's words)
 
 1. **Percents to grams:** given percents, assume a 100 g sample, so 40.0% is 40.0 g. Given grams, use the grams.
-2. **Grams to moles:** grams divided by the molar mass, typed to the tenths place (the Periodic table button docks a table with every
-   atomic mass to tenths). Moles to at least 3 significant figures.
+2. **Grams to moles,** set up by dimensional analysis, one line per row:
+   g CO2 x (1 mol CO2 / ___ g CO2) x (___ mol C / 1 mol CO2) = ___ mol C. The molar mass is the blank in the bottom of the first
+   fraction (to the tenths place; the Periodic table button docks a table with every atomic mass to tenths) and the mole ratio from the
+   formula the blank on top of the second; the units that cancel are struck through. Moles to at least 3 significant figures.
 3. **Divide by small:** tap the smallest mole value, divide every row by it, to two decimal places.
 4. **Multiply if not whole:** within 0.1 of a whole number, round (x 1). Otherwise read the decimal as a fraction and multiply every
    row by the same number: .50 x 2; .33 and .67 x 3; .25 and .75 x 4; .20, .40, .60 and .80 x 5 (halves, thirds, fourths and fifths).
@@ -84,12 +87,12 @@ with its typeset worked solution, and the big ideas.
 ```bash
 node tools/validate.js                    # must pass
 node tools/answer-key.js > ANSWER_KEY.md
-./build.sh                                # dist/combustion-analysis-v1.zip
-node tools/walkthrough.js                 # Playwright: plays the whole activity against a fake LMS
+./build.sh                                # dist/combustion-analysis-v2.zip
+node tools/walkthrough.js                 # Playwright: plays the whole activity against a fake LMS (SEED=n: one student's problems)
 node tools/layout.js                      # Playwright: fits a Chromebook, 1366x650 and 1366x520
 ```
 
-Upload `dist/combustion-analysis-v1.zip` in Schoology with **Add Materials > Add File/Link/External Tool > Add File** (or **Package**).
+Upload `dist/combustion-analysis-v2.zip` in Schoology with **Add Materials > Add File/Link/External Tool > Add File** (or **Package**).
 `src/index.html?step=set&seed=5&problem=3` opens a step (ids in `ANSWER_KEY.md`, or numbers), a given set and one of its problems
 without saving anything.
 

@@ -20,8 +20,9 @@
  *   any box refused, or a quotient that reads as another fraction;
  * - a judge refuses a right box or accepts a known slip (percent as a
  *   decimal, the water's percent as the salt, O2's mass for O, multiplying
- *   by the molar mass, a reciprocal quotient, rounding 1.5 to 2, multiplying
- *   one row only, forgetting the 2 H in H2O, adding n);
+ *   by the molar mass or the setup upside down, a reciprocal quotient,
+ *   rounding 1.5 to 2, multiplying one row only, 1 mol H per mol H2O or the
+ *   mole ratio left out of the setup, adding n);
  * - a worked solution's LaTeX does not typeset (Tex.toMathML);
  * - a drill card is not what its fraction says, or the drills miss a fraction;
  * - the largest save (every warm-up and one graded problem half done) does
@@ -257,16 +258,25 @@ function checkJudges(p, where) {
     const mm = Chem.mmValue(r.mmF);
     expect(Chem.judgeMM(r.mmF, Chem.mmText(r.mmF)), true, 'molar mass ' + r.mmF);
     if (r.atom && !r.per && Chem.DIATOMIC[r.atom]) expect(Chem.judgeMM(r.mmF, (2 * mm).toFixed(1)), false, r.atom + '2 for ' + r.atom);
-    const molM = r.g / mm;
-    expect(Chem.judgeMoles(Chem.fmtMol(molM), r.g, mm, mm, r.atom), true, 'moles ' + r.key);
-    if (mm > 1.5) expect(Chem.judgeMoles(Chem.fmtSig(r.g * mm, 3), r.g, mm, mm, r.atom), false, 'grams times molar mass');
-    const two = Chem.judgeMoles(Chem.fmtSig(molM, 2), r.g, mm, mm, r.atom);
-    if (Chem.fmtSig(molM, 2) !== Chem.fmtSig(molM, 3) && !two.fmt) bad(where + ': moles to 2 significant figures not sent back to round');
+    const per = r.per || 1;
+    const molR = r.g * per / mm;
+    expect(Chem.judgeMoles(Chem.fmtMol(molR), r.g, mm, mm, r.atom, r.per, r.molecule), true, 'moles ' + r.key);
+    if (mm > 1.5) expect(Chem.judgeMoles(Chem.fmtSig(r.g * mm * per, 3), r.g, mm, mm, r.atom, r.per, r.molecule), false, 'grams times molar mass');
+    /* upside down: unless it happens to give the same number (40.0 g Ca and 40.1 g/mol) */
+    if (mm > 1.5 && Math.abs(mm / r.g * per - molR) / molR > 0.05) {
+      expect(Chem.judgeMoles(Chem.fmtSig(mm / r.g * per, 3), r.g, mm, mm, r.atom, r.per, r.molecule), false, 'the setup upside down');
+    }
+    const two = Chem.judgeMoles(Chem.fmtSig(molR, 2), r.g, mm, mm, r.atom, r.per, r.molecule);
+    if (Chem.fmtSig(molR, 2) !== Chem.fmtSig(molR, 3) && !two.fmt) bad(where + ': moles to 2 significant figures not sent back to round');
+    /* rounded twice (3 figures, then 2 from those): still the right moles, rounded too far */
+    const twice = Chem.fmtSig(parseFloat(Chem.fmtMol(molR)) * (1 + 1e-12), 2);
+    if (twice !== Chem.fmtMol(molR) && !Chem.judgeMoles(twice, r.g, mm, mm, r.atom, r.per, r.molecule).fmt) bad(where + ': moles rounded twice (' + twice + ') not sent back to round');
     if (r.per) {
-      expect(Chem.judgePer(String(r.per), r.atom, r.molecule), true, 'atoms per molecule');
+      expect(Chem.judgePer(String(r.per), r.atom, r.molecule), true, 'the mole ratio');
       if (r.atom === 'H') {
-        expect(Chem.judgePer('1', 'H', 'H2O'), false, '1 H per H2O');
-        expect(Chem.judgeAtomMoles(Chem.fmtMol(molM), Chem.roundSig(molM, 3), 2, 'H', 'H2O'), false, 'mol H2O as mol H');
+        expect(Chem.judgePer('1', 'H', 'H2O'), false, '1 mol H per mol H2O');
+        const forgot = Chem.judgeMoles(Chem.fmtMol(r.g / mm), r.g, mm, mm, 'H', 2, 'H2O');
+        if (forgot.ok || forgot.kind !== 'forgot-ratio') bad(where + ': mol H2O as mol H not named (' + (forgot.kind || 'accepted') + ')');
       }
     }
     const q = m.rows[i].q;
@@ -392,11 +402,11 @@ kinds.forEach((k) => { if (!new RegExp('RENDER\\.' + k + ' = ').test(appSrc)) ba
 (function () {
   const half = (q) => {
     const v = {};
-    q.rows.forEach((r, i) => { v['g' + i] = r.gStr; v['mm' + i] = Chem.mmText(r.mmF); v['mM' + i] = '0.0000123'; v['per' + i] = '2';
+    q.rows.forEach((r, i) => { v['g' + i] = r.gStr; v['mm' + i] = Chem.mmText(r.mmF); v['per' + i] = '2';
       v['mol' + i] = '0.0000123'; v['q' + i] = '1.33'; v['w' + i] = '10'; v['ms' + i] = '14'; });
     v.mult = '5'; v.efm = '123.4'; v.n = '2';
     return { s: 3, v, k: { grams: 2, moles: 3, divide: 1 }, g: { grams: 0, moles: 1, divide: 0 },
-      n: { g: q.rows.map((r) => r.g), mm: q.rows.map(() => 123.4), mol: q.rows.map(() => 0.0123456), molM: q.rows.map(() => 0.0123456), q: q.rows.map(() => 1.33), sm: 0 },
+      n: { g: q.rows.map((r) => r.g), mm: q.rows.map(() => 123.4), mol: q.rows.map(() => 0.0123456), q: q.rows.map(() => 1.33), sm: 0 },
       c1: 'pct', sm: 0 };
   };
   const make = (warmHalf, graded) => {

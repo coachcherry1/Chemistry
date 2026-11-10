@@ -541,7 +541,7 @@ not the full page.
 - **Files:** `config.js`, `elements.js`, `substances.js`, `chem.js`, `problems.js`, `tex.js`, `map.js`, `ptable.js` (docked
   table), `work.js` (one problem, `Work.solutionHTML`), `scorm.js` (save key from config), `app.js`.
 
-## empirical-molecular-formula-scorm, hydrate-formula-scorm and combustion-analysis-scorm (zip v1, SCHEMA 1)
+## empirical-molecular-formula-scorm, hydrate-formula-scorm and combustion-analysis-scorm (zip v2, SCHEMA 1)
 
 - **Key objective:** fluency with the teacher's four steps, on screen in the teacher's words in every problem: **Percents to grams**
   (assume 100 g), **Grams to moles**, **Divide by small**, **Multiply if not whole**. The teacher's named hurdle is reading a
@@ -556,8 +556,11 @@ not the full page.
   with `burn` (propane's atoms go into 3 CO2 and 4 H2O: × 1 C per CO2, × 2 H per H2O).
 - **The work table (`work.js`):** a row per element (hydrate: anhydrous salt and water; combustion: C from CO2 and H from H2O), a
   column per step, each with its own Check; a step opens when the one before is right. Step 1 asks "percents or grams?" first
-  (grams given: the column fills itself; hydrate masses: subtract). Step 2 types the molar mass to tenths and the moles (combustion
-  also the atoms per molecule and mol C or H). Step 3 taps the smallest, then quotients to 2 decimals. Step 4 one multiplier for every
+  (grams given: the column fills itself; hydrate masses: subtract). Step 2 is a **dimensional analysis setup** (the teacher wants DA
+  stressed in every honors activity): g X × (1 mol X / ___ g X) = ___ mol X, the molar mass the blank on the bottom, typed to tenths;
+  combustion adds × (___ mol C / 1 mol CO₂), the mole ratio the blank on top, and the answer is mol C directly (no mol CO₂ box).
+  Cancelling units are struck through; the setup wraps between factors when a formula is long (`.da-piece`). Step 3 taps the
+  smallest, then quotients to 2 decimals. Step 4 one multiplier for every
   row and the whole numbers. Step 5: molecular formula (empirical formula mass, n, the subscripts) or the hydrate's Greek prefix.
 - **Teacher's choices:** the first Check of every step counts (score = steps right first / all steps; one interaction per step).
   Not an answer (told, check again): empty boxes, the right number rounded too far (moles under 3 significant figures, quotients under
@@ -574,4 +577,4 @@ not the full page.
   LaTeX (`Gen.solution`) typeset by `tex.js` (added `\to`, `\cdot`, `\div`, `\%`).
 - **Files:** `config.js`, `util.js`, `elements.js`, `compounds.js`, `chem.js`, `problems.js`, `tex.js`, `ptable.js`, `finder.js`, `work.js`,
   `drills.js`, `scenes.js`, `scorm.js`, `app.js`. Walkthrough harness as in the VSEPR and IMF packages (the fake LMS reads and writes
-  sessionStorage on every call).
+  sessionStorage on every call); each run picks random problems and prints its seed, `SEED=n` replays one.

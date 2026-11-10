@@ -20,8 +20,8 @@ No story problems: fluency with the routine, from real compounds.
 | Results | Score, steps right on the first check by step, every problem with its worked solution |
 
 Hydrates: 29 real ones (`HYDRATES` in `compounds.js`), n from 1 (LiCl.H2O, MnSO4.H2O) to 10 (Na2CO3.10H2O, Na2SO4.10H2O). The
-prompt names the salt and gives its formula ("a hydrate of copper(II) sulfate, CuSO4"); Step 2 types the salt's molar mass and
-water's 18.0; Step 5 picks the Greek prefix (copper(II) sulfate pentahydrate). Heating and crucible data have a little balance
+prompt names the salt and gives its formula ("a hydrate of copper(II) sulfate, CuSO4"); Step 2's setups have the salt's molar mass
+and water's 18.0 as their blanks; Step 5 picks the Greek prefix (copper(II) sulfate pentahydrate). Heating and crucible data have a little balance
 scatter (the quotient comes out like 4.96), so Step 4 is the "within 0.1 of a whole number" call. Every set has at least four
 different numbers of waters, one of 1 or 2 and one of 6 or more. Names use Roman numerals for Cu, Co, Fe, Ni, Mn, Cr, Sn and Pb; the
 validator builds every name again from its ions.
@@ -29,8 +29,9 @@ validator builds every name again from its ions.
 ## The four steps (on screen in the teacher's words)
 
 1. **Percents to grams:** given percents, assume a 100 g sample, so 40.0% is 40.0 g. Given grams, use the grams.
-2. **Grams to moles:** grams divided by the molar mass, typed to the tenths place (the Periodic table button docks a table with every
-   atomic mass to tenths). Moles to at least 3 significant figures.
+2. **Grams to moles,** set up by dimensional analysis, one line per row: g CuSO4 x (1 mol CuSO4 / ___ g CuSO4) = ___ mol CuSO4. The molar
+   mass is the blank in the bottom of the fraction (to the tenths place; the Periodic table button docks a table with every atomic
+   mass to tenths), and the g that cancels is struck through. Moles to at least 3 significant figures.
 3. **Divide by small:** tap the smallest mole value, divide every row by it, to two decimal places.
 4. **Multiply if not whole:** within 0.1 of a whole number, round (x 1). Otherwise read the decimal as a fraction and multiply every
    row by the same number: .50 x 2; .33 and .67 x 3; .25 and .75 x 4; .20, .40, .60 and .80 x 5 (halves, thirds, fourths and fifths).
@@ -84,12 +85,12 @@ with its typeset worked solution, and the big ideas.
 ```bash
 node tools/validate.js                    # must pass
 node tools/answer-key.js > ANSWER_KEY.md
-./build.sh                                # dist/hydrate-formula-v1.zip
-node tools/walkthrough.js                 # Playwright: plays the whole activity against a fake LMS
+./build.sh                                # dist/hydrate-formula-v2.zip
+node tools/walkthrough.js                 # Playwright: plays the whole activity against a fake LMS (SEED=n: one student's problems)
 node tools/layout.js                      # Playwright: fits a Chromebook, 1366x650 and 1366x520
 ```
 
-Upload `dist/hydrate-formula-v1.zip` in Schoology with **Add Materials > Add File/Link/External Tool > Add File** (or **Package**).
+Upload `dist/hydrate-formula-v2.zip` in Schoology with **Add Materials > Add File/Link/External Tool > Add File** (or **Package**).
 `src/index.html?step=set&seed=5&problem=3` opens a step (ids in `ANSWER_KEY.md`, or numbers), a given set and one of its problems
 without saving anything.
 
