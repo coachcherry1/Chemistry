@@ -67,7 +67,7 @@ h1 { font-size: 1.05rem; margin: 0; }
 .flame-out, .drops, .clock { font-weight: 700; color: var(--muted); }
 .ctl:has(#drop), .ctl:has(#skip) { flex-direction: row; align-items: center; gap: 12px; }
 
-.scenebox { position: relative; aspect-ratio: 1280 / 700; height: 100%; max-width: 100%; max-height: 100%; }
+.scenebox { position: relative; aspect-ratio: 1280 / 700; width: 100%; }   /* app.js fits it to the space, keeping the drawing's shape, so the overlays line up with it */
 .scenebox .scene { position: absolute; inset: 0; }
 .goal { position: absolute; left: 1.5%; top: 2%; width: 54%; padding: 4px 12px; border-radius: 10px; pointer-events: none; z-index: 2;
   font-weight: 800; font-size: clamp(1rem, 1.9vw, 1.55rem); line-height: 1.15; color: var(--ink); background: var(--note-bg); border: 1px solid var(--line); box-shadow: 0 2px 8px rgba(0,0,0,0.12); }

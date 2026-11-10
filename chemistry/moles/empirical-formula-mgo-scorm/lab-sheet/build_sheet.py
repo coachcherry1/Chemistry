@@ -160,10 +160,12 @@ def ans(d, text, size=10):
 
 
 def question(d, T, n, text, space, key=None, size=10):
+    if T:
+        size = 9          # the teacher edition is set smaller so it also fits on one sheet, front and back
     p = fmt(d.add_paragraph(), before=3, after=1, left=0.3, hang=0.3, keep=True)
     run(p, "%s." % n, size, bold=True); rich(p, "\t" + text, size)
     if T and key:
-        ans(d, key)
+        ans(d, key, 9)
     elif not T:
         sp = fmt(d.add_paragraph(), after=0)
         sp.paragraph_format.line_spacing = Pt(max(space * 72 * SPACE - 12, 6))
@@ -186,32 +188,17 @@ def build(T):
     footer(d, "Regular Chemistry  •  Virtual Lab Pre-Lab: Empirical Formula of Magnesium Oxide" + ("  •  TEACHER EDITION" if T else ""))
 
     if T:
-        p = fmt(d.add_paragraph(), after=2); run(p, "TEACHER EDITION: Virtual Lab Pre-Lab, Empirical Formula of Magnesium Oxide", 15, bold=True)
-        p = fmt(d.add_paragraph(), after=4); run(p, "How the simulation and the sheet fit together, how to check each student's random numbers, and the answers. The student sheet follows.", 9.5, color="555555"); rule(p)
-        heading(d, "How it works", 11.5, before=2)
+        p = fmt(d.add_paragraph(), after=1); run(p, "TEACHER EDITION: Virtual Lab Pre-Lab, Empirical Formula of Magnesium Oxide", 13, bold=True); rule(p)
         for t in [
-            "**Students write everything on this sheet.** The simulation only shows the bench and the action (the balance display, the flame, the glow, the water drops, the steam, the magnifier). It has no data tables, no typed answers and no score. The slim bar across the top of the simulation names each step and says which box to fill in.",
-            "**Every student gets different numbers.** The simulation chooses them, so check the math, not the numbers. Ranges used: mass of crucible + lid **25.000 to 35.000 g**, mass of magnesium **0.100 to 0.200 g** (the cap stands in for what fits in a real crucible), all read to 0.0001 g. The product mass is the ideal MgO mass with a small realistic scatter (within about 1%), so the O : Mg ratio comes out between about 0.98 and 1.02.",
-            "**Check the math in this order:** Box 1 + Box 2 = Box 3 (within 0.0001 g); Box 5 = Box 4 − Box 3; moles Mg = Box 2 ÷ 24.3 (24.31 also accepted); atoms Mg = moles × 6.02 × 10²³; moles O = Box 5 ÷ 16.0; ratio O : Mg = moles O ÷ moles Mg ≈ 1 : 1, so the formula is MgO. Accept answers that follow from the student's own boxes, rounded to 3 or 4 significant figures.",
-            "**Nitride, not nitrate.** The side product is magnesium **nitride**, Mg₃N₂ (Mg²⁺ and N³⁻). The water step converts it to magnesium hydroxide and ammonia; the reheating turns the hydroxide into MgO.",
+            "**Students write everything on this sheet;** the simulation has no data tables, typed answers or score. **Every student gets different numbers** (crucible + lid 25.000 to 35.000 g, Mg 0.100 to 0.200 g, a scatter within about 1%), so check the math, not the numbers. The grey answers below use **sample data**, not any one student's.",
+            "**Check in this order:** Box 1 + Box 2 = Box 3; Box 5 = Box 4 − Box 3; mol Mg = Box 2 ÷ 24.3; atoms = mol × 6.02 × 10²³; mol O = Box 5 ÷ 16.0; O : Mg ≈ 1 : 1 (about 0.97 to 1.03), so MgO. The side product is magnesium **nitride**, Mg₃N₂, not nitrate.",
         ]:
-            para(d, "•\t" + t, 10, left=0.25, hang=0.25, after=3)
-        heading(d, "Worked example (sample data, not the answer for any one student)", 11.5)
-        table(d, [["Box", "What was measured", "Sample reading"],
-                  ["1", "Mass of crucible + lid", f4(CRUC) + " g"],
-                  ["2", "Mass of Mg", f4(MGM) + " g"],
-                  ["3", "Mass of crucible + lid + Mg", f4(TOTAL3) + " g"],
-                  ["4", "Mass of crucible + lid + product after the reaction", f4(FINAL) + " g"],
-                  ["5", "Mass of oxygen added (Box 4 − Box 3)", f4(OXY) + " g"]],
-              [0.6, 4.4, 2.1], size=9.5)
-        para(d, "While cooling: moles of Mg = %s g ÷ 24.3 g/mol = **%s mol**; atoms of Mg = %s mol × 6.02 × 10²³ = **%s atoms**. The mass will be **larger** (oxygen has been added). "
-                "After cooling: moles of O = %s g ÷ 16.0 g/mol = **%s mol**; O : Mg = %s ÷ %s = **%s ≈ 1 : 1**; formula **MgO**." %
-             (f4(MGM), sf(N_MG, 4), sf(N_MG, 4), sci(ATOMS, 4), f4(OXY), sf(N_O, 4), sf(N_O, 4), sf(N_MG, 4), sf(RATIO, 3)), 10, after=4)
-        d.add_page_break()
+            para(d, "•\t" + t, 9, left=0.2, hang=0.2, after=1)
 
-    # ---------------- page: title and header
-    p = fmt(d.add_paragraph(), after=2); run(p, "Virtual Lab Pre-Lab: Empirical Formula of Magnesium Oxide", 16, bold=True)
-    p = fmt(d.add_paragraph(), after=4); run(p, "Name: ______________________________      Date: ______________      Period: ______", 11); rule(p)
+    if not T:
+        # ---------------- page: title and header
+        p = fmt(d.add_paragraph(), after=2); run(p, "Virtual Lab Pre-Lab: Empirical Formula of Magnesium Oxide", 16, bold=True)
+        p = fmt(d.add_paragraph(), after=4); run(p, "Name: ______________________________      Date: ______________      Period: ______", 11); rule(p)
     para(d, "**Goal:** Use experimental data to determine the ratio at which two or more elements combine.", 10, before=2)
     para(d, "**Introduction:** In the real lab you will react magnesium metal with the oxygen gas in the air to find the ratio at which magnesium atoms and oxygen atoms combine. "
             "First you will practice the setup and the calculations in a virtual lab. Run the simulation with this sheet beside you and "
@@ -229,7 +216,7 @@ def build(T):
             ["3", "Mass of crucible + lid + Mg", f4(TOTAL3) + " g" if T else "                              g"],
             ["4", "Mass of crucible + lid + product, after the reaction", f4(FINAL) + " g" if T else "                              g"],
             ["5", "Mass of oxygen added   (Box 4 − Box 3)", f4(OXY) + " g" if T else "                              g"]]
-    table(d, rows, [0.55, 4.55, 2.2], size=10, height=0.29)
+    table(d, rows, [0.55, 4.55, 2.2], size=9 if T else 10, height=None if T else 0.29)
     para(d, "**Observations** (the flame, the magnesium, the product, what you see when you add water):", 10, after=1)
     if T:
         ans(d, "Bright white glow when the Mg burns; a white powder, sometimes with pale yellow-green bits (magnesium nitride); hissing and steam when the water goes on; gas wisps rising from the crucible (the magnifier shows NH₃; in the real lab there is also a sharp ammonia smell); a white, dry powder at the end.")
@@ -240,11 +227,11 @@ def build(T):
     # ---------------- procedure
     heading(d, "Procedure (what you do in the simulation)", 11.5, before=4)
     steps = [
-        ("Mass the clean, dry crucible and lid.", "Record it in **Box 1**."),
-        ("Mass the piece of magnesium.", "Record it in **Box 2**. Put the Mg in the crucible, then mass the crucible + lid + Mg and record it in **Box 3**. Check: Box 1 + Box 2 should equal Box 3."),
-        ("Set up the heating.", "Place the crucible in the clay triangle on the ring stand, with the Bunsen burner underneath."),
-        ("Heat the magnesium with the Bunsen burner.", "Turn the bottom of the burner until the tip of the flame touches the bottom of the crucible. The lid goes on for you, with a slight crack, once the Mg glows. Write what you see in Observations."),
-        ("Once the Mg stops glowing, add 6 to 7 drops of DI water", "and reheat to boil the water off. Write what you see. (In the real lab you will also notice a sharp smell.)"),
+        ("Mass the clean, dry crucible and lid.", "Drag them onto the balance. Record the reading in **Box 1**, then set them back on the ceramic pad."),
+        ("Mass the piece of magnesium.", "Drag it onto the balance and record it in **Box 2**. Put the Mg in the crucible, then mass the crucible + lid + Mg and record it in **Box 3**. Check: Box 1 + Box 2 should equal Box 3."),
+        ("Set up the heating.", "The ring stand, clay triangle and Bunsen burner are set up for you. Set the crucible, with its lid, in the clay triangle."),
+        ("Heat the magnesium with the Bunsen burner.", "Turn the bottom of the burner up to the end of the scale, so the tip of the flame touches the bottom of the crucible. The lid is on with a slight crack so air can get in. Watch the magnifier and write what you see in Observations."),
+        ("Once the Mg stops glowing, add 6 to 7 drops of DI water.", "Set the lid on the ceramic pad, hold the DI water bottle above the open crucible and add the drops one at a time. Then reheat to boil the water off. Write what you see. (In the real lab you will also notice a sharp smell.)"),
         ("Once the product is dry, turn the heat off and cool for 5 minutes.", "The simulation speeds up the clock. Do the **While Cooling** questions."),
         ("Mass the crucible + lid + product.", "Record it in **Box 4**. Then calculate **Box 5**."),
     ]
@@ -289,7 +276,7 @@ def build(T):
              "1 Mg(OH)₂ → 1 MgO + 1 H₂O.   The water turns any Mg₃N₂ into Mg(OH)₂, and heating turns the Mg(OH)₂ into MgO, so no nitrogen is left in the product.")
 
     # ---------------- what if
-    heading(d, "What if...? (use the \"what if\" buttons in the simulation)", 11.5, before=5)
+    heading(d, "What if...?", 11.5, before=5)
     para(d, "For each mistake, circle what would happen to your numbers and explain in one sentence. Assume everything else is done correctly.", 10, after=2).paragraph_format.keep_with_next = True
     wi = [["What goes wrong", "Mass of crucible + lid + product would be:", "The calculated O : Mg ratio would be:", "Why?"],
           ["a) The lid is on **too wide**: white smoke escapes", "too high   /   too low" if not T else "**too low**",
@@ -301,7 +288,7 @@ def build(T):
           ["c) You **skip the water** step", "too high   /   too low" if not T else "**too low**",
            "too high   /   too low" if not T else "**too low**",
            "" if not T else "Mg₃N₂ is left. Each Mg in it holds only 2/3 of a nitrogen (about %s g per mol Mg), far less than the 16.0 g of oxygen in MgO, so the mass is low and the ratio would come out near %s." % (sf(NITRIDE_PER_MG, 3), sf(NITRIDE_RATIO, 2))]]
-    table(d, wi, [1.9, 1.4, 1.4, 2.6], size=9.5, height=0.62)
+    table(d, wi, [1.9, 1.4, 1.4, 2.6], size=9 if T else 9.5, height=None if T else 0.62)
     return d
 
 
