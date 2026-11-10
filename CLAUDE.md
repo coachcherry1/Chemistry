@@ -462,7 +462,7 @@ not the full page.
 
 - **Key objective:** practice the setup and the calculations of the magnesium oxide lab; magnesium also makes Mg₃N₂ with the nitrogen of the
   air, and a few drops of water (Mg₃N₂ + 6 H₂O → 3 Mg(OH)₂ + 2 NH₃, then heat: Mg(OH)₂ → MgO + H₂O) fix it. "Nitride", never "nitrate".
-- **Data and calculations are on paper** (`lab-sheet/`, built by `build_sheet.py`, student 2 pages, teacher edition 3). The sim has no tables,
+- **Data and calculations are on paper** (`lab-sheet/`, built by `build_sheet.py`, student and teacher edition 2 pages each, the teacher's limit). The sim has no tables,
   typed answers or score; `scorm.js` only marks it completed at the last step; `suspend_data` holds the seed. Random masses per student
   (crucible + lid 25 to 35 g, Mg 0.1 to 0.2 g, scatter within 1%); the class's roundings (Mg 24.3, O 16.0, 6.02 × 10²³) on the sheet.
 - **Bench (`scene.js`):** 2D SVG from the approved sketch (`design/`). The ring stand and clay triangle are already set up; drag the burner and the crucible,
