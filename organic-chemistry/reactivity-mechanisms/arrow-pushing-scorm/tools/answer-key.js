@@ -104,12 +104,16 @@ App.STEPS.forEach((s) => {
   if (s.chain) S[s.chain].forEach((x) => order.push(x.id));
 });
 ['demoPT', 'sn2'].concat(S.ester.map((x) => x.id), S.f623.map((x) => x.id), ['f622']).forEach((x) => order.push(x));
-Object.values(QUIZZES).forEach((Q) => Q.pool.forEach((q) => { if (q.draw) order.push(q.draw); }));
+Object.values(QUIZZES).forEach((Q) => Q.pool.forEach((q) => {
+  if (q.draw) order.push(q.draw);
+  if (q.fig && q.fig.mech) order.push(q.fig.mech);
+  if (q.fig && q.fig.chain) S[q.fig.chain].forEach((x) => order.push(x.id));
+}));
 order.forEach((id) => {
   if (listed.has(id)) return;
   listed.add(id);
   const sc = S[id];
-  const label = sc.chain ? { f623: 'Klein Figure 6.23', f631: 'Klein Figure 6.31', ester: 'Klein SkillBuilder 6.4' }[sc.chain] + ', step ' + sc.n : sc.title || id;
+  const label = sc.chain ? { f623: 'Klein Figure 6.23', f631: 'Klein Figure 6.31', ester: 'Klein SkillBuilder 6.4', k649: 'Klein 6.49', k633: 'Klein 6.33', xTbuOH: '2-Methylpropan-2-ol and HCl' }[sc.chain] + ', step ' + sc.n : sc.title || id;
   w(`| ${label} | ${arrows(sc)} | ${pats(sc)} | ${ledger(sc)} |`);
 });
 w();
@@ -138,7 +142,7 @@ for (const k of Object.keys(QUIZZES)) {
   w();
   Q.pool.forEach((q) => {
     if (q.draw) { w(`- **${q.id}** (graded drawing, first Check counts) ${q.q} *${arrows(S[q.draw]).replace(/<br>/g, ' ')}*`); return; }
-    const a = typeof q.choices[0] === 'string' ? q.choices[0] : 'the first drawing (' + (q.choices[0].rule ? 'its arrow starts on the carbocation' : '') + ')';
+    const a = typeof q.choices[0] === 'string' ? q.choices[0] : 'the drawing that ' + (q.choices[0].rule === 'rPlus' ? 'starts its arrow on the carbocation' : 'has only the arrow to the H');
     w(`- **${q.id}** ${q.q} *${a}* ${q.why}`);
   });
   w();

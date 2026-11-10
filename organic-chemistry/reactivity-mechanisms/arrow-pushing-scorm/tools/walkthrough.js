@@ -10,8 +10,8 @@
  * first where it matters), finds every transition state, intermediate and
  * reactive centre, draws every mechanism's arrows (an arrow from an atom and
  * a wrong arrow first, then the right ones), fills every word sentence,
- * answers one core question per checkpoint wrongly on purpose and gets one
- * graded drawing wrong, reloads halfway, and finally checks what reached the
+ * answers two core questions wrongly on purpose and gets one graded drawing
+ * wrong, takes the final check, reloads halfway, and finally checks what reached the
  * "LMS": the score, the completion status and the interaction records.
  * Before all that it checks that a save from another release, or one the
  * browser kept, is ignored; at the end it starts a second attempt and checks
@@ -369,6 +369,10 @@ const fakeLMS = () => {
   const ES = await page.evaluate(() => SCENES.S.ester.map((x) => ['nuc', 'lg', 'pt', 'shift'].indexOf(x.patterns[0])));
   for (let i = 0; i < 3; i++) await page.locator('.seq-row').nth(i).locator('.ghostbtn').nth(ES[i]).click();
   await next();
+  await quiz();
+  await next();
+  /* the final check */
+  expect((await stepId()) === 'quiz-E', 'no final check after Checkpoint 4');
   await quiz();
   await next();
 

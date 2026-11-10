@@ -84,19 +84,18 @@
         pic.innerHTML = '';
         var d = 96 + (r - 1) * 64, cx = 160;
         var xH = cx - d / 2, xC = cx + d / 2;
-        var bondOp = Math.max(0, 1 - (r - 1) / 1.4);
-        if (bondOp > 0.02) el('line', { x1: f1(xH + 14), y1: 60, x2: f1(xC - 20), y2: 60, class: 'm-bond' + (bondOp < 0.98 ? ' partial' : ''), opacity: bondOp.toFixed(2) }, pic);
+        if (r < 2.3) el('line', { x1: f1(xH + 14), y1: 60, x2: f1(xC - 20), y2: 60, class: 'm-bond' + (r > 1.45 ? ' partial' : '') }, pic);
         el('circle', { cx: f1(xH), cy: 60, r: 14, class: 'atom-ball h' }, pic);
         el('circle', { cx: f1(xC), cy: 60, r: 20, class: 'atom-ball cl' }, pic);
         el('text', { x: f1(xH), y: 65, class: 'ball-text', 'text-anchor': 'middle' }, pic, 'H');
         el('text', { x: f1(xC), y: 66, class: 'ball-text', 'text-anchor': 'middle' }, pic, 'Cl');
         /* the bonding pair: shared, then one electron each */
-        var split = seg(r, 1.6, 2.6);
+        var split = seg(r, 2.0, 2.6);
         var mid = (xH + xC) / 2;
         var e1 = mid - 5 - split * (mid - xH - 22), e2 = mid + 5 + split * (xC - mid - 28);
         el('circle', { cx: f1(e1), cy: 60, r: 3.4, class: 'e-dot' }, pic);
         el('circle', { cx: f1(e2), cy: 60, r: 3.4, class: 'e-dot' }, pic);
-        if (r > 2.5) el('text', { x: 165, y: 108, 'text-anchor': 'middle', class: 'pic-note' }, pic, 'Broken: H• and Cl•, one electron each');
+        if (r >= 2.3) el('text', { x: 165, y: 108, 'text-anchor': 'middle', class: 'pic-note' }, pic, 'Broken: H• and Cl•, one electron each');
         /* the plot */
         plot.innerHTML = '';
         var X = function (q) { return 40 + (q - 0.75) / (3.2 - 0.75) * 270; }, Y = function (e) { return 170 - Math.min(e, 1.5) / 1.3 * 140; };
@@ -164,12 +163,16 @@
   function splitPic(kind) {
     var s = Render.svg('mol split', kind === 'homo' ? 'Homolytic cleavage of H–Cl' : 'Heterolytic cleavage of H–Cl');
     s.setAttribute('viewBox', '0 0 260 130');
+    /* beats, as in the mechanism animations: the arrows; the electrons travel
+       (the bond dashed); they land (bond gone, charges or dots there); the
+       two pieces move apart */
     function set(p) {
       s.innerHTML = '';
-      var m = seg(p, 0.5, 1);
+      var TAKE = 0.08, LAND = 0.5;
+      var m = 1 - Math.pow(1 - Math.max(0, Math.min(1, (p - 0.58) / 0.36)), 3);
       var xH = 95 - 40 * m, xC = 160 + 40 * m, y = 75;
-      var bop = 1 - seg(p, 0.25, 0.55);
-      if (bop > 0.02) el('line', { x1: f1(xH + 8), y1: y - 5, x2: f1(xC - 12), y2: y - 5, class: 'm-bond' + (bop < 0.98 ? ' partial' : ''), opacity: bop.toFixed(2) }, s);
+      var landed = p >= LAND, off = p > TAKE;
+      if (!landed) el('line', { x1: f1(xH + 8), y1: y - 5, x2: f1(xC - 12), y2: y - 5, class: 'm-bond' + (off ? ' partial' : '') }, s);
       el('text', { x: f1(xH), y: y, class: 'm-label tone-h', 'text-anchor': 'middle' }, s, 'H');
       el('text', { x: f1(xC), y: y, class: 'm-label tone-cl', 'text-anchor': 'middle' }, s, 'Cl');
       /* Cl's three lone pairs */
@@ -179,7 +182,7 @@
         el('circle', { cx: f1(cx + (hz ? -3.4 : 0)), cy: f1(cy + (hz ? 0 : -3.4)), r: 2.1, class: 'm-lp-dot' }, s);
         el('circle', { cx: f1(cx + (hz ? 3.4 : 0)), cy: f1(cy + (hz ? 0 : 3.4)), r: 2.1, class: 'm-lp-dot' }, s);
       });
-      var mid = (xH + xC) / 2, u = seg(p, 0.05, 0.5);
+      var mid = (xH + xC) / 2, u = seg(p, TAKE, LAND);
       /* the two electrons of the bond */
       var a0 = [mid - 4, y - 5], b0 = [mid + 4, y - 5];
       var a1, b1;
@@ -187,12 +190,11 @@
       else { a1 = [xC - 17, y - 9]; b1 = [xC - 17, y - 1]; }
       var ea = [a0[0] + (a1[0] - a0[0]) * u, a0[1] + (a1[1] - a0[1]) * u - Math.sin(u * Math.PI) * 16];
       var eb = [b0[0] + (b1[0] - b0[0]) * u, b0[1] + (b1[1] - b0[1]) * u - Math.sin(u * Math.PI) * (kind === 'homo' ? 16 : 22)];
-      el('circle', { cx: f1(ea[0]), cy: f1(ea[1]), r: 2.6, class: 'e-dot' }, s);
-      el('circle', { cx: f1(eb[0]), cy: f1(eb[1]), r: 2.6, class: 'e-dot' }, s);
+      el('circle', { cx: f1(ea[0]), cy: f1(ea[1]), r: 3, class: 'e-dot' }, s);
+      el('circle', { cx: f1(eb[0]), cy: f1(eb[1]), r: 3, class: 'e-dot' }, s);
       /* the arrows, until the electrons arrive */
-      var aop = 1 - seg(p, 0.42, 0.6);
-      if (aop > 0.02) {
-        var g = el('g', { class: 'arrows', opacity: aop.toFixed(2) }, s);
+      if (!landed) {
+        var g = el('g', { class: 'arrows' }, s);
         if (kind === 'homo') {
           el('path', { d: 'M' + f1(mid) + ' ' + (y - 12) + ' Q' + f1((mid + xH) / 2) + ' ' + (y - 40) + ' ' + f1(xH + 6) + ' ' + (y - 18), class: 'arw' }, g);
           el('polygon', { points: f1(xH + 4) + ',' + (y - 16) + ' ' + f1(xH + 14) + ',' + (y - 22) + ' ' + f1(xH + 12) + ',' + (y - 14), class: 'arw-head' }, g);
@@ -203,9 +205,9 @@
           el('polygon', { points: f1(xC - 6) + ',' + (y - 17) + ' ' + f1(xC - 18) + ',' + (y - 24) + ' ' + f1(xC - 9) + ',' + (y - 30), class: 'arw-head' }, g);
         }
       }
-      /* the products */
-      if (p > 0.75) {
-        var g2 = el('g', { opacity: seg(p, 0.75, 0.95).toFixed(2) }, s);
+      /* the products, the moment the electrons land */
+      if (landed) {
+        var g2 = el('g', { class: p < 0.97 ? 'm-charge-g new' : 'm-charge-g' }, s);
         if (kind === 'homo') {
           el('text', { x: f1(xH), y: 118, 'text-anchor': 'middle', class: 'pic-note' }, g2, 'radical');
           el('text', { x: f1(xC), y: 118, 'text-anchor': 'middle', class: 'pic-note' }, g2, 'radical');

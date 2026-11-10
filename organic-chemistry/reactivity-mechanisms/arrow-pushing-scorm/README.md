@@ -5,7 +5,7 @@
 A SCORM 1.2 activity for Schoology, for the organic chemistry elective (Klein, *Organic Chemistry*, chapter 6), meant
 to come before the SN1, SN2, E1 and E2 activity. The emphasis is vocabulary and drawing curved arrows; the biggest
 objective is recognising Klein's four patterns of arrow pushing (6.8): nucleophilic attack, loss of a leaving group,
-proton transfer and carbocation rearrangement. About 45 minutes. Same look, controls, saving and grading as the
+proton transfer and carbocation rearrangement. About 50 minutes. Same look, controls, saving and grading as the
 SN1/SN2/E1/E2 activity, and the same way of drawing arrows.
 
 **The teacher's wording.** Students are AP Chemistry trained: "spontaneous" never appears. ΔG < 0 is
@@ -26,6 +26,7 @@ em dash.
 | 2 Nucleophiles and electrophiles | 3 + checkpoint | CH₃Cl and CH₃Li with δ+ and δ− and a pulsing electron cloud; sort fourteen compounds and ions (Klein 6.8 and Table 6.3); click every nucleophilic and electrophilic centre in three molecules (SkillBuilder 6.2, Problem 6.9). **Checkpoint 2** (4). |
 | 3 The four patterns | 8 + checkpoint | **Reading a curved arrow:** one played, then five drawings judged by Klein's rules (6.10). **Patterns 1 to 3:** draw the arrows of seven steps (Br⁻ and a carbocation, methanol and acetyl chloride, losses, proton transfers including an alkene and H₃O⁺). **Carbocation stability:** alkyl groups are electron-donating (induction), animated. **Pattern 4:** Klein's hole analogy, then a hydride shift and a methyl shift. **Will it rearrange?** six carbocations by Klein's SkillBuilder 6.6 steps. **Name the pattern:** eight steps from Klein 6.11 and 6.27. **Checkpoint 3** (5). |
 | 4 Putting them together | 2 + checkpoint | **Klein Figure 6.31**, drawn in the step (no textbook needed): name, then draw, each of its four steps; the figure fills in each step's arrows and pattern name, and the energy diagram grows a hill per step; then play the whole mechanism. **Two patterns at once:** 1-chlorobutane and hydroxide, concerted; then name the three-step sequence of SkillBuilder 6.4. **Checkpoint 4** (5). |
+| 5 Final check | 7 questions | New reactions the student has not seen (Klein 6.29, 6.33, 6.41, 6.49, 6.54 and others), the same four patterns: two graded arrow drawings, one mechanism whose sequence of patterns is named, one step whose pattern is named, a vocabulary question and two more (which is the nucleophile, will it rearrange, energy in or out, a missing arrow, counting transition states). |
 
 ### Drawing arrows
 
@@ -33,9 +34,11 @@ As in the SN1/SN2/E1/E2 activity: tap the electrons (a lone pair or a bond), the
 bond for a new pi bond), or drag from one to the other, or use Tab and Enter. Tapping an arrow removes it; Undo
 and Clear work too. When the arrows are right:
 
-- **the step plays.** The pair of electrons rides each arrow, bonds that break fade (dashed while they go), new
-  bonds grow, atoms glide to their new places and the charges change. A slider and Play run it; with reduced
-  motion, Play steps through still frames.
+- **the step plays**, in clean beats with nothing fading: the arrows; then each pair of electrons rides its
+  arrow (a bond that is breaking is dashed, a bond being made is drawn out, dashed, from the atom the electrons
+  come from); then they land (new bonds, lone pairs and charges appear at once, in the arrow colour, and the old
+  ones are gone); then the atoms glide to where the product is drawn. A caption names each beat. A slider and
+  Play run it; with reduced motion, Play steps through four still frames.
 - **an energy ledger fills in** beside it: every bond broken (energy in, endothermic) and every bond made (energy
   out, exothermic).
 - **"Say it in words":** a sentence about the step, its blanks filled from word tiles (nucleophile, leaving group,
@@ -56,10 +59,11 @@ three wrong checks.
 
 ## Grading
 
-**A score, from the four checkpoints only.** 18 questions per attempt (4 + 4 + 5 + 5) from a pool of 56; the
+**A score, from the four checkpoints and the final check only.** 25 questions per attempt (4 + 4 + 5 + 5 + 7) from a pool of 78; the
 **first answer** to each counts, and a **graded drawing counts on its first Check** (pressing Check with nothing
 drawn is not an answer). Every checkpoint's core has a vocabulary question; Checkpoints 3 and 4 always have one
-graded arrow drawing and one question naming a pattern or a sequence of patterns. Klein Table 6.3 and the four
+graded arrow drawing and one question naming a pattern or a sequence of patterns, and the final check has two drawings,
+a pattern and a sequence. The validator checks that no reaction in the final check was shown earlier. Klein Table 6.3 and the four
 patterns sit beside Checkpoints 2 to 4, the energy words beside Checkpoint 1. Nothing asks for a calculation.
 
 Arrows, sorts, predictions and sentences must be finished to move on but are never graded. The score (0 to 100) goes
