@@ -9,14 +9,17 @@ rules, every compound and a worked sample set. Every number is computed by the a
 ## The four steps (the teacher’s words)
 
 1. **Percents to grams:** given percents, assume a 100 g sample, so 40.0% is 40.0 g. Given grams (or masses to subtract), use the grams.
-2. **Grams to moles:** grams ÷ molar mass, the molar mass to the tenths place. Moles to at least 3 significant figures.
+2. **Grams to moles,** set up by dimensional analysis: g X × (1 mol X / ___ g X) = ___ mol X, the molar mass typed in the bottom of the
+   fraction to the tenths place, so g cancels; then × (___ mol C / 1 mol CO₂), the mole ratio from the formula typed on top.
+   Moles to at least 3 significant figures.
 3. **Divide by small:** tap the smallest mole value, divide every row by it, to two decimal places.
 4. **Multiply if not whole:** within 0.1 of a whole number, round (× 1). Otherwise the decimal is a fraction and every row is multiplied
    by the same number: .50 × 2; .33 and .67 × 3; .25 and .75 × 4; .20, .40, .60 and .80 × 5 (halves, thirds, fourths and fifths only).
 5. **Molecular formula** (when a molar mass is given): empirical formula mass to the tenths place, n = molar mass ÷ it, every subscript × n.
 
 In combustion analysis the rows are C (from the CO₂) and H (from the H₂O). Step 1 has no percents: the grams of CO₂ and H₂O are
-used as they are. Step 2 is grams of CO₂ ÷ 44.0 = mol CO₂, × 1 C per CO₂ = mol C; grams of H₂O ÷ 18.0 = mol H₂O, × 2 H per H₂O = mol H.
+used as they are. Step 2 is one dimensional analysis setup per row: g CO₂ × (1 mol CO₂ / 44.0 g CO₂) × (1 mol C / 1 mol CO₂) = mol C and
+g H₂O × (1 mol H₂O / 18.0 g H₂O) × (2 mol H / 1 mol H₂O) = mol H; the molar mass and the mole ratio are the blanks.
 The solution also checks g C + g H against the mass burned.
 
 ## Grading
@@ -92,11 +95,11 @@ Teacher links: `src/index.html?step=<id or number>` opens a step without saving;
 | The water’s percent as the salt (hydrate) | That is the water. Of the 100 g, the rest is the anhydrous salt: 100 − 36.1. |
 | O₂’s mass for O | That is O₂. The oxygen here is O atoms in a compound, so use the atomic mass of O from the periodic table. |
 | A molar mass not to tenths (159.61) | Round the molar mass of CuSO₄ to the tenths place, one digit after the decimal point (a whole number like 32 is fine when the tenths digit is 0). |
-| Grams times molar mass | You multiplied. Grams to moles: divide the grams by the molar mass (1 mol is 55.8 g). |
-| Molar mass over grams | Upside down: the grams go on top. Moles = grams ÷ molar mass. |
+| Grams times molar mass (the bottom of the setup multiplied) | The molar mass is on the bottom of the fraction, so divide by it. Multiply across the top, divide by the bottom. |
+| Molar mass over grams (the setup upside down) | Upside down: the grams go on top and the molar mass on the bottom, so g cancels and mol is left. |
 | Moles to 2 significant figures | Keep at least 3 significant figures in moles (1.25): rounding too early can change the ratio. |
-| 1 H per H₂O | Look at the formula: H₂O has 2 H atoms, so every mol of H₂O holds 2 mol of H. |
-| mol H₂O as mol H | That is the moles of H₂O. Each H₂O has 2 H atoms: multiply by 2. |
+| 1 mol H per mol H₂O in the mole ratio | Look at the formula: H₂O has 2 H atoms, so every mol of H₂O holds 2 mol of H. |
+| The mole ratio left out (mol H₂O as mol H) | That is mol H₂O. The mole ratio turns it into mol H: multiply by the 2 on top (2 mol H / 1 mol H₂O). |
 | Dividing by the largest | Divide by small: every mole value is divided by the smallest one, so the smallest row is 1.00 and every other row is more than 1. |
 | A quotient to one decimal place (1.3) | Keep two decimal places: one decimal place can hide the fraction (1.3 could be 1⅓ or 1¼, and 1 could be 1⅓). |
 | × 1 when 1.50 is not whole | 1.50 is not within 0.1 of a whole number, so it cannot be rounded. Multiply if not whole: what fraction is .50? |

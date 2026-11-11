@@ -4,6 +4,7 @@
  *   node tools/walkthrough.js            # headless run, prints a report
  *   SHOTS=dir node tools/walkthrough.js  # also saves a screenshot per step
  *   DARK=1 ...                           # the same in dark mode
+ *   SEED=2 ...                           # one student's problems (otherwise random)
  *
  * It checks that a save from another release, or one the browser kept, is
  * ignored inside the LMS. It plays the opening scene (heating a hydrate or
@@ -11,7 +12,10 @@
  * with a mistake first, and the molecular formula step. In the first
  * warm-up it makes the usual mistakes and reads the feedback each gets
  * (grams for percents, a percent as a decimal, moles to 2 significant
- * figures, the wrong smallest, x 1 when not whole), and it reloads in the
+ * figures, the mole ratio left out of the setup, the wrong smallest, x 1
+ * when not whole), checks Step 2 is a dimensional analysis setup (the molar
+ * mass box in the bottom of a fraction, the ratio box on top, the cancelling
+ * units struck through), and it reloads in the
  * middle of a warm-up and of the graded set to check the work comes back.
  * In the graded set it misses Step 1 of problem 1 (counted), types moles to
  * 2 significant figures in problem 2 (not counted), checks with Enter,
@@ -102,7 +106,10 @@ const fakeLMS = () => {
   await setLMS({});
   st = await page.evaluate(() => App.state());
   expect(st.step === 0 && st.seed !== 5, 'the browser’s save was used inside the LMS');
-  const seed = st.seed;
+  /* SEED=n replays one student's problems (a fresh start picks them at random) */
+  if (process.env.SEED) await page.evaluate((n) => { App.state().seed = n; }, Number(process.env.SEED));
+  const seed = await page.evaluate(() => App.state().seed);
+  process.on('exit', (code) => { if (code) console.error('(seed ' + seed + ': replay with SEED=' + seed + ')'); });
   const MODE = await page.evaluate(() => CONFIG.mode);
   await snap('intro');
   await page.click('.screen-box .primary');
@@ -222,7 +229,7 @@ const fakeLMS = () => {
         }
         /* Step 2: moles to 2 significant figures is sent back, not marked */
         await ctl('fillStep');
-        const molKey = p.mode === 'combustion' ? 'mM0' : 'mol0';
+        const molKey = 'mol0';
         const full = await page.inputValue('input[data-key="' + molKey + '"]');
         const short = Number(Number(full).toPrecision(2)).toString();
         if (short !== full) {
@@ -233,18 +240,35 @@ const fakeLMS = () => {
           expect((await work()).g.moles === before, 'warm-up: moles to 2 significant figures were counted');
           await typeInto(molKey, full);
         }
+        /* Step 2 is a dimensional analysis setup: the molar mass on the bottom, the ratio on top, units struck */
+        const da = await page.evaluate(() => ({ den: document.querySelectorAll('.da-den input.w-mm').length, num: document.querySelectorAll('.da-num input.w-per').length,
+          struck: document.querySelectorAll('td.c-now .da .tok.cx').length }));
+        expect(da.den === p.rows.length, 'warm-up: ' + da.den + ' molar mass boxes in the bottom of a fraction, expected ' + p.rows.length);
+        expect(da.num === (p.mode === 'combustion' ? p.rows.length : 0), 'warm-up: ' + da.num + ' mole ratio boxes on top of a fraction');
+        expect(da.struck === p.rows.length * (p.mode === 'combustion' ? 4 : 2), 'warm-up: ' + da.struck + ' units struck through in the setup');
+        if (p.mode === 'combustion') {
+          const h = p.rows[1];
+          const molH2O = Number((h.g / 18.0).toPrecision(3)).toString();
+          const right = await page.inputValue('input[data-key="mol1"]');
+          await typeInto('mol1', molH2O);
+          await page.click('.step-panel .primary:has-text("Check")');
+          expect(/mole ratio turns it into mol H/.test(await fb()), 'warm-up: the mole ratio left out is not named: ' + await fb());
+          await typeInto('mol1', right);
+        }
         await page.locator('input[data-key="mm0"]').press('Enter');
         expect((await work()).s === 2, 'warm-up: Enter did not check Step 2');
         /* reload in the middle: the work comes back */
         await page.reload();
         await page.click('.screen-box .primary');
         expect((await stepId()) === id && (await work()).s === 2, 'warm-up: the work did not come back after a reload');
-        /* Step 3: the wrong smallest */
-        const big = await page.evaluate(() => { const m = App.ctl().work.n.mol; return m.indexOf(Math.max.apply(null, m)); });
-        await page.click('.pickbtn >> nth=' + big);
-        for (let i = 0; i < p.rows.length; i++) await typeInto('q' + i, '1.00');
-        await page.click('.step-panel .primary:has-text("Check")');
-        expect(/not the smallest/.test(await fb()), 'warm-up: the wrong smallest is not answered');
+        /* Step 3: the wrong smallest (unless the rows tie, as C and H do in C8H8: then either is right) */
+        const mols = await page.evaluate(() => App.ctl().work.n.mol);
+        if (Math.max(...mols) > Math.min(...mols) * 1.01) {
+          await page.click('.pickbtn >> nth=' + mols.indexOf(Math.max(...mols)));
+          for (let i = 0; i < p.rows.length; i++) await typeInto('q' + i, '1.00');
+          await page.click('.step-panel .primary:has-text("Check")');
+          expect(/not the smallest/.test(await fb()), 'warm-up: the wrong smallest is not answered');
+        }
         await ctl('fillStep'); await ctl('check');
         /* Step 4: x 2 when every quotient is whole (or x 1 when not) */
         await typeInto('mult', p.mult === 1 ? '2' : '1');
@@ -259,12 +283,14 @@ const fakeLMS = () => {
         /* Step 5 by hand: n + the empirical subscripts is answered */
         await page.evaluate(() => { const c = App.ctl(); while (c.step() !== 'molecular') { c.fillStep(); c.check(); } });
         await ctl('fillStep');
-        if (p.mol.n > 1) {
-          const sub0 = await page.inputValue('input[data-key="ms0"]');
-          await typeInto('ms0', String(Number(sub0) / p.mol.n + p.mol.n));
+        /* adding n to a subscript, on one where adding and multiplying differ (not C2 with n = 2) */
+        const subs = await page.$$eval('.molbox input.blank.w-s', (els) => els.map((e) => ({ key: e.dataset.key, v: Number(e.value) })));
+        const slip = p.mol.n > 1 ? subs.find((x) => x.v / p.mol.n + p.mol.n !== x.v) : null;
+        if (slip) {
+          await typeInto(slip.key, String(slip.v / p.mol.n + p.mol.n));
           await page.click('.step-panel .primary:has-text("Check")');
           expect(/do not add n|subscript/.test(await fb()), 'warm-up: adding n is not answered: ' + await fb());
-          await typeInto('ms0', sub0);
+          await typeInto(slip.key, String(slip.v));
         }
         await page.click('.step-panel .primary:has-text("Check")');
       } else {
@@ -289,7 +315,7 @@ const fakeLMS = () => {
     } else if (i === 1) {
       await page.evaluate(() => { const c = App.ctl(); c.fillStep(); c.check(); });
       await ctl('fillStep');
-      const key = p.mode === 'combustion' ? 'mM0' : 'mol0';
+      const key = 'mol0';
       const full = await page.inputValue('input[data-key="' + key + '"]');
       const short = Number(Number(full).toPrecision(2)).toString();
       if (short !== full) {
@@ -354,8 +380,8 @@ const fakeLMS = () => {
 
   await browser.close();
   if (problems.length) {
-    console.error('walkthrough (' + MODE + '): ' + problems.length + ' problem(s)\n  ' + problems.join('\n  '));
+    console.error('walkthrough (' + MODE + ', seed ' + seed + '): ' + problems.length + ' problem(s)\n  ' + problems.join('\n  '));
     process.exit(1);
   }
-  console.log('walkthrough (' + MODE + '): ok (score ' + want + '% from ' + total + ' graded steps, ' + inter + ' interactions, reloads, a second attempt)');
+  console.log('walkthrough (' + MODE + ', seed ' + seed + '): ok (score ' + want + '% from ' + total + ' graded steps, ' + inter + ' interactions, reloads, a second attempt)');
 })();

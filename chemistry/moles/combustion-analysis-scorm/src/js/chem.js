@@ -372,8 +372,13 @@ var Chem = (function () {
     return { v: v, str: str.replace(/\s*(g\/mol|mol|g|%)\s*$/i, '') };
   }
   function near(a, b, tol) { return Math.abs(a - b) <= tol; }
-  /* x is want rounded to sf significant figures (allowing for the student's own molar mass) */
-  function rounds(x, want, sf) { return sf > 0 && rel(x, roundSig(want, sf)) <= 1e-9 + TOL / 3; }
+  /* x could be a rounding, to the sf significant figures it shows, of a value within TOL of want:
+     0.013 for 0.01248 (typed 0.0125 first, then rounded again) is the right moles rounded too far */
+  function rounds(x, want, sf) {
+    if (!(sf > 0) || !(x > 0) || !(want > 0)) return false;
+    var half = 0.5 * Math.pow(10, Math.floor(Math.log10(x) + 1e-12) - sf + 1);
+    return x - half <= want * (1 + TOL) + 1e-15 && x + half >= want * (1 - TOL) - 1e-15;
+  }
   function rel(a, b) { return Math.abs(a - b) / Math.abs(b || 1); }
 
   /* Grams, Step 1. want: the right grams (a number); how: 'pct' (the
@@ -412,35 +417,51 @@ var Chem = (function () {
     return { ok: false, kind: 'wrong', msg: 'Not those grams.' };
   }
 
-  /* Moles, Step 2: grams divided by the molar mass. g: the student's grams,
-     mm: their molar mass, cls: the class's molar mass, atom: for a row of
-     one element, its symbol (the O2 slip). */
-  function judgeMoles(raw, g, mm, cls, atom) {
+  /* Moles, Step 2: the answer of the dimensional analysis setup
+       g X x (1 mol X / ___ g X) [x (___ mol C / 1 mol X)] = ___ mol
+     g: the student's grams, mm: their molar mass, cls: the class's molar
+     mass, atom: for a row of one element, its symbol (the O2 slip); per: in
+     combustion, the mole ratio (1 C per CO2, 2 H per H2O) and molecule the
+     CO2 or H2O it is read from. */
+  function judgeMoles(raw, g, mm, cls, atom, per, molecule) {
+    per = per || 1;
     var r = readNum(raw, 'the moles');
     if (r.empty || r.fmt) return { ok: false, empty: r.empty, fmt: r.fmt, msg: r.msg };
     var x = r.v, sf = sigFigsIn(r.str);
-    var a = g / mm, b = g / cls;
+    var a = g * per / mm, b = g * per / cls;
     var hit = function (want) { return rel(x, want) <= TOL; };
     /* the right moles rounded to 1 or 2 significant figures: not wrong, too short */
     if (sf < 3 && (rounds(x, a, sf) || rounds(x, b, sf) || hit(a) || hit(b))) {
       return { ok: false, fmt: true, msg: 'Keep at least 3 significant figures in moles (' + fmtMol(a) + '): rounding too early can change the ratio.' };
     }
     if (hit(a) || hit(b)) return { ok: true, v: x };
-    if (rel(x, g * mm) <= 0.02) return { ok: false, kind: 'multiplied', msg: 'You multiplied. Grams to moles: divide the grams by the molar mass (1 mol is ' + mm + ' g).' };
-    if (rel(x, mm / g) <= 0.02) return { ok: false, kind: 'upside-down', msg: 'Upside down: the grams go on top. Moles = grams ÷ molar mass.' };
-    if (rel(x, g) <= 0.005) return { ok: false, kind: 'grams', msg: 'Those are still grams. Divide by the molar mass to get moles.' };
-    if (atom && DIATOMIC[atom] && rel(x, g / (2 * mm)) <= 0.02) {
+    var M = molecule ? subs(molecule) : '';
+    if (per > 1 && (hit(g / mm) || hit(g / cls))) {
+      return { ok: false, kind: 'forgot-ratio', msg: 'That is mol ' + M + '. The mole ratio turns it into mol ' + atom + ': multiply by the ' + per +
+        ' on top (' + per + ' mol ' + atom + ' / 1 mol ' + M + ').' };
+    }
+    if (per > 1 && (hit(g / mm / per) || hit(g / cls / per))) {
+      return { ok: false, kind: 'divided-ratio', msg: 'The ' + per + ' is on top of the mole ratio: multiply by it, do not divide.' };
+    }
+    if (rel(x, g * mm * per) <= 0.02) {
+      return { ok: false, kind: 'multiplied', msg: 'The molar mass is on the bottom of the fraction, so divide by it. Multiply across the top, divide by the bottom.' };
+    }
+    if (rel(x, mm / g * per) <= 0.02 || rel(x, mm / g) <= 0.02) {
+      return { ok: false, kind: 'upside-down', msg: 'Upside down: the grams go on top and the molar mass on the bottom, so g cancels and mol is left.' };
+    }
+    if (rel(x, g) <= 0.005) return { ok: false, kind: 'grams', msg: 'Those are still grams. Multiply across the top and divide by the bottom to get moles.' };
+    if (atom && !molecule && DIATOMIC[atom] && rel(x, g / (2 * mm)) <= 0.02) {
       return { ok: false, kind: 'diatomic', msg: 'You divided by the mass of ' + atom + '₂. Each ' + atom + ' atom counts here: use ' + mm + ' g/mol.' };
     }
     if (x !== 0) {
       var k = Math.round(Math.log10(Math.abs(x / a)));
       if (k !== 0 && rel(x / Math.pow(10, k), a) <= 0.02) return { ok: false, kind: 'power', msg: 'The digits are right but the decimal point is not. Check where the decimal point goes.' };
     }
-    if (rel(x, a) <= 3 * TOL) return { ok: false, kind: 'close', msg: 'Close: divide the grams by the molar mass again, without rounding before the end.' };
-    return { ok: false, kind: 'wrong', msg: 'Divide the grams by the molar mass: grams ÷ (g/mol) = mol.' };
+    if (rel(x, a) <= 3 * TOL) return { ok: false, kind: 'close', msg: 'Close: work the setup again, without rounding before the end.' };
+    return { ok: false, kind: 'wrong', msg: 'Multiply across the top and divide by the bottom: ' + g + (per > 1 ? ' × ' + per : '') + ' ÷ the molar mass.' };
   }
 
-  /* Combustion: atoms of C or H in one molecule of CO2 or H2O. */
+  /* Combustion: the mole ratio, atoms of C or H in one molecule of CO2 or H2O. */
   function judgePer(raw, atom, molecule) {
     var r = readNum(raw, 'how many ' + atom + ' atoms are in one ' + subs(molecule));
     if (r.empty || r.fmt) return { ok: false, empty: r.empty, fmt: r.fmt, msg: r.msg };
@@ -450,21 +471,6 @@ var Chem = (function () {
     if (atom === 'C' && r.v === 2) return { ok: false, kind: 'the-O', msg: 'The 2 in CO₂ belongs to the O. One CO₂ holds 1 C atom.' };
     return { ok: false, kind: 'wrong', msg: 'Count the ' + atom + ' atoms in one ' + subs(molecule) + '.' };
   }
-  /* mol of the atom = mol of the molecule times atoms per molecule */
-  function judgeAtomMoles(raw, molMolecule, per, atom, molecule) {
-    var r = readNum(raw, 'the moles of ' + atom);
-    if (r.empty || r.fmt) return { ok: false, empty: r.empty, fmt: r.fmt, msg: r.msg };
-    var x = r.v, want = molMolecule * per, sf = sigFigsIn(r.str);
-    if (sf < 3 && (rounds(x, want, sf) || rel(x, want) <= TOL)) return { ok: false, fmt: true, msg: 'Keep at least 3 significant figures in moles (' + fmtMol(want) + ').' };
-    if (rel(x, want) <= TOL) return { ok: true, v: x };
-    if (per > 1 && rel(x, molMolecule) <= TOL) {
-      return { ok: false, kind: 'forgot-times', msg: 'That is the moles of ' + subs(molecule) + '. Each ' + subs(molecule) + ' has ' + per + ' ' + atom +
-        ' atoms: multiply by ' + per + '.' };
-    }
-    if (per > 1 && rel(x, molMolecule / per) <= TOL) return { ok: false, kind: 'divided', msg: 'Multiply by ' + per + ', do not divide: there are more ' + atom + ' atoms than ' + subs(molecule) + ' molecules.' };
-    return { ok: false, kind: 'wrong', msg: 'Moles of ' + atom + ' = moles of ' + subs(molecule) + ' × ' + per + '.' };
-  }
-
   /* Step 3: which row is the smallest? (two within 0.5% are both fine) */
   function smallestOK(moles, i) {
     var m = Math.min.apply(null, moles);
@@ -565,7 +571,7 @@ var Chem = (function () {
     hydrateText: hydrateText, hydrateDisp: hydrateDisp, gcd: gcd, lcm: lcm, empirical: empirical,
     mm10: mm10, mmText: mmText, mmValue: mmValue, mmStd: mmStd, mmAccepted: mmAccepted, mmWork: mmWork, mmSlips: mmSlips, judgeMM: judgeMM,
     fracOf: fracOf, multiplierFor: multiplierFor, wholeAfter: wholeAfter, allWhole: allWhole,
-    judgeGrams: judgeGrams, judgeMoles: judgeMoles, judgePer: judgePer, judgeAtomMoles: judgeAtomMoles,
+    judgeGrams: judgeGrams, judgeMoles: judgeMoles, judgePer: judgePer,
     smallestOK: smallestOK, judgeQuotient: judgeQuotient, judgeMultiplier: judgeMultiplier, judgeWhole: judgeWhole,
     judgeN: judgeN, judgeSub: judgeSub,
     texText: texText, texU: texU, texX: texX

@@ -49,7 +49,9 @@ w();
 w('## The four steps (the teacher’s words)');
 w();
 w('1. **Percents to grams:** given percents, assume a 100 g sample, so 40.0% is 40.0 g. Given grams (or masses to subtract), use the grams.');
-w('2. **Grams to moles:** grams ÷ molar mass, the molar mass to the tenths place. Moles to at least 3 significant figures.');
+w('2. **Grams to moles,** set up by dimensional analysis: g X × (1 mol X / ___ g X) = ___ mol X, the molar mass typed in the bottom of the');
+w('   fraction to the tenths place, so g cancels' + (MODE === 'combustion' ? '; then × (___ mol C / 1 mol CO₂), the mole ratio from the formula typed on top' : '') + '.');
+w('   Moles to at least 3 significant figures.');
 w('3. **Divide by small:** tap the smallest mole value, divide every row by it, to two decimal places.');
 w('4. **Multiply if not whole:** within 0.1 of a whole number, round (× 1). Otherwise the decimal is a fraction and every row is multiplied');
 w('   by the same number: .50 × 2; .33 and .67 × 3; .25 and .75 × 4; .20, .40, .60 and .80 × 5 (halves, thirds, fourths and fifths only).');
@@ -64,7 +66,8 @@ if (MODE === 'hydrate') {
 }
 if (MODE === 'combustion') {
   w('In combustion analysis the rows are C (from the CO₂) and H (from the H₂O). Step 1 has no percents: the grams of CO₂ and H₂O are');
-  w('used as they are. Step 2 is grams of CO₂ ÷ 44.0 = mol CO₂, × 1 C per CO₂ = mol C; grams of H₂O ÷ 18.0 = mol H₂O, × 2 H per H₂O = mol H.');
+  w('used as they are. Step 2 is one dimensional analysis setup per row: g CO₂ × (1 mol CO₂ / 44.0 g CO₂) × (1 mol C / 1 mol CO₂) = mol C and');
+  w('g H₂O × (1 mol H₂O / 18.0 g H₂O) × (2 mol H / 1 mol H₂O) = mol H; the molar mass and the mole ratio are the blanks.');
   w('The solution also checks g C + g H against the mass burned.');
   w();
 }
@@ -127,11 +130,11 @@ const slips = [
   ['The water’s percent as the salt (hydrate)', Chem.judgeGrams('36.1', 63.9, 'rest', { pct: '36.1', dp: 1 }).msg],
   ['O₂’s mass for O', Chem.judgeMM('O', '32.0').msg],
   ['A molar mass not to tenths (159.61)', Chem.judgeMM('CuSO4', '159.61').msg],
-  ['Grams times molar mass', Chem.judgeMoles('3900', 69.9, 55.8, 55.8, 'Fe').msg],
-  ['Molar mass over grams', Chem.judgeMoles('0.798', 69.9, 55.8, 55.8, 'Fe').msg],
+  ['Grams times molar mass (the bottom of the setup multiplied)', Chem.judgeMoles('3900', 69.9, 55.8, 55.8, 'Fe').msg],
+  ['Molar mass over grams (the setup upside down)', Chem.judgeMoles('0.798', 69.9, 55.8, 55.8, 'Fe').msg],
   ['Moles to 2 significant figures', Chem.judgeMoles('1.3', 69.9, 55.8, 55.8, 'Fe').msg],
-  ['1 H per H₂O', Chem.judgePer('1', 'H', 'H2O').msg],
-  ['mol H₂O as mol H', Chem.judgeAtomMoles('0.0400', 0.0400, 2, 'H', 'H2O').msg],
+  ['1 mol H per mol H₂O in the mole ratio', Chem.judgePer('1', 'H', 'H2O').msg],
+  ['The mole ratio left out (mol H₂O as mol H)', Chem.judgeMoles('0.0400', 0.720, 18.0, 18.0, 'H', 2, 'H2O').msg],
   ['Dividing by the largest', Chem.judgeQuotient('0.665', 1, 1, { big: 1.88, small: 1.25, mol: 1.25 }).msg],
   ['A quotient to one decimal place (1.3)', Chem.judgeQuotient('1.3', 4 / 3, 4 / 3, {}).msg],
   ['× 1 when 1.50 is not whole', Chem.judgeMultiplier('1', [1, 1.5], 2).msg],
