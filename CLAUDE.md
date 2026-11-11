@@ -189,6 +189,10 @@ not the full page.
   - A flip turns the bonds on C1/C5 by ±60° and on C2/C4 the other way.
   - Klein views appear in Parts 1–3 and in two Part 4 steps: a trans-1,4 build on C1 and C4 (`build-newman2`) and
     cis-1,3's diaxial chair with the CH₃/CH₃ clash (`newman13`).
+- **Flip animation:** a chair drawing redrawn through a flip passes `steady` to `Draw.chair` (one frame for the whole
+  flip, carbon numbers that glide; a still drawing keeps the widest-gap rule). The 3D views `start`, `side`, `above` and
+  `newman` follow the flip (`FOLLOWS` in `viewer3d.js`); a view turned by hand does not. A played flip is timed by
+  `flipAt()` in `app.js` so it does not stop at the boat (t = 0.5 is still exactly the boat). The walkthrough checks it.
 - **Files:**
   - `chair.js`: geometry, flip, crowding, cameras
   - `molecules.js`: flat-ring molecules
