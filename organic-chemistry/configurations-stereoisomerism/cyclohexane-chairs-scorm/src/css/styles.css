@@ -828,3 +828,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .compare-pair figure { margin: 0; text-align: center; }
 .compare-pair figcaption { font-size: 0.82rem; font-weight: 700; color: var(--ink); margin-top: 4px; }
 @media (max-width: 620px) { .compare-pair { grid-template-columns: minmax(0, 1fr); } }
+
+/* A graded checkpoint choice that is selected but not yet submitted */
+.choice.selected { border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); }
+.choice.selected .choice-letter { border-color: var(--accent); background: var(--accent); color: #fff; }

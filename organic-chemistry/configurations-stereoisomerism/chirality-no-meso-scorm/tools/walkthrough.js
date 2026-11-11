@@ -185,6 +185,7 @@ const fakeLMS = () => {
       expect(!!id, 'a question on screen is not in the bank');
       const pick = WRONG.has(id) ? 1 : 0;
       await page.click(`.quiz .choice[data-choice="${pick}"]`);
+      await page.click('.quiz .submit-answer:not([hidden])');
       expect(!(await page.isHidden('.q-why')), 'no explanation after answering ' + id);
       await page.click('.quiz .btnrow .primary');
     }
@@ -512,6 +513,7 @@ const fakeLMS = () => {
   for (;;) {
     if (!(await page.$('.quiz .choice'))) break;
     await page.click('.quiz .choice[data-choice="0"]');
+    await page.click('.quiz .submit-answer:not([hidden])');
     await page.click('.quiz .btnrow .primary');
   }
   const lms2 = await page.evaluate(() => JSON.parse(sessionStorage.getItem('lms')));

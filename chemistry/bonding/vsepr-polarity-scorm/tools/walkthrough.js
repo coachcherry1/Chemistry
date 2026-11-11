@@ -202,6 +202,7 @@ const fakeLMS = () => {
       });
       expect(qid, `${id}: question not found in the bank`);
       await page.click(`.quiz .choice[data-choice="${WRONG.has(qid) ? 1 : 0}"]`);
+      await page.click('.quiz .submit-answer:not([hidden])');
       expect(!!(await page.$('.q-why:not([hidden])')), `${id}: no explanation after answering`);
       await page.click('.quiz .btnrow .primary');
     }

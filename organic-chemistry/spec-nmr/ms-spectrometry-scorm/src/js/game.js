@@ -1189,6 +1189,39 @@ var Game = (function () {
     if (idx >= 0) selectTile(idx);
   }
 
+  /* Graded, so a click only selects; Submit answer grades it (house rule).
+     The button sits right after the group of choices and removes itself once used. */
+  var Submit = (function () {
+    var pend = null, btn = null;
+    function unmark(n) { n.classList.remove('to-submit'); n.setAttribute('aria-pressed', 'false'); }
+    function clear() {
+      if (btn && btn.parentNode) btn.parentNode.removeChild(btn);
+      if (pend) { pend.node.classList.remove('to-submit'); pend.node.removeAttribute('aria-pressed'); }
+      pend = null;
+    }
+    function pick(node, go) {
+      if (pend && pend.node !== node) unmark(pend.node);
+      pend = { node: node, go: go };
+      node.classList.add('to-submit');
+      node.setAttribute('aria-pressed', 'true');
+      if (!btn) {
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'primary submit-answer';
+        btn.textContent = 'Submit answer';
+        btn.addEventListener('click', function (ev) {
+          ev.stopPropagation();
+          var p = pend;
+          clear();
+          if (p && p.node.isConnected && !p.node.disabled) p.go();
+        });
+      }
+      var group = node.parentNode;
+      if (btn.previousSibling !== group || !btn.isConnected) group.parentNode.insertBefore(btn, group.nextSibling);
+    }
+    return { pick: pick, clear: clear };
+  })();
+
   function onStageClick(ev) {
     var hit = ev.target.closest && ev.target.closest('.slot');
     if (hit && selectedTile != null) {
@@ -1200,13 +1233,23 @@ var Game = (function () {
     if (hit) return;
 
     var route = ev.target.closest && ev.target.closest('.route');
-    if (route) { chooseRoute(+route.dataset.route, route); return; }
+    if (route) {
+      if (!route.disabled && item.phase === 'predict') Submit.pick(route, function () { chooseRoute(+route.dataset.route, route); });
+      return;
+    }
 
     var mzBtn = ev.target.closest && ev.target.closest('.mz');
-    if (mzBtn) { chooseMz(+mzBtn.dataset.mz, mzBtn); return; }
+    if (mzBtn) {
+      if (!mzBtn.disabled && item.phase === 'mz') Submit.pick(mzBtn, function () { chooseMz(+mzBtn.dataset.mz, mzBtn); });
+      return;
+    }
 
     var choice = ev.target.closest && ev.target.closest('.choice');
-    if (choice) { chooseCompound(choice.dataset.mol, choice); return; }
+    if (choice) {
+      if (item.phase !== 'identify') { chooseCompound(choice.dataset.mol, choice); return; }
+      if (!choice.disabled) Submit.pick(choice, function () { chooseCompound(choice.dataset.mol, choice); });
+      return;
+    }
 
     /* Clicking anywhere else on the plot interrogates whatever stick is
        there. This is the whole "ignore the noise" lesson, made clickable. */

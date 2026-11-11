@@ -166,6 +166,7 @@ const fakeLMS = () => {
       const real = await page.evaluate(() => document.querySelector('.q-text').textContent);
       const ci = WRONG.has(qid) ? 1 : 0;
       await page.click(`.quiz .q-choices .choice[data-choice="${ci}"]`);
+      await page.click('.quiz .submit-answer:not([hidden])');
       await page.waitForSelector('.quiz .q-why:not([hidden])');
       const right = await page.evaluate(() => document.querySelectorAll('.quiz .choice.right').length);
       expect(right === 1, `${label} ${qid}: the right choice is not marked`);

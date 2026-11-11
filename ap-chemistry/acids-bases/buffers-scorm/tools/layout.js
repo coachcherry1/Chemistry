@@ -130,6 +130,7 @@ async function drive(page, st) {
           });
           await measure(`${st.id}/${qid}`, st);
           await page.click('.quiz .choice >> nth=0');
+          await page.click('.quiz .submit-answer:not([hidden])');
           await page.click('.quiz .btnrow .primary');
         }
         continue;

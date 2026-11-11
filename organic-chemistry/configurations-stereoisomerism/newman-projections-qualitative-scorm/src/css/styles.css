@@ -632,3 +632,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 .quiz-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 320px); gap: 12px; align-items: start; }
 .quiz-grid .quiz-table { margin-top: 0; position: sticky; top: 8px; }
 @media (max-width: 760px) { .quiz-grid { grid-template-columns: minmax(0, 1fr); } .quiz-grid .quiz-table { position: static; } }
+
+/* A graded checkpoint choice that is selected but not yet submitted */
+.choice.selected { border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); }
+.choice.selected .choice-letter { border-color: var(--accent); background: var(--accent); color: #fff; }

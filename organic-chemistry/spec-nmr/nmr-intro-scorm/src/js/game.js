@@ -1062,6 +1062,39 @@ var Game = (function () {
     if (idx >= 0) selectTile(idx);
   }
 
+  /* Graded, so a click only selects; Submit answer grades it (house rule).
+     The button sits right after the group of choices and removes itself once used. */
+  var Submit = (function () {
+    var pend = null, btn = null;
+    function unmark(n) { n.classList.remove('to-submit'); n.setAttribute('aria-pressed', 'false'); }
+    function clear() {
+      if (btn && btn.parentNode) btn.parentNode.removeChild(btn);
+      if (pend) { pend.node.classList.remove('to-submit'); pend.node.removeAttribute('aria-pressed'); }
+      pend = null;
+    }
+    function pick(node, go) {
+      if (pend && pend.node !== node) unmark(pend.node);
+      pend = { node: node, go: go };
+      node.classList.add('to-submit');
+      node.setAttribute('aria-pressed', 'true');
+      if (!btn) {
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'primary submit-answer';
+        btn.textContent = 'Submit answer';
+        btn.addEventListener('click', function (ev) {
+          ev.stopPropagation();
+          var p = pend;
+          clear();
+          if (p && p.node.isConnected && !p.node.disabled) p.go();
+        });
+      }
+      var group = node.parentNode;
+      if (btn.previousSibling !== group || !btn.isConnected) group.parentNode.insertBefore(btn, group.nextSibling);
+    }
+    return { pick: pick, clear: clear };
+  })();
+
   /* a click - or Enter / Space - on a slot, a capsule or a compound choice */
   function activate(target) {
     if (!target || !target.closest) return;
@@ -1084,7 +1117,9 @@ var Game = (function () {
       return;
     }
     var choice = target.closest('.choice');
-    if (choice && !choice.disabled) chooseCompound(choice.dataset.mol, choice);
+    if (choice && !choice.disabled && item.cfg.key === 'solve' && item.phase === 'work') {
+      Submit.pick(choice, function () { chooseCompound(choice.dataset.mol, choice); });
+    }
   }
 
   function onStageClick(ev) {

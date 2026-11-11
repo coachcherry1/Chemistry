@@ -222,6 +222,7 @@ const fakeLMS = () => {
         }, id);
       } else if (WRONG[id]) pick = WRONG[id];
       await page.click(`.choice[data-choice="${pick}"]`);
+      await page.click('.quiz .submit-answer:not([hidden])');
       const cls = await fbClass();
       if (pick === 0) expect(cls.includes('good'), `${id}: right answer not marked right`);
       else if (SNARKY.has(id)) expect(cls.includes('snark'), `${id}: expanded-octet choice got no anti-AI message`);

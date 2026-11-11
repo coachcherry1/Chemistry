@@ -230,9 +230,19 @@ var Game = (function () {
       }
       var b = button(cls, o.label, { act: 'check', i: i, fk: 'check:' + i });
       b.disabled = s.chosen != null;
+      if (!(s.chosen != null)) {
+        if (s.pick === i) b.className += ' selected';
+        b.setAttribute('aria-pressed', String(s.pick === i));
+      }
       opts.appendChild(b);
     });
     box.appendChild(opts);
+    /* Graded, so a click only selects; Submit answer grades it (the first submit counts). */
+    if (!(s.chosen != null)) {
+      var sub = button('primary submit-answer', 'Submit answer', { act: 'checksubmit', fk: 'checksubmit' });
+      sub.disabled = s.pick == null;
+      box.appendChild(sub);
+    }
     return box;
   }
 
@@ -529,7 +539,8 @@ var Game = (function () {
     if (act === 'opt') answerChoice(s, +t.dataset.i);
     else if (act === 'do') answerAction(s);
     else if (act === 'pick') answerPick(s, t.dataset.sym);
-    else if (act === 'check') answerCheck(item.steps[0], +t.dataset.i);
+    else if (act === 'check') { if (!item.done) { item.steps[0].pick = +t.dataset.i; paintCard(); } }
+    else if (act === 'checksubmit') { if (item.steps[0].pick != null) answerCheck(item.steps[0], item.steps[0].pick); }
   }
 
   /* ------------------------------------------------------------------ boot */

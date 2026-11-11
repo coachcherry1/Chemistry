@@ -313,6 +313,7 @@ const fakeLMS = () => {
         .some((b) => /hybrid/i.test((b.getAttribute('aria-label') || '') + b.querySelector('svg').getAttribute('aria-label'))));
       expect(!giveaway, `${id}: a choice's accessible name says which drawing is the hybrid`);
       await page.click(`.choice[data-choice="${pick}"]`);
+      await page.click('.quiz .submit-answer:not([hidden])');
       const cls = await fbClass();
       if (pick === 0) expect(cls.includes('good'), `${id}: right answer not marked right`);
       else if (SNARKY.has(id)) expect(cls.includes('snark'), `${id}: the extra-double-bond choice got no anti-AI message`);
