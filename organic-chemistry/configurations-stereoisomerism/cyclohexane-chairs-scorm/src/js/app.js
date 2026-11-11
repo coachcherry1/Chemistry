@@ -2071,12 +2071,33 @@ var App = (function () {
           typeof c === 'string' ? h('span', { class: 'choice-text', text: c }) : figure(c, 'choice-fig')
         ]);
         if (typeof c !== 'string') b.setAttribute('aria-label', 'Choice ' + letter + ': ' + figureText(c));
-        b.addEventListener('click', function () { answer(ci); });
+        b.addEventListener('click', function () { choose(ci); });
         row.appendChild(b);
       });
       box.appendChild(row);
       box.appendChild(why);
-      box.appendChild(h('div', { class: 'btnrow' }, [next]));
+      /* Graded, so a click only selects; Submit answer grades it (the first submit counts). */
+      var selCi = null;
+      var submit = h('button', { type: 'button', class: 'primary submit-answer', disabled: true, text: 'Submit answer' });
+      function choose(ci) {
+        if (state.ans[id] != null) return;
+        selCi = ci;
+        var nodes = row.querySelectorAll('.choice');
+        for (var i = 0; i < nodes.length; i++) {
+          var on = +nodes[i].getAttribute('data-choice') === ci;
+          nodes[i].classList.toggle('selected', on);
+          nodes[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+        }
+        submit.disabled = false;
+      }
+      submit.addEventListener('click', function () {
+        if (selCi == null || state.ans[id] != null) return;
+        if (submit.parentNode) submit.parentNode.removeChild(submit);
+        var nodes = row.querySelectorAll('.choice');
+        for (var i = 0; i < nodes.length; i++) { nodes[i].classList.remove('selected'); nodes[i].removeAttribute('aria-pressed'); }
+        answer(selCi);
+      });
+      box.appendChild(h('div', { class: 'btnrow' }, [submit, next]));
 
       function answer(ci) {
         if (state.ans[id] != null) return;

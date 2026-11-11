@@ -1830,14 +1830,52 @@ var Game = (function () {
     }
   }
 
+  /* Graded, so a click only selects; Submit answer grades it (house rule).
+     The button sits right after the group of choices and removes itself once used. */
+  var Submit = (function () {
+    var pend = null, btn = null;
+    function unmark(n) { n.classList.remove('to-submit'); n.setAttribute('aria-pressed', 'false'); }
+    function clear() {
+      if (btn && btn.parentNode) btn.parentNode.removeChild(btn);
+      if (pend) { pend.node.classList.remove('to-submit'); pend.node.removeAttribute('aria-pressed'); }
+      pend = null;
+    }
+    function pick(node, go) {
+      if (pend && pend.node !== node) unmark(pend.node);
+      pend = { node: node, go: go };
+      node.classList.add('to-submit');
+      node.setAttribute('aria-pressed', 'true');
+      if (!btn) {
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'primary submit-answer';
+        btn.textContent = 'Submit answer';
+        btn.addEventListener('click', function (ev) {
+          ev.stopPropagation();
+          var p = pend;
+          clear();
+          if (p && p.node.isConnected && !p.node.disabled) p.go();
+        });
+      }
+      var group = node.parentNode;
+      if (btn.previousSibling !== group || !btn.isConnected) group.parentNode.insertBefore(btn, group.nextSibling);
+    }
+    return { pick: pick, clear: clear };
+  })();
+
   function onBoardClick(ev) {
     var btn = ev.target.closest && ev.target.closest('.opt');
-    if (btn && !btn.disabled) answerCase(btn.dataset.q, btn.dataset.v);
+    if (btn && !btn.disabled && item.phase === 'case' && item.caseQs[item.caseStep] === btn.dataset.q) {
+      Submit.pick(btn, function () { answerCase(btn.dataset.q, btn.dataset.v); });
+    }
   }
 
   function onCardClick(ev) {
     var b = ev.target.closest && ev.target.closest('.cand');
-    if (b && !b.disabled) chooseCompound(b.dataset.mol);
+    if (b && !b.disabled) {
+      if (item.phase !== 'identify') { chooseCompound(b.dataset.mol); return; }
+      Submit.pick(b, function () { chooseCompound(b.dataset.mol); });
+    }
   }
 
   /* Level 4 keyboard: a focused plot steps between peaks with the arrow
