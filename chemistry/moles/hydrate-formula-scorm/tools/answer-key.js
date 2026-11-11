@@ -48,7 +48,8 @@ w('`tools/validate.js`.');
 w();
 w('## The four steps (the teacher’s words)');
 w();
-w('1. **Percents to grams:** given percents, assume a 100 g sample, so 40.0% is 40.0 g. Given grams (or masses to subtract), use the grams.');
+w('1. **Percents to grams:** the student says what the problem gives. Percents: assume a 100 g sample, and the grams fill in (40.0% is 40.0 g;');
+w('   a hydrate\'s salt is the rest of the 100 g). Grams given: they fill in too. Crucible or heating masses: the student subtracts.');
 w('2. **Grams to moles,** set up by dimensional analysis: g X × (1 mol X / ___ g X) = ___ mol X, the molar mass typed in the bottom of the');
 w('   fraction to the tenths place, so g cancels' + (MODE === 'combustion' ? '; then × (___ mol C / 1 mol CO₂), the mole ratio from the formula typed on top' : '') + '.');
 w('   Moles to at least 3 significant figures.');
@@ -126,8 +127,6 @@ w();
 const ex = Gen.example();
 const r0 = ex.rows[0];
 const slips = [
-  ['A percent as a decimal (0.699 for 69.9%)', Chem.judgeGrams('0.699', 69.9, 'pct', { pct: '69.9', dp: 1 }).msg],
-  ['The water’s percent as the salt (hydrate)', Chem.judgeGrams('36.1', 63.9, 'rest', { pct: '36.1', dp: 1 }).msg],
   ['O₂’s mass for O', Chem.judgeMM('O', '32.0').msg],
   ['A molar mass not to tenths (159.61)', Chem.judgeMM('CuSO4', '159.61').msg],
   ['Grams times molar mass (the bottom of the setup multiplied)', Chem.judgeMoles('3900', 69.9, 55.8, 55.8, 'Fe').msg],

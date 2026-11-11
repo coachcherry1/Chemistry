@@ -29,7 +29,8 @@ Every set has a problem needing x 1, x 2, x 3 and x 4 or x 5, and at least two m
 
 ## The four steps (on screen in the teacher's words)
 
-1. **Percents to grams:** given percents, assume a 100 g sample, so 40.0% is 40.0 g. Given grams, use the grams.
+1. **Percents to grams:** the student says whether the problem gives percents (assume a 100 g sample, so 40.0% is 40.0 g) or grams;
+   a right choice fills the grams in. Only crucible and heating masses are typed (by subtraction).
 2. **Grams to moles,** set up by dimensional analysis, one line per row:
    g CO2 x (1 mol CO2 / ___ g CO2) x (___ mol C / 1 mol CO2) = ___ mol C. The molar mass is the blank in the bottom of the first
    fraction (to the tenths place; the Periodic table button docks a table with every atomic mass to tenths) and the mole ratio from the

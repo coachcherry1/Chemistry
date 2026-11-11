@@ -28,7 +28,8 @@ validator builds every name again from its ions.
 
 ## The four steps (on screen in the teacher's words)
 
-1. **Percents to grams:** given percents, assume a 100 g sample, so 40.0% is 40.0 g. Given grams, use the grams.
+1. **Percents to grams:** the student says whether the problem gives percents (assume a 100 g sample, so 40.0% is 40.0 g) or grams;
+   a right choice fills the grams in. Only crucible and heating masses are typed (by subtraction).
 2. **Grams to moles,** set up by dimensional analysis, one line per row: g CuSO4 x (1 mol CuSO4 / ___ g CuSO4) = ___ mol CuSO4. The molar
    mass is the blank in the bottom of the fraction (to the tenths place; the Periodic table button docks a table with every atomic
    mass to tenths), and the g that cancels is struck through. Moles to at least 3 significant figures.
