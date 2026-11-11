@@ -84,6 +84,7 @@ var Viewer3D = (function () {
 
   /* A slight turn from the drawing's view, so the first look already reads
      as 3D rather than as a flat copy of the chair drawing. */
+  var FOLLOWS = { newman: 1, side: 1, above: 1, start: 1 };
   var START = matMul(rotY(0.38), CHAIR.sideCam(0, 30 * Math.PI / 180));
 
   function cssVar(name, fallback) {
@@ -124,7 +125,12 @@ var Viewer3D = (function () {
   };
 
   Viewer.prototype.cameraFor = function (name, args) {
-    if (name === 'start') return START;
+    /* like the chair drawing, the opening view swings a little as the ring flips */
+    if (name === 'start') {
+      if (!this.model) return START;
+      /* chair 2 is seen as the mirror image of chair 1's view */
+      return matMul(rotY(0.38 * Math.cos(Math.PI * this.model.t)), CHAIR.sideCam(this.model.t, 30 * Math.PI / 180));
+    }
     return CHAIR.camera(name, this.model, args && args[0], args && args[1]);
   };
 
@@ -132,8 +138,11 @@ var Viewer3D = (function () {
      picture does not breathe; a new molecule may rescale. */
   Viewer.prototype.setModel = function (m, rescale) {
     this.model = m;
-    /* a view down a bond follows the bond as the ring flips */
-    if (this.view === 'newman' && !this.anim) this.R = this.cameraFor('newman');
+    /* a view down a bond follows the bond as the ring flips, and the side
+       views swing with the chair drawing, so chair 2 is seen as it is drawn
+       and the groups on C1 stay in sight. A view the student has turned by
+       hand ('free') is left alone. */
+    if (FOLLOWS[this.view] && !this.anim) this.R = this.cameraFor(this.view);
     if (rescale) this.radius = Math.max(this.radius, this.measure(m));
     this.draw();
   };

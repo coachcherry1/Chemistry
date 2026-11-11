@@ -157,6 +157,48 @@ const fakeLMS = () => {
   await page.waitForTimeout(800);
   await fb(/most stable shape/, 'meet did not complete');
   expect(await page.$('.klein'), 'meet step shows no Newman projections of the chair');
+
+  /* a played flip is steady: the chair drawing keeps one frame, no carbon
+     number or label hops, and the ring does not stop at the boat */
+  {
+    const r = await page.evaluate(() => {
+      const host = document.createElement('div');
+      host.style.cssText = 'width:440px;position:absolute;left:-9999px;top:0';
+      document.body.appendChild(host);
+      const out = { frames: 0, hop: 0, slow: 1 };
+      for (const [id, opts] of [['tracked', { show: 'all', steady: true }], ['trans14', { steady: true }], ['cis13', { steady: true }]]) {
+        const frames = new Set();
+        let prev = null;
+        for (let i = 0; i <= 200; i++) {
+          host.innerHTML = '';
+          const s = Draw.chair(molecule(id), i / 200, opts);
+          host.appendChild(s);
+          frames.add(s.getAttribute('viewBox'));
+          const box = s.getBoundingClientRect(), cur = [];
+          s.querySelectorAll('.ch-num, .ch-labels text').forEach((n) => { const q = n.getBoundingClientRect(); cur.push([q.left + q.width / 2 - box.left, q.top + q.height / 2 - box.top]); });
+          if (prev) cur.forEach((c, k) => { out.hop = Math.max(out.hop, Math.hypot(c[0] - prev[k][0], c[1] - prev[k][1])); });
+          prev = cur;
+        }
+        out.frames = Math.max(out.frames, frames.size);
+      }
+      host.remove();
+      /* how fast the ring moves at each moment of a played flip, against its top speed */
+      const m = molecule('cyclohexane'), sp = [];
+      let last = null;
+      for (let i = 0; i <= 120; i++) {
+        const M = CHAIR.model(m, App.flipAt(i / 120));
+        if (last) sp.push(Math.max(...M.atoms.map((a, j) => CHAIR.vec.dist(a.p, last.atoms[j].p))));
+        last = M;
+      }
+      out.slow = Math.min(...sp.slice(40, 80)) / Math.max(...sp);
+      out.ends = [App.flipAt(0), App.flipAt(0.5), App.flipAt(1)];
+      return out;
+    });
+    expect(r.frames === 1, 'a flipping chair drawing changes its frame (' + r.frames + ' frames)');
+    expect(r.hop < 5, 'a carbon number or label hops ' + r.hop.toFixed(0) + ' px between frames of a flip');
+    expect(r.slow > 0.5, 'a played flip slows to ' + Math.round(r.slow * 100) + '% of its top speed in mid-flip');
+    expect(Math.abs(r.ends[0]) < 1e-9 && Math.abs(r.ends[1] - 0.5) < 1e-9 && Math.abs(r.ends[2] - 1) < 1e-9, 'flipAt should run 0, 0.5, 1');
+  }
   await next();
 
   await page.click('.predict .choice >> nth=1');
@@ -199,6 +241,13 @@ const fakeLMS = () => {
   expect(/Chair 2.*Red H: equatorial, pointing slightly up/.test(await page.textContent('.readout')), 'flip readout wrong at chair 2');
   expect(/You predicted/.test(await page.textContent('.reveal')), 'flip reveal does not mention the prediction');
   expect(await page.$('.klein-pair figure.current:nth-child(2)'), 'flip step does not highlight chair 2 in the Newman projections');
+  /* the Flip button plays all the way back, and on again */
+  await page.click('.flip-btn');
+  await page.waitForTimeout(2700);
+  expect((await page.$eval('.flip-range', (el) => el.value)) === '0', 'the played flip did not end at chair 1');
+  await page.click('.flip-btn');
+  await page.waitForTimeout(2700);
+  expect((await page.$eval('.flip-range', (el) => el.value)) === '100', 'the played flip did not end at chair 2');
   expect((await page.$$('.kn-move')).length === 2, 'flip step does not show the two arrows in chair 2');
   await next();
 

@@ -41,7 +41,7 @@ var Draw = (function () {
     var x0 = Math.min.apply(null, xs) - pad, x1 = Math.max.apply(null, xs) + pad;
     var y0 = Math.min.apply(null, ys) - pad, y1 = Math.max.apply(null, ys) + pad;
     s.setAttribute('viewBox', [x0, y0, x1 - x0, y1 - y0].map(function (v) { return v.toFixed(1); }).join(' '));
-    return { w: x1 - x0, h: y1 - y0 };
+    return { x0: x0, y0: y0, w: x1 - x0, h: y1 - y0 };
   }
 
   function anchorFor(dx) { return dx > 0.35 ? 'start' : dx < -0.35 ? 'end' : 'middle'; }
@@ -81,10 +81,16 @@ var Draw = (function () {
      opts.mark     { pos: class } extra classes for a position's bond and label
      opts.text     { pos: text } replace a position's label
      opts.letters  { pos: 'A' } lettered positions (quiz figures)
-     opts.numbers  false hides the carbon numbers */
+     opts.numbers  false hides the carbon numbers
+     opts.steady   for a drawing that is redrawn all through a flip: one frame
+                   for the whole flip, so the drawing neither rescales nor
+                   shifts, and carbon numbers that glide instead of hopping.
+                   true, or the positions to make room for when `show`
+                   changes during the flip */
   function chair(mol, t, opts) {
     opts = opts || {};
-    t = t || 0;
+    t = Math.max(0, Math.min(1, t || 0));
+    var steady = opts.steady ? steadyFor(mol, opts) : null;
     var m = CHAIR.model(mol, t);
     var cam = CHAIR.sideCam(t);
     function P3(p) { return [V.dot(cam[0], p) * S, -V.dot(cam[1], p) * S, V.dot(cam[2], p)]; }
@@ -136,6 +142,8 @@ var Draw = (function () {
           var a0 = dirs[q], a1 = q + 1 < dirs.length ? dirs[q + 1] : dirs[0] + 2 * Math.PI;
           if (a1 - a0 > best) { best = a1 - a0; at = (a0 + a1) / 2; }
         }
+        if (opts._numAt) opts._numAt[n] = at;
+        if (steady) at = steady.numAt(n, t);
         var nx = C[n][0] + Math.cos(at) * 13, ny = C[n][1] + Math.sin(at) * 13;
         el('text', { x: nx.toFixed(1), y: ny.toFixed(1), 'text-anchor': 'middle', 'dominant-baseline': 'central',
                      class: 'ch-num' + (opts.hotC === n ? ' hot' : '') }, gn, String(n));
@@ -152,9 +160,12 @@ var Draw = (function () {
       var lx = sb.end[0] + sb.u[0] * gap, ly = sb.end[1] + sb.u[1] * gap;
       var anchor = anchorFor(sb.u[0]);
       var w = textW(lab);
-      /* centre of the label's box, for targets */
-      var bx = anchor === 'start' ? lx + w / 2 - 2 : anchor === 'end' ? lx - w / 2 + 2 : lx;
-      if (anchor === 'middle') ly += sb.u[1] > 0 ? 3 : -3;
+      /* centre of the label's box: beside the bond's end for a bond that
+         leans sideways, above or below it for an upright one, sliding from
+         one to the other so a label never jumps as the ring flips */
+      var lean = Math.max(-1, Math.min(1, sb.u[0] / 0.35));
+      var bx = lx + lean * (w / 2 - 2);
+      ly += (sb.u[1] > 0 ? 3 : -3) * (1 - Math.abs(lean));
       var tg = targets[pos];
       var parent = gl;
       if (tg) {
@@ -185,8 +196,100 @@ var Draw = (function () {
         pts.push([lx2 - 12, ly2 - 12], [lx2 + 12, ly2 + 12]);
       }
     });
-    fit(s, pts, opts.pad == null ? 8 : opts.pad);
+    var box = fit(s, pts, opts.pad == null ? 8 : opts.pad);
+    if (opts._box) { opts._box.x0 = box.x0; opts._box.y0 = box.y0; opts._box.x1 = box.x0 + box.w; opts._box.y1 = box.y0 + box.h; }
+    if (steady) s.setAttribute('viewBox', steady.viewBox);
     return s;
+  }
+
+  /* What a steady chair drawing needs, worked out once per molecule and set
+     of positions by drawing the whole flip:
+     - one frame that holds every stage of the flip;
+     - for each carbon number, an angle that changes smoothly. A still
+       drawing puts the number in the widest gap round its carbon, and the
+       widest gap changes from moment to moment. Here the number starts in
+       chair 1's gap and ends in chair 2's, following the same two bonds as
+       they turn, and crosses from one to the other in mid-flip. */
+  var STEADY = {}, GRID = 100;
+  function steadyFor(mol, opts) {
+    var show = opts.show === 'all' ? CHAIR.POSITIONS.slice() : (opts.show || defaultShow(mol));
+    var room = opts.steady === true ? show : opts.steady;
+    var key = [mol.id, show.join(), room.join(), opts.pad, opts.numbers === false ? 0 : 1].join('|');
+    if (STEADY[key]) return STEADY[key];
+    var X0 = Infinity, Y0 = Infinity, X1 = -Infinity, Y1 = -Infinity;
+    var wide = [];                       /* widest-gap angle of each carbon, at each grid point */
+    var bonds = [];                      /* screen angle of every bond drawn at each carbon */
+    for (var i = 0; i <= GRID; i++) {
+      var t = i / GRID, box = {}, numAt = {};
+      chair(mol, t, { show: room, pad: opts.pad, numbers: false, _box: box });
+      X0 = Math.min(X0, box.x0); Y0 = Math.min(Y0, box.y0); X1 = Math.max(X1, box.x1); Y1 = Math.max(Y1, box.y1);
+      chair(mol, t, { show: show, pad: opts.pad, _box: box, _numAt: numAt });
+      X0 = Math.min(X0, box.x0); Y0 = Math.min(Y0, box.y0); X1 = Math.max(X1, box.x1); Y1 = Math.max(Y1, box.y1);
+      wide.push(numAt);
+      bonds.push(bondAngles(mol, t, show));
+    }
+    /* the two bonds either side of angle `at` round carbon n at grid point i */
+    function pairAt(n, i) {
+      var list = bonds[i][n].slice().sort(function (a, b) { return a.a - b.a; });
+      var at = wide[i][n], k;
+      for (k = 0; k < list.length; k++) if (list[k].a > at) break;
+      return [list[(k - 1 + list.length) % list.length].id, list[k % list.length].id];
+    }
+    var TAU = 2 * Math.PI;
+    function near(a, ref) { return a + TAU * Math.round((ref - a) / TAU); }
+    /* the bisector of one pair of bonds, followed from grid point `from` in steps of `dir` */
+    function track(n, from, dir) {
+      var pair = pairAt(n, from), out = [], prevA = null, prevG = null;
+      for (var i = from; i >= 0 && i <= GRID; i += dir) {
+        var a0 = null, a1 = null;
+        bonds[i][n].forEach(function (b) { if (b.id === pair[0]) a0 = b.a; if (b.id === pair[1]) a1 = b.a; });
+        var g = ((a1 - a0) % TAU + TAU) % TAU;
+        if (prevA != null) { a0 = near(a0, prevA); g = near(g, prevG); }
+        prevA = a0; prevG = g;
+        out[i] = a0 + g / 2;
+      }
+      return out;
+    }
+    var A = {}, B = {};
+    for (var n = 1; n <= 6 && opts.numbers !== false; n++) {
+      A[n] = track(n, 0, 1);
+      B[n] = track(n, GRID, -1);
+      var shift = near(B[n][GRID / 2], A[n][GRID / 2]) - B[n][GRID / 2];
+      for (var j = 0; j <= GRID; j++) B[n][j] += shift;
+    }
+    var pad = 2;
+    STEADY[key] = {
+      viewBox: [X0 - pad, Y0 - pad, X1 - X0 + 2 * pad, Y1 - Y0 + 2 * pad].map(function (v) { return v.toFixed(1); }).join(' '),
+      numAt: function (n, t) {
+        var x = t * GRID, i = Math.min(GRID - 1, Math.floor(x)), f = x - i;
+        var a = A[n][i] + (A[n][i + 1] - A[n][i]) * f, b = B[n][i] + (B[n][i + 1] - B[n][i]) * f;
+        var w = Math.max(0, Math.min(1, (t - 0.3) / 0.4));
+        w = w * w * (3 - 2 * w);
+        return a + (b - a) * w;
+      }
+    };
+    return STEADY[key];
+  }
+
+  /* Screen angles of the bonds drawn at each ring carbon: its two ring bonds
+     and the shown substituents. { n: [{ id, a }] } */
+  function bondAngles(mol, t, show) {
+    var m = CHAIR.model(mol, t), cam = CHAIR.sideCam(t), out = {};
+    function P(p) { return [V.dot(cam[0], p), -V.dot(cam[1], p)]; }
+    for (var n = 1; n <= 6; n++) {
+      var c3 = CHAIR.atom(m, 'C' + n).p, c = P(c3), list = [];
+      [['next', n % 6 + 1], ['prev', (n + 4) % 6 + 1]].forEach(function (r) {
+        var q = P(CHAIR.atom(m, 'C' + r[1]).p);
+        list.push({ id: r[0], a: Math.atan2(q[1] - c[1], q[0] - c[0]) });
+      });
+      show.forEach(function (pos) {
+        if (CHAIR.carbonOf(pos) !== n) return;
+        var e = P(V.add(c3, V.mul(V.unit(V.sub(CHAIR.atom(m, pos).p, c3)), SUB)));
+        list.push({ id: pos, a: Math.atan2(e[1] - c[1], e[0] - c[0]) });
+      });
+      out[n] = list;
+    }
+    return out;
   }
 
   /* ------------------------------------------------------- flat ring */
