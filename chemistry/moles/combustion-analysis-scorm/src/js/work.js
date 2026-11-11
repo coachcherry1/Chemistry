@@ -280,7 +280,7 @@ var Work = (function () {
         if (work.c1 !== p.choice) return 'What does the problem give? Percents: assume a 100 g sample. Grams: use the grams.';
         if (p.choice === 'pct') {
           return p.mode === 'hydrate' ? 'Assume a 100 g sample of the hydrate: the percent water is the grams of water, the rest of the 100 g is the anhydrous salt.' :
-            'Assume a 100 g sample: each percent becomes that many grams. Type the grams.';
+            'Assume a 100 g sample: each percent becomes that many grams.';
         }
         if (p.kind === 'heat') return 'The anhydrous salt is what is left. Find the grams of water lost: subtract.';
         if (p.kind === 'lab') return 'Find the grams of each part from the crucible masses: subtract.';
@@ -411,7 +411,8 @@ var Work = (function () {
       if (!p.rows.some(function (r) { return r.typed; })) {
         /* nothing to type: the grams are given */
         work.n.g = p.rows.map(function (r) { return r.g; });
-        advance(s, 'Right: no percents here, so the grams are used as they are.');
+        advance(s, p.choice === 'pct' ? 'Right: percents. In a 100 g sample' + (p.mode === 'hydrate' ? ' of the hydrate' : '') +
+          ', each percent is that many grams' + (p.mode === 'hydrate' ? ' (the salt is the rest of the 100 g)' : '') + '.' : 'Right: no percents here, so the grams are used as they are.');
         return;
       }
       render();

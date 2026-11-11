@@ -8,7 +8,8 @@ rules, every compound and a worked sample set. Every number is computed by the a
 
 ## The four steps (the teacher’s words)
 
-1. **Percents to grams:** given percents, assume a 100 g sample, so 40.0% is 40.0 g. Given grams (or masses to subtract), use the grams.
+1. **Percents to grams:** the student says what the problem gives. Percents: assume a 100 g sample, and the grams fill in (40.0% is 40.0 g;
+   a hydrate's salt is the rest of the 100 g). Grams given: they fill in too. Crucible or heating masses: the student subtracts.
 2. **Grams to moles,** set up by dimensional analysis: g X × (1 mol X / ___ g X) = ___ mol X, the molar mass typed in the bottom of the
    fraction to the tenths place, so g cancels; then × (___ mol C / 1 mol CO₂), the mole ratio from the formula typed on top.
    Moles to at least 3 significant figures.
@@ -91,8 +92,6 @@ Teacher links: `src/index.html?step=<id or number>` opens a step without saving;
 
 | Slip | Feedback |
 | --- | --- |
-| A percent as a decimal (0.699 for 69.9%) | Assume a 100 g sample: 69.9% of 100 g is 69.9 g. Percents become grams with the same number. |
-| The water’s percent as the salt (hydrate) | That is the water. Of the 100 g, the rest is the anhydrous salt: 100 − 36.1. |
 | O₂’s mass for O | That is O₂. The oxygen here is O atoms in a compound, so use the atomic mass of O from the periodic table. |
 | A molar mass not to tenths (159.61) | Round the molar mass of CuSO₄ to the tenths place, one digit after the decimal point (a whole number like 32 is fine when the tenths digit is 0). |
 | Grams times molar mass (the bottom of the setup multiplied) | The molar mass is on the bottom of the fraction, so divide by it. Multiply across the top, divide by the bottom. |

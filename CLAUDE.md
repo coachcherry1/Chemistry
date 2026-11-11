@@ -578,7 +578,7 @@ not the full page.
   with `burn` (propane's atoms go into 3 CO2 and 4 H2O: × 1 C per CO2, × 2 H per H2O).
 - **The work table (`work.js`):** a row per element (hydrate: anhydrous salt and water; combustion: C from CO2 and H from H2O), a
   column per step, each with its own Check; a step opens when the one before is right. Step 1 asks "percents or grams?" first
-  (grams given: the column fills itself; hydrate masses: subtract). Step 2 is a **dimensional analysis setup** (the teacher wants DA
+  (percents or grams given: the column fills itself once the choice is right, the teacher's choice; hydrate masses: subtract). Step 2 is a **dimensional analysis setup** (the teacher wants DA
   stressed in every honors activity): g X × (1 mol X / ___ g X) = ___ mol X, the molar mass the blank on the bottom, typed to tenths;
   combustion adds × (___ mol C / 1 mol CO₂), the mole ratio the blank on top, and the answer is mol C directly (no mol CO₂ box).
   Cancelling units are struck through; the setup wraps between factors when a formula is long (`.da-piece`). Step 3 taps the

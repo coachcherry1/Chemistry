@@ -102,7 +102,7 @@ var Gen = (function () {
       var row = { key: x, label: x, atom: x, mmF: x, target: targets[i], sub: Chem.wholeAfter(targets[i], mult) };
       if (kind === 'pct') {
         var s = (100 * w[i]).toPrecision(3);
-        row.pct = s; row.g = parseFloat(s); row.gStr = s; row.how = 'pct'; row.typed = true; row.dp = Chem.decimalsIn(s);
+        row.pct = s; row.g = parseFloat(s); row.gStr = s; row.how = 'pct'; row.typed = false; row.dp = Chem.decimalsIn(s);
         p.data.push({ label: elName(x), value: s + '%' });
       } else {
         row.g = Chem.roundTo(total * w[i], 3); row.gStr = g3(row.g); row.how = 'given'; row.typed = false; row.dp = 3;
@@ -148,7 +148,8 @@ var Gen = (function () {
       var dp = Chem.decimalsIn(s), rest = Chem.fmtDec(100 - parseFloat(s), dp);
       rows[1].g = parseFloat(s); rows[1].gStr = s; rows[1].how = 'pct'; rows[1].pct = s;
       rows[0].g = parseFloat(rest); rows[0].gStr = rest; rows[0].how = 'rest'; rows[0].pct = s;
-      rows.forEach(function (r) { r.typed = true; r.dp = dp; });
+      /* percents to grams fills itself in once the student says percents */
+      rows.forEach(function (r) { r.typed = false; r.dp = dp; });
       p.prompt = intro + ' is ' + s + '% water by mass.';
       p.data.push({ label: 'water', value: s + '%' });
       return p;
