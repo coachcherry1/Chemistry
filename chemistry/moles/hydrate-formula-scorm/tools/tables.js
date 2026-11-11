@@ -3,8 +3,8 @@
  * Students do not all use the class's table (masses to tenths). For each
  * table below, every problem of many sets is worked the way such a student
  * would: the molar masses typed are their own table's, rounded to tenths;
- * the calculator gets their table's full masses; moles are typed to 3
- * significant figures and the quotients to 2 decimal places, from those
+ * the calculator gets their table's full masses (the whole dimensional
+ * analysis setup at once); moles are typed to 3 significant figures and the quotients to 2 decimal places, from those
  * typed moles. Chem's judges then mark every box, and the quotients must
  * still read as the right fraction (the multiplier and the whole numbers
  * must be the right ones). This checks the tolerances (Chem.TOL 1.5% for
@@ -43,14 +43,12 @@ module.exports = function (ctx) {
     const mol = p.rows.map((r, i) => {
       const typedMM = round(M(r.mmF, t), 1).toFixed(1);
       const jm = need(Chem.judgeMM(r.mmF, typedMM), 'molar mass of ' + r.mmF + ' typed ' + typedMM);
-      const calc = g[i] / M(r.mmF, t);
-      const molStr = Chem.fmtSig(calc, 3);
-      need(Chem.judgeMoles(molStr, g[i], jm.ok ? jm.v : parseFloat(typedMM), Chem.mmValue(r.mmF), r.atom), 'moles ' + r.key + ' typed ' + molStr);
-      if (!r.per) return parseFloat(molStr);
-      need(Chem.judgePer(String(r.per), r.atom, r.molecule), 'atoms per ' + r.molecule);
-      const atomStr = Chem.fmtSig(parseFloat(molStr) * r.per, 3);
-      need(Chem.judgeAtomMoles(atomStr, parseFloat(molStr), r.per, r.atom, r.molecule), 'moles ' + r.atom + ' typed ' + atomStr);
-      return parseFloat(atomStr);
+      /* the whole chain on the calculator: g x 1 / their molar mass (x the mole ratio) */
+      if (r.per) need(Chem.judgePer(String(r.per), r.atom, r.molecule), 'mole ratio ' + r.atom + ' per ' + r.molecule);
+      const molStr = Chem.fmtSig(g[i] * (r.per || 1) / M(r.mmF, t), 3);
+      need(Chem.judgeMoles(molStr, g[i], jm.ok ? jm.v : parseFloat(typedMM), Chem.mmValue(r.mmF), r.atom, r.per, r.molecule),
+        'moles ' + (r.atom || r.key) + ' typed ' + molStr);
+      return parseFloat(molStr);
     });
     const min = Math.min.apply(null, mol);
     const sm = mol.indexOf(min);

@@ -193,6 +193,19 @@ input.blank::placeholder { font-weight: 500; font-size: 0.7rem; color: var(--mut
   input.blank.w-mol { width: 5em; }
 }
 
+/* Step 2: the dimensional analysis setup, fractions and struck units */
+.da { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 2px 3px; }
+.da-piece { display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; }
+.da-frac { display: inline-flex; flex-direction: column; align-items: center; margin: 0 1px; }
+.da-num { padding: 0 4px 2px; border-bottom: 1.6px solid var(--ink); }
+.da-den { padding: 2px 4px 0; }
+.da-op { color: var(--muted); font-size: 1.05rem; padding: 0 1px; }
+.da .tok.cx { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--bad); text-decoration-thickness: 2px; }
+.da input.blank { min-height: 26px; padding: 1px 4px; }
+.da input.blank::placeholder { font-size: 0.66rem; }
+.da.small { font-size: 0.82rem; }
+.da.small .da-op { font-size: 0.92rem; }
+
 .pickbtn, .qbtn {
   font: 700 0.78rem system-ui, sans-serif; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--tile-line);
   background: var(--panel); color: var(--ink); cursor: pointer; min-height: 28px;

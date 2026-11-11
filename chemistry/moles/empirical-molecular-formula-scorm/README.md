@@ -29,8 +29,9 @@ percents that needs x 1 or x 2.
 ## The four steps (on screen in the teacher's words)
 
 1. **Percents to grams:** given percents, assume a 100 g sample, so 40.0% is 40.0 g. Given grams, use the grams.
-2. **Grams to moles:** grams divided by the molar mass, typed to the tenths place (the Periodic table button docks a table with every
-   atomic mass to tenths). Moles to at least 3 significant figures.
+2. **Grams to moles,** set up by dimensional analysis, one line per row: g C x (1 mol C / ___ g C) = ___ mol C. The molar
+   mass is the blank in the bottom of the fraction (to the tenths place; the Periodic table button docks a table with every atomic
+   mass to tenths), and the g that cancels is struck through. Moles to at least 3 significant figures.
 3. **Divide by small:** tap the smallest mole value, divide every row by it, to two decimal places.
 4. **Multiply if not whole:** within 0.1 of a whole number, round (x 1). Otherwise read the decimal as a fraction and multiply every
    row by the same number: .50 x 2; .33 and .67 x 3; .25 and .75 x 4; .20, .40, .60 and .80 x 5 (halves, thirds, fourths and fifths).
@@ -84,12 +85,12 @@ with its typeset worked solution, and the big ideas.
 ```bash
 node tools/validate.js                    # must pass
 node tools/answer-key.js > ANSWER_KEY.md
-./build.sh                                # dist/empirical-molecular-formula-v1.zip
-node tools/walkthrough.js                 # Playwright: plays the whole activity against a fake LMS
+./build.sh                                # dist/empirical-molecular-formula-v2.zip
+node tools/walkthrough.js                 # Playwright: plays the whole activity against a fake LMS (SEED=n: one student's problems)
 node tools/layout.js                      # Playwright: fits a Chromebook, 1366x650 and 1366x520
 ```
 
-Upload `dist/empirical-molecular-formula-v1.zip` in Schoology with **Add Materials > Add File/Link/External Tool > Add File** (or **Package**).
+Upload `dist/empirical-molecular-formula-v2.zip` in Schoology with **Add Materials > Add File/Link/External Tool > Add File** (or **Package**).
 `src/index.html?step=set&seed=5&problem=3` opens a step (ids in `ANSWER_KEY.md`, or numbers), a given set and one of its problems
 without saving anything.
 
