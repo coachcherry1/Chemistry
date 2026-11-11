@@ -49,7 +49,8 @@ numbered and each is named by its pattern.
 activity: the electron pairs ride the arrows, the bonds that break fade (dashed while they go), new bonds grow,
 the atoms glide into the products' bond-line drawings and the charges move. A concerted step (SN2, E2) shows
 Klein's transition-state brackets with δ− on the nucleophile or base and the leaving group. Play, or drag the
-slider; the energy diagram's marker follows. It plays by itself the first time (not with reduced motion, where
+slider; the energy diagram's marker follows, a line under the picture says what is happening, and **Slow
+motion** plays it at less than half speed. In SN2 the other three groups swing over the α carbon like an umbrella. It plays by itself the first time (not with reduced motion, where
 Play steps through still frames).
 
 **Sized for a Chromebook.** Whatever a student works with is on screen together at 1366 × 650 and in a 1366 ×
@@ -70,7 +71,7 @@ projection; a sort's bins and tray; the decision table and its results. `tools/l
 - **t-BuOK** is a strong nucleophile and a strong base, as the teacher teaches it, but sterically hindered: unlike
   the others it gives mostly E2 at a 1° carbon (E2, some SN2), and it always gives the Hofmann product.
 - **Klein's table** (step 2), as printed: 1° SN2 / SN2, some E2 / E2 / ✗; 2° SN2 / E2, some SN2 / E2 / ✗; 3° SN1 /
-  E2 / E2 / SN1, some E1 (columns in the order above).
+  E2 / E2 / SN1 and E1 (columns in the order above).
 - **Regioselective**: more than one regiochemical product can form, and one is major (Zaitsev with an ordinary
   base, Hofmann with t-BuOK; E1 Zaitsev). **Regiospecific**: only one can form, because only one β H can be
   anti-coplanar to the leaving group (trans-1-chloro-2-methylcyclohexane, menthyl chloride).
@@ -83,7 +84,8 @@ projection; a sort's bins and tray; the decision table and its results. `tools/l
   is shown as major, the unrearranged one as minor. 2° substrates in ethanol never appear in the prediction
   problems.
 - **SN1 stereochemistry** is taught as a racemic mixture (attack on either face); Klein's note about a slight excess
-  of inversion is left out. **E1** products are always minor beside SN1.
+  of inversion is left out. **SN1 beside E1** follows Klein (7.8, 7.9): SN1 is favoured unless an E1 alkene is tri- or
+  tetrasubstituted, when E1 is favoured (tert-butyl bromide in ethanol: SN1 major; 2-bromo-2-methylbutane: E1 major).
 - **Left out on purpose:** solvent effects, leaving-group ranking beyond the halides, rate laws written as
   equations (only what the 1 and the 2 mean), and graded arrow drawing (checkpoints judge arrows by picking the
   right drawing).
@@ -131,8 +133,9 @@ each configuration, cis or trans for each E or Z.
   reagent-function question. First answer counts; retakes keep the best score.
 - Score 0–100 to `cmi.core.score.raw`, `completed` at the results screen, no masteryscore.
 - Saves only in `cmi.suspend_data` (localStorage only when standalone), key `substitution-elimination-state`,
-  identifiers `SUBELIM_*`, `SCHEMA` 1 in `app.js`.
-- Zip: `dist/substitution-elimination-v2.zip` (v2: every reaction played, steric hindrance, the sort drawn out).
+  identifiers `SUBELIM_*`, `SCHEMA` 2 in `app.js`.
+- Zip: `dist/substitution-elimination-v4.zip` (v4: checked against Klein's chapter 7, SN1 beside E1 by Klein's rule,
+  cleaner animations; v2: every reaction played, steric hindrance, the sort drawn out).
 
 ## Before every commit (in this folder)
 

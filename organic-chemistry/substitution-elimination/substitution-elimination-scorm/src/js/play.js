@@ -314,7 +314,7 @@ var Play = (function () {
       var major = +Object.keys(count).sort(function (p, q) { return count[q] - count[p]; })[0];
       var others = pc.filter(function (u) { return g0.atoms[u].s !== major; });
       var acid = others.length && others.every(function (u) { return g0.atoms[u].el === 'H'; });
-      pc.forEach(function (u) { W[u] = acid || g0.atoms[u].s === major ? 1 : 0.15; });
+      pc.forEach(function (u) { W[u] = acid || g0.atoms[u].s === major ? 1 : 0.4; });
       var fit;
       if (anchor && pc.indexOf(anchor.a) >= 0 && A[anchor.a] && A[anchor.b]) {
         var dir = anchor.away != null
@@ -429,7 +429,8 @@ var Play = (function () {
       var pos = {};
       Object.keys(vis).forEach(function (k) {
         var q0 = P0[k], q1 = P1[k];
-        pos[k] = [lerp(q0[0], q1[0], s) / S, -lerp(q0[1], q1[1], s) / S];
+        var q = swing(+k, s) || [lerp(q0[0], q1[0], s), lerp(q0[1], q1[1], s)];
+        pos[k] = [q[0] / S, -q[1] / S];
       });
       var fadeOut = 1 - seg(p, 0.2, 0.6), fadeIn = seg(p, 0.42, 0.85);
       var style = {}, wedge = {}, adj = {};
@@ -483,8 +484,8 @@ var Play = (function () {
         paths.forEach(function (A) {
           var q = bez(A, t), q2 = bez(A, Math.min(1, t + 0.02)), q3 = bez(A, Math.max(0, t - 0.02));
           var tg = unit([q2[0] - q3[0], q2[1] - q3[1]]), nv = [-tg[1], tg[0]];
-          Draw.el('circle', { cx: f1(q[0] + nv[0] * 3.4), cy: f1(q[1] + nv[1] * 3.4), r: 2.8, class: 'e-dot' }, ge);
-          Draw.el('circle', { cx: f1(q[0] - nv[0] * 3.4), cy: f1(q[1] - nv[1] * 3.4), r: 2.8, class: 'e-dot' }, ge);
+          Draw.el('circle', { cx: f1(q[0] + nv[0] * 3.4), cy: f1(q[1] + nv[1] * 3.4), r: 3.1, class: 'e-dot' }, ge);
+          Draw.el('circle', { cx: f1(q[0] - nv[0] * 3.4), cy: f1(q[1] - nv[1] * 3.4), r: 3.1, class: 'e-dot' }, ge);
         });
       }
       /* Klein's transition state: brackets, ‡, δ− where the charge is shared */
@@ -504,6 +505,21 @@ var Play = (function () {
       }
       return geo;
     }
+    /* back-side attack: the other groups swing over the α carbon like an
+       umbrella in the wind, each keeping its bond length, instead of
+       sliding straight across */
+    var hub = anchor && anchor.away != null ? anchor.a : -1;
+    var axis = hub >= 0 ? Math.atan2(P0[anchor.away][1] - P0[hub][1], P0[anchor.away][0] - P0[hub][0]) : 0;
+    function swing(k, s) {
+      if (hub < 0 || k === hub || g0.atoms[k].s !== g0.atoms[hub].s || k === anchor.away) return null;
+      var c = P0[hub];
+      var v0 = [P0[k][0] - c[0], P0[k][1] - c[1]], v1 = [P1[k][0] - c[0], P1[k][1] - c[1]];
+      var a0 = wrap(Math.atan2(v0[1], v0[0]) - axis), a1 = wrap(Math.atan2(v1[1], v1[0]) - axis);
+      if (a0 * a1 <= 0) return null;                 /* it would have to cross the line of attack */
+      var a = axis + lerp(a0, a1, s), r = lerp(Math.hypot(v0[0], v0[1]), Math.hypot(v1[0], v1[1]), s);
+      return [c[0] + r * Math.cos(a), c[1] + r * Math.sin(a)];
+    }
+    function wrap(a) { while (a > Math.PI) a -= 2 * Math.PI; while (a <= -Math.PI) a += 2 * Math.PI; return a; }
     function grow(b, q, r) { b[0] = Math.min(b[0], q[0] - r); b[1] = Math.min(b[1], q[1] - r); b[2] = Math.max(b[2], q[0] + r); b[3] = Math.max(b[3], q[1] + r); }
     function bez(A, t) {
       var v = 1 - t;
@@ -520,7 +536,7 @@ var Play = (function () {
 
     function set(p) { cur = p; frame(p); }
     set(o.p || 0);
-    return { node: root, set: set, p: function () { return cur; }, after: g1, box: box,
+    return { node: root, set: set, p: function () { return cur; }, after: g1, box: box, concerted: ts.length > 0,
              problems: drawnProblems(g1, P1, wedge1) };
   }
 

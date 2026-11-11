@@ -35,7 +35,7 @@ Do not edit by hand: change the data in `src/js/` and regenerate.
 | --- | --- | --- | --- | --- |
 | 1° | SN2 | SN2, some E2 | E2 | No reaction |
 | 2° | SN2 | E2, some SN2 | E2 | No reaction |
-| 3° | SN1 | E2 | E2 | SN1, some E1 |
+| 3° | SN1 | E2 | E2 | SN1 and E1 |
 
 t-BuOK is a strong nucleophile and a strong base, but sterically hindered: at a 1° carbon it gives E2, some SN2; everywhere it gives the Hofmann product.
 
@@ -122,7 +122,7 @@ Molecules: (2R,3R)-2-bromo-3-methylpentane; (2R,3S)-2-bromo-3-methylpentane.
 ### 16. E1
 
 Molecule: 2-bromo-2-methylbutane.
-- Prediction: 2-Bromo-2-methylbutane in ethanol. Ethanol can attack the carbocation or take one of its β H atoms. Which product is major? **The SN1 product, 2-ethoxy-2-methylbutane**
+- Prediction: 2-Bromo-2-methylbutane in ethanol. Ethanol can attack the carbocation or take one of its β H atoms. Which product is major? **The E1 product, 2-methylbut-2-ene**
 
 ### 18. Anti-coplanar in a chair
 
@@ -163,7 +163,7 @@ Molecules: cis-1-bromo-4-tert-butylcyclohexane; trans-1-bromo-4-tert-butylcycloh
 - Problem 2: 1-bromobutane + NaOMe. Function: Strong nucleophile and strong base. Substrate primary (1°): SN2, some E2. Products: 1-methoxybutane (SN2, major); but-1-ene (E2, minor).
 - Problem 3: 1-bromobutane + t-BuOK. Function: Strong nucleophile and strong base. Substrate primary (1°): E2, some SN2. Products: but-1-ene (E2, major); 1-tert-butoxybutane (SN2, minor).
 - Problem 4: (R)-2-bromobutane + NaCN. Function: Nucleophile only. Substrate secondary (2°): SN2. Products: (S)-2-methylbutanenitrile (SN2, major).
-- Problem 5: 2-bromo-2-methylbutane + EtOH. Function: Weak nucleophile, weak base. Substrate tertiary (3°): SN1, some E1. Products: 2-ethoxy-2-methylbutane (SN1, major); 2-methylbut-2-ene (E1, minor, Zaitsev); 2-methylbut-1-ene (E1, minor, Hofmann).
+- Problem 5: 2-bromo-2-methylbutane + EtOH. Function: Weak nucleophile, weak base. Substrate tertiary (3°): SN1 and E1. Products: 2-methylbut-2-ene (E1, major, Zaitsev); 2-methylbut-1-ene (E1, minor, Hofmann); 2-ethoxy-2-methylbutane (SN1, minor).
 
 ## Checkpoints
 
@@ -358,9 +358,9 @@ Draws 5 of 16; always asks: c-fn-tbuok, c-e2-major.
   - Other choices: Proton transfer, then loss of a leaving group; Both at once; Nucleophilic attack, then proton transfer
   - Why: E1 goes through the carbocation: the leaving group leaves first (the slow step), then the solvent takes a β H.
 - **c-e1-sn1**: What is the major product of 2-bromo-2-methylbutane in ethanol? [2-bromo-2-methylbutane + EtOH]
-  - Answer: **2-ethoxy-2-methylbutane**
-  - Other choices: 2-methylbut-2-ene; 2-methylbut-1-ene
-  - Why: A 3° substrate in ethanol, a weak nucleophile and weak base: SN1 is major and E1 minor. Among the alkenes, the Zaitsev product is major.
+  - Answer: **2-methylbut-2-ene**
+  - Other choices: 2-ethoxy-2-methylbutane; 2-methylbut-1-ene
+  - Why: A 3° substrate in ethanol, a weak nucleophile and weak base: SN1 and E1. The Zaitsev alkene, 2-methylbut-2-ene, is trisubstituted, so E1 is favoured over SN1 here (Klein). The ether and the Hofmann alkene are minor.
 - **c-e1-hofmann**: Why can a bulky base not turn E1 toward the Hofmann product?
   - Answer: **The base is not in the slow step**
   - Other choices: E1 has no proton transfer; E1 always gives substitution; E1 is stereospecific
@@ -441,12 +441,12 @@ Draws 5 of 15; always asks: e-fn-h2o, e-klein.
   - Why: Little steric hindrance at a 1° carbon: a strong nucleophile and strong base mostly substitutes (SN2), with some E2.
 - **e-mech-2both**: A 2° alkyl halide reacts with NaOMe. What does Klein’s table predict? [2-bromopentane + NaOMe]
   - Answer: **E2, some SN2**
-  - Other choices: SN2, some E2; SN1, some E1; SN2
+  - Other choices: SN2, some E2; SN1 and E1; SN2
   - Why: At a 2° carbon the strong base mostly eliminates: E2 major, SN2 minor.
 - **e-mech-3weak**: A 3° alkyl halide in ethanol. What does Klein’s table predict? [2-bromo-2-methylbutane + EtOH]
-  - Answer: **SN1, some E1**
+  - Answer: **SN1 and E1**
   - Other choices: E2; SN2; No reaction
-  - Why: Weak nucleophile, weak base, 3° substrate: the carbocation forms, then SN1 (major) and E1 (minor).
+  - Why: Weak nucleophile, weak base, 3° substrate: the carbocation forms, then SN1 and E1 compete. E1 is favoured when its alkene is tri- or tetrasubstituted, as here; otherwise SN1.
 - **e-mech-3nuc**: A 3° alkyl halide with NaSH. What does Klein’s table predict? [2-bromo-2-methylbutane + NaSH]
   - Answer: **SN1**
   - Other choices: SN2; E2; No reaction
