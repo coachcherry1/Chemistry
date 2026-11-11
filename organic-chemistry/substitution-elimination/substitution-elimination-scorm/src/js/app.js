@@ -21,7 +21,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a molecule changes: a save
      from an older build is then discarded and the student starts fresh. */
-  var SCHEMA = 1;
+  var SCHEMA = 2;
 
   var PARTS = [
     { n: 1, name: 'Who’s who' },
@@ -122,7 +122,7 @@ var App = (function () {
     specific: { q: '(2R,3S)-2-Bromo-3-methylpentane is a diastereomer of the one you just used. Does its E2 give the same alkene?',
       choices: ['No: it gives the other stereoisomer', 'Yes: the same alkene', 'Both stereoisomers, in equal amounts'], answer: 0 },
     e1major: { q: '2-Bromo-2-methylbutane in ethanol. Ethanol can attack the carbocation or take one of its β H atoms. Which product is major?',
-      choices: ['The SN1 product, 2-ethoxy-2-methylbutane', 'The E1 product, 2-methylbut-2-ene', 'Equal amounts of each'], answer: 0 },
+      choices: ['The E1 product, 2-methylbut-2-ene', 'The SN1 product, 2-ethoxy-2-methylbutane', 'Equal amounts of each'], answer: 0 },
     ringanti: { q: 'In this chair the Cl is axial, pointing up. Which H on C2 is anti-coplanar to it?',
       choices: ['The axial H, pointing down', 'The equatorial H', 'Neither of them'], answer: 0 },
     locked: { q: 'Which reacts much faster by E2 with NaOEt?',
@@ -405,7 +405,7 @@ var App = (function () {
         if (next >= 100 && o.done) o.done();
         return;
       }
-      var start = null, from = +range.value, dur = o.ms || 3200;
+      var start = null, from = +range.value, dur = (typeof o.ms === 'function' ? o.ms() : o.ms) || 3200;
       play.textContent = '❚❚ Pause';
       function step(ts) {
         if (start == null) start = ts;
@@ -452,9 +452,24 @@ var App = (function () {
   function playBox(scene, o) {
     o = o || {};
     var pl = Play.Player(scene, { arrows: o.arrows, badges: o.badges, p: o.p || 0 });
-    var sl = slider(function (p) { pl.set(p); if (o.onInput) o.onInput(p); },
-      { from: 'Arrows', to: 'Products', ms: o.ms || 4200, p: o.p || 0, done: o.done, label: scene.title + ': reaction progress' });
-    var node = h('div', { class: 'player-box' }, [h('div', { class: 'play-wrap' }, [pl.node]), sl.node]);
+    /* what is happening, in words, under the picture */
+    var read = h('p', { class: 'readout play-read', 'aria-live': 'off' });
+    var what = scene.arrows.map(function (a) { return a.pattern.toLowerCase(); }).filter(function (t, k, all) { return all.indexOf(t) === k; }).join(' and ');
+    function say2(p) {
+      read.textContent = p < 0.04 ? 'The curved arrows show where each pair of electrons goes.'
+        : p < 0.36 ? 'The electron pairs move along the arrows: ' + what + '.'
+        : p < 0.64 ? (pl.concerted ? 'Transition state: the old bond is half broken and the new one half made (dashed), all in one step.' : 'The bond that breaks fades (dashed) as the new one grows.')
+        : p < 0.97 ? 'The atoms settle into the products and the charges move.'
+        : 'The products of this step.';
+    }
+    var slow = false;
+    var half = h('button', { type: 'button', class: 'mini', 'aria-pressed': 'false', text: 'Slow motion' });
+    half.addEventListener('click', function () { slow = !slow; half.setAttribute('aria-pressed', slow ? 'true' : 'false'); });
+    var sl = slider(function (p) { pl.set(p); say2(p); if (o.onInput) o.onInput(p); },
+      { from: 'Arrows', to: 'Products', ms: function () { return (o.ms || 4200) * (slow ? 2.5 : 1); }, p: o.p || 0, done: o.done, label: scene.title + ': reaction progress' });
+    sl.node.appendChild(half);
+    say2(o.p || 0);
+    var node = h('div', { class: 'player-box' }, [h('div', { class: 'play-wrap' }, [pl.node]), sl.node, read]);
     return { node: node, player: pl, slider: sl, play: function () { if (!reduceMotion) sl.play.click(); } };
   }
 
@@ -776,7 +791,7 @@ var App = (function () {
     'E2 is concerted: proton transfer and loss of the leaving group in one step. The H and the leaving group must be anti-coplanar; on a ring, trans-diaxial.',
     'Regioselective: one regiochemical product is major (Zaitsev with an ordinary base, Hofmann with t-BuOK). Regiospecific: only one can form.',
     'Stereoselective: one stereoisomer is major (the β carbon has two H atoms). Stereospecific: the substrate’s configuration decides the only stereoisomer (one H; and SN2).',
-    'E1 goes through the same carbocation as SN1 and gives the Zaitsev product. A chair locked by a tert-butyl group with the leaving group equatorial can hardly do E2 at all.'
+    'E1 goes through the same carbocation as SN1 and gives the Zaitsev product. SN1 is usually favoured, but E1 is favoured when its alkene is tri- or tetrasubstituted. A chair locked by a tert-butyl group with the leaving group equatorial can hardly do E2 at all.'
   ];
 
   RENDER.results = function () {

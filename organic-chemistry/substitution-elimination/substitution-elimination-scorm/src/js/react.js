@@ -1,6 +1,6 @@
 /* react.js: the reactions, computed from the graph.
  *
- * Klein's three steps (section 7.11):
+ * Klein's three steps (section 7.9):
  *   1. the function of the reagent (REAGENTS, FUNCTIONS)
  *   2. the substrate, methyl to 3°, and the mechanisms Klein's table gives
  *      for it (TABLE)
@@ -82,7 +82,7 @@ var React = (function () {
   var REAGENT_ORDER = ['NaOH', 'NaOMe', 'NaOEt', 'tBuOK', 'DBN', 'DBU', 'NaH', 'NaI', 'NaBr', 'NaCl', 'NaSH', 'NaSR',
                        'H2S', 'RSH', 'NaCN', 'NaN3', 'H2O', 'MeOH', 'EtOH'];
 
-  /* Klein's table (7.11), by substrate and function. */
+  /* Klein's table (Figure 7.18), by substrate and function. */
   var TABLE = {
     1: { base: [['E2', 'major']], both: [['SN2', 'major'], ['E2', 'minor']], nuc: [['SN2', 'major']], weak: [] },
     2: { base: [['E2', 'major']], both: [['E2', 'major'], ['SN2', 'minor']], nuc: [['SN2', 'major']], weak: [] },
@@ -526,6 +526,13 @@ var React = (function () {
     var deg = degree(m);
     var mechs = mechanisms(deg, key);
     var products = [];
+    /* SN1 beside E1 (Klein 7.8 and 7.9): elimination is favoured when an
+       alkene it gives is tri- or tetrasubstituted; otherwise substitution */
+    var e1Wins = false;
+    if (mechs.length === 2 && mechs[0][0] === 'SN1' && mechs[1][0] === 'E1') {
+      e1Wins = e1Products(m).some(function (p) { return p.subst >= 3; });
+      if (e1Wins) mechs = [['E1', 'major'], ['SN1', 'minor']];
+    }
     mechs.forEach(function (mr) {
       var mech = mr[0], role = mr[1];
       if (mech === 'SN2') products.push({ mol: substitute(m, key, 'inv'), mech: 'SN2', role: role });
@@ -536,7 +543,7 @@ var React = (function () {
         products.push({ mol: p.mol, mech: 'SN1', role: role, face: p.face, rearranged: p.rearranged });
       });
       if (mech === 'E1') e1Products(m).forEach(function (p) {
-        products.push({ mol: p.mol, mech: 'E1', role: 'minor', regio: p.regio, how: p.how });
+        products.push({ mol: p.mol, mech: 'E1', role: e1Wins ? p.role : 'minor', regio: p.regio, how: p.how });
       });
     });
     products.forEach(function (p) { p.name = Name.name(p.mol); });

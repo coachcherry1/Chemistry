@@ -313,9 +313,9 @@ not the full page.
 - **Walkthrough harness (both new packages):** the fake LMS reads and writes sessionStorage on every call and never stages
   the next load's data; staging made the reload check fail at random (still the case in the older packages' walkthroughs).
 
-## substitution-elimination-scorm (branch `claude/compassionate-allen-hwn3ov`, zip v2, SCHEMA 1)
+## substitution-elimination-scorm (branch `claude/compassionate-allen-hwn3ov`, zip v3, SCHEMA 2)
 
-- **Key objective:** Klein's three steps (7.11): the function of the reagent, the substrate and Klein's table, then
+- **Key objective:** Klein's three steps (7.9): the function of the reagent, the substrate and Klein's table, then
   regio- and stereochemistry; major and minor products.
 - 26 steps in 5 parts; 23 graded questions (4+5+5+4+5) from a pool of 73. Every checkpoint's core has a
   reagent-function question. No reference table beside the checkpoints (the teacher's choice).
@@ -330,6 +330,10 @@ not the full page.
   SN2 stereospecific, SN1 not. E/Z for every stereogenic alkene, names as (E)-pent-2-ene; Klein's ring names
   (1-methylcyclohexene). Carbocation rearrangements in, on 2° substrates in ethanol (the step explains Klein's ✗).
   Left out: solvents, leaving-group ranking, rate-law equations, graded arrow drawing, A-values on screen.
+- **Checked against the teacher's Klein chapter 7 PDF (Nov 2026).** Figure 7.18 is the table (the 3° weak cell is
+  "SN1 and E1"): SN1 is favoured unless an E1 alkene is tri- or tetrasubstituted, then E1 is major
+  (`React.predict`; tBuBr in EtOH SN1 major, bmb E1 major). That edition says anti-periplanar after introducing
+  anti-coplanar, and never says regiospecific or trans-diaxial; the teacher's words are kept.
 - **One model:** molecules are SMILES (or the chairs' flat-ring spec) in `molecules.js`, each with its textbook name
   for the validator; names (`name.js`), drawings (`layout.js`), products (`react.js`), 3D (`build3d.js`) and
   mechanisms (`mech.js`) are all computed. E2 stereochemistry is checked twice (parity math and a 3D anti
@@ -343,6 +347,7 @@ not the full page.
   E/Z. Regio and the predict problems play mechanisms without drawing (`U.chainBox`, `U.scenesFor`).
   `App.playedScenes()` lists them all: the validator checks their products against react.js, the walkthrough
   their drawings. The step-21 sort shows one reaction at a time, drawn out.
+  Each play has a caption line and a Slow motion button; in SN2 the groups swing over the α carbon (`swing`).
 - **Files:** `mol.js`, `name.js`, `layout.js`, `draw.js`, `react.js`, `build3d.js`, `viewer3d.js`, `anim.js`, `mech.js`,
   `arrows.js`, `play.js`, `chair.js` (from the chairs activity), `molecules.js`, `quiz.js`, `app.js`, `steps1.js` (Parts 1-2),
   `steps2.js` (Parts 3-4), `steps3.js` (Part 5).
