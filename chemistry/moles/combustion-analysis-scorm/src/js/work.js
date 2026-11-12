@@ -13,7 +13,8 @@
  *                            the mole ratio (a blank on top: 1 C per CO2, 2 H
  *                            per H2O)
  *   3 Divide by small        tap the smallest moles, type each quotient
- *   4 Multiply if not whole  one multiplier for every row, the whole numbers
+ *   4 Multiply if not whole  one multiplier for every row (the whole numbers
+ *                            then fill in)
  *   5 Molecular formula      the empirical formula mass, n, the subscripts
  *     or Name the hydrate    the Greek prefix for the waters
  *
@@ -206,7 +207,7 @@ var Work = (function () {
       if (st === 'done') return [t(Chem.fmtQ(q) + ' × ' + k + ' → ', 'muted'), t(String(work.n.w[i]), 'val big')];
       var qb = opts.graded ? t(Chem.fmtQ(q)) : h('button', { type: 'button', class: 'qbtn', title: 'Put ' + Chem.fmtQ(q) + ' on the fraction finder',
         text: Chem.fmtQ(q), 'aria-label': Chem.fmtQ(q) + ': put it on the fraction finder', onclick: function () { finder.place(q); } });
-      return [qb, t(' × ' + k + ' → ', 'muted'), field('w' + i, 'w-w', 'whole number for ' + r.label, '')];
+      return [qb, t(' × ' + k + ' → ', 'muted'), t('…', 'muted')];
     }
 
     function paintTable() {
@@ -293,7 +294,8 @@ var Work = (function () {
       }
       if (s === 'divide') return work.sm == null ? 'Tap the smallest mole value.' : 'Divide every row by the smallest moles, to two decimal places.';
       if (s === 'multiply') {
-        return 'All within 0.1 of a whole number? Multiply by 1 and round. If not, read the decimal as a fraction (fraction finder) and multiply EVERY row by the same number.';
+        return 'All within 0.1 of a whole number? Multiply by 1. If not, read the decimal as a fraction (fraction finder): its bottom number multiplies EVERY row. ' +
+          'Type the multiplier; the whole numbers fill in.';
       }
       if (s === 'molecular') return 'Add up the empirical formula mass, divide the molar mass by it (n), and multiply every subscript by n.';
       if (s === 'name') return 'Name it: the Greek prefix says how many waters.';
@@ -542,13 +544,10 @@ var Work = (function () {
       },
       multiply: function () {
         var qs = work.n.q;
+        /* the multiplier is the answer; once it is right the whole numbers fill in (the teacher's choice) */
         var jk = Chem.judgeMultiplier(val('mult'), qs, p.mult);
-        var list = [['mult', jk]];
-        p.rows.forEach(function (r, i) {
-          list.push(['w' + i, jk.ok ? Chem.judgeWhole(val('w' + i), qs[i], jk.v, r.sub) : (val('w' + i) || jk.empty ? { neutral: true } : { empty: true })]);
-        });
-        var res = tally(list);
-        res.accept = function () { work.n.mult = num0('mult'); work.n.w = p.rows.map(function (r, i) { return num0('w' + i); }); };
+        var res = tally([['mult', jk]]);
+        res.accept = function () { work.n.mult = num0('mult'); work.n.w = p.rows.map(function (r, i) { return Chem.wholeAfter(qs[i], p.mult); }); };
         res.good = p.mult === 1 ? 'Right: all whole already, so multiply by 1.' : 'Right: ×' + p.mult + ' makes every row whole.';
         return res;
       },
@@ -616,7 +615,6 @@ var Work = (function () {
         p.rows.forEach(function (r, i) { work.v['q' + i] = Chem.fmtQ(mol[i] / min); });
       } else if (s === 'multiply') {
         work.v.mult = String(p.mult);
-        p.rows.forEach(function (r, i) { work.v['w' + i] = String(r.sub); });
       } else if (s === 'molecular') {
         work.v.efm = Chem.mmText(p.ef);
         work.v.n = String(p.mol.n);

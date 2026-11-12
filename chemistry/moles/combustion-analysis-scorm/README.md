@@ -13,7 +13,7 @@ No story problems: fluency with the routine, from real compounds.
 | What burning does | Burn propane (particle view): C3H8 + 5 O2 to 3 CO2 + 4 H2O; how many CO2 hold the 3 C, how many H2O hold the 8 H; the combustion train |
 | The four steps for combustion | A worked example (C3H8), each column filled in with Show step and explained |
 | Warm-up: a combustion problem | Every quotient whole |
-| The fraction finder, Name the fraction, Whole or not?, Multiply them all | Decimals as fractions (below) |
+| Name the fraction, Whole or not?, Multiply them all | Decimals as fractions (below) |
 | Warm-up: multiply if not whole | A problem needing x 3 |
 | Molecular formulas | CH2: ethene, propene, cyclopentane, cyclohexane; n = molar mass / 14.0 |
 | Warm-up: a molecular formula | Step 5: empirical formula mass, n, the subscripts |
@@ -38,6 +38,7 @@ Every set has a problem needing x 1, x 2, x 3 and x 4 or x 5, and at least two m
 3. **Divide by small:** tap the smallest mole value, divide every row by it, to two decimal places.
 4. **Multiply if not whole:** within 0.1 of a whole number, round (x 1). Otherwise read the decimal as a fraction and multiply every
    row by the same number: .50 x 2; .33 and .67 x 3; .25 and .75 x 4; .20, .40, .60 and .80 x 5 (halves, thirds, fourths and fifths).
+   The student types the multiplier; once it is right, the whole numbers fill in.
 
 Every problem is the same table: a row per atom (C from the CO2, H from the H2O), a column per step. A strip above it names the four steps and lights
 the one being worked; each column opens when the one before it is right, and each step has its own Check. Feedback names the slip
@@ -47,14 +48,15 @@ counted once. Hint says what to do in the step; Show me appears after two misses
 
 ## Decimals as fractions (Multiply if not whole)
 
-The hurdle the teacher named. Part 2 has four ungraded steps, the same in all three formula packages:
+The hurdle the teacher named. Part 2 has three short ungraded steps, the same in all three formula packages, with the
+**fraction finder** beside each (a ruler of the decimal part, 0 to 1, with a row for halves, thirds, fourths and fifths and shaded
+"round" ends within 0.1 of a whole number, plus its chart):
 
-- **The fraction finder:** a ruler of the decimal part, 0 to 1, with a row for halves, thirds, fourths and fifths and shaded "round"
-  ends (within 0.1 of a whole number). Students put 13 quotients on it; the nearest fraction lights up with what to multiply by.
-- **Name the fraction:** 10 cards (every fraction once, one more half, a little lab scatter such as 1.34). For each: the fraction, the
-  multiplier and the whole number (2.67 is 2 2/3, x 3, 8).
+- **Name the fraction:** 3 cards, each from a different row of the finder, with a little lab scatter such as 1.34. For each: the
+  fraction, the multiplier and the whole number (2.67 is 2 2/3, x 3, 8).
 - **Whole or not?** 8 cards to sort: round it (within 0.1) or multiply.
-- **Multiply them all:** four real compounds' ratios needing x 2, x 3, x 4 and x 5 (1 : 1.33 : 1 is x 3, 3 : 4 : 3): one multiplier for every row.
+- **Multiply them all:** four real compounds' ratios needing x 2, x 3, x 4 and x 5 (1 : 1.33 : 1 is x 3): the student finds the
+  multiplier, and the whole numbers (3 : 4 : 3) fill in.
 
 Beside every problem the fraction finder and its chart (decimal ending, fraction, multiply by) stay open. In the warm-ups a quotient
 can be put on the ruler with a tap; in the graded problems the ruler and chart are a reference only, so reading the fraction is the
@@ -88,12 +90,12 @@ with its typeset worked solution, and the big ideas.
 ```bash
 node tools/validate.js                    # must pass
 node tools/answer-key.js > ANSWER_KEY.md
-./build.sh                                # dist/combustion-analysis-v2.zip
+./build.sh                                # dist/combustion-analysis-v3.zip
 node tools/walkthrough.js                 # Playwright: plays the whole activity against a fake LMS (SEED=n: one student's problems)
 node tools/layout.js                      # Playwright: fits a Chromebook, 1366x650 and 1366x520
 ```
 
-Upload `dist/combustion-analysis-v2.zip` in Schoology with **Add Materials > Add File/Link/External Tool > Add File** (or **Package**).
+Upload `dist/combustion-analysis-v3.zip` in Schoology with **Add Materials > Add File/Link/External Tool > Add File** (or **Package**).
 `src/index.html?step=set&seed=5&problem=3` opens a step (ids in `ANSWER_KEY.md`, or numbers), a given set and one of its problems
 without saving anything.
 

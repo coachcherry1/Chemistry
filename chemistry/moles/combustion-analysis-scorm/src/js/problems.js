@@ -379,12 +379,14 @@ var Gen = (function () {
 
   /* ------------------------------------------------------------ drills */
 
-  /* Name the fraction: every fraction once, one more half, and a little of
-     the scatter real data have (1.34 is still 1 1/3). */
+  /* Name the fraction: three cards, each from a different row of the finder
+     (halves, thirds, fourths, fifths), with a little of the scatter real
+     data have (1.34 is still 1 1/3). The teacher: three get the gist. */
   function fracCards(seed) {
     var rand = UI.rng(seed * 31 + 5);
-    var fr = Chem.FRACS.concat([Chem.FRACS.filter(function (f) { return f.den === 2; })[0]]);
-    return UI.shuffle(fr, rand).map(function (f) {
+    var dens = UI.shuffle([2, 3, 4, 5], rand).slice(0, 3);
+    return dens.map(function (d) {
+      var f = pick(Chem.FRACS.filter(function (x) { return x.den === d; }), rand);
       var w = 1 + Math.floor(rand() * 3);
       var noise = pick([0, 0, 0.01, -0.01], rand);
       var q = Chem.roundTo(w + f.v + noise, 2);
