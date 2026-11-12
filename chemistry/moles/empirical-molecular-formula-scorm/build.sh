@@ -4,7 +4,7 @@
 set -euo pipefail
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-name="${1:-empirical-molecular-formula-v2}"
+name="${1:-empirical-molecular-formula-v3}"
 out="$here/dist/$name.zip"
 
 command -v zip >/dev/null || { echo "zip is not installed" >&2; exit 1; }

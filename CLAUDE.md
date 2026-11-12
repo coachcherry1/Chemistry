@@ -567,7 +567,7 @@ not the full page.
 - **Files:** `config.js`, `elements.js`, `substances.js`, `chem.js`, `problems.js`, `tex.js`, `map.js`, `ptable.js` (docked
   table), `work.js` (one problem, `Work.solutionHTML`), `scorm.js` (save key from config), `app.js`.
 
-## empirical-molecular-formula-scorm, hydrate-formula-scorm and combustion-analysis-scorm (zip v2, SCHEMA 1)
+## empirical-molecular-formula-scorm, hydrate-formula-scorm and combustion-analysis-scorm (zip v3, SCHEMA 2)
 
 - **Key objective:** fluency with the teacher's four steps, on screen in the teacher's words in every problem: **Percents to grams**
   (assume 100 g), **Grams to moles**, **Divide by small**, **Multiply if not whole**. The teacher's named hurdle is reading a
@@ -576,8 +576,9 @@ not the full page.
   fails if they differ (copy a fix to all three). `config.js` holds the mode, save key and minutes; the page title and h1, manifest
   (`EMPMOLFORMULA_*`, `HYDRATEFORMULA_*`, `COMBUSTANALYSIS_*`), `build.sh`, README and answer key are per package.
 - **Steps:** a worked example (`four`: Fe2O3 from percents, CuSO4.5H2O from crucible data, C3H8 from CO2 and H2O) filled one column
-  at a time with Show step; ungraded warm-ups; Part 2 "Multiply if not whole" (the fraction finder, Name the fraction, Whole or not?,
-  Multiply them all, then a warm-up); for empirical and combustion a molecular-formula part (n = molar mass ÷ empirical formula mass);
+  at a time with Show step; ungraded warm-ups; Part 2 "Multiply if not whole" (Name the fraction, 3 cards from different
+  rows of the finder; Whole or not?; Multiply them all, where the whole numbers fill in once the multiplier is right; then a warm-up;
+  the separate fraction finder step was removed and Name the fraction cut from 10 cards to 3, both the teacher's choice); for empirical and combustion a molecular-formula part (n = molar mass ÷ empirical formula mass);
   the graded set (8, 6, 6) and results. Hydrate opens with `heat` (heat CuSO4.5H2O to constant mass, predict first), combustion
   with `burn` (propane's atoms go into 3 CO2 and 4 H2O: × 1 C per CO2, × 2 H per H2O).
 - **The work table (`work.js`):** a row per element (hydrate: anhydrous salt and water; combustion: C from CO2 and H from H2O), a
@@ -586,8 +587,8 @@ not the full page.
   stressed in every honors activity): g X × (1 mol X / ___ g X) = ___ mol X, the molar mass the blank on the bottom, typed to tenths;
   combustion adds × (___ mol C / 1 mol CO₂), the mole ratio the blank on top, and the answer is mol C directly (no mol CO₂ box).
   Cancelling units are struck through; the setup wraps between factors when a formula is long (`.da-piece`). Step 3 taps the
-  smallest, then quotients to 2 decimals. Step 4 one multiplier for every
-  row and the whole numbers. Step 5: molecular formula (empirical formula mass, n, the subscripts) or the hydrate's Greek prefix.
+  smallest, then quotients to 2 decimals. Step 4 is one multiplier for every
+  row; once it is right the whole numbers fill in (the teacher: typing them is tedious). Step 5: molecular formula (empirical formula mass, n, the subscripts) or the hydrate's Greek prefix.
 - **Teacher's choices:** the first Check of every step counts (score = steps right first / all steps; one interaction per step).
   Not an answer (told, check again): empty boxes, the right number rounded too far (moles under 3 significant figures, quotients under
   2 decimals, 3.99 for 4). Within 0.1 of a whole number rounds; otherwise halves, thirds, fourths and fifths only (`Chem.FRACS`), and

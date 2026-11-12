@@ -149,10 +149,6 @@ const fakeLMS = () => {
       let n = 0;
       while (await page.$('.step-panel .primary') && n++ < 8) { await page.click('.step-panel .primary'); await page.waitForTimeout(20); }
       expect(await page.evaluate(() => App.ctl().work.r === 1), 'the worked example does not reach the end');
-    } else if (kind === 'finder') {
-      const n = await page.$$eval('.qbtn.big', (b) => b.length);
-      for (let i = 0; i < n; i++) await page.click('.qbtn.big >> nth=' + i);
-      expect(/multiply by \d|round it/.test(await page.textContent('.finder-cap')), 'the finder gives no caption for a quotient');
     } else if (kind === 'dfrac') {
       const cards = await page.evaluate((s) => Gen.fracCards(s), seed);
       for (let i = 0; i < cards.length; i++) {
@@ -193,8 +189,11 @@ const fakeLMS = () => {
           expect(/not within 0\.1/.test(await say()), 'multiply them all: x 1 is not answered');
         }
         await page.fill('.drill input[aria-label="multiply every row by"]', String(r.mult));
-        for (let j = 0; j < r.rows.length; j++) await page.fill('.drill input[aria-label="whole number for ' + r.rows[j].sym + '"]', String(r.rows[j].sub));
         await page.click('.drill .primary:has-text("Check")');
+        /* the whole numbers fill in themselves once the multiplier is right */
+        const shown = await page.$$eval('.drill .whole-out', (els) => els.map((e) => e.textContent));
+        expect(shown.join() === r.rows.map((x) => String(x.sub)).join(), 'multiply them all: whole numbers ' + shown.join() + ' did not fill in');
+        await page.click('.drill .primary:has-text("' + (i + 1 < list.length ? 'Next ratio' : 'Done') + '")');
       }
     } else if (kind === 'nmean') {
       const ns = await page.evaluate(() => [...document.querySelectorAll('table.nmean tbody tr')].map((tr) => {
@@ -272,12 +271,12 @@ const fakeLMS = () => {
         await ctl('fillStep'); await ctl('check');
         /* Step 4: x 2 when every quotient is whole (or x 1 when not) */
         await typeInto('mult', p.mult === 1 ? '2' : '1');
-        for (let i = 0; i < p.rows.length; i++) await typeInto('w' + i, String(p.rows[i].sub));
         await page.click('.step-panel .primary:has-text("Check")');
         expect(/already within 0\.1|not within 0\.1/.test(await fb()), 'warm-up: a wrong multiplier is not answered: ' + await fb());
         await page.click('.step-panel button:has-text("Hint")');
         expect(/within 0\.1/.test(await fb()), 'warm-up: no Step 4 hint');
         await ctl('fillStep'); await ctl('check');
+        expect(JSON.stringify((await work()).n.w) === JSON.stringify(p.rows.map((r) => r.sub)), 'warm-up: Step 4 did not fill in the whole numbers');
         await ctl('fillSolution');
       } else if (p.mol) {
         /* Step 5 by hand: n + the empirical subscripts is answered */

@@ -305,6 +305,7 @@ math .cx {
 table.ratio { border-collapse: collapse; margin: 4px 0; }
 table.ratio th, table.ratio td { padding: 3px 8px; border-bottom: 1px solid var(--line); }
 table.ratio .sym { font-size: 1.05rem; }
+table.ratio .whole-out { font-size: 1.1rem; font-weight: 800; color: var(--accent); min-width: 2em; }
 
 /* ----------------------------------------------------------- scenes */
 

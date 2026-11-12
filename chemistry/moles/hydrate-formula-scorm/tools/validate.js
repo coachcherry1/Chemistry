@@ -24,7 +24,8 @@
  *   rounding 1.5 to 2, multiplying one row only, 1 mol H per mol H2O or the
  *   mole ratio left out of the setup, adding n);
  * - a worked solution's LaTeX does not typeset (Tex.toMathML);
- * - a drill card is not what its fraction says, or the drills miss a fraction;
+ * - a drill card is not what its fraction says, or the three Name the fraction
+ *   cards repeat a row of the finder;
  * - the largest save (every warm-up and one graded problem half done) does
  *   not fit SCORM 1.2's suspend_data;
  * - the manifest, the storage key or the SCORM identifiers clash, a path is
@@ -353,14 +354,14 @@ for (let seed = 1; seed <= SEEDS; seed++) {
   });
   /* the drills */
   const fc = Gen.fracCards(seed);
-  if (fc.length !== 10) bad('seed ' + seed + ': ' + fc.length + ' fraction cards');
+  if (fc.length !== 3) bad('seed ' + seed + ': ' + fc.length + ' fraction cards');
   const seenFr = new Set();
   fc.forEach((c) => {
     const f = Chem.fracOf(c.q);
     if (f.whole || f.num !== c.num || f.den !== c.den || c.whole !== Math.round(c.q * c.den) || c.str !== c.q.toFixed(2)) bad('seed ' + seed + ': fraction card ' + c.str);
     seenFr.add(c.num + '/' + c.den);
   });
-  if (seenFr.size !== Chem.FRACS.length) bad('seed ' + seed + ': the fraction cards miss a fraction');
+  if (new Set(fc.map((c) => c.den)).size !== 3) bad('seed ' + seed + ': two fraction cards from the same row of the finder');
   const wc = Gen.wholeCards(seed);
   if (wc.filter((c) => c.round).length !== 4 || wc.length !== 8) bad('seed ' + seed + ': whole-or-not cards');
   wc.forEach((c) => {

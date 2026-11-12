@@ -22,7 +22,7 @@ var App = (function () {
 
   /* Bump whenever the steps, the plan, a compound or an atomic mass changes:
      a save from an older release is then discarded. */
-  var SCHEMA = 1;
+  var SCHEMA = 2;
 
   var h = UI.h;
   var MODE = CONFIG.mode;
@@ -42,15 +42,15 @@ var App = (function () {
   }
 
   var DRILLS = [
-    { id: 'finder', kind: 'finder', title: 'The fraction finder',
-      text: 'Multiply if not whole: when a quotient is not within 0.1 of a whole number, its decimal part is a fraction, and the fraction ' +
-            'says what to multiply by. Put each quotient on the fraction finder. Not graded.' },
     { id: 'd-frac', kind: 'dfrac', title: 'Name the fraction',
-      text: 'For each quotient: the fraction its decimal part is, the number to multiply by, and the whole number it gives. Not graded.' },
+      text: 'Multiply if not whole: when a quotient is not within 0.1 of a whole number, its decimal part is a fraction, and the bottom ' +
+            'number of the fraction is what to multiply by. Three quotients: name the fraction (the fraction finder beside it helps), the ' +
+            'multiplier and the whole number it gives. Not graded.' },
     { id: 'd-whole', kind: 'dwhole', title: 'Whole or not?',
       text: 'Within 0.1 of a whole number: round it. Otherwise: multiply. Choose for every card, then Check. Not graded.' },
     { id: 'd-all', kind: 'dall', title: 'Multiply them all',
-      text: 'One number for every row: if one quotient needs × 3, every row is multiplied by 3, even the ones already whole. Not graded.' }
+      text: 'One number for every row: if one quotient needs × 3, every row is multiplied by 3, even the ones already whole. Find the ' +
+            'multiplier; the whole numbers fill in. Not graded.' }
   ];
 
   function warmStep(id, part, title, text) { return { id: id, part: part, kind: 'warm', title: title, text: text + ' Not graded.' }; }
@@ -65,7 +65,7 @@ var App = (function () {
       { id: 'four', part: 1, kind: 'example', title: 'The four steps', text: exampleText() },
       warmStep('w-whole', 1, 'Warm-up: from percents', 'Your turn. Every quotient will come out whole in this one.'),
       warmStep('w-grams', 1, 'Warm-up: from grams', 'This one gives grams, not percents: Step 1 keeps the grams.'),
-      DRILLS[0], DRILLS[1], DRILLS[2], DRILLS[3],
+      DRILLS[0], DRILLS[1], DRILLS[2],
       warmStep('w-mult', 2, 'Warm-up: multiply if not whole', 'A whole problem where Step 4 needs a multiplier.'),
       NSTEP,
       warmStep('w-mol', 3, 'Warm-up: a molecular formula', 'The four steps give the empirical formula; Step 5 the molecular formula.')
@@ -77,7 +77,7 @@ var App = (function () {
       { id: 'four', part: 1, kind: 'example', title: 'The four steps for a hydrate', text: exampleText() },
       warmStep('w-pct', 1, 'Warm-up: percent water', 'Percents again: assume 100 g of the hydrate.'),
       warmStep('w-heat', 1, 'Warm-up: before and after heating', 'Grams this time: the water is the mass lost.'),
-      DRILLS[0], DRILLS[1], DRILLS[2], DRILLS[3],
+      DRILLS[0], DRILLS[1], DRILLS[2],
       warmStep('w-lab', 2, 'Warm-up: crucible data', 'Lab data: subtract to find each part’s grams.')
     ];
   } else {
@@ -86,7 +86,7 @@ var App = (function () {
       { id: 'burn', part: 1, kind: 'burn', title: 'What burning does', text: 'Burn a molecule of propane and count where its atoms go.' },
       { id: 'four', part: 1, kind: 'example', title: 'The four steps for combustion', text: exampleText() },
       warmStep('w-whole', 1, 'Warm-up: a combustion problem', 'Your turn. Every quotient will come out whole in this one.'),
-      DRILLS[0], DRILLS[1], DRILLS[2], DRILLS[3],
+      DRILLS[0], DRILLS[1], DRILLS[2],
       warmStep('w-mult', 2, 'Warm-up: multiply if not whole', 'A whole problem where Step 4 needs a multiplier.'),
       NSTEP,
       warmStep('w-mol', 3, 'Warm-up: a molecular formula', 'The four steps give the empirical formula; Step 5 the molecular formula.')
@@ -228,7 +228,6 @@ var App = (function () {
   function cbFor() {
     return { save: persist, say: say, complete: function (msg) { complete(msg); } };
   }
-  RENDER.finder = function (s) { var st = state.d[s.id] || (state.d[s.id] = {}); after(s, Drills.finderStep(el.stage, st, cbFor(s.id))); };
   RENDER.dfrac = function (s) { var st = state.d[s.id] || (state.d[s.id] = {}); after(s, Drills.fracDrill(el.stage, st, state.seed, cbFor(s.id))); };
   RENDER.dwhole = function (s) { var st = state.d[s.id] || (state.d[s.id] = {}); after(s, Drills.wholeDrill(el.stage, st, state.seed, cbFor(s.id))); };
   RENDER.dall = function (s) { var st = state.d[s.id] || (state.d[s.id] = {}); after(s, Drills.allDrill(el.stage, st, state.seed, cbFor(s.id))); };
