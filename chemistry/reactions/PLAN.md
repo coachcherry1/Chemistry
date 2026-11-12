@@ -1,7 +1,46 @@
 # Reactions unit: plan for four SCORM packages (honors chemistry)
 
-Status: **plan only, waiting for the teacher's review. Nothing is built.**
-Decisions marked **(default)** are my recommendation; the teacher can change any of them in review.
+Status: **the teacher has reviewed the plan (answers below). Package 1 is built; packages 2, 3 and 4 are not.**
+Where this plan and "The teacher's answers" disagree, the answers win.
+
+## The teacher's answers (review of this plan)
+
+1. **Activity series and solubility table:** the class handout, transcribed in "The class handout" below. Packages 3 and 4
+   must match it exactly.
+2. **Classifying:** the three tie-break rules are right. More broadly, **synthesis is one product, decomposition is one
+   reactant.** The decomposition of nitroglycerin (4 C₃H₅(NO₃)₃ → 12 CO₂ + 10 H₂O + 6 N₂ + O₂) is something the students
+   are expected to balance and classify as a decomposition; it must be in package 2.
+3. **Package 2 is a joint task:** students balance and classify each reaction together, not balancing in one part and
+   classifying in another.
+4. **Single replacement scope:** as planned (metal + salt solution, metal + acid, halogen + halide; no metal + water).
+5. **Net ionic problems:** every problem gives the **unbalanced molecular equation**.
+6. **Ba(OH)₂ + H₂SO₄** (a solid and water at once): include it; it is an honors class.
+7. **No mass line** in package 1: atoms only.
+
+## The class handout (activity series and solubility table)
+
+**Solubility of common compounds.** Soluble: ammonium NH₄⁺, potassium K⁺, sodium Na⁺, acetate C₂H₃O₂⁻, chlorate ClO₃⁻ and
+nitrate NO₃⁻ (no exceptions); chloride Cl⁻ except with Ag⁺, Hg₂²⁺, Pb²⁺; sulfate SO₄²⁻ except with Ca²⁺, Ba²⁺, Pb²⁺, Sr²⁺,
+Hg₂²⁺. Insoluble: carbonate CO₃²⁻ except with K⁺, Li⁺, Na⁺, NH₄⁺; hydroxide OH⁻ except with K⁺, Li⁺, Ba²⁺, Na⁺; oxide O²⁻
+(no exceptions listed); phosphate PO₄³⁻ except with K⁺, Na⁺, NH₄⁺; silicate SiO₃²⁻ except with K⁺, Na⁺; sulfide S²⁻ except
+with K⁺, Na⁺, NH₄⁺; sulfite SO₃²⁻ except with K⁺, Na⁺, NH₄⁺.
+
+**Reactivity series of metals** (most active first; each written as the ion it forms): Li (Li⁺), Rb (Rb⁺), K (K⁺), Cs (Cs⁺),
+Ba (Ba²⁺), Sr (Sr²⁺), Ca (Ca²⁺), Na (Na⁺), Mg (Mg²⁺), Al (Al³⁺), Mn (Mn²⁺), Zn (Zn²⁺), Cr (Cr³⁺), Fe (Fe²⁺), Cd (Cd²⁺),
+Co (Co²⁺), Ni (Ni²⁺), Sn (Sn²⁺), Pb (Pb²⁺), **H₂**, Cu (Cu²⁺), Ag (Ag⁺), Hg (Hg²⁺), Pt (Pt²⁺), Au (Au³⁺). Everything from
+Li to Pb "replaces hydrogen from acids".
+
+**Gaps to settle with the teacher before packages 3 and 4** (the handout is silent on these):
+
+- No row for bromide or iodide: package 3 would use only chlorides for halide precipitates, unless the teacher adds Br⁻
+  and I⁻ (same exceptions as Cl⁻).
+- No halogen series (F₂, Cl₂, Br₂, I₂), although halogen + halide is in scope: needs a line on the reference card.
+- Lithium is not in the "always soluble" list (it appears only as an exception for carbonate and hydroxide).
+- By the handout Sr(OH)₂ and Ca(OH)₂ are insoluble, so the strong bases for package 4 are LiOH, NaOH, KOH and Ba(OH)₂.
+- The teacher asked whether a clearer copy exists (theirs is blurry): the packages will draw the table and the series
+  crisply on screen from the data above; a printable one-page version can be made from the same data.
+
+Decisions marked **(default)** below are the original recommendations; see the answers above for what was changed.
 
 ## The set
 
@@ -41,9 +80,12 @@ A coefficient changes how many particles there are; a subscript is part of what 
 
 **The workbench (used all the way through):** the equation on top with a stepper (and a typed box) for each
 coefficient; under it a **Reactants box** and a **Products box** of particles that redraw as the coefficients change;
-under those an **atom tally** per element (left count, right count, a tick when they match) and a **mass line**
-(total mass of each box from the class's tenths masses), so the law of conservation of mass is seen in both atoms and
-grams. All of it is on screen together at 1366x520.
+under those an **atom tally** per element (left count, right count, a tick when they match). No mass line (the
+teacher's choice). All of it is on screen together at 1366x520.
+
+**As built (v1, SCHEMA 1):** 11 steps in 6 parts; 16 graded items (6 choice questions, 10 equations: 3 easy, 4 medium,
+3 hard from a pool of 48). In the graded equations the tally is hidden until the first Check, which is what counts. See
+the package README and the section in `CLAUDE.md`.
 
 **Steps (about 12):**
 
