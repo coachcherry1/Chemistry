@@ -43,7 +43,7 @@ Each student gets 6 graded questions and 10 graded equations (3 easy, 4 medium, 
 
 ## Graded equations: the pool
 
-### Easy (3 of 19 per student)
+### Easy (3 of 20 per student)
 
 | Unbalanced | Balanced | Coefficients | Inventory rows |
 | --- | --- | --- | --- |
@@ -66,10 +66,11 @@ Each student gets 6 graded questions and 10 graded equations (3 easy, 4 medium, 
 | Zn + HCl → ZnCl₂ + H₂ | Zn + 2 HCl → ZnCl₂ + H₂ | 1, 2, 1, 1 | Zn, H, Cl |
 | Mg + HCl → MgCl₂ + H₂ | Mg + 2 HCl → MgCl₂ + H₂ | 1, 2, 1, 1 | Mg, H, Cl |
 | Mg + AgNO₃ → Mg(NO₃)₂ + Ag | Mg + 2 AgNO₃ → Mg(NO₃)₂ + 2 Ag | 1, 2, 1, 2 | Mg, Ag, NO₃ |
+| Na₂SO₄ + BaCl₂ → BaSO₄ + NaCl | Na₂SO₄ + BaCl₂ → BaSO₄ + 2 NaCl | 1, 1, 1, 2 | Na, SO₄, Ba, Cl |
 
 \* the atoms of that element that are not inside a kept ion.
 
-### Medium (4 of 22 per student)
+### Medium (4 of 24 per student)
 
 | Unbalanced | Balanced | Coefficients | Inventory rows |
 | --- | --- | --- | --- |
@@ -87,6 +88,8 @@ Each student gets 6 graded questions and 10 graded equations (3 easy, 4 medium, 
 | Al + CuSO₄ → Al₂(SO₄)₃ + Cu | 2 Al + 3 CuSO₄ → Al₂(SO₄)₃ + 3 Cu | 2, 3, 1, 3 | Al, Cu, SO₄ |
 | NaOH + CuSO₄ → Cu(OH)₂ + Na₂SO₄ | 2 NaOH + CuSO₄ → Cu(OH)₂ + Na₂SO₄ | 2, 1, 1, 1 | Na, OH, Cu, SO₄ |
 | Al₂(SO₄)₃ → Al₂O₃ + SO₃ | Al₂(SO₄)₃ → Al₂O₃ + 3 SO₃ | 1, 1, 3 | Al, S, O |
+| CuCl₂ + NaOH → Cu(OH)₂ + NaCl | CuCl₂ + 2 NaOH → Cu(OH)₂ + 2 NaCl | 1, 2, 1, 2 | Cu, Cl, Na, OH |
+| HNO₃ + Ca(OH)₂ → Ca(NO₃)₂ + HOH | 2 HNO₃ + Ca(OH)₂ → Ca(NO₃)₂ + 2 HOH | 2, 1, 1, 2 | H*, NO₃, Ca, OH |
 | AgNO₃ + CaCl₂ → AgCl + Ca(NO₃)₂ | 2 AgNO₃ + CaCl₂ → 2 AgCl + Ca(NO₃)₂ | 2, 1, 2, 1 | Ag, NO₃, Ca, Cl |
 | Pb(NO₃)₂ + KI → PbI₂ + KNO₃ | Pb(NO₃)₂ + 2 KI → PbI₂ + 2 KNO₃ | 1, 2, 1, 2 | Pb, NO₃, K, I |
 | Ca(OH)₂ + HCl → CaCl₂ + HOH | Ca(OH)₂ + 2 HCl → CaCl₂ + 2 HOH | 1, 2, 1, 2 | Ca, OH, H*, Cl |
@@ -153,6 +156,9 @@ Each student gets 6 graded questions and 10 graded equations (3 easy, 4 medium, 
 - Mg + AgNO₃ → Mg(NO₃)₂ + Ag: NO₃ **1 in the reactants, 2 in the products**
 - Al + CuSO₄ → Al₂(SO₄)₃ + Cu: SO₄ **1 in the reactants, 3 in the products**
 - NaOH + CuSO₄ → Cu(OH)₂ + Na₂SO₄: OH **1 in the reactants, 2 in the products**
+- CuCl₂ + NaOH → Cu(OH)₂ + NaCl: OH **1 in the reactants, 2 in the products**
+- HNO₃ + Ca(OH)₂ → Ca(NO₃)₂ + HOH: NO₃ **1 in the reactants, 2 in the products**
+- HNO₃ + Ca(OH)₂ → Ca(NO₃)₂ + HOH: OH **2 in the reactants, 1 in the products**
 - AgNO₃ + CaCl₂ → AgCl + Ca(NO₃)₂: NO₃ **1 in the reactants, 2 in the products**
 - Pb(NO₃)₂ + KI → PbI₂ + KNO₃: NO₃ **2 in the reactants, 1 in the products**
 - Ca(OH)₂ + HCl → CaCl₂ + HOH: OH **2 in the reactants, 1 in the products**
@@ -195,19 +201,19 @@ Each student gets 6 graded questions and 10 graded equations (3 easy, 4 medium, 
    - Yes: every atom is conserved
    - **No: the number of oxygen atoms changes**
    - No: the number of nitrogen atoms changes
-6. Start an inventory for Zn + H₃PO₄ → Zn₃(PO₄)₂ + H₂ as it is written, before any coefficients. How many phosphate ions, PO₄, are on each side?
-   - 2 in the reactants, 1 in the products
-   - 4 in the reactants, 8 in the products
-   - **1 in the reactants, 2 in the products**
+6. Start an inventory for Ca(OH)₂ + HCl → CaCl₂ + HOH as it is written, before any coefficients. How many hydroxide ions, OH, are on each side?
+   - 1 in the reactants, 2 in the products
+   - 3 in the reactants, 2 in the products
+   - **2 in the reactants, 1 in the products**
    - 1 in the reactants, 1 in the products
 
-1. Mg + 2 AgNO₃ → Mg(NO₃)₂ + 2 Ag
-2. 2 Mg + O₂ → 2 MgO
-3. N₂O₅ + H₂O → 2 HNO₃
-4. Pb(NO₃)₂ + 2 KI → PbI₂ + 2 KNO₃
-5. 2 NaOH + CuSO₄ → Cu(OH)₂ + Na₂SO₄
-6. 2 N₂O₅ → 4 NO₂ + O₂
-7. 2 KClO₃ → 2 KCl + 3 O₂
-8. C₅H₁₂ + 8 O₂ → 5 CO₂ + 6 H₂O
-9. 3 Fe + 4 H₂O → Fe₃O₄ + 4 H₂
-10. PCl₅ + 4 H₂O → H₃PO₄ + 5 HCl
+1. 2 NO + O₂ → 2 NO₂
+2. NH₄NO₃ → N₂O + 2 H₂O
+3. 2 HgO → 2 Hg + O₂
+4. 2 AgNO₃ + CaCl₂ → 2 AgCl + Ca(NO₃)₂
+5. 6 Li + N₂ → 2 Li₃N
+6. P₄ + 5 O₂ → P₄O₁₀
+7. C₂H₄ + 3 O₂ → 2 CO₂ + 2 H₂O
+8. H₃PO₄ + 3 NaOH → Na₃PO₄ + 3 HOH
+9. PCl₅ + 4 H₂O → H₃PO₄ + 5 HCl
+10. 4 NH₃ + 5 O₂ → 4 NO + 6 H₂O

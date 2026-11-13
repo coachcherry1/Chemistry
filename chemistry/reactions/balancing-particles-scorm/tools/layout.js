@@ -11,7 +11,8 @@
  * top of the window, the equation with its steppers, both particle boxes,
  * the inventory between them and the Check button must all be on screen:
  * before a Check, while the inventory is being typed, and after a miss (with
- * the feedback showing). In
+ * the feedback showing), and in the classifying package the six type
+ * buttons too. In
  * the graded questions, the picture, the question, every choice and Submit
  * answer must be. No step may scroll sideways.
  *
@@ -44,7 +45,10 @@ const shots = process.env.SHOTS;
     const pick = [list.slice().sort((x, y) => y.sp - x.sp || y.n - x.n)[0], list.slice().sort((x, y) => y.n - x.n)[0]];
     pick.forEach((p) => views.push({ id: 'set', kind: 'set', q: '&seed=' + seed + '&problem=' + p.i, name: 'set-' + seed + '-' + p.i }));
   }
-  for (let i = 1; i <= 6; i++) views.push({ id: 'quiz', kind: 'quiz', q: '&seed=2', name: 'quiz-' + i, question: i });
+  const nQuiz = await page0.evaluate(() => Gen.QUIZ);
+  for (let i = 1; i <= nQuiz; i++) views.push({ id: 'quiz', kind: 'quiz', q: '&seed=2', name: 'quiz-' + i, question: i });
+  /* the classifying package: its longest equation, nitroglycerin, is every student's last reaction */
+  if (await page0.evaluate(() => App.CLASSIFY)) views.push({ id: 'set', kind: 'set', q: '&seed=1&problem=10', name: 'set-nitroglycerin' });
   await page0.close();
 
   for (const [w, hgt] of sizes) {
@@ -89,7 +93,8 @@ const shots = process.env.SHOTS;
       if (v.kind === 'bench' || v.kind === 'set') {
         /* a prediction comes first on some steps: answer it so the bench opens */
         if (await page.locator('.panel.ask .tile').count()) await page.locator('.panel.ask .tile').first().click();
-        const parts = [bench + ' .eq', bench + ' .pbox', bench + ' .inv', bench + ' .bench-check'];
+        const parts = [bench + ' .eq', bench + ' .pbox', bench + ' .inv', bench + ' .bench-check']
+          .concat(await page.locator(bench + ' .types').count() ? [bench + ' .type-btn'] : []);
         await fits(v, 'start', parts, bench);
         const typed = await page.locator(bench + ' .inv-in').count();
         if (typed) {
@@ -103,6 +108,13 @@ const shots = process.env.SHOTS;
         await fits(v, 'miss', parts.concat([bench + ' .fb.show']), bench);
       } else if (v.kind === 'quiz') {
         await fits(v, 'question', ['.quiz .prompt', '.quiz .choice', '.quiz .submit-answer'].concat(await page.locator('.quiz .pbox').count() ? ['.quiz .pbox'] : []), '.quiz .panel');
+      } else if (v.kind === 'types') {
+        for (const t of ['S', 'D', 'SR', 'DR', 'C', 'N']) {
+          await page.click('.type-tabs .type-btn[data-type="' + t + '"]');
+          await fits(v, t, ['.type-tabs .type-btn', '.type-card .type-form', '.type-card .pbox'], '.stage .panel');
+        }
+      } else if (v.kind === 'sort') {
+        await fits(v, 'card', ['.panel .pic-eq', '.panel .type-btn'], '.stage .panel');
       } else if (v.kind === 'conserved') {
         await fits(v, 'picture', ['.panel .pbox', '.panel .tile'], '.stage .panel');
       } else if (v.kind === 'change') {

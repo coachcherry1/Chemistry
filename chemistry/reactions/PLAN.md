@@ -1,6 +1,6 @@
 # Reactions unit: plan for four SCORM packages (honors chemistry)
 
-Status: **the teacher has reviewed the plan (answers below). Package 1 is built; packages 2, 3 and 4 are not.**
+Status: **the teacher has reviewed the plan (answers below). Packages 1 and 2 are built; packages 3 and 4 are not.**
 Where this plan and "The teacher's answers" disagree, the answers win.
 
 ## The teacher's answers (review of this plan)
@@ -131,6 +131,10 @@ package 1 first)**, then:
 - **Graded:** 10 reactions, each balanced on the workbench and then classified (two graded interactions per
   reaction, 20 in all), at least one of every type, plus 4 choice questions on the patterns. Pool of about 60
   reactions tagged by type, cross-checked against the 100-reaction bank.
+
+**As built (v1, SCHEMA 4):** 9 steps in 5 parts; 24 graded items (4 questions on the types, 10 reactions worth 2 each:
+coefficients and type, judged together by the first Check). Every set has all six types and ends with nitroglycerin.
+Balancing is recapped in two steps only, since package 1 comes first. See the package README and `CLAUDE.md`.
 
 ## 3. Predicting products
 

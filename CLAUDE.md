@@ -34,6 +34,7 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `chemistry/moles/empirical-formula-mgo-scorm/` | Virtual lab (pre-lab, with a paper sheet): empirical formula of MgO, the nitride side reaction and the water fix (about 20 min, no score) |
 | `chemistry/moles/hydrate-lab-scorm/` | Virtual lab (pre-lab, with a paper sheet): formula of a hydrate, CuSO₄·5H₂O heated to constant mass in a crucible, realistic data (about 25 min, no score) |
 | `chemistry/reactions/balancing-particles-scorm/` | Balancing with particle diagrams: a reactants box and a products box that follow the coefficients, the inventory down the centre, conservation of mass, polyatomic ions kept together (or not), 10 graded equations and 6 questions (about 30 min). Package 1 of 4; the plan for the rest is `chemistry/reactions/PLAN.md` |
+| `chemistry/reactions/balancing-reaction-types-scorm/` | Balancing and reaction types: the same workbench with six type buttons, every reaction balanced and classified by one Check (synthesis, decomposition, single and double replacement, combustion, neutralization), 4 questions and 10 reactions ending with nitroglycerin (about 35 min). Package 2 of 4, one code base with package 1 |
 
 **AP chemistry**
 
@@ -61,11 +62,11 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `organic-chemistry/reactivity-mechanisms/arrow-pushing-scorm/` | Klein 6, before SN1/SN2: bond breaking and making, ΔG, energy diagrams, nucleophiles and electrophiles, drawing curved arrows, the four patterns, a final check (about 50 min) |
 | `organic-chemistry/substitution-elimination/substitution-elimination-scorm/` | SN1, SN2, E1 and E2: reagent function, mechanisms with curved arrows, regio- and stereochemistry, rings, predicting products (about 50 min) |
 
-**Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions), arrow pushing, mole conversions (both), the formula packages (all three) and balancing with particles contains em
+**Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions), arrow pushing, mole conversions (both), the formula packages (all three) and the two balancing packages contains em
 dashes (the Lewis, resonance and drawing-tool validators allow them). The mass spec, IR + mass spec, NMR,
 naming, acids and ionization energy packages still load a browser save inside an LMS when
 `cmi.suspend_data` is empty (fixed in IR, Newman, chairs, chirality, Lewis and resonance). Only Newman,
-chairs, chirality, SN1/SN2, arrow pushing, mole conversions, the formula packages and balancing with particles have `tools/layout.js`. The acetone kinetics lab still grades a choice on the
+chairs, chirality, SN1/SN2, arrow pushing, mole conversions, the formula packages and the two balancing packages have `tools/layout.js`. The acetone kinetics lab still grades a choice on the
 click, with no Submit answer button. Bring a package up to the rules when you next change it.
 
 ## House rules
@@ -607,16 +608,30 @@ not the full page.
   `drills.js`, `scenes.js`, `scorm.js`, `app.js`. Walkthrough harness as in the VSEPR and IMF packages (the fake LMS reads and writes
   sessionStorage on every call); each run picks random problems and prints its seed, `SEED=n` replays one.
 
-## balancing-particles-scorm (zip v3, SCHEMA 3) and the reactions unit
+## balancing-particles-scorm (zip v4, SCHEMA 4), balancing-reaction-types-scorm (zip v1, SCHEMA 4) and the reactions unit
 
 - **The unit is four packages** in `chemistry/reactions/`; `PLAN.md` there holds the approved plan, the teacher's answers
-  and the class handout (activity series, solubility table). Only package 1 is built. Next: `balancing-reaction-types-scorm/`
-  (balance and classify each reaction together; six types; synthesis is one product, decomposition one reactant;
-  nitroglycerin must be in it), `predicting-products-scorm/`, `net-ionic-equations-scorm/`.
+  and the class handout (activity series, solubility table). Packages 1 and 2 are built. Next: `predicting-products-scorm/`,
+  then `net-ionic-equations-scorm/` (get the teacher's go-ahead before each).
+- **Two packages, one code base.** Every file in `src/js` (except `config.js`), `src/css` and `tools/` is identical in
+  both, and each validator fails if they differ: make a fix in one and copy it to the other. `config.js` holds
+  `classify`, the save key and the minutes; the page title and h1, manifest (`BALPART_*`, `BALTYPES_*`), `build.sh`,
+  README and answer key are per package. The walkthrough, layout test, validator and answer key all branch on the mode.
+- **Package 2 (`classify: true`):** 9 steps in 5 parts: a recap (rust with a typed inventory, NaOH + H₂SO₄ as HOH), the
+  six types (a card each beside the three rules; eight reactions to classify, shown without coefficients), two ungraded
+  joint benches, then 4 questions and 10 reactions. **Balance and classify together** (the teacher: jointly, not one
+  then the other): six type buttons on the workbench, a click only selects, and one Check judges the coefficients and
+  the type; each reaction is worth 2 of the 24 items (`work.g`, `work.k`). A Check with no type chosen is not counted.
+  Every set has all six types, easiest first, and **ends with the decomposition of nitroglycerin** (the teacher expects
+  it); its coefficients are never shown earlier (the validator checks).
+- **The types (`Chem.TYPES`, `Chem.classify`):** one product is a synthesis and one reactant a decomposition, whatever
+  else is true; acid + base is a neutralization, not a double replacement; combustion only for a compound of C and H
+  (or C, H, O) with O₂ making CO₂ and H₂O (so 2 Mg + O₂ is a synthesis). The validator checks every tag in
+  `reactions.js` against `Chem.classify`; reactions that fit none cleanly are tagged `''` and stay out of package 2.
 - **Key objective:** every atom in the reactants box is in the products box (the law of conservation of mass); a
   coefficient changes how many particles, a subscript is never changed; keep an accurate inventory.
-- 13 steps in 6 parts; 16 graded items: 6 choice questions (Submit answer) and 10 equations (3 easy, 4 medium, 3 hard
-  from a pool of 53). Score = items right the first time / 16.
+- **Package 1:** 13 steps in 6 parts; 16 graded items: 6 choice questions (Submit answer) and 10 equations (3 easy, 4
+  medium, 3 hard from a pool of 56). Score = items right the first time / 16.
 - **The inventory runs down the centre** (the teacher's paper method: count in the reactants | what is counted | count
   in the products, under the arrow, between the two boxes), updating with every coefficient. Rows are marked green or
   red live in the lesson; in the graded equations the counts are live but nothing is marked until the first Check, which
@@ -641,9 +656,7 @@ not the full page.
 - **Particles (`particles.js`):** lettered circles coloured by element, sized from covalent radii (squeezed so H holds
   its letter), laid out from the tree and settled; `Particles.pair` draws the two boxes at one scale. To be reused by
   packages 2 and 3; package 4's ions need true ionic radii instead.
-- **Written to be shared with package 2:** `config.js` (`classify`, save key, minutes) is the only file meant to differ;
-  when package 2 exists, make each validator fail if the shared files differ, as in the mole conversion packages.
 - **Files:** `config.js`, `util.js`, `chem.js`, `reactions.js`, `particles.js`, `problems.js` (`Gen.set`, `Gen.quiz`),
-  `bench.js` (workbench, inventory, `Bench.picture`), `steps.js` (lesson steps, choice questions), `scorm.js`, `app.js`;
+  `bench.js` (workbench, inventory, type picker, `Bench.picture`), `steps.js` (lesson steps, the six types, choice questions), `scorm.js`, `app.js`;
   `tools/load.js` loads them for the validator and answer key. Teacher links: `?step=<id or number>`,
   `?step=set&seed=<n>&problem=<1 to 10>`.

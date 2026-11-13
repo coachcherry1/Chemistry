@@ -4,6 +4,8 @@
  *   Steps.count      subscripts and coefficients: count the atoms in a picture
  *   Steps.change     what may be changed: a subscript or a coefficient?
  *   Steps.conserved  four pictures: are the atoms conserved?
+ *   Steps.types      the six types of reaction, a card each (package 2)
+ *   Steps.sort       classify eight reactions (package 2)
  *   Steps.quiz       graded choice questions, one at a time, Submit answer
  *
  * Each takes (host, st, cb): st is this step's saved state; cb.save(),
@@ -181,6 +183,95 @@ var Steps = (function () {
     return { done: !!st.r };
   }
 
+  /* ------------------------------------------------- the six types (package 2) */
+
+  var EXAMPLES = { S: 'mgo', D: 'electrolysis', SR: 'znhcl', DR: 'pbi2', C: 'methane', N: 'caoh2hcl' };
+  var RULES3 = [
+    'One product: synthesis. One reactant: decomposition. Count the substances first.',
+    'An acid with a base makes a salt and water (HOH). The partners trade, but it is called a neutralization, not a double replacement.',
+    'Combustion is kept for a compound of carbon and hydrogen reacting with O₂ to make CO₂ and H₂O. A metal burning in O₂ makes one product: a synthesis.'
+  ];
+
+  /* a card for each type: tap all six */
+  function types(host, st, cb) {
+    st.seen = st.seen || {};
+    var card = h('div', { class: 'type-card' });
+    var tabs = h('div', { class: 'type-tabs', role: 'group', 'aria-label': 'The six types' });
+    var btns = {};
+    function show(t) {
+      st.seen[t] = 1;
+      var T = Chem.TYPES[t], r = Rx.get(EXAMPLES[t]), c = Chem.balance(r);
+      Chem.TYPE_ORDER.forEach(function (x) {
+        btns[x].classList.toggle('selected', x === t);
+        btns[x].setAttribute('aria-pressed', x === t ? 'true' : 'false');
+        btns[x].lastChild.textContent = st.seen[x] ? ' ✓' : '';
+      });
+      card.innerHTML = '';
+      card.appendChild(h('h4', { text: T.name }));
+      card.appendChild(h('p', { class: 'type-form', text: T.form }));
+      card.appendChild(h('p', { class: 'prompt', text: T.clue }));
+      card.appendChild(Bench.picture(Bench.items(r, c), { tally: false, h: 130, w: 440, eq: Chem.equation(r, c) }));
+      cb.save();
+      var left = Chem.TYPE_ORDER.filter(function (x) { return !st.seen[x]; }).length;
+      if (!left) { st.r = 1; cb.complete('Those are the six types. The three rules beside the cards settle the close calls.'); }
+      else cb.say(left + ' more to look at.', null);
+    }
+    Chem.TYPE_ORDER.forEach(function (t) {
+      btns[t] = h('button', { type: 'button', class: 'type-btn', 'aria-pressed': 'false', 'data-type': t, onclick: function () { show(t); } },
+        [Chem.TYPES[t].name, h('span', { class: 'type-seen', text: st.seen[t] ? ' ✓' : '' })]);
+      tabs.appendChild(btns[t]);
+    });
+    host.appendChild(h('div', { class: 'with-side' }, [
+      panel('The six types', 'tap each one', [tabs, card]),
+      panel('Three rules for close calls', null, [h('ol', { class: 'rules3' }, RULES3.map(function (t) { return h('li', { text: t }); }))])
+    ]));
+    show(Chem.TYPE_ORDER.filter(function (x) { return !st.seen[x]; })[0] || 'S');
+    return { done: !!st.r };
+  }
+
+  /* classify eight reactions, one at a time; answered on the click, not graded.
+     The equations are shown without coefficients: the type does not depend on
+     them, and nitroglycerin is still to be balanced in the graded part. */
+  var SORT = ['kclo3', 'cl2ki', 'cuo', 'baso4', 'propane', 'h3po4naoh', 'hno3', 'nitroglycerin'];
+
+  function sort(host, st, cb) {
+    st.a = st.a || [];
+    var box = h('div');
+    host.appendChild(box);
+    function show(i) {
+      box.innerHTML = '';
+      var r = Rx.get(SORT[i]), last = i === SORT.length - 1, answered = st.a[i] != null;
+      var fb = h('p', { class: 'fb' });
+      var nextBtn = h('button', { type: 'button', class: 'primary', hidden: true, text: 'Next reaction →', onclick: function () { show(i + 1); } });
+      function explain(ok) {
+        fb.textContent = (ok ? 'Right. ' : 'Not that one. ') + Chem.TYPES[r.type].name + ': ' + Chem.TYPES[r.type].clue;
+        fb.className = 'fb show ' + (ok ? 'good' : 'bad');
+      }
+      var tiles = h('div', { class: 'types', role: 'group', 'aria-label': 'Type of reaction' }, Chem.TYPE_ORDER.map(function (t) {
+        return h('button', { type: 'button', class: 'type-btn', 'data-type': t, disabled: answered, text: Chem.TYPES[t].name, onclick: function (ev) {
+          st.a[i] = t === r.type ? 1 : 0;
+          Array.prototype.forEach.call(tiles.children, function (b) { b.disabled = true; if (b.getAttribute('data-type') === r.type) b.classList.add('right'); });
+          if (t !== r.type) ev.currentTarget.classList.add('wrong');
+          explain(t === r.type);
+          cb.save();
+          if (last) { st.r = 1; cb.complete('Count the reactants and products first, then look at what kind of substances they are.'); }
+          else { nextBtn.hidden = false; nextBtn.focus(); }
+        } });
+      }));
+      if (answered) {
+        Array.prototype.forEach.call(tiles.children, function (b) { if (b.getAttribute('data-type') === r.type) b.classList.add('right'); });
+        explain(true); fb.textContent = fb.textContent.replace('Right. ', ''); nextBtn.hidden = last;
+      }
+      box.appendChild(panel('Reaction ' + (i + 1) + ' of ' + SORT.length, 'not graded', [
+        h('p', { class: 'pic-eq', text: Chem.equation(r) }),
+        h('p', { class: 'prompt', text: 'What type of reaction is this?' }), tiles, fb, h('div', { class: 'btnrow' }, [nextBtn])]));
+    }
+    var first = 0;
+    while (first < SORT.length - 1 && st.a[first] != null) first++;
+    show(first);
+    return { done: !!st.r };
+  }
+
   /* ------------------------------------------------------------------- quiz */
 
   /* st.a: [{ p: index picked, ok: 1 or 0 }]. Clicking a choice only selects it;
@@ -193,7 +284,7 @@ var Steps = (function () {
       box.innerHTML = '';
       var q = questions[i], done = st.a[i], sel = done ? done.p : -1, last = i === questions.length - 1;
       var fb = h('p', { class: 'fb', role: 'status' });
-      var nextBtn = h('button', { type: 'button', class: 'primary quiz-next', hidden: true, text: last ? 'On to the equations →' : 'Next question →', onclick: function () {
+      var nextBtn = h('button', { type: 'button', class: 'primary quiz-next', hidden: true, text: last ? (CONFIG.classify ? 'On to the reactions →' : 'On to the equations →') : 'Next question →', onclick: function () {
         if (last) cb.finish(); else show(i + 1);
       } });
       var submit = h('button', { type: 'button', class: 'primary submit-answer', disabled: true, text: 'Submit answer', onclick: function () {
@@ -243,5 +334,5 @@ var Steps = (function () {
     return { show: show };
   }
 
-  return { count: count, change: change, conserved: conserved, quiz: quiz, CARDS: CARDS, COUNT: COUNT };
+  return { count: count, change: change, conserved: conserved, types: types, sort: sort, quiz: quiz, CARDS: CARDS, COUNT: COUNT, EXAMPLES: EXAMPLES, SORT: SORT, RULES3: RULES3 };
 })();

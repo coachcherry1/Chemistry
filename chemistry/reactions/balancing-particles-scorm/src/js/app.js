@@ -8,6 +8,13 @@
  * six choice questions (select, then Submit answer) and ten equations to
  * balance on the workbench, where the first Check counts.
  *
+ * With CONFIG.classify (the classifying package, balancing-reaction-types-scorm)
+ * the same code gives a different activity: a short recap of the inventory,
+ * the six types of reaction, and then reactions that are balanced AND
+ * classified together on one workbench. Its graded part is four questions on
+ * the types and ten reactions, each worth two items (the coefficients and the
+ * type, both judged by the first Check).
+ *
  * Score = graded items right the first time / all graded items, sent as
  * cmi.core.score.raw (0 to 100) after every item, with one cmi.interactions
  * record each. Retakes give new questions and equations; the gradebook keeps
@@ -18,7 +25,7 @@ var App = (function () {
 
   /* Bump whenever the steps, the pools or a reaction change: a save from an
      older release is then discarded. */
-  var SCHEMA = 3;
+  var SCHEMA = 4;
 
   var h = UI.h;
 
@@ -31,6 +38,8 @@ var App = (function () {
     'In a neutralization write water as HOH: a hydroxide and a hydrogen.',
     'Never touch a subscript.'
   ];
+
+  var CL = !!CONFIG.classify;
 
   var PARTS = ['Reading the picture', 'Is it conserved?', 'Balancing', 'Polyatomic ions', 'Graded', 'Results'];
   var STEPS = [
@@ -76,7 +85,42 @@ var App = (function () {
             'first Check of each equation counts: compare the two columns row by row first. After a miss, keep going until it is balanced.' },
     { id: 'results', part: 6, kind: 'results', title: 'Results', text: '' }
   ];
-  var ITEMS = Gen.QUIZ + Gen.COUNT;
+  if (CL) {
+    var byId = {};
+    STEPS.forEach(function (s) { byId[s.id] = s; });
+    var at = function (id, part, more) {
+      var o = {}, src = byId[id];
+      Object.keys(src).forEach(function (k) { o[k] = src[k]; });
+      Object.keys(more || {}).forEach(function (k) { o[k] = more[k]; });
+      o.part = part;
+      return o;
+    };
+    PARTS = ['Balancing recap', 'The six types', 'Balance and classify', 'Graded', 'Results'];
+    STEPS = [
+      at('strategy', 1, { id: 'recap', title: 'Recap: the inventory',
+        text: 'A quick recap of balancing. Type the inventory for the equation as it is written (reactants on the left, products on the ' +
+              'right), then change the coefficients until every row matches. Not graded.' }),
+      at('mixed', 1, { id: 'hoh', title: 'Recap: polyatomic ions and HOH' }),
+      { id: 'types', part: 2, kind: 'types', title: 'The six types of reaction',
+        text: 'Chemists sort reactions by what the reactants and products look like. Tap each of the six types to see its general form, ' +
+              'what gives it away, and an example as particles.' },
+      { id: 'sort', part: 2, kind: 'sort', title: 'Which type?',
+        text: 'Eight reactions, not balanced yet: the type does not depend on the coefficients. Classify each one. Count the reactants ' +
+              'and the products first. Not graded.' },
+      { id: 'both1', part: 3, kind: 'bench', rx: 'h3po4', classify: true, title: 'Balance and classify',
+        text: 'Now both at once, as in the graded part. Balance the equation and choose its type, in either order, then Check: it judges ' +
+              'the coefficients and the type together. Not graded.' },
+      { id: 'both2', part: 3, kind: 'bench', rx: 'methane', classify: true, title: 'Balance and classify: one more',
+        text: 'Methane and oxygen. Balance it and choose the type, then Check. Not graded.' },
+      { id: 'quiz', part: 4, kind: 'quiz', title: 'Graded questions',
+        text: Gen.QUIZ + ' questions on the six types. Click a choice to select it (you can change it), then press Submit answer. Your first Submit counts.' },
+      { id: 'set', part: 4, kind: 'set', title: 'Graded reactions',
+        text: Gen.COUNT + ' reactions. Balance each one AND choose its type, then Check. Your first Check counts for both: one point for ' +
+              'the coefficients, one for the type. After a miss, keep going until both are right.' },
+      { id: 'results', part: 5, kind: 'results', title: 'Results', text: '' }
+    ];
+  }
+  var ITEMS = Gen.QUIZ + Gen.COUNT * (CL ? 2 : 1);
 
   var el = {};
   var state = null;
@@ -112,7 +156,10 @@ var App = (function () {
 
   function rightQuiz() { return state.q.a.filter(function (a) { return a && a.ok; }).length; }
   function rightSet() { return state.p.filter(function (w) { return w && w.g === 1; }).length; }
-  function rightItems() { return rightQuiz() + rightSet(); }
+  function rightTypes() { return CL ? state.p.filter(function (w) { return w && w.k === 1; }).length : 0; }
+  /* every graded part of this reaction right on the first Check */
+  function clean(w) { return !!w && w.g === 1 && (!CL || w.k === 1); }
+  function rightItems() { return rightQuiz() + rightSet() + rightTypes(); }
   function quizDone() { for (var i = 0; i < Gen.QUIZ; i++) if (!state.q.a[i]) return false; return true; }
   function solvedCount() { var n = 0; for (var i = 0; i < Gen.COUNT; i++) if (state.p[i] && state.p[i].r) n++; return n; }
   function current() { for (var i = 0; i < Gen.COUNT; i++) if (!(state.p[i] && state.p[i].r)) return i; return Gen.COUNT; }
@@ -189,7 +236,7 @@ var App = (function () {
       if (state.done[s.id]) nav('next', 'disabled', false);
     };
   }
-  ['count', 'change', 'conserved'].forEach(lesson);
+  ['count', 'change', 'conserved', 'types', 'sort'].forEach(lesson);
 
   /* ---- a lesson workbench: one reaction, not graded. s.ask: a prediction
      (answered on the click) that must be made before the bench opens. */
@@ -204,8 +251,8 @@ var App = (function () {
         host = main;
       }
       ctl = Bench.create(host, Rx.get(s.rx), work, {
-        marks: 'live', typed: s.typed, onSave: persist,
-        onResolve: function () { complete('Balanced. Press Next.'); }
+        marks: 'live', typed: s.typed, classify: s.classify, onSave: persist,
+        onResolve: function () { complete(s.classify ? 'Balanced and classified. Press Next.' : 'Balanced. Press Next.'); }
       });
     }
     if (s.ask) {
@@ -250,42 +297,46 @@ var App = (function () {
   };
 
   /* ---- graded equations */
-  function mark(w) { return w && w.r ? (w.g === 1 ? '★' : '✓') : ''; }
+  function mark(w) { return w && w.r ? (clean(w) ? '★' : '✓') : ''; }
+  var THING = CL ? 'Reaction' : 'Equation';
   RENDER.set = function () {
     var list = problems();
     var cur = current();
     var view = Math.min(state.view != null ? state.view : cur, cur, Gen.COUNT - 1);
     state.view = view;
-    var strip = h('nav', { class: 'pstrip', 'aria-label': 'Equations' });
+    var strip = h('nav', { class: 'pstrip', 'aria-label': THING + 's' });
     list.forEach(function (p, i) {
       var w = state.p[i], r = w && w.r;
-      var what = r ? (w.g === 1 ? 'right on the first Check' : 'balanced after a miss') : i === cur ? 'current' : 'not reached';
+      var what = r ? (clean(w) ? 'right on the first Check' : 'finished after a miss') : i === cur ? 'current' : 'not reached';
       strip.appendChild(h('button', {
-        type: 'button', class: 'pnum' + (r ? (w.g === 1 ? ' first' : ' right') : '') + (i === view ? ' on' : ''),
-        disabled: i > cur, 'aria-label': 'Equation ' + (i + 1) + ': ' + what, 'aria-current': i === view ? 'true' : null,
+        type: 'button', class: 'pnum' + (r ? (clean(w) ? ' first' : ' right') : '') + (i === view ? ' on' : ''),
+        disabled: i > cur, 'aria-label': THING + ' ' + (i + 1) + ': ' + what, 'aria-current': i === view ? 'true' : null,
         title: what, onclick: function () { state.view = i; goTo(state.step); }
       }, [String(i + 1) + mark(w)]));
     });
     el.stage.appendChild(strip);
-    el.counter.textContent = 'Equation ' + (view + 1) + ' of ' + Gen.COUNT + '  ·  step ' + (state.step + 1) + ' of ' + STEPS.length;
+    el.counter.textContent = THING + ' ' + (view + 1) + ' of ' + Gen.COUNT + '  ·  step ' + (state.step + 1) + ' of ' + STEPS.length;
     var p = list[view];
     var work = state.p[view] || (state.p[view] = {});
     var last = view === Gen.COUNT - 1;
     ctl = Bench.create(el.stage, p.rx, work, {
-      marks: 'check', graded: true, onSave: persist,
-      onFirst: function (right, typed, want) {
-        if (!preview) SCORM.recordAnswer('eq-' + p.id, typed, want, right);
+      marks: 'check', graded: true, classify: CL, onSave: persist,
+      onFirst: function (right, typed, want, typeRight, typePicked, typeWant) {
+        if (!preview) {
+          SCORM.recordAnswer('eq-' + p.id, typed, want, right);
+          if (CL) SCORM.recordAnswer('type-' + p.id, typePicked, typeWant, typeRight);
+        }
         reportScore();
         paintParts();
       },
       onResolve: function () {
         persist();
         var m = strip.children[view];
-        if (m) { m.className = 'pnum on' + (work.g === 1 ? ' first' : ' right'); m.textContent = String(view + 1) + mark(work); }
+        if (m) { m.className = 'pnum on' + (clean(work) ? ' first' : ' right'); m.textContent = String(view + 1) + mark(work); }
         if (strip.children[view + 1]) strip.children[view + 1].disabled = false;
         if (solvedCount() >= Gen.COUNT) complete();
       },
-      next: { label: last ? 'See your results →' : 'Next equation →', onClick: function () {
+      next: { label: last ? 'See your results →' : 'Next ' + THING.toLowerCase() + ' →', onClick: function () {
         if (last) { if (solvedCount() >= Gen.COUNT) goTo(state.step + 1); return; }
         state.view = view + 1;
         goTo(state.step);
@@ -310,7 +361,8 @@ var App = (function () {
       h('p', { class: 'big-score', text: right + ' / ' + ITEMS + '  (' + pct + '%)' }),
       h('table', { class: 'ref-table' }, [
         h('tr', null, [h('td', { text: 'Questions right on the first Submit' }), h('td', { class: 'num', text: rightQuiz() + ' / ' + Gen.QUIZ })]),
-        h('tr', null, [h('td', { text: 'Equations balanced on the first Check' }), h('td', { class: 'num', text: rightSet() + ' / ' + Gen.COUNT })])
+        h('tr', null, [h('td', { text: 'Equations balanced on the first Check' }), h('td', { class: 'num', text: rightSet() + ' / ' + Gen.COUNT })]),
+        CL ? h('tr', null, [h('td', { text: 'Reactions classified on the first Check' }), h('td', { class: 'num', text: rightTypes() + ' / ' + Gen.COUNT })]) : null
       ]),
       state.att > 1 ? h('p', { class: 'best-line', text: 'Best attempt: ' + best + '%' + (best > pct ? '. That is the score the gradebook keeps.' : '') }) : null,
       h('p', { class: 'muted', text: SCORM.isConnected()
@@ -326,12 +378,17 @@ var App = (function () {
       'In a neutralization write water as HOH, so the hydroxide stays together.',
       'Write the lowest whole-number coefficients.'
     ];
+    if (CL) {
+      ideas = ideas.slice(0, 2).concat(Chem.TYPE_ORDER.map(function (t) { return Chem.TYPES[t].name + ' (' + Chem.TYPES[t].form + '): ' + Chem.TYPES[t].clue; }))
+        .concat(['Close calls: one product is a synthesis and one reactant a decomposition, whatever else is true. Acid + base is a neutralization.']);
+    }
     el.stage.appendChild(h('div', { class: 'grid2' }, [box, panel('Big ideas', null, [h('ul', { class: 'keylist' }, ideas.map(function (t) { return h('li', { text: t }); }))])]));
-    el.stage.appendChild(panel('Your equations', '★ right on the first Check', [h('ol', { class: 'q-review' }, list.map(function (p, i) {
+    el.stage.appendChild(panel('Your ' + THING.toLowerCase() + 's', '★ right on the first Check', [h('ol', { class: 'q-review' }, list.map(function (p, i) {
       var w = state.p[i] || {};
-      return h('li', { class: w.g === 1 ? 'right' : 'wrong' }, [
-        h('span', { class: 'mark', text: w.g === 1 ? '★' : '✓' }),
-        h('div', { class: 'review-body' }, [h('b', { class: 'eq-line', text: Chem.equation(p.rx, p.coefs) })])
+      return h('li', { class: clean(w) ? 'right' : 'wrong' }, [
+        h('span', { class: 'mark', text: clean(w) ? '★' : '✓' }),
+        h('div', { class: 'review-body' }, [h('b', { class: 'eq-line', text: Chem.equation(p.rx, p.coefs) }),
+          CL ? h('span', { class: 'muted', text: '  ' + Chem.TYPES[p.type].name + '  (coefficients ' + (w.g === 1 ? '★' : '✓') + ', type ' + (w.k === 1 ? '★' : '✓') + ')' }) : null])
       ]);
     }))]));
     el.stage.appendChild(panel('Your questions', null, [h('ol', { class: 'q-review' }, qs.map(function (q, i) {
@@ -346,7 +403,7 @@ var App = (function () {
     }))]));
     var again = h('button', { type: 'button', class: 'primary', text: 'Start a new attempt' });
     var sure = h('div', { class: 'confirm', hidden: true }, [
-      h('p', { text: 'This gives you new questions and ' + Gen.COUNT + ' new equations. Your best score so far (' + Math.max(best, pct) + '%) stays in the gradebook.' }),
+      h('p', { text: 'This gives you new questions and ' + Gen.COUNT + ' ' + THING.toLowerCase() + 's (mostly new ones). Your best score so far (' + Math.max(best, pct) + '%) stays in the gradebook.' }),
       h('div', { class: 'btnrow' }, [
         h('button', { type: 'button', class: 'primary', text: 'Yes, start again', onclick: newAttempt }),
         h('button', { type: 'button', class: 'ghostbtn', text: 'Cancel', onclick: function () { sure.hidden = true; again.hidden = false; again.focus(); } })
@@ -354,7 +411,7 @@ var App = (function () {
     ]);
     again.addEventListener('click', function () { again.hidden = true; sure.hidden = false; sure.querySelector('.primary').focus(); });
     el.stage.appendChild(panel('Try it again?', null, [
-      h('p', { class: 'muted', text: 'You can redo the activity with new equations. Parts you have already reached stay open.' }),
+      h('p', { class: 'muted', text: 'You can redo the activity with new ' + THING.toLowerCase() + 's. Parts you have already reached stay open.' }),
       h('div', { class: 'btnrow' }, [again]), sure]));
     say('Activity complete.', 'good');
   };
@@ -362,7 +419,16 @@ var App = (function () {
   /* ------------------------------------------------------------------ boot */
 
   function showIntro() {
-    var box = h('div', { class: 'screen-box', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'introTitle' }, [
+    var box = h('div', { class: 'screen-box', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'introTitle' }, CL ? [
+      h('h2', { id: 'introTitle', text: document.title }),
+      h('p', { text: 'You can balance an equation. Now you will also say what type of reaction it is: synthesis, decomposition, single ' +
+                     'replacement, double replacement, combustion or neutralization.' }),
+      h('p', { text: 'After a short recap and a look at the six types, every reaction is balanced and classified together on one workbench.' }),
+      h('p', { text: 'The lesson comes first and is not graded. Then ' + Gen.QUIZ + ' graded questions and ' + Gen.COUNT + ' graded reactions, each ' +
+                     'worth two points (coefficients and type): your first answer to each counts. About ' + CONFIG.minutes + ' minutes. Your progress is saved if you leave.' }),
+      h('p', { class: 'screen-note', text: 'Everything works with a mouse, a touch screen or the keyboard (Tab between boxes, arrow keys to change a ' +
+                     'coefficient, Enter to check).' })
+    ] : [
       h('h2', { id: 'introTitle', text: document.title }),
       h('p', { text: 'In a chemical reaction the atoms of the reactants are rearranged into the products. No atom is made and none is destroyed: ' +
                      'that is the law of conservation of mass, and it is why equations have to be balanced.' }),
@@ -399,7 +465,7 @@ var App = (function () {
       state.step = Math.max(0, Math.min(STEPS.length - 1, idx < 0 ? 0 : idx));
       if (params.get('problem')) {
         state.view = Math.max(0, Math.min(Gen.COUNT - 1, +params.get('problem') - 1));
-        for (var k = 0; k < state.view; k++) state.p[k] = { r: 1, g: 1, n: 1, c: problems()[k].coefs.slice() };
+        for (var k = 0; k < state.view; k++) state.p[k] = { r: 1, g: 1, k: 1, n: 1, c: problems()[k].coefs.slice(), y: problems()[k].rx.type };
       }
     } else {
       state = restore(SCORM.loadState()) || newState();
@@ -415,7 +481,7 @@ var App = (function () {
 
   return { start: start, SCHEMA: SCHEMA, STEPS: STEPS, PARTS: PARTS, ITEMS: ITEMS, TIPS: TIPS,
            problems: function () { return problems(); }, questions: function () { return questions(); },
-           state: function () { return state; }, ctl: function () { return ctl; }, rightItems: rightItems };
+           state: function () { return state; }, ctl: function () { return ctl; }, rightItems: rightItems, CLASSIFY: CL };
 })();
 
 document.addEventListener('DOMContentLoaded', App.start);

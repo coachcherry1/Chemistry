@@ -302,3 +302,31 @@ input.coef.inv-in { width: 34px; height: 24px; font-size: 1rem; border: 1.5px so
 .inv-row.ion.tint0 .inv-l b { box-shadow: 0 0 0 2.5px var(--tint0); }
 .inv-row.ion.tint1 .inv-l b { box-shadow: 0 0 0 2.5px var(--tint1); }
 .inv-row.ion.tint2 .inv-l b { box-shadow: 0 0 0 2.5px var(--tint2); }
+
+/* the type of reaction: a click selects, Check judges it with the coefficients */
+.types { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 6px; }
+.types-l { font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-right: 2px; }
+.type-btn { font: 600 0.86rem system-ui, sans-serif; padding: 5px 11px; min-height: 32px; border-radius: 99px; border: 1.5px solid var(--tile-line);
+  background: var(--panel); color: var(--ink); cursor: pointer; }
+.type-btn:hover:not(:disabled) { border-color: var(--accent); }
+.type-btn.selected { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.type-btn.wrong { background: var(--bad-bg); border-color: var(--bad); color: var(--bad); }
+.type-btn.right { background: var(--good-bg); border-color: var(--good); color: var(--good); }
+.type-btn:disabled { cursor: default; }
+.type-btn:disabled:not(.right) { opacity: 0.45; }
+.type-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* the six types: a card for each */
+.type-tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+.type-card h4 { margin: 0 0 2px; font-size: 1.1rem; }
+.type-form { font-size: 1.25rem; font-weight: 700; margin: 2px 0 4px; color: var(--accent); }
+.type-seen { font-size: 0.7rem; margin-left: 4px; }
+.rules3 { margin: 0; padding-left: 18px; font-size: 0.84rem; }
+.rules3 li { margin-bottom: 5px; }
+
+/* four or more substances on one side: closer together, so the equation stays on one line */
+.eq-side.tight { gap: 3px 4px; }
+.eq-side.tight .stp { width: 22px; }
+.eq-side.tight input.coef { width: 30px; }
+.eq-side.tight .formula { font-size: 1.12rem; }
+.eq-side.tight .term { gap: 3px; }

@@ -1,11 +1,13 @@
 # Balancing equations with particles (honors chemistry)
 
-SCORM 1.2 package for Schoology, about 30 minutes. Package 1 of the reactions unit (see `../PLAN.md`).
+SCORM 1.2 package for Schoology, about 30 minutes. Package 1 of the reactions unit (see `../PLAN.md`). It shares its code with
+package 2, `../balancing-reaction-types-scorm/`: every file in `src/js` (except `config.js`), `src/css` and `tools/` is the same
+in both, and each validator fails if they differ, so a fix goes into both.
 
 **Web version:** https://coachcherry1.github.io/Chemistry/chemistry/reactions/balancing-particles-scorm/src/index.html
 (works once this branch is merged into `main`)
 
-**Upload to Schoology:** `dist/balancing-particles-v3.zip`
+**Upload to Schoology:** `dist/balancing-particles-v4.zip`
 
 ## What students do
 
@@ -45,8 +47,8 @@ same: every row of the inventory matches (the law of conservation of mass).
 
 - `chem.js` reads formulas and **balances every equation by solving it**; no coefficient is typed anywhere. It also writes the
   inventory: a polyatomic ion (NO₃, SO₄, PO₄, CO₃, OH, ClO₃, C₂H₃O₂, NH₄) is one row only when it is in the reactants and in
-  the products; otherwise its atoms are counted. In a neutralization water is written HOH (a hydroxide and a hydrogen). `reactions.js` holds 88 substances (name and particle drawing) and 62
-  reactions (53 in the graded pool), each tagged with its type for the classifying package that follows.
+  the products; otherwise its atoms are counted. In a neutralization water is written HOH (a hydroxide and a hydrogen). `reactions.js` holds 88 substances (name and particle drawing) and 65
+  reactions (56 in the graded pool), each tagged with its type for the classifying package that follows.
 - `particles.js` draws each particle from the atoms that touch: lettered circles coloured by element, bigger atoms drawn
   bigger (from covalent radii, squeezed so H still holds its letter). Both boxes always use one scale.
 - `bench.js` is the workbench; `steps.js` the other lesson steps and the choice questions; `problems.js` one student's

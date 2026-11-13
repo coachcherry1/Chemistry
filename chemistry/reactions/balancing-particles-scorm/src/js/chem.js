@@ -233,7 +233,52 @@ var Chem = (function () {
     return side(rx.l, 0) + ' → ' + side(rx.r, nl);
   }
 
-  return { parse: parse, pretty: pretty, species: species, elements: elements, balance: balance, tally: tally,
+  /* ------------------------------------------------------------ the six types */
+
+  /* The teacher's six types, in the order they are taught. form: the general
+     form; clue: what gives it away; look: the nudge after a wrong choice. */
+  var TYPES = {
+    S: { name: 'Synthesis', form: 'A + B → AB', clue: 'There is only one product.', look: 'Look again: there is only one product.' },
+    D: { name: 'Decomposition', form: 'AB → A + B', clue: 'There is only one reactant.', look: 'Look again: there is only one reactant.' },
+    SR: { name: 'Single replacement', form: 'A + BC → AC + B', clue: 'An element and a compound make a different element and a different compound.',
+          look: 'Look again: an element and a compound make a different element and a different compound.' },
+    DR: { name: 'Double replacement', form: 'AB + CD → AD + CB', clue: 'Two compounds trade partners.',
+          look: 'Look again: two compounds trade partners, and it is not an acid with a base.' },
+    C: { name: 'Combustion', form: 'CxHy + O₂ → CO₂ + H₂O', clue: 'A compound of carbon and hydrogen reacts with O₂ and makes CO₂ and H₂O.',
+         look: 'Look again: a compound of carbon and hydrogen reacts with O₂ and makes CO₂ and H₂O.' },
+    N: { name: 'Neutralization', form: 'HX + MOH → MX + HOH', clue: 'An acid and a base make a salt and water (HOH).',
+         look: 'Look again: an acid and a base make a salt and water (HOH).' }
+  };
+  var TYPE_ORDER = ['S', 'D', 'SR', 'DR', 'C', 'N'];
+
+  /* The type by the teacher's rules, from the formulas alone ('' when none of
+     the six fits). One reactant is a decomposition and one product a
+     synthesis, whatever else is true; an acid with a base is a neutralization,
+     not a double replacement; only a compound of C and H (or C, H and O)
+     burning to CO2 and H2O is a combustion. The validator checks every tag in
+     reactions.js against this. */
+  function classify(rx) {
+    function isEl(f) { return Object.keys(parse(f)).length === 1; }
+    function has(list, f) { return list.indexOf(f) >= 0; }
+    if (rx.l.length === 1) return 'D';
+    if (rx.r.length === 1) return 'S';
+    if (rx.l.length !== 2 || rx.r.length !== 2) return '';
+    var fuel = rx.l.filter(function (f) { return f !== 'O2'; })[0];
+    if (has(rx.l, 'O2') && fuel && has(rx.r, 'CO2') && has(rx.r, 'H2O')) {
+      var c = parse(fuel);
+      if (c.C && c.H && Object.keys(c).every(function (el) { return el === 'C' || el === 'H' || el === 'O'; })) return 'C';
+      return '';
+    }
+    var base = rx.l.filter(function (f) { return ionCount(f, 'OH') > 0 && !/^C\d/.test(f); })[0];
+    var acid = rx.l.filter(function (f) { return /^H[A-Z\d]/.test(f) && f !== 'H2O' && f !== 'H2O2' && f !== base; })[0];
+    if (base && acid && has(rx.r, 'H2O')) return 'N';
+    var elsL = rx.l.filter(isEl).length, elsR = rx.r.filter(isEl).length;
+    if (elsL === 1 && elsR === 1) return 'SR';
+    if (elsL === 0 && elsR === 0) return 'DR';
+    return '';
+  }
+
+  return { TYPES: TYPES, TYPE_ORDER: TYPE_ORDER, classify: classify, parse: parse, pretty: pretty, species: species, elements: elements, balance: balance, tally: tally,
            conserved: conserved, judge: judge, equation: equation, gcd: gcd,
            IONS: IONS, ionCount: ionCount, isHOH: isHOH, show: show, rows: rows, inventory: inventory };
 })();

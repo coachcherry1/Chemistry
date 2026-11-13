@@ -1,8 +1,11 @@
 /* problems.js: one student's graded work, from a seed.
  *
  *   Gen.set(seed)    the graded equations: 3 easy, 4 medium, 3 hard, easiest
- *                    first, never a lesson reaction
- *   Gen.quiz(seed)   the six graded choice questions
+ *                    first, never a lesson reaction. In the classifying
+ *                    package (CONFIG.classify): ten reactions with every one
+ *                    of the six types, nitroglycerin last
+ *   Gen.quiz(seed)   the graded choice questions: six on balancing, or four
+ *                    on the types
  *
  * Every answer comes from Chem: the coefficients from Chem.balance, the
  * counts from Chem.parse, "is it conserved" from Chem.tally. Nothing is
@@ -14,7 +17,9 @@ var Gen = (function () {
   'use strict';
 
   var PLAN = [[1, 3], [2, 4], [3, 3]];          /* [level, how many] */
-  var QUIZ = 6;
+  var CLASSIFY = !!CONFIG.classify;
+  var QUIZ = CLASSIFY ? 4 : 6;
+  var CORE = 'nitroglycerin';                    /* classifying package: every student's last reaction (the teacher's) */
 
   function pick(list, rand) { return list[Math.floor(rand() * list.length)]; }
   function pool(level) {
@@ -22,9 +27,30 @@ var Gen = (function () {
   }
   function sig(r) { return r.l.length + '>' + r.r.length + ':' + Chem.balance(r).join(','); }
 
+  /* The classifying package: ten reactions to balance and classify, at least
+     one of each of the six types, easiest first, and the decomposition of
+     nitroglycerin last for everyone. */
+  function typedPool() {
+    return Rx.REACTIONS.filter(function (r) { return r.type && !r.lesson && r.id !== CORE; });
+  }
+  function setTypes(seed) {
+    var rand = UI.rng(seed ^ 0x5bd1e995), all = UI.shuffle(typedPool(), rand), got = [], n = {};
+    Chem.TYPE_ORDER.forEach(function (t) {
+      var r = all.filter(function (x) { return x.type === t; })[0];
+      got.push(r); n[t] = 1;
+    });
+    all.forEach(function (r) {
+      if (got.length < 9 && got.indexOf(r) < 0 && (n[r.type] || 0) < 2 && r.level < 3) { got.push(r); n[r.type]++; }
+    });
+    got.sort(function (a, b) { return a.level - b.level; });
+    got.push(Rx.get(CORE));
+    return got.map(function (r) { return { id: r.id, rx: r, coefs: Chem.balance(r), level: r.level, type: r.type }; });
+  }
+
   var setCache = {};
   function set(seed) {
     if (setCache[seed]) return setCache[seed];
+    if (CLASSIFY) return (setCache[seed] = setTypes(seed));
     var rand = UI.rng(seed ^ 0x5bd1e995), out = [];
     PLAN.forEach(function (pl) {
       var list = UI.shuffle(pool(pl[0]), rand), seen = {}, got = [];
@@ -171,9 +197,74 @@ var Gen = (function () {
     return finish({ id: r.id, kind: 'rule', fig: null, stem: r.stem, why: r.why }, r.c[0], r.c.slice(1), rand);
   }
 
+  /* ---------------------------------- questions of the classifying package */
+
+  function typeNames(list) { return list.map(function (t) { return Chem.TYPES[t].name; }); }
+  function others(t, rand, n) { return UI.shuffle(Chem.TYPE_ORDER.filter(function (x) { return x !== t; }), rand).slice(0, n); }
+
+  /* which type has this general form? */
+  function formQ(id, rand) {
+    var t = pick(['S', 'D', 'SR', 'DR'], rand);
+    return finish({ id: id, kind: 'form', fig: null, type: t,
+      stem: 'Which type of reaction has the general form ' + Chem.TYPES[t].form + '?',
+      why: Chem.TYPES[t].name + ': ' + Chem.TYPES[t].form + '. ' + Chem.TYPES[t].clue
+    }, Chem.TYPES[t].name, typeNames(others(t, rand, 3)), rand);
+  }
+  /* which of these four equations is a ...? */
+  function pickQ(id, rand) {
+    var t = pick(Chem.TYPE_ORDER, rand), pool = UI.shuffle(typedPool().filter(function (r) { return !r.big && r.level < 3; }), rand);
+    function eq(r) { return Chem.equation(r, Chem.balance(r)); }
+    var right = pool.filter(function (r) { return r.type === t; })[0];
+    var wrong = others(t, rand, 3).map(function (x) { return pool.filter(function (r) { return r.type === x; })[0]; });
+    return finish({ id: id, kind: 'pick', fig: null, type: t, rxid: right.id,
+      stem: 'Which of these is a ' + Chem.TYPES[t].name.toLowerCase() + ' reaction?',
+      why: Chem.TYPES[t].clue + ' The others: ' + wrong.map(function (r) { return eq(r) + ' is a ' + Chem.TYPES[r.type].name.toLowerCase(); }).join('; ') + '.'
+    }, eq(right), wrong.map(eq), rand);
+  }
+  /* what type does this picture show? */
+  function pictureQ(id, rand, avoid) {
+    var list = small().filter(function (r) { return r.type && !r.lesson && avoid.indexOf(r.id) < 0; });
+    var r = pick(list, rand);
+    return finish({ id: id, kind: 'picture', fig: { rx: r, coefs: Chem.balance(r) }, type: r.type, rxid: r.id,
+      stem: 'What type of reaction does this picture show?',
+      why: Chem.equation(r, Chem.balance(r)) + '. ' + Chem.TYPES[r.type].clue + ' That makes it a ' + Chem.TYPES[r.type].name.toLowerCase() + '.'
+    }, Chem.TYPES[r.type].name, typeNames(others(r.type, rand, 3)), rand);
+  }
+  /* the teacher's tie-breaks; the right answer is first here and never the longest */
+  var TYPE_RULES = [
+    { id: 't-neutral', type: 'N', stem: 'HCl + NaOH → NaCl + HOH: the partners trade places. What is this reaction called in this class?',
+      c: ['Neutralization', 'Double replacement', 'Single replacement', 'Decomposition'],
+      why: 'An acid and a base make a salt and water. The partners do trade, but acid + base gets its own name: neutralization.' },
+    { id: 't-burn', type: 'S', stem: '2 Mg + O₂ → 2 MgO: magnesium burns with a bright flame. What type of reaction is it?',
+      c: ['Synthesis', 'Combustion', 'Decomposition', 'Single replacement'],
+      why: 'There is only one product, so it is a synthesis. Combustion is kept for a compound of carbon and hydrogen making CO₂ and H₂O.' },
+    { id: 't-nitro', type: 'D', stem: 'C₃H₅(NO₃)₃ → CO₂ + H₂O + N₂ + O₂ (not balanced yet) makes CO₂ and H₂O. What type of reaction is it?',
+      c: ['Decomposition', 'Combustion', 'Double replacement', 'Single replacement'],
+      why: 'There is only one reactant, so it is a decomposition. Nothing reacts with O₂ here: oxygen is a product.' },
+    { id: 't-one-product', type: 'S', stem: 'What does every synthesis reaction have?',
+      c: ['One product', 'Two elements as the reactants', 'Oxygen as one of the reactants', 'A product that is a solid'],
+      why: 'Synthesis: however many reactants, and whether they are elements or compounds, they join into one product.' },
+    { id: 't-one-reactant', type: 'D', stem: 'What does every decomposition reaction have?',
+      c: ['One reactant', 'Two elements as the products', 'Oxygen as one of the products', 'Heat written over the arrow'],
+      why: 'Decomposition: one reactant breaks into two or more products, which may be elements or compounds.' }
+  ];
+  function typeRuleQ(id, rand) {
+    var r = pick(TYPE_RULES, rand);
+    return finish({ id: r.id, kind: 'rule', fig: null, stem: r.stem, why: r.why, type: r.type }, r.c[0], r.c.slice(1), rand);
+  }
+  function quizTypes(seed) {
+    var rand = UI.rng(seed ^ 0x2545f491), out = [];
+    out.push(formQ('q-form', rand));
+    out.push(typeRuleQ('q-rule', rand));
+    out.push(pickQ('q-pick', rand));
+    out.push(pictureQ('q-picture', rand, [out[2].rxid]));
+    return out;
+  }
+
   var quizCache = {};
   function quiz(seed) {
     if (quizCache[seed]) return quizCache[seed];
+    if (CLASSIFY) return (quizCache[seed] = quizTypes(seed));
     var rand = UI.rng(seed ^ 0x2545f491);
     var out = [];
     out.push(countQ('q-count', pick(COUNT_PLAIN, rand), rand));
@@ -185,7 +276,7 @@ var Gen = (function () {
     return (quizCache[seed] = out);
   }
 
-  return { PLAN: PLAN, QUIZ: QUIZ, COUNT: PLAN.reduce(function (t, p) { return t + p[1]; }, 0), set: set, quiz: quiz, pool: pool,
+  return { PLAN: PLAN, QUIZ: QUIZ, CLASSIFY: CLASSIFY, CORE: CORE, typedPool: typedPool, TYPE_RULES: TYPE_RULES, COUNT: PLAN.reduce(function (t, p) { return t + p[1]; }, 0), set: set, quiz: quiz, pool: pool,
            RULES: RULES, ionList: ionList, COUNT_PLAIN: COUNT_PLAIN, COUNT_BRACKET: COUNT_BRACKET, countQ: countQ, small: small };
 })();
 

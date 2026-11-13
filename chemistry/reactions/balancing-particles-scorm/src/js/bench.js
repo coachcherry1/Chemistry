@@ -19,7 +19,13 @@
  *                     student compares the two columns
  *   typed    the student first types the inventory for the equation as
  *            written (every coefficient 1); the steppers open once it is right
- *   graded   the first Check counts: opts.onFirst(right, typed, wanted)
+ *   graded   the first Check counts: opts.onFirst(right, typed, wanted, and
+ *            with classify: typeRight, typePicked, typeWanted)
+ *   classify the student also chooses the type of reaction (six buttons; a
+ *            click only selects), and Check judges both together: the
+ *            classifying package. work.y is the type picked, work.k 1 or 0
+ *            for the type on the first Check. A Check with no type chosen is
+ *            not an answer.
  *   onSave, onResolve, onTyped, next: { label, onClick }
  *
  * A Check with an empty box is not an answer. Coefficients that conserve
@@ -117,7 +123,7 @@ var Bench = (function () {
         if (j) kids.push(h('span', { class: 'eq-op', text: '+' }));
         kids.push(term(f, off + j));
       });
-      return h('div', { class: 'eq-side' }, kids);
+      return h('div', { class: 'eq-side' + (list.length > 3 ? ' tight' : '') }, kids);
     }
     var eq = h('div', { class: 'eq', role: 'group', 'aria-label': 'The equation: set each coefficient' },
       [side(rx.l, 0), h('span', { class: 'eq-op arrow', text: '→' }), side(rx.r, nl)]);
@@ -219,6 +225,36 @@ var Bench = (function () {
       return 'Not balanced yet. ' + cap(rowName(r)) + ': ' + r.left + ' in the reactants, ' + r.right + ' in the products.' + more +
         ' Change a coefficient, never a subscript.';
     }
+    /* ---- the type of reaction (the classifying package) */
+    var typeBtns = [], typeRow = null;
+    if (opts.classify) {
+      typeRow = h('div', { class: 'types', role: 'group', 'aria-label': 'Type of reaction' }, [h('span', { class: 'types-l', text: 'Type of reaction:' })]);
+      Chem.TYPE_ORDER.forEach(function (t) {
+        var b = h('button', { type: 'button', class: 'type-btn' + (work.y === t ? ' selected' : ''), 'aria-pressed': work.y === t ? 'true' : 'false',
+          'data-type': t, text: Chem.TYPES[t].name, onclick: function () {
+            if (work.r) return;
+            work.y = t;
+            typeBtns.forEach(function (x) {
+              var on = x === b;
+              x.classList.toggle('selected', on); x.classList.remove('wrong');
+              x.setAttribute('aria-pressed', on ? 'true' : 'false');
+            });
+            if (opts.onSave) opts.onSave();
+          } });
+        typeBtns.push(b);
+        typeRow.appendChild(b);
+      });
+    }
+    function lockTypes() {
+      typeBtns.forEach(function (b) {
+        b.disabled = true;
+        var right = b.getAttribute('data-type') === rx.type;
+        b.classList.remove('selected', 'wrong');
+        b.classList.toggle('right', right);
+        b.setAttribute('aria-pressed', right ? 'true' : 'false');
+      });
+    }
+
     function setLocked(on) {
       inputs.forEach(function (inp) { inp.readOnly = on; });
       Array.prototype.forEach.call(eq.querySelectorAll('.stp'), function (b) { b.disabled = on; });
@@ -226,6 +262,7 @@ var Bench = (function () {
     function lock() {
       setLocked(true);
       checkBtn.hidden = true; resetBtn.hidden = true; showBtn.hidden = true;
+      lockTypes();
       root.classList.add('done');
       if (nextBtn) nextBtn.hidden = false;
     }
@@ -235,7 +272,8 @@ var Bench = (function () {
       marksOn = true;
       paint();
       lock();
-      tell((shown ? 'Here it is: ' : 'Balanced: ') + Chem.equation(rx, want) + '. Every row of the inventory matches.', 'good');
+      tell((shown ? 'Here it is: ' : 'Balanced: ') + Chem.equation(rx, want) + '. Every row of the inventory matches.' +
+        (opts.classify ? ' ' + Chem.TYPES[rx.type].name + ': ' + Chem.TYPES[rx.type].clue : ''), 'good');
       if (opts.onSave) opts.onSave();
       if (opts.onResolve) opts.onResolve();
     }
@@ -248,20 +286,33 @@ var Bench = (function () {
         inputs[j.at].focus();
         return;
       }
+      if (opts.classify && !work.y) {
+        tell('Choose the type of reaction as well, then Check. (This Check was not counted.)', 'tip');
+        return;
+      }
       var first = work.n === 0;
       work.n++;
+      var balOk = j.kind === 'right', typeOk = !opts.classify || work.y === rx.type;
       if (opts.graded && first) {
-        work.g = j.kind === 'right' ? 1 : 0;
-        if (opts.onFirst) opts.onFirst(j.kind === 'right', cs.join(', '), want.join(', '));
+        work.g = balOk ? 1 : 0;
+        if (opts.classify) work.k = typeOk ? 1 : 0;
+        if (opts.onFirst) {
+          opts.onFirst(balOk, cs.join(', '), want.join(', '), typeOk, opts.classify ? Chem.TYPES[work.y].name : '', opts.classify ? Chem.TYPES[rx.type].name : '');
+        }
       }
-      if (j.kind === 'right') { resolve(false); return; }
+      if (balOk && typeOk) { resolve(false); return; }
       marksOn = true;
       paint();
-      if (j.kind === 'multiple') {
-        tell('Every row matches, but an equation is written with the lowest whole numbers. Every coefficient can be divided by ' + j.k + '.', 'bad');
-      } else {
-        tell(offText(j), 'bad');
+      var msg;
+      if (balOk) msg = 'The equation is balanced.';
+      else if (j.kind === 'multiple') msg = 'Every row matches, but an equation is written with the lowest whole numbers. Every coefficient can be divided by ' + j.k + '.';
+      else msg = offText(j);
+      if (opts.classify) {
+        typeBtns.forEach(function (b) { b.classList.toggle('wrong', !typeOk && b.getAttribute('data-type') === work.y); });
+        msg += typeOk ? ' The type is right: ' + Chem.TYPES[rx.type].name.toLowerCase() + '.'
+                      : ' The type is not ' + Chem.TYPES[work.y].name.toLowerCase() + '. ' + Chem.TYPES[rx.type].look;
       }
+      tell(msg, 'bad');
       if (work.n >= 3) showBtn.hidden = false;
       if (opts.onSave) opts.onSave();
     }
@@ -275,6 +326,7 @@ var Bench = (function () {
     var showBtn = h('button', { type: 'button', class: 'ghostbtn showme', text: 'Show me', hidden: true, onclick: function () {
       inputs.forEach(function (inp, j) { inp.value = String(want[j]); });
       work.c = want.slice();
+      if (opts.classify) work.y = rx.type;
       resolve(true);
     } });
     var nextBtn = opts.next ? h('button', { type: 'button', class: 'primary bench-next', text: opts.next.label, hidden: true, onclick: opts.next.onClick }) : null;
@@ -284,7 +336,7 @@ var Bench = (function () {
     });
 
     var root = h('section', { class: 'bench' + (typing ? ' typing' : '') }, [
-      eq, boxes,
+      eq, boxes, typeRow,
       h('div', { class: 'bench-foot' }, [h('div', { class: 'btnrow' }, [checkBtn, resetBtn, showBtn, nextBtn]), key]),
       fb
     ]);
@@ -295,12 +347,13 @@ var Bench = (function () {
       inputs.forEach(function (inp, j) { inp.value = String(want[j]); });
       paint();
       lock();
-      tell('Balanced: ' + Chem.equation(rx, want) + '.', 'good');
+      tell('Balanced: ' + Chem.equation(rx, want) + '.' + (opts.classify ? ' ' + Chem.TYPES[rx.type].name + '.' : ''), 'good');
     } else if (work.n >= 3) showBtn.hidden = false;
 
     return {
       work: work, root: root, want: want,
       set: function (cs) { inputs.forEach(function (inp, j) { inp.value = String(cs[j]); }); changed(); },
+      type: rx.type,
       check: check,
       destroy: function () {}
     };

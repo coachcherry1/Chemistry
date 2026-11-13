@@ -45,8 +45,23 @@ manifest.replace(/<file href="([^"]+)"\/>/g, (m, f) => { listed.push(f); return 
 const actual = walk(SRC).map((f) => path.relative(SRC, f)).filter((f) => f !== 'imsmanifest.xml').sort();
 ok(JSON.stringify(listed.slice().sort()) === JSON.stringify(actual), 'the manifest does not list exactly the files of src/: ' + listed.join(' ') + ' vs ' + actual.join(' '));
 ok(JSON.stringify(scripts().slice().sort()) === JSON.stringify(actual.filter((f) => /\.js$/.test(f))), 'index.html does not load exactly the scripts of src/js');
-ok(/identifier="BALPART_MANIFEST"/.test(manifest) && !/masteryscore/i.test(manifest.replace(/<!--[\s\S]*?-->/g, '')), 'manifest identifiers, or a masteryscore');
-ok(CONFIG.store === 'balancing-particles-state', 'the save key');
+const CL = !!CONFIG.classify;
+const ME = CL ? { ids: 'BALTYPES', store: 'balancing-reaction-types-state', folder: 'balancing-reaction-types-scorm', other: 'balancing-particles-scorm' }
+              : { ids: 'BALPART', store: 'balancing-particles-state', folder: 'balancing-particles-scorm', other: 'balancing-reaction-types-scorm' };
+ok(new RegExp('identifier="' + ME.ids + '_MANIFEST"').test(manifest) && !/masteryscore/i.test(manifest.replace(/<!--[\s\S]*?-->/g, '')), 'manifest identifiers, or a masteryscore');
+ok(CONFIG.store === ME.store && path.basename(ROOT) === ME.folder, 'the save key or the folder does not fit config.js');
+/* two packages, one code base: everything but config.js must be the same file in both */
+const OTHER = path.join(ROOT, '..', ME.other);
+if (fs.existsSync(OTHER)) {
+  ['src/js', 'src/css', 'tools'].forEach((dir) => {
+    fs.readdirSync(path.join(ROOT, dir)).forEach((f) => {
+      if (f === 'config.js') return;
+      const mine = fs.readFileSync(path.join(ROOT, dir, f), 'utf8'), theirs = path.join(OTHER, dir, f);
+      ok(fs.existsSync(theirs) && fs.readFileSync(theirs, 'utf8') === mine, dir + '/' + f + ' differs from the copy in ' + ME.other + ' (a fix goes into both)');
+    });
+  });
+  ok(fs.readFileSync(path.join(OTHER, 'src', 'js', 'config.js'), 'utf8').indexOf('classify: ' + (CL ? 'false' : 'true')) >= 0, 'the two packages need opposite classify settings');
+}
 ok(typeof App.SCHEMA === 'number', 'SCHEMA');
 const appSrc = fs.readFileSync(path.join(SRC, 'js', 'steps.js'), 'utf8');
 ok(/submit-answer/.test(appSrc) && /aria-pressed/.test(appSrc) && /selected/.test(appSrc), 'graded choices need select, then Submit answer');
@@ -132,7 +147,17 @@ Rx.REACTIONS.forEach((r) => {
       Particles.fill(null, r.r.map((f, j) => ({ f, n: cs[nl + j] })), { w: Bench.BOXW, h: Bench.BOXH, measure: true }));
     ok(sc(c) >= 0.75, r.id + ': particles drawn too small at the answer (scale ' + sc(c).toFixed(2) + ')');
     ok(sc(c.map((x) => x + 2)) >= 0.55, r.id + ': particles drawn too small two past the answer');
+  } else {
+    /* the two big ones are only used by the classifying package: still readable at the answer */
+    const nl = r.l.length;
+    const scBig = Math.min(
+      Particles.fill(null, r.l.map((f, j) => ({ f, n: c[j] })), { w: Bench.BOXW, h: Bench.BOXH, measure: true }),
+      Particles.fill(null, r.r.map((f, j) => ({ f, n: c[nl + j] })), { w: Bench.BOXW, h: Bench.BOXH, measure: true }));
+    ok(scBig >= 0.5, r.id + ': particles drawn too small at the answer (scale ' + scBig.toFixed(2) + ')');
   }
+  /* the type, by the teacher's rules, worked out again from the formulas */
+  if (r.type) ok(Chem.classify(r) === r.type, r.id + ': tagged ' + r.type + ', the rules say ' + (Chem.classify(r) || 'none'));
+  ok((r.r.length === 1) === (r.type === 'S') && (r.l.length === 1) === (r.type === 'D'), r.id + ': one product must be a synthesis, one reactant a decomposition');
 });
 ok(Particles.fill(null, [{ f: 'O2', n: 20 }, { f: 'C3H5(NO3)3', n: 20 }], { w: Bench.BOXW, h: Bench.BOXH, measure: true }) > 0, 'a full box still draws');
 
@@ -203,65 +228,129 @@ const cons = Steps.CARDS.map((c) => Chem.conserved(Rx.get(c.rx), c.c));
 ok(cons.filter(Boolean).length === 2 && cons.length === 4, 'Is it conserved? needs two pictures of each kind');
 Steps.COUNT.forEach((c) => ok(Rx.SUBSTANCES[c[1]] && c[0] > 1, 'count card ' + c[1]));
 
+/* ----------------------------------------------------------- the six types */
+ok(Chem.TYPE_ORDER.join() === 'S,D,SR,DR,C,N' && Chem.TYPE_ORDER.every((t) => Chem.TYPES[t].name && Chem.TYPES[t].form && Chem.TYPES[t].clue && Chem.TYPES[t].look), 'the six types');
+Chem.TYPE_ORDER.forEach((t) => ok(Rx.get(Steps.EXAMPLES[t]) && Rx.get(Steps.EXAMPLES[t]).type === t, 'the example for ' + t + ' is not a ' + t));
+ok(new Set(Steps.SORT.map((id) => Rx.get(id).type)).size === 6 && Steps.SORT.indexOf('nitroglycerin') >= 0, 'the sorting practice needs all six types and nitroglycerin');
+ok(Rx.get('nitroglycerin').type === 'D' && Chem.balance(Rx.get('nitroglycerin')).join() === '4,12,10,6,1', 'nitroglycerin: a decomposition, 4, 12, 10, 6, 1');
+ok(Chem.classify(Rx.get('mgo')) === 'S' && Chem.classify(Rx.get('caoh2hcl')) === 'N' && Chem.classify(Rx.get('ethanol')) === 'C' && Chem.classify(Rx.get('nawater')) === 'SR', 'the tie-break rules');
+
 /* ----------------------------------------------------------- graded work */
-const graded = Rx.REACTIONS.filter((r) => !r.lesson && !r.big);
-graded.forEach((r) => ok(Chem.balance(r).some((x) => x > 1), r.id + ': a graded equation whose answer is all 1s'));
-Gen.PLAN.forEach((pl) => ok(Gen.pool(pl[0]).length >= pl[1] + 4, 'pool for level ' + pl[0] + ' too small'));
-ok(Gen.COUNT === 10 && Gen.QUIZ === 6 && App.ITEMS === 16, 'the plan: 10 equations and 6 questions');
 const seenRx = {}, seenQ = {};
-for (let seed = 1; seed <= 400; seed++) {
-  const set = Gen.set(seed * 7919 + 13);
-  ok(set.length === 10 && new Set(set.map((p) => p.id)).size === 10, 'seed ' + seed + ': 10 different equations');
-  ok(set.map((p) => p.level).join('') === '1112222333', 'seed ' + seed + ': 3 easy, 4 medium, 3 hard, in order');
-  set.forEach((p) => { seenRx[p.id] = 1; ok(!p.rx.lesson && !p.rx.big && Chem.judge(p.rx, p.coefs).kind === 'right', 'seed ' + seed + ': ' + p.id); });
-  const qs = Gen.quiz(seed * 7919 + 13);
-  ok(qs.length === 6, 'seed ' + seed + ': 6 questions');
-  let yes = 0;
-  qs.forEach((q) => {
-    seenQ[q.id] = 1;
-    const tag = 'seed ' + seed + ' ' + q.id + ': ';
-    ok(q.choices.length >= 3 && q.choices.length <= 4 && new Set(q.choices).size === q.choices.length, tag + 'choices ' + q.choices.join(' / '));
-    ok(q.right >= 0 && q.right < q.choices.length && q.why && q.stem, tag + 'right answer or explanation missing');
-    const right = q.choices[q.right];
-    if (q.kind === 'count') {
-      const m = /How many (\w+) atoms are in (\d+) (\S+)\?/.exec(q.stem);
-      const el = Object.keys(Particles.EL).filter((e) => Particles.EL[e][0] === m[1])[0];
-      const f = m[3].replace(/[₀-₉]/g, (d) => '₀₁₂₃₄₅₆₇₈₉'.indexOf(d));
-      ok(+right === +m[2] * Chem.parse(f)[el], tag + 'count');
-    } else if (q.kind === 'conserved') {
-      const t = Bench.tallyOf(Bench.items(q.fig.rx, q.fig.coefs)), off = t.filter((x) => !x.ok);
-      ok(off.length <= 1, tag + 'more than one element off');
-      if (off.length) ok(right === 'No: the number of ' + Particles.EL[off[0].el][0] + ' atoms changes', tag + 'which element');
-      else { yes++; ok(/^Yes/.test(right), tag + 'conserved'); }
-      ok(q.fig.coefs.reduce((a, b) => a + b, 0) <= 14, tag + 'too many particles to count');
-    } else if (q.kind === 'inventory') {
-      /* counted again here, straight from the formulas */
-      const r = Rx.get(q.rxid), n = (list) => list.reduce((t, f) => {
-        const m = new RegExp('\\(' + q.ion + '\\)(\\d*)').exec(f);
-        /* the water of a neutralization is HOH: one hydroxide */
-        if (f === 'H2O') return t + (q.ion === 'OH' && r.type === 'N' ? 1 : 0);
-        return t + (m ? +(m[1] || 1) : f.indexOf(q.ion) >= 0 ? 1 : 0);
-      }, 0);
-      ok(right === n(r.l) + ' in the reactants, ' + n(r.r) + ' in the products', tag + 'the ion count');
-      ok(n(r.l) > 0 && n(r.r) > 0 && q.choices.length === 4, tag + 'the ion must be on both sides, with four choices');
-    }
-    /* the "No" choices and the count choices differ only in a name or a number, so only the others are checked */
-    if (/[a-z]{3}/.test(right) && q.kind !== 'inventory' && !/^No: /.test(right)) {
-      ok(q.choices.some((c, i) => i !== q.right && c.length > right.length), tag + 'the right answer is the longest choice');
-    }
+if (CL) gradedTypes(); else gradedBalancing();
+
+function gradedTypes() {
+  const pool = Gen.typedPool();
+  Chem.TYPE_ORDER.forEach((t) => ok(pool.filter((r) => r.type === t && !r.big).length >= 4, 'fewer than 4 reactions of type ' + t + ' to draw from'));
+  ok(Gen.COUNT === 10 && Gen.QUIZ === 4 && App.ITEMS === 24, 'the plan: 4 questions and 10 reactions worth 2 each');
+  const byEq = {};
+  Rx.REACTIONS.forEach((r) => { byEq[Chem.equation(r, Chem.balance(r))] = r; });
+  const names = Chem.TYPE_ORDER.map((t) => Chem.TYPES[t].name);
+  for (let seed = 1; seed <= 400; seed++) {
+    const set = Gen.set(seed * 7919 + 13);
+    ok(set.length === 10 && new Set(set.map((p) => p.id)).size === 10, 'seed ' + seed + ': 10 different reactions');
+    ok(Chem.TYPE_ORDER.every((t) => set.some((p) => p.type === t)), 'seed ' + seed + ': every one of the six types');
+    ok(set[9].id === 'nitroglycerin', 'seed ' + seed + ': nitroglycerin last');
+    ok(set.slice(0, 9).every((p, i) => i === 0 || p.level >= set[i - 1].level), 'seed ' + seed + ': easiest first');
+    ok(Chem.TYPE_ORDER.every((t) => set.filter((p) => p.type === t).length <= 3), 'seed ' + seed + ': too many of one type');
+    set.forEach((p) => {
+      seenRx[p.id] = 1;
+      ok(!p.rx.lesson && p.type === p.rx.type && Chem.classify(p.rx) === p.type && Chem.judge(p.rx, p.coefs).kind === 'right', 'seed ' + seed + ': ' + p.id);
+    });
+    const qs = Gen.quiz(seed * 7919 + 13);
+    ok(qs.length === 4 && qs.map((q) => q.kind).join() === 'form,rule,pick,picture', 'seed ' + seed + ': the four questions');
+    qs.forEach((q) => {
+      seenQ[q.id] = 1;
+      const tag = 'seed ' + seed + ' ' + q.id + ': ', right = q.choices[q.right];
+      ok(q.choices.length === 4 && new Set(q.choices).size === 4 && q.right >= 0 && q.why && q.stem, tag + 'choices ' + q.choices.join(' / '));
+      if (q.kind === 'form') {
+        const t = Chem.TYPE_ORDER.filter((x) => q.stem.indexOf(Chem.TYPES[x].form) >= 0);
+        ok(t.length === 1 && right === Chem.TYPES[t[0]].name && q.choices.every((c) => names.indexOf(c) >= 0), tag + 'the general form');
+      } else if (q.kind === 'pick') {
+        const t = Chem.TYPE_ORDER.filter((x) => q.stem.indexOf(' ' + Chem.TYPES[x].name.toLowerCase() + ' reaction') >= 0);
+        ok(t.length === 1 && q.choices.every((c) => byEq[c]), tag + 'unknown equation or type');
+        q.choices.forEach((c, i) => ok((Chem.classify(byEq[c]) === t[0]) === (i === q.right), tag + c + ' is ' + Chem.classify(byEq[c])));
+      } else if (q.kind === 'picture') {
+        ok(right === Chem.TYPES[Chem.classify(q.fig.rx)].name && Chem.conserved(q.fig.rx, q.fig.coefs), tag + 'the picture');
+        ok(q.fig.coefs.reduce((a, b) => a + b, 0) <= 8, tag + 'too many particles');
+      } else {
+        ok(right === Gen.TYPE_RULES.filter((r) => r.id === q.id)[0].c[0], tag + 'the rule');
+      }
+    });
+    ok(qs[2].rxid !== qs[3].rxid, 'seed ' + seed + ': a reaction in two questions');
+  }
+  pool.concat([Rx.get('nitroglycerin')]).forEach((r) => ok(seenRx[r.id], r.id + ' never comes up in 400 students'));
+  Gen.TYPE_RULES.forEach((r) => {
+    ok(seenQ[r.id], r.id + ' never comes up');
+    ok(r.c.slice(1).some((c) => c.length > r.c[0].length), r.id + ': the right answer is the longest');
+    if (/^t-(neutral|burn|nitro)$/.test(r.id)) ok(r.c[0] === Chem.TYPES[r.type].name, r.id + ': answer and type disagree');
   });
-  ok(yes === 1, 'seed ' + seed + ': one conserved picture and one that is not');
-  ok(qs.filter((q) => q.kind === 'inventory').length === 1, 'seed ' + seed + ': one inventory question');
-  const figs = qs.filter((q) => q.fig).map((q) => q.fig.rx.id);
-  ok(new Set(figs).size === figs.length, 'seed ' + seed + ': a reaction drawn in two questions');
+  ok(/2 Mg \+ O₂ → 2 MgO/.test(Gen.TYPE_RULES[1].stem) && Chem.classify(Rx.get('mgo')) === 'S', 'the burning magnesium rule');
+  ok(Gen.TYPE_RULES[2].stem.indexOf(Chem.equation(Rx.get('nitroglycerin'))) === 0, 'the nitroglycerin equation in its question');
+  /* nitroglycerin is every student's last graded reaction: its coefficients must not be shown before */
+  const srcText = ['steps.js', 'app.js', 'problems.js'].map((f) => fs.readFileSync(path.join(SRC, 'js', f), 'utf8')).join('');
+  ok(!/12 CO₂ \+ 10 H₂O/.test(srcText) && /Chem\.equation\(r\) \}\),\n\s+h\('p', \{ class: 'prompt', text: 'What type of reaction is this\?'/.test(srcText), 'the balanced nitroglycerin equation is given away before the graded part');
 }
-graded.forEach((r) => ok(seenRx[r.id], r.id + ' never comes up in 400 students'));
-Gen.RULES.forEach((r) => { ok(seenQ[r.id], r.id + ' never comes up'); ok(r.c.slice(1).some((c) => c.length > r.c[0].length), r.id + ': the right answer is the longest'); });
-Gen.COUNT_PLAIN.concat(Gen.COUNT_BRACKET).forEach((it) => {
-  const q = Gen.countQ('x', it, A.UI.rng(1));
-  ok(q.choices.length === 4, 'count question ' + it.join(' ') + ' needs four different choices');
-});
+
+function gradedBalancing() {
+  const graded = Rx.REACTIONS.filter((r) => !r.lesson && !r.big);
+  graded.forEach((r) => ok(Chem.balance(r).some((x) => x > 1), r.id + ': a graded equation whose answer is all 1s'));
+  Gen.PLAN.forEach((pl) => ok(Gen.pool(pl[0]).length >= pl[1] + 4, 'pool for level ' + pl[0] + ' too small'));
+  ok(Gen.COUNT === 10 && Gen.QUIZ === 6 && App.ITEMS === 16, 'the plan: 10 equations and 6 questions');
+  for (let seed = 1; seed <= 400; seed++) {
+    const set = Gen.set(seed * 7919 + 13);
+    ok(set.length === 10 && new Set(set.map((p) => p.id)).size === 10, 'seed ' + seed + ': 10 different equations');
+    ok(set.map((p) => p.level).join('') === '1112222333', 'seed ' + seed + ': 3 easy, 4 medium, 3 hard, in order');
+    set.forEach((p) => { seenRx[p.id] = 1; ok(!p.rx.lesson && !p.rx.big && Chem.judge(p.rx, p.coefs).kind === 'right', 'seed ' + seed + ': ' + p.id); });
+    const qs = Gen.quiz(seed * 7919 + 13);
+    ok(qs.length === 6, 'seed ' + seed + ': 6 questions');
+    let yes = 0;
+    qs.forEach((q) => {
+      seenQ[q.id] = 1;
+      const tag = 'seed ' + seed + ' ' + q.id + ': ';
+      ok(q.choices.length >= 3 && q.choices.length <= 4 && new Set(q.choices).size === q.choices.length, tag + 'choices ' + q.choices.join(' / '));
+      ok(q.right >= 0 && q.right < q.choices.length && q.why && q.stem, tag + 'right answer or explanation missing');
+      const right = q.choices[q.right];
+      if (q.kind === 'count') {
+        const m = /How many (\w+) atoms are in (\d+) (\S+)\?/.exec(q.stem);
+        const el = Object.keys(Particles.EL).filter((e) => Particles.EL[e][0] === m[1])[0];
+        const f = m[3].replace(/[₀-₉]/g, (d) => '₀₁₂₃₄₅₆₇₈₉'.indexOf(d));
+        ok(+right === +m[2] * Chem.parse(f)[el], tag + 'count');
+      } else if (q.kind === 'conserved') {
+        const t = Bench.tallyOf(Bench.items(q.fig.rx, q.fig.coefs)), off = t.filter((x) => !x.ok);
+        ok(off.length <= 1, tag + 'more than one element off');
+        if (off.length) ok(right === 'No: the number of ' + Particles.EL[off[0].el][0] + ' atoms changes', tag + 'which element');
+        else { yes++; ok(/^Yes/.test(right), tag + 'conserved'); }
+        ok(q.fig.coefs.reduce((a, b) => a + b, 0) <= 14, tag + 'too many particles to count');
+      } else if (q.kind === 'inventory') {
+        /* counted again here, straight from the formulas */
+        const r = Rx.get(q.rxid), n = (list) => list.reduce((t, f) => {
+          const m = new RegExp('\\(' + q.ion + '\\)(\\d*)').exec(f);
+          /* the water of a neutralization is HOH: one hydroxide */
+          if (f === 'H2O') return t + (q.ion === 'OH' && r.type === 'N' ? 1 : 0);
+          return t + (m ? +(m[1] || 1) : f.indexOf(q.ion) >= 0 ? 1 : 0);
+        }, 0);
+        ok(right === n(r.l) + ' in the reactants, ' + n(r.r) + ' in the products', tag + 'the ion count');
+        ok(n(r.l) > 0 && n(r.r) > 0 && q.choices.length === 4, tag + 'the ion must be on both sides, with four choices');
+      }
+      /* the "No" choices and the count choices differ only in a name or a number, so only the others are checked */
+      if (/[a-z]{3}/.test(right) && q.kind !== 'inventory' && !/^No: /.test(right)) {
+        ok(q.choices.some((c, i) => i !== q.right && c.length > right.length), tag + 'the right answer is the longest choice');
+      }
+    });
+    ok(yes === 1, 'seed ' + seed + ': one conserved picture and one that is not');
+    ok(qs.filter((q) => q.kind === 'inventory').length === 1, 'seed ' + seed + ': one inventory question');
+    const figs = qs.filter((q) => q.fig).map((q) => q.fig.rx.id);
+    ok(new Set(figs).size === figs.length, 'seed ' + seed + ': a reaction drawn in two questions');
+  }
+  graded.forEach((r) => ok(seenRx[r.id], r.id + ' never comes up in 400 students'));
+  Gen.RULES.forEach((r) => { ok(seenQ[r.id], r.id + ' never comes up'); ok(r.c.slice(1).some((c) => c.length > r.c[0].length), r.id + ': the right answer is the longest'); });
+  Gen.COUNT_PLAIN.concat(Gen.COUNT_BRACKET).forEach((it) => {
+    const q = Gen.countQ('x', it, A.UI.rng(1));
+    ok(q.choices.length === 4, 'count question ' + it.join(' ') + ' needs four different choices');
+  });
+}
 
 console.log(bad ? bad + ' of ' + checks + ' checks FAILED' : 'All ' + checks + ' checks passed: ' + Object.keys(Rx.SUBSTANCES).length + ' substances, ' +
-  Rx.REACTIONS.length + ' reactions (' + graded.length + ' in the graded pool), 400 students.');
+  Rx.REACTIONS.length + ' reactions (' + Object.keys(seenRx).length + ' in the graded pool), 400 students' + (CL ? ', classifying package.' : '.'));
 process.exit(bad ? 1 : 0);
