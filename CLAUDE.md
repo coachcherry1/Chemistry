@@ -33,7 +33,7 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `chemistry/moles/combustion-analysis-scorm/` | Combustion analysis by the same four steps: a hydrocarbon (C and H only) from its grams of CO₂ and H₂O, × 2 H per H₂O, empirical and molecular formula, 6 graded problems (about 30 min) |
 | `chemistry/moles/empirical-formula-mgo-scorm/` | Virtual lab (pre-lab, with a paper sheet): empirical formula of MgO, the nitride side reaction and the water fix (about 20 min, no score) |
 | `chemistry/moles/hydrate-lab-scorm/` | Virtual lab (pre-lab, with a paper sheet): formula of a hydrate, CuSO₄·5H₂O heated to constant mass in a crucible, realistic data (about 25 min, no score) |
-| `chemistry/reactions/balancing-particles-scorm/` | Balancing with particle diagrams: a reactants box and a products box that follow the coefficients, the atom tally, conservation of mass, lowest whole numbers, 10 graded equations and 6 questions (about 25 min). Package 1 of 4; the plan for the rest is `chemistry/reactions/PLAN.md` |
+| `chemistry/reactions/balancing-particles-scorm/` | Balancing with particle diagrams: a reactants box and a products box that follow the coefficients, the inventory down the centre, conservation of mass, polyatomic ions kept together (or not), 10 graded equations and 6 questions (about 30 min). Package 1 of 4; the plan for the rest is `chemistry/reactions/PLAN.md` |
 
 **AP chemistry**
 
@@ -607,29 +607,39 @@ not the full page.
   `drills.js`, `scenes.js`, `scorm.js`, `app.js`. Walkthrough harness as in the VSEPR and IMF packages (the fake LMS reads and writes
   sessionStorage on every call); each run picks random problems and prints its seed, `SEED=n` replays one.
 
-## balancing-particles-scorm (zip v1, SCHEMA 1) and the reactions unit
+## balancing-particles-scorm (zip v2, SCHEMA 2) and the reactions unit
 
 - **The unit is four packages** in `chemistry/reactions/`; `PLAN.md` there holds the approved plan, the teacher's answers
   and the class handout (activity series, solubility table). Only package 1 is built. Next: `balancing-reaction-types-scorm/`
   (balance and classify each reaction together; six types; synthesis is one product, decomposition one reactant;
   nitroglycerin must be in it), `predicting-products-scorm/`, `net-ionic-equations-scorm/`.
 - **Key objective:** every atom in the reactants box is in the products box (the law of conservation of mass); a
-  coefficient changes how many particles, a subscript is never changed; lowest whole numbers.
-- 11 steps in 6 parts; 16 graded items: 6 choice questions (Submit answer) and 10 equations (3 easy, 4 medium, 3 hard
-  from a pool of 48). Score = items right the first time / 16.
-- **Teacher's choices:** no masses on screen (atoms only). In graded equations the atom tally is hidden until the first
-  Check, which is the one that counts; an empty box is not counted; doubled coefficients are told to reduce and count
-  as a miss; Show me after three misses.
-- **One model:** `chem.js` balances every equation by solving it (the validator balances each again by brute force);
-  no coefficient is typed anywhere. `reactions.js`: formula, name and particle tree (`O(H)(H)`) per substance, and
-  reactions tagged with a type for package 2 (`''` where the six types do not fit) and `big` (butane, nitroglycerin:
-  kept out of this package's graded set).
+  coefficient changes how many particles, a subscript is never changed; keep an accurate inventory.
+- 13 steps in 6 parts; 16 graded items: 6 choice questions (Submit answer) and 10 equations (3 easy, 4 medium, 3 hard
+  from a pool of 53). Score = items right the first time / 16.
+- **The inventory runs down the centre** (the teacher's paper method: count in the reactants | what is counted | count
+  in the products, under the arrow, between the two boxes), updating with every coefficient. Rows are marked green or
+  red live in the lesson; in the graded equations the counts are live but nothing is marked until the first Check, which
+  is the one that counts.
+- **Polyatomic ions (Part 4, the teacher's emphasis):** an ion is one row of the inventory only when it is in the
+  reactants and in the products (`Chem.rows`, ions in `Chem.IONS`); the teacher's example Na₃PO₄ + Ca(C₂H₃O₂)₂ gives rows
+  Na, PO₄, Ca, C₂H₃O₂. On one side only (P₄O₁₀ + H₂O → H₃PO₄) it is counted atom by atom. When one ion stays and another
+  does not (NaOH + H₂SO₄), the O row counts only the oxygen "not in SO₄". Steps with `typed` make the student type the
+  starting inventory before the steppers open; steps with `ask` start with a prediction (answered on the click).
+- **Teacher's choices:** no masses on screen. No picture-to-equation section (removed at the teacher's request; the
+  workbench still tells doubled coefficients to reduce, and counts them as a miss). An empty box is not counted; Show me
+  after three misses.
+- **One model:** `chem.js` balances every equation by solving it (the validator balances each again by brute force) and
+  writes the inventory (the validator checks every atom is in exactly one row, and that the rows all match exactly when
+  the atoms are conserved). `reactions.js`: formula, name and particle tree (`O(H)(H)`) per substance, and reactions
+  tagged with a type for package 2 (`''` where the six types do not fit) and `big` (butane, nitroglycerin: kept out of
+  this package's graded set).
 - **Particles (`particles.js`):** lettered circles coloured by element, sized from covalent radii (squeezed so H holds
   its letter), laid out from the tree and settled; `Particles.pair` draws the two boxes at one scale. To be reused by
   packages 2 and 3; package 4's ions need true ionic radii instead.
 - **Written to be shared with package 2:** `config.js` (`classify`, save key, minutes) is the only file meant to differ;
   when package 2 exists, make each validator fail if the shared files differ, as in the mole conversion packages.
 - **Files:** `config.js`, `util.js`, `chem.js`, `reactions.js`, `particles.js`, `problems.js` (`Gen.set`, `Gen.quiz`),
-  `bench.js` (workbench, `Bench.picture`), `steps.js` (lesson steps, choice questions), `scorm.js`, `app.js`;
+  `bench.js` (workbench, inventory, `Bench.picture`), `steps.js` (lesson steps, choice questions), `scorm.js`, `app.js`;
   `tools/load.js` loads them for the validator and answer key. Teacher links: `?step=<id or number>`,
   `?step=set&seed=<n>&problem=<1 to 10>`.

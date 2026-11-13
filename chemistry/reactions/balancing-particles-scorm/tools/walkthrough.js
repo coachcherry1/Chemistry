@@ -7,8 +7,9 @@
  *
  * It checks that a save from another release, or one the browser kept, is
  * ignored inside the LMS; plays every lesson step with a mistake first and
- * reads the feedback; balances with the + and - buttons, the arrow keys and
- * typed numbers; reloads in the middle of the questions and of the equations
+ * reads the feedback; types the inventory where the step asks for it (one
+ * count wrong first) and makes both predictions about polyatomic ions;
+ * balances with the + and - buttons, the arrow keys and typed numbers; reloads in the middle of the questions and of the equations
  * to check the work comes back. In the graded part it checks that clicking a
  * choice grades nothing until Submit answer, misses one question on
  * purpose, misses the first Check of two equations (one with doubled
@@ -97,7 +98,10 @@ const fakeLMS = () => {
   }
   const check = () => page.click('.bench:not(.still) .bench-check');
   const answer = (id) => page.evaluate((i) => Chem.balance(Rx.get(i)), id);
-  const chips = () => page.evaluate(() => Array.from(document.querySelectorAll('.bench:not(.still) .chip')).map((c) => c.textContent.trim()));
+  /* the rows of the bench's inventory, and how many of them are marked */
+  const rows = () => page.locator('.bench:not(.still) .inv-row').count();
+  const marked = () => page.locator('.bench:not(.still) .inv-row.ok, .bench:not(.still) .inv-row.off').count();
+  const allOk = async () => (await rows()) > 0 && (await rows()) === (await page.locator('.bench:not(.still) .inv-row.ok').count());
 
   /* ---- a save from another release, and one the browser kept, are ignored inside the LMS */
   await page.goto(URL);
@@ -139,27 +143,54 @@ const fakeLMS = () => {
   /* ---- conserved */
   const cards = await page.evaluate(() => Steps.CARDS.map((c) => Chem.conserved(Rx.get(c.rx), c.c)));
   for (let i = 0; i < cards.length; i++) {
-    expect(await page.locator('.chip').count() === 0, 'conserved ' + i + ': the tally shows before the answer');
+    expect(await page.locator('.inv-row').count() === 0, 'conserved ' + i + ': the inventory shows before the answer');
     const wrongFirst = i === 1;
     await page.click('.tile:has-text("' + ((cards[i] !== wrongFirst) ? 'Atoms conserved' : 'Not conserved') + '")');
-    expect(await page.locator('.chip').count() > 0, 'conserved ' + i + ': no tally after the answer');
+    expect(await page.locator('.inv-row').count() > 0, 'conserved ' + i + ': no inventory after the answer');
     expect(new RegExp(wrongFirst ? 'Look again' : 'Right').test(await fb()), 'conserved ' + i + ': feedback ' + await fb());
     if (i === 1) await snap('conserved');
     if (i < cards.length - 1) await page.click('.panel .btnrow .primary');
   }
   await next();
 
-  /* ---- the lesson benches */
-  const hows = ['buttons', 'keys', 'type', 'type'];
-  for (let b = 0; b < 4; b++) {
-    const id = await stepId();
-    const rxid = await page.evaluate(() => App.STEPS[App.state().step].rx);
-    const want = await answer(rxid);
-    if (b < 3) expect((await chips()).length > 0, id + ': the live tally is missing');
-    else expect((await chips()).length === 0, id + ': the tally should be hidden until Check');
+  /* ---- the lesson benches: Part 3, then polyatomic ions */
+  const hows = ['buttons', 'keys', 'type', 'type', 'buttons', 'type', 'type'];
+  const benchSteps = await page.evaluate(() => App.STEPS.filter((s) => s.kind === 'bench').map((s) => ({ id: s.id, rx: s.rx, typed: !!s.typed, ask: s.ask ? s.ask.c.map((c) => !!c.ok) : null })));
+  expect(benchSteps.map((s) => s.id).join() === 'first,second,third,strategy,ions,split,mixed', 'the lesson benches: ' + benchSteps.map((s) => s.id).join());
+  for (let b = 0; b < benchSteps.length; b++) {
+    const bs = benchSteps[b], id = await stepId();
+    expect(id === bs.id, 'expected step ' + bs.id + ', on ' + id);
+    const want = await answer(bs.rx);
+    if (bs.ask) {
+      expect(await page.locator('.bench:not(.still)').count() === 0, id + ': the bench should wait for the prediction');
+      const pickRight = id !== 'ions';             /* one prediction wrong, one right */
+      await page.locator('.panel.ask .tile').nth(bs.ask.indexOf(pickRight)).click();
+      expect(await page.locator('.panel.ask .fb.show.' + (pickRight ? 'good' : 'bad')).count() === 1, id + ': feedback on the prediction');
+      expect(await page.locator('.bench:not(.still)').count() === 1, id + ': the bench should open after the prediction');
+    }
+    if (bs.typed) {
+      const inv = await page.evaluate((rid) => { const r = Rx.get(rid); return Chem.inventory(r, Chem.species(r).map(() => 1)).map((x) => [x.left, x.right, x.label]); }, bs.rx);
+      const cells = page.locator('.bench .inv-in');
+      expect(await cells.count() === inv.length * 2, id + ': a box for both sides of every row');
+      expect(await page.isDisabled('.bench .stp.inc >> nth=0'), id + ': the steppers should wait for the inventory');
+      await check();
+      expect(/Fill in both columns/.test(await fb('.bench')), id + ': an empty inventory');
+      for (let r = 0; r < inv.length; r++) { await cells.nth(2 * r).fill(String(inv[r][0])); await cells.nth(2 * r + 1).fill(String(inv[r][1] + (r === 1 ? 1 : 0))); }
+      await check();
+      expect(await page.locator('.bench .inv-in.wrong').count() === 1 && (await fb('.bench')).length > 20, id + ': a wrong count should be marked and explained: ' + await fb('.bench'));
+      if (id === 'ions') {
+        expect(inv.map((x) => x[2]).join() === 'Na,PO₄,Ca,C₂H₃O₂', 'ions: the inventory rows should be Na, PO₄, Ca, C₂H₃O₂');
+        await snap('ions-typing');
+      }
+      await cells.nth(3).fill(String(inv[1][1]));
+      await cells.nth(3).press('Enter');
+      expect(/That is the inventory/.test(await fb('.bench')), id + ': the right inventory was not accepted: ' + await fb('.bench'));
+    }
+    expect(await rows() > 0 && (await marked()) === (await rows()), id + ': the live inventory should be marked');
+    if (id === 'mixed') expect(/not in SO₄/.test(await page.textContent('.bench .inv')), 'mixed: the O row should say it leaves out SO₄');
+    if (id === 'split') expect(!/PO₄/.test(await page.textContent('.bench .inv')), 'split: PO₄ must not be a row');
     await check();
     expect(/Not balanced yet/.test(await fb('.bench')), id + ': all 1s should not be balanced: ' + await fb('.bench'));
-    expect((await chips()).length > 0, id + ': Check should show the tally');
     if (b === 0) {
       await setCoefs(want.map((c) => c * 2), 'type');
       await check();
@@ -171,25 +202,10 @@ const fakeLMS = () => {
     await setCoefs(want, hows[b]);
     if (b === 1) await page.keyboard.press('Enter'); else await check();
     expect(/Balanced/.test(await fb('.bench')), id + ': the right coefficients were not accepted: ' + await fb('.bench'));
-    expect((await chips()).every((c) => /✓/.test(c)), id + ': every chip should match');
+    expect(await allOk(), id + ': every row should match');
     await snap(id);
     await next();
   }
-
-  /* ---- picture to equation */
-  for (let i = 0; i < 2; i++) {
-    const card = await page.evaluate((k) => Steps.LOWEST[k], i);
-    const want = await answer(card.rx);
-    const before = await page.evaluate(() => document.querySelectorAll('.bench .particle').length);
-    await setCoefs(card.c, 'type');
-    expect(before === await page.evaluate(() => document.querySelectorAll('.bench .particle').length), 'lowest: the picture changed');
-    await check();
-    expect(/matches the picture/.test(await fb('.bench')), 'lowest ' + i + ': the unreduced equation should be explained: ' + await fb('.bench'));
-    await setCoefs(want, 'type');
-    await check();
-    if (i === 0) { await snap('lowest'); await page.click('.bench-next'); }
-  }
-  await next();
 
   /* ---- graded questions: select, then Submit answer */
   expect(await stepId() === 'quiz', 'the questions should follow the lesson');
@@ -223,14 +239,14 @@ const fakeLMS = () => {
   const set = await page.evaluate(() => App.problems().map((p) => ({ id: p.id, coefs: p.coefs })));
   for (let i = 0; i < set.length; i++) {
     const want = set[i].coefs;
-    expect((await chips()).length === 0, 'equation ' + (i + 1) + ': the tally should be hidden before the first Check');
+    expect(await rows() > 0 && (await marked()) === 0, 'equation ' + (i + 1) + ': the inventory should show its counts but mark nothing before the first Check');
     if (i === 0) {
       await page.locator('.bench input.coef').first().fill('');
       await check();
       expect((await page.evaluate(() => App.ctl().work.n)) === 0, 'an empty box was counted as a Check');
       await page.locator('.bench input.coef').first().fill('1');
       await check();                                  /* all 1s: a counted miss */
-      expect((await chips()).length > 0, 'a miss should show the tally');
+      expect(await marked() > 0, 'a miss should mark the inventory');
       await snap('equation-miss');
     } else if (i === 1) {
       await setCoefs(want.map((c) => c * 2), 'type');

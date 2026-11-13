@@ -6,11 +6,12 @@
  *   SHOTS=dir node tools/layout.js            # also screenshot each checked view
  *
  * What a student works with must be on screen together without zooming. On
- * every workbench (the lesson's, picture to equation, and the graded
- * equations with the most substances and the most particles): after
- * scrolling the workbench to the top of the window, the equation with its
- * steppers, both particle boxes, the tally and the Check button must all be
- * on screen, before a Check and after a miss (with the feedback showing). In
+ * every workbench (the lesson's, and the graded equations with the most
+ * substances and the most particles): after scrolling the workbench to the
+ * top of the window, the equation with its steppers, both particle boxes,
+ * the inventory between them and the Check button must all be on screen:
+ * before a Check, while the inventory is being typed, and after a miss (with
+ * the feedback showing). In
  * the graded questions, the picture, the question, every choice and Submit
  * answer must be. No step may scroll sideways.
  *
@@ -85,9 +86,19 @@ const shots = process.env.SHOTS;
       if (side > 1) { bad++; out.push(v.name + ': scrolls sideways by ' + side + ' px'); }
       if (!together) continue;
       const bench = '.bench:not(.still)';
-      if (v.kind === 'bench' || v.kind === 'set' || v.kind === 'lowest') {
-        const parts = [bench + ' .eq', bench + ' .pbox', bench + ' .bench-foot', bench + ' .bench-check'];
+      if (v.kind === 'bench' || v.kind === 'set') {
+        /* a prediction comes first on some steps: answer it so the bench opens */
+        if (await page.locator('.panel.ask .tile').count()) await page.locator('.panel.ask .tile').first().click();
+        const parts = [bench + ' .eq', bench + ' .pbox', bench + ' .inv', bench + ' .bench-check'];
         await fits(v, 'start', parts, bench);
+        const typed = await page.locator(bench + ' .inv-in').count();
+        if (typed) {
+          /* fill the inventory in: the bench must still fit once the counts are live */
+          const want = await page.evaluate(() => { const s = App.STEPS[App.state().step], r = Rx.get(s.rx); return Chem.inventory(r, Chem.species(r).map(() => 1)).map((x) => [x.left, x.right]); });
+          for (let k = 0; k < want.length; k++) { await page.locator(bench + ' .inv-in').nth(2 * k).fill(String(want[k][0])); await page.locator(bench + ' .inv-in').nth(2 * k + 1).fill(String(want[k][1])); }
+          await page.click(bench + ' .bench-check');
+          await fits(v, 'inventory', parts.concat([bench + ' .fb.show']), bench);
+        }
         await page.click(bench + ' .bench-check');
         await fits(v, 'miss', parts.concat([bench + ' .fb.show']), bench);
       } else if (v.kind === 'quiz') {

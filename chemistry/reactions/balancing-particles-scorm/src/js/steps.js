@@ -4,7 +4,6 @@
  *   Steps.count      subscripts and coefficients: count the atoms in a picture
  *   Steps.change     what may be changed: a subscript or a coefficient?
  *   Steps.conserved  four pictures: are the atoms conserved?
- *   Steps.lowest     picture to equation: lowest whole numbers
  *   Steps.quiz       graded choice questions, one at a time, Submit answer
  *
  * Each takes (host, st, cb): st is this step's saved state; cb.save(),
@@ -182,31 +181,6 @@ var Steps = (function () {
     return { done: !!st.r };
   }
 
-  /* ----------------------------------------------------------------- lowest */
-
-  var LOWEST = [{ rx: 'water', c: [4, 2, 4] }, { rx: 'ammonia', c: [2, 6, 4] }];
-
-  function lowest(host, st, cb) {
-    st.w = st.w || [{}, {}];
-    var box = h('div');
-    host.appendChild(box);
-    function show(i) {
-      box.innerHTML = '';
-      var card = LOWEST[i], last = i === LOWEST.length - 1;
-      var wrap = panel('Picture ' + (i + 1) + ' of ' + LOWEST.length, 'write the equation for what the picture shows; not graded', []);
-      box.appendChild(wrap);
-      Bench.create(wrap, Rx.get(card.rx), st.w[i], {
-        picture: card.c, onSave: cb.save,
-        onResolve: function () {
-          if (last) { st.r = 1; cb.complete('A picture can show any number of particles. The equation gives their lowest whole-number ratio.'); }
-        },
-        next: last ? null : { label: 'Next picture →', onClick: function () { show(i + 1); } }
-      });
-    }
-    show(st.w[0].r && !st.r ? 1 : 0);
-    return { done: !!st.r };
-  }
-
   /* ------------------------------------------------------------------- quiz */
 
   /* st.a: [{ p: index picked, ok: 1 or 0 }]. Clicking a choice only selects it;
@@ -269,5 +243,5 @@ var Steps = (function () {
     return { show: show };
   }
 
-  return { count: count, change: change, conserved: conserved, lowest: lowest, quiz: quiz, CARDS: CARDS, LOWEST: LOWEST, COUNT: COUNT };
+  return { count: count, change: change, conserved: conserved, quiz: quiz, CARDS: CARDS, COUNT: COUNT };
 })();

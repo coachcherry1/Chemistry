@@ -1,8 +1,10 @@
 /* app.js: the steps, their order, saving, scoring.
  *
  * Parts 1 to 4 are the lesson (nothing graded): reading a particle picture,
- * checking that atoms are conserved, balancing on the workbench, and writing
- * the equation for a picture in lowest whole numbers. Part 5 is graded:
+ * checking that atoms are conserved, balancing on the workbench with the
+ * inventory between the boxes, and polyatomic ions: kept together as one row
+ * of the inventory when they are on both sides, counted atom by atom when
+ * they are not. Part 5 is graded:
  * six choice questions (select, then Submit answer) and ten equations to
  * balance on the workbench, where the first Check counts.
  *
@@ -16,7 +18,7 @@ var App = (function () {
 
   /* Bump whenever the steps, the pools or a reaction change: a save from an
      older release is then discarded. */
-  var SCHEMA = 1;
+  var SCHEMA = 2;
 
   var h = UI.h;
 
@@ -25,11 +27,11 @@ var App = (function () {
     'Start with an element that is in only one particle on each side.',
     'Leave a lone element (like O₂ or Fe) for last: its coefficient changes nothing else.',
     'An odd number on one side and an even number on the other? Double the odd one.',
-    'A group like SO₄ or OH that stays together on both sides can be counted as one piece.',
+    'A polyatomic ion that is on both sides, like SO₄ or NO₃, is counted as one piece.',
     'Never touch a subscript.'
   ];
 
-  var PARTS = ['Reading the picture', 'Is it conserved?', 'Balancing', 'Picture to equation', 'Graded', 'Results'];
+  var PARTS = ['Reading the picture', 'Is it conserved?', 'Balancing', 'Polyatomic ions', 'Graded', 'Results'];
   var STEPS = [
     { id: 'count', part: 1, kind: 'count', title: 'Subscripts and coefficients',
       text: 'Each picture shows the particles a formula stands for. The big number in front (the coefficient) says how many particles; the small ' +
@@ -39,23 +41,35 @@ var App = (function () {
     { id: 'conserved', part: 2, kind: 'conserved', title: 'Is it conserved?',
       text: 'The law of conservation of mass: in a chemical reaction atoms are not made and not destroyed, only rearranged. So every atom in the ' +
             'reactants box must be in the products box. Four pictures: decide for each.' },
-    { id: 'first', part: 3, kind: 'bench', rx: 'water', tally: 'live', title: 'Balance it: water',
-      text: 'Now fix the water picture. Use + and − (or type) to change the coefficients until every element has the same number of atoms in both ' +
-            'boxes, then Check. Not graded.' },
-    { id: 'second', part: 3, kind: 'bench', rx: 'ammonia', tally: 'live', title: 'Balance it: ammonia',
-      text: 'Nitrogen and hydrogen make ammonia. Watch the tally as you add particles. Not graded.' },
-    { id: 'third', part: 3, kind: 'bench', rx: 'methane', tally: 'live', title: 'Balance it: burning methane',
+    { id: 'first', part: 3, kind: 'bench', rx: 'water', title: 'Balance it: water',
+      text: 'Now fix the water picture. The inventory runs down the middle, under the arrow: atoms in the reactants on its left, atoms in the ' +
+            'products on its right. Use + and − (or type) to change the coefficients until every row matches, then Check. Not graded.' },
+    { id: 'second', part: 3, kind: 'bench', rx: 'ammonia', title: 'Balance it: ammonia',
+      text: 'Nitrogen and hydrogen make ammonia. Watch the inventory and the boxes as you add particles. Not graded.' },
+    { id: 'third', part: 3, kind: 'bench', rx: 'methane', title: 'Balance it: burning methane',
       text: 'Four substances this time. Oxygen is in both products, so leave it for last. Not graded.' },
-    { id: 'strategy', part: 3, kind: 'bench', rx: 'rust', tally: 'check', tips: true, title: 'Count for yourself',
-      text: 'From here on the tally is hidden until you Check, so count the atoms in the boxes yourself. The tips beside the boxes help. Not graded.' },
-    { id: 'lowest', part: 4, kind: 'lowest', title: 'From picture to equation',
-      text: 'A picture can show many particles, but an equation is written with the lowest whole-number coefficients. The picture is fixed here: ' +
-            'write its equation. Not graded.' },
+    { id: 'strategy', part: 3, kind: 'bench', rx: 'rust', typed: true, tips: true, title: 'Start the inventory yourself',
+      text: 'On paper you write the inventory yourself. Type the count of each element in the reactants (left) and in the products (right) for ' +
+            'the equation as it is written. Then balance it: the inventory updates as you go. The tips help. Not graded.' },
+    { id: 'ions', part: 4, kind: 'bench', rx: 'acetate', typed: true, title: 'Keep the ion together',
+      ask: { q: 'PO₄ and C₂H₃O₂ are polyatomic ions, and each is in the reactants and in the products. Which inventory is quicker to keep?',
+        c: [{ t: 'Na, PO₄, Ca, C₂H₃O₂', ok: 1, fb: 'Yes. An ion that stays together on both sides is counted as one piece: four rows.' },
+            { t: 'Na, P, O, Ca, C, H', fb: 'That works, but it is six rows and oxygen is in every substance. Both ions stay together on both sides, so count each as one piece: Na, PO₄, Ca, C₂H₃O₂.' }] },
+      text: 'Sodium phosphate and calcium acetate trade partners. Decide how to keep the inventory, type it for the equation as written (mind the ' +
+            'subscripts outside the brackets), then balance. Not graded.' },
+    { id: 'split', part: 4, kind: 'bench', rx: 'h3po4', typed: true, title: 'When the ion is on one side only',
+      ask: { q: 'H₃PO₄ has a PO₄ in it. Can PO₄ be a row of the inventory here?',
+        c: [{ t: 'Yes: P₄O₁₀ has P and O', fb: 'P₄O₁₀ is not made of PO₄ ions, and there is no PO₄ in the reactants. An ion is kept together only when it is on both sides. Here count P, O and H atom by atom.' },
+            { t: 'No: PO₄ is only in the products', ok: 1, fb: 'Right. No PO₄ in the reactants, so the inventory goes atom by atom: P, O and H. Oxygen is in both reactants: add them.' }] },
+      text: 'Tetraphosphorus decoxide and water make phosphoric acid. Decide how to keep the inventory, type it, then balance. Not graded.' },
+    { id: 'mixed', part: 4, kind: 'bench', rx: 'naohh2so4', typed: true, title: 'One ion stays, one does not',
+      text: 'Sodium hydroxide and sulfuric acid. SO₄ is on both sides, so it is one row. OH is not in the products (it ends up in H₂O), so its ' +
+            'O and H are counted as atoms. The O row counts only the oxygen that is not inside an SO₄. Not graded.' },
     { id: 'quiz', part: 5, kind: 'quiz', title: 'Graded questions',
       text: Gen.QUIZ + ' questions. Click a choice to select it (you can change it), then press Submit answer. Your first Submit counts.' },
     { id: 'set', part: 5, kind: 'set', title: 'Graded equations',
-      text: Gen.COUNT + ' equations. The tally stays hidden until you Check, and your first Check of each equation counts, so count the atoms ' +
-            'in both boxes before you press it. After a miss, keep going until it is balanced.' },
+      text: Gen.COUNT + ' equations. The inventory follows your coefficients, but nothing is marked right or wrong until you Check, and your ' +
+            'first Check of each equation counts: compare the two columns row by row first. After a miss, keep going until it is balanced.' },
     { id: 'results', part: 6, kind: 'results', title: 'Results', text: '' }
   ];
   var ITEMS = Gen.QUIZ + Gen.COUNT;
@@ -171,22 +185,47 @@ var App = (function () {
       if (state.done[s.id]) nav('next', 'disabled', false);
     };
   }
-  ['count', 'change', 'conserved', 'lowest'].forEach(lesson);
+  ['count', 'change', 'conserved'].forEach(lesson);
 
-  /* ---- a lesson workbench: one reaction, not graded */
+  /* ---- a lesson workbench: one reaction, not graded. s.ask: a prediction
+     (answered on the click) that must be made before the bench opens. */
   RENDER.bench = function (s) {
     var work = state.d[s.id] || (state.d[s.id] = {});
     var host = el.stage;
-    if (s.tips) {
-      var main = h('div', { class: 'side-main' });
-      host.appendChild(h('div', { class: 'with-side' }, [main,
-        panel('Tips', null, [h('ol', { class: 'tips' }, TIPS.map(function (t) { return h('li', { text: t }); }))])]));
-      host = main;
+    function open() {
+      if (s.tips) {
+        var main = h('div', { class: 'side-main' });
+        host.appendChild(h('div', { class: 'with-side' }, [main,
+          panel('Tips', null, [h('ol', { class: 'tips' }, TIPS.map(function (t) { return h('li', { text: t }); }))])]));
+        host = main;
+      }
+      ctl = Bench.create(host, Rx.get(s.rx), work, {
+        marks: 'live', typed: s.typed, onSave: persist,
+        onResolve: function () { complete('Balanced. Press Next.'); }
+      });
     }
-    ctl = Bench.create(host, Rx.get(s.rx), work, {
-      tally: s.tally, onSave: persist,
-      onResolve: function () { complete('Balanced. Press Next.'); }
-    });
+    if (s.ask) {
+      var fb = h('p', { class: 'fb' });
+      var tiles = h('div', { class: 'tiles', role: 'group', 'aria-label': 'Prediction' }, s.ask.c.map(function (c, i) {
+        return h('button', { type: 'button', class: 'tile', text: c.t, onclick: function (ev) {
+          if (work.a != null) return;
+          work.a = i;
+          answered(ev.currentTarget, c);
+          persist();
+          open();
+        } });
+      }));
+      var answered = function (btn, c) {
+        Array.prototype.forEach.call(tiles.children, function (b) { b.disabled = true; });
+        btn.classList.add(c.ok ? 'on' : 'wrong');
+        fb.textContent = c.fb;
+        fb.className = 'fb show ' + (c.ok ? 'good' : 'bad');
+      };
+      el.stage.appendChild(h('section', { class: 'panel ask' }, [
+        h('p', { class: 'pic-eq', text: Chem.equation(Rx.get(s.rx)) }),
+        h('p', { class: 'prompt', text: s.ask.q }), tiles, fb]));
+      if (work.a != null) { answered(tiles.children[work.a], s.ask.c[work.a]); open(); }
+    } else open();
     if (state.done[s.id]) nav('next', 'disabled', false);
   };
 
@@ -229,7 +268,7 @@ var App = (function () {
     var work = state.p[view] || (state.p[view] = {});
     var last = view === Gen.COUNT - 1;
     ctl = Bench.create(el.stage, p.rx, work, {
-      tally: 'check', graded: true, onSave: persist,
+      marks: 'check', graded: true, onSave: persist,
       onFirst: function (right, typed, want) {
         if (!preview) SCORM.recordAnswer('eq-' + p.id, typed, want, right);
         reportScore();
@@ -279,6 +318,7 @@ var App = (function () {
       'Balanced means every element has the same number of atoms in the reactants and in the products.',
       'A coefficient says how many particles. Atoms of an element = coefficient × subscript.',
       'Only coefficients may change. A different subscript is a different substance.',
+      'Keep an inventory: a row for each element, or for a polyatomic ion when it is on both sides. If the ion is on one side only, count its atoms.',
       'Write the lowest whole-number coefficients.'
     ];
     el.stage.appendChild(h('div', { class: 'grid2' }, [box, panel('Big ideas', null, [h('ul', { class: 'keylist' }, ideas.map(function (t) { return h('li', { text: t }); }))])]));
@@ -321,8 +361,8 @@ var App = (function () {
       h('h2', { id: 'introTitle', text: document.title }),
       h('p', { text: 'In a chemical reaction the atoms of the reactants are rearranged into the products. No atom is made and none is destroyed: ' +
                      'that is the law of conservation of mass, and it is why equations have to be balanced.' }),
-      h('p', { text: 'You will see every reaction as particles: a box of reactants and a box of products. Change the coefficients and watch the ' +
-                     'particles until every atom is accounted for.' }),
+      h('p', { text: 'You will see every reaction as particles: a box of reactants and a box of products, with the inventory between them. Change ' +
+                     'the coefficients and watch the particles and the counts until every atom is accounted for.' }),
       h('p', { text: 'The lesson comes first and is not graded. Then ' + Gen.QUIZ + ' graded questions and ' + Gen.COUNT + ' graded equations: your first ' +
                      'answer to each counts. About ' + CONFIG.minutes + ' minutes. Your progress is saved if you leave.' }),
       h('p', { class: 'screen-note', text: 'Everything works with a mouse, a touch screen or the keyboard (Tab between boxes, arrow keys to change a ' +

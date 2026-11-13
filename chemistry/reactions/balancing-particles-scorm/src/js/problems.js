@@ -113,25 +113,29 @@ var Gen = (function () {
     }, right, wrong, rand);
   }
 
-  /* the picture shows k of everything; which equation is written correctly? */
-  function eqQ(id, rand, avoid) {
-    var list = small().filter(function (r) {
-      var c = Chem.balance(r);
-      return avoid.indexOf(r.id) < 0 && c.reduce(function (a, b) { return a + b; }, 0) <= 5 && c.some(function (x) { return x > 1; });
+  /* the inventory of an equation as written: how many of a polyatomic ion on each side? */
+  function ionList() {
+    var out = [];
+    Rx.REACTIONS.forEach(function (r) {
+      if (r.lesson || r.big) return;
+      var ones = Chem.species(r).map(function () { return 1; });
+      Chem.inventory(r, ones).forEach(function (row) { if (row.ion && row.left !== row.right) out.push({ rx: r, row: row }); });
     });
-    var r = pick(list, rand), base = Chem.balance(r), k = 2;
-    var drawn = base.map(function (c) { return c * k; });
-    var ones = base.map(function () { return 1; });
-    var other = base.slice();
-    var j = base.indexOf(Math.max.apply(null, base));
-    other[j] = base[j] + 1;
-    var wrong = [Chem.equation(r, drawn), Chem.equation(r, ones), Chem.equation(r, other)];
+    return out;
+  }
+  function invQ(id, rand) {
+    var it = pick(ionList(), rand), r = it.rx, row = it.row, atoms = Chem.parse(row.ion), big = Math.max.apply(null, Object.keys(atoms).map(function (k) { return atoms[k]; }));
+    function say(a, b) { return a + ' in the reactants, ' + b + ' in the products'; }
+    var right = say(row.left, row.right), wrong = [];
+    [say(1, 1), say(row.right, row.left), say(row.left * big, row.right * big), say(row.left + 1, row.right + 1), say(row.left, row.left)].forEach(function (t) {
+      if (t !== right && wrong.indexOf(t) < 0 && wrong.length < 3) wrong.push(t);
+    });
     return finish({
-      id: id, kind: 'equation', fig: { rx: r, coefs: drawn }, rxid: r.id,
-      stem: 'Which balanced equation should be written for the reaction in this picture?',
-      why: 'The picture shows ' + Chem.equation(r, drawn) + '. An equation is written with the lowest whole numbers, so divide every ' +
-           'coefficient by ' + k + ': ' + Chem.equation(r, base) + '.'
-    }, Chem.equation(r, base), wrong, rand);
+      id: id, kind: 'inventory', fig: null, rxid: r.id, ion: row.ion,
+      stem: 'Start an inventory for ' + Chem.equation(r) + ' as it is written, before any coefficients. How many ' + row.name + ' ions, ' + row.label + ', are on each side?',
+      why: row.label + ' is on both sides, so it is kept together as one row of the inventory. A subscript outside the brackets counts the ions: ' +
+           right + '.'
+    }, right, wrong, rand);
   }
 
   /* fixed wording; the right answer is first here and never the longest */
@@ -151,7 +155,15 @@ var Gen = (function () {
     { id: 'r-same', stem: 'When an equation is balanced, what is the same on both sides of the arrow?',
       c: ['The number of atoms of each element', 'The number of molecules of each substance', 'The coefficients in front of the formulas',
           'The subscripts inside every one of the formulas'],
-      why: 'Atoms are conserved, element by element. The number of molecules can change: 2 H₂ + O₂ (3 molecules) makes 2 H₂O (2 molecules).' }
+      why: 'Atoms are conserved, element by element. The number of molecules can change: 2 H₂ + O₂ (3 molecules) makes 2 H₂O (2 molecules).' },
+    { id: 'r-ion', stem: 'In P₄O₁₀ + H₂O → H₃PO₄, why can PO₄ not be a row of the inventory?',
+      c: ['PO₄ is on only one side', 'A polyatomic ion is never counted as one piece', 'P₄O₁₀ has too many oxygen atoms to count them',
+          'Only an ion written inside brackets is kept together'],
+      why: 'An ion is kept together only when it is in the reactants and in the products. Here the reactants have no PO₄, so P and O are counted atom by atom.' },
+    { id: 'r-lowest', stem: 'A student balances an equation as 4 H₂ + 2 O₂ → 4 H₂O. What should be done with it?',
+      c: ['Divide every coefficient by 2', 'Nothing: every atom is conserved', 'Change the subscripts so that it reads 4, 2, 4',
+          'Add one more O₂ so the reactants are even'],
+      why: 'Every atom is conserved, but an equation is written with the lowest whole-number coefficients: 2 H₂ + O₂ → 2 H₂O.' }
   ];
   function ruleQ(id, rand) {
     var r = pick(RULES, rand);
@@ -168,12 +180,12 @@ var Gen = (function () {
     out.push(balQ('q-bal-a', rand() < 0.5, rand, []));
     out.push(countQ('q-bracket', pick(COUNT_BRACKET, rand), rand));
     out.push(balQ('q-bal-b', !(out[2].choices[out[2].right].slice(0, 3) === 'Yes'), rand, [out[2].rxid]));
-    out.push(eqQ('q-equation', rand, [out[2].rxid, out[4].rxid]));
+    out.push(invQ('q-inventory', rand));
     return (quizCache[seed] = out);
   }
 
   return { PLAN: PLAN, QUIZ: QUIZ, COUNT: PLAN.reduce(function (t, p) { return t + p[1]; }, 0), set: set, quiz: quiz, pool: pool,
-           RULES: RULES, COUNT_PLAIN: COUNT_PLAIN, COUNT_BRACKET: COUNT_BRACKET, countQ: countQ, small: small };
+           RULES: RULES, ionList: ionList, COUNT_PLAIN: COUNT_PLAIN, COUNT_BRACKET: COUNT_BRACKET, countQ: countQ, small: small };
 })();
 
 if (typeof module !== 'undefined') module.exports = Gen;

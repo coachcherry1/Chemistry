@@ -21,82 +21,100 @@ Each student gets 6 graded questions and 10 graded equations (3 easy, 4 medium, 
 3. 2 H₂O₂ → 2 H₂O + O₂: conserved
 4. Zn + HCl → ZnCl₂ + H₂: not conserved (H 1 before, 2 after; Cl 1 before, 2 after)
 
-**Balancing**
+**Balancing and polyatomic ions** (the inventory is shown for the equation as written, reactants | row | products)
 
 - Balance it: water: 2 H₂ + O₂ → 2 H₂O
+  - Inventory: 2 | H | 2; 2 | O | 1
 - Balance it: ammonia: N₂ + 3 H₂ → 2 NH₃
+  - Inventory: 2 | N | 1; 2 | H | 3
 - Balance it: burning methane: CH₄ + 2 O₂ → CO₂ + 2 H₂O
-- Count for yourself: 4 Fe + 3 O₂ → 2 Fe₂O₃
-
-**From picture to equation**
-
-- The picture shows 4 H₂ + 2 O₂ → 4 H₂O; the equation is 2 H₂ + O₂ → 2 H₂O
-- The picture shows 2 N₂ + 6 H₂ → 4 NH₃; the equation is N₂ + 3 H₂ → 2 NH₃
+  - Inventory: 1 | C | 1; 4 | H | 2; 2 | O | 3
+- Start the inventory yourself: 4 Fe + 3 O₂ → 2 Fe₂O₃
+  - Inventory (typed by the student): 1 | Fe | 2; 2 | O | 3
+- Keep the ion together: 2 Na₃PO₄ + 3 Ca(C₂H₃O₂)₂ → Ca₃(PO₄)₂ + 6 NaC₂H₃O₂
+  - Inventory (typed by the student): 3 | Na | 1; 1 | PO₄ | 2; 1 | Ca | 3; 2 | C₂H₃O₂ | 1
+  - Prediction: PO₄ and C₂H₃O₂ are polyatomic ions, and each is in the reactants and in the products. Which inventory is quicker to keep? **Na, PO₄, Ca, C₂H₃O₂**
+- When the ion is on one side only: P₄O₁₀ + 6 H₂O → 4 H₃PO₄
+  - Inventory (typed by the student): 4 | P | 1; 11 | O | 4; 2 | H | 3
+  - Prediction: H₃PO₄ has a PO₄ in it. Can PO₄ be a row of the inventory here? **No: PO₄ is only in the products**
+- One ion stays, one does not: 2 NaOH + H₂SO₄ → Na₂SO₄ + 2 H₂O
+  - Inventory (typed by the student): 1 | Na | 2; 1 | O (not in SO₄) | 1; 3 | H | 2; 1 | SO₄ | 1
 
 ## Graded equations: the pool
 
-### Easy (3 of 17 per student)
+### Easy (3 of 19 per student)
 
-| Unbalanced | Balanced | Coefficients |
-| --- | --- | --- |
-| H₂ + Cl₂ → HCl | H₂ + Cl₂ → 2 HCl | 1, 1, 2 |
-| Na + Cl₂ → NaCl | 2 Na + Cl₂ → 2 NaCl | 2, 1, 2 |
-| Mg + O₂ → MgO | 2 Mg + O₂ → 2 MgO | 2, 1, 2 |
-| K + Br₂ → KBr | 2 K + Br₂ → 2 KBr | 2, 1, 2 |
-| Li + F₂ → LiF | 2 Li + F₂ → 2 LiF | 2, 1, 2 |
-| Ca + O₂ → CaO | 2 Ca + O₂ → 2 CaO | 2, 1, 2 |
-| Cu + O₂ → CuO | 2 Cu + O₂ → 2 CuO | 2, 1, 2 |
-| N₂ + O₂ → NO | N₂ + O₂ → 2 NO | 1, 1, 2 |
-| CO + O₂ → CO₂ | 2 CO + O₂ → 2 CO₂ | 2, 1, 2 |
-| SO₂ + O₂ → SO₃ | 2 SO₂ + O₂ → 2 SO₃ | 2, 1, 2 |
-| NO + O₂ → NO₂ | 2 NO + O₂ → 2 NO₂ | 2, 1, 2 |
-| H₂O₂ → H₂O + O₂ | 2 H₂O₂ → 2 H₂O + O₂ | 2, 2, 1 |
-| HgO → Hg + O₂ | 2 HgO → 2 Hg + O₂ | 2, 2, 1 |
-| H₂O → H₂ + O₂ | 2 H₂O → 2 H₂ + O₂ | 2, 2, 1 |
-| NH₄NO₃ → N₂O + H₂O | NH₄NO₃ → N₂O + 2 H₂O | 1, 1, 2 |
-| Zn + HCl → ZnCl₂ + H₂ | Zn + 2 HCl → ZnCl₂ + H₂ | 1, 2, 1, 1 |
-| Mg + HCl → MgCl₂ + H₂ | Mg + 2 HCl → MgCl₂ + H₂ | 1, 2, 1, 1 |
+| Unbalanced | Balanced | Coefficients | Inventory rows |
+| --- | --- | --- | --- |
+| H₂ + Cl₂ → HCl | H₂ + Cl₂ → 2 HCl | 1, 1, 2 | H, Cl |
+| Na + Cl₂ → NaCl | 2 Na + Cl₂ → 2 NaCl | 2, 1, 2 | Na, Cl |
+| Mg + O₂ → MgO | 2 Mg + O₂ → 2 MgO | 2, 1, 2 | Mg, O |
+| K + Br₂ → KBr | 2 K + Br₂ → 2 KBr | 2, 1, 2 | K, Br |
+| Li + F₂ → LiF | 2 Li + F₂ → 2 LiF | 2, 1, 2 | Li, F |
+| Ca + O₂ → CaO | 2 Ca + O₂ → 2 CaO | 2, 1, 2 | Ca, O |
+| Cu + O₂ → CuO | 2 Cu + O₂ → 2 CuO | 2, 1, 2 | Cu, O |
+| N₂ + O₂ → NO | N₂ + O₂ → 2 NO | 1, 1, 2 | N, O |
+| CO + O₂ → CO₂ | 2 CO + O₂ → 2 CO₂ | 2, 1, 2 | C, O |
+| SO₂ + O₂ → SO₃ | 2 SO₂ + O₂ → 2 SO₃ | 2, 1, 2 | S, O |
+| NO + O₂ → NO₂ | 2 NO + O₂ → 2 NO₂ | 2, 1, 2 | N, O |
+| H₂O₂ → H₂O + O₂ | 2 H₂O₂ → 2 H₂O + O₂ | 2, 2, 1 | H, O |
+| HgO → Hg + O₂ | 2 HgO → 2 Hg + O₂ | 2, 2, 1 | Hg, O |
+| H₂O → H₂ + O₂ | 2 H₂O → 2 H₂ + O₂ | 2, 2, 1 | H, O |
+| N₂O₅ + H₂O → HNO₃ | N₂O₅ + H₂O → 2 HNO₃ | 1, 1, 2 | N, O, H |
+| NH₄NO₃ → N₂O + H₂O | NH₄NO₃ → N₂O + 2 H₂O | 1, 1, 2 | N, H, O |
+| Zn + HCl → ZnCl₂ + H₂ | Zn + 2 HCl → ZnCl₂ + H₂ | 1, 2, 1, 1 | Zn, H, Cl |
+| Mg + HCl → MgCl₂ + H₂ | Mg + 2 HCl → MgCl₂ + H₂ | 1, 2, 1, 1 | Mg, H, Cl |
+| Mg + AgNO₃ → Mg(NO₃)₂ + Ag | Mg + 2 AgNO₃ → Mg(NO₃)₂ + 2 Ag | 1, 2, 1, 2 | Mg, Ag, NO₃ |
 
-### Medium (4 of 20 per student)
+\* the atoms of that element that are not inside a kept ion.
 
-| Unbalanced | Balanced | Coefficients |
-| --- | --- | --- |
-| Al + Cl₂ → AlCl₃ | 2 Al + 3 Cl₂ → 2 AlCl₃ | 2, 3, 2 |
-| Al + O₂ → Al₂O₃ | 4 Al + 3 O₂ → 2 Al₂O₃ | 4, 3, 2 |
-| Mg + N₂ → Mg₃N₂ | 3 Mg + N₂ → Mg₃N₂ | 3, 1, 1 |
-| Li + N₂ → Li₃N | 6 Li + N₂ → 2 Li₃N | 6, 1, 2 |
-| P₄ + O₂ → P₂O₅ | P₄ + 5 O₂ → 2 P₂O₅ | 1, 5, 2 |
-| KClO₃ → KCl + O₂ | 2 KClO₃ → 2 KCl + 3 O₂ | 2, 2, 3 |
-| KNO₃ → KNO₂ + O₂ | 2 KNO₃ → 2 KNO₂ + O₂ | 2, 2, 1 |
-| N₂O₅ → NO₂ + O₂ | 2 N₂O₅ → 4 NO₂ + O₂ | 2, 4, 1 |
-| Na + H₂O → NaOH + H₂ | 2 Na + 2 H₂O → 2 NaOH + H₂ | 2, 2, 2, 1 |
-| Cl₂ + KI → KCl + I₂ | Cl₂ + 2 KI → 2 KCl + I₂ | 1, 2, 2, 1 |
-| Al + CuCl₂ → AlCl₃ + Cu | 2 Al + 3 CuCl₂ → 2 AlCl₃ + 3 Cu | 2, 3, 2, 3 |
-| AgNO₃ + CaCl₂ → AgCl + Ca(NO₃)₂ | 2 AgNO₃ + CaCl₂ → 2 AgCl + Ca(NO₃)₂ | 2, 1, 2, 1 |
-| Pb(NO₃)₂ + KI → PbI₂ + KNO₃ | Pb(NO₃)₂ + 2 KI → PbI₂ + 2 KNO₃ | 1, 2, 1, 2 |
-| NaOH + H₂SO₄ → Na₂SO₄ + H₂O | 2 NaOH + H₂SO₄ → Na₂SO₄ + 2 H₂O | 2, 1, 1, 2 |
-| Ca(OH)₂ + HCl → CaCl₂ + H₂O | Ca(OH)₂ + 2 HCl → CaCl₂ + 2 H₂O | 1, 2, 1, 2 |
-| C₂H₄ + O₂ → CO₂ + H₂O | C₂H₄ + 3 O₂ → 2 CO₂ + 2 H₂O | 1, 3, 2, 2 |
-| C₃H₈ + O₂ → CO₂ + H₂O | C₃H₈ + 5 O₂ → 3 CO₂ + 4 H₂O | 1, 5, 3, 4 |
-| C₂H₅OH + O₂ → CO₂ + H₂O | C₂H₅OH + 3 O₂ → 2 CO₂ + 3 H₂O | 1, 3, 2, 3 |
-| Fe₂O₃ + CO → Fe + CO₂ | Fe₂O₃ + 3 CO → 2 Fe + 3 CO₂ | 1, 3, 2, 3 |
-| CaCO₃ + HCl → CaCl₂ + H₂O + CO₂ | CaCO₃ + 2 HCl → CaCl₂ + H₂O + CO₂ | 1, 2, 1, 1, 1 |
+### Medium (4 of 22 per student)
 
-### Hard (3 of 11 per student)
+| Unbalanced | Balanced | Coefficients | Inventory rows |
+| --- | --- | --- | --- |
+| Al + Cl₂ → AlCl₃ | 2 Al + 3 Cl₂ → 2 AlCl₃ | 2, 3, 2 | Al, Cl |
+| Al + O₂ → Al₂O₃ | 4 Al + 3 O₂ → 2 Al₂O₃ | 4, 3, 2 | Al, O |
+| Mg + N₂ → Mg₃N₂ | 3 Mg + N₂ → Mg₃N₂ | 3, 1, 1 | Mg, N |
+| Li + N₂ → Li₃N | 6 Li + N₂ → 2 Li₃N | 6, 1, 2 | Li, N |
+| P₄ + O₂ → P₄O₁₀ | P₄ + 5 O₂ → P₄O₁₀ | 1, 5, 1 | P, O |
+| KClO₃ → KCl + O₂ | 2 KClO₃ → 2 KCl + 3 O₂ | 2, 2, 3 | K, Cl, O |
+| KNO₃ → KNO₂ + O₂ | 2 KNO₃ → 2 KNO₂ + O₂ | 2, 2, 1 | K, N, O |
+| N₂O₅ → NO₂ + O₂ | 2 N₂O₅ → 4 NO₂ + O₂ | 2, 4, 1 | N, O |
+| Na + H₂O → NaOH + H₂ | 2 Na + 2 H₂O → 2 NaOH + H₂ | 2, 2, 2, 1 | Na, H, O |
+| Cl₂ + KI → KCl + I₂ | Cl₂ + 2 KI → 2 KCl + I₂ | 1, 2, 2, 1 | Cl, K, I |
+| Al + CuCl₂ → AlCl₃ + Cu | 2 Al + 3 CuCl₂ → 2 AlCl₃ + 3 Cu | 2, 3, 2, 3 | Al, Cu, Cl |
+| Al + CuSO₄ → Al₂(SO₄)₃ + Cu | 2 Al + 3 CuSO₄ → Al₂(SO₄)₃ + 3 Cu | 2, 3, 1, 3 | Al, Cu, SO₄ |
+| NaOH + CuSO₄ → Cu(OH)₂ + Na₂SO₄ | 2 NaOH + CuSO₄ → Cu(OH)₂ + Na₂SO₄ | 2, 1, 1, 1 | Na, OH, Cu, SO₄ |
+| Al₂(SO₄)₃ → Al₂O₃ + SO₃ | Al₂(SO₄)₃ → Al₂O₃ + 3 SO₃ | 1, 1, 3 | Al, S, O |
+| AgNO₃ + CaCl₂ → AgCl + Ca(NO₃)₂ | 2 AgNO₃ + CaCl₂ → 2 AgCl + Ca(NO₃)₂ | 2, 1, 2, 1 | Ag, NO₃, Ca, Cl |
+| Pb(NO₃)₂ + KI → PbI₂ + KNO₃ | Pb(NO₃)₂ + 2 KI → PbI₂ + 2 KNO₃ | 1, 2, 1, 2 | Pb, NO₃, K, I |
+| Ca(OH)₂ + HCl → CaCl₂ + H₂O | Ca(OH)₂ + 2 HCl → CaCl₂ + 2 H₂O | 1, 2, 1, 2 | Ca, O, H, Cl |
+| C₂H₄ + O₂ → CO₂ + H₂O | C₂H₄ + 3 O₂ → 2 CO₂ + 2 H₂O | 1, 3, 2, 2 | C, H, O |
+| C₃H₈ + O₂ → CO₂ + H₂O | C₃H₈ + 5 O₂ → 3 CO₂ + 4 H₂O | 1, 5, 3, 4 | C, H, O |
+| C₂H₅OH + O₂ → CO₂ + H₂O | C₂H₅OH + 3 O₂ → 2 CO₂ + 3 H₂O | 1, 3, 2, 3 | C, H, O |
+| Fe₂O₃ + CO → Fe + CO₂ | Fe₂O₃ + 3 CO → 2 Fe + 3 CO₂ | 1, 3, 2, 3 | Fe, O, C |
+| CaCO₃ + HCl → CaCl₂ + H₂O + CO₂ | CaCO₃ + 2 HCl → CaCl₂ + H₂O + CO₂ | 1, 2, 1, 1, 1 | Ca, C, O, H, Cl |
 
-| Unbalanced | Balanced | Coefficients |
-| --- | --- | --- |
-| Al + HCl → AlCl₃ + H₂ | 2 Al + 6 HCl → 2 AlCl₃ + 3 H₂ | 2, 6, 2, 3 |
-| Fe + H₂O → Fe₃O₄ + H₂ | 3 Fe + 4 H₂O → Fe₃O₄ + 4 H₂ | 3, 4, 1, 4 |
-| C₂H₆ + O₂ → CO₂ + H₂O | 2 C₂H₆ + 7 O₂ → 4 CO₂ + 6 H₂O | 2, 7, 4, 6 |
-| C₅H₁₂ + O₂ → CO₂ + H₂O | C₅H₁₂ + 8 O₂ → 5 CO₂ + 6 H₂O | 1, 8, 5, 6 |
-| NH₃ + O₂ → NO + H₂O | 4 NH₃ + 5 O₂ → 4 NO + 6 H₂O | 4, 5, 4, 6 |
-| PCl₅ + H₂O → H₃PO₄ + HCl | PCl₅ + 4 H₂O → H₃PO₄ + 5 HCl | 1, 4, 1, 5 |
-| H₃PO₄ + NaOH → Na₃PO₄ + H₂O | H₃PO₄ + 3 NaOH → Na₃PO₄ + 3 H₂O | 1, 3, 1, 3 |
-| Al(OH)₃ + H₂SO₄ → Al₂(SO₄)₃ + H₂O | 2 Al(OH)₃ + 3 H₂SO₄ → Al₂(SO₄)₃ + 6 H₂O | 2, 3, 1, 6 |
-| Ca(OH)₂ + H₃PO₄ → Ca₃(PO₄)₂ + H₂O | 3 Ca(OH)₂ + 2 H₃PO₄ → Ca₃(PO₄)₂ + 6 H₂O | 3, 2, 1, 6 |
-| Na₃PO₄ + CaCl₂ → Ca₃(PO₄)₂ + NaCl | 2 Na₃PO₄ + 3 CaCl₂ → Ca₃(PO₄)₂ + 6 NaCl | 2, 3, 1, 6 |
-| Al₂(SO₄)₃ + BaCl₂ → BaSO₄ + AlCl₃ | Al₂(SO₄)₃ + 3 BaCl₂ → 3 BaSO₄ + 2 AlCl₃ | 1, 3, 3, 2 |
+\* the atoms of that element that are not inside a kept ion.
+
+### Hard (3 of 12 per student)
+
+| Unbalanced | Balanced | Coefficients | Inventory rows |
+| --- | --- | --- | --- |
+| Al + HCl → AlCl₃ + H₂ | 2 Al + 6 HCl → 2 AlCl₃ + 3 H₂ | 2, 6, 2, 3 | Al, H, Cl |
+| Fe + H₂O → Fe₃O₄ + H₂ | 3 Fe + 4 H₂O → Fe₃O₄ + 4 H₂ | 3, 4, 1, 4 | Fe, H, O |
+| C₂H₆ + O₂ → CO₂ + H₂O | 2 C₂H₆ + 7 O₂ → 4 CO₂ + 6 H₂O | 2, 7, 4, 6 | C, H, O |
+| C₅H₁₂ + O₂ → CO₂ + H₂O | C₅H₁₂ + 8 O₂ → 5 CO₂ + 6 H₂O | 1, 8, 5, 6 | C, H, O |
+| NH₃ + O₂ → NO + H₂O | 4 NH₃ + 5 O₂ → 4 NO + 6 H₂O | 4, 5, 4, 6 | N, H, O |
+| Zn + H₃PO₄ → Zn₃(PO₄)₂ + H₂ | 3 Zn + 2 H₃PO₄ → Zn₃(PO₄)₂ + 3 H₂ | 3, 2, 1, 3 | Zn, H, PO₄ |
+| PCl₅ + H₂O → H₃PO₄ + HCl | PCl₅ + 4 H₂O → H₃PO₄ + 5 HCl | 1, 4, 1, 5 | P, Cl, H, O |
+| H₃PO₄ + NaOH → Na₃PO₄ + H₂O | H₃PO₄ + 3 NaOH → Na₃PO₄ + 3 H₂O | 1, 3, 1, 3 | H, PO₄, O*, Na |
+| Al(OH)₃ + H₂SO₄ → Al₂(SO₄)₃ + H₂O | 2 Al(OH)₃ + 3 H₂SO₄ → Al₂(SO₄)₃ + 6 H₂O | 2, 3, 1, 6 | Al, O*, H, SO₄ |
+| Ca(OH)₂ + H₃PO₄ → Ca₃(PO₄)₂ + H₂O | 3 Ca(OH)₂ + 2 H₃PO₄ → Ca₃(PO₄)₂ + 6 H₂O | 3, 2, 1, 6 | Ca, O*, H, PO₄ |
+| Na₃PO₄ + CaCl₂ → Ca₃(PO₄)₂ + NaCl | 2 Na₃PO₄ + 3 CaCl₂ → Ca₃(PO₄)₂ + 6 NaCl | 2, 3, 1, 6 | Na, PO₄, Ca, Cl |
+| Al₂(SO₄)₃ + BaCl₂ → BaSO₄ + AlCl₃ | Al₂(SO₄)₃ + 3 BaCl₂ → 3 BaSO₄ + 2 AlCl₃ | 1, 3, 3, 2 | Al, SO₄, Ba, Cl |
+
+\* the atoms of that element that are not inside a kept ion.
 
 ## Graded questions: the pools
 
@@ -124,10 +142,23 @@ Each student gets 6 graded questions and 10 graded equations (3 easy, 4 medium, 
 - What does the coefficient 3 in 3 CO₂ tell you? **There are 3 CO₂ molecules.** A coefficient counts whole particles: 3 CO₂ is three molecules, each one still 1 C and 2 O.
 - A reaction runs in a sealed jar. How does the mass in the jar afterwards compare with the mass before? **The same: no atoms enter or leave.** The law of conservation of mass: a reaction only rearranges atoms. The same atoms are there before and after, so the mass is the same.
 - When an equation is balanced, what is the same on both sides of the arrow? **The number of atoms of each element.** Atoms are conserved, element by element. The number of molecules can change: 2 H₂ + O₂ (3 molecules) makes 2 H₂O (2 molecules).
+- In P₄O₁₀ + H₂O → H₃PO₄, why can PO₄ not be a row of the inventory? **PO₄ is on only one side.** An ion is kept together only when it is in the reactants and in the products. Here the reactants have no PO₄, so P and O are counted atom by atom.
+- A student balances an equation as 4 H₂ + 2 O₂ → 4 H₂O. What should be done with it? **Divide every coefficient by 2.** Every atom is conserved, but an equation is written with the lowest whole-number coefficients: 2 H₂ + O₂ → 2 H₂O.
 
-**Is the picture conserved?** (two per student: one conserved, one with exactly one element off). The pictures are drawn from: 2 H₂ + O₂ → 2 H₂O; N₂ + 3 H₂ → 2 NH₃; CH₄ + 2 O₂ → CO₂ + 2 H₂O; H₂ + Cl₂ → 2 HCl; 2 Na + Cl₂ → 2 NaCl; 2 Mg + O₂ → 2 MgO; 2 K + Br₂ → 2 KBr; 2 Li + F₂ → 2 LiF; 2 Ca + O₂ → 2 CaO; 2 Cu + O₂ → 2 CuO; N₂ + O₂ → 2 NO; 2 CO + O₂ → 2 CO₂; 2 SO₂ + O₂ → 2 SO₃; 2 NO + O₂ → 2 NO₂; 2 H₂O₂ → 2 H₂O + O₂; 2 HgO → 2 Hg + O₂; 2 H₂O → 2 H₂ + O₂; NH₄NO₃ → N₂O + 2 H₂O; Zn + 2 HCl → ZnCl₂ + H₂; Mg + 2 HCl → MgCl₂ + H₂; 2 Al + 3 Cl₂ → 2 AlCl₃; 3 Mg + N₂ → Mg₃N₂; 2 KClO₃ → 2 KCl + 3 O₂; 2 KNO₃ → 2 KNO₂ + O₂; 2 N₂O₅ → 4 NO₂ + O₂; 2 Na + 2 H₂O → 2 NaOH + H₂; Cl₂ + 2 KI → 2 KCl + I₂. A conserved picture may show every coefficient doubled: it is still conserved.
+**Is the picture conserved?** (two per student: one conserved, one with exactly one element off). The pictures are drawn from: 2 H₂ + O₂ → 2 H₂O; N₂ + 3 H₂ → 2 NH₃; CH₄ + 2 O₂ → CO₂ + 2 H₂O; H₂ + Cl₂ → 2 HCl; 2 Na + Cl₂ → 2 NaCl; 2 Mg + O₂ → 2 MgO; 2 K + Br₂ → 2 KBr; 2 Li + F₂ → 2 LiF; 2 Ca + O₂ → 2 CaO; 2 Cu + O₂ → 2 CuO; N₂ + O₂ → 2 NO; 2 CO + O₂ → 2 CO₂; 2 SO₂ + O₂ → 2 SO₃; 2 NO + O₂ → 2 NO₂; 2 H₂O₂ → 2 H₂O + O₂; 2 HgO → 2 Hg + O₂; 2 H₂O → 2 H₂ + O₂; N₂O₅ + H₂O → 2 HNO₃; NH₄NO₃ → N₂O + 2 H₂O; Zn + 2 HCl → ZnCl₂ + H₂; Mg + 2 HCl → MgCl₂ + H₂; 2 Al + 3 Cl₂ → 2 AlCl₃; 3 Mg + N₂ → Mg₃N₂; P₄ + 5 O₂ → P₄O₁₀; 2 KClO₃ → 2 KCl + 3 O₂; 2 KNO₃ → 2 KNO₂ + O₂; 2 N₂O₅ → 4 NO₂ + O₂; 2 Na + 2 H₂O → 2 NaOH + H₂; Cl₂ + 2 KI → 2 KCl + I₂; Al₂(SO₄)₃ → Al₂O₃ + 3 SO₃. A conserved picture may show every coefficient doubled: it is still conserved.
 
-**Which equation for this picture?** (one per student) The picture shows twice the lowest coefficients; the answer is the equation in lowest whole numbers.
+**Starting an inventory** (one per student): how many of a polyatomic ion are on each side of the equation as written.
+
+- Mg + AgNO₃ → Mg(NO₃)₂ + Ag: NO₃ **1 in the reactants, 2 in the products**
+- Al + CuSO₄ → Al₂(SO₄)₃ + Cu: SO₄ **1 in the reactants, 3 in the products**
+- NaOH + CuSO₄ → Cu(OH)₂ + Na₂SO₄: OH **1 in the reactants, 2 in the products**
+- AgNO₃ + CaCl₂ → AgCl + Ca(NO₃)₂: NO₃ **1 in the reactants, 2 in the products**
+- Pb(NO₃)₂ + KI → PbI₂ + KNO₃: NO₃ **2 in the reactants, 1 in the products**
+- Zn + H₃PO₄ → Zn₃(PO₄)₂ + H₂: PO₄ **1 in the reactants, 2 in the products**
+- Al(OH)₃ + H₂SO₄ → Al₂(SO₄)₃ + H₂O: SO₄ **1 in the reactants, 3 in the products**
+- Ca(OH)₂ + H₃PO₄ → Ca₃(PO₄)₂ + H₂O: PO₄ **1 in the reactants, 2 in the products**
+- Na₃PO₄ + CaCl₂ → Ca₃(PO₄)₂ + NaCl: PO₄ **1 in the reactants, 2 in the products**
+- Al₂(SO₄)₃ + BaCl₂ → BaSO₄ + AlCl₃: SO₄ **3 in the reactants, 1 in the products**
 
 ## Reactions kept for the classifying package (too many particles for this one)
 
@@ -141,39 +172,38 @@ Each student gets 6 graded questions and 10 graded equations (3 easy, 4 medium, 
    - 5
    - **6**
    - 3
-2. To balance H₂ + O₂ → H₂O, a student changes H₂O to H₂O₂. Why is that not allowed?
-   - Coefficients must be changed before subscripts are
-   - A subscript can only be made smaller, never bigger
-   - **H₂O₂ is a different substance**
-   - It puts too many hydrogen atoms in the products
-3. Count the atoms in the picture. Does it obey the law of conservation of mass? (picture: Mg + 2 HCl → MgCl₂ + H₂)
-   - No: the number of hydrogen atoms changes
+2. What does the coefficient 3 in 3 CO₂ tell you?
+   - The molecule is 3 times as heavy as usual
+   - Each molecule has 3 carbon atoms in it
+   - **There are 3 CO₂ molecules**
+   - Each molecule has 3 oxygen atoms in it
+3. Count the atoms in the picture. Does it obey the law of conservation of mass? (picture: Al₂(SO₄)₃ → Al₂O₃ + 3 SO₃)
+   - No: the number of aluminum atoms changes
+   - No: the number of oxygen atoms changes
+   - No: the number of sulfur atoms changes
    - **Yes: every atom is conserved**
-   - No: the number of chlorine atoms changes
-   - No: the number of magnesium atoms changes
-4. How many hydrogen atoms are in 3 Ca(OH)₂?
-   - 2
+4. How many oxygen atoms are in 2 Al(OH)₃?
    - 3
-   - **6**
    - 1
-5. Count the atoms in the picture. Does it obey the law of conservation of mass? (picture: 2 Zn + 2 HCl → ZnCl₂ + H₂)
-   - No: the number of chlorine atoms changes
+   - 2
+   - **6**
+5. Count the atoms in the picture. Does it obey the law of conservation of mass? (picture: 2 NO + 2 O₂ → 2 NO₂)
    - Yes: every atom is conserved
-   - No: the number of hydrogen atoms changes
-   - **No: the number of zinc atoms changes**
-6. Which balanced equation should be written for the reaction in this picture? (picture: 4 Ca + 2 O₂ → 4 CaO)
-   - **2 Ca + O₂ → 2 CaO**
-   - 3 Ca + O₂ → 2 CaO
-   - Ca + O₂ → CaO
-   - 4 Ca + 2 O₂ → 4 CaO
+   - **No: the number of oxygen atoms changes**
+   - No: the number of nitrogen atoms changes
+6. Start an inventory for Zn + H₃PO₄ → Zn₃(PO₄)₂ + H₂ as it is written, before any coefficients. How many phosphate ions, PO₄, are on each side?
+   - 2 in the reactants, 1 in the products
+   - 4 in the reactants, 8 in the products
+   - **1 in the reactants, 2 in the products**
+   - 1 in the reactants, 1 in the products
 
-1. Zn + 2 HCl → ZnCl₂ + H₂
+1. Mg + 2 AgNO₃ → Mg(NO₃)₂ + 2 Ag
 2. 2 Mg + O₂ → 2 MgO
-3. 2 HgO → 2 Hg + O₂
-4. P₄ + 5 O₂ → 2 P₂O₅
-5. C₂H₅OH + 3 O₂ → 2 CO₂ + 3 H₂O
-6. 2 Al + 3 CuCl₂ → 2 AlCl₃ + 3 Cu
-7. 2 Al + 3 Cl₂ → 2 AlCl₃
-8. 3 Fe + 4 H₂O → Fe₃O₄ + 4 H₂
-9. 2 Na₃PO₄ + 3 CaCl₂ → Ca₃(PO₄)₂ + 6 NaCl
-10. H₃PO₄ + 3 NaOH → Na₃PO₄ + 3 H₂O
+3. N₂O₅ + H₂O → 2 HNO₃
+4. Pb(NO₃)₂ + 2 KI → PbI₂ + 2 KNO₃
+5. 2 NaOH + CuSO₄ → Cu(OH)₂ + Na₂SO₄
+6. 2 N₂O₅ → 4 NO₂ + O₂
+7. 2 KClO₃ → 2 KCl + 3 O₂
+8. C₅H₁₂ + 8 O₂ → 5 CO₂ + 6 H₂O
+9. 3 Fe + 4 H₂O → Fe₃O₄ + 4 H₂
+10. PCl₅ + 4 H₂O → H₃PO₄ + 5 HCl

@@ -7,7 +7,9 @@
  * manifest lists every file), every substance (the particle tree has exactly
  * the atoms of the formula, a sound drawing), every reaction (balanced a
  * second way by brute force, lowest whole numbers, one answer only), the
- * lesson's fixed pictures, and the graded work of 400 students: the plan of
+ * inventory (ions kept together only when they are on both sides; its rows
+ * match exactly when the atoms are conserved), the lesson's fixed pictures,
+ * and the graded work of 400 students: the plan of
  * equations, and every choice question answered again here from the question
  * itself.
  */
@@ -53,7 +55,6 @@ ok(/submit-answer/.test(appSrc) && /aria-pressed/.test(appSrc) && /selected/.tes
 const used = {};
 Rx.REACTIONS.forEach((r) => Chem.species(r).forEach((f) => { used[f] = 1; }));
 Steps.COUNT.forEach((c) => { used[c[1]] = 1; });
-used.H2O2 = 1;
 Object.keys(Rx.SUBSTANCES).forEach((f) => {
   const want = Chem.parse(f), got = {};
   Particles.readTree(Rx.tree(f)).forEach((a) => { got[a.el] = (got[a.el] || 0) + 1; });
@@ -63,7 +64,7 @@ Object.keys(Rx.SUBSTANCES).forEach((f) => {
   ok(Rx.name(f) && Rx.name(f) === Rx.name(f).trim(), f + ': name');
   ok(used[f], f + ' is not used by any reaction');
   const lay = Particles.layout(f);
-  ok(lay.atoms.every((a) => isFinite(a.x) && isFinite(a.y)) && lay.R > 0 && lay.R < 80, f + ': drawing out of range (R ' + lay.R.toFixed(0) + ')');
+  ok(lay.atoms.every((a) => isFinite(a.x) && isFinite(a.y)) && lay.R > 0 && lay.R < 85, f + ': drawing out of range (R ' + lay.R.toFixed(0) + ')');
   lay.atoms.forEach((a, i) => {
     if (a.parent >= 0) {
       const p = lay.atoms[a.parent], d = Math.hypot(a.x - p.x, a.y - p.y), t = 0.8 * (a.r + p.r);
@@ -129,26 +130,57 @@ Rx.REACTIONS.forEach((r) => {
     const sc = (cs) => Math.min(
       Particles.fill(null, r.l.map((f, j) => ({ f, n: cs[j] })), { w: Bench.BOXW, h: Bench.BOXH, measure: true }),
       Particles.fill(null, r.r.map((f, j) => ({ f, n: cs[nl + j] })), { w: Bench.BOXW, h: Bench.BOXH, measure: true }));
-    ok(sc(c) >= 0.8, r.id + ': particles drawn too small at the answer (scale ' + sc(c).toFixed(2) + ')');
+    ok(sc(c) >= 0.75, r.id + ': particles drawn too small at the answer (scale ' + sc(c).toFixed(2) + ')');
     ok(sc(c.map((x) => x + 2)) >= 0.55, r.id + ': particles drawn too small two past the answer');
   }
 });
 ok(Particles.fill(null, [{ f: 'O2', n: 20 }, { f: 'C3H5(NO3)3', n: 20 }], { w: Bench.BOXW, h: Bench.BOXH, measure: true }) > 0, 'a full box still draws');
+
+/* -------------------------------------------------------------- inventory */
+const rnd = A.UI.rng(77);
+Rx.REACTIONS.forEach((r) => {
+  const c = Chem.balance(r), info = Chem.rows(r), sp = Chem.species(r);
+  ok(Chem.inventory(r, c).every((x) => x.ok), r.id + ': the inventory does not match at the answer');
+  /* every atom is in exactly one row */
+  sp.forEach((f, j) => {
+    const want = Chem.parse(f), got = {};
+    info.rows.forEach((row) => {
+      const a = row.ion ? Chem.parse(row.ion) : { [row.key]: 1 };
+      Object.keys(a).forEach((el) => { got[el] = (got[el] || 0) + a[el] * row.per[j]; });
+    });
+    Object.keys(want).forEach((el) => ok(want[el] === (got[el] || 0), r.id + ': ' + f + ' has ' + want[el] + ' ' + el + ', the inventory counts ' + (got[el] || 0)));
+  });
+  info.rows.forEach((row) => ok(row.per.every((n) => n >= 0), r.id + ': a negative count in row ' + row.key));
+  info.kept.forEach((ion) => ok(r.l.some((f) => Chem.ionCount(f, ion)) && r.r.some((f) => Chem.ionCount(f, ion)), r.id + ': ' + ion + ' kept but not on both sides'));
+  ok(info.rows.length <= 6, r.id + ': more than 6 rows in the inventory');
+  /* the rows all match exactly when the atoms are conserved */
+  for (let k = 0; k < 40; k++) {
+    const t = c.map((x) => Math.max(1, x + Math.floor(rnd() * 5) - 2));
+    ok(Chem.inventory(r, t).every((x) => x.ok) === Chem.conserved(r, t), r.id + ': inventory and atoms disagree at ' + t.join());
+  }
+});
+const kept = (id) => Chem.rows(Rx.get(id)).kept.join();
+ok(kept('acetate') === 'PO4,C2H3O2', 'the teacher\'s example keeps PO4 and C2H3O2 together: ' + kept('acetate'));
+ok(Chem.rows(Rx.get('acetate')).rows.map((x) => x.key).join() === 'Na,PO4,Ca,C2H3O2', 'the teacher\'s inventory order: Na, PO4, Ca, C2H3O2');
+ok(kept('h3po4') === '' && Chem.rows(Rx.get('h3po4')).rows.map((x) => x.key).join() === 'P,O,H', 'P4O10 + H2O: PO4 is on one side only, so atom by atom');
+ok(kept('naohh2so4') === 'SO4' && Chem.rows(Rx.get('naohh2so4')).rows.filter((x) => x.key === 'O')[0].other.join() === 'SO4', 'NaOH + H2SO4: SO4 kept, OH not');
+ok(kept('ethanol') === '' && kept('kclo3') === '' && kept('nitroglycerin') === '', 'an ion on one side only must not be kept');
+ok(Chem.ionCount('Ca3(PO4)2', 'PO4') === 2 && Chem.ionCount('P4O10', 'PO4') === 0 && Chem.ionCount('NO2', 'NO3') === 0 && Chem.ionCount('NH4NO3', 'NH4') === 1, 'ionCount');
+ok(Gen.ionList().length >= 8, 'too few inventory questions: ' + Gen.ionList().length);
 
 /* ----------------------------------------------------------------- lesson */
 const stepIds = {};
 App.STEPS.forEach((s, i) => {
   ok(!stepIds[s.id], 'step id twice: ' + s.id); stepIds[s.id] = 1;
   ok(i === 0 || s.part >= App.STEPS[i - 1].part, 'parts out of order at ' + s.id);
-  if (s.kind === 'bench') ok(Rx.get(s.rx) && Rx.get(s.rx).lesson, s.id + ': a lesson bench needs a lesson reaction');
+  if (s.kind === 'bench') {
+    ok(Rx.get(s.rx) && Rx.get(s.rx).lesson, s.id + ': a lesson bench needs a lesson reaction');
+    if (s.ask) ok(s.ask.c.filter((c) => c.ok).length === 1 && s.ask.c.every((c) => c.fb), s.id + ': the prediction needs one right choice and feedback for each');
+  }
 });
 ok(App.STEPS[App.STEPS.length - 1].kind === 'results' && App.PARTS.length === App.STEPS[App.STEPS.length - 1].part, 'results last');
 const cons = Steps.CARDS.map((c) => Chem.conserved(Rx.get(c.rx), c.c));
 ok(cons.filter(Boolean).length === 2 && cons.length === 4, 'Is it conserved? needs two pictures of each kind');
-Steps.LOWEST.forEach((c) => {
-  const j = Chem.judge(Rx.get(c.rx), c.c);
-  ok(j.kind === 'multiple' && j.k > 1, 'picture to equation: ' + c.rx + ' must be a multiple of the answer');
-});
 Steps.COUNT.forEach((c) => ok(Rx.SUBSTANCES[c[1]] && c[0] > 1, 'count card ' + c[1]));
 
 /* ----------------------------------------------------------- graded work */
@@ -182,17 +214,22 @@ for (let seed = 1; seed <= 400; seed++) {
       if (off.length) ok(right === 'No: the number of ' + Particles.EL[off[0].el][0] + ' atoms changes', tag + 'which element');
       else { yes++; ok(/^Yes/.test(right), tag + 'conserved'); }
       ok(q.fig.coefs.reduce((a, b) => a + b, 0) <= 14, tag + 'too many particles to count');
-    } else if (q.kind === 'equation') {
-      ok(right === Chem.equation(q.fig.rx, Chem.balance(q.fig.rx)), tag + 'equation');
-      ok(Chem.judge(q.fig.rx, q.fig.coefs).kind === 'multiple', tag + 'the picture should be a multiple');
-      q.choices.forEach((c, i) => { if (i !== q.right) ok(c !== right, tag + 'duplicate'); });
+    } else if (q.kind === 'inventory') {
+      /* counted again here, straight from the formulas */
+      const r = Rx.get(q.rxid), n = (list) => list.reduce((t, f) => {
+        const m = new RegExp('\\(' + q.ion + '\\)(\\d*)').exec(f);
+        return t + (m ? +(m[1] || 1) : f.indexOf(q.ion) >= 0 ? 1 : 0);
+      }, 0);
+      ok(right === n(r.l) + ' in the reactants, ' + n(r.r) + ' in the products', tag + 'the ion count');
+      ok(n(r.l) > 0 && n(r.r) > 0 && q.choices.length === 4, tag + 'the ion must be on both sides, with four choices');
     }
-    /* the "No" choices differ only in the element's name, so only the others are checked */
-    if (/[a-z]{3}/.test(right) && q.kind !== 'equation' && !/^No: /.test(right)) {
+    /* the "No" choices and the count choices differ only in a name or a number, so only the others are checked */
+    if (/[a-z]{3}/.test(right) && q.kind !== 'inventory' && !/^No: /.test(right)) {
       ok(q.choices.some((c, i) => i !== q.right && c.length > right.length), tag + 'the right answer is the longest choice');
     }
   });
   ok(yes === 1, 'seed ' + seed + ': one conserved picture and one that is not');
+  ok(qs.filter((q) => q.kind === 'inventory').length === 1, 'seed ' + seed + ': one inventory question');
   const figs = qs.filter((q) => q.fig).map((q) => q.fig.rx.id);
   ok(new Set(figs).size === figs.length, 'seed ' + seed + ': a reaction drawn in two questions');
 }

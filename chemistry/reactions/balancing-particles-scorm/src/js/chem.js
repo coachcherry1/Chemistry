@@ -1,6 +1,7 @@
 /* chem.js: the model. Reads formulas, counts atoms, balances an equation by
- * solving it (so no coefficient is typed twice anywhere) and judges a
- * student's coefficients. No DOM: the validator and the answer key load it
+ * solving it (so no coefficient is typed twice anywhere), writes the
+ * inventory (polyatomic ions kept together when they are on both sides) and
+ * judges a student's coefficients. No DOM: the validator and the answer key load it
  * in node.
  *
  * A reaction is { l: [formula, ...], r: [formula, ...] }. Coefficients are
@@ -120,6 +121,74 @@ var Chem = (function () {
     });
   }
 
+  /* ---------------------------------------------------------- the inventory */
+
+  /* Polyatomic ions that can be kept together as one piece of the inventory. */
+  var IONS = { NO3: 'nitrate', SO4: 'sulfate', PO4: 'phosphate', CO3: 'carbonate', OH: 'hydroxide', ClO3: 'chlorate',
+               C2H3O2: 'acetate', NH4: 'ammonium' };
+
+  /* how many of the ion a formula shows: (PO4)2 is 2, Na3PO4 is 1, P4O10 is 0 */
+  function ionCount(formula, ion) {
+    var m = new RegExp('\\(' + ion + '\\)(\\d*)').exec(formula);
+    if (m) return m[1] ? +m[1] : 1;
+    return new RegExp(ion + '(?![a-z\\d])').test(formula) ? 1 : 0;
+  }
+
+  /* The rows of the inventory, in the order they first appear in the equation.
+     An ion that is in the reactants AND in the products is kept together as
+     one row; an ion on one side only is counted atom by atom, like everything
+     else. An element that is partly inside a kept ion gets a row for its
+     other atoms (other: the ions they are outside of).
+       { key, label, name, ion (or null), other: [ions], per: [count in one particle of each species] } */
+  var invCache = {};
+  function rows(rx) {
+    if (invCache[rx.id]) return invCache[rx.id];
+    var sp = species(rx), nl = rx.l.length;
+    var kept = Object.keys(IONS).filter(function (ion) {
+      function on(list) { return list.some(function (f) { return ionCount(f, ion) > 0; }); }
+      return on(rx.l) && on(rx.r);
+    });
+    var counts = sp.map(parse);
+    var rest = counts.map(function (c, j) {
+      var o = {};
+      Object.keys(c).forEach(function (el) { o[el] = c[el]; });
+      kept.forEach(function (ion) {
+        var n = ionCount(sp[j], ion), a = parse(ion);
+        Object.keys(a).forEach(function (el) { o[el] -= n * a[el]; });
+      });
+      return o;
+    });
+    var out = [], seen = {};
+    sp.forEach(function (f, j) {
+      var re = /[A-Z][a-z]?/g, m;
+      while ((m = re.exec(f))) {
+        var el = m[0];
+        if (!seen[el] && rest.some(function (r) { return r[el] > 0; })) {
+          seen[el] = 1;
+          var inside = kept.filter(function (ion) { return parse(ion)[el]; });
+          out.push({ key: el, label: el, ion: null, other: inside, per: rest.map(function (r) { return r[el] || 0; }) });
+        }
+        kept.forEach(function (ion) {
+          if (!seen[ion] && parse(ion)[el] && ionCount(f, ion) > 0) {
+            seen[ion] = 1;
+            out.push({ key: ion, label: pretty(ion), ion: ion, name: IONS[ion], other: [], per: sp.map(function (g) { return ionCount(g, ion); }) });
+          }
+        });
+      }
+    });
+    return (invCache[rx.id] = { rows: out, kept: kept, nl: nl });
+  }
+
+  /* the inventory with these coefficients: every row with its left and right count */
+  function inventory(rx, coefs) {
+    var inv = rows(rx);
+    return inv.rows.map(function (r) {
+      var left = 0, right = 0;
+      r.per.forEach(function (n, j) { if (j < inv.nl) left += n * (coefs[j] || 0); else right += n * (coefs[j] || 0); });
+      return { key: r.key, label: r.label, ion: r.ion, name: r.name, other: r.other, left: left, right: right, ok: left === right };
+    });
+  }
+
   function conserved(rx, coefs) { return tally(rx, coefs).every(function (t) { return t.ok; }); }
 
   /* What a set of coefficients is:
@@ -135,7 +204,11 @@ var Chem = (function () {
     }
     var t = tally(rx, coefs);
     var bad = t.filter(function (x) { return !x.ok; });
-    if (bad.length) return { kind: 'off', el: bad[0].el, left: bad[0].left, right: bad[0].right, tally: t, bad: bad };
+    if (bad.length) {
+      /* reported by the rows of the inventory the student sees */
+      var rowsOff = inventory(rx, coefs).filter(function (x) { return !x.ok; });
+      return { kind: 'off', el: bad[0].el, left: bad[0].left, right: bad[0].right, tally: t, bad: bad, rows: rowsOff };
+    }
     var g = coefs.slice(0, n).reduce(gcd, 0);
     if (g > 1) return { kind: 'multiple', k: g, tally: t };
     return { kind: 'right', tally: t };
@@ -154,7 +227,8 @@ var Chem = (function () {
   }
 
   return { parse: parse, pretty: pretty, species: species, elements: elements, balance: balance, tally: tally,
-           conserved: conserved, judge: judge, equation: equation, gcd: gcd };
+           conserved: conserved, judge: judge, equation: equation, gcd: gcd,
+           IONS: IONS, ionCount: ionCount, rows: rows, inventory: inventory };
 })();
 
 if (typeof module !== 'undefined') module.exports = Chem;

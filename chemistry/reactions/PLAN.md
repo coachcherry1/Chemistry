@@ -30,15 +30,19 @@ Ba (Ba²⁺), Sr (Sr²⁺), Ca (Ca²⁺), Na (Na⁺), Mg (Mg²⁺), Al (Al³⁺)
 Co (Co²⁺), Ni (Ni²⁺), Sn (Sn²⁺), Pb (Pb²⁺), **H₂**, Cu (Cu²⁺), Ag (Ag⁺), Hg (Hg²⁺), Pt (Pt²⁺), Au (Au³⁺). Everything from
 Li to Pb "replaces hydrogen from acids".
 
-**Gaps to settle with the teacher before packages 3 and 4** (the handout is silent on these):
+**Settled with the teacher (additions to the handout for packages 3 and 4):**
 
-- No row for bromide or iodide: package 3 would use only chlorides for halide precipitates, unless the teacher adds Br⁻
-  and I⁻ (same exceptions as Cl⁻).
-- No halogen series (F₂, Cl₂, Br₂, I₂), although halogen + halide is in scope: needs a line on the reference card.
-- Lithium is not in the "always soluble" list (it appears only as an exception for carbonate and hydroxide).
-- By the handout Sr(OH)₂ and Ca(OH)₂ are insoluble, so the strong bases for package 4 are LiOH, NaOH, KOH and Ba(OH)₂.
-- The teacher asked whether a clearer copy exists (theirs is blurry): the packages will draw the table and the series
-  crisply on screen from the data above; a printable one-page version can be made from the same data.
+- **Bromide and iodide are included**, with chloride's exceptions (insoluble with Ag⁺, Hg₂²⁺, Pb²⁺).
+- **The halogens are included** in the series: F₂ > Cl₂ > Br₂ > I₂ (a line on the reference card).
+- **Lithium salts are always soluble** (added to the always-soluble list).
+- **Strong bases for package 4:** LiOH, NaOH, KOH and Ba(OH)₂ only (by the handout Ca(OH)₂ and Sr(OH)₂ are insoluble).
+- The teacher's copy of the handout is blurry: the packages draw the table and the series crisply on screen from this
+  data; a printable one-page version can be made from the same data if wanted.
+
+**Changes the teacher asked for in package 1 (done, zip v2):** the picture-to-equation section was removed; Part 4 is now
+polyatomic ions (kept together in the inventory when on both sides, counted atom by atom when not, as in
+P₄O₁₀ + H₂O → H₃PO₄); the inventory runs down the centre between the two boxes and updates with the coefficients. Package
+2 inherits all of this, and packages 3 and 4 should use the same centre inventory wherever students balance.
 
 Decisions marked **(default)** below are the original recommendations; see the answers above for what was changed.
 
@@ -83,8 +87,8 @@ coefficient; under it a **Reactants box** and a **Products box** of particles th
 under those an **atom tally** per element (left count, right count, a tick when they match). No mass line (the
 teacher's choice). All of it is on screen together at 1366x520.
 
-**As built (v1, SCHEMA 1):** 11 steps in 6 parts; 16 graded items (6 choice questions, 10 equations: 3 easy, 4 medium,
-3 hard from a pool of 48). In the graded equations the tally is hidden until the first Check, which is what counts. See
+**As built (v2, SCHEMA 2):** 13 steps in 6 parts; 16 graded items (6 choice questions, 10 equations: 3 easy, 4 medium,
+3 hard from a pool of 53). Part 4 is polyatomic ions, not picture to equation (see the teacher's changes above). See
 the package README and the section in `CLAUDE.md`.
 
 **Steps (about 12):**

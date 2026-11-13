@@ -1,7 +1,7 @@
 /* styles.css: self-contained. No web fonts, no CDN, nothing that a locked-down
    LMS iframe could fail to load. The house palette (Lewis structures, VSEPR,
    IMFs, mole conversions) plus the balancing workbench: the equation with
-   its steppers, the two particle boxes, the atom tally and Check, tuned to
+   its steppers, the two particle boxes with the inventory between them, and Check, tuned to
    share a 1366 x 520 window. */
 
 :root {
@@ -222,7 +222,9 @@ h3 { font-size: 0.74rem; margin: 0; text-transform: uppercase; letter-spacing: 0
 .panel .bench { border: 0; padding: 0; background: none; }
 .bench.still { border: 0; padding: 0; background: none; margin-bottom: 6px; }
 
-.eq { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 10px; margin-bottom: 6px; }
+.eq { display: grid; grid-template-columns: minmax(0, 1fr) 164px minmax(0, 1fr); gap: 6px; align-items: center; margin-bottom: 6px; }
+.eq-side { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 8px; }
+.eq > .arrow { text-align: center; }
 .term { display: inline-flex; align-items: center; gap: 6px; }
 .eq-op { font-size: 1.3rem; font-weight: 700; color: var(--muted); }
 .eq-op.arrow { font-size: 1.6rem; color: var(--ink); margin: 0 6px; }
@@ -239,24 +241,36 @@ input.coef.wrong { border-color: var(--bad); background: var(--bad-bg); }
 .bench.done input.coef { color: var(--good); }
 .bench.done .stepper { border-color: var(--good); }
 
-.boxes { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 6px; align-items: center; }
+.boxes { display: grid; grid-template-columns: minmax(0, 1fr) 164px minmax(0, 1fr); gap: 6px; align-items: stretch; }
+.boxes.plain { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; }
 .boxes-arrow { font-size: 1.7rem; font-weight: 700; color: var(--muted); }
+
+/* the inventory, down the centre under the arrow: before | what | after */
+.inv { display: flex; flex-direction: column; justify-content: center; gap: 3px; min-width: 0; }
+.inv-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; text-align: center; }
+.inv-head { text-align: center; font: 700 0.66rem system-ui, sans-serif; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.inv-row { border: 1.5px solid var(--line); border-radius: 7px; padding: 1px 2px; background: var(--panel); min-height: 28px; }
+.inv-n { font: 700 1.15rem system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+.inv-l { display: flex; flex-direction: column; line-height: 1.05; border-left: 1.5px solid var(--line); border-right: 1.5px solid var(--line); min-width: 0; }
+.inv-l b { font-size: 1.08rem; white-space: nowrap; }
+.inv-l small { font-size: 0.58rem; color: var(--muted); white-space: nowrap; }
+.inv-row.ok { border-color: var(--good); background: var(--good-bg); color: var(--good); }
+.inv-row.off { border-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
+.inv-row.ok .inv-l, .inv-row.off .inv-l { border-color: currentColor; }
+input.coef.inv-in { width: 34px; height: 24px; font-size: 1rem; border: 1.5px solid var(--tile-line); border-radius: 5px; justify-self: center; }
+.bench.typing .stepper { opacity: 0.55; }
+.panel.ask .tiles { justify-content: flex-start; }
 .pbox { margin: 0; border: 1.5px solid var(--tile-line); border-radius: var(--radius); background: var(--box); position: relative; min-width: 0; }
 .pbox figcaption { position: absolute; top: 2px; left: 8px; font: 700 0.66rem system-ui, sans-serif; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
-.pbox-svg { display: block; width: 100%; height: auto; max-height: 200px; }
+.pbox-svg { display: block; width: 100%; height: auto; max-height: 210px; }
 .atom { stroke: var(--atom-line); stroke-width: 1; }
 .atom-t { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-weight: 700; text-anchor: middle; pointer-events: none; }
 @keyframes pop { from { opacity: 0.2; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
 .particle.pop { animation: pop 0.25s ease-out; transform-box: fill-box; transform-origin: center; }
 @media (prefers-reduced-motion: reduce) { .particle.pop { animation: none; } }
 
-.bench-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 12px; margin-top: 6px; min-height: 28px; }
-.tally { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
-.tally-head, .tally-note { font-size: 0.76rem; color: var(--muted); }
-.chip { font-size: 0.88rem; padding: 2px 9px; border-radius: 99px; border: 1.5px solid var(--line); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.chip.ok { color: var(--good); border-color: var(--good); background: var(--good-bg); }
-.chip.off { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
-.chip-m { font-weight: 700; }
+.bench-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 12px; margin-top: 6px; }
+.bench-foot .btnrow { margin-top: 0; }
 .pkey { display: flex; flex-wrap: wrap; gap: 2px 10px; font-size: 0.74rem; color: var(--muted); }
 .pkey-i { display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; }
 .pic-eq { margin: 0 0 4px; text-align: center; font-size: 1.15rem; font-weight: 700; }

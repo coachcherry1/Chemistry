@@ -6,5 +6,5 @@
 var CONFIG = {
   classify: false,                              /* true: every graded reaction is also classified */
   store: 'balancing-particles-state',           /* localStorage key, used only outside an LMS */
-  minutes: 25
+  minutes: 30
 };

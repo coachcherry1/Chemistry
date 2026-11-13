@@ -9,6 +9,7 @@ const { Chem, Rx, Gen, Steps, App } = load();
 const out = [];
 const p = (s) => out.push(s);
 const LEVEL = { 1: 'Easy', 2: 'Medium', 3: 'Hard' };
+const inv = (x) => x.left + ' | ' + x.label + (x.other.length ? ' (not in ' + x.other.map(Chem.pretty).join(', ') + ')' : '') + ' | ' + x.right;
 
 p('# Balancing equations with particles: answer key');
 p('');
@@ -35,22 +36,28 @@ Steps.CARDS.forEach((c, i) => {
   p((i + 1) + '. ' + Chem.equation(r, c.c) + ': ' + (off.length ? 'not conserved (' + off.map((x) => x.el + ' ' + x.left + ' before, ' + x.right + ' after').join('; ') + ')' : 'conserved'));
 });
 p('');
-p('**Balancing**');
+p('**Balancing and polyatomic ions** (the inventory is shown for the equation as written, reactants | row | products)');
 p('');
-App.STEPS.filter((s) => s.kind === 'bench').forEach((s) => { const r = Rx.get(s.rx); p('- ' + s.title + ': ' + Chem.equation(r, Chem.balance(r))); });
-p('');
-p('**From picture to equation**');
-p('');
-Steps.LOWEST.forEach((c) => { const r = Rx.get(c.rx); p('- The picture shows ' + Chem.equation(r, c.c) + '; the equation is ' + Chem.equation(r, Chem.balance(r))); });
+App.STEPS.filter((s) => s.kind === 'bench').forEach((s) => {
+  const r = Rx.get(s.rx), ones = Chem.species(r).map(() => 1);
+  p('- ' + s.title + ': ' + Chem.equation(r, Chem.balance(r)));
+  p('  - Inventory' + (s.typed ? ' (typed by the student)' : '') + ': ' + Chem.inventory(r, ones).map(inv).join('; '));
+  if (s.ask) p('  - Prediction: ' + s.ask.q + ' **' + s.ask.c.filter((c) => c.ok)[0].t + '**');
+});
 p('');
 p('## Graded equations: the pool');
 p('');
 [1, 2, 3].forEach((lv) => {
   p('### ' + LEVEL[lv] + ' (' + Gen.PLAN.filter((pl) => pl[0] === lv)[0][1] + ' of ' + Gen.pool(lv).length + ' per student)');
   p('');
-  p('| Unbalanced | Balanced | Coefficients |');
-  p('| --- | --- | --- |');
-  Gen.pool(lv).forEach((r) => { const c = Chem.balance(r); p('| ' + Chem.equation(r) + ' | ' + Chem.equation(r, c) + ' | ' + c.join(', ') + ' |'); });
+  p('| Unbalanced | Balanced | Coefficients | Inventory rows |');
+  p('| --- | --- | --- | --- |');
+  Gen.pool(lv).forEach((r) => {
+    const c = Chem.balance(r);
+    p('| ' + Chem.equation(r) + ' | ' + Chem.equation(r, c) + ' | ' + c.join(', ') + ' | ' + Chem.rows(r).rows.map((x) => x.label + (x.other.length ? '*' : '')).join(', ') + ' |');
+  });
+  p('');
+  p('\\* the atoms of that element that are not inside a kept ion.');
   p('');
 });
 p('## Graded questions: the pools');
@@ -68,7 +75,9 @@ p('');
 p('**Is the picture conserved?** (two per student: one conserved, one with exactly one element off). The pictures are drawn from: ' +
   Gen.small().map((r) => Chem.equation(r, Chem.balance(r))).join('; ') + '. A conserved picture may show every coefficient doubled: it is still conserved.');
 p('');
-p('**Which equation for this picture?** (one per student) The picture shows twice the lowest coefficients; the answer is the equation in lowest whole numbers.');
+p('**Starting an inventory** (one per student): how many of a polyatomic ion are on each side of the equation as written.');
+p('');
+Gen.ionList().forEach((it) => p('- ' + Chem.equation(it.rx) + ': ' + it.row.label + ' **' + it.row.left + ' in the reactants, ' + it.row.right + ' in the products**'));
 p('');
 p('## Reactions kept for the classifying package (too many particles for this one)');
 p('');
