@@ -4,9 +4,10 @@
  *   node tools/validate.js
  *
  * It checks the house rules (no em dash, offline, relative paths, the
- * manifest lists every file), the class handout typed a second time here
- * (the activity series, the halogens, the solubility of every pair of ions
- * that can appear), every compound (formula from the charges, name, particle
+ * manifest lists every file), the reference typed a second time here (the
+ * activity series from the standard potentials, what replaces hydrogen from
+ * cold water, the halogens, the solubility of every pair of ions that can
+ * appear), every compound (formula from the charges, name, particle
  * drawing), every problem in the pools (reacts or not, products, states and
  * coefficients, each worked out again here), and the graded work of 400
  * students.
@@ -56,12 +57,17 @@ if (fs.existsSync(SHARED)) {
     ok(fs.readFileSync(path.join(SHARED, f), 'utf8') === fs.readFileSync(path.join(SRC, 'js', f), 'utf8'), f + ' differs from the copy in balancing-particles-scorm');
   });
 }
-ok(!/hydroxide|OH/.test(Gen.METALS.join()) && Gen.METALS.every((m) => ['Li', 'K', 'Na', 'Ca', 'Ba', 'Sr'].indexOf(m) < 0), 'no metal that reacts with water as a lone metal');
 
 /* --------------------------------------------------- the handout, typed again */
-const SERIES = 'Li Rb K Cs Ba Sr Ca Na Mg Al Mn Zn Cr Fe Cd Co Ni Sn Pb H Cu Ag Hg Pt Au'.split(' ');
+/* in the order of the standard reduction potentials (volts), typed here from a table of them */
+const E0 = { Li: -3.04, Cs: -3.03, Rb: -2.98, K: -2.93, Ba: -2.91, Sr: -2.90, Ca: -2.87, Na: -2.71, Mg: -2.37, Al: -1.66, Mn: -1.18, Zn: -0.76, Cr: -0.74, Fe: -0.44,
+  Cd: -0.40, Co: -0.28, Ni: -0.26, Sn: -0.14, Pb: -0.13, H: 0, Cu: 0.34, Ag: 0.80, Hg: 0.85, Pt: 1.20, Au: 1.50 };
+const SERIES = Object.keys(E0).sort((a, b) => E0[a] - E0[b]);
+ok(SERIES.join(' ') === 'Li Cs Rb K Ba Sr Ca Na Mg Al Mn Zn Cr Fe Cd Co Ni Sn Pb H Cu Ag Hg Pt Au', 'the order by potential');
+ok(Ions.tier('Na') === 'water' && Ions.tier('Li') === 'water' && Ions.tier('Mg') === 'steam' && Ions.tier('Cd') === 'steam' && Ions.tier('Co') === 'acid' &&
+   Ions.tier('Pb') === 'acid' && Ions.tier('Cu') === 'none' && Ions.tier('Au') === 'none', 'what each metal replaces hydrogen from');
 const CHARGE = { Li: 1, Rb: 1, K: 1, Cs: 1, Ba: 2, Sr: 2, Ca: 2, Na: 1, Mg: 2, Al: 3, Mn: 2, Zn: 2, Cr: 3, Fe: 2, Cd: 2, Co: 2, Ni: 2, Sn: 2, Pb: 2, H: 1, Cu: 2, Ag: 1, Hg: 2, Pt: 2, Au: 3 };
-ok(Ions.SERIES.map((x) => x[0]).join(' ') === SERIES.join(' '), 'the activity series is not the handout\'s');
+ok(Ions.SERIES.map((x) => x[0]).join(' ') === SERIES.join(' '), 'the activity series is not in the order of the potentials');
 Ions.SERIES.forEach((x) => ok(x[2] === CHARGE[x[0]], 'the ion of ' + x[0] + ' on the series'));
 Object.keys(Ions.CATIONS).forEach((c) => { if (CHARGE[c]) ok(Ions.CATIONS[c][1] === CHARGE[c], c + ': the charge does not match the series'); });
 ok(Ions.HALOGENS.map((x) => x[0]).join(' ') === 'F Cl Br I', 'the halogens: F, Cl, Br, I');
@@ -79,6 +85,16 @@ Object.keys(REAL).forEach((cat) => COLS.forEach((an) => {
   ok((r === '-') === !Ions.usable(cat, an), cat + ' ' + an + ': avoided or not?');
   if (r !== '-') ok((r === 'S') === Ions.soluble(cat, an), cat + ' ' + an + ': the table says ' + (Ions.soluble(cat, an) ? 'soluble' : 'insoluble') + ', it is ' + r);
 }));
+/* a compound marked slightly soluble must never be used, and the slight and exception lists never overlap */
+Ions.TABLE.soluble.concat(Ions.TABLE.insoluble).forEach((r) => {
+  r.slight.forEach((c) => {
+    ok((r.not || r.but).indexOf(c) < 0, r.an + ': ' + c + ' is both an exception and slightly soluble');
+    if (Ions.CATIONS[c] && Ions.ANIONS[r.an]) ok(!Ions.usable(c, r.an), c + ' ' + r.an + ' is slightly soluble, so it must be avoided');
+  });
+  (r.not || r.but).concat(r.slight).forEach((c) => ok(Ions.CATIONS[c] || Ions.SHEET_IONS[c], r.an + ': unknown ion ' + c));
+  ok(Ions.ANIONS[r.an] ? !r.sheet : r.sheet && Ions.SHEET_IONS[r.an], r.an + ': a rule for an ion the problems use must be on screen, others only on the sheet');
+});
+ok(Ions.TABLE.always.join() === 'Li,Na,K,Rb,Cs,NH4', 'always soluble: group 1 and ammonium');
 /* the handout's own rows, and the agreed additions */
 ok(Ions.soluble('Ag', 'Cl') === false && Ions.soluble('Pb', 'I') === false && Ions.soluble('Ba', 'SO4') === false && Ions.soluble('Sr', 'SO4') === false, 'insoluble exceptions');
 ok(Ions.soluble('Ba', 'OH') && Ions.soluble('Na', 'CO3') && Ions.soluble('NH4', 'PO4') && Ions.soluble('K', 'S') && Ions.soluble('Li', 'CO3'), 'soluble exceptions');
@@ -102,7 +118,7 @@ Object.keys(Ions.BY).forEach((f) => {
 ok(Ions.formula('Al', 'SO4') === 'Al2(SO4)3' && Ions.formula('NH4', 'PO4') === '(NH4)3PO4' && Ions.formula('Ca', 'OH') === 'Ca(OH)2' && Ions.formula('H', 'SO4') === 'H2SO4' &&
    Ions.formula('Fe', 'Cl') === 'FeCl2' && Ions.formula('Ba', 'SO4') === 'BaSO4', 'formulas from charges');
 ok(Ions.name('FeCl2') === 'iron(II) chloride' && Ions.name('HCl') === 'hydrochloric acid' && Ions.name('Br2') === 'bromine' && Ions.name('Zn') === 'zinc', 'names');
-ok(Ions.state('H2') === 'g' && Ions.state('Br2') === 'l' && Ions.state('I2') === 's' && Ions.state('Cu') === 's' && Ions.state('AgCl') === 's' && Ions.state('HCl') === 'aq', 'states');
+ok(Ions.state('AgCl') === 's' && Ions.state('NaNO3') === 'aq' && Ions.name('HOH') === 'water' && Ions.formula('H', 'OH') === 'HOH', 'states, and water as HOH');
 
 /* --------------------------------------------------------------- problems */
 const P = Gen.pools();
@@ -113,21 +129,28 @@ function checkProblem(p, where) {
   ok(p.coefs && Chem.conserved(p.rx, p.coefs) && Chem.judge(p.rx, p.coefs).kind === 'right', tag + 'not balanced');
   ok(Chem.inventory(p.rx, p.coefs).every((x) => x.ok), tag + 'the inventory does not match at the answer');
   const all = p.l.concat(p.products);
-  all.forEach((f) => { const pr = Ions.parts(f); if (pr && pr.cat !== 'H') ok(Ions.usable(pr.cat, pr.an) && real(pr.cat, pr.an) !== '-', tag + f + ' should never be used'); });
+  all.forEach((f) => { const pr = Ions.parts(f); if (pr && pr.cat !== 'H') ok(Ions.usable(pr.cat, pr.an) && REAL[pr.cat] && real(pr.cat, pr.an) !== '-', tag + f + ' should never be used'); });
   if (p.kind === 'sr') {
     const comp = Ions.parts(p.l[1]), lone = Ions.symOf(p.l[0]);
     ok(Ions.isElement(p.l[0]) && comp, tag + 'a lone element and a compound');
     if (p.sub === 'halogen') {
       ok('F Cl Br I'.split(' ').indexOf(lone) < 'F Cl Br I'.split(' ').indexOf(comp.an) === p.reacts, tag + 'halogen order');
       ok(p.products[0] === Ions.formula(comp.cat, lone) && p.products[1] === comp.an + '2', tag + 'halogen products');
+    } else if (p.sub === 'water') {
+      /* cold water: only the metals down to sodium */
+      ok(p.l[1] === 'HOH' && (E0[lone] <= E0.Na) === p.reacts, tag + 'cold water');
+      ok(p.products[0] === Ions.formula(lone, 'OH') && p.products[1] === 'H2', tag + 'a hydroxide and hydrogen');
+      if (p.reacts) ok(real(lone, 'OH') === 'S', tag + 'the hydroxide must be clearly soluble');
+      else ok(Gen.WATER_NO.indexOf(lone) >= 0, tag + 'only the listed metals are asked about with water');
     } else {
       ok(above(lone, comp.cat) === p.reacts, tag + 'the series says ' + above(lone, comp.cat));
       ok(p.products[0] === Ions.formula(lone, comp.an) && p.products[1] === (comp.cat === 'H' ? 'H2' : comp.cat), tag + 'products');
       ok((p.sub === 'acid') === (comp.cat === 'H'), tag + 'acid or salt');
       ok(real(lone, comp.an) === 'S', tag + 'the new salt must be soluble, or the metal would be coated');
     }
-    ok(p.rungs.join() === (p.reacts ? 'react,products,states,balance' : 'react'), tag + 'rungs');
-    if (p.reacts) ok(p.states[p.products[0]] === 'aq' && p.states[p.products[1]] === ({ H2: 'g', Br2: 'l', I2: 's', Cl2: 'g' }[p.products[1]] || 's'), tag + 'states');
+    /* no state symbols in a single replacement (the teacher writes them only where they matter) */
+    ok(!/\((s|l|g|aq)\)/.test(Gen.equation(p, true)), tag + 'a state symbol in a single replacement');
+    ok(p.rungs.join() === (p.reacts ? 'react,products,balance' : 'react'), tag + 'rungs');
   } else {
     const a = Ions.parts(p.l[0]), b = Ions.parts(p.l[1]);
     ok(real(a.cat, a.an) === 'S' && real(b.cat, b.an) === 'S' && a.cat !== b.cat && a.an !== b.an, tag + 'two different soluble compounds');
@@ -155,9 +178,11 @@ Object.keys(P).forEach((k) => P[k].forEach((p) => {
   checkProblem(p, k);
   ok(p.reacts === /Yes$/.test(k), k + ' ' + p.id + ': in the wrong pool');
 }));
-ok(Gen.equation(Gen.make('Al', 'CuCl2'), true) === '2 Al(s) + 3 CuCl₂(aq) → 2 AlCl₃(aq) + 3 Cu(s)', 'Al + CuCl2: ' + Gen.equation(Gen.make('Al', 'CuCl2'), true));
-ok(Gen.equation(Gen.make('Cu', 'HCl'), true) === 'Cu(s) + HCl(aq) → no reaction', 'Cu + HCl');
-ok(Gen.equation(Gen.make('Cl2', 'KBr'), true) === 'Cl₂(aq) + 2 KBr(aq) → 2 KCl(aq) + Br₂(l)', 'Cl2 + KBr');
+ok(Gen.equation(Gen.make('Al', 'CuCl2'), true) === '2 Al + 3 CuCl₂ → 2 AlCl₃ + 3 Cu', 'Al + CuCl2: ' + Gen.equation(Gen.make('Al', 'CuCl2'), true));
+ok(Gen.equation(Gen.make('Na', 'HOH'), true) === '2 Na + 2 HOH → 2 NaOH + H₂' && Gen.equation(Gen.make('Zn', 'HOH'), true) === 'Zn + HOH → no reaction', 'sodium and zinc in cold water');
+ok(Gen.equation(Gen.make('Ba(OH)2', 'CuSO4'), true) === 'Ba(OH)₂(aq) + CuSO₄(aq) → BaSO₄(s) + Cu(OH)₂(s)', 'two solids at once');
+ok(Gen.equation(Gen.make('Cu', 'HCl'), true) === 'Cu + HCl → no reaction', 'Cu + HCl');
+ok(Gen.equation(Gen.make('Cl2', 'KBr'), true) === 'Cl₂ + 2 KBr → 2 KCl + Br₂', 'Cl2 + KBr');
 ok(Gen.equation(Gen.make('Pb(NO3)2', 'KI'), true) === 'Pb(NO₃)₂(aq) + 2 KI(aq) → PbI₂(s) + 2 KNO₃(aq)', 'Pb(NO3)2 + KI');
 
 /* ----------------------------------------------------------------- lesson */
@@ -169,7 +194,7 @@ App.STEPS.forEach((s, i) => {
 });
 const lesson = (id) => { const s = App.STEPS.filter((x) => x.id === id)[0]; return Gen.make(s.l[0], s.l[1]); };
 ok(lesson('sr1').reacts && lesson('sr2').sub === 'acid' && lesson('sr2').reacts && lesson('dr1').reacts && !lesson('dr2').reacts, 'the four lesson problems');
-ok(Steps.WILLIT.filter((w) => Gen.make(w[0], w[1]).reacts).length === 3 && Steps.WILLIT.length === 6, 'will it react: three of each');
+ok(Steps.WILLIT.filter((w) => Gen.make(w[0], w[1]).reacts).length === 4 && Steps.WILLIT.length === 8, 'will it react: four of each');
 ok(Steps.SOL.filter((f) => Ions.state(f) === 's').length === 4 && Steps.SOL.length === 8 && Steps.SOL.every((f) => Ions.BY[f]), 'soluble or not: four of each');
 ok(App.STEPS[App.STEPS.length - 1].kind === 'results' && App.PARTS.length === 4, 'results last');
 
@@ -180,9 +205,10 @@ for (let seed = 1; seed <= 400; seed++) {
   ok(set.length === 10 && new Set(set.map((p) => p.id)).size === 10, tag + '10 different problems');
   const sr = set.filter((p) => p.kind === 'sr'), dr = set.filter((p) => p.kind === 'dr');
   ok(sr.length === 5 && sr.filter((p) => !p.reacts).length === 2 && dr.length === 5 && dr.filter((p) => !p.reacts).length === 1, tag + 'five of each kind, three with no reaction');
-  ok(sr.filter((p) => p.sub === 'metal').length === 3 && sr.filter((p) => p.sub === 'acid').length === 1 && sr.filter((p) => p.sub === 'halogen').length === 1, tag + 'three metals, an acid and a halogen');
+  ok(sr.filter((p) => p.sub === 'metal').length === 3 && sr.filter((p) => p.sub === 'acid' || p.sub === 'water').length === 1 && sr.filter((p) => p.sub === 'halogen').length === 1, tag + 'three metals with a salt, one with an acid or water, and a halogen');
+  set.forEach((p) => { if (p.sub === 'water') seen.water = (seen.water || 0) + 1; if (p.kind === 'dr' && p.solids.length === 2) seen.two = (seen.two || 0) + 1; });
   ok(set[0].kind === 'sr' && set[0].sub === 'metal' && set[0].reacts, tag + 'a metal that reacts first');
-  ok(set.reduce((t, p) => t + p.rungs.length, 0) === 33, tag + '33 steps in all');
+  ok(set.reduce((t, p) => t + p.rungs.length, 0) === 30, tag + '30 steps in all');
   set.forEach((p) => { seen[p.kind + (p.reacts ? 'Y' : 'N')] = (seen[p.kind + (p.reacts ? 'Y' : 'N')] || new Set()).add(p.id); });
   const qs = Gen.quiz(seed * 7919 + 13);
   ok(qs.length === 4 && qs.map((q) => q.kind).join() === 'series,acid,insoluble,noreaction', tag + 'the four questions');
@@ -202,6 +228,13 @@ for (let seed = 1; seed <= 400; seed++) {
   });
 }
 ok(seen.srY.size >= 30 && seen.srN.size >= 25 && seen.drY.size >= 200 && seen.drN.size >= 100, 'too little variety across 400 students');
+ok(seen.water >= 100 && seen.two >= 5, 'metal + water and two-solid problems should both come up: ' + seen.water + ', ' + seen.two);
+/* the printed sheet is built from this data: it must be there and newer than the data */
+const SHEET = path.join(ROOT, '..', 'reference-sheet', 'Activity_Series_and_Solubility_Rules.html');
+if (fs.existsSync(path.dirname(SHEET))) {
+  const sh = fs.existsSync(SHEET) ? fs.readFileSync(SHEET, 'utf8') : '';
+  ok(/Cesium[\s\S]*Rubidium[\s\S]*Potassium/.test(sh) && /chromate/.test(sh) && fs.existsSync(SHEET.replace(/html$/, 'pdf')), 'the reference sheet is missing or out of date: run node build.js in reference-sheet/');
+}
 ok(App.totalItems.length === 0, 'App.totalItems');
 
 console.log(bad ? bad + ' of ' + checks + ' checks FAILED' : 'All ' + checks + ' checks passed: ' + Object.keys(Ions.BY).length + ' compounds; pools: ' + sizes + '; 400 students.');

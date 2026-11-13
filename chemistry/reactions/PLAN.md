@@ -1,6 +1,6 @@
 # Reactions unit: plan for four SCORM packages (honors chemistry)
 
-Status: **the teacher has reviewed the plan (answers below). Packages 1 and 2 are merged into main; package 3 is built and waiting for the teacher's review; package 4 is not built.**
+Status: **the teacher has reviewed the plan (answers below). Packages 1, 2 and 3 are merged into main; package 4 is not built.**
 Where this plan and "The teacher's answers" disagree, the answers win.
 
 ## The teacher's answers (review of this plan)
@@ -17,7 +17,18 @@ Where this plan and "The teacher's answers" disagree, the answers win.
 6. **Ba(OH)₂ + H₂SO₄** (a solid and water at once): include it; it is an honors class.
 7. **No mass line** in package 1: atoms only.
 
-## The class handout (activity series and solubility table)
+## The reference was corrected (November 2026): use package 3's data, not the old handout below
+
+The teacher asked for the handout to be made more accurate and printable. The corrected reference is the data in
+`predicting-products-scorm/src/js/ions.js` (series in the order of the standard potentials with cold water, steam and acid
+tiers; solubility rules with group 1, Br⁻, I⁻, Hg₂²⁺ and a slightly-soluble column), printed as
+`reference-sheet/Activity_Series_and_Solubility_Rules.pdf`. Package 4 must take its solubility from that data.
+
+The teacher's review of package 3: metals that react with water are included; **state symbols only where they matter**
+(none in a single replacement; (aq) and (s) in a double replacement, and so throughout package 4); two solids at once
+are allowed.
+
+## The class handout as first given (activity series and solubility table)
 
 **Solubility of common compounds.** Soluble: ammonium NH₄⁺, potassium K⁺, sodium Na⁺, acetate C₂H₃O₂⁻, chlorate ClO₃⁻ and
 nitrate NO₃⁻ (no exceptions); chloride Cl⁻ except with Ag⁺, Hg₂²⁺, Pb²⁺; sulfate SO₄²⁻ except with Ca²⁺, Ba²⁺, Pb²⁺, Sr²⁺,

@@ -1,6 +1,7 @@
 /* problems.js: one student's graded work, from a seed.
  *
- *   Gen.set(seed)    ten problems: five single replacements (three react, two
+ *   Gen.set(seed)    ten problems: five single replacements (three metal + salt,
+ *                    one metal + acid or water, one halogen; three react, two
  *                    do not) and five double replacements (four give a solid,
  *                    one gives no reaction), mixed, a reacting metal first
  *   Gen.quiz(seed)   four choice questions on reading the series and the table
@@ -10,13 +11,15 @@
  *   { id, kind: 'sr' | 'dr', sub, l: [formula, formula], reacts, products: [formula, formula],
  *     states: { formula: 's' | 'l' | 'g' | 'aq' }, rx, coefs, rungs: [...], prompt, why }
  * rungs: what the student does, in order. Single: react, then (if it reacts)
- * products, states, balance. Double: products, states, react, then balance
+ * products, balance (no states: they do not matter there). Double: products, states, react, then balance
  * if a solid forms.
  */
 var Gen = (function () {
   'use strict';
 
-  var METALS = ['Mg', 'Al', 'Zn', 'Fe', 'Pb', 'Cu', 'Ag'];        /* lone metals that do not react with water */
+  /* lone metals, the ones that react with water included (the teacher's choice: on paper the series decides) */
+  var METALS = ['K', 'Ba', 'Ca', 'Na', 'Mg', 'Al', 'Zn', 'Fe', 'Pb', 'Cu', 'Ag'];
+  var WATER_NO = ['Zn', 'Fe', 'Pb', 'Cu', 'Ag'];                 /* dropped into cold water: nothing happens */
   var SALT_ANIONS = ['NO3', 'Cl', 'SO4', 'C2H3O2'];
   var ACID_ANIONS = ['Cl', 'SO4'];
   var HALS = ['Cl', 'Br', 'I'];
@@ -40,11 +43,16 @@ var Gen = (function () {
       p.reacts = info.reacts; p.products = info.products;
       var lone = elName(info.el), pushed = elName(info.out), isHal = info.kind === 'halogen';
       p.prompt = isHal ? cap(lone) + ', ' + pretty(a) + ', is added to a solution of ' + Ions.name(b) + ', ' + pretty(b) + '.'
+               : info.kind === 'water' ? 'A piece of ' + lone + ' is dropped into cold water, HOH.'
                : info.kind === 'acid' ? 'A piece of ' + lone + ' is dropped into ' + Ions.name(b) + ', ' + pretty(b) + '.'
                : 'A piece of ' + lone + ' is placed in a solution of ' + Ions.name(b) + ', ' + pretty(b) + '.';
-      p.why = cap(lone) + ' is ' + (info.reacts ? 'above ' : 'below ') + pushed + ' in the ' + (isHal ? 'halogens' : 'activity series') + ', so it ' +
-              (info.reacts ? 'takes its place' : 'cannot take its place: no reaction') + '.';
-      p.rungs = info.reacts ? ['react', 'products', 'states', 'balance'] : ['react'];
+      p.why = info.kind === 'water'
+        ? (info.reacts ? cap(lone) + ' is one of the metals that react with cold water (lithium to sodium on the series), so it takes the place of a hydrogen in HOH.'
+                       : cap(lone) + ' does not react with cold water: only the metals from lithium to sodium do. No reaction.')
+        : cap(lone) + ' is ' + (info.reacts ? 'above ' : 'below ') + pushed + ' in the ' + (isHal ? 'halogens' : 'activity series') + ', so it ' +
+          (info.reacts ? 'takes its place' : 'cannot take its place: no reaction') + '.';
+      /* no states in a single replacement: the teacher writes them only where they matter */
+      p.rungs = info.reacts ? ['react', 'products', 'balance'] : ['react'];
     } else {
       info = Ions.double(a, b);
       p.kind = 'dr'; p.sub = 'double';
@@ -62,27 +70,25 @@ var Gen = (function () {
     return p;
   }
 
-  /* '2 Al(s) + 3 CuCl₂(aq) → 2 AlCl₃(aq) + 3 Cu(s)', or '... → no reaction' */
+  /* '2 Al + 3 CuCl₂ → 2 AlCl₃ + 3 Cu' (a single replacement has no state symbols),
+     'Pb(NO₃)₂(aq) + 2 KI(aq) → PbI₂(s) + 2 KNO₃(aq)', or '... → no reaction' */
   function equation(p, withCoefs) {
     function side(list, off) {
       return list.map(function (f, j) {
         var c = withCoefs && p.reacts ? p.coefs[off + j] : 1;
-        return (c > 1 ? c + ' ' : '') + pretty(f) + '(' + stateOf(p, f) + ')';
+        return (c > 1 ? c + ' ' : '') + pretty(f) + stateOf(p, f);
       }).join(' + ');
     }
     return side(p.l, 0) + ' → ' + (p.reacts ? side(p.products, 2) : 'no reaction');
   }
-  /* a lone halogen is added as a solution */
-  function stateOf(p, f) {
-    if (p.kind === 'sr' && p.sub === 'halogen' && f === p.l[0]) return 'aq';
-    return p.states[f];
-  }
+  /* '(aq)' or '(s)' after a formula in a double replacement, nothing in a single replacement */
+  function stateOf(p, f) { return p.kind === 'dr' ? '(' + p.states[f] + ')' : ''; }
 
   /* ---- every reactant pair the graded set can draw from */
   var poolCache = null;
   function pools() {
     if (poolCache) return poolCache;
-    var out = { metalYes: [], metalNo: [], acidYes: [], acidNo: [], halYes: [], halNo: [], drYes: [], drNo: [] };
+    var out = { metalYes: [], metalNo: [], acidYes: [], acidNo: [], waterYes: [], waterNo: [], halYes: [], halNo: [], drYes: [], drNo: [] };
     METALS.forEach(function (m) {
       METALS.forEach(function (n) {
         if (m === n) return;
@@ -97,6 +103,12 @@ var Gen = (function () {
         var p = make(m, Ions.formula('H', an));
         (p.reacts ? out.acidYes : out.acidNo).push(p);
       });
+    });
+    METALS.concat(WATER_NO).forEach(function (m) {
+      var p = make(m, 'HOH');
+      if (p.reacts && !aq(m, 'OH')) return;      /* the hydroxide it makes must be clearly soluble */
+      var list = p.reacts ? out.waterYes : out.waterNo;
+      if (!list.some(function (q) { return q.id === p.id; }) && (p.reacts || WATER_NO.indexOf(m) >= 0)) list.push(p);
     });
     HALS.forEach(function (x) {
       HALS.forEach(function (y) {
@@ -140,9 +152,11 @@ var Gen = (function () {
     }
     var usedS = {}, usedD = {};
     var first = take(P.metalYes, 1, usedS)[0];
-    var acidReacts = rand() < 0.5;
+    /* the fourth single replacement replaces hydrogen: from an acid, or from water */
+    var acidReacts = rand() < 0.5, water = rand() < 0.4;
+    var hyd = water ? (acidReacts ? P.waterYes : P.waterNo) : (acidReacts ? P.acidYes : P.acidNo);
     var rest = take(P.metalYes, 1, usedS).concat(take(P.metalNo, 1, usedS),
-      take(acidReacts ? P.acidYes : P.acidNo, 1, usedS), take(acidReacts ? P.halNo : P.halYes, 1, usedS),
+      take(hyd, 1, usedS), take(acidReacts ? P.halNo : P.halYes, 1, usedS),
       take(P.drYes, 4, usedD), take(P.drNo, 1, usedD));
     var out = [first].concat(UI.shuffle(rest, rand));
     return (setCache[seed] = out);
@@ -192,7 +206,7 @@ var Gen = (function () {
     return out;
   }
 
-  return { QUIZ: QUIZ, COUNT: 10, METALS: METALS, HALS: HALS, DR_CATS: DR_CATS, DR_ANS: DR_ANS, make: make, equation: equation, stateOf: stateOf,
+  return { QUIZ: QUIZ, COUNT: 10, WATER_NO: WATER_NO, METALS: METALS, HALS: HALS, DR_CATS: DR_CATS, DR_ANS: DR_ANS, make: make, equation: equation, stateOf: stateOf,
            pools: pools, set: set, quiz: quiz };
 })();
 

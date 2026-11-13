@@ -17,7 +17,7 @@ var App = (function () {
 
   /* Bump whenever the steps, the pools or the handout data change: a save
      from an older release is then discarded. */
-  var SCHEMA = 1;
+  var SCHEMA = 2;
 
   var h = UI.h;
 
@@ -25,16 +25,17 @@ var App = (function () {
   var STEPS = [
     { id: 'willit', part: 1, kind: 'willit', title: 'Reading the activity series',
       text: 'In a single replacement a lone element takes the place of an element like it in a compound: a metal replaces a metal (or the ' +
-            'hydrogen of an acid), a halogen replaces a halogen. It only happens if the lone element is ABOVE the other in the series. Not graded.' },
+            'hydrogen of an acid or of water, HOH), a halogen replaces a halogen. It only happens if the lone element comes BEFORE the other ' +
+            'on the series. Not graded.' },
     { id: 'plate', part: 1, kind: 'plate', title: 'What it looks like',
       text: 'Predict first, then press Play on each picture.' },
     { id: 'sr1', part: 1, kind: 'ladder', l: ['Al', 'CuCl2'], title: 'Predict the products: a metal and a salt',
-      text: 'Work down the steps: will it react, what forms, in what state, and balance. The new compound is made of ions, so its formula ' +
-            'comes from their charges, not from the old formula. Not graded.' },
+      text: 'Work down the steps: will it react, what forms, and balance. The new compound is made of ions, so its formula comes from their ' +
+            'charges, not from the old formula. (No state symbols here: they do not matter in a single replacement.) Not graded.' },
     { id: 'sr2', part: 1, kind: 'ladder', l: ['Mg', 'HCl'], title: 'Predict the products: a metal and an acid',
       text: 'A metal above hydrogen replaces the hydrogen of an acid. Hydrogen on its own is a diatomic gas. Not graded.' },
-    { id: 'sol', part: 2, kind: 'sol', title: 'Reading the solubility table',
-      text: 'A dissolved compound is written (aq). One that does not dissolve is a solid, (s). Find the negative ion in the table, then check ' +
+    { id: 'sol', part: 2, kind: 'sol', title: 'Reading the solubility rules',
+      text: 'In a double replacement the states matter. A dissolved compound is written (aq); one that does not dissolve is a solid, (s). Find the negative ion in the rules, then check ' +
             'whether the positive ion is listed as an exception. Not graded.' },
     { id: 'mix', part: 2, kind: 'mix', title: 'What it looks like',
       text: 'In a double replacement two dissolved compounds trade partners. Predict first, then press Play on each picture.' },
@@ -274,9 +275,9 @@ var App = (function () {
         : 'Standalone mode: nothing was sent to a gradebook.' })
     ]);
     var ideas = [
-      'Single replacement: a lone element replaces an element like it only if it is ABOVE it in the activity series. Otherwise: no reaction.',
-      'A metal above hydrogen replaces the hydrogen of an acid, and H₂ gas forms.',
-      'Double replacement: the positive ions trade partners. Look up both products in the solubility table.',
+      'Single replacement: a lone element replaces an element like it only if it comes BEFORE it on the activity series. Otherwise: no reaction.',
+      'A metal before hydrogen replaces the hydrogen of an acid, and H₂ forms. Only the metals from lithium to sodium do the same with cold water, HOH.',
+      'Double replacement: the positive ions trade partners. Look up both products in the solubility rules.',
       'If a product is insoluble, a solid forms and there is a reaction. If both products are soluble: no reaction.',
       'A new compound\'s formula comes from the charges of its ions, never from the subscripts of the old one.',
       'On its own a metal is written as single atoms; hydrogen and the halogens are diatomic: H₂, Cl₂, Br₂, I₂.'
@@ -324,7 +325,7 @@ var App = (function () {
       h('p', { text: 'Given only the reactants, you will predict what forms, or that nothing does. Two kinds of reaction, two reference tables:' }),
       h('ul', { class: 'screen-list' }, [
         h('li', null, [h('b', { text: 'Single replacement: ' }), 'the activity series says whether a lone element can take another\'s place.']),
-        h('li', null, [h('b', { text: 'Double replacement: ' }), 'the solubility table says whether trading partners makes a solid.'])
+        h('li', null, [h('b', { text: 'Double replacement: ' }), 'the solubility rules say whether trading partners makes a solid.'])
       ]),
       h('p', { text: 'Both tables stay beside your work the whole time. The lesson comes first and is not graded. Then ' + Gen.QUIZ +
                      ' graded questions and ' + Gen.COUNT + ' graded problems: your first answer to each step counts. About ' + CONFIG.minutes +

@@ -399,3 +399,16 @@ input.coef.inv-in { width: 34px; height: 24px; font-size: 1rem; border: 1.5px so
 .sc-divider { stroke: var(--tile-line); stroke-width: 1.5; stroke-dasharray: 5 5; }
 .sc-label { font: 600 11px system-ui, sans-serif; fill: var(--muted); }
 .scene-cap { margin: 4px 0 0; font-size: 0.84rem; min-height: 2.6em; }
+
+/* what each metal replaces hydrogen from: a coloured edge on the series, and its key */
+.series li { border-left: 4px solid transparent; }
+.series li.tier-water, .tier-key .tier-water { border-left-color: #c2410c; }
+.series li.tier-steam, .tier-key .tier-steam { border-left-color: #d9a400; }
+.series li.tier-acid, .tier-key .tier-acid { border-left-color: #2f8f5b; }
+.series li.tier-none, .tier-key .tier-none { border-left-color: #8a97a6; }
+.tier-key { list-style: none; margin: 5px 0 0; padding: 0; font-size: 0.72rem; line-height: 1.35; }
+.tier-key li { border-left: 4px solid transparent; padding-left: 5px; margin-bottom: 1px; }
+.sol-table th:nth-child(3), .sol-slight { color: var(--muted); font-size: 0.7rem; }
+.sol-table td:first-child { white-space: nowrap; }
+.sol-table td { padding: 1px 3px; }
+.ref-table2 .sol-table { margin-bottom: 4px; }

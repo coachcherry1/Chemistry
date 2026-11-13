@@ -7,7 +7,8 @@
  *   products  build the products from the ions: pick a positive and a negative
  *             ion for each compound and set the subscripts so the charges
  *             cancel; in a single replacement also pick the element set free
- *   states    (s), (l), (g) or (aq) for each product
+ *   states    (s) or (aq) for each product of a double replacement, from the
+ *             solubility rules (a single replacement has no states rung)
  *   balance   the workbench of the balancing packages, with the inventory
  *
  * work (saved): { i: rung index, g: { rung: 1 or 0, the first answer }, n: { rung: checks }, v: { ... the
@@ -19,7 +20,7 @@ var Ladder = (function () {
   'use strict';
   var h = UI.h;
   var NAMES = { react: 'Will it react?', products: 'Products', states: 'States', balance: 'Balance' };
-  var STATE_WORD = { s: 'solid', l: 'liquid', g: 'gas', aq: 'aqueous (dissolved)' };
+  var STATE_WORD = { s: 'solid', aq: 'aqueous (dissolved)' };
 
   function pretty(f) { return Chem.pretty(f); }
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
@@ -41,7 +42,7 @@ var Ladder = (function () {
     var area = h('div', { class: 'rung-area' });
     var main = h('div', { class: 'ladder-main panel' }, [
       h('p', { class: 'prompt', text: p.prompt }),
-      h('p', { class: 'given', 'aria-label': 'The reactants' }, [p.l.map(function (f) { return pretty(f) + '(' + Gen.stateOf(p, f) + ')'; }).join(' + ') + ' → ?']),
+      h('p', { class: 'given', 'aria-label': 'The reactants' }, [p.l.map(function (f) { return pretty(f) + Gen.stateOf(p, f); }).join(' + ') + ' → ?']),
       strip, done, area
     ]);
     var root = h('div', { class: 'ladder' }, [main, ref.el]);
@@ -74,7 +75,7 @@ var Ladder = (function () {
         if (r === 'react') text = p.why;
         else if (r === 'products') text = 'Products: ' + p.products.map(pretty).join(' and ') + '.';
         else if (r === 'states') text = 'States: ' + p.products.map(function (f) { return pretty(f) + '(' + p.states[f] + ')'; }).join(', ') + '.';
-        else text = 'Balanced: ' + Gen.equation(p, true);
+        else text = 'Balanced.';
         done.appendChild(h('p', { class: 'done-line', text: text }));
       });
     }
@@ -92,7 +93,7 @@ var Ladder = (function () {
       var choices = isSr ? [{ t: 'A reaction happens', v: true }, { t: 'No reaction', v: false }]
                          : [{ t: 'A solid forms: there is a reaction', v: true }, { t: 'Nothing is a solid: no reaction', v: false }];
       var sel = -1, fb = fbEl();
-      var q = isSr ? 'Use the ' + (p.sub === 'halogen' ? 'halogens under the activity series' : 'activity series') + '. Will ' + Ions.name(p.l[0]) + ' react?'
+      var q = isSr ? 'Use the ' + (p.sub === 'halogen' ? 'halogens under the activity series' : p.sub === 'water' ? 'activity series: it shows which metals react with cold water' : 'activity series') + '. Will ' + Ions.name(p.l[0]) + ' react?'
                    : 'Look at the states you just gave the products. Is there a reaction?';
       var nextBtn = h('button', { type: 'button', class: 'primary rung-next', hidden: true, text: 'Continue →', onclick: advance });
       var submit = h('button', { type: 'button', class: 'primary submit-answer', disabled: true, text: 'Submit answer', onclick: function () {
@@ -239,17 +240,12 @@ var Ladder = (function () {
     }
 
     /* --------------------------------------------------------------- states */
-    function whyState(f) {
-      var s = p.states[f], parts = Ions.parts(f);
-      if (parts) return cap(Ions.name(f)) + ', ' + pretty(f) + ', is ' + (s === 'aq' ? 'soluble' : 'insoluble') + ' by the solubility table: (' + s + ').';
-      return cap(Ions.name(f)) + ', ' + pretty(f) + ', is a ' + STATE_WORD[s] + ' at room temperature: (' + s + ').';
-    }
     function rungStates() {
       var fb = fbEl();
       work.v.st = work.v.st || {};
       ref.show('table');
       var rows = p.products.map(function (f) {
-        var btns = ['s', 'l', 'g', 'aq'].map(function (s) {
+        var btns = ['s', 'aq'].map(function (s) {
           return h('button', { type: 'button', class: 'state-btn' + (work.v.st[f] === s ? ' selected' : ''), 'aria-pressed': work.v.st[f] === s ? 'true' : 'false',
             'data-state': s, 'aria-label': pretty(f) + ' ' + STATE_WORD[s], text: '(' + s + ')', onclick: function () {
               work.v.st[f] = s;
@@ -268,8 +264,7 @@ var Ladder = (function () {
         if (!wrong.length) { advance(); return; }
         rows.forEach(function (r) { r.btns.forEach(function (b) { b.classList.toggle('wrong', wrong.indexOf(r.f) >= 0 && b.getAttribute('data-state') === work.v.st[r.f]); }); });
         var f = wrong[0], parts = Ions.parts(f);
-        tell(fb, parts ? 'Look up ' + pretty(f) + ' in the solubility table: find ' + Ions.ANIONS[parts.an][2] + ', then see whether ' + Ions.CATIONS[parts.cat][2].replace(/\(.*/, '') + ' is an exception.'
-                       : 'Think about ' + Ions.name(f) + ' on its own at room temperature: a metal is a solid, and H₂ and Cl₂ are gases, Br₂ a liquid, I₂ a solid.', 'bad');
+        tell(fb, 'Look up ' + pretty(f) + ' in the solubility rules: find ' + Ions.ANIONS[parts.an][2] + ', then see whether ' + Ions.CATIONS[parts.cat][2].replace(/\(.*/, '') + ' is an exception.', 'bad');
         if (work.n.states >= 3) showBtn.hidden = false;
         save();
       }

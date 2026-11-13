@@ -1,7 +1,7 @@
 /* steps.js: the lesson steps that are not a ladder, and the screen for the
  * graded choice questions.
  *
- *   Steps.willit   six pairs: will the lone element replace the other? (the series)
+ *   Steps.willit   eight pairs: will the lone element replace the other? (the series)
  *   Steps.plate    predict, then watch zinc in copper(II) sulfate; then copper in zinc sulfate
  *   Steps.sol      eight compounds: soluble or insoluble? (the table)
  *   Steps.mix      predict, then watch AgNO3 + NaCl; then NaCl + KNO3
@@ -52,28 +52,28 @@ var Steps = (function () {
     return { done: !!st.r };
   }
 
-  var WILLIT = [['Zn', 'CuSO4'], ['Cu', 'MgCl2'], ['Mg', 'HCl'], ['Ag', 'HCl'], ['Cl2', 'NaBr'], ['I2', 'KCl']];
+  var WILLIT = [['Zn', 'CuSO4'], ['Cu', 'MgCl2'], ['Mg', 'HCl'], ['Ag', 'HCl'], ['Na', 'HOH'], ['Zn', 'HOH'], ['Cl2', 'NaBr'], ['I2', 'KCl']];
   function willit(host, st, cb) {
     var list = WILLIT.map(function (w) {
       var p = Gen.make(w[0], w[1]);
       return { big: Chem.pretty(w[0]) + ' + ' + Chem.pretty(w[1]) + ' → ?', q: p.prompt + ' Will there be a reaction?',
         choices: [{ t: 'A reaction happens', ok: p.reacts }, { t: 'No reaction', ok: !p.reacts }], why: p.why };
     });
-    return cards(host, st, cb, list, 'Pair', 'series', 'An element only replaces one that is BELOW it. If it is not below, nothing happens.');
+    return cards(host, st, cb, list, 'Pair', 'series', 'An element only replaces one that comes AFTER it on the series. For cold water, only the metals from lithium to sodium react.');
   }
 
   var SOL = ['NaNO3', 'AgCl', 'BaSO4', 'K2CO3', 'CaCO3', 'Cu(OH)2', '(NH4)3PO4', 'Ba(OH)2'];
   function sol(host, st, cb) {
     var list = SOL.map(function (f) {
       var pr = Ions.parts(f), s = Ions.soluble(pr.cat, pr.an);
-      var row = Ions.TABLE.soluble.concat(Ions.TABLE.insoluble).filter(function (r) { return r[0] === pr.an; })[0];
+      var x = Ions.row(pr.an), exc = (x.soluble ? x.r.not : x.r.but).indexOf(pr.cat) >= 0;
       var always = Ions.TABLE.always.indexOf(pr.cat) >= 0;
       var why = always ? 'Compounds of ' + Ions.CATIONS[pr.cat][2] + ' are always soluble: (aq).'
-        : 'The table lists ' + Ions.ANIONS[pr.an][2] + ' as ' + (Ions.TABLE.soluble.indexOf(row) >= 0 ? 'soluble' : 'insoluble') + ', and ' + Ions.CATIONS[pr.cat][2].replace(/\(.*/, '') +
-          (row[1].indexOf(pr.cat) >= 0 ? ' IS one of its exceptions' : ' is not one of its exceptions') + ': ' + (s ? 'soluble, (aq).' : 'insoluble, a solid, (s).');
+        : 'The rules list ' + Ions.ANIONS[pr.an][2] + ' as ' + (x.soluble ? 'soluble' : 'insoluble') + ', and ' + Ions.CATIONS[pr.cat][2].replace(/\(.*/, '') +
+          (exc ? ' IS one of its exceptions' : ' is not one of its exceptions') + ': ' + (s ? 'soluble, (aq).' : 'insoluble, a solid, (s).');
       return { big: Chem.pretty(f), q: 'Is ' + Ions.name(f) + ' soluble in water?', choices: [{ t: 'Soluble: (aq)', ok: s }, { t: 'Insoluble: (s)', ok: !s }], why: why };
     });
-    return cards(host, st, cb, list, 'Compound', 'table', 'Find the negative ion in the table first, then check whether the positive ion is one of its exceptions.');
+    return cards(host, st, cb, list, 'Compound', 'table', 'Find the negative ion in the rules first, then check whether the positive ion is one of its exceptions.');
   }
 
   /* predict, then two animations */
@@ -121,7 +121,7 @@ var Steps = (function () {
   }
   function mix(host, st, cb) {
     return watch(host, st, cb, { kind: 'mix',
-      q: 'Solutions of silver nitrate and sodium chloride are mixed. The positive ions trade partners. Which two ions come together as a solid? (Use the solubility table.)',
+      q: 'Solutions of silver nitrate and sodium chloride are mixed. The positive ions trade partners. Which two ions come together as a solid? (Use the solubility rules.)',
       choices: [
         { t: 'Ag⁺ and Cl⁻', ok: 1, fb: 'Yes. Silver chloride is insoluble (chloride is soluble except with Ag⁺ and Pb²⁺), so it forms as a solid.' },
         { t: 'Na⁺ and NO₃⁻', fb: 'Sodium compounds and nitrates are always soluble, so those two stay dissolved. Silver chloride, AgCl, is the insoluble one.' },

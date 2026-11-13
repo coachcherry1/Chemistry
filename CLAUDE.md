@@ -35,7 +35,7 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `chemistry/moles/hydrate-lab-scorm/` | Virtual lab (pre-lab, with a paper sheet): formula of a hydrate, CuSO₄·5H₂O heated to constant mass in a crucible, realistic data (about 25 min, no score) |
 | `chemistry/reactions/balancing-particles-scorm/` | Balancing with particle diagrams: a reactants box and a products box that follow the coefficients, the inventory down the centre, conservation of mass, polyatomic ions kept together (or not), 10 graded equations and 6 questions (about 30 min). Package 1 of 4; the plan for the rest is `chemistry/reactions/PLAN.md` |
 | `chemistry/reactions/balancing-reaction-types-scorm/` | Balancing and reaction types: the same workbench with six type buttons, every reaction balanced and classified by one Check (synthesis, decomposition, single and double replacement, combustion, neutralization), 4 questions and 10 reactions ending with nitroglycerin (about 35 min). Package 2 of 4, one code base with package 1 |
-| `chemistry/reactions/predicting-products-scorm/` | Predicting products: single replacement by the activity series, double replacement by the solubility table (a solid, or no reaction); each problem worked step by step (will it react, products from ion charges, states, balance) beside the class handout; 4 questions and 10 problems (about 40 min). Package 3 of 4 |
+| `chemistry/reactions/predicting-products-scorm/` | Predicting products: single replacement by the activity series (salts, acids, cold water, halogens; no state symbols), double replacement by the solubility rules (a solid, or no reaction; states asked); each problem worked step by step beside the reference; 4 questions and 10 problems (about 40 min). Package 3 of 4. `chemistry/reactions/reference-sheet/` is the printable PDF of the same reference |
 
 **AP chemistry**
 
@@ -612,8 +612,9 @@ not the full page.
 ## balancing-particles-scorm (zip v4, SCHEMA 4), balancing-reaction-types-scorm (zip v1, SCHEMA 4) and the reactions unit
 
 - **The unit is four packages** in `chemistry/reactions/`; `PLAN.md` there holds the approved plan, the teacher's answers
-  and the class handout (activity series, solubility table). Packages 1 to 3 are built (3 has its own section below). Next:
-  `net-ionic-equations-scorm/` (get the teacher's go-ahead first).
+  and the reference (activity series, solubility rules; the corrected version is the data in package 3's `ions.js`).
+  Packages 1 to 3 are built and merged (3 has its own section below). Next: `net-ionic-equations-scorm/`; it must use
+  the same reference data, write water HOH, and use only LiOH, NaOH, KOH and Ba(OH)₂ as strong bases.
 - **Two packages, one code base.** Every file in `src/js` (except `config.js`), `src/css` and `tools/` is identical in
   both, and each validator fails if they differ: make a fix in one and copy it to the other. `config.js` holds
   `classify`, the save key and the minutes; the page title and h1, manifest (`BALPART_*`, `BALTYPES_*`), `build.sh`,
@@ -662,26 +663,39 @@ not the full page.
   `tools/load.js` loads them for the validator and answer key. Teacher links: `?step=<id or number>`,
   `?step=set&seed=<n>&problem=<1 to 10>`.
 
-## predicting-products-scorm (zip v1, SCHEMA 1)
+## predicting-products-scorm (zip v2, SCHEMA 2) and reference-sheet
 
 - **Key objective:** from the reactants alone, decide whether a reaction happens, write the products from ion charges,
-  give states, balance. Only single replacement (activity series) and double replacement that makes a solid
-  (solubility table); "no reaction" is a real answer (3 of every 10 graded problems).
-- 11 steps in 4 parts; 37 graded items: 4 questions and 33 problem steps (10 problems: 5 single, 3 metal + salt, 1 metal
-  + acid, 1 halogen, two of the five with no reaction; 5 double, one with no reaction). Score = items right first / 37.
-- **The class handout is the model (`ions.js`)** and is drawn beside everything (`ref.js`: activity series with the ion
-  each metal forms, the halogens, the solubility table). Agreed additions: Br⁻ and I⁻ follow Cl⁻, lithium always
-  soluble, F₂ > Cl₂ > Br₂ > I₂. The validator types the series and the solubility of every ion pair a second time.
-- **Never used (`Ions.AVOID`):** pairs whose real compound is slightly soluble, reacts with water or does not exist
-  (CaSO₄, Ag₂SO₄, Ca(OH)₂, Sr(OH)₂, PbCl₂, PbBr₂, AgOH, NH₄OH, CuI₂, Al₂(CO₃)₃, sulfides of Mg/Ca/Ba/Sr/Al, most
-  acetates). Lone metals are Mg, Al, Zn, Fe, Pb, Cu, Ag (none that reacts with water); no metal + water. A single
-  replacement is asked only when the new salt is soluble. A lone halogen is (aq); Br₂ product (l), I₂ (s).
+  balance. Only single replacement (activity series) and double replacement that makes a solid (solubility rules);
+  "no reaction" is a real answer (3 of every 10 graded problems).
+- 11 steps in 4 parts; 34 graded items: 4 questions and 30 problem steps (10 problems: 5 single, 3 metal + salt, 1 metal
+  + acid or cold water, 1 halogen, two of the five with no reaction; 5 double, one with no reaction).
+- **State symbols only where they matter (the teacher):** a single replacement has no states rung and its equations
+  carry no state symbols anywhere (the validator checks); a double replacement asks (aq) or (s) for each product.
+- **The reference is the model (`ions.js`)**, drawn beside everything (`ref.js`) and printed as
+  `../reference-sheet/Activity_Series_and_Solubility_Rules.pdf` (`node build.js` there: one Letter page, Times-style
+  serif, made from `ions.js`; rebuild it after any change to the data, the validator checks it exists). It was
+  **corrected at the teacher's request**: the series is in the order of the standard potentials (Li, Cs, Rb, K ...; the
+  old handout had Rb, K, Cs) with tiers (`Ions.TIERS`: Li to Na react with cold water, Mg to Cd with steam, Co to Pb
+  with acids, Cu to Au nothing) and the halogens; the solubility rules have group 1 and NH₄⁺ always soluble, Br⁻ and I⁻
+  with Cl⁻, Hg₂²⁺ exceptions, and a **slightly soluble** column (`slight`). Rows marked `sheet` (chlorate, sulfite,
+  chromate, silicate, oxide) are on the printed sheet only. The validator re-sorts the series from potentials and types
+  the solubility of every usable ion pair a second time.
+- **Never used (`Ions.AVOID`):** every slightly soluble pair (CaSO₄, Ag₂SO₄, Ca(OH)₂, Sr(OH)₂, PbCl₂, PbBr₂, silver
+  acetate) and pairs that react with water or do not exist (AgOH, NH₄OH, CuI₂, Al₂(CO₃)₃, sulfides of Mg/Ca/Ba/Sr/Al,
+  most acetates, lithium salts of the insoluble anions).
+- **Metals that react with water are included (the teacher):** lone metals are K, Ba, Ca, Na, Mg, Al, Zn, Fe, Pb, Cu, Ag;
+  on paper the series decides, even for K in a salt solution. **Metal + cold water** is a problem kind (`sub: 'water'`,
+  water written HOH as in the balancing packages): K, Na, Ba react (hydroxide + H₂), Zn, Fe, Pb, Cu, Ag do not
+  (`Gen.WATER_NO`); Ca is left out because Ca(OH)₂ is slightly soluble. A single replacement is asked only when the new
+  salt is soluble. Double replacements that make two solids are allowed.
 - **The ladder (`ladder.js`):** rungs `react` (a choice and Submit answer), `products` (pick a positive and a negative
   ion with their charges shown, set how many of each; in a single replacement also the element set free, Cu or Cu₂, H or
-  H₂), `states`, `balance` (the balancing packages' workbench, reference hidden for width). Single: react first, and a
-  problem with no reaction is that one rung. Double: products, states, then react, then balance if a solid forms. The
-  first answer to each rung counts; an unfinished Check is not counted; Show me after three misses. Slips named:
-  charges not cancelling, not lowest terms, the reactants built again, a metal written diatomic, H for H₂.
+  H₂), `states` (double replacement only), `balance` (the balancing packages' workbench, reference hidden for width).
+  Single: react, products, balance; with no reaction, react is the whole problem. Double: products, states, react, then
+  balance if a solid forms. The first answer to each rung counts; an unfinished Check is not counted; Show me after
+  three misses. Slips named: charges not cancelling, not lowest terms, the reactants built again, a metal written
+  diatomic, H for H₂.
 - **Animations (`scene.js`):** a metal strip in a solution (ions arrive and become atoms, atoms leave as ions; or
   nothing) and two solutions mixing (the ions of the solid settle, the rest float; or nothing). Drawn from the problem,
   roughly to scale only; reduced motion shows the end. Package 4 needs true ionic radii and constant motion instead.
@@ -690,4 +704,4 @@ not the full page.
   here is a small adapter in `ions.js` (name and particle tree built from the ions).
 - **Files:** `config.js`, `util.js`, `chem.js`, `ions.js`, `particles.js`, `problems.js` (`Gen.make`, `Gen.pools`, `Gen.set`,
   `Gen.quiz`), `ref.js`, `scene.js`, `bench.js`, `ladder.js`, `steps.js`, `scorm.js`, `app.js`. Teacher links:
-  `?step=<id or number>`, `?step=set&seed=<n>&problem=<1 to 10>&rung=<1 to 4>`.
+  `?step=<id or number>`, `?step=set&seed=<n>&problem=<1 to 10>&rung=<n>`.

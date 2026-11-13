@@ -10,7 +10,8 @@
  * both predictions and plays all four animations; works the four lesson
  * problems on the ladder with the usual mistakes (subscripts copied from
  * the reactant, a formula not in lowest terms, the reactants built again, H
- * instead of H2, a wrong state) and reads the feedback each gets. In the
+ * instead of H2, a wrong state in a double replacement) and reads the
+ * feedback each gets; checks that a single replacement has no states step. In the
  * graded part it checks that a choice is only selected until Submit answer,
  * misses one question and several steps on purpose, checks that an
  * unfinished step is not counted, reloads in the middle, and then checks
@@ -138,7 +139,7 @@ const fakeLMS = () => {
       }
       await check();
       if (miss) {
-        expect(/solubility table|room temperature/.test(await fb('.ladder')), p.id + ' states: feedback ' + await fb('.ladder'));
+        expect(/solubility rules/.test(await fb('.ladder')), p.id + ' states: feedback ' + await fb('.ladder'));
         await page.locator('.state-row[data-f="' + p.products[0] + '"] .state-btn[data-state="' + p.states[p.products[0]] + '"]').click();
         await check();
       }
@@ -205,7 +206,7 @@ const fakeLMS = () => {
   }
 
   expect(await stepId() === 'willit', 'first step');
-  expect(await page.locator('.ref .series li').count() === 25, 'the activity series should be beside the drill');
+  expect(await page.locator('.ref .series li').count() === 25 && await page.locator('.ref .series li.tier-water').count() === 8 && /cold water/.test(await page.textContent('.ref .tier-key')), 'the activity series, with what reacts with water, should be beside the drill');
   await drill(await page.evaluate(() => Steps.WILLIT.map((w) => Gen.make(w[0], w[1]).reacts)), 'willit');
   await watch('plate', 'Copper ions become copper atoms');
   /* Al + CuCl2: subscripts copied from the reactant, then right */
@@ -221,8 +222,7 @@ const fakeLMS = () => {
   expect(/single atoms/.test(await fb('.ladder')), 'sr1: Cu2 should be corrected: ' + await fb('.ladder'));
   await page.click('.ion-btn[data-el="Cu"]');
   await check();
-  await snap('sr1-states');
-  await doRung(p, true);
+  expect((await rung()) === 'balance' && !/\((s|aq)\)/.test(await page.textContent('.ladder .given')), 'sr1: a single replacement has no states step and no state symbols');
   expect(await page.locator('.ladder.wide').count() === 1 && await page.locator('.bench .inv-row').count() > 0, 'sr1: the balancing bench with its inventory');
   await doRung(p, true);
   await snap('sr1-done');
@@ -236,10 +236,11 @@ const fakeLMS = () => {
   expect(/diatomic/.test(await fb('.ladder')), 'sr2: H should be corrected to H2: ' + await fb('.ladder'));
   await page.click('.ion-btn[data-el="H2"]');
   await check();
-  await doRung(p, false); await doRung(p, false);
+  await doRung(p, false);
+  expect(/Mg \+ 2 HCl → MgCl₂ \+ H₂/.test(await page.textContent('.final-eq')), 'sr2: the final equation, without states');
   await next();
 
-  expect(await page.locator('.ref .sol-table').count() === 2, 'the solubility table should be beside the drill');
+  expect(await page.locator('.ref .sol-table').count() === 2 && /slightly/.test(await page.textContent('.ref')), 'the solubility rules should be beside the drill');
   await drill(await page.evaluate(() => Steps.SOL.map((f) => Ions.state(f) === 'aq')), 'sol');
   await watch('mix', 'Ag⁺ and Cl⁻');
   await solve(['products', 'states']);
@@ -253,6 +254,7 @@ const fakeLMS = () => {
   expect(await stepId() === 'quiz', 'the questions should follow the lesson');
   const qs = await page.evaluate(() => App.questions().map((q) => ({ right: q.right, n: q.choices.length })));
   let wantRight = 0, items = 0;
+  const TOTAL = 34;
   for (let i = 0; i < qs.length; i++) {
     const q = qs[i], wrong = (q.right + 1) % q.n, miss = i === 1;
     expect(await page.isDisabled('.quiz .submit-answer'), 'q' + i + ': Submit answer should wait for a choice');
@@ -270,10 +272,11 @@ const fakeLMS = () => {
   /* ---- graded problems */
   expect(await stepId() === 'set', 'the problems should follow the questions');
   const total = await page.evaluate(() => App.totalItems());
-  expect(total === 37, 'the graded items: ' + total);
+  expect(total === TOTAL, 'the graded items: ' + total);
   for (let i = 0; i < 10; i++) {
     const before = await prob();
     const misses = i === 0 ? ['products', 'balance'] : i === 1 ? before.rungs.slice(0, 1) : i === 2 ? ['states'] : [];
+    if (before.kind === 'sr') expect(before.rungs.indexOf('states') < 0 && !/\((s|aq)\)/.test(await page.textContent('.ladder .given')), before.id + ': no states in a single replacement');
     const res = await solve(misses);
     wantRight += res.right; items += res.p.rungs.length;
     if (i === 0) await snap('problem-1');
@@ -301,20 +304,20 @@ const fakeLMS = () => {
     }
     await page.click('.ladder-next');
   }
-  expect(items === 37, 'the walkthrough answered ' + items + ' items');
+  expect(items === TOTAL, 'the walkthrough answered ' + items + ' items');
 
   /* ---- results and what reached the LMS */
   expect(await stepId() === 'results', 'results should follow the problems');
   await snap('results');
   const data = await lms();
-  const pct = String(Math.round(100 * wantRight / 37));
-  expect(data['cmi.core.score.raw'] === pct, 'score ' + data['cmi.core.score.raw'] + ', wanted ' + pct + ' (' + wantRight + ' of 37)');
+  const pct = String(Math.round(100 * wantRight / TOTAL));
+  expect(data['cmi.core.score.raw'] === pct, 'score ' + data['cmi.core.score.raw'] + ', wanted ' + pct + ' (' + wantRight + ' of ' + TOTAL + ')');
   expect(data['cmi.core.lesson_status'] === 'completed', 'status ' + data['cmi.core.lesson_status']);
   const inter = Object.keys(data).filter((k) => /^cmi\.interactions\.\d+\.id$/.test(k));
-  expect(inter.length === 37, inter.length + ' interactions, wanted 37');
+  expect(inter.length === TOTAL, inter.length + ' interactions, wanted ' + TOTAL);
   expect(Object.keys(data).filter((k) => /\.result$/.test(k) && data[k] === 'correct').length === wantRight, 'interactions marked correct');
   expect((data['cmi.suspend_data'] || '').length < 4000, 'suspend_data too long: ' + (data['cmi.suspend_data'] || '').length);
-  expect((await page.textContent('.big-score')).indexOf(wantRight + ' / 37') >= 0, 'the results screen score');
+  expect((await page.textContent('.big-score')).indexOf(wantRight + ' / ' + TOTAL) >= 0, 'the results screen score');
 
   /* ---- a second attempt keeps the best score */
   const firstSet = await page.evaluate(() => App.problems().map((q) => q.id).join());
@@ -336,5 +339,5 @@ const fakeLMS = () => {
 
   await browser.close();
   if (problems.length) { console.error(problems.join('\n')); console.error(problems.length + ' problem(s)'); process.exit(1); }
-  console.log('Walkthrough passed: lesson, 4 questions, 10 problems, score ' + pct + '% (' + wantRight + ' of 37) and completion reached the LMS, best score kept.');
+  console.log('Walkthrough passed: lesson, 4 questions, 10 problems, score ' + pct + '% (' + wantRight + ' of ' + TOTAL + ') and completion reached the LMS, best score kept.');
 })();
