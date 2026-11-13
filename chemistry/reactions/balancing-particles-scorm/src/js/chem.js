@@ -141,11 +141,18 @@ var Chem = (function () {
      other atoms (other: the ions they are outside of).
        { key, label, name, ion (or null), other: [ions], per: [count in one particle of each species] } */
   var invCache = {};
+  /* The teacher writes the water of a neutralization as HOH, a hydroxide and
+     a hydrogen, so that OH stays together on both sides. */
+  function isHOH(rx) { return rx.type === 'N' && species(rx).indexOf('H2O') >= 0; }
+  /* a formula as this reaction writes it */
+  function show(rx, f) { return rx && f === 'H2O' && isHOH(rx) ? 'HOH' : pretty(f); }
   function rows(rx) {
     if (invCache[rx.id]) return invCache[rx.id];
-    var sp = species(rx), nl = rx.l.length;
+    var sp = species(rx), nl = rx.l.length, hoh = isHOH(rx);
+    /* in a neutralization water is HOH: one hydroxide and one hydrogen */
+    function cnt(f, ion) { return hoh && f === 'H2O' && ion === 'OH' ? 1 : ionCount(f, ion); }
     var kept = Object.keys(IONS).filter(function (ion) {
-      function on(list) { return list.some(function (f) { return ionCount(f, ion) > 0; }); }
+      function on(list) { return list.some(function (f) { return cnt(f, ion) > 0; }); }
       return on(rx.l) && on(rx.r);
     });
     var counts = sp.map(parse);
@@ -153,7 +160,7 @@ var Chem = (function () {
       var o = {};
       Object.keys(c).forEach(function (el) { o[el] = c[el]; });
       kept.forEach(function (ion) {
-        var n = ionCount(sp[j], ion), a = parse(ion);
+        var n = cnt(sp[j], ion), a = parse(ion);
         Object.keys(a).forEach(function (el) { o[el] -= n * a[el]; });
       });
       return o;
@@ -169,14 +176,14 @@ var Chem = (function () {
           out.push({ key: el, label: el, ion: null, other: inside, per: rest.map(function (r) { return r[el] || 0; }) });
         }
         kept.forEach(function (ion) {
-          if (!seen[ion] && parse(ion)[el] && ionCount(f, ion) > 0) {
+          if (!seen[ion] && parse(ion)[el] && cnt(f, ion) > 0) {
             seen[ion] = 1;
-            out.push({ key: ion, label: pretty(ion), ion: ion, name: IONS[ion], other: [], per: sp.map(function (g) { return ionCount(g, ion); }) });
+            out.push({ key: ion, label: pretty(ion), ion: ion, name: IONS[ion], other: [], per: sp.map(function (g) { return cnt(g, ion); }) });
           }
         });
       }
     });
-    return (invCache[rx.id] = { rows: out, kept: kept, nl: nl });
+    return (invCache[rx.id] = { rows: out, kept: kept, nl: nl, hoh: hoh });
   }
 
   /* the inventory with these coefficients: every row with its left and right count */
@@ -220,7 +227,7 @@ var Chem = (function () {
     function side(list, off) {
       return list.map(function (f, j) {
         var c = coefs ? coefs[off + j] : 1;
-        return (c > 1 ? c + ' ' : '') + pretty(f);
+        return (c > 1 ? c + ' ' : '') + show(rx, f);
       }).join(' + ');
     }
     return side(rx.l, 0) + ' → ' + side(rx.r, nl);
@@ -228,7 +235,7 @@ var Chem = (function () {
 
   return { parse: parse, pretty: pretty, species: species, elements: elements, balance: balance, tally: tally,
            conserved: conserved, judge: judge, equation: equation, gcd: gcd,
-           IONS: IONS, ionCount: ionCount, rows: rows, inventory: inventory };
+           IONS: IONS, ionCount: ionCount, isHOH: isHOH, show: show, rows: rows, inventory: inventory };
 })();
 
 if (typeof module !== 'undefined') module.exports = Chem;

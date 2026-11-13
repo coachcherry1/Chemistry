@@ -52,8 +52,8 @@ var Bench = (function () {
 
   /* one row of the inventory: left count, what is counted, right count.
      marks: colour the row by whether the two counts match */
-  function invRow(r, marks) {
-    return h('div', { class: 'inv-row' + (marks ? (r.ok ? ' ok' : ' off') : ''), role: 'row',
+  function invRow(r, marks, tint) {
+    return h('div', { class: 'inv-row' + (marks ? (r.ok ? ' ok' : ' off') : '') + (tint >= 0 ? ' ion tint' + tint : ''), role: 'row',
       'aria-label': cap(rowName(r)) + ': ' + r.left + ' in the reactants, ' + r.right + ' in the products' + (marks ? (r.ok ? ', the same' : ', not the same') : '') }, [
       h('span', { class: 'inv-n', text: String(r.left) }),
       h('span', { class: 'inv-l' }, [h('b', { text: r.label }), r.other && r.other.length ? h('small', { text: 'not in ' + r.other.map(Chem.pretty).join(', ') }) : null]),
@@ -71,6 +71,10 @@ var Bench = (function () {
     var marksOn = opts.marks !== 'check' || work.n > 0 || work.r;
     var inputs = [], was = { l: null, r: null };
     work.i = work.i || {};
+    /* the ions kept together: outlined in the boxes, tinted the same in the inventory */
+    var info = Chem.rows(rx);
+    var ions = info.kept.map(function (ion, k) { return { ion: ion, tint: k % 3, hoh: info.hoh }; });
+    function tintOf(r) { return r.ion ? info.kept.indexOf(r.ion) % 3 : -1; }
 
     var fb = h('p', { class: 'fb', role: 'status', 'aria-live': 'polite' });
     function tell(text, kind) { fb.textContent = text || ''; fb.className = 'fb' + (text ? ' show ' + (kind || '') : ''); }
@@ -83,7 +87,7 @@ var Bench = (function () {
     /* ---- the equation: reactants over their box, the arrow over the inventory, products over theirs */
     function term(f, j) {
       var inp = h('input', { class: 'coef', type: 'text', inputmode: 'numeric', maxlength: '2', autocomplete: 'off',
-        'aria-label': 'Coefficient of ' + Chem.pretty(f) + ' (' + Rx.name(f) + ')', value: String(work.c[j] || '') });
+        'aria-label': 'Coefficient of ' + Chem.show(rx, f) + ' (' + Rx.name(f) + ')', value: String(work.c[j] || '') });
       function bump(d) {
         if (work.r || typing) return;
         var v = /^\d+$/.test(inp.value.trim()) ? +inp.value : 0;
@@ -100,11 +104,11 @@ var Bench = (function () {
       inputs[j] = inp;
       return h('span', { class: 'term' }, [
         h('span', { class: 'stepper' }, [
-          h('button', { type: 'button', class: 'stp dec', 'aria-label': 'One fewer ' + Chem.pretty(f), text: '−', onclick: function () { bump(-1); } }),
+          h('button', { type: 'button', class: 'stp dec', 'aria-label': 'One fewer ' + Chem.show(rx, f), text: '−', onclick: function () { bump(-1); } }),
           inp,
-          h('button', { type: 'button', class: 'stp inc', 'aria-label': 'One more ' + Chem.pretty(f), text: '+', onclick: function () { bump(1); } })
+          h('button', { type: 'button', class: 'stp inc', 'aria-label': 'One more ' + Chem.show(rx, f), text: '+', onclick: function () { bump(1); } })
         ]),
-        h('span', { class: 'formula', title: Rx.name(f), text: Chem.pretty(f) })
+        h('span', { class: 'formula', title: Rx.name(f), text: Chem.show(rx, f) })
       ]);
     }
     function side(list, off) {
@@ -125,7 +129,7 @@ var Bench = (function () {
     var typedInputs = [];
 
     function describe(list, cs, off) {
-      return list.map(function (f, j) { return cs[off + j] + ' ' + Chem.pretty(f); }).join(', ');
+      return list.map(function (f, j) { return cs[off + j] + ' ' + Chem.show(rx, f); }).join(', ');
     }
     function paintInv(d) {
       inv.innerHTML = '';
@@ -142,7 +146,7 @@ var Bench = (function () {
             typedInputs.push({ inp: inp, want: wantN, row: r, side: sideName });
             return inp;
           }
-          inv.appendChild(h('div', { class: 'inv-row typing', role: 'row' }, [
+          inv.appendChild(h('div', { class: 'inv-row typing' + (r.ion ? ' ion tint' + tintOf(r) : ''), role: 'row' }, [
             cell('l', r.left),
             h('span', { class: 'inv-l' }, [h('b', { text: r.label }), r.other && r.other.length ? h('small', { text: 'not in ' + r.other.map(Chem.pretty).join(', ') }) : null]),
             cell('r', r.right)
@@ -150,13 +154,13 @@ var Bench = (function () {
         });
         return;
       }
-      Chem.inventory(rx, d).forEach(function (r) { inv.appendChild(invRow(r, marksOn)); });
+      Chem.inventory(rx, d).forEach(function (r) { inv.appendChild(invRow(r, marksOn, tintOf(r))); });
     }
     function paint() {
       var d = drawn();
       var li = rx.l.map(function (f, j) { return { f: f, n: d[j] }; });
       var ri = rx.r.map(function (f, j) { return { f: f, n: d[nl + j] }; });
-      Particles.pair(left.svg, li, right.svg, ri, { w: BOXW, h: BOXH, wasL: was.l, wasR: was.r });
+      Particles.pair(left.svg, li, right.svg, ri, { w: BOXW, h: BOXH, wasL: was.l, wasR: was.r, ions: ions });
       was.l = li.map(function (x) { return x.n; });
       was.r = ri.map(function (x) { return x.n; });
       left.svg.setAttribute('aria-label', 'Reactants: ' + describe(rx.l, d, 0));
@@ -175,6 +179,7 @@ var Bench = (function () {
     function slip(t, v) {
       var f = (t.side === 'l' ? rx.l : rx.r), where = t.side === 'l' ? 'reactants' : 'products';
       var what = t.row.ion ? t.row.label : t.row.key;
+      if (t.row.ion === 'OH' && info.hoh && t.side === (rx.l.indexOf('H2O') >= 0 ? 'l' : 'r') && v < t.want) return 'Water is written HOH here: one hydroxide, OH, and one hydrogen.';
       var bracket = f.filter(function (x) { return new RegExp('\\(' + (t.row.ion || '[^)]*' + t.row.key + '[^)]*') + '\\)\\d').test(x); })[0];
       if (bracket && v < t.want) return 'Look at ' + Chem.pretty(bracket) + ': the subscript outside the brackets multiplies everything inside them.';
       if (!t.row.ion && f.filter(function (x) { return Chem.parse(x)[t.row.key]; }).length > 1) {
@@ -274,6 +279,9 @@ var Bench = (function () {
     } });
     var nextBtn = opts.next ? h('button', { type: 'button', class: 'primary bench-next', text: opts.next.label, hidden: true, onclick: opts.next.onClick }) : null;
     var key = Particles.key(Chem.elements(rx));
+    ions.forEach(function (it) {
+      key.appendChild(h('span', { class: 'pkey-i' }, [h('span', { class: 'pkey-halo tint' + it.tint }), ' ' + Chem.pretty(it.ion) + ' kept together']));
+    });
 
     var root = h('section', { class: 'bench' + (typing ? ' typing' : '') }, [
       eq, boxes,

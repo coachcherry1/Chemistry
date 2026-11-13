@@ -10,6 +10,7 @@
  *   Particles.fill(svg, items, o)    a box of particles: items [{ f, n }]
  *   Particles.one(formula, scale)    one particle as a small svg
  *   Particles.key(elements)          the colour key for these elements
+ *   Particles.groups(formula, ion)   the atoms of each such ion in the particle
  */
 var Particles = (function () {
   'use strict';
@@ -117,14 +118,57 @@ var Particles = (function () {
     return (cache[formula] = { atoms: atoms, R: R });
   }
 
-  /* one particle as a <g>, turned by rot degrees (the letters stay upright) */
-  function particle(formula, x, y, scale, rot, cls) {
+  /* The atoms of each polyatomic ion inside a particle: [[atom index, ...], ...],
+     found from which atoms touch. hoh: water is HOH, so one of its H and its O
+     are a hydroxide. The validator checks that as many are found as the
+     formula has. */
+  var CENTRE = { NO3: ['N', 'O', 3], SO4: ['S', 'O', 4], PO4: ['P', 'O', 4], CO3: ['C', 'O', 3], ClO3: ['Cl', 'O', 3], NH4: ['N', 'H', 4] };
+  var groupCache = {};
+  function groups(formula, ion, hoh) {
+    var id = formula + '|' + ion + '|' + (hoh ? 1 : 0);
+    if (groupCache[id]) return groupCache[id];
+    var atoms = layout(formula).atoms, out = [];
+    function near(i) { var a = atoms[i]; return (a.parent >= 0 ? [a.parent] : []).concat(a.kids); }
+    function of(i, el) { return near(i).filter(function (j) { return atoms[j].el === el; }); }
+    atoms.forEach(function (a, i) {
+      var c = CENTRE[ion];
+      if (c) {
+        if (a.el === c[0] && of(i, c[1]).length >= c[2]) out.push([i].concat(of(i, c[1]).slice(0, c[2])));
+      } else if (ion === 'OH') {
+        /* an O holding an H: on a metal, or in the water of a neutralization */
+        var hs = of(i, 'H');
+        var acid = near(i).some(function (j) { return /^(S|P|N|C|Cl)$/.test(atoms[j].el); });
+        if (a.el === 'O' && hs.length && !acid && (formula !== 'H2O' || hoh)) out.push([i, hs[0]]);
+      } else if (ion === 'C2H3O2') {
+        /* the carbon with two O, and the CH3 beside it */
+        var cs = of(i, 'C');
+        if (a.el === 'C' && of(i, 'O').length === 2 && cs.length === 1) out.push([i].concat(of(i, 'O'), cs, of(cs[0], 'H')));
+      }
+    });
+    return (groupCache[id] = out);
+  }
+
+  /* one particle as a <g>, turned by rot degrees (the letters stay upright).
+     ions: [{ ion, tint, hoh }]: each of these ions inside the particle gets a
+     coloured outline, so it can be counted as one piece. */
+  function particle(formula, x, y, scale, rot, cls, ions) {
     var lay = layout(formula), rad = (rot || 0) * Math.PI / 180, co = Math.cos(rad), si = Math.sin(rad);
     var g = s('g', { class: 'particle' + (cls ? ' ' + cls : ''), 'data-f': formula });
+    function at(a) { return [x + (a.x * co - a.y * si) * scale, y + (a.x * si + a.y * co) * scale, a.r * scale]; }
+    (ions || []).forEach(function (it) {
+      groups(formula, it.ion, it.hoh).forEach(function (list) {
+        var halo = s('g', { class: 'halo tint' + it.tint, 'data-ion': it.ion });
+        list.forEach(function (i) {
+          var p = at(lay.atoms[i]);
+          halo.appendChild(s('circle', { cx: p[0].toFixed(1), cy: p[1].toFixed(1), r: (p[2] + Math.max(2.5, 3.5 * scale)).toFixed(1) }));
+        });
+        g.appendChild(halo);
+      });
+    });
     /* big atoms first, so a small H is never hidden */
     var order = lay.atoms.slice().sort(function (a, b) { return b.r - a.r; });
     order.forEach(function (a) {
-      var px = x + (a.x * co - a.y * si) * scale, py = y + (a.x * si + a.y * co) * scale, r = a.r * scale;
+      var p = at(a), px = p[0], py = p[1], r = p[2];
       g.appendChild(s('circle', { cx: px.toFixed(1), cy: py.toFixed(1), r: r.toFixed(1), fill: EL[a.el][2], class: 'atom' }));
       if (r >= 5) {
         g.appendChild(s('text', { x: px.toFixed(1), y: (py + r * 0.36).toFixed(1), 'font-size': (r * (a.el.length > 1 ? 0.92 : 1.12)).toFixed(1),
@@ -179,7 +223,7 @@ var Particles = (function () {
       row.forEach(function (p) {
         var c = p.cell, rot = ((c.k * 7 + c.i * 5) % 12) * 30 + (c.k % 2 ? 15 : 0);
         var isNew = o.was && c.i >= (o.was[c.k] || 0);
-        svg.appendChild(particle(c.f, p.x + dx, row.y + dy + row.h / 2, sc, rot, isNew ? 'pop' : null));
+        svg.appendChild(particle(c.f, p.x + dx, row.y + dy + row.h / 2, sc, rot, isNew ? 'pop' : null, o.ions));
       });
     });
     return sc;
@@ -216,12 +260,12 @@ var Particles = (function () {
     var a = fill(null, itemsL, { w: o.w, h: o.h, max: o.max, measure: true });
     var b = fill(null, itemsR, { w: o.w, h: o.h, max: o.max, measure: true });
     var sc = Math.min(a, b);
-    fill(svgL, itemsL, { w: o.w, h: o.h, max: o.max, scale: sc, was: o.wasL });
-    fill(svgR, itemsR, { w: o.w, h: o.h, max: o.max, scale: sc, was: o.wasR });
+    fill(svgL, itemsL, { w: o.w, h: o.h, max: o.max, scale: sc, was: o.wasL, ions: o.ions });
+    fill(svgR, itemsR, { w: o.w, h: o.h, max: o.max, scale: sc, was: o.wasR, ions: o.ions });
     return sc;
   }
 
-  return { pair: pair, EL: EL, layout: layout, readTree: readTree, particle: particle, fill: fill, one: one, key: key, radius: radius };
+  return { pair: pair, groups: groups, EL: EL, layout: layout, readTree: readTree, particle: particle, fill: fill, one: one, key: key, radius: radius };
 })();
 
 if (typeof module !== 'undefined') module.exports = Particles;

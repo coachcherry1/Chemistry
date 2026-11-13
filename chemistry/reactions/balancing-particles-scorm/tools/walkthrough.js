@@ -187,7 +187,12 @@ const fakeLMS = () => {
       expect(/That is the inventory/.test(await fb('.bench')), id + ': the right inventory was not accepted: ' + await fb('.bench'));
     }
     expect(await rows() > 0 && (await marked()) === (await rows()), id + ': the live inventory should be marked');
-    if (id === 'mixed') expect(/not in SO₄/.test(await page.textContent('.bench .inv')), 'mixed: the O row should say it leaves out SO₄');
+    if (id === 'mixed') {
+      expect(/HOH/.test(await page.textContent('.bench .eq')) && /OH/.test(await page.textContent('.bench .inv')), 'mixed: water should be written HOH and OH should be a row');
+      expect(await page.locator('.bench .halo[data-ion="OH"]').count() === 2 && await page.locator('.bench .halo[data-ion="SO4"]').count() === 2, 'mixed: OH and SO4 should be outlined on both sides');
+    }
+    if (id === 'ions') expect(await page.locator('.bench .halo[data-ion="PO4"]').count() === 3 && await page.locator('.bench .halo[data-ion="C2H3O2"]').count() === 3, 'ions: every PO4 and C2H3O2 should be outlined');
+    if (id === 'first') expect(await page.locator('.bench .halo').count() === 0, 'first: nothing to outline');
     if (id === 'split') expect(!/PO₄/.test(await page.textContent('.bench .inv')), 'split: PO₄ must not be a row');
     await check();
     expect(/Not balanced yet/.test(await fb('.bench')), id + ': all 1s should not be balanced: ' + await fb('.bench'));

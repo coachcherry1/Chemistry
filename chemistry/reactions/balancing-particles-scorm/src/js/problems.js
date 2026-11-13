@@ -133,8 +133,9 @@ var Gen = (function () {
     return finish({
       id: id, kind: 'inventory', fig: null, rxid: r.id, ion: row.ion,
       stem: 'Start an inventory for ' + Chem.equation(r) + ' as it is written, before any coefficients. How many ' + row.name + ' ions, ' + row.label + ', are on each side?',
-      why: row.label + ' is on both sides, so it is kept together as one row of the inventory. A subscript outside the brackets counts the ions: ' +
-           right + '.'
+      why: row.label + ' is on both sides, so it is kept together as one row of the inventory. ' +
+           (row.ion === 'OH' && Chem.isHOH(r) ? 'Water is written HOH: one hydroxide and one hydrogen. ' : '') +
+           'A subscript outside the brackets counts the ions: ' + right + '.'
     }, right, wrong, rand);
   }
 

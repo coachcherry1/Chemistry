@@ -5,7 +5,7 @@ SCORM 1.2 package for Schoology, about 30 minutes. Package 1 of the reactions un
 **Web version:** https://coachcherry1.github.io/Chemistry/chemistry/reactions/balancing-particles-scorm/src/index.html
 (works once this branch is merged into `main`)
 
-**Upload to Schoology:** `dist/balancing-particles-v2.zip`
+**Upload to Schoology:** `dist/balancing-particles-v3.zip`
 
 ## What students do
 
@@ -19,7 +19,7 @@ same: every row of the inventory matches (the law of conservation of mass).
 | 1 Reading the picture | Subscripts and coefficients (count atoms in 3 H₂O, 2 Al₂O₃, 2 Ca(OH)₂); what may you change (a coefficient, never a subscript) | no |
 | 2 Is it conserved? | Four pictures: are the atoms conserved? | no |
 | 3 Balancing | Water, ammonia and methane with the live inventory; then iron and oxygen, where the student types the starting inventory first, with the tips | no |
-| 4 Polyatomic ions | Na₃PO₄ + Ca(C₂H₃O₂)₂: the ions are on both sides, so each is one row (Na, PO₄, Ca, C₂H₃O₂). P₄O₁₀ + H₂O → H₃PO₄: PO₄ is on one side only, so atom by atom. NaOH + H₂SO₄: SO₄ stays, OH does not. Each starts with the student typing the inventory | no |
+| 4 Polyatomic ions | Na₃PO₄ + Ca(C₂H₃O₂)₂: the ions are on both sides, so each is one row (Na, PO₄, Ca, C₂H₃O₂). P₄O₁₀ + H₂O → H₃PO₄: PO₄ is on one side only, so atom by atom. NaOH + H₂SO₄: a neutralization, so water is written HOH and OH stays together (Na, OH, H, SO₄). Each starts with the student typing the inventory. Every kept ion is outlined in colour in the boxes and ringed the same colour in its inventory row | no |
 | 5 Graded | 6 choice questions (select, then Submit answer), then 10 equations (3 easy, 4 medium, 3 hard) | yes |
 | 6 Results | Score, every equation and question with its answer, a new attempt | |
 
@@ -45,7 +45,7 @@ same: every row of the inventory matches (the law of conservation of mass).
 
 - `chem.js` reads formulas and **balances every equation by solving it**; no coefficient is typed anywhere. It also writes the
   inventory: a polyatomic ion (NO₃, SO₄, PO₄, CO₃, OH, ClO₃, C₂H₃O₂, NH₄) is one row only when it is in the reactants and in
-  the products; otherwise its atoms are counted. `reactions.js` holds 88 substances (name and particle drawing) and 62
+  the products; otherwise its atoms are counted. In a neutralization water is written HOH (a hydroxide and a hydrogen). `reactions.js` holds 88 substances (name and particle drawing) and 62
   reactions (53 in the graded pool), each tagged with its type for the classifying package that follows.
 - `particles.js` draws each particle from the atoms that touch: lettered circles coloured by element, bigger atoms drawn
   bigger (from covalent radii, squeezed so H still holds its letter). Both boxes always use one scale.

@@ -27,6 +27,7 @@
   --mark-line: #c08f00;
   --radius:  8px;
   --box:     #f7fafc;
+  --tint0: #f0a020; --tint1: #17a2b8; --tint2: #d6409f;
   --atom-line: #26323d;
 }
 
@@ -290,3 +291,14 @@ input.coef.inv-in { width: 34px; height: 24px; font-size: 1rem; border: 1.5px so
 .choice.right { border-color: var(--good); background: var(--good-bg); color: var(--good); }
 .choice.wrong { border-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
 .choice:disabled { cursor: default; }
+
+/* a polyatomic ion kept together: outlined in the boxes, tinted the same in its inventory row */
+.halo circle { stroke: none; }
+.halo.tint0 circle, .pkey-halo.tint0 { fill: var(--tint0); background: var(--tint0); }
+.halo.tint1 circle, .pkey-halo.tint1 { fill: var(--tint1); background: var(--tint1); }
+.halo.tint2 circle, .pkey-halo.tint2 { fill: var(--tint2); background: var(--tint2); }
+.pkey-halo { display: inline-block; width: 14px; height: 14px; border-radius: 50%; }
+.inv-row.ion .inv-l b { border-radius: 99px; padding: 0 7px; align-self: center; }
+.inv-row.ion.tint0 .inv-l b { box-shadow: 0 0 0 2.5px var(--tint0); }
+.inv-row.ion.tint1 .inv-l b { box-shadow: 0 0 0 2.5px var(--tint1); }
+.inv-row.ion.tint2 .inv-l b { box-shadow: 0 0 0 2.5px var(--tint2); }

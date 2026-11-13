@@ -37,8 +37,9 @@ Each student gets 6 graded questions and 10 graded equations (3 easy, 4 medium, 
 - When the ion is on one side only: P₄O₁₀ + 6 H₂O → 4 H₃PO₄
   - Inventory (typed by the student): 4 | P | 1; 11 | O | 4; 2 | H | 3
   - Prediction: H₃PO₄ has a PO₄ in it. Can PO₄ be a row of the inventory here? **No: PO₄ is only in the products**
-- One ion stays, one does not: 2 NaOH + H₂SO₄ → Na₂SO₄ + 2 H₂O
-  - Inventory (typed by the student): 1 | Na | 2; 1 | O (not in SO₄) | 1; 3 | H | 2; 1 | SO₄ | 1
+- Water is HOH: 2 NaOH + H₂SO₄ → Na₂SO₄ + 2 HOH
+  - Inventory (typed by the student): 1 | Na | 2; 1 | OH | 1; 2 | H (not in OH) | 1; 1 | SO₄ | 1
+  - Prediction: An acid and a base make a salt and water. Written H₂O, the OH of the base seems to vanish. How do you keep the hydroxide together? **Write water as HOH**
 
 ## Graded equations: the pool
 
@@ -88,7 +89,7 @@ Each student gets 6 graded questions and 10 graded equations (3 easy, 4 medium, 
 | Al₂(SO₄)₃ → Al₂O₃ + SO₃ | Al₂(SO₄)₃ → Al₂O₃ + 3 SO₃ | 1, 1, 3 | Al, S, O |
 | AgNO₃ + CaCl₂ → AgCl + Ca(NO₃)₂ | 2 AgNO₃ + CaCl₂ → 2 AgCl + Ca(NO₃)₂ | 2, 1, 2, 1 | Ag, NO₃, Ca, Cl |
 | Pb(NO₃)₂ + KI → PbI₂ + KNO₃ | Pb(NO₃)₂ + 2 KI → PbI₂ + 2 KNO₃ | 1, 2, 1, 2 | Pb, NO₃, K, I |
-| Ca(OH)₂ + HCl → CaCl₂ + H₂O | Ca(OH)₂ + 2 HCl → CaCl₂ + 2 H₂O | 1, 2, 1, 2 | Ca, O, H, Cl |
+| Ca(OH)₂ + HCl → CaCl₂ + HOH | Ca(OH)₂ + 2 HCl → CaCl₂ + 2 HOH | 1, 2, 1, 2 | Ca, OH, H*, Cl |
 | C₂H₄ + O₂ → CO₂ + H₂O | C₂H₄ + 3 O₂ → 2 CO₂ + 2 H₂O | 1, 3, 2, 2 | C, H, O |
 | C₃H₈ + O₂ → CO₂ + H₂O | C₃H₈ + 5 O₂ → 3 CO₂ + 4 H₂O | 1, 5, 3, 4 | C, H, O |
 | C₂H₅OH + O₂ → CO₂ + H₂O | C₂H₅OH + 3 O₂ → 2 CO₂ + 3 H₂O | 1, 3, 2, 3 | C, H, O |
@@ -108,9 +109,9 @@ Each student gets 6 graded questions and 10 graded equations (3 easy, 4 medium, 
 | NH₃ + O₂ → NO + H₂O | 4 NH₃ + 5 O₂ → 4 NO + 6 H₂O | 4, 5, 4, 6 | N, H, O |
 | Zn + H₃PO₄ → Zn₃(PO₄)₂ + H₂ | 3 Zn + 2 H₃PO₄ → Zn₃(PO₄)₂ + 3 H₂ | 3, 2, 1, 3 | Zn, H, PO₄ |
 | PCl₅ + H₂O → H₃PO₄ + HCl | PCl₅ + 4 H₂O → H₃PO₄ + 5 HCl | 1, 4, 1, 5 | P, Cl, H, O |
-| H₃PO₄ + NaOH → Na₃PO₄ + H₂O | H₃PO₄ + 3 NaOH → Na₃PO₄ + 3 H₂O | 1, 3, 1, 3 | H, PO₄, O*, Na |
-| Al(OH)₃ + H₂SO₄ → Al₂(SO₄)₃ + H₂O | 2 Al(OH)₃ + 3 H₂SO₄ → Al₂(SO₄)₃ + 6 H₂O | 2, 3, 1, 6 | Al, O*, H, SO₄ |
-| Ca(OH)₂ + H₃PO₄ → Ca₃(PO₄)₂ + H₂O | 3 Ca(OH)₂ + 2 H₃PO₄ → Ca₃(PO₄)₂ + 6 H₂O | 3, 2, 1, 6 | Ca, O*, H, PO₄ |
+| H₃PO₄ + NaOH → Na₃PO₄ + HOH | H₃PO₄ + 3 NaOH → Na₃PO₄ + 3 HOH | 1, 3, 1, 3 | H*, PO₄, Na, OH |
+| Al(OH)₃ + H₂SO₄ → Al₂(SO₄)₃ + HOH | 2 Al(OH)₃ + 3 H₂SO₄ → Al₂(SO₄)₃ + 6 HOH | 2, 3, 1, 6 | Al, OH, H*, SO₄ |
+| Ca(OH)₂ + H₃PO₄ → Ca₃(PO₄)₂ + HOH | 3 Ca(OH)₂ + 2 H₃PO₄ → Ca₃(PO₄)₂ + 6 HOH | 3, 2, 1, 6 | Ca, OH, H*, PO₄ |
 | Na₃PO₄ + CaCl₂ → Ca₃(PO₄)₂ + NaCl | 2 Na₃PO₄ + 3 CaCl₂ → Ca₃(PO₄)₂ + 6 NaCl | 2, 3, 1, 6 | Na, PO₄, Ca, Cl |
 | Al₂(SO₄)₃ + BaCl₂ → BaSO₄ + AlCl₃ | Al₂(SO₄)₃ + 3 BaCl₂ → 3 BaSO₄ + 2 AlCl₃ | 1, 3, 3, 2 | Al, SO₄, Ba, Cl |
 
@@ -154,9 +155,12 @@ Each student gets 6 graded questions and 10 graded equations (3 easy, 4 medium, 
 - NaOH + CuSO₄ → Cu(OH)₂ + Na₂SO₄: OH **1 in the reactants, 2 in the products**
 - AgNO₃ + CaCl₂ → AgCl + Ca(NO₃)₂: NO₃ **1 in the reactants, 2 in the products**
 - Pb(NO₃)₂ + KI → PbI₂ + KNO₃: NO₃ **2 in the reactants, 1 in the products**
+- Ca(OH)₂ + HCl → CaCl₂ + HOH: OH **2 in the reactants, 1 in the products**
 - Zn + H₃PO₄ → Zn₃(PO₄)₂ + H₂: PO₄ **1 in the reactants, 2 in the products**
-- Al(OH)₃ + H₂SO₄ → Al₂(SO₄)₃ + H₂O: SO₄ **1 in the reactants, 3 in the products**
-- Ca(OH)₂ + H₃PO₄ → Ca₃(PO₄)₂ + H₂O: PO₄ **1 in the reactants, 2 in the products**
+- Al(OH)₃ + H₂SO₄ → Al₂(SO₄)₃ + HOH: OH **3 in the reactants, 1 in the products**
+- Al(OH)₃ + H₂SO₄ → Al₂(SO₄)₃ + HOH: SO₄ **1 in the reactants, 3 in the products**
+- Ca(OH)₂ + H₃PO₄ → Ca₃(PO₄)₂ + HOH: OH **2 in the reactants, 1 in the products**
+- Ca(OH)₂ + H₃PO₄ → Ca₃(PO₄)₂ + HOH: PO₄ **1 in the reactants, 2 in the products**
 - Na₃PO₄ + CaCl₂ → Ca₃(PO₄)₂ + NaCl: PO₄ **1 in the reactants, 2 in the products**
 - Al₂(SO₄)₃ + BaCl₂ → BaSO₄ + AlCl₃: SO₄ **3 in the reactants, 1 in the products**
 

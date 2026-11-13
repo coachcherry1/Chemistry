@@ -18,7 +18,7 @@ var App = (function () {
 
   /* Bump whenever the steps, the pools or a reaction change: a save from an
      older release is then discarded. */
-  var SCHEMA = 2;
+  var SCHEMA = 3;
 
   var h = UI.h;
 
@@ -28,6 +28,7 @@ var App = (function () {
     'Leave a lone element (like O₂ or Fe) for last: its coefficient changes nothing else.',
     'An odd number on one side and an even number on the other? Double the odd one.',
     'A polyatomic ion that is on both sides, like SO₄ or NO₃, is counted as one piece.',
+    'In a neutralization write water as HOH: a hydroxide and a hydrogen.',
     'Never touch a subscript.'
   ];
 
@@ -62,9 +63,12 @@ var App = (function () {
         c: [{ t: 'Yes: P₄O₁₀ has P and O', fb: 'P₄O₁₀ is not made of PO₄ ions, and there is no PO₄ in the reactants. An ion is kept together only when it is on both sides. Here count P, O and H atom by atom.' },
             { t: 'No: PO₄ is only in the products', ok: 1, fb: 'Right. No PO₄ in the reactants, so the inventory goes atom by atom: P, O and H. Oxygen is in both reactants: add them.' }] },
       text: 'Tetraphosphorus decoxide and water make phosphoric acid. Decide how to keep the inventory, type it, then balance. Not graded.' },
-    { id: 'mixed', part: 4, kind: 'bench', rx: 'naohh2so4', typed: true, title: 'One ion stays, one does not',
-      text: 'Sodium hydroxide and sulfuric acid. SO₄ is on both sides, so it is one row. OH is not in the products (it ends up in H₂O), so its ' +
-            'O and H are counted as atoms. The O row counts only the oxygen that is not inside an SO₄. Not graded.' },
+    { id: 'mixed', part: 4, kind: 'bench', rx: 'naohh2so4', typed: true, title: 'Water is HOH',
+      ask: { q: 'An acid and a base make a salt and water. Written H₂O, the OH of the base seems to vanish. How do you keep the hydroxide together?',
+        c: [{ t: 'Write water as HOH', ok: 1, fb: 'Yes. HOH is one hydroxide, OH, and one hydrogen. Now OH is on both sides and stays one row: Na, OH, H, SO₄.' },
+            { t: 'Count O and H atom by atom', fb: 'That works, but there is a quicker way: write water as HOH, one hydroxide and one hydrogen. Then OH is on both sides and stays one row: Na, OH, H, SO₄.' }] },
+      text: 'Sodium hydroxide and sulfuric acid: a neutralization. Water is written HOH. The H row counts only the hydrogen that is not in ' +
+            'an OH: the H of the acid, and the H of HOH. Not graded.' },
     { id: 'quiz', part: 5, kind: 'quiz', title: 'Graded questions',
       text: Gen.QUIZ + ' questions. Click a choice to select it (you can change it), then press Submit answer. Your first Submit counts.' },
     { id: 'set', part: 5, kind: 'set', title: 'Graded equations',
@@ -222,7 +226,7 @@ var App = (function () {
         fb.className = 'fb show ' + (c.ok ? 'good' : 'bad');
       };
       el.stage.appendChild(h('section', { class: 'panel ask' }, [
-        h('p', { class: 'pic-eq', text: Chem.equation(Rx.get(s.rx)) }),
+        h('p', { class: 'pic-eq', text: s.id === 'mixed' ? 'NaOH + H₂SO₄ → Na₂SO₄ + H₂O' : Chem.equation(Rx.get(s.rx)) }),
         h('p', { class: 'prompt', text: s.ask.q }), tiles, fb]));
       if (work.a != null) { answered(tiles.children[work.a], s.ask.c[work.a]); open(); }
     } else open();
@@ -319,6 +323,7 @@ var App = (function () {
       'A coefficient says how many particles. Atoms of an element = coefficient × subscript.',
       'Only coefficients may change. A different subscript is a different substance.',
       'Keep an inventory: a row for each element, or for a polyatomic ion when it is on both sides. If the ion is on one side only, count its atoms.',
+      'In a neutralization write water as HOH, so the hydroxide stays together.',
       'Write the lowest whole-number coefficients.'
     ];
     el.stage.appendChild(h('div', { class: 'grid2' }, [box, panel('Big ideas', null, [h('ul', { class: 'keylist' }, ideas.map(function (t) { return h('li', { text: t }); }))])]));

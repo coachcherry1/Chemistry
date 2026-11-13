@@ -607,7 +607,7 @@ not the full page.
   `drills.js`, `scenes.js`, `scorm.js`, `app.js`. Walkthrough harness as in the VSEPR and IMF packages (the fake LMS reads and writes
   sessionStorage on every call); each run picks random problems and prints its seed, `SEED=n` replays one.
 
-## balancing-particles-scorm (zip v2, SCHEMA 2) and the reactions unit
+## balancing-particles-scorm (zip v3, SCHEMA 3) and the reactions unit
 
 - **The unit is four packages** in `chemistry/reactions/`; `PLAN.md` there holds the approved plan, the teacher's answers
   and the class handout (activity series, solubility table). Only package 1 is built. Next: `balancing-reaction-types-scorm/`
@@ -623,9 +623,13 @@ not the full page.
   is the one that counts.
 - **Polyatomic ions (Part 4, the teacher's emphasis):** an ion is one row of the inventory only when it is in the
   reactants and in the products (`Chem.rows`, ions in `Chem.IONS`); the teacher's example Na₃PO₄ + Ca(C₂H₃O₂)₂ gives rows
-  Na, PO₄, Ca, C₂H₃O₂. On one side only (P₄O₁₀ + H₂O → H₃PO₄) it is counted atom by atom. When one ion stays and another
-  does not (NaOH + H₂SO₄), the O row counts only the oxygen "not in SO₄". Steps with `typed` make the student type the
-  starting inventory before the steppers open; steps with `ask` start with a prediction (answered on the click).
+  Na, PO₄, Ca, C₂H₃O₂. On one side only (P₄O₁₀ + H₂O → H₃PO₄) it is counted atom by atom. **A neutralization writes
+  water as HOH** (the teacher: a hydroxide and a hydrogen), so OH stays together: NaOH + H₂SO₄ → Na₂SO₄ + HOH has rows
+  Na, OH, H, SO₄, and the H row counts only the hydrogen "not in OH" (`Chem.isHOH`, type `N` only; `Chem.show` prints
+  HOH). Every kept ion is outlined in colour in the boxes (`Particles.groups` finds its atoms; the validator checks as
+  many are found as the inventory counts) and ringed in the same colour in its row. Steps with `typed` make the
+  student type the starting inventory before the steppers open; steps with `ask` start with a prediction (answered on
+  the click).
 - **Teacher's choices:** no masses on screen. No picture-to-equation section (removed at the teacher's request; the
   workbench still tells doubled coefficients to reduce, and counts them as a miss). An empty box is not counted; Show me
   after three misses.

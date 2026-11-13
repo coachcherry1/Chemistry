@@ -151,7 +151,26 @@ Rx.REACTIONS.forEach((r) => {
     Object.keys(want).forEach((el) => ok(want[el] === (got[el] || 0), r.id + ': ' + f + ' has ' + want[el] + ' ' + el + ', the inventory counts ' + (got[el] || 0)));
   });
   info.rows.forEach((row) => ok(row.per.every((n) => n >= 0), r.id + ': a negative count in row ' + row.key));
-  info.kept.forEach((ion) => ok(r.l.some((f) => Chem.ionCount(f, ion)) && r.r.some((f) => Chem.ionCount(f, ion)), r.id + ': ' + ion + ' kept but not on both sides'));
+  const nl = r.l.length;
+  info.kept.forEach((ion) => {
+    const per = info.rows.filter((x) => x.key === ion)[0].per;
+    ok(per.slice(0, nl).some((n) => n > 0) && per.slice(nl).some((n) => n > 0), r.id + ': ' + ion + ' kept but not on both sides');
+    /* the outline in the picture: as many ions found among the touching atoms as the inventory counts */
+    sp.forEach((f, j) => {
+      const found = Particles.groups(f, ion, info.hoh);
+      ok(found.length === per[j], r.id + ': ' + f + ' should show ' + per[j] + ' ' + ion + ' outlined, the drawing finds ' + found.length);
+      const want = Chem.parse(ion), atoms = Particles.layout(f).atoms;
+      found.forEach((g) => {
+        const got = {};
+        g.forEach((i) => { got[atoms[i].el] = (got[atoms[i].el] || 0) + 1; });
+        ok(Object.keys(want).every((el) => want[el] === got[el]) && new Set(g).size === g.length, r.id + ': the outline of ' + ion + ' in ' + f + ' has the wrong atoms');
+      });
+      ok(new Set(found.flat()).size === found.flat().length, r.id + ': two ' + ion + ' outlines share an atom in ' + f);
+    });
+  });
+  /* a neutralization writes water as HOH and keeps the hydroxide together */
+  ok(info.hoh === (r.type === 'N'), r.id + ': only a neutralization writes HOH');
+  if (r.type === 'N') ok(info.kept.indexOf('OH') >= 0 && /HOH/.test(Chem.equation(r)) && !/H₂O/.test(Chem.equation(r)), r.id + ': a neutralization keeps OH and shows HOH');
   ok(info.rows.length <= 6, r.id + ': more than 6 rows in the inventory');
   /* the rows all match exactly when the atoms are conserved */
   for (let k = 0; k < 40; k++) {
@@ -163,7 +182,8 @@ const kept = (id) => Chem.rows(Rx.get(id)).kept.join();
 ok(kept('acetate') === 'PO4,C2H3O2', 'the teacher\'s example keeps PO4 and C2H3O2 together: ' + kept('acetate'));
 ok(Chem.rows(Rx.get('acetate')).rows.map((x) => x.key).join() === 'Na,PO4,Ca,C2H3O2', 'the teacher\'s inventory order: Na, PO4, Ca, C2H3O2');
 ok(kept('h3po4') === '' && Chem.rows(Rx.get('h3po4')).rows.map((x) => x.key).join() === 'P,O,H', 'P4O10 + H2O: PO4 is on one side only, so atom by atom');
-ok(kept('naohh2so4') === 'SO4' && Chem.rows(Rx.get('naohh2so4')).rows.filter((x) => x.key === 'O')[0].other.join() === 'SO4', 'NaOH + H2SO4: SO4 kept, OH not');
+ok(Chem.rows(Rx.get('naohh2so4')).rows.map((x) => x.key).join() === 'Na,OH,H,SO4', 'NaOH + H2SO4 with HOH: rows Na, OH, H, SO4');
+ok(kept('nawater') === '', 'Na + H2O is not a neutralization: no HOH');
 ok(kept('ethanol') === '' && kept('kclo3') === '' && kept('nitroglycerin') === '', 'an ion on one side only must not be kept');
 ok(Chem.ionCount('Ca3(PO4)2', 'PO4') === 2 && Chem.ionCount('P4O10', 'PO4') === 0 && Chem.ionCount('NO2', 'NO3') === 0 && Chem.ionCount('NH4NO3', 'NH4') === 1, 'ionCount');
 ok(Gen.ionList().length >= 8, 'too few inventory questions: ' + Gen.ionList().length);
@@ -218,6 +238,8 @@ for (let seed = 1; seed <= 400; seed++) {
       /* counted again here, straight from the formulas */
       const r = Rx.get(q.rxid), n = (list) => list.reduce((t, f) => {
         const m = new RegExp('\\(' + q.ion + '\\)(\\d*)').exec(f);
+        /* the water of a neutralization is HOH: one hydroxide */
+        if (f === 'H2O') return t + (q.ion === 'OH' && r.type === 'N' ? 1 : 0);
         return t + (m ? +(m[1] || 1) : f.indexOf(q.ion) >= 0 ? 1 : 0);
       }, 0);
       ok(right === n(r.l) + ' in the reactants, ' + n(r.r) + ' in the products', tag + 'the ion count');

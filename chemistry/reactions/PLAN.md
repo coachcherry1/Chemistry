@@ -44,6 +44,10 @@ polyatomic ions (kept together in the inventory when on both sides, counted atom
 P₄O₁₀ + H₂O → H₃PO₄); the inventory runs down the centre between the two boxes and updates with the coefficients. Package
 2 inherits all of this, and packages 3 and 4 should use the same centre inventory wherever students balance.
 
+**Second round (done, zip v3):** the teacher writes the water of a neutralization as **HOH**, a hydroxide and a hydrogen,
+so OH stays together in the inventory (packages 2 and 4 must do the same); every kept-together ion is outlined in colour
+in the particle boxes. The teacher approved leaving the inventory rows unmarked until the first Check in graded equations.
+
 Decisions marked **(default)** below are the original recommendations; see the answers above for what was changed.
 
 ## The set
@@ -87,7 +91,7 @@ coefficient; under it a **Reactants box** and a **Products box** of particles th
 under those an **atom tally** per element (left count, right count, a tick when they match). No mass line (the
 teacher's choice). All of it is on screen together at 1366x520.
 
-**As built (v2, SCHEMA 2):** 13 steps in 6 parts; 16 graded items (6 choice questions, 10 equations: 3 easy, 4 medium,
+**As built (v3, SCHEMA 3):** 13 steps in 6 parts; 16 graded items (6 choice questions, 10 equations: 3 easy, 4 medium,
 3 hard from a pool of 53). Part 4 is polyatomic ions, not picture to equation (see the teacher's changes above). See
 the package README and the section in `CLAUDE.md`.
 
