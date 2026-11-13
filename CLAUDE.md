@@ -35,6 +35,7 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `chemistry/moles/hydrate-lab-scorm/` | Virtual lab (pre-lab, with a paper sheet): formula of a hydrate, CuSO₄·5H₂O heated to constant mass in a crucible, realistic data (about 25 min, no score) |
 | `chemistry/reactions/balancing-particles-scorm/` | Balancing with particle diagrams: a reactants box and a products box that follow the coefficients, the inventory down the centre, conservation of mass, polyatomic ions kept together (or not), 10 graded equations and 6 questions (about 30 min). Package 1 of 4; the plan for the rest is `chemistry/reactions/PLAN.md` |
 | `chemistry/reactions/balancing-reaction-types-scorm/` | Balancing and reaction types: the same workbench with six type buttons, every reaction balanced and classified by one Check (synthesis, decomposition, single and double replacement, combustion, neutralization), 4 questions and 10 reactions ending with nitroglycerin (about 35 min). Package 2 of 4, one code base with package 1 |
+| `chemistry/reactions/predicting-products-scorm/` | Predicting products: single replacement by the activity series, double replacement by the solubility table (a solid, or no reaction); each problem worked step by step (will it react, products from ion charges, states, balance) beside the class handout; 4 questions and 10 problems (about 40 min). Package 3 of 4 |
 
 **AP chemistry**
 
@@ -62,11 +63,11 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `organic-chemistry/reactivity-mechanisms/arrow-pushing-scorm/` | Klein 6, before SN1/SN2: bond breaking and making, ΔG, energy diagrams, nucleophiles and electrophiles, drawing curved arrows, the four patterns, a final check (about 50 min) |
 | `organic-chemistry/substitution-elimination/substitution-elimination-scorm/` | SN1, SN2, E1 and E2: reagent function, mechanisms with curved arrows, regio- and stereochemistry, rings, predicting products (about 50 min) |
 
-**Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions), arrow pushing, mole conversions (both), the formula packages (all three) and the two balancing packages contains em
+**Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions), arrow pushing, mole conversions (both), the formula packages (all three), the two balancing packages and predicting products contains em
 dashes (the Lewis, resonance and drawing-tool validators allow them). The mass spec, IR + mass spec, NMR,
 naming, acids and ionization energy packages still load a browser save inside an LMS when
 `cmi.suspend_data` is empty (fixed in IR, Newman, chairs, chirality, Lewis and resonance). Only Newman,
-chairs, chirality, SN1/SN2, arrow pushing, mole conversions, the formula packages and the two balancing packages have `tools/layout.js`. The acetone kinetics lab still grades a choice on the
+chairs, chirality, SN1/SN2, arrow pushing, mole conversions, the formula packages, the two balancing packages and predicting products have `tools/layout.js`. The acetone kinetics lab still grades a choice on the
 click, with no Submit answer button. Bring a package up to the rules when you next change it.
 
 ## House rules
@@ -611,8 +612,8 @@ not the full page.
 ## balancing-particles-scorm (zip v4, SCHEMA 4), balancing-reaction-types-scorm (zip v1, SCHEMA 4) and the reactions unit
 
 - **The unit is four packages** in `chemistry/reactions/`; `PLAN.md` there holds the approved plan, the teacher's answers
-  and the class handout (activity series, solubility table). Packages 1 and 2 are built. Next: `predicting-products-scorm/`,
-  then `net-ionic-equations-scorm/` (get the teacher's go-ahead before each).
+  and the class handout (activity series, solubility table). Packages 1 to 3 are built (3 has its own section below). Next:
+  `net-ionic-equations-scorm/` (get the teacher's go-ahead first).
 - **Two packages, one code base.** Every file in `src/js` (except `config.js`), `src/css` and `tools/` is identical in
   both, and each validator fails if they differ: make a fix in one and copy it to the other. `config.js` holds
   `classify`, the save key and the minutes; the page title and h1, manifest (`BALPART_*`, `BALTYPES_*`), `build.sh`,
@@ -660,3 +661,33 @@ not the full page.
   `bench.js` (workbench, inventory, type picker, `Bench.picture`), `steps.js` (lesson steps, the six types, choice questions), `scorm.js`, `app.js`;
   `tools/load.js` loads them for the validator and answer key. Teacher links: `?step=<id or number>`,
   `?step=set&seed=<n>&problem=<1 to 10>`.
+
+## predicting-products-scorm (zip v1, SCHEMA 1)
+
+- **Key objective:** from the reactants alone, decide whether a reaction happens, write the products from ion charges,
+  give states, balance. Only single replacement (activity series) and double replacement that makes a solid
+  (solubility table); "no reaction" is a real answer (3 of every 10 graded problems).
+- 11 steps in 4 parts; 37 graded items: 4 questions and 33 problem steps (10 problems: 5 single, 3 metal + salt, 1 metal
+  + acid, 1 halogen, two of the five with no reaction; 5 double, one with no reaction). Score = items right first / 37.
+- **The class handout is the model (`ions.js`)** and is drawn beside everything (`ref.js`: activity series with the ion
+  each metal forms, the halogens, the solubility table). Agreed additions: Br⁻ and I⁻ follow Cl⁻, lithium always
+  soluble, F₂ > Cl₂ > Br₂ > I₂. The validator types the series and the solubility of every ion pair a second time.
+- **Never used (`Ions.AVOID`):** pairs whose real compound is slightly soluble, reacts with water or does not exist
+  (CaSO₄, Ag₂SO₄, Ca(OH)₂, Sr(OH)₂, PbCl₂, PbBr₂, AgOH, NH₄OH, CuI₂, Al₂(CO₃)₃, sulfides of Mg/Ca/Ba/Sr/Al, most
+  acetates). Lone metals are Mg, Al, Zn, Fe, Pb, Cu, Ag (none that reacts with water); no metal + water. A single
+  replacement is asked only when the new salt is soluble. A lone halogen is (aq); Br₂ product (l), I₂ (s).
+- **The ladder (`ladder.js`):** rungs `react` (a choice and Submit answer), `products` (pick a positive and a negative
+  ion with their charges shown, set how many of each; in a single replacement also the element set free, Cu or Cu₂, H or
+  H₂), `states`, `balance` (the balancing packages' workbench, reference hidden for width). Single: react first, and a
+  problem with no reaction is that one rung. Double: products, states, then react, then balance if a solid forms. The
+  first answer to each rung counts; an unfinished Check is not counted; Show me after three misses. Slips named:
+  charges not cancelling, not lowest terms, the reactants built again, a metal written diatomic, H for H₂.
+- **Animations (`scene.js`):** a metal strip in a solution (ions arrive and become atoms, atoms leave as ions; or
+  nothing) and two solutions mixing (the ions of the solid settle, the rest float; or nothing). Drawn from the problem,
+  roughly to scale only; reduced motion shows the end. Package 4 needs true ionic radii and constant motion instead.
+- **Shared code:** `chem.js`, `bench.js`, `util.js`, `scorm.js` are the balancing packages' files unchanged (this
+  validator fails if they differ: a fix goes into all three packages); `particles.js` is theirs plus strontium. `Rx`
+  here is a small adapter in `ions.js` (name and particle tree built from the ions).
+- **Files:** `config.js`, `util.js`, `chem.js`, `ions.js`, `particles.js`, `problems.js` (`Gen.make`, `Gen.pools`, `Gen.set`,
+  `Gen.quiz`), `ref.js`, `scene.js`, `bench.js`, `ladder.js`, `steps.js`, `scorm.js`, `app.js`. Teacher links:
+  `?step=<id or number>`, `?step=set&seed=<n>&problem=<1 to 10>&rung=<1 to 4>`.

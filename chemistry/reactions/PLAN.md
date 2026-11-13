@@ -1,6 +1,6 @@
 # Reactions unit: plan for four SCORM packages (honors chemistry)
 
-Status: **the teacher has reviewed the plan (answers below). Packages 1 and 2 are built; packages 3 and 4 are not.**
+Status: **the teacher has reviewed the plan (answers below). Packages 1 and 2 are merged into main; package 3 is built and waiting for the teacher's review; package 4 is not built.**
 Where this plan and "The teacher's answers" disagree, the answers win.
 
 ## The teacher's answers (review of this plan)
@@ -167,6 +167,10 @@ rung. Plus 4 choice questions (reading the series and the table).
 - Double replacement: only precipitates. No gas formers, no water formers here (water comes in package 4).
 - Only pairs whose solubility is clear-cut: the validator holds real solubilities and refuses borderline cases
   (CaSO₄, Ag₂SO₄, Ca(OH)₂, PbCl₂).
+
+**As built (v1, SCHEMA 1):** 11 steps in 4 parts; 37 graded items (4 questions, 33 problem steps). The rungs are as
+planned, except that in a double replacement "will it react?" comes after the states (that is when it can be answered).
+The handout is drawn on screen beside everything. See the package README and `CLAUDE.md`.
 
 ## 4. Net ionic equations
 
