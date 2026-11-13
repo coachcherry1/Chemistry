@@ -106,7 +106,6 @@ var Gen = (function () {
     });
     METALS.concat(WATER_NO).forEach(function (m) {
       var p = make(m, 'HOH');
-      if (p.reacts && !aq(m, 'OH')) return;      /* the hydroxide it makes must be clearly soluble */
       var list = p.reacts ? out.waterYes : out.waterNo;
       if (!list.some(function (q) { return q.id === p.id; }) && (p.reacts || WATER_NO.indexOf(m) >= 0)) list.push(p);
     });

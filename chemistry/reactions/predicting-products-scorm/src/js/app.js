@@ -17,7 +17,7 @@ var App = (function () {
 
   /* Bump whenever the steps, the pools or the handout data change: a save
      from an older release is then discarded. */
-  var SCHEMA = 2;
+  var SCHEMA = 3;
 
   var h = UI.h;
 

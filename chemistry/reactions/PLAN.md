@@ -24,6 +24,8 @@ The teacher asked for the handout to be made more accurate and printable. The co
 tiers; solubility rules with group 1, Br⁻, I⁻, Hg₂²⁺ and a slightly-soluble column), printed as
 `reference-sheet/Activity_Series_and_Solubility_Rules.pdf`. Package 4 must take its solubility from that data.
 
+The solubility table has **two answers only, soluble or insoluble, as a novice chemist would see them** (no "slightly soluble"; calcium hydroxide is insoluble); package 4 uses the same rules. Two PDFs exist: the full reference sheet and an assessment version without the rules for using the tables.
+
 The teacher's review of package 3: metals that react with water are included; **state symbols only where they matter**
 (none in a single replacement; (aq) and (s) in a double replacement, and so throughout package 4); two solids at once
 are allowed.

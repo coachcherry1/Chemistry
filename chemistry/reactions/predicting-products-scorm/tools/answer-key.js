@@ -37,16 +37,17 @@ const cats = (list) => { const g1 = Ions.G1.every((k) => list.indexOf(k) >= 0); 
 const anName = (k) => { const t = Ions.ANIONS[k] || Ions.SHEET_IONS[k]; return t[2] + ' ' + Chem.pretty(t[0]) + (t[1] > 1 ? t[1] : '') + '−'; };
 p('**Solubility.** Always soluble: compounds of group 1 (Li+, Na+, K+, Rb+, Cs+) and of NH₄+. Rows marked * are on the printed sheet only.');
 p('');
-p('| Soluble | except with | slightly soluble with |');
-p('| --- | --- | --- |');
-Ions.TABLE.soluble.forEach((r) => p('| ' + anName(r.an) + (r.sheet ? ' *' : '') + ' | ' + cats(r.not) + ' | ' + (r.slight.length ? cats(r.slight) : '') + ' |'));
+p('| Soluble | except with |');
+p('| --- | --- |');
+Ions.TABLE.soluble.forEach((r) => p('| ' + anName(r.an) + (r.sheet ? ' *' : '') + ' | ' + cats(r.not) + ' |'));
 p('');
-p('| Insoluble | except with | slightly soluble with |');
-p('| --- | --- | --- |');
-Ions.TABLE.insoluble.forEach((r) => p('| ' + anName(r.an) + (r.sheet ? ' *' : '') + ' | ' + cats(r.but) + ' | ' + (r.slight.length ? cats(r.slight) : '') + ' |'));
+p('| Insoluble | except with |');
+p('| --- | --- |');
+Ions.TABLE.insoluble.forEach((r) => p('| ' + anName(r.an) + (r.sheet ? ' *' : '') + ' | ' + cats(r.but) + ' |'));
 p('');
-p('Never used, as a reactant or a product, because the real compound is only slightly soluble, reacts with water or does not exist: ' +
-  Ions.AVOID.filter((x) => !/^Li /.test(x)).map((x) => { const t = x.split(' '); return Chem.pretty(Ions.formula(t[0], t[1])); }).join(', ') + '.');
+p('There is no "slightly soluble": what a novice would see as a solid is insoluble, so Ca(OH)₂, CaSO₄, Ag₂SO₄, PbCl₂ and PbBr₂ are solids in the problems. ' +
+  'Never used, as a reactant or a product, because the real compound reacts with water, does not exist or is too borderline to ask about: ' +
+  Ions.AVOID.map((x) => { const t = x.split(' '); return Chem.pretty(Ions.formula(t[0], t[1])); }).join(', ') + '.');
 p('');
 p('## The lesson (not graded)');
 p('');

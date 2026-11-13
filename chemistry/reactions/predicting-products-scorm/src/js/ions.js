@@ -18,8 +18,9 @@
  * The handout was corrected at the teacher's request (November 2026): the
  * series follows the standard reduction potentials and says which metals
  * react with cold water, with steam and with acids; the solubility rules name
- * the group 1 ions, bromide, iodide and the mercury(I) exceptions, and mark
- * the slightly soluble compounds. The halogens are F2 > Cl2 > Br2 > I2. The
+ * the group 1 ions, bromide, iodide and the mercury(I) exceptions, with
+ * nothing in between (a compound that comes out as a solid is insoluble).
+ * The halogens are F2 > Cl2 > Br2 > I2. The
  * printed sheet (../reference-sheet/) is drawn from this same data.
  */
 var Ions = (function () {
@@ -61,32 +62,34 @@ var Ions = (function () {
   /* elements as they are written alone, with their state at room temperature */
   var ELEMENT = { H: ['H2', 'g', 'hydrogen'], F: ['F2', 'g', 'fluorine'], Cl: ['Cl2', 'g', 'chlorine'], Br: ['Br2', 'l', 'bromine'], I: ['I2', 's', 'iodine'] };
 
-  /* The solubility rules. G1: the group 1 ions. Each row: the negative ion,
-     the positive ions that are the exception, and the positive ions whose
-     compound is only SLIGHTLY soluble (neither clearly dissolved nor clearly a
-     solid: those compounds are never used in a problem). Rows marked sheet
-     are for the printed reference only: no problem uses those ions. */
+  /* The solubility rules, as a novice chemist would see them (the teacher's
+     scope): a compound either dissolves, (aq), or a solid is seen, (s). There is
+     no "slightly soluble": a compound that comes out of a classroom solution as
+     a solid, like calcium hydroxide or lead(II) chloride, is insoluble.
+     G1: the group 1 ions. Each row: the negative ion and the positive ions that
+     are the exception. Rows marked sheet are for the printed reference only: no
+     problem uses those ions. */
   var G1 = ['Li', 'Na', 'K', 'Rb', 'Cs'];
   var TABLE = {
     always: G1.concat(['NH4']),
     soluble: [
-      { an: 'NO3', not: [], slight: [] },
-      { an: 'C2H3O2', not: [], slight: ['Ag'] },
-      { an: 'ClO3', not: [], slight: [], sheet: true },
-      { an: 'Cl', not: ['Ag', 'Hg2'], slight: ['Pb'] },
-      { an: 'Br', not: ['Ag', 'Hg2'], slight: ['Pb'] },
-      { an: 'I', not: ['Ag', 'Hg2', 'Pb'], slight: [] },
-      { an: 'SO4', not: ['Ba', 'Sr', 'Pb', 'Hg2'], slight: ['Ca', 'Ag'] }
+      { an: 'NO3', not: [] },
+      { an: 'C2H3O2', not: [] },
+      { an: 'ClO3', not: [], sheet: true },
+      { an: 'Cl', not: ['Ag', 'Hg2', 'Pb'] },
+      { an: 'Br', not: ['Ag', 'Hg2', 'Pb'] },
+      { an: 'I', not: ['Ag', 'Hg2', 'Pb'] },
+      { an: 'SO4', not: ['Ca', 'Sr', 'Ba', 'Pb', 'Hg2', 'Ag'] }
     ],
     insoluble: [
-      { an: 'CO3', but: G1.concat(['NH4']), slight: [] },
-      { an: 'PO4', but: G1.concat(['NH4']), slight: [] },
-      { an: 'OH', but: G1.concat(['Ba']), slight: ['Ca', 'Sr'] },
-      { an: 'S', but: G1.concat(['NH4', 'Ca', 'Sr', 'Ba']), slight: [] },
-      { an: 'SO3', but: G1.concat(['NH4']), slight: [], sheet: true },
-      { an: 'CrO4', but: G1.concat(['NH4', 'Mg']), slight: ['Ca'], sheet: true },
-      { an: 'SiO3', but: G1, slight: [], sheet: true },
-      { an: 'O', but: G1.concat(['Ca', 'Sr', 'Ba']), slight: [], sheet: true, note: 'these oxides react with water and form hydroxides' }
+      { an: 'CO3', but: G1.concat(['NH4']) },
+      { an: 'PO4', but: G1.concat(['NH4']) },
+      { an: 'OH', but: G1.concat(['Ba']) },
+      { an: 'S', but: G1.concat(['NH4', 'Ca', 'Sr', 'Ba']) },
+      { an: 'SO3', but: G1.concat(['NH4']), sheet: true },
+      { an: 'CrO4', but: G1.concat(['NH4', 'Mg', 'Ca']), sheet: true },
+      { an: 'SiO3', but: G1, sheet: true },
+      { an: 'O', but: G1.concat(['Ca', 'Sr', 'Ba']), sheet: true, note: 'these oxides react with water and form hydroxides' }
     ]
   };
   /* ions that are only on the reference: [formula, charge, name] */
@@ -98,11 +101,11 @@ var Ions = (function () {
     for (i = 0; i < TABLE.insoluble.length; i++) if (TABLE.insoluble[i].an === an) return { r: TABLE.insoluble[i], soluble: false };
     throw new Error('no solubility rule for ' + an);
   }
-  /* Pairs never used, as a reactant or as a product: the compound is slightly
-     soluble (the rules give no clear answer), reacts with water, or does not
-     exist. H is handled apart (acids and water). */
-  var AVOID = ['Ca SO4', 'Ag SO4', 'Ca OH', 'Sr OH', 'Ag OH', 'NH4 OH', 'Pb Cl', 'Pb Br', 'Cu I', 'Al CO3', 'Al S', 'Mg S', 'Ca S', 'Ba S', 'Sr S',
-    'Ag C2H3O2', 'Mg C2H3O2', 'Sr C2H3O2', 'Al C2H3O2', 'Zn C2H3O2', 'Fe C2H3O2', 'Cu C2H3O2', 'Li CO3', 'Li PO4', 'Li OH', 'Li S', 'Li C2H3O2'];
+  /* Pairs never used, as a reactant or as a product: the compound reacts with
+     water, or does not exist, or (silver acetate) is too borderline to ask
+     about. H is handled apart (acids and water). */
+  var AVOID = ['Ag OH', 'NH4 OH', 'Cu I', 'Al CO3', 'Al S', 'Mg S', 'Ca S', 'Ba S', 'Sr S',
+    'Ag C2H3O2', 'Mg C2H3O2', 'Sr C2H3O2', 'Al C2H3O2', 'Zn C2H3O2', 'Fe C2H3O2', 'Cu C2H3O2', 'Li OH', 'Li S', 'Li C2H3O2'];
 
   function gcd(a, b) { while (b) { var t = a % b; a = b; b = t; } return a; }
   function usable(cat, an) { return AVOID.indexOf(cat + ' ' + an) < 0; }
@@ -129,7 +132,6 @@ var Ions = (function () {
     var x = row(an);
     return x.soluble ? x.r.not.indexOf(cat) < 0 : x.r.but.indexOf(cat) >= 0;
   }
-  function slight(cat, an) { return row(an).r.slight.indexOf(cat) >= 0; }
 
   /* ---- every compound that can appear: formula -> { cat, an } */
   var BY = {};
@@ -250,7 +252,7 @@ var Ions = (function () {
     return out(root);
   }
 
-  return { G1: G1, TIERS: TIERS, tier: tier, SHEET_IONS: SHEET_IONS, row: row, slight: slight, CATIONS: CATIONS, ANIONS: ANIONS, ACIDS: ACIDS, SERIES: SERIES, HALOGENS: HALOGENS, ELEMENT: ELEMENT, TABLE: TABLE, AVOID: AVOID, BY: BY,
+  return { G1: G1, TIERS: TIERS, tier: tier, SHEET_IONS: SHEET_IONS, row: row, CATIONS: CATIONS, ANIONS: ANIONS, ACIDS: ACIDS, SERIES: SERIES, HALOGENS: HALOGENS, ELEMENT: ELEMENT, TABLE: TABLE, AVOID: AVOID, BY: BY,
            usable: usable, ratio: ratio, formula: formula, written: written, soluble: soluble, parts: parts, name: name, state: state, tree: tree,
            isElement: isElement, elementOf: elementOf, symOf: symOf, rank: rank, hrank: hrank, replaces: replaces, single: single, double: double };
 })();

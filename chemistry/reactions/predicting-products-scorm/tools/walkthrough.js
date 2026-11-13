@@ -240,7 +240,7 @@ const fakeLMS = () => {
   expect(/Mg \+ 2 HCl → MgCl₂ \+ H₂/.test(await page.textContent('.final-eq')), 'sr2: the final equation, without states');
   await next();
 
-  expect(await page.locator('.ref .sol-table').count() === 2 && /slightly/.test(await page.textContent('.ref')), 'the solubility rules should be beside the drill');
+  expect(await page.locator('.ref .sol-table').count() === 2 && !/slightly/.test(await page.textContent('.ref')), 'the solubility rules should be beside the drill');
   await drill(await page.evaluate(() => Steps.SOL.map((f) => Ions.state(f) === 'aq')), 'sol');
   await watch('mix', 'Ag⁺ and Cl⁻');
   await solve(['products', 'states']);

@@ -17,28 +17,28 @@ The same data makes the printable sheet, `../reference-sheet/Activity_Series_and
 
 **Solubility.** Always soluble: compounds of group 1 (Li+, Na+, K+, Rb+, Cs+) and of NH₄+. Rows marked * are on the printed sheet only.
 
-| Soluble | except with | slightly soluble with |
-| --- | --- | --- |
-| nitrate NO₃− | none |  |
-| acetate C₂H₃O₂− | none | Ag+ |
-| chlorate ClO₃− * | none |  |
-| chloride Cl− | Ag+, Hg₂2+ | Pb2+ |
-| bromide Br− | Ag+, Hg₂2+ | Pb2+ |
-| iodide I− | Ag+, Hg₂2+, Pb2+ |  |
-| sulfate SO₄2− | Ba2+, Sr2+, Pb2+, Hg₂2+ | Ca2+, Ag+ |
+| Soluble | except with |
+| --- | --- |
+| nitrate NO₃− | none |
+| acetate C₂H₃O₂− | none |
+| chlorate ClO₃− * | none |
+| chloride Cl− | Ag+, Hg₂2+, Pb2+ |
+| bromide Br− | Ag+, Hg₂2+, Pb2+ |
+| iodide I− | Ag+, Hg₂2+, Pb2+ |
+| sulfate SO₄2− | Ca2+, Sr2+, Ba2+, Pb2+, Hg₂2+, Ag+ |
 
-| Insoluble | except with | slightly soluble with |
-| --- | --- | --- |
-| carbonate CO₃2− | group 1, NH₄+ |  |
-| phosphate PO₄3− | group 1, NH₄+ |  |
-| hydroxide OH− | group 1, Ba2+ | Ca2+, Sr2+ |
-| sulfide S2− | group 1, NH₄+, Ca2+, Sr2+, Ba2+ |  |
-| sulfite SO₃2− * | group 1, NH₄+ |  |
-| chromate CrO₄2− * | group 1, NH₄+, Mg2+ | Ca2+ |
-| silicate SiO₃2− * | group 1 |  |
-| oxide O2− * | group 1, Ca2+, Sr2+, Ba2+ |  |
+| Insoluble | except with |
+| --- | --- |
+| carbonate CO₃2− | group 1, NH₄+ |
+| phosphate PO₄3− | group 1, NH₄+ |
+| hydroxide OH− | group 1, Ba2+ |
+| sulfide S2− | group 1, NH₄+, Ca2+, Sr2+, Ba2+ |
+| sulfite SO₃2− * | group 1, NH₄+ |
+| chromate CrO₄2− * | group 1, NH₄+, Mg2+, Ca2+ |
+| silicate SiO₃2− * | group 1 |
+| oxide O2− * | group 1, Ca2+, Sr2+, Ba2+ |
 
-Never used, as a reactant or a product, because the real compound is only slightly soluble, reacts with water or does not exist: CaSO₄, Ag₂SO₄, Ca(OH)₂, Sr(OH)₂, AgOH, NH₄OH, PbCl₂, PbBr₂, CuI₂, Al₂(CO₃)₃, Al₂S₃, MgS, CaS, BaS, SrS, AgC₂H₃O₂, Mg(C₂H₃O₂)₂, Sr(C₂H₃O₂)₂, Al(C₂H₃O₂)₃, Zn(C₂H₃O₂)₂, Fe(C₂H₃O₂)₂, Cu(C₂H₃O₂)₂.
+There is no "slightly soluble": what a novice would see as a solid is insoluble, so Ca(OH)₂, CaSO₄, Ag₂SO₄, PbCl₂ and PbBr₂ are solids in the problems. Never used, as a reactant or a product, because the real compound reacts with water, does not exist or is too borderline to ask about: AgOH, NH₄OH, CuI₂, Al₂(CO₃)₃, Al₂S₃, MgS, CaS, BaS, SrS, AgC₂H₃O₂, Mg(C₂H₃O₂)₂, Sr(C₂H₃O₂)₂, Al(C₂H₃O₂)₃, Zn(C₂H₃O₂)₂, Fe(C₂H₃O₂)₂, Cu(C₂H₃O₂)₂, LiOH, Li₂S, LiC₂H₃O₂.
 
 ## The lesson (not graded)
 
@@ -60,7 +60,7 @@ Never used, as a reactant or a product, because the real compound is only slight
 3. BaSO₄, barium sulfate: **(s)**
 4. K₂CO₃, potassium carbonate: **(aq)**
 5. CaCO₃, calcium carbonate: **(s)**
-6. Cu(OH)₂, copper(II) hydroxide: **(s)**
+6. Ca(OH)₂, calcium hydroxide: **(s)**
 7. (NH₄)₃PO₄, ammonium phosphate: **(aq)**
 8. Ba(OH)₂, barium hydroxide: **(aq)**
 
@@ -345,10 +345,11 @@ Never used, as a reactant or a product, because the real compound is only slight
 - Cu + HCl → no reaction
 - Cu + H₂SO₄ → no reaction
 
-### A metal and cold water: reacts (3)
+### A metal and cold water: reacts (4)
 
 - 2 K + 2 HOH → 2 KOH + H₂
 - Ba + 2 HOH → Ba(OH)₂ + H₂
+- Ca + 2 HOH → Ca(OH)₂ + H₂
 - 2 Na + 2 HOH → 2 NaOH + H₂
 
 ### A metal and cold water: no reaction (5)
@@ -379,9 +380,9 @@ Never used, as a reactant or a product, because the real compound is only slight
 
 ### Double replacement
 
-489 pairs of solutions give a solid and 1070 give no reaction: every pair of soluble compounds of Na+, K+, NH₄+, Mg2+, Ca2+, Ba2+, Sr2+, Al3+, Zn2+, Fe2+, Pb2+, Cu2+, Ag+ with Cl−, Br−, I−, NO₃−, SO₄2−, CO₃2−, PO₄3−, OH−, C₂H₃O₂−, S2− whose products are both usable. The solids that can form:
+590 pairs of solutions give a solid and 1070 give no reaction: every pair of soluble compounds of Na+, K+, NH₄+, Mg2+, Ca2+, Ba2+, Sr2+, Al3+, Zn2+, Fe2+, Pb2+, Cu2+, Ag+ with Cl−, Br−, I−, NO₃−, SO₄2−, CO₃2−, PO₄3−, OH−, C₂H₃O₂−, S2− whose products are both usable. The solids that can form:
 
-Ag₂CO₃, Ag₂S, Ag₃PO₄, AgBr, AgCl, AgI, Al(OH)₃, AlPO₄, Ba₃(PO₄)₂, BaCO₃, BaSO₄, Ca₃(PO₄)₂, CaCO₃, Cu(OH)₂, Cu₃(PO₄)₂, CuCO₃, CuS, Fe(OH)₂, Fe₃(PO₄)₂, FeCO₃, FeS, Mg(OH)₂, Mg₃(PO₄)₂, MgCO₃, Pb(OH)₂, Pb₃(PO₄)₂, PbCO₃, PbI₂, PbS, PbSO₄, Sr₃(PO₄)₂, SrCO₃, SrSO₄, Zn(OH)₂, Zn₃(PO₄)₂, ZnCO₃, ZnS.
+Ag₂CO₃, Ag₂S, Ag₂SO₄, Ag₃PO₄, AgBr, AgCl, AgI, Al(OH)₃, AlPO₄, Ba₃(PO₄)₂, BaCO₃, BaSO₄, Ca(OH)₂, Ca₃(PO₄)₂, CaCO₃, CaSO₄, Cu(OH)₂, Cu₃(PO₄)₂, CuCO₃, CuS, Fe(OH)₂, Fe₃(PO₄)₂, FeCO₃, FeS, Mg(OH)₂, Mg₃(PO₄)₂, MgCO₃, Pb(OH)₂, Pb₃(PO₄)₂, PbBr₂, PbCO₃, PbCl₂, PbI₂, PbS, PbSO₄, Sr(OH)₂, Sr₃(PO₄)₂, SrCO₃, SrSO₄, Zn(OH)₂, Zn₃(PO₄)₂, ZnCO₃, ZnS.
 
 ## Graded questions
 
@@ -403,23 +404,23 @@ Ag₂CO₃, Ag₂S, Ag₃PO₄, AgBr, AgCl, AgI, Al(OH)₃, AlPO₄, Ba₃(PO₄
    - **Silver**
    - Iron
 3. Which of these compounds is insoluble in water, so that it would form as a solid?
-   - **PbI₂**
-   - NaOH
-   - NH₄C₂H₃O₂
-   - Fe(NO₃)₂
+   - Al₂(SO₄)₃
+   - Ba(OH)₂
+   - **PbCl₂**
+   - BaI₂
 4. Which pair of solutions gives NO reaction when they are mixed?
-   - Na₃PO₄ and ZnBr₂
-   - **Mg(NO₃)₂ and Al₂(SO₄)₃**
-   - Na₂CO₃ and AgNO₃
-   - K₂CO₃ and Ca(C₂H₃O₂)₂
+   - **Ba(NO₃)₂ and CuBr₂**
+   - BaBr₂ and AgNO₃
+   - K₃PO₄ and ZnBr₂
+   - K₂CO₃ and SrCl₂
 
 1. A piece of potassium is placed in a solution of barium nitrate, Ba(NO₃)₂. **2 K + Ba(NO₃)₂ → 2 KNO₃ + Ba**
-2. A piece of aluminum is placed in a solution of sodium chloride, NaCl. **Al + NaCl → no reaction**
-3. A piece of iron is dropped into hydrochloric acid, HCl. **Fe + 2 HCl → FeCl₂ + H₂**
-4. Solutions of potassium sulfide, K₂S, and lead(II) nitrate, Pb(NO₃)₂, are mixed. **K₂S(aq) + Pb(NO₃)₂(aq) → 2 KNO₃(aq) + PbS(s)**
-5. A piece of calcium is placed in a solution of magnesium nitrate, Mg(NO₃)₂. **Ca + Mg(NO₃)₂ → Ca(NO₃)₂ + Mg**
-6. Iodine, I₂, is added to a solution of sodium bromide, NaBr. **I₂ + NaBr → no reaction**
-7. Solutions of potassium sulfate, K₂SO₄, and zinc bromide, ZnBr₂, are mixed. **K₂SO₄(aq) + ZnBr₂(aq) → no reaction**
-8. Solutions of ammonium phosphate, (NH₄)₃PO₄, and iron(II) bromide, FeBr₂, are mixed. **2 (NH₄)₃PO₄(aq) + 3 FeBr₂(aq) → 6 NH₄Br(aq) + Fe₃(PO₄)₂(s)**
-9. Solutions of barium nitrate, Ba(NO₃)₂, and copper(II) sulfate, CuSO₄, are mixed. **Ba(NO₃)₂(aq) + CuSO₄(aq) → BaSO₄(s) + Cu(NO₃)₂(aq)**
-10. Solutions of sodium sulfide, Na₂S, and silver nitrate, AgNO₃, are mixed. **Na₂S(aq) + 2 AgNO₃(aq) → 2 NaNO₃(aq) + Ag₂S(s)**
+2. Iodine, I₂, is added to a solution of sodium bromide, NaBr. **I₂ + NaBr → no reaction**
+3. Solutions of potassium hydroxide, KOH, and copper(II) sulfate, CuSO₄, are mixed. **2 KOH(aq) + CuSO₄(aq) → K₂SO₄(aq) + Cu(OH)₂(s)**
+4. A piece of calcium is placed in a solution of magnesium nitrate, Mg(NO₃)₂. **Ca + Mg(NO₃)₂ → Ca(NO₃)₂ + Mg**
+5. Solutions of sodium hydroxide, NaOH, and strontium iodide, SrI₂, are mixed. **2 NaOH(aq) + SrI₂(aq) → 2 NaI(aq) + Sr(OH)₂(s)**
+6. Solutions of potassium carbonate, K₂CO₃, and lead(II) nitrate, Pb(NO₃)₂, are mixed. **K₂CO₃(aq) + Pb(NO₃)₂(aq) → 2 KNO₃(aq) + PbCO₃(s)**
+7. A piece of aluminum is placed in a solution of sodium chloride, NaCl. **Al + NaCl → no reaction**
+8. Solutions of calcium bromide, CaBr₂, and barium hydroxide, Ba(OH)₂, are mixed. **CaBr₂(aq) + Ba(OH)₂(aq) → Ca(OH)₂(s) + BaBr₂(aq)**
+9. A piece of iron is dropped into hydrochloric acid, HCl. **Fe + 2 HCl → FeCl₂ + H₂**
+10. Solutions of potassium chloride, KCl, and strontium bromide, SrBr₂, are mixed. **KCl(aq) + SrBr₂(aq) → no reaction**

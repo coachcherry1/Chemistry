@@ -62,7 +62,7 @@ var Steps = (function () {
     return cards(host, st, cb, list, 'Pair', 'series', 'An element only replaces one that comes AFTER it on the series. For cold water, only the metals from lithium to sodium react.');
   }
 
-  var SOL = ['NaNO3', 'AgCl', 'BaSO4', 'K2CO3', 'CaCO3', 'Cu(OH)2', '(NH4)3PO4', 'Ba(OH)2'];
+  var SOL = ['NaNO3', 'AgCl', 'BaSO4', 'K2CO3', 'CaCO3', 'Ca(OH)2', '(NH4)3PO4', 'Ba(OH)2'];
   function sol(host, st, cb) {
     var list = SOL.map(function (f) {
       var pr = Ions.parts(f), s = Ions.soluble(pr.cat, pr.an);

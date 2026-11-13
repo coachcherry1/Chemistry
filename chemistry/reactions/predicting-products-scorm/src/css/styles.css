@@ -408,7 +408,6 @@ input.coef.inv-in { width: 34px; height: 24px; font-size: 1rem; border: 1.5px so
 .series li.tier-none, .tier-key .tier-none { border-left-color: #8a97a6; }
 .tier-key { list-style: none; margin: 5px 0 0; padding: 0; font-size: 0.72rem; line-height: 1.35; }
 .tier-key li { border-left: 4px solid transparent; padding-left: 5px; margin-bottom: 1px; }
-.sol-table th:nth-child(3), .sol-slight { color: var(--muted); font-size: 0.7rem; }
 .sol-table td:first-child { white-space: nowrap; }
 .sol-table td { padding: 1px 3px; }
 .ref-table2 .sol-table { margin-bottom: 4px; }

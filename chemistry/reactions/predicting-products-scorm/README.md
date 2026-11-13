@@ -6,7 +6,7 @@ the two balancing packages first.
 **Web version:** https://coachcherry1.github.io/Chemistry/chemistry/reactions/predicting-products-scorm/src/index.html
 (works once this branch is merged into `main`)
 
-**Upload to Schoology:** `dist/predicting-products-v2.zip`
+**Upload to Schoology:** `dist/predicting-products-v3.zip`
 
 ## What students do
 
@@ -19,7 +19,7 @@ and balance. Two kinds of reaction only:
   States matter here, so they are asked: (aq) or (s).
 
 The reference (activity series with the halogens, solubility rules) is drawn on screen beside every problem, drill and
-question. The same data makes the printable sheet, `../reference-sheet/Activity_Series_and_Solubility_Rules.pdf`.
+question. The same data makes two printable sheets in `../reference-sheet/`: the full one, and an assessment version with the same tables but not the rules for using them (students are to know those by heart).
 
 | Part | Steps | Graded |
 | --- | --- | --- |
@@ -56,18 +56,18 @@ The teacher asked for the handout to be made more accurate. What changed from th
   (the old sheet had Rb, K, Cs). It now says what each metal replaces hydrogen from: Li to Na from cold water, Mg to Cd
   from steam, Co to Pb from acids only, Cu to Au from nothing. The halogens are listed: F₂ > Cl₂ > Br₂ > I₂.
 - **Solubility rules:** group 1 (lithium included) and ammonium are always soluble; bromide and iodide are listed with
-  chloride; Hg₂²⁺ is an exception for the halides and sulfate; PbI₂ is insoluble while PbCl₂ and PbBr₂ are only slightly
-  soluble; the sulfides of Ca, Sr and Ba are not insoluble. A third column marks the **slightly soluble** compounds
-  (CaSO₄, Ag₂SO₄, Ca(OH)₂, Sr(OH)₂, PbCl₂, PbBr₂, silver acetate).
+  chloride; Hg₂²⁺ is an exception for the halides and sulfate; the sulfides of Ca, Sr and Ba are not insoluble.
+- **Two answers only, as a novice would see them:** a compound either dissolves, (aq), or a solid is seen, (s). There is no
+  "slightly soluble": Ca(OH)₂, CaSO₄, Ag₂SO₄, Sr(OH)₂, PbCl₂ and PbBr₂ are insoluble, and now appear in the problems.
 
 ## Choices made in the problems
 
-- Slightly soluble compounds, and a few that react with water or do not exist, are never used as a reactant or a product:
-  `ANSWER_KEY.md` lists them.
+- A few compounds that react with water, do not exist or are too borderline to ask about (silver acetate) are never used as a
+  reactant or a product: `ANSWER_KEY.md` lists them.
 - Lone metals include the ones that react with water (K, Ba, Ca, Na) as well as Mg, Al, Zn, Fe, Pb, Cu and Ag: on paper
   the series decides. The ion each metal forms is the one on the series (iron forms Fe²⁺, lead Pb²⁺, copper Cu²⁺).
-- A metal in cold water: K, Na and Ba react (a hydroxide and H₂); Zn, Fe, Pb, Cu and Ag do not. Calcium is not asked
-  with water because Ca(OH)₂ is only slightly soluble.
+- A metal in cold water: K, Na, Ba and Ca react (a hydroxide and H₂; calcium's hydroxide is a solid, which a single
+  replacement does not show); Zn, Fe, Pb, Cu and Ag do not.
 - A double replacement may make two solids at once (Ba(OH)₂ + CuSO₄).
 
 ## Teacher links
