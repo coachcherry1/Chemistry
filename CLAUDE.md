@@ -663,7 +663,7 @@ not the full page.
   `tools/load.js` loads them for the validator and answer key. Teacher links: `?step=<id or number>`,
   `?step=set&seed=<n>&problem=<1 to 10>`.
 
-## predicting-products-scorm (zip v3, SCHEMA 3) and reference-sheet
+## predicting-products-scorm (zip v4, SCHEMA 4) and reference-sheet
 
 - **Key objective:** from the reactants alone, decide whether a reaction happens, write the products from ion charges,
   balance. Only single replacement (activity series) and double replacement that makes a solid (solubility rules);
@@ -701,12 +701,25 @@ not the full page.
   balance if a solid forms. The first answer to each rung counts; an unfinished Check is not counted; Show me after
   three misses. Slips named: charges not cancelling, not lowest terms, the reactants built again, a metal written
   diatomic, H for H₂.
-- **Animations (`scene.js`):** a metal strip in a solution (ions arrive and become atoms, atoms leave as ions; or
-  nothing) and two solutions mixing (the ions of the solid settle, the rest float; or nothing). Drawn from the problem,
-  roughly to scale only; reduced motion shows the end. Package 4 needs true ionic radii and constant motion instead.
+- **The strip of steps never gives the answer away (the teacher):** every problem of a kind shows the same pills
+  (`SHOWN` in `ladder.js`: single react, products, balance; double products, states, react, balance) whether or not it
+  reacts; unused steps are marked "not needed" only once the problem is finished. Scoring still counts only the steps
+  actually done (`p.rungs`).
+- **No lesson reaction is ever a graded problem (the teacher: it would bore, no desirable difficulty):** `Gen.LESSON` in
+  `problems.js` is the one list of the lesson's reactions (drill pairs, animations, the four worked problems; `app.js`
+  and `steps.js` read it) and `pools()` filters them out; the validator and the walkthrough check.
+- **Animations (`scene.js`, `Scene.show(host, problem, { auto, onDone })`), in the graded set too (the teacher: dual
+  coding):** every finished problem, lesson or graded, plays its reaction as particles under the final equation (once by
+  itself, then Play again; never before the answer). Kinds: a metal strip in a salt solution (ions arrive and become
+  atoms, atoms leave as ions), in an acid (H⁺ arrives, H₂ bubbles leave), in cold water (HOH arrives, goes back as OH⁻, H₂
+  leaves), a halogen molecule meeting two halide ions, and two solutions mixing (the ions of the solid settle, the rest
+  float). With no reaction the particles move about and nothing changes. Drawn from the problem, roughly to scale only;
+  reduced motion shows the end. Package 4 needs true ionic radii and constant motion instead.
+- **The reference is beside the two prediction steps too** (`plate`: series, `mix`: solubility rules), since the
+  prediction is made from it.
 - **Shared code:** `chem.js`, `bench.js`, `util.js`, `scorm.js` are the balancing packages' files unchanged (this
   validator fails if they differ: a fix goes into all three packages); `particles.js` is theirs plus strontium. `Rx`
   here is a small adapter in `ions.js` (name and particle tree built from the ions).
 - **Files:** `config.js`, `util.js`, `chem.js`, `ions.js`, `particles.js`, `problems.js` (`Gen.make`, `Gen.pools`, `Gen.set`,
   `Gen.quiz`), `ref.js`, `scene.js`, `bench.js`, `ladder.js`, `steps.js`, `scorm.js`, `app.js`. Teacher links:
-  `?step=<id or number>`, `?step=set&seed=<n>&problem=<1 to 10>&rung=<n>`.
+  `?step=<id or number>`, `?step=set&seed=<n>&problem=<1 to 10>&rung=<n>` (or `&done` for the finished problem with its animation).

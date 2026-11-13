@@ -14,7 +14,8 @@
  * work (saved): { i: rung index, g: { rung: 1 or 0, the first answer }, n: { rung: checks }, v: { ... the
  * student's choices }, bench: { ... }, r: 1 when done }
  * opts: graded (the first answer of every rung counts: opts.onRung(rung, right, typed, wanted)), onSave, onDone,
- * next: { label, onClick }. Not an answer: a Check with something left unchosen. Show me after three misses.
+ * next: { label, onClick }. The strip of steps is the same for every problem of a kind, so it never shows that a
+ * problem has no reaction; a finished problem shows its reaction as particles (scene.js). Not an answer: a Check with something left unchosen. Show me after three misses.
  */
 var Ladder = (function () {
   'use strict';
@@ -47,7 +48,7 @@ var Ladder = (function () {
     ]);
     var root = h('div', { class: 'ladder' }, [main, ref.el]);
     host.appendChild(root);
-    var bench = null;
+    var bench = null, fresh = false;
 
     function save() { if (opts.onSave) opts.onSave(); }
     function fbEl() { return h('p', { class: 'fb', role: 'status', 'aria-live': 'polite' }); }
@@ -58,12 +59,19 @@ var Ladder = (function () {
       if (opts.graded && opts.onRung) opts.onRung(rung, right, typed, want);
     }
 
+    /* Every problem of a kind shows the same steps, whether or not it reacts:
+       the strip must not give away that there is no reaction. A step that
+       turns out not to be needed is marked so once the problem is finished. */
+    var SHOWN = p.kind === 'sr' ? ['react', 'products', 'balance'] : ['products', 'states', 'react', 'balance'];
     function paintStrip() {
       strip.innerHTML = '';
-      p.rungs.forEach(function (r, k) {
-        var st = k < work.i ? (work.g[r] === 1 ? 'right' : 'fixed') : k === work.i && !work.r ? 'now' : '';
-        strip.appendChild(h('li', { class: 'rung ' + st, 'aria-current': st === 'now' ? 'step' : null }, [
-          h('span', { class: 'rung-n', text: String(k + 1) }), NAMES[r] + (k < work.i ? (work.g[r] === 1 ? ' ★' : ' ✓') : '')]));
+      SHOWN.forEach(function (r, n) {
+        var k = p.rungs.indexOf(r), st, mark = '';
+        if (k < 0) st = work.r ? 'skipped' : '';
+        else if (k < work.i) { st = work.g[r] === 1 ? 'right' : 'fixed'; mark = work.g[r] === 1 ? ' ★' : ' ✓'; }
+        else st = k === work.i && !work.r ? 'now' : '';
+        strip.appendChild(h('li', { class: 'rung ' + st, 'aria-current': st === 'now' ? 'step' : null, title: st === 'skipped' ? 'not needed: no reaction' : null }, [
+          h('span', { class: 'rung-n', text: String(n + 1) }), NAMES[r] + mark + (st === 'skipped' ? ' (not needed)' : '')]));
       });
     }
     /* what has been settled so far, one line per finished rung */
@@ -81,7 +89,7 @@ var Ladder = (function () {
     }
     function advance() {
       work.i++;
-      if (work.i >= p.rungs.length) { work.r = 1; }
+      if (work.i >= p.rungs.length) { work.r = 1; fresh = true; }
       save();
       render();
       if (work.r && opts.onDone) opts.onDone();
@@ -292,8 +300,11 @@ var Ladder = (function () {
       paintStrip();
       paintDone();
       if (work.r) {
+        /* the answer, then the same reaction as particles: it plays by itself the first time */
         area.appendChild(h('p', { class: 'final-eq', text: Gen.equation(p, true) }));
-        if (opts.next) area.appendChild(h('div', { class: 'btnrow' }, [h('button', { type: 'button', class: 'primary ladder-next', text: opts.next.label, onclick: opts.next.onClick })]));
+        var sc = Scene.show(area, p, { auto: fresh });
+        fresh = false;
+        if (opts.next) sc.row.appendChild(h('button', { type: 'button', class: 'primary ladder-next', text: opts.next.label, onclick: opts.next.onClick }));
         return;
       }
       var r = p.rungs[work.i];

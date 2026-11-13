@@ -411,3 +411,9 @@ input.coef.inv-in { width: 34px; height: 24px; font-size: 1rem; border: 1.5px so
 .sol-table td:first-child { white-space: nowrap; }
 .sol-table td { padding: 1px 3px; }
 .ref-table2 .sol-table { margin-bottom: 4px; }
+
+/* a step that turned out not to be needed (no reaction), and the picture of a finished problem */
+.rung.skipped { opacity: 0.55; text-decoration: line-through; }
+.ladder .scene-svg { max-height: 205px; }
+.ladder .scene-box { max-width: 560px; margin: 0 auto; }
+.scene-row { justify-content: space-between; }

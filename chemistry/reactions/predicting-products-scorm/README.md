@@ -6,7 +6,7 @@ the two balancing packages first.
 **Web version:** https://coachcherry1.github.io/Chemistry/chemistry/reactions/predicting-products-scorm/src/index.html
 (works once this branch is merged into `main`)
 
-**Upload to Schoology:** `dist/predicting-products-v3.zip`
+**Upload to Schoology:** `dist/predicting-products-v4.zip`
 
 ## What students do
 
@@ -36,6 +36,15 @@ question. The same data makes two printable sheets in `../reference-sheet/`: the
 | Products | The new compound (pick its two ions, set how many of each) and the element set free (Cu or Cu₂? H or H₂?) | Both possible products, each built from a positive and a negative ion |
 | States | not asked: they do not matter in a single replacement | (aq) or (s) for each product, from the solubility rules |
 | Balance | The workbench of the balancing packages, inventory down the centre | The same |
+
+**The strip of steps is the same for every problem of a kind**, whether or not it reacts, so it never gives away a
+"no reaction" problem; a step that turns out not to be needed is marked so only when the problem is finished.
+
+**Every finished problem plays as particles** (also in the graded set): a metal strip in a salt solution, in an acid (H₂
+bubbles away) or in cold water (HOH leaves an OH⁻ behind), a halogen meeting halide ions, or two solutions mixing with the
+solid settling. With no reaction, the particles move about and nothing changes.
+
+**No reaction from the lesson comes back in the graded set.**
 
 Ions are shown with their charges; the student has to make the charges cancel. Feedback names the usual slips: subscripts
 copied from the reactant, a formula not in lowest terms, the reactants built again, H for H₂, a wrong state in a double replacement.
@@ -73,7 +82,8 @@ The teacher asked for the handout to be made more accurate. What changed from th
 ## Teacher links
 
 - `src/index.html?step=<id or number>` opens one step (ids: willit, plate, sr1, sr2, sol, mix, dr1, dr2, quiz, set, results).
-- `?step=set&seed=<n>&problem=<1 to 10>&rung=<n>` opens one graded problem of one student's set at one step.
+- `?step=set&seed=<n>&problem=<1 to 10>&rung=<n>` opens one graded problem of one student's set at one step; `&done` in
+  place of `&rung=<n>` opens it finished, with its animation.
 - `ANSWER_KEY.md` has the reference tables, every single replacement in the pools and the solids the double replacements make.
 
 ## How it is built

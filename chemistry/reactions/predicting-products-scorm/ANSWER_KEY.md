@@ -73,7 +73,7 @@ There is no "slightly soluble": what a novice would see as a solid is insoluble,
 
 ## Graded problems: the pools
 
-### A metal and a salt: reacts (122)
+### A metal and a salt: reacts (120)
 
 - 2 K + Ba(NO₃)₂ → 2 KNO₃ + Ba
 - 2 K + BaCl₂ → 2 KCl + Ba
@@ -178,7 +178,6 @@ There is no "slightly soluble": what a novice would see as a solid is insoluble,
 - 2 Al + 3 FeSO₄ → Al₂(SO₄)₃ + 3 Fe
 - 2 Al + 3 Pb(NO₃)₂ → 2 Al(NO₃)₃ + 3 Pb
 - 2 Al + 3 Cu(NO₃)₂ → 2 Al(NO₃)₃ + 3 Cu
-- 2 Al + 3 CuCl₂ → 2 AlCl₃ + 3 Cu
 - 2 Al + 3 CuSO₄ → Al₂(SO₄)₃ + 3 Cu
 - Al + 3 AgNO₃ → Al(NO₃)₃ + 3 Ag
 - Zn + Fe(NO₃)₂ → Zn(NO₃)₂ + Fe
@@ -187,7 +186,6 @@ There is no "slightly soluble": what a novice would see as a solid is insoluble,
 - Zn + Pb(NO₃)₂ → Zn(NO₃)₂ + Pb
 - Zn + Cu(NO₃)₂ → Zn(NO₃)₂ + Cu
 - Zn + CuCl₂ → ZnCl₂ + Cu
-- Zn + CuSO₄ → ZnSO₄ + Cu
 - Zn + 2 AgNO₃ → Zn(NO₃)₂ + 2 Ag
 - Fe + Pb(NO₃)₂ → Fe(NO₃)₂ + Pb
 - Fe + Cu(NO₃)₂ → Fe(NO₃)₂ + Cu
@@ -198,7 +196,7 @@ There is no "slightly soluble": what a novice would see as a solid is insoluble,
 - Pb + 2 AgNO₃ → Pb(NO₃)₂ + 2 Ag
 - Cu + 2 AgNO₃ → Cu(NO₃)₂ + 2 Ag
 
-### A metal and a salt: no reaction (122)
+### A metal and a salt: no reaction (120)
 
 - Ba + KNO₃ → no reaction
 - Ba + KCl → no reaction
@@ -300,14 +298,12 @@ There is no "slightly soluble": what a novice would see as a solid is insoluble,
 - Cu + NaCl → no reaction
 - Cu + Na₂SO₄ → no reaction
 - Cu + Mg(NO₃)₂ → no reaction
-- Cu + MgCl₂ → no reaction
 - Cu + MgSO₄ → no reaction
 - Cu + Al(NO₃)₃ → no reaction
 - Cu + AlCl₃ → no reaction
 - Cu + Al₂(SO₄)₃ → no reaction
 - Cu + Zn(NO₃)₂ → no reaction
 - Cu + ZnCl₂ → no reaction
-- Cu + ZnSO₄ → no reaction
 - Cu + Fe(NO₃)₂ → no reaction
 - Cu + FeCl₂ → no reaction
 - Cu + FeSO₄ → no reaction
@@ -323,7 +319,7 @@ There is no "slightly soluble": what a novice would see as a solid is insoluble,
 - Ag + Pb(NO₃)₂ → no reaction
 - Ag + Cu(NO₃)₂ → no reaction
 
-### A metal and an acid: reacts (14)
+### A metal and an acid: reacts (13)
 
 - 2 K + 2 HCl → 2 KCl + H₂
 - 2 K + H₂SO₄ → K₂SO₄ + H₂
@@ -331,7 +327,6 @@ There is no "slightly soluble": what a novice would see as a solid is insoluble,
 - Ca + 2 HCl → CaCl₂ + H₂
 - 2 Na + 2 HCl → 2 NaCl + H₂
 - 2 Na + H₂SO₄ → Na₂SO₄ + H₂
-- Mg + 2 HCl → MgCl₂ + H₂
 - Mg + H₂SO₄ → MgSO₄ + H₂
 - 2 Al + 6 HCl → 2 AlCl₃ + 3 H₂
 - 2 Al + 3 H₂SO₄ → Al₂(SO₄)₃ + 3 H₂
@@ -345,42 +340,38 @@ There is no "slightly soluble": what a novice would see as a solid is insoluble,
 - Cu + HCl → no reaction
 - Cu + H₂SO₄ → no reaction
 
-### A metal and cold water: reacts (4)
+### A metal and cold water: reacts (3)
 
 - 2 K + 2 HOH → 2 KOH + H₂
 - Ba + 2 HOH → Ba(OH)₂ + H₂
 - Ca + 2 HOH → Ca(OH)₂ + H₂
-- 2 Na + 2 HOH → 2 NaOH + H₂
 
-### A metal and cold water: no reaction (5)
+### A metal and cold water: no reaction (4)
 
-- Zn + HOH → no reaction
 - Fe + HOH → no reaction
 - Pb + HOH → no reaction
 - Cu + HOH → no reaction
 - Ag + HOH → no reaction
 
-### A halogen and a halide: reacts (6)
+### A halogen and a halide: reacts (5)
 
-- Cl₂ + 2 NaBr → 2 NaCl + Br₂
 - Cl₂ + 2 KBr → 2 KCl + Br₂
 - Cl₂ + 2 NaI → 2 NaCl + I₂
 - Cl₂ + 2 KI → 2 KCl + I₂
 - Br₂ + 2 NaI → 2 NaBr + I₂
 - Br₂ + 2 KI → 2 KBr + I₂
 
-### A halogen and a halide: no reaction (6)
+### A halogen and a halide: no reaction (5)
 
 - Br₂ + NaCl → no reaction
 - Br₂ + KCl → no reaction
 - I₂ + NaCl → no reaction
-- I₂ + KCl → no reaction
 - I₂ + NaBr → no reaction
 - I₂ + KBr → no reaction
 
 ### Double replacement
 
-590 pairs of solutions give a solid and 1070 give no reaction: every pair of soluble compounds of Na+, K+, NH₄+, Mg2+, Ca2+, Ba2+, Sr2+, Al3+, Zn2+, Fe2+, Pb2+, Cu2+, Ag+ with Cl−, Br−, I−, NO₃−, SO₄2−, CO₃2−, PO₄3−, OH−, C₂H₃O₂−, S2− whose products are both usable. The solids that can form:
+588 pairs of solutions give a solid and 1069 give no reaction: every pair of soluble compounds of Na+, K+, NH₄+, Mg2+, Ca2+, Ba2+, Sr2+, Al3+, Zn2+, Fe2+, Pb2+, Cu2+, Ag+ with Cl−, Br−, I−, NO₃−, SO₄2−, CO₃2−, PO₄3−, OH−, C₂H₃O₂−, S2− whose products are both usable. The solids that can form:
 
 Ag₂CO₃, Ag₂S, Ag₂SO₄, Ag₃PO₄, AgBr, AgCl, AgI, Al(OH)₃, AlPO₄, Ba₃(PO₄)₂, BaCO₃, BaSO₄, Ca(OH)₂, Ca₃(PO₄)₂, CaCO₃, CaSO₄, Cu(OH)₂, Cu₃(PO₄)₂, CuCO₃, CuS, Fe(OH)₂, Fe₃(PO₄)₂, FeCO₃, FeS, Mg(OH)₂, Mg₃(PO₄)₂, MgCO₃, Pb(OH)₂, Pb₃(PO₄)₂, PbBr₂, PbCO₃, PbCl₂, PbI₂, PbS, PbSO₄, Sr(OH)₂, Sr₃(PO₄)₂, SrCO₃, SrSO₄, Zn(OH)₂, Zn₃(PO₄)₂, ZnCO₃, ZnS.
 
@@ -409,18 +400,18 @@ Ag₂CO₃, Ag₂S, Ag₂SO₄, Ag₃PO₄, AgBr, AgCl, AgI, Al(OH)₃, AlPO₄,
    - **PbCl₂**
    - BaI₂
 4. Which pair of solutions gives NO reaction when they are mixed?
+   - Na₃PO₄ and CaI₂
+   - Na₂CO₃ and BaBr₂
    - **Ba(NO₃)₂ and CuBr₂**
-   - BaBr₂ and AgNO₃
-   - K₃PO₄ and ZnBr₂
-   - K₂CO₃ and SrCl₂
+   - Na₃PO₄ and CuCl₂
 
-1. A piece of potassium is placed in a solution of barium nitrate, Ba(NO₃)₂. **2 K + Ba(NO₃)₂ → 2 KNO₃ + Ba**
-2. Iodine, I₂, is added to a solution of sodium bromide, NaBr. **I₂ + NaBr → no reaction**
-3. Solutions of potassium hydroxide, KOH, and copper(II) sulfate, CuSO₄, are mixed. **2 KOH(aq) + CuSO₄(aq) → K₂SO₄(aq) + Cu(OH)₂(s)**
-4. A piece of calcium is placed in a solution of magnesium nitrate, Mg(NO₃)₂. **Ca + Mg(NO₃)₂ → Ca(NO₃)₂ + Mg**
-5. Solutions of sodium hydroxide, NaOH, and strontium iodide, SrI₂, are mixed. **2 NaOH(aq) + SrI₂(aq) → 2 NaI(aq) + Sr(OH)₂(s)**
-6. Solutions of potassium carbonate, K₂CO₃, and lead(II) nitrate, Pb(NO₃)₂, are mixed. **K₂CO₃(aq) + Pb(NO₃)₂(aq) → 2 KNO₃(aq) + PbCO₃(s)**
-7. A piece of aluminum is placed in a solution of sodium chloride, NaCl. **Al + NaCl → no reaction**
-8. Solutions of calcium bromide, CaBr₂, and barium hydroxide, Ba(OH)₂, are mixed. **CaBr₂(aq) + Ba(OH)₂(aq) → Ca(OH)₂(s) + BaBr₂(aq)**
-9. A piece of iron is dropped into hydrochloric acid, HCl. **Fe + 2 HCl → FeCl₂ + H₂**
-10. Solutions of potassium chloride, KCl, and strontium bromide, SrBr₂, are mixed. **KCl(aq) + SrBr₂(aq) → no reaction**
+1. A piece of barium is placed in a solution of iron(II) nitrate, Fe(NO₃)₂. **Ba + Fe(NO₃)₂ → Ba(NO₃)₂ + Fe**
+2. Solutions of aluminum bromide, AlBr₃, and iron(II) nitrate, Fe(NO₃)₂, are mixed. **AlBr₃(aq) + Fe(NO₃)₂(aq) → no reaction**
+3. Iodine, I₂, is added to a solution of sodium chloride, NaCl. **I₂ + NaCl → no reaction**
+4. Solutions of barium hydroxide, Ba(OH)₂, and strontium nitrate, Sr(NO₃)₂, are mixed. **Ba(OH)₂(aq) + Sr(NO₃)₂(aq) → Ba(NO₃)₂(aq) + Sr(OH)₂(s)**
+5. A piece of zinc is dropped into hydrochloric acid, HCl. **Zn + 2 HCl → ZnCl₂ + H₂**
+6. Solutions of sodium phosphate, Na₃PO₄, and magnesium nitrate, Mg(NO₃)₂, are mixed. **2 Na₃PO₄(aq) + 3 Mg(NO₃)₂(aq) → 6 NaNO₃(aq) + Mg₃(PO₄)₂(s)**
+7. A piece of aluminum is placed in a solution of magnesium nitrate, Mg(NO₃)₂. **Al + Mg(NO₃)₂ → no reaction**
+8. Solutions of potassium hydroxide, KOH, and copper(II) nitrate, Cu(NO₃)₂, are mixed. **2 KOH(aq) + Cu(NO₃)₂(aq) → 2 KNO₃(aq) + Cu(OH)₂(s)**
+9. Solutions of ammonium carbonate, (NH₄)₂CO₃, and magnesium chloride, MgCl₂, are mixed. **(NH₄)₂CO₃(aq) + MgCl₂(aq) → 2 NH₄Cl(aq) + MgCO₃(s)**
+10. A piece of potassium is placed in a solution of lead(II) acetate, Pb(C₂H₃O₂)₂. **2 K + Pb(C₂H₃O₂)₂ → 2 KC₂H₃O₂ + Pb**

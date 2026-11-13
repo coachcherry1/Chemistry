@@ -52,7 +52,7 @@ var Steps = (function () {
     return { done: !!st.r };
   }
 
-  var WILLIT = [['Zn', 'CuSO4'], ['Cu', 'MgCl2'], ['Mg', 'HCl'], ['Ag', 'HCl'], ['Na', 'HOH'], ['Zn', 'HOH'], ['Cl2', 'NaBr'], ['I2', 'KCl']];
+  var WILLIT = Gen.LESSON.willit;
   function willit(host, st, cb) {
     var list = WILLIT.map(function (w) {
       var p = Gen.make(w[0], w[1]);
@@ -87,10 +87,10 @@ var Steps = (function () {
       o.scenes.forEach(function (sc, k) {
         var box = h('div');
         grid.appendChild(panel(sc.title, 'press Play', [h('p', { class: 'pic-eq', text: Gen.equation(sc.p, true) }), box]));
-        Scene[o.kind](box, sc.p, function () {
+        Scene.show(box, sc.p, { onDone: function () {
           st.seen[k] = 1; cb.save();
           if (o.scenes.every(function (x, j) { return st.seen[j]; })) { st.r = 1; cb.complete(o.done); }
-        });
+        } });
       });
       sceneBox.appendChild(grid);
     }
@@ -104,7 +104,8 @@ var Steps = (function () {
         scenes();
       } });
     }));
-    host.appendChild(panel('Predict first', 'not graded', [h('p', { class: 'prompt', text: o.q }), tiles, fb]));
+    /* the prediction is made from the reference, so the reference is beside it */
+    host.appendChild(beside(panel('Predict first', 'not graded', [h('p', { class: 'prompt', text: o.q }), tiles, fb]), o.kind === 'mix' ? 'table' : 'series'));
     host.appendChild(sceneBox);
     if (st.pick != null) { fb.textContent = o.choices[st.pick].fb; fb.className = 'fb show ' + (o.choices[st.pick].ok ? 'good' : 'bad'); scenes(); }
     return { done: !!st.r };
@@ -116,7 +117,7 @@ var Steps = (function () {
         { t: 'Copper ions become copper atoms on the strip; zinc atoms leave as ions', ok: 1, fb: 'Yes. Zinc takes copper\'s place in the compound, so copper is set free as the metal.' },
         { t: 'Nothing: a solid metal cannot react with a solution', fb: 'It can. Zinc is above copper, so zinc atoms go into solution as ions and copper ions come out as copper metal.' },
         { t: 'Sulfate ions stick to the zinc strip', fb: 'The sulfate ions do nothing here. Zinc is above copper, so zinc replaces the copper: copper metal forms on the strip.' }],
-      scenes: [{ title: 'Zinc in copper(II) sulfate', p: Gen.make('Zn', 'CuSO4') }, { title: 'Copper in zinc sulfate', p: Gen.make('Cu', 'ZnSO4') }],
+      scenes: [{ title: 'Zinc in copper(II) sulfate', p: Gen.make.apply(null, Gen.LESSON.plate[0]) }, { title: 'Copper in zinc sulfate', p: Gen.make.apply(null, Gen.LESSON.plate[1]) }],
       done: 'It only goes one way: the more active metal ends up in the compound, the less active one as the metal.' });
   }
   function mix(host, st, cb) {
@@ -126,7 +127,7 @@ var Steps = (function () {
         { t: 'Ag⁺ and Cl⁻', ok: 1, fb: 'Yes. Silver chloride is insoluble (chloride is soluble except with Ag⁺ and Pb²⁺), so it forms as a solid.' },
         { t: 'Na⁺ and NO₃⁻', fb: 'Sodium compounds and nitrates are always soluble, so those two stay dissolved. Silver chloride, AgCl, is the insoluble one.' },
         { t: 'Ag⁺ and Na⁺', fb: 'Two positive ions repel each other. A compound needs a positive and a negative ion: Ag⁺ with Cl⁻ makes insoluble AgCl.' }],
-      scenes: [{ title: 'Silver nitrate + sodium chloride', p: Gen.make('AgNO3', 'NaCl') }, { title: 'Sodium chloride + potassium nitrate', p: Gen.make('NaCl', 'KNO3') }],
+      scenes: [{ title: 'Silver nitrate + sodium chloride', p: Gen.make.apply(null, Gen.LESSON.mix[0]) }, { title: 'Sodium chloride + potassium nitrate', p: Gen.make.apply(null, Gen.LESSON.mix[1]) }],
       done: 'A double replacement only happens if a product leaves the solution. Here that means a solid. No solid: no reaction.' });
   }
 

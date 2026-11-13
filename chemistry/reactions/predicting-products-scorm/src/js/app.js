@@ -17,7 +17,7 @@ var App = (function () {
 
   /* Bump whenever the steps, the pools or the handout data change: a save
      from an older release is then discarded. */
-  var SCHEMA = 3;
+  var SCHEMA = 4;
 
   var h = UI.h;
 
@@ -29,25 +29,25 @@ var App = (function () {
             'on the series. Not graded.' },
     { id: 'plate', part: 1, kind: 'plate', title: 'What it looks like',
       text: 'Predict first, then press Play on each picture.' },
-    { id: 'sr1', part: 1, kind: 'ladder', l: ['Al', 'CuCl2'], title: 'Predict the products: a metal and a salt',
+    { id: 'sr1', part: 1, kind: 'ladder', l: Gen.LESSON.sr1, title: 'Predict the products: a metal and a salt',
       text: 'Work down the steps: will it react, what forms, and balance. The new compound is made of ions, so its formula comes from their ' +
             'charges, not from the old formula. (No state symbols here: they do not matter in a single replacement.) Not graded.' },
-    { id: 'sr2', part: 1, kind: 'ladder', l: ['Mg', 'HCl'], title: 'Predict the products: a metal and an acid',
+    { id: 'sr2', part: 1, kind: 'ladder', l: Gen.LESSON.sr2, title: 'Predict the products: a metal and an acid',
       text: 'A metal above hydrogen replaces the hydrogen of an acid. Hydrogen on its own is a diatomic gas. Not graded.' },
     { id: 'sol', part: 2, kind: 'sol', title: 'Reading the solubility rules',
       text: 'In a double replacement the states matter. A dissolved compound is written (aq); one that does not dissolve is a solid, (s). Find the negative ion in the rules, then check ' +
             'whether the positive ion is listed as an exception. Not graded.' },
     { id: 'mix', part: 2, kind: 'mix', title: 'What it looks like',
       text: 'In a double replacement two dissolved compounds trade partners. Predict first, then press Play on each picture.' },
-    { id: 'dr1', part: 2, kind: 'ladder', l: ['Pb(NO3)2', 'KI'], title: 'Predict the products: a solid forms',
+    { id: 'dr1', part: 2, kind: 'ladder', l: Gen.LESSON.dr1, title: 'Predict the products: a solid forms',
       text: 'Trade the partners and build both possible products, look up their states, then decide whether anything happens. Not graded.' },
-    { id: 'dr2', part: 2, kind: 'ladder', l: ['NaCl', 'KNO3'], title: 'Predict the products: or does it?',
+    { id: 'dr2', part: 2, kind: 'ladder', l: Gen.LESSON.dr2, title: 'Predict the products: or does it?',
       text: 'Same steps. Be ready for either answer. Not graded.' },
     { id: 'quiz', part: 3, kind: 'quiz', title: 'Graded questions',
       text: Gen.QUIZ + ' questions. Click a choice to select it (you can change it), then press Submit answer. Your first Submit counts.' },
     { id: 'set', part: 3, kind: 'set', title: 'Graded problems',
-      text: Gen.COUNT + ' problems, single and double replacement mixed. Every step of a problem is worth a point, and your first answer to ' +
-            'it counts. Some problems have no reaction: then deciding that is the whole problem.' },
+      text: Gen.COUNT + ' problems, single and double replacement mixed, none of them from the lesson. Every step you do is worth a point, ' +
+            'and your first answer to it counts. Some have no reaction: you have to find that out. When a problem is finished, watch it as particles.' },
     { id: 'results', part: 4, kind: 'results', title: 'Results', text: '' }
   ];
 
@@ -363,7 +363,12 @@ var App = (function () {
           pk.rungs.forEach(function (r) { g[r] = 1; });
           state.p[k] = { r: 1, i: pk.rungs.length, g: g };
         }
-        /* ?rung=n opens that problem at its nth step */
+        /* ?done opens that problem finished, with its picture; ?rung=n opens it at its nth step */
+        if (params.get('done') != null) {
+          var pd = problems()[state.view], gd = {};
+          pd.rungs.forEach(function (r) { gd[r] = 1; });
+          state.p[state.view] = { r: 1, i: pd.rungs.length, g: gd };
+        }
         if (params.get('rung')) {
           var pv = problems()[state.view], gi = {}, n = Math.max(0, Math.min(pv.rungs.length - 1, +params.get('rung') - 1));
           pv.rungs.slice(0, n).forEach(function (r) { gi[r] = 1; });

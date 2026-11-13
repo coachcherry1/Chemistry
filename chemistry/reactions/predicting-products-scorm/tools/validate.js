@@ -186,6 +186,14 @@ ok(Gen.equation(Gen.make('Cl2', 'KBr'), true) === 'Cl₂ + 2 KBr → 2 KCl + Br�
 ok(Gen.equation(Gen.make('Pb(NO3)2', 'KI'), true) === 'Pb(NO₃)₂(aq) + 2 KI(aq) → PbI₂(s) + 2 KNO₃(aq)', 'Pb(NO3)2 + KI');
 
 /* ----------------------------------------------------------------- lesson */
+/* the lesson's reactions are listed once, and none of them is in a graded pool */
+const lessonPairs = Gen.LESSON.willit.concat(Gen.LESSON.plate, Gen.LESSON.mix, [Gen.LESSON.sr1, Gen.LESSON.sr2, Gen.LESSON.dr1, Gen.LESSON.dr2]);
+lessonPairs.forEach((l) => ok(Gen.SEEN[Gen.key(l)], l.join(' + ') + ' is in the lesson but not marked as seen'));
+Object.keys(P).forEach((k) => P[k].forEach((p) => ok(!Gen.SEEN[Gen.key(p.l)], k + ' ' + p.id + ': a lesson reaction in a graded pool')));
+ok(App.STEPS.filter((s) => s.kind === 'ladder').every((s) => lessonPairs.indexOf(s.l) >= 0), 'every worked problem comes from Gen.LESSON');
+const ladderSrc = fs.readFileSync(path.join(SRC, 'js', 'ladder.js'), 'utf8');
+ok(/SHOWN\.forEach/.test(ladderSrc) && !/p\.rungs\.forEach\(function \(r, k\) \{\s*var st/.test(ladderSrc), 'the strip of steps must be the same whether or not there is a reaction');
+ok(/Scene\.show\(area, p/.test(ladderSrc), 'a finished problem shows its reaction as particles');
 const ids = {};
 App.STEPS.forEach((s, i) => {
   ok(!ids[s.id], 'step id twice: ' + s.id); ids[s.id] = 1;
