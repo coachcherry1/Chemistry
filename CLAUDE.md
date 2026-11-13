@@ -72,7 +72,8 @@ click, with no Submit answer button. Bring a package up to the rules when you ne
 
 ## House rules
 
-- Plan first and get approval before building a new activity.
+- Plan first and get approval before building a new activity. The plan has a **Learning design** section (see
+  **Learning design** below).
 - No em dashes anywhere (each validator fails on one). Spelling as in the existing files: colour, centre, neighbour.
 - Organic packages: kJ/mol, Klein's values. Honors packages: the teacher's 5 Lewis rules and Pauling
   electronegativities, as in `lewis-structures-scorm/`. Qualitative packages never ask for a calculation; a reference table sits beside the checkpoints instead.
@@ -95,6 +96,57 @@ click, with no Submit answer button. Bring a package up to the rules when you ne
 - Answers are computed from the model, never typed twice, and the validator checks them.
 - Every package also runs as a plain web page (see **Web version** below).
 - Built zips are committed in `dist/`. Branch for new work; don't open a PR unless asked.
+
+## Learning design (every sim: at the plan, at every change, at every review)
+
+The teacher's rule (Nov 2026). Every sim is made and evaluated against the three checks below, hardest at the original
+plan and again at every iteration. Sources: the Learning Scientists (learningscientists.org), *Teach Like a Champion*
+(teachlikeachampion.org) and *Make It Stick* (Brown, Roediger and McDaniel).
+
+- **The plan** for a new activity has a "Learning design" section: the prerequisites, how each of the three checks is
+  met, and the words and the picture for every step.
+- **A review** reports on each check (what is strong, what is missing, the proposed fix) in chat and is also saved in the
+  package as `LEARNING_REVIEW.md` (dated, newest first; not part of the zip). Review when a sim is built, when it is
+  changed in a way that touches what students see or do, and whenever the teacher asks for an evaluation.
+- **Tools with no score** (pre-labs, demos): ask the teacher before the build how the checks apply; do not assume.
+- **Teacher-facing tools** (`lewis-drawing-tool/`, `buffer-beaker-demo/` and any like them): the focus is check 3,
+  dual-code everything.
+- Older packages predate this rule; review and bring one up to it when it is next changed.
+
+**1. Write for a novice chemist.** The student is new to the topic in every course: honors, AP and organic.
+
+- The plan names the prerequisites, and nothing else is assumed.
+- Every new term is defined in plain words where it first appears and stays in reach afterwards (Vocabulary, the
+  reference beside the checkpoints).
+- One new idea per step. A worked example first, then support that fades, then independent work.
+- The steps are named in the teacher's words and stay on screen.
+- No expert shortcuts, skipped steps or notation that was never taught.
+- Feedback names the specific slip and the next move, never only "incorrect".
+- Nothing is on screen that the current step does not need.
+- The test: could a student with only the named prerequisites do every step without asking the teacher?
+
+**2. Use the best cognitive science.**
+
+- **Retrieval practice:** students pull an idea from memory before it is shown again; a checkpoint is retrieval, not
+  recognition of the screen above it.
+- **Spacing:** earlier ideas come back in later parts, and earlier packages come back in later packages.
+- **Interleaving:** problem types are mixed once each has been taught, so the student must choose the method.
+- **Generation:** the student predicts before the reveal.
+- **Elaboration:** questions ask why and how, not only what.
+- **Concrete examples:** every abstract idea has more than one real example.
+- **Calibration:** the first answer counts, so students find out what they do not know.
+- **Desirable difficulty:** the effort goes into the chemistry, never into the interface.
+- **Check for understanding:** no new idea is built on one that has not been checked.
+- **Plan for error:** wrong choices are the real misconceptions, each with its own feedback.
+- **No opt out:** a wrong answer ends with the student producing the right one.
+
+**3. Dual-code everything.**
+
+- Every idea is given in words and in a picture, on screen together, with the labels on the picture and not in a
+  far-off legend.
+- Students work in both directions: read a picture into words, and turn words into a picture.
+- Pictures are drawn from the model and carry meaning; none is decoration.
+- Any question that names a molecule, particle or setup draws it.
 
 ## Web version (GitHub Pages)
 
