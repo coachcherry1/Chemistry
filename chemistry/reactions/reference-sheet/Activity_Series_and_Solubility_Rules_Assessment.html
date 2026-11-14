@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Activity Series and Solubility Rules</title>
+<style>
+  @page { size: Letter; margin: 0.55in 0.6in; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Times New Roman", "Liberation Serif", Tinos, Times, serif; font-size: 11pt; color: #000; line-height: 1.22; }
+  h1 { font-size: 19pt; text-align: center; margin: 0 0 2pt; letter-spacing: 0.01em; }
+  .sub { text-align: center; font-style: italic; font-size: 10.5pt; margin: 0 0 10pt; }
+  .cols { display: grid; grid-template-columns: 3.1in 1fr; gap: 0.3in; align-items: start; }
+  h2 { font-size: 13.5pt; margin: 0 0 3pt; border-bottom: 1.5pt solid #000; padding-bottom: 1pt; }
+  h3 { font-size: 11.5pt; margin: 9pt 0 2pt; }
+  p { margin: 0 0 4pt; }
+  .how { font-size: 10pt; }
+  table { border-collapse: collapse; width: 100%; }
+  td, th { padding: 1.1pt 5pt; vertical-align: middle; }
+  th { text-align: left; font-size: 9.5pt; border-bottom: 1pt solid #000; font-weight: bold; }
+  .series td { border-bottom: 0.4pt solid #999; font-size: 10.6pt; }
+  .series td:nth-child(2) { font-weight: bold; width: 0.42in; }
+  .series tr.hyd td { background: #000; color: #fff; font-weight: bold; border-bottom: 0; }
+  .series .band { border-left: 1.2pt solid #000; border-bottom: 1.2pt solid #000; border-top: 1.2pt solid #000; border-right: 1.2pt solid #000; text-align: center; font-size: 9.2pt; font-weight: bold; width: 0.98in; line-height: 1.15; }
+  .series .hydband { background: #000; color: #fff; border-color: #000; font-weight: normal; font-style: italic; }
+  .b-water { background: #d9d9d9; } .b-steam { background: #ececec; } .b-acid { background: #f6f6f6; } .b-none { background: #fff; }
+  .arrow { font-size: 9.5pt; font-style: italic; margin: 2pt 0 3pt; }
+  .hal { border: 1pt solid #000; padding: 4pt 7pt; margin-top: 8pt; font-size: 10.6pt; }
+  .hal b { font-size: 11.5pt; }
+  .sol td { border-bottom: 0.4pt solid #999; font-size: 10.4pt; }
+  .sol .an { width: 0.82in; } .sol .f { width: 0.68in; white-space: nowrap; }
+  .always { border: 1pt solid #000; padding: 4pt 7pt; margin: 0 0 6pt; font-size: 10.8pt; background: #f1f1f1; }
+  .note { font-size: 9pt; font-style: italic; }
+  .foot { font-size: 9.3pt; margin-top: 7pt; }
+  .foot li { margin-bottom: 1.5pt; }
+  ul { margin: 2pt 0 0; padding-left: 13pt; }
+  sub, sup { font-size: 0.7em; line-height: 0; }
+</style></head><body>
+<h1>Activity Series and Solubility Rules</h1>
+<p class="sub">Honors Chemistry reference sheet</p>
+<div class="cols">
+<section>
+  <h2>Activity Series of the Metals</h2>
+  <p class="arrow">Most active at the top. Each metal is shown with the ion it forms.</p>
+  <table class="series">
+    <thead><tr><th>Metal</th><th></th><th>Forms</th><th style="text-align:center">Replaces hydrogen?</th></tr></thead>
+    <tbody>
+<tr class="t-water"><td>Lithium</td><td>Li</td><td>Li<sup>+</sup> + e<sup>−</sup></td><td class="band b-water" rowspan="8"><span>React with cold water,<br>steam and acids</span></td></tr>
+<tr class="t-water"><td>Cesium</td><td>Cs</td><td>Cs<sup>+</sup> + e<sup>−</sup></td></tr>
+<tr class="t-water"><td>Rubidium</td><td>Rb</td><td>Rb<sup>+</sup> + e<sup>−</sup></td></tr>
+<tr class="t-water"><td>Potassium</td><td>K</td><td>K<sup>+</sup> + e<sup>−</sup></td></tr>
+<tr class="t-water"><td>Barium</td><td>Ba</td><td>Ba<sup>2+</sup> + 2 e<sup>−</sup></td></tr>
+<tr class="t-water"><td>Strontium</td><td>Sr</td><td>Sr<sup>2+</sup> + 2 e<sup>−</sup></td></tr>
+<tr class="t-water"><td>Calcium</td><td>Ca</td><td>Ca<sup>2+</sup> + 2 e<sup>−</sup></td></tr>
+<tr class="t-water"><td>Sodium</td><td>Na</td><td>Na<sup>+</sup> + e<sup>−</sup></td></tr>
+<tr class="t-steam"><td>Magnesium</td><td>Mg</td><td>Mg<sup>2+</sup> + 2 e<sup>−</sup></td><td class="band b-steam" rowspan="7"><span>React with steam<br>and acids</span></td></tr>
+<tr class="t-steam"><td>Aluminum</td><td>Al</td><td>Al<sup>3+</sup> + 3 e<sup>−</sup></td></tr>
+<tr class="t-steam"><td>Manganese</td><td>Mn</td><td>Mn<sup>2+</sup> + 2 e<sup>−</sup></td></tr>
+<tr class="t-steam"><td>Zinc</td><td>Zn</td><td>Zn<sup>2+</sup> + 2 e<sup>−</sup></td></tr>
+<tr class="t-steam"><td>Chromium</td><td>Cr</td><td>Cr<sup>3+</sup> + 3 e<sup>−</sup></td></tr>
+<tr class="t-steam"><td>Iron</td><td>Fe</td><td>Fe<sup>2+</sup> + 2 e<sup>−</sup></td></tr>
+<tr class="t-steam"><td>Cadmium</td><td>Cd</td><td>Cd<sup>2+</sup> + 2 e<sup>−</sup></td></tr>
+<tr class="t-acid"><td>Cobalt</td><td>Co</td><td>Co<sup>2+</sup> + 2 e<sup>−</sup></td><td class="band b-acid" rowspan="4"><span>React with<br>acids</span></td></tr>
+<tr class="t-acid"><td>Nickel</td><td>Ni</td><td>Ni<sup>2+</sup> + 2 e<sup>−</sup></td></tr>
+<tr class="t-acid"><td>Tin</td><td>Sn</td><td>Sn<sup>2+</sup> + 2 e<sup>−</sup></td></tr>
+<tr class="t-acid"><td>Lead</td><td>Pb</td><td>Pb<sup>2+</sup> + 2 e<sup>−</sup></td></tr>
+<tr class="hyd"><td>Hydrogen</td><td>H<sub>2</sub></td><td>2 H<sup>+</sup> + 2 e<sup>−</sup></td><td class="band hydband">reference</td></tr>
+<tr class="t-none"><td>Copper</td><td>Cu</td><td>Cu<sup>2+</sup> + 2 e<sup>−</sup></td><td class="band b-none" rowspan="5"><span>Do not replace<br>hydrogen</span></td></tr>
+<tr class="t-none"><td>Silver</td><td>Ag</td><td>Ag<sup>+</sup> + e<sup>−</sup></td></tr>
+<tr class="t-none"><td>Mercury</td><td>Hg</td><td>Hg<sup>2+</sup> + 2 e<sup>−</sup></td></tr>
+<tr class="t-none"><td>Platinum</td><td>Pt</td><td>Pt<sup>2+</sup> + 2 e<sup>−</sup></td></tr>
+<tr class="t-none"><td>Gold</td><td>Au</td><td>Au<sup>3+</sup> + 3 e<sup>−</sup></td></tr>
+    </tbody>
+  </table>
+  <div class="hal"><b>Halogens:</b> &nbsp; F<sub>2</sub> &nbsp;&gt;&nbsp; Cl<sub>2</sub> &nbsp;&gt;&nbsp; Br<sub>2</sub> &nbsp;&gt;&nbsp; I<sub>2</sub><br><span class="note">most active first</span></div>
+  
+</section>
+<section>
+  <h2>Solubility Rules for Ionic Compounds in Water</h2>
+  <div class="always"><b>Always soluble:</b> compounds of the <b>Group 1</b> ions (Li<sup>+</sup>, Na<sup>+</sup>, K<sup>+</sup>, Rb<sup>+</sup>, Cs<sup>+</sup>) and of ammonium, NH<sub>4</sub><sup>+</sup>.</div>
+  <h3>Compounds of these ions are soluble (aq) ...</h3>
+  <table class="sol">
+    <thead><tr><th colspan="2">Negative ion</th><th>... except with (insoluble)</th></tr></thead>
+    <tbody>
+<tr><td class="an"><b>nitrate</b></td><td class="f">NO<sub>3</sub><sup>−</sup></td><td><i>none</i></td></tr>
+<tr><td class="an"><b>acetate</b></td><td class="f">C<sub>2</sub>H<sub>3</sub>O<sub>2</sub><sup>−</sup></td><td><i>none</i></td></tr>
+<tr><td class="an"><b>chlorate</b></td><td class="f">ClO<sub>3</sub><sup>−</sup></td><td><i>none</i></td></tr>
+<tr><td class="an"><b>chloride</b></td><td class="f">Cl<sup>−</sup></td><td>Ag<sup>+</sup>, Hg<sub>2</sub><sup>2+</sup>, Pb<sup>2+</sup></td></tr>
+<tr><td class="an"><b>bromide</b></td><td class="f">Br<sup>−</sup></td><td>Ag<sup>+</sup>, Hg<sub>2</sub><sup>2+</sup>, Pb<sup>2+</sup></td></tr>
+<tr><td class="an"><b>iodide</b></td><td class="f">I<sup>−</sup></td><td>Ag<sup>+</sup>, Hg<sub>2</sub><sup>2+</sup>, Pb<sup>2+</sup></td></tr>
+<tr><td class="an"><b>sulfate</b></td><td class="f">SO<sub>4</sub><sup>2−</sup></td><td>Ca<sup>2+</sup>, Sr<sup>2+</sup>, Ba<sup>2+</sup>, Pb<sup>2+</sup>, Hg<sub>2</sub><sup>2+</sup>, Ag<sup>+</sup></td></tr>
+    </tbody>
+  </table>
+  <h3>Compounds of these ions are insoluble (s) ...</h3>
+  <table class="sol">
+    <thead><tr><th colspan="2">Negative ion</th><th>... except with (soluble)</th></tr></thead>
+    <tbody>
+<tr><td class="an"><b>carbonate</b></td><td class="f">CO<sub>3</sub><sup>2−</sup></td><td>Group 1, NH<sub>4</sub><sup>+</sup></td></tr>
+<tr><td class="an"><b>phosphate</b></td><td class="f">PO<sub>4</sub><sup>3−</sup></td><td>Group 1, NH<sub>4</sub><sup>+</sup></td></tr>
+<tr><td class="an"><b>hydroxide</b></td><td class="f">OH<sup>−</sup></td><td>Group 1, Ba<sup>2+</sup></td></tr>
+<tr><td class="an"><b>sulfide</b></td><td class="f">S<sup>2−</sup></td><td>Group 1, NH<sub>4</sub><sup>+</sup>, Ca<sup>2+</sup>, Sr<sup>2+</sup>, Ba<sup>2+</sup></td></tr>
+<tr><td class="an"><b>sulfite</b></td><td class="f">SO<sub>3</sub><sup>2−</sup></td><td>Group 1, NH<sub>4</sub><sup>+</sup></td></tr>
+<tr><td class="an"><b>chromate</b></td><td class="f">CrO<sub>4</sub><sup>2−</sup></td><td>Group 1, NH<sub>4</sub><sup>+</sup>, Mg<sup>2+</sup>, Ca<sup>2+</sup></td></tr>
+<tr><td class="an"><b>silicate</b></td><td class="f">SiO<sub>3</sub><sup>2−</sup></td><td>Group 1</td></tr>
+<tr><td class="an"><b>oxide</b></td><td class="f">O<sup>2−</sup></td><td>Group 1, Ca<sup>2+</sup>, Sr<sup>2+</sup>, Ba<sup>2+</sup> <span class="note">(these oxides react with water and form hydroxides)</span></td></tr>
+    </tbody>
+  </table>
+  
+  <ul class="foot">
+    <li>Hg<sub>2</sub><sup>2+</sup> is the mercury(I) ion.</li>
+  </ul>
+</section>
+</div>
+</body></html>

@@ -495,6 +495,25 @@ var App = (function () {
     return r;
   }
 
+  /* Timing of a played flip. The flip is two swings, one end of the ring and
+     then the other, and each swing on its own starts and stops gently, so
+     played at an even pace the ring would stop dead at the boat. flipAt(u)
+     is the flip progress at playing time u (0 to 1): a gentle start, straight
+     on through the boat, a gentle finish. flipTime() is its inverse. */
+  function flipAt(u) {
+    u = Math.max(0, Math.min(1, u));
+    function half(x) {                       /* first swing: x and the result both 0 to 1 */
+      var y = x * x * (2 - x);               /* ease in, still moving at the end */
+      return 0.5 - Math.sin(Math.asin(1 - 2 * y) / 3);   /* undo the swing's own easing */
+    }
+    return u < 0.5 ? half(2 * u) / 2 : 1 - half(2 - 2 * u) / 2;
+  }
+  function flipTime(t) {
+    var lo = 0, hi = 1;
+    for (var i = 0; i < 30; i++) { var mid = (lo + hi) / 2; if (flipAt(mid) < t) lo = mid; else hi = mid; }
+    return (lo + hi) / 2;
+  }
+
   /* The ring-flip control: a slider from chair 1 to chair 2 and a button
      that plays the flip. onChange(t) is called on every change. */
   function flipper(onChange, opts) {
@@ -520,11 +539,12 @@ var App = (function () {
       var from = t, to = t < 0.5 ? 1 : 0;
       if (anim) cancelAnimationFrame(anim);
       if (reduceMotion) { set(to); return; }
-      var t0 = null, dur = 1700 * Math.abs(to - from) + 200;
+      var u0 = flipTime(from), u1 = to;
+      var t0 = null, dur = 2000 * Math.abs(u1 - u0) + 200;
       function step(ts) {
         if (t0 == null) t0 = ts;
         var u = Math.min(1, (ts - t0) / dur);
-        set(from + (to - from) * u);
+        set(u < 1 ? flipAt(u0 + (u1 - u0) * u) : to);
         anim = u < 1 ? requestAnimationFrame(step) : null;
       }
       anim = requestAnimationFrame(step);
@@ -977,7 +997,7 @@ var App = (function () {
         var mm = marks();
         m3.viewer().setTint(mm.tint);
         host.innerHTML = '';
-        host.appendChild(Draw.chair(mol, t, { show: 'all', mark: mm.mk,
+        host.appendChild(Draw.chair(mol, t, { show: 'all', mark: mm.mk, steady: true,
           label: 'Chair drawing of cyclohexane, ' + (ends(t) < 0 ? 'part way through a flip' : 'chair ' + (ends(t) + 1)) +
                  '. Red H: ' + CHAIR.describe('1t', t > 0.5 ? 1 : 0) + '. Blue H: ' + CHAIR.describe('1b', t > 0.5 ? 1 : 0) + '.' }));
         var e = ends(t);
@@ -1224,8 +1244,8 @@ var App = (function () {
         var t0 = null;
         var go = function (ts) {
           if (t0 == null) t0 = ts;
-          var u = Math.min(1, (ts - t0) / 1800);
-          helper.setT(u);
+          var u = Math.min(1, (ts - t0) / 2200);
+          helper.setT(flipAt(u));
           if (u < 1) requestAnimationFrame(go);
         };
         if (reduceMotion) helper.setT(1);
@@ -1413,6 +1433,7 @@ var App = (function () {
         m3.viewer().setGlow(e === 0 ? crowdGlow(mol, 0) : []);
         host.innerHTML = '';
         host.appendChild(Draw.chair(mol, t, { show: e === 0 ? ['1t', '1b', '3t', '5t'] : ['1t', '1b'],
+          steady: ['1t', '1b', '3t', '5t'],
           mark: e === 0 ? { '1t': 'crowd', '3t': 'crowd', '5t': 'crowd' } : {} }));
         read.textContent = e < 0 ? 'Flipping…' : e === 0
           ? 'Chair 1: the CH₃ is axial. It crowds the axial H atoms on C3 and C5 (glowing red).'
@@ -1720,7 +1741,7 @@ var App = (function () {
     function update(id, v) {
       var m = molecule(id), e = ends(v);
       hosts[id].innerHTML = '';
-      hosts[id].appendChild(Draw.chair(m, v, { cls: 'small', mark: e < 0 ? {} : markAxial(m, e) }));
+      hosts[id].appendChild(Draw.chair(m, v, { cls: 'small', steady: true, mark: e < 0 ? {} : markAxial(m, e) }));
       reads[id].textContent = e < 0 ? 'Flipping…' : 'Chair ' + (e + 1) + ': ' + axialText(m, e) + '  ' + AVAL.breakdown(m, e);
       plot.markers = IDS.map(function (k, i) { return { t: t(k), mol: molecule(k), label: i ? 'cis' : 'trans' }; });
       plot.render();
@@ -1862,7 +1883,7 @@ var App = (function () {
         m3.setT(t);
         m3.viewer().setGlow(e < 0 ? [] : crowdGlow(m, e));
         host.innerHTML = '';
-        host.appendChild(Draw.chair(m, t, { cls: 'small', mark: e < 0 ? {} : markAxial(m, e) }));
+        host.appendChild(Draw.chair(m, t, { cls: 'small', steady: true, mark: e < 0 ? {} : markAxial(m, e) }));
         read.textContent = e < 0 ? 'Flipping…' : 'Chair ' + (e + 1) + ': ' + axialText(m, e) + '  ' + AVAL.breakdown(m, e);
       }
       function paintWhy() {
@@ -2217,7 +2238,7 @@ var App = (function () {
       m3.setT(t);
       m3.viewer().setGlow(e < 0 ? [] : crowdGlow(mol, e));
       host.innerHTML = '';
-      host.appendChild(Draw.chair(mol, t, { show: MOLECULES.groups(mol).length ? null : 'all',
+      host.appendChild(Draw.chair(mol, t, { show: MOLECULES.groups(mol).length ? null : 'all', steady: true,
         mark: e < 0 ? {} : markAxial(mol, e) }));
       read.textContent = e < 0 ? 'Flipping…' : 'Chair ' + (e + 1) + (MOLECULES.groups(mol).length ? ': ' + axialText(mol, e) : '.') +
         '  ' + AVAL.breakdown(mol, e);
@@ -2324,7 +2345,7 @@ var App = (function () {
 
   return { start: start, SCHEMA: SCHEMA, STEPS: STEPS, GRADED: GRADED, QZ: QZ, judgeBuild: judgeBuild,
            swapAnswer: swapAnswer, bestAnswer: bestAnswer, BEST: BEST, SWAP_NOTES: SWAP_NOTES, PREDICT: PREDICT,
-           figure: figure };
+           figure: figure, flipAt: flipAt };
 })();
 
 document.addEventListener('DOMContentLoaded', App.start);

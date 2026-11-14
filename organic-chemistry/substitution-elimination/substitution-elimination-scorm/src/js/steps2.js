@@ -517,7 +517,7 @@
               h('span', { class: 'tagline', text: p.mech + ', ' + p.role + (p.regio ? ' (' + p.regio + ')' : '') })]);
           }));
           kids.push(row);
-          kids.push(U.reveal([U.verdict(P.e1major, pr.p) + 'The carbocation is attacked by ethanol (SN1, the major product) more often than it loses a proton (E1, minor).',
+          kids.push(U.reveal([U.verdict(P.e1major, pr.p) + 'Ethanol can attack the carbocation (SN1) or take a β H (E1), so both products form. Klein’s rule: SN1 is usually favoured, but E1 is favoured when the alkene is tri- or tetrasubstituted. 2-Methylbut-2-ene is trisubstituted, so here E1 is major. (tert-Butyl bromide gives only a disubstituted alkene, so there SN1 is major.)',
             'E1 is regioselective: the Zaitsev product is the major alkene. A hindered base cannot change that, because the base is not in the rate-determining step.',
             'E1 is not stereospecific: the carbocation is flat, so where a C=C can be E or Z, the more stable E is favoured (stereoselective).']));
         }

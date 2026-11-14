@@ -183,7 +183,7 @@ expect('a 3° carbocation never shifts', !React.cationPath(mol('bmb')).shift && 
 const KLEIN_TABLE = {
   1: { base: 'E2', both: 'SN2, some E2', nuc: 'SN2', weak: 'No reaction' },
   2: { base: 'E2', both: 'E2, some SN2', nuc: 'SN2', weak: 'No reaction' },
-  3: { base: 'E2', both: 'E2', nuc: 'SN1', weak: 'SN1, some E1' }
+  3: { base: 'E2', both: 'E2', nuc: 'SN1', weak: 'SN1 and E1' }
 };
 [1, 2, 3].forEach((d) => Object.keys(KLEIN_TABLE[d]).forEach((fn) => {
   const got = App.resultOf(React.TABLE[d][fn]);
@@ -233,7 +233,14 @@ answerIs('ringsn2', /^trans/.test(name(React.substitute(mol('cisBrMe'), 'NaSH', 
 answerIs('shift', React.cationPath(mol('b3mb')).shift.kind === 'H' ? 'A hydride shift makes a 3° carbocation' : 'A methyl shift makes a 3° carbocation');
 answerIs('locked', React.chairs(mol('cisBrTb')).gap < React.chairs(mol('transBrTb')).gap ? 'cis-1-Bromo-4-tert-butylcyclohexane' : 'trans-1-Bromo-4-tert-butylcyclohexane');
 answerIs('k718', React.chairs(mol('transTbCl')).gap < React.chairs(mol('cisTbCl')).gap ? 'trans-1-tert-Butyl-3-chlorocyclohexane' : 'cis-1-tert-Butyl-3-chlorocyclohexane');
-answerIs('e1major', roles(pred('bmb', 'EtOH'))['2-ethoxy-2-methylbutane'] === 'major' ? 'The SN1 product, 2-ethoxy-2-methylbutane' : '?');
+answerIs('e1major', roles(pred('bmb', 'EtOH'))['2-methylbut-2-ene'] === 'major' ? 'The E1 product, 2-methylbut-2-ene' : '?');
+/* Klein 7.8 and 7.9: E1 is favoured over SN1 when the alkene is tri- or tetrasubstituted, SN1 otherwise */
+expect('tert-butyl bromide in ethanol: SN1 major (its alkene is disubstituted)', roles(pred('tBuBr', 'EtOH'))['2-ethoxy-2-methylpropane'] === 'major' && roles(pred('tBuBr', 'EtOH'))['2-methylpropene'] === 'minor');
+expect('2-bromo-2-methylbutane in ethanol: E1 major (trisubstituted), SN1 and Hofmann minor', roles(pred('bmb', 'EtOH'))['2-ethoxy-2-methylbutane'] === 'minor' && roles(pred('bmb', 'EtOH'))['2-methylbut-1-ene'] === 'minor');
+{
+  const k = roles(React.predict(Mol.parse('CC(C)C(C)(C)Br'), 'H2O'));   /* Klein's 7.9 example, in water */
+  expect('2-bromo-2,3-dimethylbutane in water: the tetrasubstituted alkene is major', k['2,3-dimethylbut-2-ene'] === 'major' && k['2,3-dimethylbutan-2-ol'] === 'minor');
+}
 {
   const sizes = ['bromomethane', 'bromopropane1', 'bromopropane2', 'tBuBr'].map((id) => Anim.approach(mol(id), 'NaSH'));
   if (!(sizes[0].crowd < sizes[1].crowd && sizes[1].crowd < sizes[2].crowd && sizes[3].blocked && !sizes[2].blocked)) fail('sterics: crowding should rise from methyl to 2° and block 3°');

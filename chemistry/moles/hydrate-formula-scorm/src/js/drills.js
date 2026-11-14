@@ -1,12 +1,12 @@
 /* drills.js: Multiply if not whole, the hurdle the teacher named: reading
  * a decimal as a fraction. Four ungraded steps, the same in all three
  * packages:
- *   finder  put quotients on the fraction finder and see what each one is
- *   frac    Name the fraction: a quotient, its fraction, the multiplier and
+ *   frac    Name the fraction (three cards): a quotient, its fraction, the multiplier and
  *           the whole number it gives (2.67 is 2 2/3, x 3, 8)
  *   whole   Whole or not? round it (within 0.1) or multiply
  *   all     Multiply them all: a real compound's ratio, one multiplier for
- *           every row (1 : 1.33 : 1 is x 3, 3 : 4 : 3)
+ *           every row (1 : 1.33 : 1 is x 3); once the multiplier is right the
+ *           whole numbers fill in (3 : 4 : 3), the teacher's choice
  * Each gets its state object (saved in suspend_data) and callbacks:
  * cb.save(), cb.complete(msg), cb.say(msg, kind).
  */
@@ -25,42 +25,6 @@ var Drills = (function () {
       return h('button', { type: 'button', class: 'tile' + (on ? ' on' : '') + (on && wrong ? ' wrong' : ''), 'aria-pressed': on ? 'true' : 'false',
         text: x.t, onclick: function () { onPick(x.v); } });
     }));
-  }
-
-  /* ---------------------------------------------------- the finder step */
-
-  var FINDER_QS = [1.50, 2.50, 1.33, 1.67, 2.33, 1.25, 1.75, 1.20, 1.40, 1.60, 2.80, 1.98, 3.03];
-
-  function finderStep(host, st, cb) {
-    st.seen = st.seen || {};
-    var finder = Finder.create({ interactive: true });
-    var list = h('div', { class: 'qchips', role: 'group', 'aria-label': 'Quotients to put on the fraction finder' });
-    var count = h('p', { class: 'muted' });
-    function paint() {
-      list.innerHTML = '';
-      FINDER_QS.forEach(function (q, i) {
-        list.appendChild(h('button', { type: 'button', class: 'qbtn big' + (st.seen[i] ? ' seen' : ''), text: Chem.fmtQ(q),
-          'aria-label': Chem.fmtQ(q) + (st.seen[i] ? ' (seen)' : ''), onclick: function () {
-            finder.place(q);
-            st.seen[i] = 1;
-            cb.save();
-            paint();
-            var left = FINDER_QS.length - Object.keys(st.seen).length;
-            if (!left) cb.complete('Every one placed. The bottom number of the fraction is the number to multiply by.');
-          } }));
-      });
-      var left = FINDER_QS.length - Object.keys(st.seen).length;
-      count.textContent = left ? left + ' of ' + FINDER_QS.length + ' still to place.' : 'All placed.';
-    }
-    host.appendChild(h('div', { class: 'grid2 finder-step' }, [
-      panel('The fraction finder', 'decimal part of the quotient, 0 to 1', [finder.el]),
-      panel('Put each quotient on it', null, [count, list,
-        h('p', { class: 'muted', text: 'Only the decimal part matters: 1.33 and 2.33 are both a third more than a whole number, so both need × 3. ' +
-          'Keep two decimal places: 1.3 could be 1.33 (⅓) or 1.25 (¼), and the finder cannot tell.' }),
-        Finder.chart()])
-    ]));
-    paint();
-    return { done: Object.keys(st.seen).length >= FINDER_QS.length };
   }
 
   /* --------------------------------------------------- Name the fraction */
@@ -200,7 +164,7 @@ var Drills = (function () {
           h('p', { class: 'muted', text: 'One multiplier for every row, even the rows that were already whole.' })]));
         return;
       }
-      var r = list[st.i], a = st.a;
+      var r = list[st.i], a = st.a, shown = !!st.shown;
       var inp = function (key, label, cls) {
         var x = h('input', { type: 'text', inputmode: 'numeric', class: 'blank ' + cls + (marks[key] ? ' ' + marks[key] : ''), 'aria-label': label, value: a[key] || '' });
         x.addEventListener('input', function () { a[key] = x.value; delete marks[key]; x.classList.remove('ok', 'wrong'); cb.save(); });
@@ -211,14 +175,27 @@ var Drills = (function () {
         return h('tr', null, [h('th', { scope: 'row', class: 'sym', text: row.sym }),
           h('td', null, [h('button', { type: 'button', class: 'qbtn', text: row.str, 'aria-label': row.str + ': put it on the fraction finder',
             onclick: function () { finder.place(row.q); } })]),
-          h('td', { class: 'muted', text: '× ' + (a.k || '?') + ' →' }), h('td', null, [inp('w' + j, 'whole number for ' + row.sym, 'w-w')])]);
+          h('td', { class: 'muted', text: '× ' + (shown ? r.mult : '?') + ' →' }),
+          h('td', { class: 'whole-out', text: shown ? String(row.sub) : '…' })]);
       });
       box.appendChild(panel('Multiply them all', 'ratio ' + (st.i + 1) + ' of ' + list.length, [
         h('p', { class: 'drill-q', text: 'After Divide by small, a compound gives ' + r.rows.map(function (x) { return x.sym + ' ' + x.str; }).join(' : ') + '.' }),
         h('p', { class: 'drill-q' }, ['Multiply every row by ', inp('k', 'multiply every row by', 'w-k'), ' (1 if they are all whole already)']),
         h('table', { class: 'ratio' }, rows),
-        h('div', { class: 'btnrow' }, [h('button', { type: 'button', class: 'primary', text: 'Check', onclick: check })])
+        h('div', { class: 'btnrow' }, shown ? [h('button', { type: 'button', class: 'primary', text: st.i + 1 < list.length ? 'Next ratio' : 'Done',
+          onclick: nextRatio })] : [h('button', { type: 'button', class: 'primary', text: 'Check', onclick: check })])
       ]));
+    }
+    function nextRatio() {
+      st.i++;
+      st.a = {};
+      st.shown = 0;
+      marks = {};
+      cb.save();
+      finder.clear();
+      paint();
+      if (st.i >= list.length) cb.complete('All ' + list.length + ' done. Every row gets the same multiplier.');
+      else { var f = box.querySelector('input'); if (f) f.focus({ preventScroll: true }); }
     }
     function check() {
       var r = list[st.i], a = st.a;
@@ -227,30 +204,92 @@ var Drills = (function () {
       if (jk.empty) { cb.say('Type the number to multiply by first.', null); return; }
       if (!jk.ok) { marks.k = 'wrong'; paint(); cb.say(jk.msg, 'bad'); return; }
       marks.k = 'ok';
-      var msgs = [];
-      var empty = false;
-      r.rows.forEach(function (row, j) {
-        var jw = Chem.judgeWhole(a['w' + j], row.q, r.mult, row.sub);
-        if (jw.empty) { empty = true; return; }
-        marks['w' + j] = jw.ok ? 'ok' : 'wrong';
-        if (!jw.ok && msgs.indexOf(jw.msg) < 0) msgs.push(jw.msg);
-      });
-      paint();
-      if (empty) { cb.say('Type every whole number.', null); return; }
-      if (msgs.length) { cb.say(msgs[0], 'bad'); return; }
-      cb.say('Right: × ' + r.mult + ' gives ' + r.efDisp + (r.f !== r.ef ? ' (the empirical formula of ' + r.name + ', ' + Chem.subs(r.f) + ')' : ', ' + r.name) + '.', 'good');
-      st.i++;
-      st.a = {};
-      marks = {};
+      st.shown = 1;
       cb.save();
-      finder.clear();
       paint();
-      if (st.i >= list.length) cb.complete('All ' + list.length + ' done. Every row gets the same multiplier.');
-      else { var f = box.querySelector('input'); if (f) f.focus({ preventScroll: true }); }
+      cb.say('Right: × ' + r.mult + ' gives ' + r.efDisp + (r.f !== r.ef ? ' (the empirical formula of ' + r.name + ', ' + Chem.subs(r.f) + ')' : ', ' + r.name) + '.', 'good');
+      var nb = box.querySelector('.btnrow .primary'); if (nb) nb.focus({ preventScroll: true });
     }
     paint();
     return { done: st.i >= list.length };
   }
 
-  return { finderStep: finderStep, fracDrill: fracDrill, wholeDrill: wholeDrill, allDrill: allDrill, FINDER_QS: FINDER_QS };
+  /* --------------------------------------------------- Find the mistake */
+
+  /* A finished problem with one wrong step (Gen.mistakes): pick the step, then
+     what went wrong; select then Check, as everywhere. */
+  function mistakeDrill(host, st, cb) {
+    var cards = Gen.mistakes();
+    st.i = st.i || 0;
+    var box = h('div');
+    host.appendChild(box);
+    var sel = null;
+    function paint() {
+      box.innerHTML = '';
+      if (st.i >= cards.length) {
+        box.appendChild(panel('Find the mistake', null, [h('p', { class: 'big-ok', text: 'Both mistakes found.' })]));
+        return;
+      }
+      var c = cards[st.i], stage = st.stage || 'step';
+      var lines = h('ol', { class: 'mlines' }, c.lines.map(function (l, j) {
+        return h('li', { class: stage !== 'step' && j + 1 === c.bad ? 'bad' : null }, [h('b', { text: 'Step ' + (j + 1) + ': ' }), l]);
+      }));
+      var kids = [h('p', { class: 'drill-q', text: c.prompt }), lines,
+        h('p', { class: 'drill-q' }, ['Their answer: ', h('b', { text: c.formula })])];
+      var opts = stage === 'step' ? [1, 2, 3, 4].map(function (n) { return { v: n, t: 'Step ' + n }; }) :
+        c.reasons.map(function (r, j) { return { v: j, t: r }; });
+      if (stage === 'done') {
+        kids.push(h('p', { class: 'drill-q' }, [h('b', { text: 'The fix: ' }), c.fix + ' Then Step ' + c.bad + ' and every step after it change.']));
+        kids.push(h('p', { class: 'drill-q' }, ['The right answer: ', h('b', { text: c.rightFormula })]));
+        kids.push(h('div', { class: 'btnrow' }, [h('button', { type: 'button', class: 'primary', text: st.i + 1 < cards.length ? 'Next problem' : 'Done',
+          onclick: function () { st.i++; st.stage = 'step'; sel = null; cb.save(); paint(); if (st.i >= cards.length) cb.complete('Both mistakes found. Check your own work the same way.'); } })]));
+      } else {
+        kids.push(h('p', { class: 'drill-q', text: stage === 'step' ? 'Which step has the mistake?' : 'What went wrong in Step ' + c.bad + '?' }));
+        kids.push(tiles(opts, sel, function (v) { sel = v; paint(); }, stage === 'step' ? 'step with the mistake' : 'what went wrong'));
+        kids.push(h('div', { class: 'btnrow' }, [h('button', { type: 'button', class: 'primary', text: 'Check', disabled: sel == null, onclick: check })]));
+      }
+      box.appendChild(panel('Find the mistake', 'problem ' + (st.i + 1) + ' of ' + cards.length, kids));
+    }
+    function check() {
+      var c = cards[st.i];
+      if ((st.stage || 'step') === 'step') {
+        if (sel !== c.bad) { cb.say(sel < c.bad ? 'Step ' + sel + ' is right. Keep reading: the mistake is later.' : 'The mistake is earlier: by Step ' + sel + ' the numbers are already off.', 'bad'); return; }
+        st.stage = 'reason'; sel = null; cb.save(); cb.say('Yes: Step ' + c.bad + '.', 'good'); paint(); return;
+      }
+      if (sel !== c.right) { cb.say('Not that: look at what Step ' + c.bad + ' actually does.', 'bad'); return; }
+      st.stage = 'done'; sel = null; cb.save(); cb.say('Right.', 'good'); paint();
+    }
+    paint();
+    return { done: st.i >= cards.length };
+  }
+
+  /* ------------------------------------------------- the four steps from memory */
+
+  function recallDrill(host, st, cb) {
+    var order = ['grams', 'moles', 'divide', 'multiply'].map(function (s) { return Work.STEP_NAMES[s]; });
+    var shown = UI.shuffle(order, UI.rng(19));
+    st.n = st.n || 0;
+    var box = h('div');
+    host.appendChild(box);
+    function paint() {
+      box.innerHTML = '';
+      var picked = h('ol', { class: 'recall-picked' }, order.slice(0, st.n).map(function (n, i) { return h('li', { text: (i + 1) + '. ' + n }); }));
+      box.appendChild(panel('The four steps from memory', st.n + ' of 4', [
+        h('p', { class: 'drill-q', text: st.n < 4 ? 'Tap the ' + ['first', 'second', 'third', 'fourth'][st.n] + ' step.' : 'All four, in order.' }),
+        picked,
+        h('div', { class: 'tiles', role: 'group', 'aria-label': 'the four steps' }, shown.map(function (n) {
+          var used = order.indexOf(n) < st.n;
+          return h('button', { type: 'button', class: 'tile', disabled: used, text: n, onclick: function () {
+            if (n !== order[st.n]) { cb.say(st.n ? 'Not yet: what do you do after ' + order[st.n - 1] + '?' : 'Not first: what do you do with the data the problem gives?', 'bad'); return; }
+            st.n++; cb.save(); cb.say('', null); paint();
+            if (st.n === 4) cb.complete('Percents to grams, grams to moles, divide by small, multiply if not whole. Use them on every graded problem.');
+          } });
+        }))
+      ]));
+    }
+    paint();
+    return { done: st.n >= 4 };
+  }
+
+  return { fracDrill: fracDrill, wholeDrill: wholeDrill, allDrill: allDrill, mistakeDrill: mistakeDrill, recallDrill: recallDrill };
 })();

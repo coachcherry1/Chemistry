@@ -13,11 +13,14 @@
  *                            the mole ratio (a blank on top: 1 C per CO2, 2 H
  *                            per H2O)
  *   3 Divide by small        tap the smallest moles, type each quotient
- *   4 Multiply if not whole  one multiplier for every row, the whole numbers
+ *   4 Multiply if not whole  one multiplier for every row (the whole numbers
+ *                            then fill in)
  *   5 Molecular formula      the empirical formula mass, n, the subscripts
  *     or Name the hydrate    the Greek prefix for the waters
  *
- * Grading (the teacher's choice): the first Check of each step counts. A
+ * Grading (the teacher's choice): the first Check of each step counts (in
+ * graded problems the button reads Submit answer, and the Step 1 choice only
+ * selects until it is submitted). A
  * Check with an empty box, or with the right number rounded too far (moles
  * to fewer than 3 significant figures, a quotient to fewer than 2 decimals),
  * is not an answer: the student is told and checks again. Hints are free;
@@ -73,9 +76,19 @@ var Work = (function () {
     host.appendChild(root);
 
     var finder = Finder.create({ interactive: !opts.graded, compact: true });
-    side.appendChild(h('h3', { text: 'Fraction finder' }));
-    side.appendChild(finder.el);
-    side.appendChild(Finder.chart());
+    var finderBox = h('div', { class: 'finder-wrap', id: 'finder-' + (p.id || 'x') }, [finder.el, Finder.chart()]);
+    if (opts.graded) {
+      /* fading the support (expertise reversal): in graded problems the finder is one tap away, not always open */
+      finderBox.hidden = true;
+      var tog = h('button', { type: 'button', class: 'mini finder-toggle', 'aria-expanded': 'false', 'aria-controls': finderBox.id, text: 'Show fraction finder' });
+      tog.addEventListener('click', function () {
+        finderBox.hidden = !finderBox.hidden;
+        tog.setAttribute('aria-expanded', finderBox.hidden ? 'false' : 'true');
+        tog.textContent = finderBox.hidden ? 'Show fraction finder' : 'Hide fraction finder';
+      });
+      side.appendChild(tog);
+    } else side.appendChild(h('h3', { text: 'Fraction finder' }));
+    side.appendChild(finderBox);
 
     function cur() { return steps[work.s]; }
     function done() { return work.s >= steps.length; }
@@ -130,9 +143,9 @@ var Work = (function () {
       strip.innerHTML = '';
       steps.forEach(function (s, i) {
         var g = work.g[s];
-        var state = i < work.s ? (g === 0 ? ' fixed' : ' right') : i === work.s ? ' now' : '';
+        var state = i < work.s ? (g === 'w' ? ' given' : g === 0 ? ' fixed' : ' right') : i === work.s ? ' now' : '';
         strip.appendChild(h('li', { class: 'st' + state, 'aria-current': i === work.s ? 'step' : null }, [
-          h('span', { class: 'st-n', text: i < work.s ? (g === 0 ? '✓' : '★') : String(i + 1) }),
+          h('span', { class: 'st-n', text: i < work.s ? (g === 'w' ? '✓' : g === 0 ? '✓' : '★') : String(i + 1) }),
           h('span', { class: 'st-t', text: STEP_NAMES[s] })
         ]));
       });
@@ -206,7 +219,7 @@ var Work = (function () {
       if (st === 'done') return [t(Chem.fmtQ(q) + ' × ' + k + ' → ', 'muted'), t(String(work.n.w[i]), 'val big')];
       var qb = opts.graded ? t(Chem.fmtQ(q)) : h('button', { type: 'button', class: 'qbtn', title: 'Put ' + Chem.fmtQ(q) + ' on the fraction finder',
         text: Chem.fmtQ(q), 'aria-label': Chem.fmtQ(q) + ': put it on the fraction finder', onclick: function () { finder.place(q); } });
-      return [qb, t(' × ' + k + ' → ', 'muted'), field('w' + i, 'w-w', 'whole number for ' + r.label, '')];
+      return [qb, t(' × ' + k + ' → ', 'muted'), t('…', 'muted')];
     }
 
     function paintTable() {
@@ -277,10 +290,10 @@ var Work = (function () {
 
     function stepText(s) {
       if (s === 'grams') {
-        if (work.c1 !== p.choice) return 'What does the problem give? Percents: assume a 100 g sample. Grams: use the grams.';
+        if (work.c1 !== p.choice) return 'What does the problem give? Percents: assume a 100 g sample. Grams: use the grams. Choose, then submit.';
         if (p.choice === 'pct') {
           return p.mode === 'hydrate' ? 'Assume a 100 g sample of the hydrate: the percent water is the grams of water, the rest of the 100 g is the anhydrous salt.' :
-            'Assume a 100 g sample: each percent becomes that many grams. Type the grams.';
+            'Assume a 100 g sample: each percent becomes that many grams.';
         }
         if (p.kind === 'heat') return 'The anhydrous salt is what is left. Find the grams of water lost: subtract.';
         if (p.kind === 'lab') return 'Find the grams of each part from the crucible masses: subtract.';
@@ -293,7 +306,8 @@ var Work = (function () {
       }
       if (s === 'divide') return work.sm == null ? 'Tap the smallest mole value.' : 'Divide every row by the smallest moles, to two decimal places.';
       if (s === 'multiply') {
-        return 'All within 0.1 of a whole number? Multiply by 1 and round. If not, read the decimal as a fraction (fraction finder) and multiply EVERY row by the same number.';
+        return 'All within 0.1 of a whole number? Multiply by 1. If not, read the decimal as a fraction (fraction finder): its bottom number multiplies EVERY row. ' +
+          'Type the multiplier; the whole numbers fill in.';
       }
       if (s === 'molecular') return 'Add up the empirical formula mass, divide the molar mass by it (n), and multiply every subscript by n.';
       if (s === 'name') return 'Name it: the Greek prefix says how many waters.';
@@ -336,21 +350,30 @@ var Work = (function () {
       if (opts.demo) { paintDemo(); return; }
       if (done()) { paintDone(); return; }
       var s = cur();
+      if (work.pf && work.s === work.pf) panel.appendChild(h('p', { class: 'muted pf-note', text: (work.pf === 1 ? 'Step 1 was worked for you (look at it). ' :
+        'Steps 1 and 2 were worked for you (look at them). ') + 'Your turn from here.' }));
       panel.appendChild(h('p', { class: 'step-q' }, [h('b', { text: 'Step ' + (work.s + 1) + ': ' + STEP_NAMES[s] + '. ' }), stepText(s)]));
       var row = h('div', { class: 'btnrow' });
+      /* Submit answer on everything graded (the teacher): a click on a choice only selects it */
+      var submitText = opts.graded ? 'Submit answer' : 'Check';
       if (s === 'grams' && work.c1 !== p.choice) {
         [['pct', 'Percents: assume 100 g'], ['g', 'Grams: use the grams']].forEach(function (o) {
-          row.appendChild(h('button', { type: 'button', class: 'ghostbtn choice' + (work.c1 === o[0] ? ' wrong' : ''), text: o[1],
-            onclick: function () { choose(o[0]); } }));
+          var on = work.sel1 === o[0];
+          row.appendChild(h('button', { type: 'button', class: 'ghostbtn choice' + (on ? ' selected' : '') + (work.c1 === o[0] && !on ? ' wrong' : ''),
+            'aria-pressed': on ? 'true' : 'false', text: o[1], onclick: function () { work.sel1 = o[0]; save(); paintPanel(); focusSubmit(); } }));
         });
+        row.appendChild(h('button', { type: 'button', class: 'primary submit-answer', text: submitText, disabled: !work.sel1 || work.sel1 === work.c1,
+          onclick: function () { if (work.sel1) choose(work.sel1); } }));
       } else {
-        row.appendChild(h('button', { type: 'button', class: 'primary', text: 'Check', onclick: check }));
+        row.appendChild(h('button', { type: 'button', class: 'primary' + (opts.graded ? ' submit-answer' : ''), text: submitText, onclick: check }));
       }
       row.appendChild(h('button', { type: 'button', class: 'ghostbtn', text: 'Hint', onclick: hint }));
       if ((work.k[s] || 0) >= SHOW_AFTER) row.appendChild(h('button', { type: 'button', class: 'ghostbtn showme', text: 'Show me', onclick: showMe }));
       panel.appendChild(row);
       panel.appendChild(fb);
     }
+
+    function focusSubmit() { var b = panel.querySelector('.submit-answer'); if (b && !b.disabled) b.focus({ preventScroll: true }); }
 
     function paintDone() {
       var right = steps.filter(function (s) { return work.g[s] === 1; }).length;
@@ -411,7 +434,8 @@ var Work = (function () {
       if (!p.rows.some(function (r) { return r.typed; })) {
         /* nothing to type: the grams are given */
         work.n.g = p.rows.map(function (r) { return r.g; });
-        advance(s, 'Right: no percents here, so the grams are used as they are.');
+        advance(s, p.choice === 'pct' ? 'Right: percents. In a 100 g sample' + (p.mode === 'hydrate' ? ' of the hydrate' : '') +
+          ', each percent is that many grams' + (p.mode === 'hydrate' ? ' (the salt is the rest of the 100 g)' : '') + '.' : 'Right: no percents here, so the grams are used as they are.');
         return;
       }
       render();
@@ -437,7 +461,7 @@ var Work = (function () {
     function check() {
       if (done()) return;
       var s = cur();
-      if (s === 'grams' && work.c1 !== p.choice) { say('tip', 'First say what the problem gives: percents or grams.'); return; }
+      if (s === 'grams' && work.c1 !== p.choice) { if (work.sel1 && work.sel1 !== work.c1) choose(work.sel1); else say('tip', 'First choose what the problem gives, percents or grams, then submit.'); return; }
       var res = JUDGE[s]();
       if (res.empty && !res.wrong) {
         paintTable(); paintExtra();
@@ -454,7 +478,7 @@ var Work = (function () {
       if (res.fmt) {
         save();
         render();
-        say('tip', res.msgs.slice(0, 2).map(esc).join('<br>') + ' <span class="muted">(Not marked wrong: fix it and check again.)</span>');
+        say('tip', res.msgs.slice(0, 2).map(esc).join('<br>') + ' <span class="muted">(Not marked wrong: fix it and ' + (opts.graded ? 'submit' : 'check') + ' again.)</span>');
         return;
       }
       res.accept();
@@ -541,13 +565,10 @@ var Work = (function () {
       },
       multiply: function () {
         var qs = work.n.q;
+        /* the multiplier is the answer; once it is right the whole numbers fill in (the teacher's choice) */
         var jk = Chem.judgeMultiplier(val('mult'), qs, p.mult);
-        var list = [['mult', jk]];
-        p.rows.forEach(function (r, i) {
-          list.push(['w' + i, jk.ok ? Chem.judgeWhole(val('w' + i), qs[i], jk.v, r.sub) : (val('w' + i) || jk.empty ? { neutral: true } : { empty: true })]);
-        });
-        var res = tally(list);
-        res.accept = function () { work.n.mult = num0('mult'); work.n.w = p.rows.map(function (r, i) { return num0('w' + i); }); };
+        var res = tally([['mult', jk]]);
+        res.accept = function () { work.n.mult = num0('mult'); work.n.w = p.rows.map(function (r, i) { return Chem.wholeAfter(qs[i], p.mult); }); };
         res.good = p.mult === 1 ? 'Right: all whole already, so multiply by 1.' : 'Right: ×' + p.mult + ' makes every row whole.';
         return res;
       },
@@ -580,7 +601,7 @@ var Work = (function () {
       var s = cur();
       var r0 = p.rows[0];
       var text = {
-        grams: work.c1 !== p.choice ? 'Read the problem: does it give % (percents) or g (grams)?' :
+        grams: work.c1 !== p.choice ? 'Read the problem: does it give % (percents) or g (grams)? Choose one, then submit it.' :
           p.choice === 'pct' ? (p.mode === 'hydrate' ? 'In 100 g of the hydrate there are ' + p.rows[1].pct + ' g of water. The anhydrous salt is the rest: 100 − ' + p.rows[1].pct + '.' :
             'In 100 g of the compound there are ' + r0.pct + ' g of ' + Chem.el(r0.atom).name + '. Do the same for every row.') :
           (p.rows.filter(function (r) { return r.typed; })[0] || {}).ctx ? p.rows.filter(function (r) { return r.typed; })[0].ctx.how : 'The grams are given.',
@@ -615,7 +636,6 @@ var Work = (function () {
         p.rows.forEach(function (r, i) { work.v['q' + i] = Chem.fmtQ(mol[i] / min); });
       } else if (s === 'multiply') {
         work.v.mult = String(p.mult);
-        p.rows.forEach(function (r, i) { work.v['w' + i] = String(r.sub); });
       } else if (s === 'molecular') {
         work.v.efm = Chem.mmText(p.ef);
         work.v.n = String(p.mol.n);
@@ -645,6 +665,23 @@ var Work = (function () {
       var top = pt.getBoundingClientRect().top, r = tableWrap.getBoundingClientRect();
       var down = r.bottom - (top - 8);
       if (down > 0) window.scrollBy(0, Math.min(down, r.top - 4));
+    }
+
+    /* Faded worked example: the first steps arrive already done (marked "worked for you") */
+    function prefillStep() {
+      var s = cur();
+      fillStep(s);
+      if (s === 'grams') {
+        work.c1 = work.sel1 = p.choice;
+        work.n.g = p.rows.map(function (r, i) { return r.typed ? Chem.parseNum(val('g' + i)) : r.g; });
+      } else JUDGE[s]().accept();
+      work.g[s] = 'w';
+      work.s++;
+    }
+    if (opts.prefill && !work.s && !work.pf) {
+      for (var pi = 0; pi < opts.prefill && !done(); pi++) prefillStep();
+      work.pf = opts.prefill;
+      save();
     }
 
     render();

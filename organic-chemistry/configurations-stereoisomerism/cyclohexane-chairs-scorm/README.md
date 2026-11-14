@@ -34,6 +34,11 @@ build gets specific feedback ("The CH₃ on C1 is on the wrong face. It is on a 
 it belongs on the top face. In this chair, C1's up position is the axial one, pointing straight up."), a
 tip, and after two misses a "Show me in 3D" button.
 
+**A steady ring flip.** While the ring flips, the chair drawing keeps one frame (it never rescales or shifts), the
+carbon numbers and labels glide instead of hopping, and the 3D side views swing with the drawing so the groups on C1
+stay in sight in chair 2. The Flip button starts gently, passes straight through the boat and finishes gently; it no
+longer stops at the boat. `tools/walkthrough.js` checks all of this.
+
 **Sized for a Chromebook.** On every step where the ring flips (flip the ring, flip it equatorial,
 which chair wins) and on bigger groups push harder, the chair drawing with its flip slider and the
 energy plot sit side by side (with the 3D model beside them when there is room), so a student dragging

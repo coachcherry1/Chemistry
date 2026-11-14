@@ -1,6 +1,6 @@
 /* steps3.js: Part 5.
  *
- *   table    Klein's decision table (7.11): which mechanisms each substrate
+ *   table    Klein's decision table (Figure 7.18): which mechanisms each substrate
  *            and each kind of reagent give
  *   predict  Klein's three steps on five problems: the function of the
  *            reagent, the mechanism(s), then every product major, minor or
@@ -14,11 +14,13 @@
   function stage() { return U.stage(); }
 
   /* The results a cell of the table can hold, in the order of the chips. */
-  var RESULTS = ['E2', 'SN2', 'SN1', 'SN2, some E2', 'E2, some SN2', 'SN1, some E1', 'No reaction'];
+  var RESULTS = ['E2', 'SN2', 'SN1', 'SN2, some E2', 'E2, some SN2', 'SN1 and E1', 'No reaction'];
 
   function resultOf(list) {
     if (!list.length) return 'No reaction';
     if (list.length === 1) return list[0][0];
+    /* which of SN1 and E1 is major depends on the alkene (Klein), so the table names both */
+    if (/1$/.test(list[0][0])) return 'SN1 and E1';
     return list[0][0] + ', some ' + list[1][0];
   }
 
@@ -27,7 +29,7 @@
     var sn2 = /SN2/.test(got), sn1 = /SN1/.test(got), e2 = /E2/.test(got);
     if (deg === 3 && sn2) return 'At a 3° carbon, steric hindrance blocks back-side attack: never SN2.';
     if (fn === 'weak' && deg < 3) return 'A weak nucleophile and weak base cannot do SN2 or E2, and a 1° or 2° carbocation is too unstable to form readily. Klein marks these ✗.';
-    if (fn === 'weak') return 'A weak nucleophile and weak base waits for the carbocation: SN1, with some E1.';
+    if (fn === 'weak') return 'A weak nucleophile and weak base waits for the carbocation: SN1 and E1 together.';
     if (fn === 'base' && (sn2 || sn1)) return 'A base only is a weak nucleophile, so it cannot substitute. It eliminates: E2.';
     if (fn === 'nuc' && e2) return 'A nucleophile only is a weak base, so it substitutes.' + (deg === 3 ? ' At a 3° carbon it cannot do SN2, so it waits for the carbocation: SN1.' : '');
     if (fn === 'nuc' && deg < 3 && sn1) return 'A strong nucleophile at a 1° or 2° carbon attacks the back side directly: SN2.';
@@ -152,8 +154,10 @@
     if (c.role === 'none') return c.why;
     if (c.mech === 'SN2' && c.role === 'major') return c.name + ' is the SN2 product, with inversion of configuration: the major product here.';
     if (c.mech === 'SN2') return c.name + ' is the SN2 product. Here SN2 is the minor pathway.';
-    if (c.mech === 'SN1') return c.name + ': SN1, attack on the flat carbocation from either face, so both configurations form. The major pathway here.';
-    if (c.mech === 'E1') return c.name + ' comes from E1, the minor pathway beside SN1.';
+    if (c.mech === 'SN1' && c.role === 'major') return c.name + ' is the SN1 product: ethanol attacks the flat carbocation. No alkene here is tri- or tetrasubstituted, so substitution is major.';
+    if (c.mech === 'SN1') return c.name + ' is the SN1 product. It forms, but as a minor product: the E1 alkene here is trisubstituted or tetrasubstituted, so elimination is favoured.';
+    if (c.mech === 'E1' && c.role === 'major') return c.name + ' is the E1 Zaitsev product, a tri- or tetrasubstituted alkene: with an alkene that stable, E1 is favoured over SN1.';
+    if (c.mech === 'E1') return c.name + ' comes from E1 too, but as a minor product' + (c.regio === 'Hofmann' ? ': E1 always favours the Zaitsev product.' : '.');
     if (c.role === 'major') return c.name + ' is the ' + (c.regio ? c.regio + ' product' : 'E2 product') + (c.how === 'selective-major' ? ' with the larger groups trans' : '') +
       (React.REAGENTS[key].hindered ? ': the hindered base takes the most accessible H.' : ': the major product.');
     if (c.how === 'selective-minor') return c.name + ' forms too, but less: its larger groups are cis (stereoselective).';

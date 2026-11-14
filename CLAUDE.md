@@ -33,6 +33,10 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `chemistry/moles/combustion-analysis-scorm/` | Combustion analysis by the same four steps: a hydrocarbon (C and H only) from its grams of CO₂ and H₂O, × 2 H per H₂O, empirical and molecular formula, 6 graded problems (about 30 min) |
 | `chemistry/moles/empirical-formula-mgo-scorm/` | Virtual lab (pre-lab, with a paper sheet): empirical formula of MgO, the nitride side reaction and the water fix (about 20 min, no score) |
 | `chemistry/moles/hydrate-lab-scorm/` | Virtual lab (pre-lab, with a paper sheet): formula of a hydrate, CuSO₄·5H₂O heated to constant mass in a crucible, realistic data (about 25 min, no score) |
+| `chemistry/reactions/balancing-particles-scorm/` | Balancing with particle diagrams: a reactants box and a products box that follow the coefficients, the inventory down the centre, conservation of mass, polyatomic ions kept together (or not), 10 graded equations and 6 questions (about 30 min). Package 1 of 4; the plan for the rest is `chemistry/reactions/PLAN.md` |
+| `chemistry/reactions/balancing-reaction-types-scorm/` | Balancing and reaction types: the same workbench with six type buttons, every reaction balanced and classified by one Check (synthesis, decomposition, single and double replacement, combustion, neutralization), 4 questions and 10 reactions ending with nitroglycerin (about 35 min). Package 2 of 4, one code base with package 1 |
+| `chemistry/reactions/predicting-products-scorm/` | Predicting products: single replacement by the activity series (salts, acids, cold water, halogens; no state symbols), double replacement by the solubility rules (a solid, or no reaction; states asked); each problem worked step by step beside the reference; 4 questions and 10 problems (about 40 min). Package 3 of 4. `chemistry/reactions/reference-sheet/` has the printable PDFs of the same reference (a full sheet, and an assessment sheet without the rules for using the tables) |
+| `chemistry/reactions/net-ionic-equations-scorm/` | Net ionic equations: two solutions poured together in a beaker drawn to scale (Shannon radii), the solid sinking, H⁺ + OH⁻ becoming HOH, spectators moving; every problem from the unbalanced molecular equation in five steps (balance, states, complete ionic, strike the spectators, net ionic or no reaction); 4 questions and 8 problems ending with Ba(OH)₂ + H₂SO₄ (about 45 min). Package 4 of 4 |
 
 **AP chemistry**
 
@@ -60,16 +64,17 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `organic-chemistry/reactivity-mechanisms/arrow-pushing-scorm/` | Klein 6, before SN1/SN2: bond breaking and making, ΔG, energy diagrams, nucleophiles and electrophiles, drawing curved arrows, the four patterns, a final check (about 50 min) |
 | `organic-chemistry/substitution-elimination/substitution-elimination-scorm/` | SN1, SN2, E1 and E2: reagent function, mechanisms with curved arrows, regio- and stereochemistry, rings, predicting products (about 50 min) |
 
-**Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions), arrow pushing, mole conversions (both) and the formula packages (all three) contains em
+**Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions), arrow pushing, mole conversions (both), the formula packages (all three), the two balancing packages, predicting products and net ionic equations contains em
 dashes (the Lewis, resonance and drawing-tool validators allow them). The mass spec, IR + mass spec, NMR,
 naming, acids and ionization energy packages still load a browser save inside an LMS when
 `cmi.suspend_data` is empty (fixed in IR, Newman, chairs, chirality, Lewis and resonance). Only Newman,
-chairs, chirality, SN1/SN2, arrow pushing, mole conversions and the formula packages have `tools/layout.js`. The acetone kinetics lab still grades a choice on the
+chairs, chirality, SN1/SN2, arrow pushing, mole conversions, the formula packages, the two balancing packages, predicting products and net ionic equations have `tools/layout.js`. The acetone kinetics lab still grades a choice on the
 click, with no Submit answer button. Bring a package up to the rules when you next change it.
 
 ## House rules
 
-- Plan first and get approval before building a new activity.
+- Plan first and get approval before building a new activity. The plan has a **Learning design** section (see
+  **Learning design** below).
 - No em dashes anywhere (each validator fails on one). Spelling as in the existing files: colour, centre, neighbour.
 - Organic packages: kJ/mol, Klein's values. Honors packages: the teacher's 5 Lewis rules and Pauling
   electronegativities, as in `lewis-structures-scorm/`. Qualitative packages never ask for a calculation; a reference table sits beside the checkpoints instead.
@@ -92,6 +97,57 @@ click, with no Submit answer button. Bring a package up to the rules when you ne
 - Answers are computed from the model, never typed twice, and the validator checks them.
 - Every package also runs as a plain web page (see **Web version** below).
 - Built zips are committed in `dist/`. Branch for new work; don't open a PR unless asked.
+
+## Learning design (every sim: at the plan, at every change, at every review)
+
+The teacher's rule (Nov 2026). Every sim is made and evaluated against the three checks below, hardest at the original
+plan and again at every iteration. Sources: the Learning Scientists (learningscientists.org), *Teach Like a Champion*
+(teachlikeachampion.org) and *Make It Stick* (Brown, Roediger and McDaniel).
+
+- **The plan** for a new activity has a "Learning design" section: the prerequisites, how each of the three checks is
+  met, and the words and the picture for every step.
+- **A review** reports on each check (what is strong, what is missing, the proposed fix) in chat and is also saved in the
+  package as `LEARNING_REVIEW.md` (dated, newest first; not part of the zip). Review when a sim is built, when it is
+  changed in a way that touches what students see or do, and whenever the teacher asks for an evaluation.
+- **Tools with no score** (pre-labs, demos): ask the teacher before the build how the checks apply; do not assume.
+- **Teacher-facing tools** (`lewis-drawing-tool/`, `buffer-beaker-demo/` and any like them): the focus is check 3,
+  dual-code everything.
+- Older packages predate this rule; review and bring one up to it when it is next changed.
+
+**1. Write for a novice chemist.** The student is new to the topic in every course: honors, AP and organic.
+
+- The plan names the prerequisites, and nothing else is assumed.
+- Every new term is defined in plain words where it first appears and stays in reach afterwards (Vocabulary, the
+  reference beside the checkpoints).
+- One new idea per step. A worked example first, then support that fades, then independent work.
+- The steps are named in the teacher's words and stay on screen.
+- No expert shortcuts, skipped steps or notation that was never taught.
+- Feedback names the specific slip and the next move, never only "incorrect".
+- Nothing is on screen that the current step does not need.
+- The test: could a student with only the named prerequisites do every step without asking the teacher?
+
+**2. Use the best cognitive science.**
+
+- **Retrieval practice:** students pull an idea from memory before it is shown again; a checkpoint is retrieval, not
+  recognition of the screen above it.
+- **Spacing:** earlier ideas come back in later parts, and earlier packages come back in later packages.
+- **Interleaving:** problem types are mixed once each has been taught, so the student must choose the method.
+- **Generation:** the student predicts before the reveal.
+- **Elaboration:** questions ask why and how, not only what.
+- **Concrete examples:** every abstract idea has more than one real example.
+- **Calibration:** the first answer counts, so students find out what they do not know.
+- **Desirable difficulty:** the effort goes into the chemistry, never into the interface.
+- **Check for understanding:** no new idea is built on one that has not been checked.
+- **Plan for error:** wrong choices are the real misconceptions, each with its own feedback.
+- **No opt out:** a wrong answer ends with the student producing the right one.
+
+**3. Dual-code everything.**
+
+- Every idea is given in words and in a picture, on screen together, with the labels on the picture and not in a
+  far-off legend.
+- Students work in both directions: read a picture into words, and turn words into a picture.
+- Pictures are drawn from the model and carry meaning; none is decoration.
+- Any question that names a molecule, particle or setup draws it.
 
 ## Web version (GitHub Pages)
 
@@ -189,6 +245,10 @@ not the full page.
   - A flip turns the bonds on C1/C5 by ±60° and on C2/C4 the other way.
   - Klein views appear in Parts 1–3 and in two Part 4 steps: a trans-1,4 build on C1 and C4 (`build-newman2`) and
     cis-1,3's diaxial chair with the CH₃/CH₃ clash (`newman13`).
+- **Flip animation:** a chair drawing redrawn through a flip passes `steady` to `Draw.chair` (one frame for the whole
+  flip, carbon numbers that glide; a still drawing keeps the widest-gap rule). The 3D views `start`, `side`, `above` and
+  `newman` follow the flip (`FOLLOWS` in `viewer3d.js`); a view turned by hand does not. A played flip is timed by
+  `flipAt()` in `app.js` so it does not stop at the boat (t = 0.5 is still exactly the boat). The walkthrough checks it.
 - **Files:**
   - `chair.js`: geometry, flip, crowding, cameras
   - `molecules.js`: flat-ring molecules
@@ -324,9 +384,9 @@ not the full page.
 - **Walkthrough harness (both new packages):** the fake LMS reads and writes sessionStorage on every call and never stages
   the next load's data; staging made the reload check fail at random (still the case in the older packages' walkthroughs).
 
-## substitution-elimination-scorm (branch `claude/compassionate-allen-hwn3ov`, zip v2, SCHEMA 1)
+## substitution-elimination-scorm (branch `claude/compassionate-allen-hwn3ov`, zip v4, SCHEMA 2)
 
-- **Key objective:** Klein's three steps (7.11): the function of the reagent, the substrate and Klein's table, then
+- **Key objective:** Klein's three steps (7.9): the function of the reagent, the substrate and Klein's table, then
   regio- and stereochemistry; major and minor products.
 - 26 steps in 5 parts; 23 graded questions (4+5+5+4+5) from a pool of 73. Every checkpoint's core has a
   reagent-function question. No reference table beside the checkpoints (the teacher's choice).
@@ -341,6 +401,10 @@ not the full page.
   SN2 stereospecific, SN1 not. E/Z for every stereogenic alkene, names as (E)-pent-2-ene; Klein's ring names
   (1-methylcyclohexene). Carbocation rearrangements in, on 2° substrates in ethanol (the step explains Klein's ✗).
   Left out: solvents, leaving-group ranking, rate-law equations, graded arrow drawing, A-values on screen.
+- **Checked against the teacher's Klein chapter 7 PDF (Nov 2026).** Figure 7.18 is the table (the 3° weak cell is
+  "SN1 and E1"): SN1 is favoured unless an E1 alkene is tri- or tetrasubstituted, then E1 is major
+  (`React.predict`; tBuBr in EtOH SN1 major, bmb E1 major). That edition says anti-periplanar after introducing
+  anti-coplanar, and never says regiospecific or trans-diaxial; the teacher's words are kept.
 - **One model:** molecules are SMILES (or the chairs' flat-ring spec) in `molecules.js`, each with its textbook name
   for the validator; names (`name.js`), drawings (`layout.js`), products (`react.js`), 3D (`build3d.js`) and
   mechanisms (`mech.js`) are all computed. E2 stereochemistry is checked twice (parity math and a 3D anti
@@ -354,6 +418,7 @@ not the full page.
   E/Z. Regio and the predict problems play mechanisms without drawing (`U.chainBox`, `U.scenesFor`).
   `App.playedScenes()` lists them all: the validator checks their products against react.js, the walkthrough
   their drawings. The step-21 sort shows one reaction at a time, drawn out.
+  Each play has a caption line and a Slow motion button; in SN2 the groups swing over the α carbon (`swing`).
 - **Files:** `mol.js`, `name.js`, `layout.js`, `draw.js`, `react.js`, `build3d.js`, `viewer3d.js`, `anim.js`, `mech.js`,
   `arrows.js`, `play.js`, `chair.js` (from the chairs activity), `molecules.js`, `quiz.js`, `app.js`, `steps1.js` (Parts 1-2),
   `steps2.js` (Parts 3-4), `steps3.js` (Part 5).
@@ -558,7 +623,7 @@ not the full page.
 - **Files:** `config.js`, `elements.js`, `substances.js`, `chem.js`, `problems.js`, `tex.js`, `map.js`, `ptable.js` (docked
   table), `work.js` (one problem, `Work.solutionHTML`), `scorm.js` (save key from config), `app.js`.
 
-## empirical-molecular-formula-scorm, hydrate-formula-scorm and combustion-analysis-scorm (zip v2, SCHEMA 1)
+## empirical-molecular-formula-scorm, hydrate-formula-scorm and combustion-analysis-scorm (zip v4, SCHEMA 3)
 
 - **Key objective:** fluency with the teacher's four steps, on screen in the teacher's words in every problem: **Percents to grams**
   (assume 100 g), **Grams to moles**, **Divide by small**, **Multiply if not whole**. The teacher's named hurdle is reading a
@@ -567,23 +632,30 @@ not the full page.
   fails if they differ (copy a fix to all three). `config.js` holds the mode, save key and minutes; the page title and h1, manifest
   (`EMPMOLFORMULA_*`, `HYDRATEFORMULA_*`, `COMBUSTANALYSIS_*`), `build.sh`, README and answer key are per package.
 - **Steps:** a worked example (`four`: Fe2O3 from percents, CuSO4.5H2O from crucible data, C3H8 from CO2 and H2O) filled one column
-  at a time with Show step; ungraded warm-ups; Part 2 "Multiply if not whole" (the fraction finder, Name the fraction, Whole or not?,
-  Multiply them all, then a warm-up); for empirical and combustion a molecular-formula part (n = molar mass ÷ empirical formula mass);
+  at a time with Show step; ungraded warm-ups; Part 2 "Multiply if not whole" (Name the fraction, 3 cards from different
+  rows of the finder; Whole or not?; Multiply them all, where the whole numbers fill in once the multiplier is right; then a warm-up;
+  the separate fraction finder step was removed and Name the fraction cut from 10 cards to 3, both the teacher's choice); for empirical and combustion a molecular-formula part (n = molar mass ÷ empirical formula mass);
   the graded set (8, 6, 6) and results. Hydrate opens with `heat` (heat CuSO4.5H2O to constant mass, predict first), combustion
   with `burn` (propane's atoms go into 3 CO2 and 4 H2O: × 1 C per CO2, × 2 H per H2O).
 - **The work table (`work.js`):** a row per element (hydrate: anhydrous salt and water; combustion: C from CO2 and H from H2O), a
   column per step, each with its own Check; a step opens when the one before is right. Step 1 asks "percents or grams?" first
-  (grams given: the column fills itself; hydrate masses: subtract). Step 2 is a **dimensional analysis setup** (the teacher wants DA
+  (percents or grams given: the column fills itself once the choice is right, the teacher's choice; hydrate masses: subtract). Step 2 is a **dimensional analysis setup** (the teacher wants DA
   stressed in every honors activity): g X × (1 mol X / ___ g X) = ___ mol X, the molar mass the blank on the bottom, typed to tenths;
   combustion adds × (___ mol C / 1 mol CO₂), the mole ratio the blank on top, and the answer is mol C directly (no mol CO₂ box).
   Cancelling units are struck through; the setup wraps between factors when a formula is long (`.da-piece`). Step 3 taps the
-  smallest, then quotients to 2 decimals. Step 4 one multiplier for every
-  row and the whole numbers. Step 5: molecular formula (empirical formula mass, n, the subscripts) or the hydrate's Greek prefix.
+  smallest, then quotients to 2 decimals. Step 4 is one multiplier for every
+  row; once it is right the whole numbers fill in (the teacher: typing them is tedious). Step 5: molecular formula (empirical formula mass, n, the subscripts) or the hydrate's Greek prefix.
 - **Teacher's choices:** the first Check of every step counts (score = steps right first / all steps; one interaction per step).
+  In graded problems that button reads **Submit answer** (`.submit-answer`), and Step 1's percents-or-grams choice only selects
+  (`selected`, `aria-pressed`) until it is submitted, in warm-ups too.
   Not an answer (told, check again): empty boxes, the right number rounded too far (moles under 3 significant figures, quotients under
   2 decimals, 3.99 for 4). Within 0.1 of a whole number rounds; otherwise halves, thirds, fourths and fifths only (`Chem.FRACS`), and
   the multiplier is the smallest that makes all whole. Hints free; Show me after two misses in a step. Combustion includes the
   molecular formula (the teacher asked). Hydrate names: salt name + mono to deca + hydrate.
+- **Learning design (Nov 2026, the teacher chose these):** faded worked examples (warm-up `prefill`: 2 steps, then 1, then
+  none; worked steps are `work.g[s] = 'w'`, shown "worked for you"); **Find the mistake** (`mistake` step in Part 2,
+  `Gen.mistakes`/`Gen.worked`: two cards per package, pick the step then the reason); in graded problems the finder is
+  behind a Show fraction finder button; `recall` (tap the four steps in order) just before the set. `LEARNING_REVIEW.md` per package.
 - **Fraction finder (`finder.js`):** a ruler of the decimal part with rows for halves to fifths and shaded "round" ends, plus a chart.
   Interactive in the drills and warm-ups (tap a quotient, the fraction lights up); a reference only in graded problems.
 - **One model:** `compounds.js` holds real compounds only (65 formulas, 29 hydrates, 26 hydrocarbons); `problems.js` computes every
@@ -595,3 +667,169 @@ not the full page.
 - **Files:** `config.js`, `util.js`, `elements.js`, `compounds.js`, `chem.js`, `problems.js`, `tex.js`, `ptable.js`, `finder.js`, `work.js`,
   `drills.js`, `scenes.js`, `scorm.js`, `app.js`. Walkthrough harness as in the VSEPR and IMF packages (the fake LMS reads and writes
   sessionStorage on every call); each run picks random problems and prints its seed, `SEED=n` replays one.
+
+## balancing-particles-scorm (zip v4, SCHEMA 4), balancing-reaction-types-scorm (zip v1, SCHEMA 4) and the reactions unit
+
+- **The unit is four packages** in `chemistry/reactions/`; `PLAN.md` there holds the approved plan, the teacher's answers
+  and the reference (activity series, solubility rules; the corrected version is the data in package 3's `ions.js`).
+  All four packages are built and merged (3 and 4 each have their own section below). All four use
+  the same reference data and write water HOH.
+- **Two packages, one code base.** Every file in `src/js` (except `config.js`), `src/css` and `tools/` is identical in
+  both, and each validator fails if they differ: make a fix in one and copy it to the other. `config.js` holds
+  `classify`, the save key and the minutes; the page title and h1, manifest (`BALPART_*`, `BALTYPES_*`), `build.sh`,
+  README and answer key are per package. The walkthrough, layout test, validator and answer key all branch on the mode.
+- **Package 2 (`classify: true`):** 9 steps in 5 parts: a recap (rust with a typed inventory, NaOH + H₂SO₄ as HOH), the
+  six types (a card each beside the three rules; eight reactions to classify, shown without coefficients), two ungraded
+  joint benches, then 4 questions and 10 reactions. **Balance and classify together** (the teacher: jointly, not one
+  then the other): six type buttons on the workbench, a click only selects, and one Check judges the coefficients and
+  the type; each reaction is worth 2 of the 24 items (`work.g`, `work.k`). A Check with no type chosen is not counted.
+  Every set has all six types, easiest first, and **ends with the decomposition of nitroglycerin** (the teacher expects
+  it); its coefficients are never shown earlier (the validator checks).
+- **The types (`Chem.TYPES`, `Chem.classify`):** one product is a synthesis and one reactant a decomposition, whatever
+  else is true; acid + base is a neutralization, not a double replacement; combustion only for a compound of C and H
+  (or C, H, O) with O₂ making CO₂ and H₂O (so 2 Mg + O₂ is a synthesis). The validator checks every tag in
+  `reactions.js` against `Chem.classify`; reactions that fit none cleanly are tagged `''` and stay out of package 2.
+- **Key objective:** every atom in the reactants box is in the products box (the law of conservation of mass); a
+  coefficient changes how many particles, a subscript is never changed; keep an accurate inventory.
+- **Package 1:** 13 steps in 6 parts; 16 graded items: 6 choice questions (Submit answer) and 10 equations (3 easy, 4
+  medium, 3 hard from a pool of 56). Score = items right the first time / 16.
+- **The inventory runs down the centre** (the teacher's paper method: count in the reactants | what is counted | count
+  in the products, under the arrow, between the two boxes), updating with every coefficient. Rows are marked green or
+  red live in the lesson; in the graded equations the counts are live but nothing is marked until the first Check, which
+  is the one that counts.
+- **Polyatomic ions (Part 4, the teacher's emphasis):** an ion is one row of the inventory only when it is in the
+  reactants and in the products (`Chem.rows`, ions in `Chem.IONS`); the teacher's example Na₃PO₄ + Ca(C₂H₃O₂)₂ gives rows
+  Na, PO₄, Ca, C₂H₃O₂. On one side only (P₄O₁₀ + H₂O → H₃PO₄) it is counted atom by atom. **A neutralization writes
+  water as HOH** (the teacher: a hydroxide and a hydrogen), so OH stays together: NaOH + H₂SO₄ → Na₂SO₄ + HOH has rows
+  Na, OH, H, SO₄, and the H row counts only the hydrogen "not in OH" (`Chem.isHOH`, type `N` only; `Chem.show` prints
+  HOH). Every kept ion is outlined in colour in the boxes (`Particles.groups` finds its atoms; the validator checks as
+  many are found as the inventory counts) and ringed in the same colour in its row. Steps with `typed` make the
+  student type the starting inventory before the steppers open; steps with `ask` start with a prediction (answered on
+  the click).
+- **Teacher's choices:** no masses on screen. No picture-to-equation section (removed at the teacher's request; the
+  workbench still tells doubled coefficients to reduce, and counts them as a miss). An empty box is not counted; Show me
+  after three misses.
+- **One model:** `chem.js` balances every equation by solving it (the validator balances each again by brute force) and
+  writes the inventory (the validator checks every atom is in exactly one row, and that the rows all match exactly when
+  the atoms are conserved). `reactions.js`: formula, name and particle tree (`O(H)(H)`) per substance, and reactions
+  tagged with a type for package 2 (`''` where the six types do not fit) and `big` (butane, nitroglycerin: kept out of
+  this package's graded set).
+- **Particles (`particles.js`):** lettered circles coloured by element, sized from covalent radii (squeezed so H holds
+  its letter), laid out from the tree and settled; `Particles.pair` draws the two boxes at one scale. To be reused by
+  packages 2 and 3; package 4's ions need true ionic radii instead.
+- **Files:** `config.js`, `util.js`, `chem.js`, `reactions.js`, `particles.js`, `problems.js` (`Gen.set`, `Gen.quiz`),
+  `bench.js` (workbench, inventory, type picker, `Bench.picture`), `steps.js` (lesson steps, the six types, choice questions), `scorm.js`, `app.js`;
+  `tools/load.js` loads them for the validator and answer key. Teacher links: `?step=<id or number>`,
+  `?step=set&seed=<n>&problem=<1 to 10>`.
+
+## predicting-products-scorm (zip v4, SCHEMA 4) and reference-sheet
+
+- **Key objective:** from the reactants alone, decide whether a reaction happens, write the products from ion charges,
+  balance. Only single replacement (activity series) and double replacement that makes a solid (solubility rules);
+  "no reaction" is a real answer (3 of every 10 graded problems).
+- 11 steps in 4 parts; 34 graded items: 4 questions and 30 problem steps (10 problems: 5 single, 3 metal + salt, 1 metal
+  + acid or cold water, 1 halogen, two of the five with no reaction; 5 double, one with no reaction).
+- **State symbols only where they matter (the teacher):** a single replacement has no states rung and its equations
+  carry no state symbols anywhere (the validator checks); a double replacement asks (aq) or (s) for each product.
+- **The reference is the model (`ions.js`)**, drawn beside everything (`ref.js`) and printed by `node build.js` in
+  `../reference-sheet/`: one Letter page each, Times-style serif, made from `ions.js` (rebuild after any change to the
+  data; the validator checks both exist and are current). **Two sheets (the teacher):** the full sheet, and
+  `Activity_Series_and_Solubility_Rules_Assessment.pdf`, the same two tables **without the rules for using them** (students
+  must have those memorized for assessments; the validator fails if the assessment sheet says "Using the", "below it" or
+  "no reaction"). The on-screen reference keeps its short how-to notes (it is for learning, not assessing).
+  The reference was **corrected at the teacher's request**: the series is in the order of the standard potentials (Li, Cs,
+  Rb, K ...; the old handout had Rb, K, Cs) with tiers (`Ions.TIERS`: Li to Na react with cold water, Mg to Cd with steam,
+  Co to Pb with acids, Cu to Au nothing) and the halogens; the solubility rules have group 1 and NH₄⁺ always soluble, Br⁻ and
+  I⁻ with Cl⁻, Hg₂²⁺ exceptions. Rows marked `sheet` (chlorate, sulfite, chromate, silicate, oxide) are on the printed sheets
+  only. The validator re-sorts the series from potentials and types the solubility of every usable ion pair a second time.
+- **The solubility table has two answers only (the teacher): "what would a novice chemist observe?"** A compound dissolves,
+  (aq), or a solid is seen, (s); there is **no "slightly soluble" category** (an earlier draft had one). Ca(OH)₂, CaSO₄,
+  Ag₂SO₄, Sr(OH)₂, PbCl₂ and PbBr₂ are therefore insoluble exceptions and are used in problems (the validator fails if a
+  `slight` field returns).
+- **Never used (`Ions.AVOID`):** pairs that react with water or do not exist (AgOH, NH₄OH, CuI₂, Al₂(CO₃)₃, sulfides of
+  Mg/Ca/Ba/Sr/Al, most acetates, lithium OH, S and acetate) and silver acetate (too borderline to ask about).
+- **Metals that react with water are included (the teacher):** lone metals are K, Ba, Ca, Na, Mg, Al, Zn, Fe, Pb, Cu, Ag;
+  on paper the series decides, even for K in a salt solution. **Metal + cold water** is a problem kind (`sub: 'water'`,
+  water written HOH as in the balancing packages): K, Na, Ba react (hydroxide + H₂), Zn, Fe, Pb, Cu, Ag do not
+  (`Gen.WATER_NO`); calcium reacts too (its hydroxide is a solid, which a single replacement does not show). A single
+  replacement of a metal in a salt or an acid is asked only when the new salt is soluble. Double replacements that make two solids are allowed.
+- **The ladder (`ladder.js`):** rungs `react` (a choice and Submit answer), `products` (pick a positive and a negative
+  ion with their charges shown, set how many of each; in a single replacement also the element set free, Cu or Cu₂, H or
+  H₂), `states` (double replacement only), `balance` (the balancing packages' workbench, reference hidden for width).
+  Single: react, products, balance; with no reaction, react is the whole problem. Double: products, states, react, then
+  balance if a solid forms. The first answer to each rung counts; an unfinished Check is not counted; Show me after
+  three misses. Slips named: charges not cancelling, not lowest terms, the reactants built again, a metal written
+  diatomic, H for H₂.
+- **The strip of steps never gives the answer away (the teacher):** every problem of a kind shows the same pills
+  (`SHOWN` in `ladder.js`: single react, products, balance; double products, states, react, balance) whether or not it
+  reacts; unused steps are marked "not needed" only once the problem is finished. Scoring still counts only the steps
+  actually done (`p.rungs`).
+- **No lesson reaction is ever a graded problem (the teacher: it would bore, no desirable difficulty):** `Gen.LESSON` in
+  `problems.js` is the one list of the lesson's reactions (drill pairs, animations, the four worked problems; `app.js`
+  and `steps.js` read it) and `pools()` filters them out; the validator and the walkthrough check.
+- **Animations (`scene.js`, `Scene.show(host, problem, { auto, onDone })`), in the graded set too (the teacher: dual
+  coding):** every finished problem, lesson or graded, plays its reaction as particles under the final equation (once by
+  itself, then Play again; never before the answer). Kinds: a metal strip in a salt solution (ions arrive and become
+  atoms, atoms leave as ions), in an acid (H⁺ arrives, H₂ bubbles leave), in cold water (HOH arrives, goes back as OH⁻, H₂
+  leaves), a halogen molecule meeting two halide ions, and two solutions mixing (the ions of the solid settle, the rest
+  float). With no reaction the particles move about and nothing changes. Drawn from the problem, roughly to scale only;
+  reduced motion shows the end. Package 4 needs true ionic radii and constant motion instead.
+- **The reference is beside the two prediction steps too** (`plate`: series, `mix`: solubility rules), since the
+  prediction is made from it.
+- **Shared code:** `chem.js`, `bench.js`, `util.js`, `scorm.js` are the balancing packages' files unchanged (this
+  validator fails if they differ: a fix goes into all three packages); `particles.js` is theirs plus strontium. `Rx`
+  here is a small adapter in `ions.js` (name and particle tree built from the ions).
+- **Files:** `config.js`, `util.js`, `chem.js`, `ions.js`, `particles.js`, `problems.js` (`Gen.make`, `Gen.pools`, `Gen.set`,
+  `Gen.quiz`), `ref.js`, `scene.js`, `bench.js`, `ladder.js`, `steps.js`, `scorm.js`, `app.js`. Teacher links:
+  `?step=<id or number>`, `?step=set&seed=<n>&problem=<1 to 10>&rung=<n>` (or `&done` for the finished problem with its animation).
+
+## net-ionic-equations-scorm (zip v3, SCHEMA 2; package 4 of the reactions unit)
+
+- **Key objective:** a dissolved strong electrolyte is its ions, apart; the ions the same on both sides are spectators;
+  the net ionic equation is what is left: a solid, H⁺(aq) + OH⁻(aq) → HOH(l), or no reaction.
+- 11 steps in 6 parts; 44 graded items: 4 questions and 8 problems × 5 steps (3 solid, three kinds of solid; 2 water, one
+  that must be reduced to lowest terms; 2 no reaction, never first; **Ba(OH)₂ + H₂SO₄ always last**, the teacher's challenge).
+- **Every problem gives the unbalanced molecular equation** (the teacher) and has the same five steps (`Gen.RUNGS`):
+  balance (the balancing workbench, inventory down the centre), states ((aq), (s), (l)), complete ionic (only **splits into
+  ions or stays together** per substance; the ions then write themselves, coefficients in front: `Ladder.splitRow`. The
+  teacher: the molecular equation is already balanced, so counting ions and clicking charges again is tedious, not a
+  desirable difficulty), spectators (tap to strike on both sides, or "There are no spectators"), net ionic (**starts with
+  what is left**, coefficients first, states fixed: the student reduces to lowest terms, or says "No reaction" when nothing
+  is left; the teacher: no reconfirming what was struck out). The first Check of each
+  counts; an unfinished Check is not counted; Show me after three misses. Hints only in the three lesson problems.
+- **Scope (the teacher's):** strong electrolytes only: soluble salts, HCl, HBr, HI, HNO₃, H₂SO₄ (2 H⁺ + SO₄²⁻), and only
+  LiOH, NaOH, KOH, Ba(OH)₂ as bases. No weak acids or bases, no gases: an acid never meets a carbonate or a phosphate;
+  ammonium (ammonia with OH⁻), acetate and sulfide are not used; HClO₄ is out (not on the class table). Water is HOH
+  everywhere; H⁺ not H₃O⁺. The validator bans weak acids, H₂O, hydronium and "slightly soluble" in this package's files.
+- **The beaker (`beaker.js`) is to scale:** `data.js` holds Shannon effective ionic radii (six-coordinate) with the source;
+  in a polyatomic ion each O is 140 pm at the real bond length (SO₄²⁻ and PO₄³⁻ are tetrahedra seen along a two-fold axis,
+  NO₃⁻ and CO₃²⁻ flat triangles), the centre atom over it at its covalent radius; **OH⁻ and water, HOH, are drawn the same
+  way** (the teacher: with fidelity, never like an ion, and an H that swells when H⁺ joins OH⁻ looks comical): the O (137 pm
+  in OH⁻, 140 pm in water, the usual size of a water molecule) with each H at 31 pm, the size of the H⁺ dot, on its surface;
+  water bent at 104.5°. Names sit **beside** each particle, never inside; a settled solid has one name over the heap
+  (`solidName`), not one per ion. **No spectator is ever trapped under the solid** (a free particle under a settling unit
+  is lifted out above it; the walkthrough checks every beaker it plays). A bare H⁺ is
+  drawn as a 31 pm dot and the screen says why. One scale (`Data.SCALE`, px per pm) and a 200 pm bar everywhere. The
+  validator checks every shape against the tables; the walkthrough checks every drawn sphere.
+- **Motion:** the first solution already moves; Pour (locked until the prediction) pours the second in, **spread across
+  the whole surface, each ion moving its own way** (the teacher: never clustered), the
+  ions mix, each solid unit gathers in its own shape and sinks to its place in a lattice on the bottom; H⁺ seeks an OH⁻
+  and it becomes HOH (ringed green), which keeps moving; spectators move the whole time (`stepWorld`, soft collisions).
+  Counts come from `Net.beaker` (about 20 ions; the validator checks each solution and what is left are neutral and the
+  solid is in the formula's ratio). Reduced motion: Before and After stills. Tap an ion to name it; Highlight spectators.
+- **Lesson:** `aq` picture cards (words to picture; no table beside them, the pictures take the full width), `split`
+  drill (splits or stays together for 8 substances, the first a worked example; each then written out and drawn in
+  water), three predict-then-pour steps with the beaker beside the prediction and the
+  reference, three lesson problems. `Gen.LESSON` lists every lesson reaction and compound; none is graded or asked.
+- **Questions (one of each):** which picture shows this solution (pictures as choices), which ions are the spectators in
+  this beaker (drawn after mixing), the net ionic equation, what happens (both drawn before mixing).
+- **Shared code:** `chem.js`, `bench.js`, `util.js`, `scorm.js` are the balancing packages' files; `ions.js` and
+  `particles.js` are package 3's (the validator fails if any differs). `net.js` adds HI and LiOH to `Ions.BY` at load and
+  sets `Rx` (water is `H2O` in the model, type `N`, so the workbench writes HOH).
+- **Teacher's answers (v2):** students know their ion charges (no table of charges); the class does not say "strong
+  electrolyte" (banned in this package by the validator); everything was too small, so the beakers, pictures and text
+  were made larger (`tools/layout.js` still passes at 1366x520).
+- **Files:** `config.js`, `util.js`, `chem.js`, `ions.js`, `data.js`, `net.js`, `particles.js`, `problems.js`, `ref.js`,
+  `beaker.js`, `bench.js`, `ladder.js`, `steps.js`, `scorm.js`, `app.js`. Teacher links: `?step=<id or number>`,
+  `?step=set&seed=<n>&problem=<1 to 8>&rung=<1 to 5>` (or `&done`), `?step=quiz&seed=<n>`. Walkthrough: `MOTION=1` plays
+  the beaker instead of reduced motion.
