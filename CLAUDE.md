@@ -666,7 +666,7 @@ not the full page.
 
 - **The unit is four packages** in `chemistry/reactions/`; `PLAN.md` there holds the approved plan, the teacher's answers
   and the reference (activity series, solubility rules; the corrected version is the data in package 3's `ions.js`).
-  Packages 1 to 3 are built and merged; package 4 is built (each of 3 and 4 has its own section below). All four use
+  All four packages are built and merged (3 and 4 each have their own section below). All four use
   the same reference data and write water HOH.
 - **Two packages, one code base.** Every file in `src/js` (except `config.js`), `src/css` and `tools/` is identical in
   both, and each validator fails if they differ: make a fix in one and copy it to the other. `config.js` holds

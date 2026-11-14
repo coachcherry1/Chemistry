@@ -1,6 +1,6 @@
 # Reactions unit: plan for four SCORM packages (honors chemistry)
 
-Status: **the teacher has reviewed the plan (answers below). Packages 1, 2 and 3 are merged into main; package 4 is built (v2, after the teacher's first look) and waiting for the teacher's review.**
+Status: **the teacher has reviewed the plan (answers below). Packages 1, 2 and 3 are merged into main; all four packages are built and merged into main (package 4 at zip v3).**
 Where this plan and "The teacher's answers" disagree, the answers win.
 
 ## The teacher's answers (review of this plan)
