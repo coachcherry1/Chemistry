@@ -2,6 +2,16 @@
 
 Reviews against the three checks in `CLAUDE.md` (Learning design), newest first. Not part of the zip.
 
+## 2026-11-14: v3 (zip only; SCHEMA unchanged), the teacher's second look
+
+- **Water looked wrong, and the H swelled when H⁺ joined OH⁻ ("almost comical").** OH⁻ and HOH are now drawn the same way:
+  the O (137 pm in OH⁻, 140 pm in water) with each H at 31 pm, the size of the H⁺ dot, on the O's surface; water bent at
+  104.5°. Joining adds an H and nothing changes size. The validator checks the three H are the same size.
+- **Spectators were trapped under the solid.** A free particle under a settling unit or the heap is lifted out above it;
+  the walkthrough checks every beaker it plays, and 278 mixes run to the end leave none trapped.
+- **The ions' names overlapped on the heap.** A settled solid now carries one name, such as BaSO₄(s), over the heap
+  (dual coding: the formula on the picture).
+
 ## 2026-11-14: v2, after the teacher's first look
 
 The teacher could not finish v1 and asked for these changes; each is made.

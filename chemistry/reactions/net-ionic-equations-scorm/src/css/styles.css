@@ -548,3 +548,5 @@ input.coef.inv-in { width: 34px; height: 24px; font-size: 1rem; border: 1.5px so
 .net-empty { margin: 4px 0; font-weight: 600; color: var(--muted); }
 .quiz .pic-choice .bk-svg { max-height: 156px; }
 .bk-atom.bk-h { stroke-width: 1.4; }
+.bk-in-solid .bk-t { display: none; }
+.bk-solid-name { font-size: 17px; }

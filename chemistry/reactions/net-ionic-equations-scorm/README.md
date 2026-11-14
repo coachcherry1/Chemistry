@@ -6,7 +6,7 @@ done the two balancing packages and predicting products first.
 **Web version:** https://coachcherry1.github.io/Chemistry/chemistry/reactions/net-ionic-equations-scorm/src/index.html
 (works once this branch is merged into `main`)
 
-**Upload to Schoology:** `dist/net-ionic-equations-v2.zip`
+**Upload to Schoology:** `dist/net-ionic-equations-v3.zip`
 
 ## What students do
 
@@ -14,7 +14,9 @@ Two solutions are poured together in a beaker drawn **to scale**: every ion at i
 polyatomic ion each oxygen at 140 pm around the centre atom, at the real bond length), a 200 pm scale bar on every
 picture; each name sits beside its ion, not inside it. The ions drift and bounce the whole time. The ones that react find each other, come together in the solid's
 ratio and sink, stacking on the bottom; H⁺ joins OH⁻ as a water molecule, HOH, drawn as the covalent molecule it is
-(O and two H at their van der Waals radii, bent at 104.5°), which keeps moving. The poured solution enters spread
+(an O of 140 pm, the usual size of a water molecule, with two small H atoms bent at 104.5°: the same H as in OH⁻ and H⁺, so
+nothing swells when they join), which keeps moving. A settled solid carries one name, such as BaSO₄(s); a spectator is
+never left trapped under it. The poured solution enters spread
 across the surface, each ion moving its own way. The **spectators keep
 moving the whole time**. With no reaction, everything just keeps moving. The solvent's own water molecules are not
 drawn. Tap any ion to name it; **Highlight spectators** rings them; Pour again, and a speed slider. With reduced motion,

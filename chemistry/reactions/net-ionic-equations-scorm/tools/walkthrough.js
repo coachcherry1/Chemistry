@@ -94,6 +94,17 @@ const fakeLMS = () => {
       return out;
     }, sel);
     expect(!bad.length, name + ': drawn sizes differ from the table: ' + bad.join(', '));
+    /* no free particle may be left under the solid */
+    await page.waitForTimeout(process.env.MOTION ? 1500 : 50);
+    const trapped = await page.evaluate((s) => {
+      const wd = document.querySelector(s + ' .bk')._world, out = [];
+      const solid = wd.all.filter((x) => x.shown && x.state === 'sunk'), free = wd.all.filter((x) => x.shown && x.state === 'free');
+      free.forEach((x) => solid.forEach((y) => {
+        if (x.y > y.y && Math.abs(x.x - y.x) < y.r && Math.hypot(x.x - y.x, x.y - y.y) < x.r + y.r - 3) out.push(x.key + ' under ' + y.key);
+      }));
+      return out;
+    }, sel);
+    expect(!trapped.length, name + ': trapped under the solid: ' + trapped.join(', '));
     await page.click(sel + ' .bk-hi');
     expect(await page.locator(sel + ' .bk-svg.hi').count() === 1, name + ': Highlight spectators');
     await page.click(sel + ' .bk-hi');

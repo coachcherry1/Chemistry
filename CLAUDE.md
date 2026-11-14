@@ -777,7 +777,7 @@ not the full page.
   `Gen.quiz`), `ref.js`, `scene.js`, `bench.js`, `ladder.js`, `steps.js`, `scorm.js`, `app.js`. Teacher links:
   `?step=<id or number>`, `?step=set&seed=<n>&problem=<1 to 10>&rung=<n>` (or `&done` for the finished problem with its animation).
 
-## net-ionic-equations-scorm (zip v2, SCHEMA 2; package 4 of the reactions unit)
+## net-ionic-equations-scorm (zip v3, SCHEMA 2; package 4 of the reactions unit)
 
 - **Key objective:** a dissolved strong electrolyte is its ions, apart; the ions the same on both sides are spectators;
   the net ionic equation is what is left: a solid, H⁺(aq) + OH⁻(aq) → HOH(l), or no reaction.
@@ -797,9 +797,12 @@ not the full page.
   everywhere; H⁺ not H₃O⁺. The validator bans weak acids, H₂O, hydronium and "slightly soluble" in this package's files.
 - **The beaker (`beaker.js`) is to scale:** `data.js` holds Shannon effective ionic radii (six-coordinate) with the source;
   in a polyatomic ion each O is 140 pm at the real bond length (SO₄²⁻ and PO₄³⁻ are tetrahedra seen along a two-fold axis,
-  NO₃⁻ and CO₃²⁻ flat triangles), the centre atom over it at its covalent radius; the H of OH⁻ 31 pm. **Water, HOH, is
-  drawn as the covalent molecule** (the teacher: with fidelity, never like an ion): O 152 and two H 120 (Bondi van der
-  Waals), bent at 104.5°, H in front (the usual space-filling view). Names sit **beside** each particle, never inside. A bare H⁺ is
+  NO₃⁻ and CO₃²⁻ flat triangles), the centre atom over it at its covalent radius; **OH⁻ and water, HOH, are drawn the same
+  way** (the teacher: with fidelity, never like an ion, and an H that swells when H⁺ joins OH⁻ looks comical): the O (137 pm
+  in OH⁻, 140 pm in water, the usual size of a water molecule) with each H at 31 pm, the size of the H⁺ dot, on its surface;
+  water bent at 104.5°. Names sit **beside** each particle, never inside; a settled solid has one name over the heap
+  (`solidName`), not one per ion. **No spectator is ever trapped under the solid** (a free particle under a settling unit
+  is lifted out above it; the walkthrough checks every beaker it plays). A bare H⁺ is
   drawn as a 31 pm dot and the screen says why. One scale (`Data.SCALE`, px per pm) and a 200 pm bar everywhere. The
   validator checks every shape against the tables; the walkthrough checks every drawn sphere.
 - **Motion:** the first solution already moves; Pour (locked until the prediction) pours the second in, **spread across

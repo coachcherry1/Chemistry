@@ -195,7 +195,7 @@ function sizeCheck(key) {
   const sh = T.shape(key);
   sh.atoms.forEach((a, i) => {
     let want;
-    if (key === 'HOH') want = a.el === 'O' ? 152 : 120;          /* Bondi's van der Waals radii: water is a covalent molecule */
+    if (key === 'HOH') want = a.el === 'O' ? 140 : 31;           /* water: the usual 140 pm molecule, H at its covalent radius as in OH- */
     else if (a.el === 'H') want = T.COVALENT.H;
     else if (sh.atoms.length === 1) want = T.IONIC[key];
     else if (key === 'OH') want = T.IONIC.OH;
@@ -213,6 +213,9 @@ Net.CATS.concat(Net.ANS, ['H', 'HOH']).forEach(sizeCheck);
   const ang = Math.acos((hs[0].x * hs[1].x + hs[0].y * hs[1].y) / (Math.hypot(hs[0].x, hs[0].y) * Math.hypot(hs[1].x, hs[1].y))) * 180 / Math.PI;
   if (Math.abs(ang - 104.5) > 0.1) fail('water is not bent at 104.5 degrees: ' + ang);
   hs.forEach((a) => { if (Math.hypot(a.x, a.y) + a.r <= o.r + 20) fail('water: an H atom does not stand out from the O'); });
+  /* H+ joining OH- must not change the size of the H (the teacher) */
+  const ohH = T.shape('OH').atoms.find((a) => a.el === 'H');
+  if (hs.some((a) => a.r !== ohH.r) || T.shape('H').atoms[0].r !== ohH.r) fail('water: its H atoms are not the size of the H in OH- and of H+');
 })();
 const SHANNON = { Li: 76, Na: 102, K: 138, Ag: 115, Mg: 72, Ca: 100, Sr: 118, Ba: 135, Zn: 74, Fe: 78, Pb: 119, Cu: 73, Al: 53.5, Cl: 181, Br: 196, I: 220, OH: 137, O: 140 };
 Object.keys(SHANNON).forEach((k) => { if (T.IONIC[k] !== SHANNON[k]) fail('ionic radius of ' + k + ' is not Shannon\'s ' + SHANNON[k]); });

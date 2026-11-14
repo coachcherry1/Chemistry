@@ -146,6 +146,7 @@ var Beaker = (function () {
         /* alternate positive and negative so a unit reads like the solid */
         var big = ans.length >= cats.length ? ans : cats, small = big === ans ? cats : ans;
         big.forEach(function (x, k) { mem.push(x); if (small[k]) mem.push(small[k]); });
+        mem.forEach(function (x) { x.solid = sd.f; });
         var gr = { kind: 'solid', f: sd.f, mem: mem };
         groups.push(gr); units.push(mem);
       }
@@ -158,7 +159,14 @@ var Beaker = (function () {
       x.vx = Math.cos(ang) * sp; x.vy = Math.sin(ang) * sp; x.a = rand() * 360; x.va = (rand() - 0.5) * 40;
       svg.appendChild(x.g);
     });
-    return { p: p, all: all, A: A, B: B, groups: groups, rand: rand, bk: bk };
+    /* one name for the whole solid, over its heap (the ions' own names would overlap there) */
+    var labels = bk.solids.map(function (sd) {
+      var t = s('text', { class: 'bk-t bk-solid-name', 'text-anchor': 'middle', text: Net.pretty(sd.f) + '(s)' });
+      t.style.display = 'none';
+      svg.appendChild(t);
+      return { f: sd.f, el: t };
+    });
+    return { p: p, all: all, A: A, B: B, groups: groups, rand: rand, bk: bk, labels: labels };
   }
 
   /* place everything as it is before mixing */
@@ -166,7 +174,8 @@ var Beaker = (function () {
     scatter(wd.A, { x0: L, y0: START_TOP, x1: R, y1: BOT }, wd.rand);
     wd.B.forEach(function (x, i) { x.at(40 + (i % 5) * 18, -40 - x.r); x.show(false); x.pour = T_POUR + POUR_LEN * i / Math.max(1, wd.B.length); x.state = 'pour'; });
     wd.A.forEach(function (x) { x.state = 'free'; x.show(true); });
-    wd.all.forEach(function (x) { x.made = false; x.g.classList.remove('bk-made'); if (x.key === 'HOH') x.as('OH', -1); x.a = x.a || 0; });
+    wd.all.forEach(function (x) { x.made = false; x.g.classList.remove('bk-made', 'bk-in-solid'); if (x.key === 'HOH') x.as('OH', -1); x.a = x.a || 0; });
+    (wd.labels || []).forEach(function (l) { l.el.style.display = 'none'; });
     wd.groups.forEach(function (g, k) { g.t0 = T_REACT + k * GAP; g.on = false; });
   }
 
@@ -214,7 +223,7 @@ var Beaker = (function () {
         var mx = g.cx + x.ox, my = g.cy + x.oy;
         if (u < 1) { var e = ease(u); x.at(x.fx + (mx - x.fx) * e, x.fy + (my - x.fy) * e); }
         else if (v < 1) { var e2 = ease(v); x.a *= 0.9; x.at(mx + (x.sx - mx) * e2, my + (x.sy - my) * e2); }
-        else { x.state = 'sunk'; x.a = 0; x.at(x.sx, x.sy); }
+        else { x.state = 'sunk'; x.a = 0; x.at(x.sx, x.sy); x.g.classList.add('bk-in-solid'); solidName(wd, x.solid); }
       });
     });
     /* the free ones drift, get nudged and bounce */
@@ -239,6 +248,12 @@ var Beaker = (function () {
         if (o <= 0) return;
         var fixed = y.state !== 'free', ux = dx / d, uy = dy / d;
         var mx = fixed ? o : o / 2;
+        /* a free particle under the solid (or a unit on its way down) is lifted out above it, never trapped (the teacher) */
+        if (fixed && x.y > y.y - y.r * 0.3 && Math.abs(dx) < y.r + x.r * 0.6) {
+          ux = 0; uy = 1;
+          mx = Math.min(x.y - (y.y - x.r - y.r), 8);
+          x.vy = -Math.abs(x.vy) - 10;
+        }
         x.at(x.x - ux * mx * 0.5, x.y - uy * mx * 0.5);
         if (!fixed) y.at(y.x + ux * mx * 0.5, y.y + uy * mx * 0.5);
         var rel = (x.vx - (fixed ? 0 : y.vx)) * ux + (x.vy - (fixed ? 0 : y.vy)) * uy;
@@ -246,6 +261,17 @@ var Beaker = (function () {
       });
     });
     return top;
+  }
+  /* put the solid's name just above the part of the heap already on the bottom */
+  function solidName(wd, f) {
+    var l = (wd.labels || []).filter(function (x) { return x.f === f; })[0];
+    if (!l) return;
+    var on = wd.all.filter(function (x) { return x.solid === f && x.state === 'sunk'; });
+    var x0 = Math.min.apply(null, on.map(function (x) { return x.x - x.r; })), x1 = Math.max.apply(null, on.map(function (x) { return x.x + x.r; }));
+    var y = Math.min.apply(null, on.map(function (x) { return x.y - x.r; }));
+    l.el.setAttribute('x', ((x0 + x1) / 2).toFixed(1));
+    l.el.setAttribute('y', (y - 8).toFixed(1));
+    l.el.style.display = '';
   }
   function endTime(wd) { return wd.groups.length ? T_REACT + (wd.groups.length - 1) * GAP + MEET + SINK + 0.4 : T_POUR + POUR_LEN + 1.6; }
 
@@ -296,6 +322,7 @@ var Beaker = (function () {
       [playBtn, h('label', { class: 'bk-speed-l' }, ['Speed ', slider]), hiBtn]);
     var box = h('figure', { class: 'bk' }, [row, f.svg, h('figcaption', null, [cap, named])]);
     host.appendChild(box);
+    box._world = wd;              /* for the walkthrough: is any spectator trapped under the solid? */
 
     wd.all.forEach(function (x) {
       function name() {
