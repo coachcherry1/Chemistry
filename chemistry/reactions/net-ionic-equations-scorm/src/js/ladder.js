@@ -250,7 +250,8 @@ var Ladder = (function () {
        lowest whole numbers, or, when nothing is left, says there is no reaction. */
     function rungNet() {
       var fb = fbEl();
-      var left = [p.ionic.left.filter(function (t) { return p.spect.indexOf(t.key) < 0; }),
+      /* positive ions first, as the class writes them */
+      var left = [p.ionic.left.filter(function (t) { return p.spect.indexOf(t.key) < 0; }).sort(function (x, y) { return (y.q > 0) - (x.q > 0); }),
                   p.ionic.right.filter(function (t) { return t.t !== 'ion' || p.spect.indexOf(t.key) < 0; })];
       function id(t, k) { return k + ':' + Net.termKey(t); }
       if (!work.v.net) {
