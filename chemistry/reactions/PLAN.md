@@ -1,6 +1,6 @@
 # Reactions unit: plan for four SCORM packages (honors chemistry)
 
-Status: **the teacher has reviewed the plan (answers below). Packages 1, 2 and 3 are merged into main; package 4 is not built.**
+Status: **the teacher has reviewed the plan (answers below). Packages 1, 2 and 3 are merged into main; all four packages are built and merged into main (package 4 at zip v3).**
 Where this plan and "The teacher's answers" disagree, the answers win.
 
 ## The teacher's answers (review of this plan)
@@ -224,6 +224,45 @@ this mix, which ions are spectators in this beaker).
 H₂SO₄ written as 2 H⁺ + SO₄²⁻, HClO₄) and strong bases (group 1 hydroxides, Ba(OH)₂, Sr(OH)₂). Products are solids
 or water only. No weak acids or bases, no gases, no solid reactants. The validator fails on any weak acid.
 H⁺ is written H⁺, not H₃O⁺ **(default)**.
+
+**As built (v1, SCHEMA 1):** 11 steps in 6 parts; 44 graded items (4 questions, 8 problems × 5 steps). Changed from the plan,
+with the reasons:
+
+- **Every problem gives the unbalanced molecular equation** (the teacher's answer 5), so the first step is to balance it on
+  the balancing packages' workbench (inventory down the centre), then the states. Every problem has the same five steps:
+  balance, states, complete ionic, spectators, net ionic (or no reaction), so the strip never gives away a no-reaction problem.
+- **8 problems: 3 solid, 2 water, 2 no reaction and the challenge** (Ba(OH)₂ + H₂SO₄, the teacher's answer 6), always last.
+- **Strong acids:** HCl, HBr, HI, HNO₃, H₂SO₄ (HClO₄ left out: perchlorate is not on the class solubility table). **Strong
+  bases:** LiOH, NaOH, KOH, Ba(OH)₂ only (as the teacher asked; Sr(OH)₂ is insoluble on the class table). Water is HOH.
+- **Ammonium left out** (with a hydroxide it makes ammonia, a weak base), and with it the NH₄⁺ drawing. Acetate and
+  sulfide left out too (weak acids). An acid never meets a carbonate or a phosphate.
+- **Sizes:** Shannon effective ionic radii (six-coordinate). In a polyatomic ion each O is drawn at 140 pm (the oxide
+  ion) at the real bond length, the centre atom over it at its covalent radius; the H of OH⁻ and HOH at 31 pm. A bare H⁺
+  is drawn as a dot the size of an H atom, and the screen says so.
+- **Questions:** which picture shows this solution (pictures as choices), which ions are the spectators in this beaker
+  (drawn after mixing), the net ionic equation, and what happens (both drawn before mixing).
+- **Ion charges are not listed on screen** (the solubility table shows the polyatomic ions with their charges); getting
+  the charge right is one of the graded slips. Open question for the teacher, in `LEARNING_REVIEW.md`.
+
+**v2 (SCHEMA 2), the teacher's first look:** the complete ionic step only asks *splits into ions* or *stays together* (the
+ions then write themselves, coefficients in front: counting them again was tedious, not a desirable difficulty); the net
+ionic step starts with what is left, coefficients first, and asks for lowest terms or no reaction; water is drawn as the
+covalent molecule (van der Waals radii, bent); poured ions enter spread out; names beside the ions; larger beakers and
+pictures; no "strong electrolyte" (not the class's term); no table of ion charges (the class knows them).
+
+**Learning design** (added with the November 2026 rule; how package 4 meets the three checks):
+
+- *Prerequisites:* ion names and charges (the ionic naming package), balancing with the inventory (packages 1 and 2), the
+  solubility rules (package 3). Nothing else is assumed.
+- *Novice chemist:* every term is defined where it first appears ("(aq)", "spectator", "complete ionic", "net ionic"); one
+  new idea per part (dissolving, a solid, water, nothing); a worked example first in the split drill, hints in the three
+  lesson problems, none in the graded set; feedback names each slip and the next move.
+- *Cognitive science:* a prediction before every pour (generation); the split drill fades its picture from before to after
+  the answer; the graded set mixes all three outcomes (interleaving) and brings back balancing and the solubility rules
+  (spacing); first answer counts (calibration); wrong choices are the real misconceptions (a 1 : 1 ratio, ions still
+  joined, a solid when nothing forms, the complete ionic equation offered as the net one, 2 H⁺ + 2 OH⁻ → 2 HOH).
+- *Dual coding:* the beaker is on screen with the equation for every reaction, lesson and graded; picture to words in the
+  split drill, words to picture in the picture cards and the first question; every question that names a mix draws it.
 
 ## Questions for the teacher
 

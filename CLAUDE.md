@@ -36,6 +36,7 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `chemistry/reactions/balancing-particles-scorm/` | Balancing with particle diagrams: a reactants box and a products box that follow the coefficients, the inventory down the centre, conservation of mass, polyatomic ions kept together (or not), 10 graded equations and 6 questions (about 30 min). Package 1 of 4; the plan for the rest is `chemistry/reactions/PLAN.md` |
 | `chemistry/reactions/balancing-reaction-types-scorm/` | Balancing and reaction types: the same workbench with six type buttons, every reaction balanced and classified by one Check (synthesis, decomposition, single and double replacement, combustion, neutralization), 4 questions and 10 reactions ending with nitroglycerin (about 35 min). Package 2 of 4, one code base with package 1 |
 | `chemistry/reactions/predicting-products-scorm/` | Predicting products: single replacement by the activity series (salts, acids, cold water, halogens; no state symbols), double replacement by the solubility rules (a solid, or no reaction; states asked); each problem worked step by step beside the reference; 4 questions and 10 problems (about 40 min). Package 3 of 4. `chemistry/reactions/reference-sheet/` has the printable PDFs of the same reference (a full sheet, and an assessment sheet without the rules for using the tables) |
+| `chemistry/reactions/net-ionic-equations-scorm/` | Net ionic equations: two solutions poured together in a beaker drawn to scale (Shannon radii), the solid sinking, H⁺ + OH⁻ becoming HOH, spectators moving; every problem from the unbalanced molecular equation in five steps (balance, states, complete ionic, strike the spectators, net ionic or no reaction); 4 questions and 8 problems ending with Ba(OH)₂ + H₂SO₄ (about 45 min). Package 4 of 4 |
 
 **AP chemistry**
 
@@ -63,11 +64,11 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `organic-chemistry/reactivity-mechanisms/arrow-pushing-scorm/` | Klein 6, before SN1/SN2: bond breaking and making, ΔG, energy diagrams, nucleophiles and electrophiles, drawing curved arrows, the four patterns, a final check (about 50 min) |
 | `organic-chemistry/substitution-elimination/substitution-elimination-scorm/` | SN1, SN2, E1 and E2: reagent function, mechanisms with curved arrows, regio- and stereochemistry, rings, predicting products (about 50 min) |
 
-**Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions), arrow pushing, mole conversions (both), the formula packages (all three), the two balancing packages and predicting products contains em
+**Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions), arrow pushing, mole conversions (both), the formula packages (all three), the two balancing packages, predicting products and net ionic equations contains em
 dashes (the Lewis, resonance and drawing-tool validators allow them). The mass spec, IR + mass spec, NMR,
 naming, acids and ionization energy packages still load a browser save inside an LMS when
 `cmi.suspend_data` is empty (fixed in IR, Newman, chairs, chirality, Lewis and resonance). Only Newman,
-chairs, chirality, SN1/SN2, arrow pushing, mole conversions, the formula packages, the two balancing packages and predicting products have `tools/layout.js`. The acetone kinetics lab still grades a choice on the
+chairs, chirality, SN1/SN2, arrow pushing, mole conversions, the formula packages, the two balancing packages, predicting products and net ionic equations have `tools/layout.js`. The acetone kinetics lab still grades a choice on the
 click, with no Submit answer button. Bring a package up to the rules when you next change it.
 
 ## House rules
@@ -665,8 +666,8 @@ not the full page.
 
 - **The unit is four packages** in `chemistry/reactions/`; `PLAN.md` there holds the approved plan, the teacher's answers
   and the reference (activity series, solubility rules; the corrected version is the data in package 3's `ions.js`).
-  Packages 1 to 3 are built and merged (3 has its own section below). Next: `net-ionic-equations-scorm/`; it must use
-  the same reference data, write water HOH, and use only LiOH, NaOH, KOH and Ba(OH)₂ as strong bases.
+  All four packages are built and merged (3 and 4 each have their own section below). All four use
+  the same reference data and write water HOH.
 - **Two packages, one code base.** Every file in `src/js` (except `config.js`), `src/css` and `tools/` is identical in
   both, and each validator fails if they differ: make a fix in one and copy it to the other. `config.js` holds
   `classify`, the save key and the minutes; the page title and h1, manifest (`BALPART_*`, `BALTYPES_*`), `build.sh`,
@@ -775,3 +776,54 @@ not the full page.
 - **Files:** `config.js`, `util.js`, `chem.js`, `ions.js`, `particles.js`, `problems.js` (`Gen.make`, `Gen.pools`, `Gen.set`,
   `Gen.quiz`), `ref.js`, `scene.js`, `bench.js`, `ladder.js`, `steps.js`, `scorm.js`, `app.js`. Teacher links:
   `?step=<id or number>`, `?step=set&seed=<n>&problem=<1 to 10>&rung=<n>` (or `&done` for the finished problem with its animation).
+
+## net-ionic-equations-scorm (zip v3, SCHEMA 2; package 4 of the reactions unit)
+
+- **Key objective:** a dissolved strong electrolyte is its ions, apart; the ions the same on both sides are spectators;
+  the net ionic equation is what is left: a solid, H⁺(aq) + OH⁻(aq) → HOH(l), or no reaction.
+- 11 steps in 6 parts; 44 graded items: 4 questions and 8 problems × 5 steps (3 solid, three kinds of solid; 2 water, one
+  that must be reduced to lowest terms; 2 no reaction, never first; **Ba(OH)₂ + H₂SO₄ always last**, the teacher's challenge).
+- **Every problem gives the unbalanced molecular equation** (the teacher) and has the same five steps (`Gen.RUNGS`):
+  balance (the balancing workbench, inventory down the centre), states ((aq), (s), (l)), complete ionic (only **splits into
+  ions or stays together** per substance; the ions then write themselves, coefficients in front: `Ladder.splitRow`. The
+  teacher: the molecular equation is already balanced, so counting ions and clicking charges again is tedious, not a
+  desirable difficulty), spectators (tap to strike on both sides, or "There are no spectators"), net ionic (**starts with
+  what is left**, coefficients first, states fixed: the student reduces to lowest terms, or says "No reaction" when nothing
+  is left; the teacher: no reconfirming what was struck out). The first Check of each
+  counts; an unfinished Check is not counted; Show me after three misses. Hints only in the three lesson problems.
+- **Scope (the teacher's):** strong electrolytes only: soluble salts, HCl, HBr, HI, HNO₃, H₂SO₄ (2 H⁺ + SO₄²⁻), and only
+  LiOH, NaOH, KOH, Ba(OH)₂ as bases. No weak acids or bases, no gases: an acid never meets a carbonate or a phosphate;
+  ammonium (ammonia with OH⁻), acetate and sulfide are not used; HClO₄ is out (not on the class table). Water is HOH
+  everywhere; H⁺ not H₃O⁺. The validator bans weak acids, H₂O, hydronium and "slightly soluble" in this package's files.
+- **The beaker (`beaker.js`) is to scale:** `data.js` holds Shannon effective ionic radii (six-coordinate) with the source;
+  in a polyatomic ion each O is 140 pm at the real bond length (SO₄²⁻ and PO₄³⁻ are tetrahedra seen along a two-fold axis,
+  NO₃⁻ and CO₃²⁻ flat triangles), the centre atom over it at its covalent radius; **OH⁻ and water, HOH, are drawn the same
+  way** (the teacher: with fidelity, never like an ion, and an H that swells when H⁺ joins OH⁻ looks comical): the O (137 pm
+  in OH⁻, 140 pm in water, the usual size of a water molecule) with each H at 31 pm, the size of the H⁺ dot, on its surface;
+  water bent at 104.5°. Names sit **beside** each particle, never inside; a settled solid has one name over the heap
+  (`solidName`), not one per ion. **No spectator is ever trapped under the solid** (a free particle under a settling unit
+  is lifted out above it; the walkthrough checks every beaker it plays). A bare H⁺ is
+  drawn as a 31 pm dot and the screen says why. One scale (`Data.SCALE`, px per pm) and a 200 pm bar everywhere. The
+  validator checks every shape against the tables; the walkthrough checks every drawn sphere.
+- **Motion:** the first solution already moves; Pour (locked until the prediction) pours the second in, **spread across
+  the whole surface, each ion moving its own way** (the teacher: never clustered), the
+  ions mix, each solid unit gathers in its own shape and sinks to its place in a lattice on the bottom; H⁺ seeks an OH⁻
+  and it becomes HOH (ringed green), which keeps moving; spectators move the whole time (`stepWorld`, soft collisions).
+  Counts come from `Net.beaker` (about 20 ions; the validator checks each solution and what is left are neutral and the
+  solid is in the formula's ratio). Reduced motion: Before and After stills. Tap an ion to name it; Highlight spectators.
+- **Lesson:** `aq` picture cards (words to picture; no table beside them, the pictures take the full width), `split`
+  drill (splits or stays together for 8 substances, the first a worked example; each then written out and drawn in
+  water), three predict-then-pour steps with the beaker beside the prediction and the
+  reference, three lesson problems. `Gen.LESSON` lists every lesson reaction and compound; none is graded or asked.
+- **Questions (one of each):** which picture shows this solution (pictures as choices), which ions are the spectators in
+  this beaker (drawn after mixing), the net ionic equation, what happens (both drawn before mixing).
+- **Shared code:** `chem.js`, `bench.js`, `util.js`, `scorm.js` are the balancing packages' files; `ions.js` and
+  `particles.js` are package 3's (the validator fails if any differs). `net.js` adds HI and LiOH to `Ions.BY` at load and
+  sets `Rx` (water is `H2O` in the model, type `N`, so the workbench writes HOH).
+- **Teacher's answers (v2):** students know their ion charges (no table of charges); the class does not say "strong
+  electrolyte" (banned in this package by the validator); everything was too small, so the beakers, pictures and text
+  were made larger (`tools/layout.js` still passes at 1366x520).
+- **Files:** `config.js`, `util.js`, `chem.js`, `ions.js`, `data.js`, `net.js`, `particles.js`, `problems.js`, `ref.js`,
+  `beaker.js`, `bench.js`, `ladder.js`, `steps.js`, `scorm.js`, `app.js`. Teacher links: `?step=<id or number>`,
+  `?step=set&seed=<n>&problem=<1 to 8>&rung=<1 to 5>` (or `&done`), `?step=quiz&seed=<n>`. Walkthrough: `MOTION=1` plays
+  the beaker instead of reduced motion.
