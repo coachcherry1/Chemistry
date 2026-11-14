@@ -92,7 +92,7 @@ const fakeLMS = () => {
   }
   async function good(what) { const c = await fbClass(); expect(c.includes('good'), what + ': ' + (await feedback())); }
   async function bad(what) { const c = await fbClass(); expect(c.includes('bad'), what + ' was accepted: ' + (await feedback())); }
-  const predict = (n) => page.click(`.predict .choice >> nth=${n || 0}`);
+  const predict = (n) => page.click(`.predict .choice[data-choice="${n || 0}"] >> nth=0`);
   const setRange = (sel, v) => page.$eval(sel, (el, x) => { el.value = x; el.dispatchEvent(new Event('input')); }, String(v));
   const saved = () => page.evaluate(() => JSON.parse(JSON.parse(sessionStorage.getItem('lms'))['cmi.suspend_data']));
 
@@ -200,19 +200,35 @@ const fakeLMS = () => {
   expect(/Every reagent sorted/.test(await feedback()), 'sort: did not finish');
   await next();
 
-  async function quiz() {
+  async function quiz(reloadOnWrong) {
     const id = await stepId();
+    /* a checkpoint is recall: the reference drawers are hidden */
+    for (const d of await page.$$('details.reference')) expect(!(await d.isVisible()), `${id}: a reference drawer is visible during a checkpoint`);
     for (;;) {
       const q = await page.$('.quiz .choice');
       if (!q) break;
       const qid = await page.getAttribute('.quiz', 'data-qid');
-      await page.click(`.quiz .choice[data-choice="${WRONG.has(qid) ? 1 : 0}"]`);
+      const wrong = WRONG.has(qid);
+      await page.click(`.quiz .choice[data-choice="${wrong ? 1 : 0}"]`);
       await page.click('.quiz .submit-answer:not([hidden])');
-      await page.click('.quiz .btnrow .primary');
+      if (wrong) {
+        /* no opt out: the wrong choice's own feedback, no Next until the right one is picked */
+        const fb = await page.textContent('.quiz .q-wrong');
+        expect(fb && fb.length > 20 && (await page.isVisible('.quiz .q-wrong')), `${qid}: no feedback for the wrong choice`);
+        expect(!(await page.isVisible('.quiz .btnrow .primary:not(.submit-answer)')), `${qid}: Next shown before the right answer`);
+        if (reloadOnWrong) {
+          reloadOnWrong = false;
+          await page.reload();
+          await page.click('.screen .primary');
+          expect((await page.getAttribute('.quiz', 'data-qid')) === qid && (await page.isVisible('.quiz .q-wrong')), `${qid}: a reload did not keep the wrong question open`);
+        }
+        await page.click('.quiz .choice[data-choice="0"]');
+      }
+      await page.click('.quiz .btnrow .primary:not(.submit-answer)');
     }
     expect(/Checkpoint finished/.test(await feedback()), `${id}: checkpoint did not finish`);
   }
-  await quiz();
+  await quiz(true);
   await page.reload();
   await page.click('.screen .primary');
   expect((await stepId()) === 'quiz-A', 'reload: resumed at ' + (await stepId()));
@@ -233,7 +249,7 @@ const fakeLMS = () => {
   expect(!(await page.$('.prog-range')), 'backside: animation open before the prediction');
   await predict(0);
   await setRange('.prog-range', 100);
-  await page.click('.panel:has-text("On a ring") .predict .choice >> nth=0');
+  await page.click('.panel:has-text("On a ring") .predict .choice[data-choice="0"] >> nth=0');
   await next();
   /* sterics */
   await predict(0);
@@ -335,11 +351,11 @@ const fakeLMS = () => {
   /* stereoselective: both conformers, then which is major */
   await newman(2);
   await page.waitForTimeout(80);
-  await page.click('.panel:has-text("Which is major?") .predict .choice >> nth=0');
+  await page.click('.panel:has-text("Which is major?") .predict .choice[data-choice="0"] >> nth=0');
   await next();
   /* stereospecific: the RR, then predict, then the RS */
   await newman(1);
-  await page.click('.panel:has-text("The diastereomer") .predict .choice >> nth=0');
+  await page.click('.panel:has-text("The diastereomer") .predict .choice[data-choice="0"] >> nth=0');
   await newman(1);
   await next();
   /* E1 */
@@ -391,7 +407,7 @@ const fakeLMS = () => {
   await page.click('.chips .chip >> nth=1');
   await setRange('.prog-range', 0);
   await page.waitForTimeout(60);
-  await page.click('.panel:has-text("Klein problem 7.18") .predict .choice >> nth=0');
+  await page.click('.panel:has-text("Klein problem 7.18") .predict .choice[data-choice="0"] >> nth=0');
   await next();
   /* sort */
   /* one reaction at a time, drawn out */

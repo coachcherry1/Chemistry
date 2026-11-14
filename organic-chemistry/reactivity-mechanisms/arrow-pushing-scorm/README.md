@@ -124,5 +124,5 @@ activity in Chromium against a fake LMS (wrong answers first where it matters, a
 `layout.js` checks that every arrow drawing and its Check, every animation and its slider (and energy diagram),
 and every other working group fits a Chromebook window (1366 × 650, and 1366 × 520 in an LMS frame).
 
-The zip is `dist/arrow-pushing-v2.zip` (v2: the learning review's six suggestions, `LEARNING_REVIEW.md`). Teacher
+The zip is `dist/arrow-pushing-v3.zip` (v3: predictions shuffled for each student; v2: the learning review's six suggestions, `LEARNING_REVIEW.md`). Teacher
 links: `?step=<id or number>`, and `?step=quiz-C&all` for every question of a pool.

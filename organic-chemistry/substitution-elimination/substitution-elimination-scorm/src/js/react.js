@@ -38,7 +38,8 @@ var React = (function () {
   };
   var FN_ORDER = ['nuc', 'both', 'base', 'weak'];
 
-  /* species: the SMILES of the part that reacts (Na⁺ and K⁺ are spectators) */
+  /* species: the SMILES of the part that reacts (Na⁺ and K⁺ are spectators);
+     draw: a structure for pictures only (DBN, DBU) */
   var REAGENTS = {
     NaOH:  { text: 'NaOH', fn: 'both', species: '[OH-]', ion: 'HO⁻',
              why: 'HO⁻ is a strong base (its conjugate acid, water, is a weak acid) and a strong nucleophile (a negative charge on an uncrowded O).' },
@@ -48,9 +49,9 @@ var React = (function () {
              why: 'EtO⁻ is a strong base (its conjugate acid, ethanol, is a weak acid) and a strong nucleophile (a negative charge on an uncrowded O).' },
     tBuOK: { text: 't-BuOK', fn: 'both', species: 'CC(C)(C)[O-]', ion: 't-BuO⁻', hindered: true,
              why: 't-BuO⁻ is a strong base and a strong nucleophile, but it is sterically hindered: it prefers E2 even at a primary carbon, and it removes the most accessible H, giving the Hofmann product.' },
-    DBN:   { text: 'DBN', fn: 'base',
+    DBN:   { text: 'DBN', fn: 'base', draw: 'C1CC2=NCCCN2C1',
              why: 'DBN is a strong base, but the N that would attack is crowded by the rings around it, so it is a weak nucleophile.' },
-    DBU:   { text: 'DBU', fn: 'base',
+    DBU:   { text: 'DBU', fn: 'base', draw: 'C1CCC2=NCCCN2CC1',
              why: 'DBU is a strong base, but the N that would attack is crowded by the rings around it, so it is a weak nucleophile.' },
     NaH:   { text: 'NaH', fn: 'base', species: '[H-]', ion: 'H⁻',
              why: 'H⁻ is a very strong base (its conjugate acid, H₂, is an extremely weak acid), but it is small and not polarizable, so it is a weak nucleophile.' },

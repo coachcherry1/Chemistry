@@ -1,5 +1,11 @@
 # Learning review
 
+## 2026-11-14 (latest): predictions shuffled (zip v3, SCHEMA 5)
+
+Found by the SN1/SN2/E1/E2 activity's learning review: all five predictions had the right answer first and were never
+shuffled, so picking the first choice always won. Each student now sees the choices in a seeded order (the same after a
+reload). Generation (check 2) is now real for every prediction.
+
 ## 2026-11-14 (later): all six suggestions built (zip v2, SCHEMA 5)
 
 The teacher chose all six suggestions of the first review (below). 28 steps (was 25); the graded set is unchanged in size

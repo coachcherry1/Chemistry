@@ -27,6 +27,9 @@ function figText(f) {
   if (f.pair) return f.pair.map(figText).join(' and ');
   if (f.rxn) return name(mol(f.rxn[0])) + ' + ' + React.REAGENTS[f.rxn[1]].text;
   if (f.mech) return 'curved arrows: ' + (f.label || f.arrows);
+  if (f.label) return f.label;
+  if (f.reagent) return React.REAGENTS[f.reagent].text + (React.REAGENTS[f.reagent].ion ? ' (' + React.REAGENTS[f.reagent].ion + ')' : '');
+  if (f.chair) return 'chair of ' + MOLS[f.chair].name;
   if (f.mol) return name(mol(f.mol));
   if (f.smiles) return name(Mol.parse(f.smiles));
   if (f.ring) return name(Mol.fromRing(f.ring, f.ene));
@@ -134,6 +137,7 @@ Object.keys(QUIZZES).forEach((k) => {
     P(`  - Answer: **${figText(q.choices[0])}**`);
     P(`  - Other choices: ${q.choices.slice(1).map(figText).join('; ')}`);
     P(`  - Why: ${q.why}`);
+    (q.wrong || []).forEach((w, i) => P(`  - If ${figText(q.choices[i + 1])}: ${w}`));
   });
   P();
 });
