@@ -18,7 +18,9 @@
  *   5 Molecular formula      the empirical formula mass, n, the subscripts
  *     or Name the hydrate    the Greek prefix for the waters
  *
- * Grading (the teacher's choice): the first Check of each step counts. A
+ * Grading (the teacher's choice): the first Check of each step counts (in
+ * graded problems the button reads Submit answer, and the Step 1 choice only
+ * selects until it is submitted). A
  * Check with an empty box, or with the right number rounded too far (moles
  * to fewer than 3 significant figures, a quotient to fewer than 2 decimals),
  * is not an answer: the student is told and checks again. Hints are free;
@@ -278,7 +280,7 @@ var Work = (function () {
 
     function stepText(s) {
       if (s === 'grams') {
-        if (work.c1 !== p.choice) return 'What does the problem give? Percents: assume a 100 g sample. Grams: use the grams.';
+        if (work.c1 !== p.choice) return 'What does the problem give? Percents: assume a 100 g sample. Grams: use the grams. Choose, then submit.';
         if (p.choice === 'pct') {
           return p.mode === 'hydrate' ? 'Assume a 100 g sample of the hydrate: the percent water is the grams of water, the rest of the 100 g is the anhydrous salt.' :
             'Assume a 100 g sample: each percent becomes that many grams.';
@@ -340,19 +342,26 @@ var Work = (function () {
       var s = cur();
       panel.appendChild(h('p', { class: 'step-q' }, [h('b', { text: 'Step ' + (work.s + 1) + ': ' + STEP_NAMES[s] + '. ' }), stepText(s)]));
       var row = h('div', { class: 'btnrow' });
+      /* Submit answer on everything graded (the teacher): a click on a choice only selects it */
+      var submitText = opts.graded ? 'Submit answer' : 'Check';
       if (s === 'grams' && work.c1 !== p.choice) {
         [['pct', 'Percents: assume 100 g'], ['g', 'Grams: use the grams']].forEach(function (o) {
-          row.appendChild(h('button', { type: 'button', class: 'ghostbtn choice' + (work.c1 === o[0] ? ' wrong' : ''), text: o[1],
-            onclick: function () { choose(o[0]); } }));
+          var on = work.sel1 === o[0];
+          row.appendChild(h('button', { type: 'button', class: 'ghostbtn choice' + (on ? ' selected' : '') + (work.c1 === o[0] && !on ? ' wrong' : ''),
+            'aria-pressed': on ? 'true' : 'false', text: o[1], onclick: function () { work.sel1 = o[0]; save(); paintPanel(); focusSubmit(); } }));
         });
+        row.appendChild(h('button', { type: 'button', class: 'primary submit-answer', text: submitText, disabled: !work.sel1 || work.sel1 === work.c1,
+          onclick: function () { if (work.sel1) choose(work.sel1); } }));
       } else {
-        row.appendChild(h('button', { type: 'button', class: 'primary', text: 'Check', onclick: check }));
+        row.appendChild(h('button', { type: 'button', class: 'primary' + (opts.graded ? ' submit-answer' : ''), text: submitText, onclick: check }));
       }
       row.appendChild(h('button', { type: 'button', class: 'ghostbtn', text: 'Hint', onclick: hint }));
       if ((work.k[s] || 0) >= SHOW_AFTER) row.appendChild(h('button', { type: 'button', class: 'ghostbtn showme', text: 'Show me', onclick: showMe }));
       panel.appendChild(row);
       panel.appendChild(fb);
     }
+
+    function focusSubmit() { var b = panel.querySelector('.submit-answer'); if (b && !b.disabled) b.focus({ preventScroll: true }); }
 
     function paintDone() {
       var right = steps.filter(function (s) { return work.g[s] === 1; }).length;
@@ -440,7 +449,7 @@ var Work = (function () {
     function check() {
       if (done()) return;
       var s = cur();
-      if (s === 'grams' && work.c1 !== p.choice) { say('tip', 'First say what the problem gives: percents or grams.'); return; }
+      if (s === 'grams' && work.c1 !== p.choice) { if (work.sel1 && work.sel1 !== work.c1) choose(work.sel1); else say('tip', 'First choose what the problem gives, percents or grams, then submit.'); return; }
       var res = JUDGE[s]();
       if (res.empty && !res.wrong) {
         paintTable(); paintExtra();
@@ -457,7 +466,7 @@ var Work = (function () {
       if (res.fmt) {
         save();
         render();
-        say('tip', res.msgs.slice(0, 2).map(esc).join('<br>') + ' <span class="muted">(Not marked wrong: fix it and check again.)</span>');
+        say('tip', res.msgs.slice(0, 2).map(esc).join('<br>') + ' <span class="muted">(Not marked wrong: fix it and ' + (opts.graded ? 'submit' : 'check') + ' again.)</span>');
         return;
       }
       res.accept();
@@ -580,7 +589,7 @@ var Work = (function () {
       var s = cur();
       var r0 = p.rows[0];
       var text = {
-        grams: work.c1 !== p.choice ? 'Read the problem: does it give % (percents) or g (grams)?' :
+        grams: work.c1 !== p.choice ? 'Read the problem: does it give % (percents) or g (grams)? Choose one, then submit it.' :
           p.choice === 'pct' ? (p.mode === 'hydrate' ? 'In 100 g of the hydrate there are ' + p.rows[1].pct + ' g of water. The anhydrous salt is the rest: 100 − ' + p.rows[1].pct + '.' :
             'In 100 g of the compound there are ' + r0.pct + ' g of ' + Chem.el(r0.atom).name + '. Do the same for every row.') :
           (p.rows.filter(function (r) { return r.typed; })[0] || {}).ctx ? p.rows.filter(function (r) { return r.typed; })[0].ctx.how : 'The grams are given.',

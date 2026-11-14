@@ -94,7 +94,7 @@ var App = (function () {
   }
   var SET_PART = PARTS.length - 1;
   STEPS.push({ id: 'set', part: SET_PART, kind: 'set', title: 'Graded problems',
-    text: Gen.PLAN.length + ' problems. The first Check of every step counts, so work each step out before you check it. Hints are free; ' +
+    text: Gen.PLAN.length + ' problems. The first Submit answer of every step counts, so work each step out before you submit it. Hints are free; ' +
           'an empty box or a number rounded too far is not marked wrong.' });
   STEPS.push({ id: 'results', part: PARTS.length, kind: 'results', title: 'Results', text: '' });
 
@@ -433,7 +433,7 @@ var App = (function () {
         h('li', null, [h('b', { text: 'Divide by small: ' }), 'divide every mole value by the smallest one.']),
         h('li', null, [h('b', { text: 'Multiply if not whole: ' }), 'read the decimal as a fraction and multiply every value until all are whole.'])
       ]),
-      h('p', { text: 'Warm-ups and drills come first and are not graded. Then ' + GRADED + ' graded problems: the first Check of every step counts. ' +
+      h('p', { text: 'Warm-ups and drills come first and are not graded. Then ' + GRADED + ' graded problems: the first Submit answer of every step counts. ' +
                      'About ' + CONFIG.minutes + ' minutes. Your progress is saved if you leave.' }),
       h('p', { class: 'screen-note', text: 'Everything works with a mouse, a touch screen or the keyboard (Tab between boxes, Enter to check).' })
     ]);

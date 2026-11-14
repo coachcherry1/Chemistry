@@ -214,8 +214,10 @@ const fakeLMS = () => {
         /* the usual mistakes, one at a time */
         const wrongChoice = p.choice === 'pct' ? 'Grams: use the grams' : 'Percents: assume 100 g';
         await page.click('.step-panel .choice:has-text("' + wrongChoice + '")');
+        await page.click('.step-panel .submit-answer');
         expect(/Look again/.test(await fb()), 'warm-up: the wrong Step 1 choice is not answered');
         await page.click('.step-panel .choice:has-text("' + (p.choice === 'pct' ? 'Percents: assume 100 g' : 'Grams: use the grams') + '")');
+        await page.click('.step-panel .submit-answer');
         if (p.rows.some((r) => r.typed)) {
           const r0 = p.rows.findIndex((r) => r.how === 'pct' || r.how === 'sub');
           if (p.rows[r0].how === 'pct') {
@@ -308,10 +310,16 @@ const fakeLMS = () => {
     await snap('set-' + (i + 1));
     if (i === 0) {
       const wrongChoice = p.choice === 'pct' ? 'Grams: use the grams' : 'Percents: assume 100 g';
+      /* Submit answer: a click only selects, the submit grades */
+      expect(await page.$eval('.step-panel .submit-answer', (b) => b.disabled), 'set: Submit answer is not disabled before a choice');
       await page.click('.step-panel .choice:has-text("' + wrongChoice + '")');
+      expect((await work()).g.grams === undefined && /selected/.test(await page.$eval('.step-panel .choice[aria-pressed="true"]', (b) => b.className)),
+        'set: clicking a choice graded it instead of selecting it');
+      await page.click('.step-panel .submit-answer');
       expect((await work()).g.grams === 0, 'set: a wrong first Step 1 was not counted');
       await ctl('fillSolution');
     } else if (i === 1) {
+      expect(await page.$$eval('.step-panel .submit-answer', (b) => b.length) === 1, 'set: the graded step has no Submit answer button');
       await page.evaluate(() => { const c = App.ctl(); c.fillStep(); c.check(); });
       await ctl('fillStep');
       const key = 'mol0';
@@ -319,10 +327,10 @@ const fakeLMS = () => {
       const short = Number(Number(full).toPrecision(2)).toString();
       if (short !== full) {
         await typeInto(key, short);
-        await page.click('.step-panel .primary:has-text("Check")');
+        await page.click('.step-panel .submit-answer');
         await typeInto(key, full);
       }
-      await page.click('.step-panel .primary:has-text("Check")');
+      await page.click('.step-panel .submit-answer');
       expect((await work()).g.moles === 1, 'set: moles to 2 significant figures counted as a miss');
       await ctl('fillSolution');
     } else if (i === 2) {
@@ -332,7 +340,7 @@ const fakeLMS = () => {
       await page.click('.pickbtn >> nth=' + big);
       for (let k = 0; k < 2; k++) {
         for (let r = 0; r < p.rows.length; r++) await typeInto('q' + r, '9.99');
-        await page.click('.step-panel .primary:has-text("Check")');
+        await page.click('.step-panel .submit-answer');
       }
       expect(!!(await page.$('.step-panel .showme')), 'set: no Show me after two misses');
       await page.click('.step-panel .showme');

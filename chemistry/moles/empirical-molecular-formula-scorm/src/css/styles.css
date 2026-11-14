@@ -227,6 +227,7 @@ input.blank::placeholder { font-weight: 500; font-size: 0.7rem; color: var(--mut
 .step-panel { margin-top: 6px; }
 .step-q { margin: 0; font-size: 0.88rem; }
 .choice.wrong { border-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
+.choice.selected { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
 .showme { border-color: var(--warn); color: var(--warn); }
 .sol-details { margin-top: 6px; }
 .sol-details summary, .review-body summary, details summary { cursor: pointer; font-size: 0.82rem; color: var(--accent); }

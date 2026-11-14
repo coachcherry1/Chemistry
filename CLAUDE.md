@@ -646,6 +646,8 @@ not the full page.
   smallest, then quotients to 2 decimals. Step 4 is one multiplier for every
   row; once it is right the whole numbers fill in (the teacher: typing them is tedious). Step 5: molecular formula (empirical formula mass, n, the subscripts) or the hydrate's Greek prefix.
 - **Teacher's choices:** the first Check of every step counts (score = steps right first / all steps; one interaction per step).
+  In graded problems that button reads **Submit answer** (`.submit-answer`), and Step 1's percents-or-grams choice only selects
+  (`selected`, `aria-pressed`) until it is submitted, in warm-ups too.
   Not an answer (told, check again): empty boxes, the right number rounded too far (moles under 3 significant figures, quotients under
   2 decimals, 3.99 for 4). Within 0.1 of a whole number rounds; otherwise halves, thirds, fourths and fifths only (`Chem.FRACS`), and
   the multiplier is the smallest that makes all whole. Hints free; Show me after two misses in a step. Combustion includes the
