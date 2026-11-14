@@ -225,6 +225,43 @@
     return { node: s, set: set };
   }
 
+  /* Figures for the checkpoint questions (App.FIG). */
+  /* H–Cl splitting, still: before (p 0, arrows drawn) or after (p 1) */
+  App.FIG.split = function (spec) {
+    var pic = splitPic(spec.split);
+    pic.set(spec.p || 0);
+    return h('div', { class: 'mol-wrap' }, [pic.node]);
+  };
+  /* The H–Cl energy curve with one move along it: 'apart' (the bond broken)
+     or 'together' (the bond made). Labels name the places, not the answer. */
+  App.FIG.bond = function (spec) {
+    function E(r) { var x = 1 - Math.exp(-1.7 * (r - 1)); return x * x; }
+    var plot = Render.svg('energy', spec.bond === 'apart' ? 'Energy curve: H and Cl pulled apart, from the bond to the separate atoms'
+      : 'Energy curve: H and Cl coming together, from the separate atoms to the bond');
+    plot.setAttribute('viewBox', '0 0 330 200');
+    var X = function (q) { return 40 + (q - 0.75) / (3.2 - 0.75) * 270; }, Y = function (e) { return 170 - Math.min(e, 1.5) / 1.3 * 140; };
+    el('line', { x1: 40, y1: 172, x2: 318, y2: 172, class: 'en-axis' }, plot);
+    el('line', { x1: 40, y1: 172, x2: 40, y2: 14, class: 'en-axis' }, plot);
+    el('text', { x: 14, y: 95, class: 'en-axis-text', transform: 'rotate(-90 14 95)', 'text-anchor': 'middle' }, plot, 'Potential energy');
+    el('text', { x: 180, y: 192, class: 'en-axis-text', 'text-anchor': 'middle' }, plot, 'Distance between H and Cl');
+    var dd = '';
+    for (var q = 0.8; q <= 3.2; q += 0.04) dd += (dd ? ' L' : 'M') + f1(X(q)) + ' ' + f1(Y(E(q)));
+    el('path', { d: dd, class: 'en-curve' }, plot);
+    el('text', { x: f1(X(1)), y: f1(Y(0) + 16), 'text-anchor': 'middle', class: 'en-label' }, plot, 'H–Cl bond');
+    el('text', { x: f1(X(3.15)), y: f1(Y(E(3.15)) + 20), 'text-anchor': 'end', class: 'en-label' }, plot, 'H and Cl apart');
+    /* the move: an arrow riding just above the curve, from the bond up to the
+       separate atoms ('apart') or back down ('together') */
+    var pts = [];
+    for (var r = 1.12; r <= 2.62; r += 0.05) pts.push([X(r), Y(E(r)) - 13]);
+    if (spec.bond !== 'apart') pts.reverse();
+    el('path', { d: 'M' + pts.map(function (p) { return f1(p[0]) + ' ' + f1(p[1]); }).join(' L'), class: 'arw' }, plot);
+    var hd = pts[pts.length - 1], pv = pts[pts.length - 2], ang = Math.atan2(hd[1] - pv[1], hd[0] - pv[0]);
+    el('polygon', { points: [[hd[0] + 4 * Math.cos(ang), hd[1] + 4 * Math.sin(ang)],
+      [hd[0] - 7 * Math.cos(ang) + 5 * Math.sin(ang), hd[1] - 7 * Math.sin(ang) - 5 * Math.cos(ang)],
+      [hd[0] - 7 * Math.cos(ang) - 5 * Math.sin(ang), hd[1] - 7 * Math.sin(ang) + 5 * Math.cos(ang)]].map(function (p) { return f1(p[0]) + ',' + f1(p[1]); }).join(' '), class: 'arw-head' }, plot);
+    return h('div', { class: 'mol-wrap' }, [plot]);
+  };
+
   R.cleave = function (s) {
     var pr = U.progress(s.id);
     pr.q = pr.q || [null, null, null];
@@ -455,16 +492,45 @@
   var WHEN = ['At every temperature', 'At no temperature', 'Only at low temperature', 'Only at high temperature'];
   function when(dH, dS) { return dH < 0 && dS > 0 ? 0 : dH > 0 && dS < 0 ? 1 : dH < 0 ? 2 : 3; }
 
+  /* One idea per step: first exergonic and endergonic read from a diagram
+     (favor), then ΔG = ΔH − TΔS (dg). */
   R.favor = function (s) {
     var pr = U.progress(s.id);
-    pr.t = pr.t || [null, null, null, null];
+    pr.d = pr.d || {};
     var P2 = SCENES.PROFILES;
-    stage().appendChild(h('div', { class: 'grid2' }, [
-      U.panel('Exergonic', 'ΔG < 0', [Energy.draw(P2.exo, { dG: 'Exergonic', label: 'An exergonic reaction' }),
-        h('p', { class: 'muted', text: 'Products lower in free energy: thermodynamically favorable. At equilibrium, products are favored: K > 1.' })]),
-      U.panel('Endergonic', 'ΔG > 0', [Energy.draw(P2.endo, { dG: 'Endergonic', label: 'An endergonic reaction' }),
-        h('p', { class: 'muted', text: 'Products higher in free energy: not thermodynamically favorable. Reactants are favored: K < 1.' })])
-    ]));
+    stage().appendChild(U.panel('The words', null, [h('dl', { class: 'vocab' }, [
+      h('dt', { text: 'Exergonic (ΔG < 0)' }), h('dd', { text: 'The products are lower in free energy than the reactants: thermodynamically favorable. At equilibrium, products are favored: K > 1.' }),
+      h('dt', { text: 'Endergonic (ΔG > 0)' }), h('dd', { text: 'The products are higher in free energy: not thermodynamically favorable. Reactants are favored: K < 1.' })
+    ])]));
+    var CH = ['Exergonic: thermodynamically favorable', 'Endergonic: not thermodynamically favorable'];
+    var R2 = [{ id: 'A', prof: 'endo', ans: 1 }, { id: 'B', prof: 'exo', ans: 0 }];
+    var grid = h('div', { class: 'grid2' });
+    stage().appendChild(grid);
+    function paint() {
+      grid.innerHTML = '';
+      R2.forEach(function (r) {
+        var ok = pr.d[r.id] === r.ans;
+        grid.appendChild(U.panel('Reaction ' + r.id, ok ? (r.ans ? 'ΔG > 0' : 'ΔG < 0') : 'which is it?', [
+          Energy.draw(P2[r.prof], { dG: ok ? (r.ans ? 'Endergonic' : 'Exergonic') : null, label: 'Energy diagram of reaction ' + r.id }),
+          U.choiceRow(CH, r.ans, pr.d[r.id], function (c) {
+            pr.d[r.id] = c; U.persist();
+            if (c === r.ans) {
+              var why = r.ans ? 'The products sit higher than the reactants: ΔG > 0, endergonic, not thermodynamically favorable (K < 1).'
+                : 'The products sit lower than the reactants: ΔG < 0, exergonic, thermodynamically favorable (K > 1).';
+              if (R2.every(function (x) { return pr.d[x.id] === x.ans; })) U.complete(why + ' Both read. Next: what decides the sign of ΔG.');
+              else U.say(why, 'good');
+            } else U.say('Compare where the products end (right) with where the reactants start (left). Lower products: ΔG < 0.', 'bad');
+            paint();
+          })
+        ]));
+      });
+    }
+    paint();
+  };
+
+  R.dg = function (s) {
+    var pr = U.progress(s.id);
+    pr.t = pr.t || [null, null, null, null];
     var box = h('div');
     stage().appendChild(U.panel('ΔG = ΔH − TΔS', 'when is it thermodynamically favorable?', [box]));
     function paint() {

@@ -111,11 +111,19 @@ const fakeLMS = () => {
     expect(want, 'no arrow scene on ' + (await stepId()));
     if (!want) return;
     const click = (k) => page.click(`${root} [data-key="${k}"] >> nth=0`, { force: true });
+    /* a worked example: the arrows are drawn and the tool is locked */
+    if (await page.$(`${root} svg.locked`)) {
+      expect(await page.$('.worked-note'), 'a locked drawing that is not a worked example on ' + (await stepId()));
+      return;
+    }
+    /* faded support: the first arrows may be given */
+    const given = await page.$$eval(`${root} .arw-g.given`, (ns) => ns.length);
+    if (given) { want.splice(0, given); }
     if (wrongFirst) {
       const atom = await page.$eval(`${root} .tgt.atom`, (n) => n.getAttribute('data-key'));
       await click(atom);
       await bad('an arrow from an atom');
-      if (want.length > 1) {
+      if (want.length > 1 && !given) {
         /* only the first of two arrows: a rule must catch it, or it is incomplete */
         await click(want[0].from); await click(want[0].to);
         await page.click(`${root} .arrow-tools .primary`);
@@ -196,15 +204,35 @@ const fakeLMS = () => {
           await page.click(`.quiz .arrow-tool [data-key="${other}"] >> nth=0`, { force: true });
           await page.click('.quiz .arrow-tools .primary');
           await bad('a wrong graded drawing');
+          /* no opt out: Next stays hidden until the right arrows are drawn */
+          expect(!(await page.isVisible('.quiz .btnrow > .primary')), 'quiz: Next after a wrong graded drawing');
+          await page.click('.quiz .arrow-tool button:text-is("Clear")');
+          await arrows(false, '.quiz .arrow-tool');
         } else await arrows(false, '.quiz .arrow-tool');
-        await page.click('.quiz .btnrow .primary');
+        await page.click('.quiz .btnrow > .primary');
         continue;
       }
       const q = await page.$('.quiz .choice');
       if (!q) break;
+      /* the four patterns are hidden for a question that names a pattern */
+      const hideP = await page.evaluate((q) => { const x = App.QZ.C.pool.concat(App.QZ.D.pool).find((p) => p.id === q); return !!(x && x.check && (x.check.pattern || x.check.seq)); }, qid);
+      if (await page.$('.side-patterns')) expect((await page.isVisible('.side-patterns')) === !hideP, `${qid}: the four-pattern card should be ${hideP ? 'hidden' : 'shown'}`);
       await page.click(`.quiz .choice[data-choice="${WRONG.has(qid) ? 1 : 0}"]`);
       await page.click('.quiz .submit-answer:not([hidden])');
-      await page.click('.quiz .btnrow .primary');
+      if (WRONG.has(qid)) {
+        /* no opt out: its own feedback, no Next, then the right answer */
+        expect(((await page.textContent('.quiz .q-wrong')) || '').length > 20, `${qid}: no feedback for the wrong choice`);
+        expect(!(await page.isVisible('.quiz .btnrow > .primary')), `${qid}: Next after a wrong answer`);
+        if (qid === 'a-break') {
+          /* a reload before putting it right comes back to the same question */
+          await page.reload();
+          await page.click('.screen .primary');
+          expect((await page.getAttribute('.quiz', 'data-qid')) === qid, 'reload: the wrong answer was not kept open');
+        }
+        await page.click('.quiz .choice[data-choice="0"]');
+        await good(`${qid}: the right answer after a wrong one`);
+      }
+      await page.click('.quiz .btnrow > .primary');
     }
     expect(/Checkpoint finished/.test(await feedback()), `${id}: checkpoint did not finish`);
   }
@@ -247,7 +275,13 @@ const fakeLMS = () => {
   }));
   await cards('.cards .card', dS, true);
   await next();
-  /* favor */
+  /* favor: read two energy diagrams (reaction A endergonic, B exergonic) */
+  await page.locator('.choice-row').nth(0).locator('.ghostbtn').nth(0).click();
+  await bad('favor: exergonic for an endergonic diagram');
+  await page.locator('.choice-row').nth(0).locator('.ghostbtn').nth(1).click();
+  await page.locator('.choice-row').nth(1).locator('.ghostbtn').nth(0).click();
+  await next();
+  /* dg */
   const W = await page.evaluate(() => App.SIGNS.map((s) => App.when(s[0], s[1])));
   for (let i = 0; i < W.length; i++) {
     if (i === 2) { await page.locator('.rel-table tr').nth(i + 1).locator('.ghostbtn').nth(3).click(); await bad('favor: high T for ΔH<0, ΔS<0'); }
@@ -299,9 +333,10 @@ const fakeLMS = () => {
   await cards('.cards .card', rules, true);
   await next();
   /* the three drawing steps */
+  /* the first scene of each is worked for you; then support fades */
   for (const n of [2, 2, 3]) {
     for (let k = 0; k < n; k++) {
-      await arrows(k === 0);
+      await arrows(k === 1);
       await page.waitForTimeout(60);
       await sayIt();
       const nx = await page.$('button:text-is("Next drawing →")');
@@ -319,9 +354,10 @@ const fakeLMS = () => {
     await page.locator('.card.rank').nth(idx).click();
   }
   await next();
-  /* shifts */
+  /* shifts: a worked hydride shift, then the methyl shift with its tail marked */
   for (let k = 0; k < 2; k++) {
-    await arrows(k === 0);
+    if (k === 1) expect(await page.$('.arrow-tool .hint-tail'), 'shift: the tail is not marked');
+    await arrows(k === 1);
     await page.waitForTimeout(60);
     await sayIt();
     const nx = await page.$('button:text-is("Next drawing →")');
@@ -349,6 +385,18 @@ const fakeLMS = () => {
   }));
   await cards('.cards .card', NM, true);
   await next();
+  /* recall: the four patterns from memory, definitions out of reach */
+  expect((await stepId()) === 'recall', 'no recall step before Checkpoint 3');
+  expect(!(await page.isVisible('.patterns-ref')), 'recall: the four patterns are still in reach');
+  await page.click('.choice-row .ghostbtn:text-is("Ring flip")');
+  await bad('recall: ring flip as a pattern');
+  for (const t of ['Nucleophilic attack', 'Loss of a leaving group', 'Proton transfer', 'Carbocation rearrangement']) await page.click(`.choice-row .ghostbtn:text-is("${t}")`);
+  const RC = await page.evaluate(() => {
+    const ids = App.STEPS.find((s) => s.id === 'recall').scenes;
+    return App.U.shuffle(ids, App.U.rng(App.U.seed() ^ 43)).map((id) => ['nuc', 'lg', 'pt', 'shift'].indexOf(SCENES.S[id].patterns[0]));
+  });
+  await cards('.cards .card', RC, true);
+  await next();
   await quiz();
   await next();
 
@@ -367,6 +415,8 @@ const fakeLMS = () => {
   await arrows(true);
   await page.waitForTimeout(60);
   await sayIt();
+  await next();
+  /* seqread */
   const ES = await page.evaluate(() => SCENES.S.ester.map((x) => ['nuc', 'lg', 'pt', 'shift'].indexOf(x.patterns[0])));
   for (let i = 0; i < 3; i++) await page.locator('.seq-row').nth(i).locator('.ghostbtn').nth(ES[i]).click();
   await next();

@@ -145,7 +145,7 @@ const fakeLMS = () => {
     }, { lms: lmsVersion, browser: browserVersion, key: STORE });
     await page.reload();
     await page.click('.screen .primary');
-    expect((await stepId()) === 'players', what + ' was resumed at ' + (await stepId()));
+    expect((await stepId()) === 'warmup', what + ' was resumed at ' + (await stepId()));
     const clean = await saved();
     expect(Object.keys(clean.ans).length === 0 && Object.keys(clean.done).length === 0, what + ': old answers carried over');
   }
@@ -153,9 +153,20 @@ const fakeLMS = () => {
   await startsFresh(null, await page.evaluate(() => App.SCHEMA), 'a browser save inside the LMS');
 
   /* =========================================================== Part 1 */
+  /* the warm-up: name the four patterns from memory (a wrong name first) */
+  const WU = await page.evaluate(() => {
+    const s = App.STEPS[0], N = ['Nucleophilic attack', 'Loss of a leaving group', 'Proton transfer', 'Carbocation rearrangement'];
+    return App.U.shuffle(s.figs, App.U.rng(App.U.seed() ^ 17)).map((id) => N.indexOf(App.MECHFIG[id]().arrows[0].pattern));
+  });
+  for (let i = 0; i < WU.length; i++) {
+    const row = page.locator('.cards .card').nth(i).locator('.choice-row .ghostbtn');
+    if (i === 0) { await row.nth((WU[i] + 1) % 4).click(); await bad('warm-up: a wrong pattern'); }
+    await page.locator('.cards .card').nth(i).locator('.choice-row .ghostbtn').nth(WU[i]).click();
+  }
+  await next();
   expect(!(await page.$('.m-pick')), 'players: the carbons open before the prediction');
   await predict(0);
-  const P1 = await page.evaluate(() => App.STEPS[0].mols.map((id) => {
+  const P1 = await page.evaluate(() => App.STEPS.find((x) => x.id === 'players').mols.map((id) => {
     const m = mol(id), L = React.lg(m);
     return { a: L.a, b: React.betas(m, L.a).map((x) => x.b), d: Mol.degree(m, L.a), far: m.atoms.map((x, i) => i).filter((i) => m.atoms[i].el === 'C' && i !== L.a && !m.carbonsOn(L.a).some((y) => y.j === i)) };
   }));
@@ -465,7 +476,7 @@ const fakeLMS = () => {
 
   await page.click('button:has-text("Start a new attempt")');
   await page.click('button:has-text("Yes, start again")');
-  expect((await stepId()) === 'players', 'retry: did not restart at step 1');
+  expect((await stepId()) === 'warmup', 'retry: did not restart at step 1');
   const s2 = await saved();
   expect(Object.keys(s2.ans).length === 0 && s2.att === 2, 'retry: attempt not cleared');
   const lms2 = await page.evaluate(() => JSON.parse(sessionStorage.getItem('lms')));

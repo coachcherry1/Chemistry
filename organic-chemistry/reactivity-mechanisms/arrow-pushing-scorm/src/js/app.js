@@ -22,7 +22,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a scene changes: a save
      from an older build is then discarded and the student starts fresh. */
-  var SCHEMA = 4;
+  var SCHEMA = 5;
 
   var PARTS = [
     { n: 1, name: 'Energy and bonds' },
@@ -42,8 +42,10 @@ var App = (function () {
       text: 'Every bond broken takes energy in; every bond formed gives energy out. Click every bond that breaks, then every bond that forms.' },
     { id: 'entropy', part: 1, kind: 'entropy', title: 'Entropy: more ways to arrange',
       text: 'Entropy measures how many ways a system can be arranged. Play the expansion, then sort the reactions by the sign of ΔS for the system.' },
-    { id: 'favor', part: 1, kind: 'favor', title: 'Thermodynamically favorable',
-      text: 'ΔG = ΔH − TΔS. A reaction with ΔG < 0 is thermodynamically favorable. Fill in the table for each combination of signs.' },
+    { id: 'favor', part: 1, kind: 'favor', title: 'Exergonic or endergonic?',
+      text: 'A reaction with ΔG < 0 is exergonic and thermodynamically favorable. Read each energy diagram: is it exergonic or endergonic?' },
+    { id: 'dg', part: 1, kind: 'dg', title: 'Thermodynamically favorable: ΔG = ΔH − TΔS',
+      text: 'ΔG = ΔH − TΔS. Both terms decide the sign of ΔG. Fill in the table for each combination of signs.' },
     { id: 'diagram', part: 1, kind: 'diagram', title: 'Reading an energy diagram',
       text: 'Play each reaction and watch the dot on its energy diagram. Then click every transition state and every intermediate.' },
     { id: 'quiz-A', part: 1, kind: 'quiz', quiz: 'A', title: 'Checkpoint 1', text: '' },
@@ -58,27 +60,31 @@ var App = (function () {
 
     { id: 'read', part: 3, kind: 'read', title: 'Reading a curved arrow',
       text: 'The tail of a curved arrow is where the electrons are; the head is where they go. Play it, then judge five drawings by Klein’s rules.' },
-    { id: 'nuc', part: 3, kind: 'draw', scenes: ['brAttack', 'acylAttack'], title: 'Pattern 1: nucleophilic attack',
-      text: 'A nucleophile attacks an electrophile. Draw the curved arrows, check them, and watch the step happen.' },
-    { id: 'lg', part: 3, kind: 'draw', scenes: ['brLoss', 'tetLoss'], title: 'Pattern 2: loss of a leaving group',
-      text: 'A bond breaks and its pair leaves with the leaving group. Draw the curved arrows, check them, and watch.' },
-    { id: 'pt', part: 3, kind: 'draw', scenes: ['protKetone', 'deprotKetone', 'alkeneH3O'], title: 'Pattern 3: proton transfer',
-      text: 'A proton moves from one atom to another, leaving its electrons behind. Draw both curved arrows, check them, and watch.' },
+    { id: 'nuc', part: 3, kind: 'draw', scenes: ['brAttack', 'acylAttack'], fade: ['worked', 'given'], title: 'Pattern 1: nucleophilic attack',
+      text: 'A nucleophile attacks an electrophile. The first one is worked for you: play it and say it in words. In the second, one arrow is given; draw the other.' },
+    { id: 'lg', part: 3, kind: 'draw', scenes: ['brLoss', 'tetLoss'], fade: ['worked', 'given'], title: 'Pattern 2: loss of a leaving group',
+      text: 'A bond breaks and its pair leaves with the leaving group. Watch the worked one, then finish the second (one arrow is given).' },
+    { id: 'pt', part: 3, kind: 'draw', scenes: ['protKetone', 'deprotKetone', 'alkeneH3O'], fade: ['worked', 'given', null], title: 'Pattern 3: proton transfer',
+      text: 'A proton moves from one atom to another, leaving its electrons behind. Watch the worked one, finish the second, then draw the third on your own.' },
     { id: 'stable', part: 3, kind: 'stable', title: 'Carbocation stability',
       text: 'Before the fourth pattern: which carbocations are most stable, and why? Put the four in order, from least to most stable.' },
-    { id: 'shift', part: 3, kind: 'draw', scenes: ['shiftH', 'shiftMe'], hole: true, title: 'Pattern 4: carbocation rearrangement',
-      text: 'An H or a CH₃ next door moves over, with its pair of electrons, to make a more stable carbocation. Draw the arrow, check it, and watch.' },
+    { id: 'shift', part: 3, kind: 'draw', scenes: ['shiftH', 'shiftMe'], fade: ['worked', 'tail'], hole: true, title: 'Pattern 4: carbocation rearrangement',
+      text: 'An H or a CH₃ next door moves over, with its pair of electrons, to make a more stable carbocation. Watch the worked hydride shift, then draw the methyl shift.' },
     { id: 'rearrange', part: 3, kind: 'rearrange', mols: ['r1', 'r3', 'r6', 'r4', 'r5', 'r7'], title: 'Will it rearrange?',
       text: 'Klein’s steps: find the carbons next to the C⁺, look at the H and CH₃ groups on them, and ask whether moving one makes a more stable carbocation.' },
     { id: 'name', part: 3, kind: 'name',
       scenes: ['nAllylLoss', 'nAllylWater', 'nArenium', 'nTbuClLoss', 'nPhShift', 'nCyclize', 'nAllylShift', 'nOxDeprot'],
       title: 'Name the pattern', text: 'Read the curved arrows in each step and name its pattern (Klein 6.11 and 6.27).' },
+    { id: 'recall', part: 3, kind: 'recall', scenes: ['shiftH', 'protKetone', 'brAttack', 'brLoss'], title: 'The four patterns, from memory',
+      text: 'The four patterns are hidden for this step. From memory: pick the four patterns of arrow pushing, then name the pattern in each picture.' },
     { id: 'quiz-C', part: 3, kind: 'quiz', quiz: 'C', title: 'Checkpoint 3', text: '' },
 
     { id: 'sequence', part: 4, kind: 'sequence', chain: 'f631', title: 'One mechanism, four patterns',
       text: 'Klein’s Figure 6.31, shown below: four steps, one of each pattern. For each step, name the pattern, then draw its arrows.' },
     { id: 'concerted', part: 4, kind: 'concerted', title: 'Two patterns at once',
-      text: 'Sometimes one step does two patterns at the same time. Draw it, then read a three-step mechanism and name its sequence.' },
+      text: 'Sometimes one step does two patterns at the same time: a concerted step. Draw both arrows, watch it, and say it in words.' },
+    { id: 'seqread', part: 4, kind: 'seqread', title: 'A sequence of patterns',
+      text: 'A mechanism is a sequence of patterns. Read each step’s arrows and name its pattern.' },
     { id: 'quiz-D', part: 4, kind: 'quiz', quiz: 'D', title: 'Checkpoint 4', text: '' },
 
     { id: 'quiz-E', part: 5, kind: 'quiz', quiz: 'E', title: 'Final check', text: '' },
@@ -184,7 +190,7 @@ var App = (function () {
     var rand = rng(seed);
     var draws = {};
     Object.keys(QZ).forEach(function (k) { draws[k] = drawQuiz(QZ[k], rand); });
-    return { v: SCHEMA, seed: seed, step: 0, max: 0, draws: draws, ans: {}, pick: {}, pr: {}, done: {}, fin: 0, best: 0, att: 1 };
+    return { v: SCHEMA, seed: seed, step: 0, max: 0, draws: draws, ans: {}, pick: {}, fix: {}, qd: {}, pr: {}, done: {}, fin: 0, best: 0, att: 1 };
   }
 
   function restore(saved) {
@@ -272,6 +278,9 @@ var App = (function () {
     el.instructions.hidden = !text;
     el.stage.innerHTML = '';
     el.stage.className = 'stage stage-' + s.kind;
+    /* retrieval: the four patterns' definitions are out of reach in the recall
+       step and the final check (and in pattern questions, set per question) */
+    document.body.classList.toggle('recall-mode', s.kind === 'recall' || (s.kind === 'quiz' && s.quiz === 'E'));
     say('');
     nav('next', 'disabled', !(state.done[s.id] || i < state.max));
     nav('next', 'hidden', s.kind === 'results');
@@ -429,15 +438,33 @@ var App = (function () {
     return { node: node, player: pl, slider: sl, ledger: led };
   }
 
+  /* Show me, without an opt out: the right arrows appear in a still picture
+     beside the drawing, the drawing is cleared, and the student draws them. */
+  function showMe(sc, tool, yours) {
+    tool.clear();
+    yours.innerHTML = '';
+    yours.appendChild(h('p', { class: 'muted', text: 'The right arrows. Copy them onto your drawing, then press Check:' }));
+    yours.appendChild(h('div', { class: 'mol-wrap small' }, [Arrows.figure(sc, sc.arrows, { scale: 30, label: 'The right curved arrows' })]));
+    yours.hidden = false;
+  }
+
   /* An arrow-drawing exercise on one scene. done(fresh) is called once
-     the arrows are right (now, or on a revisit). */
+     the arrows are right (now, or on a revisit).
+     o.worked: a worked example (the arrows are drawn; the student plays it)
+     o.given:  this many of the step's arrows are drawn for the student
+     o.tail:   the tail of the first arrow is marked
+     o.graded(r): called on the first Check with something drawn (graded) */
   function arrowBox(sc, pr, key, done, o) {
     o = o || {};
-    var tool = Arrows.Tool(sc, { say: say, onCheck: check, scale: o.scale });
+    var tool = Arrows.Tool(sc, { say: say, onCheck: check, scale: o.scale, checkText: o.checkText,
+      given: o.given ? sc.arrows.slice(0, o.given) : null, tail: o.tail ? sc.arrows[0].from : null });
     var help = h('button', { type: 'button', class: 'ghostbtn', text: 'Show me', hidden: true });
     var yours = h('div', { class: 'yours', hidden: true });
     var legend = h('ol', { class: 'pattern-list', hidden: true });
-    var node = h('div', null, [tool.node, h('div', { class: 'btnrow' }, [help]), yours, legend]);
+    var note = o.worked ? h('p', { class: 'worked-note', text: 'Worked for you: these are the arrows. Play the step and watch the electrons follow them.' })
+      : o.given ? h('p', { class: 'worked-note', text: (o.given === 1 ? 'The first arrow is drawn for you' : 'Some arrows are drawn for you') + ' (grey). Draw the rest.' })
+      : o.tail ? h('p', { class: 'worked-note', text: 'The ringed electrons are where the arrow starts. Where do they go?' }) : null;
+    var node = h('div', null, [note, tool.node, h('div', { class: 'btnrow' }, [help]), yours, legend]);
     function finish(fresh) {
       tool.lock();
       yours.hidden = true;
@@ -448,15 +475,18 @@ var App = (function () {
       if (done) done(fresh);
     }
     function check(r) {
+      if (o.graded && !tool.drawn().length) { say(r.msg, 'bad'); return; }   /* nothing drawn: not an answer */
+      var first = o.graded ? o.graded(r) : false;
       if (r.ok) {
         pr[key] = 1; persist();
-        say(r.msg, 'good');
+        if (!o.graded) say(r.msg, 'good');
         finish(true);
         return;
       }
       pr[key + 'm'] = (pr[key + 'm'] || 0) + 1;
       persist();
-      say(r.msg, 'bad');
+      if (!o.graded) say(r.msg, 'bad');
+      else say('Not quite: ' + r.msg + (first ? ' That first Check counted. Fix your arrows and press Check again.' : ''), 'bad');
       /* arrows that obey the rules but make something else: show it */
       yours.innerHTML = '';
       if (r.state) {
@@ -466,13 +496,16 @@ var App = (function () {
       } else yours.hidden = true;
       if (pr[key + 'm'] >= (o.misses || 3)) help.hidden = false;
     }
+    /* No opt out: Show me shows the arrows beside the drawing, and the
+       student then draws them and checks. */
     help.addEventListener('click', function () {
-      tool.show();
-      pr[key] = 1; persist();
-      say('These are the arrows. The list underneath says what each one does.', '');
-      finish(true);
+      showMe(sc, tool, yours);
+      say('These are the right arrows. Now draw them yourself, then press Check.', '');
     });
-    if (pr[key]) { tool.show(); finish(false); }
+    if (pr[key] || o.worked) {
+      tool.show(); finish(o.worked ? !pr[key] : false);
+      if (o.worked && !pr[key]) { pr[key] = 1; persist(); }
+    }
     else if (pr[key + 'm'] >= (o.misses || 3)) help.hidden = false;
     return { node: node, tool: tool };
   }
@@ -502,9 +535,14 @@ var App = (function () {
       return Arrows.figure(sc, arrows, { label: spec.label || sc.title + ' with curved arrows' });
     }
     if (spec.energy) {
-      return Energy.draw(SCENES.PROFILES[spec.energy], { dG: spec.dG ? (SCENES.PROFILES[spec.energy].slice(-1)[0].E < SCENES.PROFILES[spec.energy][0].E ? 'Exergonic' : 'Endergonic') : null,
-        label: 'An energy diagram' });
+      /* dG: true draws the ΔG bracket with its sign only, never the word the
+         question may be asking for */
+      return Energy.draw(SCENES.PROFILES[spec.energy], { dG: spec.dG ? ' ' : null, Ea: spec.Ea, mark: spec.mark, label: 'An energy diagram' });
     }
+    if (spec.mols) {
+      return h('div', { class: 'chain-fig' }, spec.mols.map(function (id) { return figure({ mol: id }); }));
+    }
+    if (spec.split || spec.bond) return FIG[spec.split ? 'split' : 'bond'](spec);
     if (spec.chain) {
       return h('div', { class: 'chain-fig' }, SC[spec.chain].map(function (sc, k) {
         return h('figure', null, [Arrows.figure(sc, sc.arrows, { scale: 30, label: 'Step ' + (k + 1) + ' with curved arrows' }), h('figcaption', { text: 'Step ' + (k + 1) })]);
@@ -516,6 +554,9 @@ var App = (function () {
     }
     return h('div');
   }
+
+  /* figures drawn by the step files (steps1.js): split, bond */
+  var FIG = {};
 
   function figureText(spec) {
     if (spec.mech) return (SC[spec.mech].title || 'a step') + ', with curved arrows';
@@ -543,8 +584,16 @@ var App = (function () {
         ['Peak', 'A transition state. Valley: an intermediate.'], ['Eₐ', 'The climb to the first peak: how fast.']
       ].reduce(function (acc, p) { acc.push(h('dt', { text: p[0] })); acc.push(h('dd', { text: p[1] })); return acc; }, []))], 'side');
     }
-    return panel('Klein Table 6.3 and the four patterns', null, [tableNode(), k === 'B' ? null : patternsNode()], 'side');
+    /* The four patterns sit beside Checkpoints 3 and 4, but not while a
+       question asks to name a pattern (retrieval, not matching the card),
+       and never in the final check. */
+    var pats = k === 'C' || k === 'D' ? h('div', { class: 'side-patterns' }, [h('h4', { text: 'The four patterns' }), patternsNode()]) : null;
+    var gone = pats ? h('p', { class: 'muted side-gone', hidden: true, text: 'The four patterns are hidden for this question: name it from memory.' }) : null;
+    return panel(k === 'B' || k === 'E' ? 'Klein Table 6.3' : 'Klein Table 6.3 and the four patterns', null, [tableNode(), pats, gone], 'side');
   }
+
+  /* Does this question ask the student to name a pattern from memory? */
+  function fromMemory(q) { return !!(q.recall || (q.check && (q.check.pattern || q.check.seq))); }
 
   function tableNode() {
     var rows = [['Hydroxide', 'NaOH'], ['Alkoxide ions', 'NaOR'], ['Halide ions', 'NaX (Cl, Br, I)'], ['Thiolate', 'NaSH'],
@@ -572,7 +621,15 @@ var App = (function () {
     var Q = QZ[s.quiz];
     var ids = state.draws[s.quiz];
     var box = h('div', { class: 'quiz' });
-    el.stage.appendChild(h('div', { class: 'quiz-grid' }, [panel(Q.title, null, [box]), quizSide(s.quiz)]));
+    var sidePanel = quizSide(s.quiz);
+    el.stage.appendChild(h('div', { class: 'quiz-grid' }, [panel(Q.title, null, [box]), sidePanel]));
+    function side(q) {
+      if (s.quiz === 'C' || s.quiz === 'D') document.body.classList.toggle('recall-mode', fromMemory(q));
+      var p = sidePanel.querySelector('.side-patterns'), g = sidePanel.querySelector('.side-gone');
+      if (!p) return;
+      p.hidden = fromMemory(q);
+      g.hidden = !p.hidden;
+    }
 
     function summary() {
       box.innerHTML = '';
@@ -600,35 +657,49 @@ var App = (function () {
       paintParts();
     }
 
+    /* No opt out: a wrong answer counts as wrong, then the student keeps
+       going until they produce the right one (state.fix marks that). */
+    function settled(id) { return state.ans[id] === 1 || (state.ans[id] === 0 && state.fix[id]); }
+
     function ask(n) {
       var id = ids[n];
       if (id == null) { summary(); return; }
-      if (state.ans[id] != null) { ask(n + 1); return; }
+      if (settled(id)) { ask(n + 1); return; }
       var q = question(id);
+      var redo = state.ans[id] === 0;          /* counted wrong, not yet put right */
       box.innerHTML = '';
       box.setAttribute('data-qid', id);
       say('');
+      side(q);
       box.appendChild(h('p', { class: 'q-count', text: 'Question ' + (n + 1) + ' of ' + ids.length }));
       box.appendChild(h('p', { class: 'q-text', text: q.q }));
       var why = h('p', { class: 'q-why', hidden: true });
+      var fb = h('p', { class: 'q-wrong', hidden: true, 'aria-live': 'polite' });
       var next = h('button', { type: 'button', class: 'primary', hidden: true, text: n + 1 < ids.length ? 'Next question →' : 'Finish checkpoint' });
       next.addEventListener('click', function () { ask(n + 1); });
+      function fixed() {
+        if (state.ans[id] === 0 && !state.fix[id]) { state.fix[id] = 1; persist(); }
+        why.hidden = false;
+        why.textContent = q.why;
+        next.hidden = false;
+        next.focus({ preventScroll: true });
+      }
 
       if (q.draw) {
-        /* a graded drawing: the first Check counts */
+        /* a graded drawing: the first Check counts; then draw until right */
         var sc = SC[q.draw];
-        var tool = Arrows.Tool(sc, { say: say, checkText: 'Check (graded)', onCheck: function (r) {
-          if (state.ans[id] != null) return;
-          if (!tool.drawn().length) { say(r.msg, 'bad'); return; }   /* nothing drawn yet: not an answer */
+        var qpr = state.qd[id] = state.qd[id] || {};
+        var ab = arrowBox(sc, qpr, 'a', function () {
+          say(state.ans[id] === 1 ? 'Correct. These arrows are right.' : 'Now they are right. (Your first Check is the one that counted.)', 'good');
+          fixed();
+        }, { checkText: redo ? 'Check' : 'Check (graded)', graded: function (r) {
+          if (state.ans[id] != null) return false;
           record(id, r.ok, r.ok ? 'a' : 'b');
-          if (!r.ok) { tool.show(); say('Not quite: ' + r.msg + ' The right arrows are drawn now.', 'bad'); }
-          else { tool.lock(); say('Correct. ' + r.msg, 'good'); }
-          why.hidden = false;
-          why.textContent = q.why;
-          next.hidden = false;
-          next.focus({ preventScroll: true });
+          ab.tool.checkText('Check');
+          return true;
         } });
-        box.appendChild(h('div', { class: 'q-draw' }, [tool.node]));
+        if (redo) say('This one counted as wrong. Draw the right arrows to go on.', 'bad');
+        box.appendChild(h('div', { class: 'q-draw' }, [ab.node]));
         box.appendChild(why);
         box.appendChild(h('div', { class: 'btnrow' }, [next]));
         return;
@@ -646,10 +717,11 @@ var App = (function () {
           typeof c === 'string' ? h('span', { class: 'choice-text', text: c }) : figure(c)
         ]);
         if (typeof c !== 'string') b.setAttribute('aria-label', 'Choice ' + letter + ': ' + figureText(c));
-        b.addEventListener('click', function () { choose(ci); });
+        b.addEventListener('click', function () { if (state.ans[id] == null) choose(ci); else retry(ci); });
         row.appendChild(b);
       });
       box.appendChild(row);
+      box.appendChild(fb);
       box.appendChild(why);
       /* Graded, so a click only selects; Submit answer grades it (the first submit counts). */
       var selCi = null;
@@ -672,25 +744,52 @@ var App = (function () {
         for (var i = 0; i < nodes.length; i++) { nodes[i].classList.remove('selected'); nodes[i].removeAttribute('aria-pressed'); }
         answer(selCi);
       });
-      box.appendChild(h('div', { class: 'btnrow' }, [submit, next]));
+      box.appendChild(h('div', { class: 'btnrow' }, [redo ? null : submit, next]));
 
+      function mark(ci) {
+        var nodes = row.querySelectorAll('.choice');
+        for (var i = 0; i < nodes.length; i++) if (+nodes[i].getAttribute('data-choice') === ci) {
+          nodes[i].classList.add(ci === 0 ? 'right' : 'wrong');
+          nodes[i].disabled = true;
+        }
+      }
+      function lockAll() {
+        var nodes = row.querySelectorAll('.choice');
+        for (var i = 0; i < nodes.length; i++) nodes[i].disabled = true;
+      }
+      /* each wrong choice has its own feedback: the misconception and the next move */
+      function wrongText(ci) { return (q.wrong && q.wrong[ci - 1]) || ''; }
       function answer(ci) {
         if (state.ans[id] != null) return;
         var right = ci === 0;
         state.pick[id] = ci;
         record(id, right, String.fromCharCode(97 + ci));
-        var nodes = row.querySelectorAll('.choice');
-        for (var i = 0; i < nodes.length; i++) {
-          var c = +nodes[i].getAttribute('data-choice');
-          nodes[i].disabled = true;
-          if (c === 0) nodes[i].classList.add('right');
-          else if (c === ci) nodes[i].classList.add('wrong');
+        mark(ci);
+        if (right) { lockAll(); say('Correct.', 'good'); fixed(); return; }
+        fb.hidden = false;
+        fb.textContent = wrongText(ci);
+        say('Not quite. That answer counted. Read why, then pick the right answer.', 'bad');
+      }
+      /* after the counted answer: pick again (not graded) until right */
+      function retry(ci) {
+        if (settled(id)) return;
+        mark(ci);
+        if (ci === 0) {
+          lockAll();
+          fb.hidden = true;
+          say('Now you have it. (Your first answer is the one that counted.)', 'good');
+          fixed();
+          return;
         }
-        why.hidden = false;
-        why.textContent = q.why;
-        say(right ? 'Correct.' : 'Not quite. The correct answer is highlighted.', right ? 'good' : 'bad');
-        next.hidden = false;
-        next.focus({ preventScroll: true });
+        fb.hidden = false;
+        fb.textContent = wrongText(ci);
+        say('Not that one either. Read why, then pick again.', 'bad');
+      }
+      if (redo) {
+        mark(state.pick[id]);
+        fb.hidden = false;
+        fb.textContent = wrongText(state.pick[id]);
+        say('This one counted as wrong. Pick the right answer to go on.', 'bad');
       }
     }
     ask(0);
@@ -785,6 +884,8 @@ var App = (function () {
     ['Loss of a leaving group', 'A bond breaks and its pair goes with the leaving group.'],
     ['Proton transfer', 'An H moves from one atom to another without its electrons. Two curved arrows.'],
     ['Carbocation rearrangement', 'A hydride shift (H) or methyl shift (CH₃) moves a group with its pair to the C⁺, making a more stable carbocation.'],
+    ['Hydride shift', 'An H moves to the C⁺ next door with the pair of its bond (as H⁻, a hydride). A methyl shift moves a CH₃ the same way.'],
+    ['Base', 'In a proton transfer, the one that takes the H (a proton, H⁺), with a lone pair or a pi bond.'],
     ['Concerted', 'Two patterns at the same time, in one step.']
   ];
 
@@ -792,11 +893,24 @@ var App = (function () {
     el.patternsBody.appendChild(patternsNode());
     el.tableBody.appendChild(tableNode());
     var dl = h('dl', { class: 'vocab' });
-    VOCAB.forEach(function (p) { dl.appendChild(h('dt', { text: p[0] })); dl.appendChild(h('dd', { text: p[1] })); });
+    var PATS = ['Nucleophilic attack', 'Loss of a leaving group', 'Proton transfer', 'Carbocation rearrangement'];
+    VOCAB.forEach(function (p) {
+      var c = PATS.indexOf(p[0]) >= 0 ? 'vocab-pattern' : null;
+      dl.appendChild(h('dt', { class: c, text: p[0] })); dl.appendChild(h('dd', { class: c, text: p[1] }));
+    });
     el.vocabBody.appendChild(dl);
   }
 
   /* ------------------------------------------------------------------ boot */
+
+  /* What this activity assumes (Klein chapters 1 to 3 and AP Chemistry). */
+  var PREREQS = [
+    'Draw a Lewis structure with every lone pair, and find an atom’s formal charge (Klein chapters 1 and 2).',
+    'Mark δ+ and δ− on a polar bond from electronegativity.',
+    'Call a carbon 1°, 2° or 3° by the number of carbons bonded to it.',
+    'Know that a carbon with three bonds and a + charge has an empty p orbital (Klein chapter 1).',
+    'Use ΔH, ΔS, ΔG and K as in AP Chemistry (no calculations here).'
+  ];
 
   function showIntro() {
     var box = h('div', { class: 'screen-box', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'introTitle' }, [
@@ -810,8 +924,11 @@ var App = (function () {
         h('li', { text: 'Part 4, Putting the patterns together.' }),
         h('li', { text: 'Part 5, Final check: the same four patterns on reactions you have not seen.' })
       ]),
+      h('p', { class: 'screen-kicker', text: 'Before you start, you should be able to:' }),
+      h('ul', { class: 'prereq' }, PREREQS.map(function (t) { return h('li', { text: t }); })),
       h('p', { text: 'Arrows, sorts and predictions are never graded, so try things. The four checkpoints and the final check are graded: your ' +
-                     'first answer to each question counts, and a drawing counts on its first Check. About 50 minutes. Your progress is saved if you leave.' }),
+                     'first answer to each question counts, and a drawing counts on its first Check. A wrong answer still has to be put right before you go on. ' +
+                     'About 55 minutes. Your progress is saved if you leave.' }),
       h('p', { class: 'screen-note', text: 'Everything works with a mouse, a touch screen or the keyboard (Tab and Enter).' })
     ]);
     var go = h('button', { type: 'button', class: 'primary', text: state.max > 0 ? 'Continue where you left off' : 'Start' });
@@ -840,6 +957,11 @@ var App = (function () {
       state.max = STEPS.length - 1;
       var idx = /^\d+$/.test(jump) ? +jump - 1 : stepIndex(jump);
       state.step = Math.max(0, Math.min(STEPS.length - 1, idx < 0 ? 0 : idx));
+      /* teacher links: &all shows every question of the checkpoint's pool */
+      if (params.has('all') && STEPS[state.step].quiz) {
+        var k = STEPS[state.step].quiz;
+        state.draws[k] = QZ[k].pool.map(function (q) { return q.id; });
+      }
     } else {
       state = restore(SCORM.loadState()) || newState();
       persist();
@@ -866,7 +988,7 @@ var App = (function () {
   };
 
   return { start: start, SCHEMA: SCHEMA, STEPS: STEPS, GRADED: GRADED, QZ: QZ, PREDICT: PREDICT, RENDER: RENDER, U: U,
-           BIG_IDEAS: BIG_IDEAS, VOCAB: VOCAB, figure: figure, drawQuiz: drawQuiz };
+           BIG_IDEAS: BIG_IDEAS, VOCAB: VOCAB, figure: figure, drawQuiz: drawQuiz, FIG: FIG };
 })();
 
 document.addEventListener('DOMContentLoaded', App.start);

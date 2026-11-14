@@ -221,8 +221,15 @@ function arrowsRight(sc) { return Mech.judge(sc, sc.arrows.map((a) => ({ from: a
   /* the question figures' wrong sets are really wrong */
   Object.keys(App.MECHFIG).forEach((k) => {
     const s = App.MECHFIG[k]();
-    Object.keys(s.wrongSets).forEach((w) => { if (Mech.judge(s, s.wrongSets[w]).ok) fail(`MECHFIG ${k}.${w} is accepted as right`); });
+    Object.keys(s.wrongSets || {}).forEach((w) => { if (Mech.judge(s, s.wrongSets[w]).ok) fail(`MECHFIG ${k}.${w} is accepted as right`); });
   });
+  /* the warm-up: one step of each of Klein's four patterns, each step one pattern */
+  const wu = App.STEPS.find((x) => x.id === 'warmup');
+  if (!wu || App.STEPS[0] !== wu) fail('the four-pattern warm-up is not the first step');
+  else {
+    const pats = wu.figs.map((id) => { const s = App.MECHFIG[id](); if (new Set(s.arrows.map((a) => a.pattern)).size !== 1) fail(`warm-up ${id}: more than one pattern`); return s.arrows[0].pattern; });
+    if (new Set(pats).size !== 4) fail('warm-up: not one step of each of the four patterns: ' + pats.join(', '));
+  }
 }
 
 /* ----------------------------------------------------- predictions */

@@ -61,7 +61,7 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `organic-chemistry/configurations-stereoisomerism/cyclohexane-chairs-scorm/` | Chairs, ring flips, 1,3-diaxial crowding (qualitative) |
 | `organic-chemistry/configurations-stereoisomerism/chirality-scorm/` | Chirality, R and S, enantiomers, diastereomers and meso compounds (qualitative) |
 | `organic-chemistry/configurations-stereoisomerism/chirality-no-meso-scorm/` | Same, without meso compounds, for a weaker group |
-| `organic-chemistry/reactivity-mechanisms/arrow-pushing-scorm/` | Klein 6, before SN1/SN2: bond breaking and making, ΔG, energy diagrams, nucleophiles and electrophiles, drawing curved arrows, the four patterns, a final check (about 50 min) |
+| `organic-chemistry/reactivity-mechanisms/arrow-pushing-scorm/` | Klein 6, before SN1/SN2: bond breaking and making, ΔG, energy diagrams, nucleophiles and electrophiles, drawing curved arrows, the four patterns, a final check (about 55 min) |
 | `organic-chemistry/substitution-elimination/substitution-elimination-scorm/` | SN1, SN2, E1 and E2: reagent function, mechanisms with curved arrows, regio- and stereochemistry, rings, predicting products (about 50 min) |
 
 **Older packages predate some house rules.** Everything except Newman, chairs, chirality (both versions), arrow pushing, mole conversions (both), the formula packages (all three), the two balancing packages, predicting products and net ionic equations contains em
@@ -384,12 +384,14 @@ not the full page.
 - **Walkthrough harness (both new packages):** the fake LMS reads and writes sessionStorage on every call and never stages
   the next load's data; staging made the reload check fail at random (still the case in the older packages' walkthroughs).
 
-## substitution-elimination-scorm (branch `claude/compassionate-allen-hwn3ov`, zip v4, SCHEMA 2)
+## substitution-elimination-scorm (branch `claude/compassionate-allen-hwn3ov`, zip v5, SCHEMA 3)
 
 - **Key objective:** Klein's three steps (7.9): the function of the reagent, the substrate and Klein's table, then
   regio- and stereochemistry; major and minor products.
-- 26 steps in 5 parts; 23 graded questions (4+5+5+4+5) from a pool of 73. Every checkpoint's core has a
+- 27 steps in 5 parts; 23 graded questions (4+5+5+4+5) from a pool of 73. Every checkpoint's core has a
   reagent-function question. No reference table beside the checkpoints (the teacher's choice).
+- **Warm-up first** (`warmup`, from the arrow-pushing learning review): name the pattern, from memory, in four steps of this
+  activity's own mechanisms (`MECHFIG` `sn1loss`, `sn1attack`, `sn1pt`, `shiftH`); never graded; the validator checks one of each.
 - **Klein's wording:** SN2 is nucleophilic attack and loss of the leaving group, concerted, back-side attack,
   inversion of configuration; E2 is proton transfer and loss of the leaving group, anti-coplanar (never
   antiperiplanar); the four arrow patterns by Klein's names. What slows or stops SN2 is **steric hindrance** at
@@ -442,16 +444,33 @@ not the full page.
   strongest first, predict each `[prop, most]`, then run the liquid bench (drop on plastic, pipet draining, drop left
   out). Reduced motion shows a still partway through with the order in words.
 
-## arrow-pushing-scorm (branch `claude/charming-gauss-ear0ac`, zip v1, SCHEMA 4)
+## arrow-pushing-scorm (branch `claude/charming-gauss-ear0ac`, zip v2, SCHEMA 5)
 
 - **Key objective:** recognise and draw Klein's four patterns (6.8): nucleophilic attack, loss of a leaving group,
   proton transfer, carbocation rearrangement; vocabulary adoption. Comes before `substitution-elimination-scorm/`.
-- 25 steps in 5 parts; 25 graded questions (4+4+5+5+7) from a pool of 78. Part 5 is a **final check** (`quiz-E`): 7 questions
+- 28 steps in 5 parts; 25 graded questions (4+4+5+5+7) from a pool of 80. Part 5 is a **final check** (`quiz-E`): 7 questions
   (two graded drawings, a sequence, a pattern, a vocabulary core, two more) on reactions no step or earlier checkpoint has
   shown; the validator enforces that. Energy words beside checkpoint 1, Klein Table
-  6.3 (and the four patterns) beside 2 to 4. Every checkpoint's core has a vocabulary question; checkpoints 3 and 4
-  each have a **graded arrow drawing** (first Check counts; Check with nothing drawn is not an answer) and a
-  pattern or sequence question (pick groups in `quiz.js`).
+  6.3 beside 2 to 4 (the final check: Table 6.3 only). Every checkpoint's core has a vocabulary question and a **why**
+  question; checkpoints 3 and 4 each have a **graded arrow drawing** (first Check counts; Check with nothing drawn is not an
+  answer) and a pattern or sequence question (pick groups in `quiz.js`).
+- **Learning design (zip v2, from `LEARNING_REVIEW.md`, all six suggestions built):**
+  - **No opt out:** a wrong graded answer counts, then is put right before Next: each wrong choice has its own feedback
+    (`wrong` in `quiz.js`, the misconception and the next move), is struck out, and the student picks again; a wrong graded
+    drawing is redrawn. Show me (after three misses, everywhere) shows the right arrows beside the drawing to copy, never
+    instead of it. `state.fix` keeps a question open across a reload until it is put right.
+  - **Worked example, then fading** (`fade` per draw step): the first scene of each pattern is worked (arrows drawn, the
+    student plays it and fills the sentence), the next has one arrow given (grey, `given`) or its tail ringed (`tail`), then
+    unaided. Every later drawing is unaided.
+  - **Retrieval:** `recall` (before Checkpoint 3) picks the four patterns out of six (decoys homolytic cleavage, ring flip)
+    and names four pictures; the four-pattern card and their Vocabulary entries are hidden there, in every pattern or
+    sequence question (`fromMemory`) and in the whole final check (`recall-mode`).
+  - **Dual code:** every checkpoint question that names a species, a diagram part or an energy idea draws it (figures
+    `bond` H–Cl curve and `split` from steps1.js via `App.FIG`, `mols`, energy `mark`, `Ea`; `dG: true` shows the sign, never
+    the word asked for). The validator checks the words.
+  - **One idea per step:** `favor` (read exergonic or endergonic) and `dg` (ΔG = ΔH − TΔS) are two steps; `concerted` and
+    `seqread` are two steps. Prerequisites on the intro screen (`PREREQS`). "Base" and "Hydride shift" in Vocabulary.
+  - Teacher link `?step=quiz-C&all` shows every question of a pool.
 - **Teacher's wording:** AP Chemistry trained. Never "spontaneous": ΔG < 0 is thermodynamically favorable, ΔG > 0 not
   thermodynamically favorable; ΔG kept; exergonic and endergonic used. No ΔH calculated, but "bond breaking is
   endothermic, bond making is exothermic" everywhere (energy ledger beside every animation). Kinetics left out except

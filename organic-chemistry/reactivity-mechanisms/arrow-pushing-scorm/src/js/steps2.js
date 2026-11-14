@@ -7,9 +7,11 @@
  *   stable      methyl < 1° < 2° < 3°: alkyl groups are electron-donating (induction)
  *   rearrange   will this carbocation rearrange? (Klein SkillBuilder 6.6)
  *   name        read the arrows and name the pattern
+ *   recall      the four patterns from memory (definitions hidden)
  *   sequence    Klein Figure 6.31: name and draw each of four steps while
  *               the energy diagram grows, then play the whole mechanism
- *   concerted   two patterns in one step; a three-step sequence read
+ *   concerted   two patterns in one step
+ *   seqread     a three-step sequence read and named
  */
 
 (function () {
@@ -33,7 +35,7 @@
     acylAttack: ['The O of methanol is the ', 0, '. The pi bond’s pair moves onto O, so the carbon never has a ', 1, '.', ['nucleophile', 'fifth bond', 'electrophile', 'lone pair']],
     brLoss: ['The C–Br bond breaks ', 0, ': Br⁻ leaves with both electrons as the ', 1, '.', ['heterolytically', 'leaving group', 'homolytically', 'nucleophile']],
     tetLoss: ['The O⁻ pushes a pair down to re-form the C=O, which pushes out Cl⁻, the ', 0, '. One pattern: loss of a leaving group, drawn with ', 1, ' arrows.', ['leaving group', 'two', 'nucleophile', 'three']],
-    protKetone: ['Acetone acts as a ', 0, ' and takes a ', 1, ' from H₃O⁺.', ['base', 'proton', 'nucleophile', 'hydride']],
+    protKetone: ['Acetone acts as a ', 0, ' and takes a ', 1, ' from H₃O⁺.', ['base', 'proton', 'nucleophile', 'leaving group']],
     deprotKetone: ['Water acts as a ', 0, '. The O–H pair stays behind on O: a proton moves ', 1, ' its electrons.', ['base', 'without', 'leaving group', 'with']],
     alkeneH3O: ['The ', 0, ' is the base. The new carbocation is ', 1, ', the more stable one.', ['pi bond', 'tertiary', 'lone pair', 'primary']],
     shiftH: ['A ', 0, ': the H moves with its pair, and a 2° carbocation becomes a more stable ', 1, ' one.', ['hydride shift', '3°', 'methyl shift', '1°']],
@@ -179,8 +181,11 @@
       var sc = SC[ids[k]];
       var chips = U.chipRow('Step', ids.map(function (id) { return SC[id].title; }), k, isDone, function (i) { return i === 0 || isDone(i - 1); },
         function (i) { k = i; pr.k = i; U.persist(); paint(); });
-      var ab = U.arrowBox(sc, pr, 'a' + k, function (fresh) { showAfter(sc, fresh); });
-      left.appendChild(U.panel(sc.title, 'draw the arrows', [chips, ab.node]));
+      /* worked example, then support that fades (s.fade per scene) */
+      var f = (s.fade || [])[k];
+      var ab = U.arrowBox(sc, pr, 'a' + k, function (fresh) { showAfter(sc, fresh); },
+        { worked: f === 'worked', given: f === 'given' ? 1 : 0, tail: f === 'tail' });
+      left.appendChild(U.panel(sc.title, f === 'worked' ? 'worked for you' : 'draw the arrows', [chips, ab.node]));
       if (!pr['a' + k]) right.appendChild(U.panel('Then watch it happen', null, [h('p', { class: 'muted', text: 'Draw the curved arrows and press Check. When they are right, the step plays here: the electrons ride your arrows, bonds break and form, and the charges move.' }),
         rulesList()]));
     }
@@ -393,6 +398,70 @@
     paint();
   };
 
+  /* ============================================================ recall */
+
+  /* Retrieval before Checkpoint 3: the four patterns' definitions are out of
+     reach (recall mode); pick the four names out of six, then name the
+     pattern in four pictures. Never graded; a wrong pick says why and the
+     student picks again. */
+  var DECOYS = {
+    'Homolytic cleavage': 'Homolytic cleavage moves one electron to each atom (fish-hooks) and makes radicals. The four patterns move electrons in pairs.',
+    'Ring flip': 'A ring flip (the chairs activity) turns one chair into the other: no bond breaks or forms, so no curved arrows.'
+  };
+  R.recall = function (s) {
+    var pr = U.progress(s.id);
+    pr.n = pr.n || [];          /* names picked right */
+    pr.c = pr.c || {};          /* picture: chosen pattern */
+    var names = NAMES.map(function (x) { return PN[x]; }).concat(Object.keys(DECOYS));
+    var top = h('div'), pics = h('div', { class: 'cards wide' });
+    stage().appendChild(U.panel('Which four are the patterns of arrow pushing?', 'pick four', [top]));
+    var picArea = U.panel('Name the pattern in each picture', null, [pics]);
+    stage().appendChild(picArea);
+    function ans(id) { return NAMES.indexOf(SC[id].patterns[0]); }
+    function allNamed() { return pr.n.length === 4; }
+    function allPics() { return s.scenes.every(function (x) { return pr.c[x] === ans(x); }); }
+    function finish(msg) {
+      if (allNamed() && allPics()) { if (!U.isDone(s.id)) U.complete(msg + ' All four, from memory. On to Checkpoint 3.'); else U.say(msg, 'good'); }
+      else U.say(msg, 'good');
+    }
+    function paintNames() {
+      top.innerHTML = '';
+      var row = h('div', { class: 'choice-row' });
+      U.shuffle(names, U.rng(U.seed() ^ 41)).forEach(function (t) {
+        var right = pr.n.indexOf(t) >= 0;
+        var b = h('button', { type: 'button', class: 'ghostbtn' + (right ? ' right' : ''), text: t, disabled: right || allNamed() });
+        b.addEventListener('click', function () {
+          if (DECOYS[t]) { U.say(DECOYS[t] + ' Pick again.', 'bad'); b.classList.add('wrong'); return; }
+          pr.n.push(t); U.persist();
+          paintNames();
+          finish(allNamed() ? 'Those are the four patterns.' : t + ': one of the four. ' + (4 - pr.n.length) + ' to go.');
+          picArea.hidden = !allNamed();
+        });
+        row.appendChild(b);
+      });
+      top.appendChild(row);
+    }
+    function paintPics() {
+      pics.innerHTML = '';
+      U.shuffle(s.scenes, U.rng(U.seed() ^ 43)).forEach(function (id) {
+        var sc = SC[id];
+        var row = U.choiceRow(NAMES.map(function (x) { return PN[x]; }), ans(id), pr.c[id], function (i) {
+          pr.c[id] = i; U.persist();
+          if (i === ans(id)) finish(PN[sc.patterns[0]] + ': ' + sc.picks.map(function (m) { return Judge.describe(sc, sc.before, m); }).join('; ') + '.');
+          else U.say('Read the arrows again: does an H move, does a group leave, does a new bond form to an electrophile, or does a group shift to a C⁺? Pick again.', 'bad');
+          paintPics();
+        });
+        box(sc, row);
+      });
+    }
+    function box(sc, row) {
+      pics.appendChild(h('div', { class: 'card' }, [h('div', { class: 'mol-wrap' }, [Arrows.figure(sc, sc.arrows, { scale: 30, label: 'A step with curved arrows' })]), row]));
+    }
+    paintNames();
+    paintPics();
+    picArea.hidden = !allNamed();
+  };
+
   /* ========================================================== sequence */
 
   R.sequence = function (s) {
@@ -479,41 +548,49 @@
 
   R.concerted = function (s) {
     var pr = U.progress(s.id);
-    pr.q = pr.q || [null, null, null];
-    var left = h('div'), right = h('div'), bottom = h('div');
+    var left = h('div'), right = h('div');
     stage().appendChild(h('div', { class: 'work work-wide' }, [left, right]));
-    stage().appendChild(bottom);
     var live = [];
-    function check() { if (pr.a0 && pr.wsn && seqDone() && !U.isDone(s.id)) U.complete('One step can hold two patterns (concerted); a mechanism is a sequence of them. Klein: fewer than a dozen sequences cover more than 100 mechanisms.'); }
-    function seqDone() { return SC.ester.every(function (x, i) { return pr.q[i] === NAMES.indexOf(x.patterns[0]); }); }
     var ab = U.arrowBox(SC.sn2, pr, 'a0', function (fresh) {
       right.innerHTML = '';
       var pb = U.playerBox(SC.sn2, { scale: 38, ts: { partial: ['O', 'Cl'] } });
       live.push(pb.slider);
       var e = Energy.draw(SCENES.PROFILES.sn2, { axis: 'Potential energy', label: 'One step: one transition state' });
-      var say = sayIt('sn2', pr, function () { pr.wsn = 1; U.persist(); check(); paintSeq(); });
+      var say = sayIt('sn2', pr, function () {
+        pr.wsn = 1; U.persist();
+        if (!U.isDone(s.id)) U.complete('One step can hold two patterns at once: a concerted step, with one transition state and no intermediate.');
+      });
       live.push(say);
       right.appendChild(U.panel('One step, two patterns', 'concerted', [pb.node, e, say]));
       if (fresh && !U.reduceMotion) setTimeout(function () { pb.slider.play.click(); }, 300);
     });
     left.appendChild(U.panel(SC.sn2.title, 'draw both arrows', [ab.node]));
     if (!pr.a0) right.appendChild(U.panel('Concerted', null, [h('p', { class: 'muted', text: 'Hydroxide attacks the carbon as chloride leaves. Draw both arrows: one for each pattern.' })]));
+    return { destroy: function () { live.forEach(function (x) { if (x.stop) x.stop(); if (x.destroy) x.destroy(); }); } };
+  };
+
+  /* A mechanism is a sequence of patterns: name each step of SkillBuilder 6.4. */
+  R.seqread = function (s) {
+    var pr = U.progress(s.id);
+    pr.q = pr.q || [null, null, null];
+    var bottom = h('div');
+    stage().appendChild(bottom);
+    function seqDone() { return SC.ester.every(function (x, i) { return pr.q[i] === NAMES.indexOf(x.patterns[0]); }); }
     function paintSeq() {
       bottom.innerHTML = '';
-      if (!pr.wsn) return;
       var rows = SC.ester.map(function (x, i) {
         var ans = NAMES.indexOf(x.patterns[0]);
         return h('div', { class: 'seq-row' }, [h('figure', null, [Arrows.figure(x, x.arrows, { scale: 28, label: 'Step ' + (i + 1) }), h('figcaption', { text: 'Step ' + (i + 1) })]),
           U.choiceRow(NAMES.map(function (n) { return PN[n]; }), ans, pr.q[i], function (c) {
             pr.q[i] = c; U.persist();
             U.say(c === ans ? 'Step ' + (i + 1) + ': ' + PN[x.patterns[0]].toLowerCase() + '.' : 'Read the arrows of step ' + (i + 1) + ' again: what forms, what breaks, what moves?', c === ans ? 'good' : 'bad');
-            check(); paintSeq();
+            if (seqDone() && !U.isDone(s.id)) U.complete('Nucleophilic attack, loss of a leaving group, proton transfer: a mechanism is a sequence of patterns. Klein: fewer than a dozen sequences cover more than 100 mechanisms.');
+            paintSeq();
           })]);
       });
       bottom.appendChild(U.panel('A sequence of patterns', 'Klein SkillBuilder 6.4: an ester and hydroxide', rows));
     }
     paintSeq();
-    return { destroy: function () { live.forEach(function (x) { if (x.stop) x.stop(); if (x.destroy) x.destroy(); }); } };
   };
 
   App.SAY = SAY;

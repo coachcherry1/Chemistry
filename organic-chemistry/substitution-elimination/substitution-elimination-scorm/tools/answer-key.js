@@ -71,6 +71,13 @@ App.STEPS.forEach((s, i) => {
   P();
   if (s.mols) P('Molecules: ' + s.mols.map((id) => name(mol(id))).join('; ') + '.');
   if (s.mol) P('Molecule: ' + name(mol(s.mol)) + '.');
+  if (s.kind === 'warmup') {
+    const WHAT = { sn1loss: 'SN1 step 1: 2-bromo-2-methylpropane loses Br⁻', sn1attack: 'SN1 step 2: ethanol attacks the carbocation',
+      sn1pt: 'SN1 step 3: a second ethanol takes the proton', shiftH: 'the 2° carbocation from 2-bromo-3-methylbutane: a hydride shift' };
+    s.figs.forEach((id) => P(`- ${WHAT[id] || id}: **${App.MECHFIG[id]().arrows[0].pattern}**`));
+    P('');
+    P('Never graded; a wrong name says what that pattern looks like, and the student picks again.');
+  }
   if (s.kind === 'players') {
     s.mols.forEach((id) => {
       const m = mol(id), L = React.lg(m), num = Name.numbers(m);

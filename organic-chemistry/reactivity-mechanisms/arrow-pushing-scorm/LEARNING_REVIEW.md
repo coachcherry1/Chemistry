@@ -1,5 +1,49 @@
 # Learning review
 
+## 2026-11-14 (later): all six suggestions built (zip v2, SCHEMA 5)
+
+The teacher chose all six suggestions of the first review (below). 28 steps (was 25); the graded set is unchanged in size
+(25 per attempt) from a pool of 80 (was 78).
+
+- **No opt out and feedback per wrong choice.** Every wrong choice of every multiple-choice question (66 questions) has its
+  own feedback, naming the misconception and the next move. The first answer counts; a wrong one is struck out and the
+  student picks again until right before Next appears. A wrong graded drawing is redrawn until right. Show me (after three
+  misses, in every drawing) shows the right arrows beside the drawing to copy, instead of finishing it. A reload keeps the
+  question open. Walkthrough and validator check it.
+- **Worked example, then fading.** Patterns 1 to 4: the first scene is worked (arrows drawn; the student plays it and says
+  it in words), the second has one arrow given in grey (or, for the methyl shift, the tail ringed), Pattern 3's third is
+  unaided. Name the pattern, Figure 6.31, the concerted step and all checkpoints are unaided.
+- **Retrieval, not recognition.** A new step before Checkpoint 3, **The four patterns, from memory**: pick the four out of
+  six (homolytic cleavage and ring flip are the decoys, each with its reason), then name four pictures. The four-pattern
+  card and its Vocabulary entries are hidden there, for every pattern or sequence question, and for the whole final check.
+- **Every checkpoint question that names something draws it.** Checkpoint 1: the H–Cl energy curve (bond broken, bond
+  made, why), the cleavage pictures, energy diagrams with a ringed peak or valley, Eₐ and ΔG brackets (the sign only, never
+  the word asked for). Later: I⁻ and HS⁻, water and methanol, hydroxide, acetone, the four carbocations, the hydride and
+  methyl shifts, the concerted step, the three-step mechanism. The validator fails a question that names one of these and
+  draws nothing.
+- **Prerequisites, one idea per step, vocabulary.** The intro lists five prerequisites. Thermodynamically favorable is now
+  two steps (read exergonic or endergonic from a diagram; then ΔG = ΔH − TΔS); Two patterns at once is two (the concerted
+  step; then a sequence of patterns). "Hydride" left the Pattern 3 tiles; "Base" and "Hydride shift" are in Vocabulary.
+- **Elaboration and spacing.** A why question in every checkpoint's core (new: why bond breaking takes energy in, why a
+  proton transfer needs two arrows; now core: why a carbocation is electrophilic, why it rearranges, why iodide leaving
+  takes energy in). The SN1/SN2/E1/E2 activity now opens with a four-pattern warm-up (its own `LEARNING_REVIEW.md`).
+
+### 1. Write for a novice chemist
+- Strong now: prerequisites named; a worked example before every pattern; one new idea per step; feedback on every wrong choice.
+- Still missing: three Checkpoint 1 questions stay words only (ΔS sign, ΔH > 0 and ΔS > 0, Klein 6.47), since they name
+  no species and a picture would give the answer away.
+
+### 2. Cognitive science
+- Strong now: no opt out everywhere; retrieval of the four patterns before Checkpoint 3 and in every pattern question;
+  spacing into the next package; a why in every core.
+- Still missing: spacing across days (a short mixed review a week later), and calibration beyond the first answer (a
+  "how sure are you?" before submitting was not built).
+
+### 3. Dual-code
+- Strong now: every checkpoint question that names a species or an energy idea draws it.
+- Still missing: the energy ledger beside each animation lists bonds in words; the bond it names is not marked on the
+  drawing (suggested in the first review under dual code, not in the six built).
+
 ## 2026-11-14: first review against the Learning design rule
 
 The package was built before the rule (zip v1, SCHEMA 4). This review covers what students see and do in all 25 steps and the

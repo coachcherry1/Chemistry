@@ -24,6 +24,10 @@ var Arrows = (function () {
     var box = [geo.box[0] - 18, geo.box[1] - 30, geo.box[2] + 18, geo.box[3] + 30];
     Render.fit(root, box, 6);
     var drawn = [], chosen = null, locked = false, numbers = false, pats = null;
+    /* faded support: arrows given (drawn for the student, cannot be removed)
+       and a marked tail (where the electrons start) */
+    var given = (opts.given || []).map(function (a) { return { from: a.from, to: a.to, fixed: true }; });
+    drawn = given.slice();
     var arrowsG = el('g', { class: 'arrows' }, root);
     var layer = el('g', { class: 'hits' }, root);
     var live = el('path', { class: 'arw live', d: '' }, root);
@@ -64,7 +68,7 @@ var Arrows = (function () {
       arrowsG.innerHTML = '';
       drawn.forEach(function (a, k) {
         var A = Render.arrowPath(geo, st, a.from, a.to);
-        var g = el('g', { class: 'arw-g' + (a.bad ? ' bad' : ''), 'data-arrow': k }, arrowsG);
+        var g = el('g', { class: 'arw-g' + (a.bad ? ' bad' : '') + (a.fixed ? ' given' : ''), 'data-arrow': k }, arrowsG);
         el('path', { d: A.d, class: 'arw' }, g);
         el('polygon', { points: A.head, class: 'arw-head' }, g);
         el('path', { d: A.d, class: 'arw-hit', 'aria-hidden': 'true' }, g);
@@ -74,8 +78,11 @@ var Arrows = (function () {
         }
       });
       var nodes = layer.querySelectorAll('.src');
-      for (var i = 0; i < nodes.length; i++) nodes[i].classList.toggle('chosen', !!chosen && nodes[i].getAttribute('data-key') === chosen);
-      count.textContent = drawn.length === 1 ? '1 arrow' : drawn.length + ' arrows';
+      for (var i = 0; i < nodes.length; i++) {
+        nodes[i].classList.toggle('chosen', !!chosen && nodes[i].getAttribute('data-key') === chosen);
+        nodes[i].classList.toggle('hint-tail', !locked && !!opts.tail && nodes[i].getAttribute('data-key') === opts.tail && !drawn.some(function (d) { return d.from === opts.tail && !d.fixed; }));
+      }
+      count.textContent = (drawn.length === 1 ? '1 arrow' : drawn.length + ' arrows') + (given.length ? ' (' + given.length + ' given)' : '');
       if (opts.onChange) opts.onChange(drawn.length);
     }
 
@@ -106,7 +113,7 @@ var Arrows = (function () {
     root.addEventListener('pointerdown', function (ev) {
       if (locked) return;
       var arr = ev.target.closest && ev.target.closest('.arw-g');
-      if (arr) { drawn.splice(+arr.getAttribute('data-arrow'), 1); paint(); ev.preventDefault(); return; }
+      if (arr) { if (!drawn[+arr.getAttribute('data-arrow')].fixed) { drawn.splice(+arr.getAttribute('data-arrow'), 1); paint(); } ev.preventDefault(); return; }
       var g = keyOf(ev.target);
       if (!g) return;
       press = { key: g.getAttribute('data-key'), x: ev.clientX, y: ev.clientY, moved: false };
@@ -162,8 +169,8 @@ var Arrows = (function () {
     var count = document.createElement('span');
     count.className = 'count';
     var check = btn(opts.checkText || 'Check', function () { if (!locked && opts.onCheck) opts.onCheck(result()); }, 'primary');
-    var undo = btn('Undo last arrow', function () { if (!locked && drawn.length) { drawn.pop(); paint(); } });
-    var clear = btn('Clear', function () { if (!locked) { drawn = []; chosen = null; paint(); } });
+    var undo = btn('Undo last arrow', function () { if (!locked && drawn.length > given.length) { drawn.pop(); paint(); } });
+    var clear = btn('Clear', function () { if (!locked) { drawn = given.slice(); chosen = null; paint(); } });
     var tools = document.createElement('div');
     tools.className = 'arrow-tools';
     [check, undo, clear, count].forEach(function (n) { tools.appendChild(n); });
@@ -201,7 +208,9 @@ var Arrows = (function () {
     }
     return { node: node, svg: root, geo: geo, drawn: function () { return drawn.slice(); },
              set: function (list) { drawn = list.map(function (a) { return { from: a.from, to: a.to }; }); paint(); },
-             show: show, lock: lock, check: result, legend: legend, scene: sc };
+             show: show, lock: lock, check: result, legend: legend, scene: sc,
+             clear: function () { drawn = given.slice(); chosen = null; paint(); },
+             checkText: function (t) { check.textContent = t; } };
   }
 
   /* A still picture of a scene with arrows (for questions and cards). */

@@ -227,6 +227,8 @@ for (const k of Object.keys(QUIZZES)) {
     const d = App.drawQuiz(Q, rand);
     ok(d.length === Q.draw && new Set(d).size === d.length, `${k}: a draw of ${d.length}`);
   }
+  /* elaboration: every checkpoint's core has a why question */
+  ok(Q.core.some((id) => { const q = Q.pool.find((x) => x.id === id); return q && /\bwhy\b/i.test(q.q); }), `${k}: no why question in the core`);
   for (const q of Q.pool) {
     if (q.draw) {
       const sc = S[q.draw];
@@ -235,6 +237,12 @@ for (const k of Object.keys(QUIZZES)) {
       continue;
     }
     ok(q.choices && q.choices.length >= 2 && q.why, `${q.id}: needs choices and an explanation`);
+    /* plan for error: every wrong choice has its own feedback */
+    ok(q.wrong && q.wrong.length === q.choices.length - 1 && q.wrong.every((w) => typeof w === 'string' && w.length > 20),
+      `${q.id}: every wrong choice needs its own feedback (wrong)`);
+    /* dual code: a question that names a species draws it */
+    if (/carbocation|I⁻|HS⁻|water|acetone|NaOH|C=O|iodide|Br⁻|ethoxide|hydride shift|energy diagram|valley|peak|H₃O⁺/i.test(q.q) && !q.rule)
+      ok(q.fig, `${q.id}: names a species or a diagram but draws nothing`);
     if (typeof q.choices[0] === 'string') {
       ok(new Set(q.choices).size === q.choices.length, `${q.id}: duplicate choices`);
       const L0 = q.choices[0].length, longest = Math.max(...q.choices.slice(1).map((c) => c.length));
@@ -267,7 +275,7 @@ for (const k of Object.keys(QUIZZES)) {
     }
     if (c.onlyBreaks) {
       const L = Chem.ledger(S[c.onlyBreaks].before, S[c.onlyBreaks].after);
-      ok(L.broken.length > 0 && L.formed.length === 0 && /^Endothermic/.test(q.choices[0]), `${q.id}: ${c.onlyBreaks} is not a step that only breaks a bond`);
+      ok(L.broken.length > 0 && L.formed.length === 0 && /^(Endothermic|A bond breaks and none forms)/.test(q.choices[0]), `${q.id}: ${c.onlyBreaks} is not a step that only breaks a bond`);
     }
     if (c.arrows) ok(S[c.arrows[0]].arrows.length === c.arrows[1] && q.choices[0] === ['', 'One', 'Two', 'Three'][c.arrows[1]], `${q.id}: arrows of ${c.arrows[0]}`);
     if (c.chainLen) {

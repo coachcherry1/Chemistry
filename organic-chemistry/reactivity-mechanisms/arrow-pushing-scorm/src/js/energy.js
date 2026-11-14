@@ -8,7 +8,7 @@
  * o: axis ('Free energy (G)' or 'Potential energy'), marker (0 to 1), upto
  * (draw the curve only that far), pick (peaks and valleys become buttons:
  * { i: aria label }), found ({ i: 'ts' | 'int' }), dG (the ΔG bracket and
- * its word), Ea (the activation-energy bracket), w, h.
+ * its word), Ea (the activation-energy bracket), mark (a point ringed with ?), w, h.
  */
 
 var Energy = (function () {
@@ -79,6 +79,12 @@ var Energy = (function () {
         if (found) el('text', { x: x.toFixed(1), y: (y + (points[i].ts ? -15 : 24)).toFixed(1), 'text-anchor': 'middle', class: 'en-found' }, g,
           found === 'ts' ? 'Transition state' : 'Intermediate');
       });
+    }
+    /* a point a question asks about: ringed, with a question mark */
+    if (o.mark != null) {
+      var mx = X(o.mark / (n - 1)), my = Y(points[o.mark].E);
+      el('circle', { cx: mx.toFixed(1), cy: my.toFixed(1), r: 10, class: 'en-mark' }, s);
+      el('text', { x: mx.toFixed(1), y: (my + (points[o.mark].ts ? -15 : 26)).toFixed(1), 'text-anchor': 'middle', class: 'en-found' }, s, '?');
     }
     if (o.marker != null) {
       var mf = Math.max(0, Math.min(1, o.marker));

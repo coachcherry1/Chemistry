@@ -29,6 +29,42 @@
   /* An ion or small molecule written as text beside the drawings. */
   function textSpecies(t) { return h('span', { class: 'reagent-text', text: t }); }
 
+  /* ============================================================ warmup */
+
+  /* Retrieval and spacing: the four patterns of the arrow-pushing activity,
+     named from memory on steps of this activity's own mechanisms. Never
+     graded; a wrong name says what that pattern looks like, and the student
+     picks again. */
+  var NAMES = ['Nucleophilic attack', 'Loss of a leaving group', 'Proton transfer', 'Carbocation rearrangement'];
+  var LOOKS = {
+    'Nucleophilic attack': 'Nucleophilic attack: a lone pair or a pi bond makes a new bond to an electrophile.',
+    'Loss of a leaving group': 'Loss of a leaving group: a bond breaks and its pair goes with the group that leaves.',
+    'Proton transfer': 'Proton transfer: two arrows move an H from one atom to another, without its electrons.',
+    'Carbocation rearrangement': 'Carbocation rearrangement: an H or CH₃ next to a C⁺ moves over with its pair.'
+  };
+  R.warmup = function (s) {
+    var pr = U.progress(s.id);
+    pr.c = pr.c || {};
+    var box = h('div', { class: 'cards wide' });
+    stage().appendChild(U.panel('Name the pattern', 'from memory', [box]));
+    function ans(id) { return NAMES.indexOf(App.MECHFIG[id]().arrows[0].pattern); }
+    function paint() {
+      box.innerHTML = '';
+      U.shuffle(s.figs, U.rng(U.seed() ^ 17)).forEach(function (id) {
+        var row = U.choiceRow(NAMES, ans(id), pr.c[id], function (i) {
+          pr.c[id] = i; U.persist();
+          if (i === ans(id)) {
+            if (s.figs.every(function (x) { return pr.c[x] === ans(x); })) U.complete('All four named. You will see each of them again in SN1, SN2, E1 and E2.');
+            else U.say(LOOKS[NAMES[i]], 'good');
+          } else U.say('Not that one. ' + LOOKS[NAMES[i]] + ' Read these arrows again and pick again.', 'bad');
+          paint();
+        });
+        box.appendChild(h('div', { class: 'card' }, [h('div', { class: 'mol-wrap' }, [U.figure({ mech: id, label: 'A mechanism step with curved arrows' })]), row]));
+      });
+    }
+    paint();
+  };
+
   /* =========================================================== players */
 
   R.players = function (s) {

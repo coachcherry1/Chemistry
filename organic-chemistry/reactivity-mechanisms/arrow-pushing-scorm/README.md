@@ -5,7 +5,7 @@
 A SCORM 1.2 activity for Schoology, for the organic chemistry elective (Klein, *Organic Chemistry*, chapter 6), meant
 to come before the SN1, SN2, E1 and E2 activity. The emphasis is vocabulary and drawing curved arrows; the biggest
 objective is recognising Klein's four patterns of arrow pushing (6.8): nucleophilic attack, loss of a leaving group,
-proton transfer and carbocation rearrangement. About 50 minutes. Same look, controls, saving and grading as the
+proton transfer and carbocation rearrangement. About 55 minutes. Same look, controls, saving and grading as the
 SN1/SN2/E1/E2 activity, and the same way of drawing arrows.
 
 **The teacher's wording.** Students are AP Chemistry trained: "spontaneous" never appears. ΔG < 0 is
@@ -22,10 +22,10 @@ em dash.
 
 | Part | Steps | What happens |
 | --- | --- | --- |
-| 1 Energy and bonds | 6 + checkpoint | **Breaking a bond takes energy:** predict, then pull H and Cl apart with a slider beside the energy curve (energy in), and let them bond again (energy out). **Homolytic or heterolytic:** two animations, fish-hooks to radicals and a curved arrow to ions. **Bonds broken, bonds formed:** click every bond broken and formed in Klein's SkillBuilder 6.1 and Practice 6.1(b); energy bars drawn to scale from Table 6.1 (never added up) decide exo- or endothermic. **Entropy:** a gas spreading into two flasks; sort five reactions by the sign of ΔS. **Thermodynamically favorable:** exergonic and endergonic diagrams; ΔG = ΔH − TΔS for every combination of signs. **Reading an energy diagram:** Klein Figures 6.23 and 6.22 play beside their diagrams; click every transition state and intermediate. **Checkpoint 1** (4). |
+| 1 Energy and bonds | 7 + checkpoint | **Breaking a bond takes energy:** predict, then pull H and Cl apart with a slider beside the energy curve (energy in), and let them bond again (energy out). **Homolytic or heterolytic:** two animations, fish-hooks to radicals and a curved arrow to ions. **Bonds broken, bonds formed:** click every bond broken and formed in Klein's SkillBuilder 6.1 and Practice 6.1(b); energy bars drawn to scale from Table 6.1 (never added up) decide exo- or endothermic. **Entropy:** a gas spreading into two flasks; sort five reactions by the sign of ΔS. **Exergonic or endergonic?** read two energy diagrams. **Thermodynamically favorable:** ΔG = ΔH − TΔS for every combination of signs. **Reading an energy diagram:** Klein Figures 6.23 and 6.22 play beside their diagrams; click every transition state and intermediate. **Checkpoint 1** (4). |
 | 2 Nucleophiles and electrophiles | 3 + checkpoint | CH₃Cl and CH₃Li with δ+ and δ− and a pulsing electron cloud; sort fourteen compounds and ions (Klein 6.8 and Table 6.3); click every nucleophilic and electrophilic centre in three molecules (SkillBuilder 6.2, Problem 6.9). **Checkpoint 2** (4). |
-| 3 The four patterns | 8 + checkpoint | **Reading a curved arrow:** one played, then five drawings judged by Klein's rules (6.10). **Patterns 1 to 3:** draw the arrows of seven steps (Br⁻ and a carbocation, methanol and acetyl chloride, losses, proton transfers including an alkene and H₃O⁺). **Carbocation stability:** alkyl groups are electron-donating (induction), animated. **Pattern 4:** Klein's hole analogy, then a hydride shift and a methyl shift. **Will it rearrange?** six carbocations by Klein's SkillBuilder 6.6 steps. **Name the pattern:** eight steps from Klein 6.11 and 6.27. **Checkpoint 3** (5). |
-| 4 Putting them together | 2 + checkpoint | **Klein Figure 6.31**, drawn in the step (no textbook needed): name, then draw, each of its four steps; the figure fills in each step's arrows and pattern name, and the energy diagram grows a hill per step; then play the whole mechanism. **Two patterns at once:** 1-chlorobutane and hydroxide, concerted; then name the three-step sequence of SkillBuilder 6.4. **Checkpoint 4** (5). |
+| 3 The four patterns | 9 + checkpoint | **Reading a curved arrow:** one played, then five drawings judged by Klein's rules (6.10). **Patterns 1 to 3:** the first step of each is worked for you (play it, say it in words), the next has one arrow given, then you draw on your own: seven steps (Br⁻ and a carbocation, methanol and acetyl chloride, losses, proton transfers including an alkene and H₃O⁺). **Carbocation stability:** alkyl groups are electron-donating (induction), animated. **Pattern 4:** Klein's hole analogy, then a worked hydride shift and a methyl shift with its tail ringed. **Will it rearrange?** six carbocations by Klein's SkillBuilder 6.6 steps. **Name the pattern:** eight steps from Klein 6.11 and 6.27. **The four patterns, from memory:** the four definitions are hidden; pick the four names out of six, then name four pictures. **Checkpoint 3** (5). |
+| 4 Putting them together | 3 + checkpoint | **Klein Figure 6.31**, drawn in the step (no textbook needed): name, then draw, each of its four steps; the figure fills in each step's arrows and pattern name, and the energy diagram grows a hill per step; then play the whole mechanism. **Two patterns at once:** 1-chlorobutane and hydroxide, concerted. **A sequence of patterns:** name the three steps of SkillBuilder 6.4. **Checkpoint 4** (5). |
 | 5 Final check | 7 questions | New reactions the student has not seen (Klein 6.29, 6.33, 6.41, 6.49, 6.54 and others), the same four patterns: two graded arrow drawings, one mechanism whose sequence of patterns is named, one step whose pattern is named, a vocabulary question and two more (which is the nucleophile, will it rearrange, energy in or out, a missing arrow, counting transition states). |
 
 ### Drawing arrows
@@ -53,7 +53,8 @@ Wrong arrows get Klein's reasons, worked out from the drawing rather than typed 
 - *an arrow pointing the wrong way, or a missing arrow:* says so, and names what is still missing.
 
 Arrows that obey the rules but are not the step's show **what they would make instead**. Show me appears after
-three wrong checks.
+three wrong checks: it shows the right arrows beside the drawing, and the student copies them (it never finishes the
+drawing for them).
 
 ---
 
@@ -61,10 +62,14 @@ three wrong checks.
 
 **A score, from the four checkpoints and the final check only.** 25 questions per attempt (4 + 4 + 5 + 5 + 7) from a pool of 78; the
 **first answer** to each counts, and a **graded drawing counts on its first Check** (pressing Check with nothing
-drawn is not an answer). Every checkpoint's core has a vocabulary question; Checkpoints 3 and 4 always have one
+drawn is not an answer). A wrong answer is then put right before Next appears (no opt out): the wrong choice is struck
+out with its own feedback (the misconception and the next move) and the student picks again, or redraws the arrows.
+A reload keeps that question open until it is put right. Every checkpoint's core has a vocabulary question and a why question; Checkpoints 3 and 4 always have one
 graded arrow drawing and one question naming a pattern or a sequence of patterns, and the final check has two drawings,
 a pattern and a sequence. The validator checks that no reaction in the final check was shown earlier. Klein Table 6.3 and the four
-patterns sit beside Checkpoints 2 to 4, the energy words beside Checkpoint 1. Nothing asks for a calculation.
+patterns sit beside Checkpoints 3 and 4 (hidden while a question asks to name a pattern or a sequence, and in the final
+check, so those are answered from memory), Table 6.3 alone beside Checkpoint 2 and the final check, the energy words
+beside Checkpoint 1. Every question that names a species, part of an energy diagram or an energy idea draws it. Nothing asks for a calculation.
 
 Arrows, sorts, predictions and sentences must be finished to move on but are never graded. The score (0 to 100) goes
 to `cmi.core.score.raw` after every answer; `cmi.core.lesson_status` becomes `completed` at the results screen; no
@@ -119,4 +124,5 @@ activity in Chromium against a fake LMS (wrong answers first where it matters, a
 `layout.js` checks that every arrow drawing and its Check, every animation and its slider (and energy diagram),
 and every other working group fits a Chromebook window (1366 × 650, and 1366 × 520 in an LMS frame).
 
-The zip is `dist/arrow-pushing-v1.zip`.
+The zip is `dist/arrow-pushing-v2.zip` (v2: the learning review's six suggestions, `LEARNING_REVIEW.md`). Teacher
+links: `?step=<id or number>`, and `?step=quiz-C&all` for every question of a pool.

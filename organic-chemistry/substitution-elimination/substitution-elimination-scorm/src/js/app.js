@@ -21,7 +21,7 @@ var App = (function () {
 
   /* Bump whenever the step list, a quiz pool or a molecule changes: a save
      from an older build is then discarded and the student starts fresh. */
-  var SCHEMA = 2;
+  var SCHEMA = 3;
 
   var PARTS = [
     { n: 1, name: 'Who’s who' },
@@ -33,6 +33,8 @@ var App = (function () {
   ];
 
   var STEPS = [
+    { id: 'warmup', part: 1, kind: 'warmup', title: 'Warm-up: the four patterns', figs: ['sn1loss', 'sn1attack', 'sn1pt', 'shiftH'],
+      text: 'From the arrow-pushing activity, from memory: every mechanism in this activity is built from Klein’s four patterns. Read the arrows in each step and name its pattern.' },
     { id: 'players', part: 1, kind: 'players', title: 'Substitution or elimination?',
       mols: ['bromomethane', 'bromobutane1', 'bromopentane2', 'ccmb'],
       text: 'In substitution, a nucleophile replaces the leaving group. In elimination, a base removes a proton and the ' +
@@ -678,6 +680,16 @@ var App = (function () {
       var sc = Mech.loss(mol('tBuBr')), K = Mech.keys, L = React.lg(sc.species[0].mol);
       sc.wrongSets = { toC: [{ from: sc.arrows[0].from[0], to: K.ak(0, L.a) }] };
       return sc;
+    },
+    /* the three steps of SN1 for 2-bromo-2-methylpropane in ethanol */
+    sn1attack: function () {
+      var cat = React.cation(mol('tBuBr'));
+      return Mech.attack(cat, cat.plus, 'EtOH');
+    },
+    sn1pt: function () {
+      var cat = React.cation(mol('tBuBr'));
+      var ox = React.oxonium(cat, cat.plus, 'EtOH');
+      return Mech.protonOff(ox.mol, ox.o, ox.h, 'EtOH');
     },
     shiftH: function () {
       var c = React.cation(mol('b3mb'));

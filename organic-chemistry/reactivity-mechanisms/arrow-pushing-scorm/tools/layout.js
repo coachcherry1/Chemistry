@@ -90,7 +90,11 @@ function groups() {
       }
       /* draw the right arrows, so the animation that follows is checked too */
       if (st.kind !== 'quiz') {
-        const want = await page.evaluate(() => { const t = document.querySelector('.arrow-tool'); return t && t.__scene ? t.__scene.arrows : null; });
+        const want = await page.evaluate(() => {
+          const t = document.querySelector('.arrow-tool');
+          if (!t || !t.__scene || t.querySelector('svg.locked')) return null;   /* none, or a worked example */
+          return t.__scene.arrows.slice(t.querySelectorAll('.arw-g.given').length);
+        });
         if (want) {
           for (const a of want) {
             await page.click(`.arrow-tool [data-key="${a.from}"] >> nth=0`, { force: true });

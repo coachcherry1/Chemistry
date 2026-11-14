@@ -210,6 +210,7 @@ var SCENES = (function () {
     ['M3', 'C', ['C', 270]], ['O', 'O', ['C', 90], { c: -1 }]] });
   def('kWater', { title: 'Water', atoms: [['O', 'O', [0, 0]], ['H1', 'H', ['O', 210]], ['H2', 'H', ['O', 330]]] });
   def('kMeOH', { title: 'Methanol', atoms: [['C', 'C', [0, 0], { label: 'H₃C' }], ['O', 'O', ['C', 0], { label: 'OH' }]] });
+  def('kI', { title: 'NaI', label: 'NaI: the iodide ion, I⁻', atoms: [['X', 'I', [0, 0], { c: -1 }]] });
   def('kHS', { title: 'NaSH', label: 'NaSH: the hydrosulfide ion, HS⁻', atoms: [['S', 'S', [0, 0], { c: -1, label: 'HS' }]] });
   def('kAcetone', { title: 'Acetone', atoms: [['C', 'C', [0, 0]], ['O', 'O', ['C', 90], { o: 2 }], ['M1', 'C', ['C', 210]], ['M2', 'C', ['C', 330]]] });
 
@@ -731,7 +732,9 @@ var SCENES = (function () {
            { E: 0.7, t: '', ts: true }, { E: 0.38, t: '3°' }, { E: 0.5, t: '', ts: true }, { E: -0.25, t: 'Product' }],
     sn2: [{ E: 0, t: 'Reactants' }, { E: 1, t: 'Transition state', ts: true }, { E: -0.35, t: 'Products' }],
     exo: [{ E: 0.45, t: 'Reactants' }, { E: 1, t: '', ts: true }, { E: 0, t: 'Products' }],
-    endo: [{ E: 0, t: 'Reactants' }, { E: 1, t: '', ts: true }, { E: 0.45, t: 'Products' }]
+    endo: [{ E: 0, t: 'Reactants' }, { E: 1, t: '', ts: true }, { E: 0.45, t: 'Products' }],
+    /* two steps, nothing named (for questions about peaks and valleys) */
+    two: [{ E: 0, t: 'Reactants' }, { E: 1, t: '', ts: true }, { E: 0.6, t: '' }, { E: 0.78, t: '', ts: true }, { E: -0.3, t: 'Products' }]
   };
 
   return { S: S, RULES: RULES, QUIZ_RULES: QUIZ_RULES, SHIFT_KLEIN: SHIFT_KLEIN, PROFILES: PROFILES, shiftScene: shiftScene,
