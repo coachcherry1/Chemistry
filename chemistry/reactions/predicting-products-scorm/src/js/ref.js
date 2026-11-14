@@ -46,13 +46,12 @@ var Ref = (function () {
   }
   function rows(list, head, key, all) {
     return h('table', { class: 'sol-table' }, [
-      h('thead', null, [h('tr', null, [h('th', { text: head[0] }), h('th', { text: head[1] }), h('th', { text: 'slightly', title: 'only slightly soluble with these ions' })])]),
+      h('thead', null, [h('tr', null, [h('th', { text: head[0] }), h('th', { text: head[1] })])]),
       h('tbody', null, list.filter(function (r) { return all || !r.sheet; }).map(function (r) {
         var a = info(r.an, false);
         return h('tr', null, [
           h('td', null, [h('span', { class: 'sol-name', text: a[2] + ' ' }), ion(a[0], a[1], '−')]),
-          h('td', null, cations(r[key])),
-          h('td', { class: 'sol-slight' }, r.slight.length ? cations(r.slight) : [''])
+          h('td', null, cations(r[key]))
         ]);
       }))
     ]);

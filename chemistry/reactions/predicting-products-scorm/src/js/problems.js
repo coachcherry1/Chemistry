@@ -84,6 +84,19 @@ var Gen = (function () {
   /* '(aq)' or '(s)' after a formula in a double replacement, nothing in a single replacement */
   function stateOf(p, f) { return p.kind === 'dr' ? '(' + p.states[f] + ')' : ''; }
 
+  /* Every reaction the lesson shows. None of them is ever a graded problem
+     (the teacher: meeting a worked example again in the graded set teaches
+     nothing). app.js and steps.js take their reactions from here. */
+  var LESSON = {
+    willit: [['Zn', 'CuSO4'], ['Cu', 'MgCl2'], ['Mg', 'HCl'], ['Ag', 'HCl'], ['Na', 'HOH'], ['Zn', 'HOH'], ['Cl2', 'NaBr'], ['I2', 'KCl']],
+    plate: [['Zn', 'CuSO4'], ['Cu', 'ZnSO4']],
+    mix: [['AgNO3', 'NaCl'], ['NaCl', 'KNO3']],
+    sr1: ['Al', 'CuCl2'], sr2: ['Mg', 'HCl'], dr1: ['Pb(NO3)2', 'KI'], dr2: ['NaCl', 'KNO3']
+  };
+  function key(l) { return l.slice().sort().join('+'); }
+  var SEEN = {};
+  LESSON.willit.concat(LESSON.plate, LESSON.mix, [LESSON.sr1, LESSON.sr2, LESSON.dr1, LESSON.dr2]).forEach(function (l) { SEEN[key(l)] = 1; });
+
   /* ---- every reactant pair the graded set can draw from */
   var poolCache = null;
   function pools() {
@@ -106,7 +119,6 @@ var Gen = (function () {
     });
     METALS.concat(WATER_NO).forEach(function (m) {
       var p = make(m, 'HOH');
-      if (p.reacts && !aq(m, 'OH')) return;      /* the hydroxide it makes must be clearly soluble */
       var list = p.reacts ? out.waterYes : out.waterNo;
       if (!list.some(function (q) { return q.id === p.id; }) && (p.reacts || WATER_NO.indexOf(m) >= 0)) list.push(p);
     });
@@ -130,6 +142,7 @@ var Gen = (function () {
         (p.reacts ? out.drYes : out.drNo).push(p);
       });
     });
+    Object.keys(out).forEach(function (k) { out[k] = out[k].filter(function (q) { return !SEEN[key(q.l)]; }); });
     return (poolCache = out);
   }
 
@@ -206,7 +219,7 @@ var Gen = (function () {
     return out;
   }
 
-  return { QUIZ: QUIZ, COUNT: 10, WATER_NO: WATER_NO, METALS: METALS, HALS: HALS, DR_CATS: DR_CATS, DR_ANS: DR_ANS, make: make, equation: equation, stateOf: stateOf,
+  return { LESSON: LESSON, SEEN: SEEN, key: key, QUIZ: QUIZ, COUNT: 10, WATER_NO: WATER_NO, METALS: METALS, HALS: HALS, DR_CATS: DR_CATS, DR_ANS: DR_ANS, make: make, equation: equation, stateOf: stateOf,
            pools: pools, set: set, quiz: quiz };
 })();
 

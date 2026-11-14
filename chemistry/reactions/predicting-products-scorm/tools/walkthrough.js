@@ -16,7 +16,10 @@
  * misses one question and several steps on purpose, checks that an
  * unfinished step is not counted, reloads in the middle, and then checks
  * what reached the "LMS": the score, the completion status and one
- * interaction per graded item. Finally it starts a second attempt and opens
+ * interaction per graded item. It also checks that the strip of steps never
+ * shows which problems have no reaction, that every finished problem plays
+ * as particles, that the reference is beside both predictions, and that no
+ * lesson reaction comes back in the graded set. Finally it starts a second attempt and opens
  * the page with no LMS at all.
  */
 const path = require('path');
@@ -95,6 +98,7 @@ const fakeLMS = () => {
     }
   }
   const check = () => page.click('.rung-check');
+  const kinds = {};
   /* do one rung; miss: answer it wrongly first where that is possible. Returns true if the first answer was right. */
   async function doRung(p, miss) {
     const r = await rung();
@@ -157,6 +161,10 @@ const fakeLMS = () => {
   async function solve(misses) {
     const p = await prob();
     let right = 0;
+    /* the strip shows the same steps whether or not there is a reaction */
+    const pills = await page.locator('.ladder .rungs .rung').count();
+    expect(pills === (p.kind === 'sr' ? 3 : 4), p.id + ': the strip shows ' + pills + ' steps; it must not give away a problem with no reaction');
+    expect(await page.locator('.ladder .rung.skipped').count() === 0 && await page.locator('.ladder .scene-svg').count() === 0, p.id + ': nothing is marked not needed, and no picture, before the end');
     for (const r of p.rungs) {
       expect((await rung()) === r, p.id + ': expected rung ' + r + ', on ' + await rung());
       if (await doRung(p, (misses || []).indexOf(r) >= 0)) right++;
@@ -164,6 +172,11 @@ const fakeLMS = () => {
     expect((await rung()) === 'done', p.id + ': not finished');
     const want = await page.evaluate(() => Gen.equation(App.ctl().problem, true));
     expect((await page.textContent('.final-eq')) === want, p.id + ': the final equation');
+    /* the finished problem plays as particles, and only now are unused steps marked */
+    await page.waitForFunction(() => { const b = document.querySelector('.ladder .scene-play'); return b && b.textContent === 'Play again'; }, null, { timeout: 4000 }).catch(() => problems.push(p.id + ': the picture did not play by itself'));
+    expect(await page.locator('.ladder .scene-svg .sc-ion').count() >= 4 && (await page.textContent('.ladder .scene-cap')).length > 20, p.id + ': the picture and its caption');
+    expect(await page.locator('.ladder .rung.skipped').count() === (p.kind === 'sr' ? 3 : 4) - p.rungs.length, p.id + ': unused steps should be marked once it is finished');
+    kinds[p.kind === 'dr' ? 'dr' : p.sub] = 1;
     return { p, right };
   }
 
@@ -193,6 +206,7 @@ const fakeLMS = () => {
   }
   async function watch(name, rightText) {
     expect(await page.locator('.scene-svg').count() === 0, name + ': the animations should wait for the prediction');
+    expect(await page.locator('.ref .ref-body').count() === 1 && await page.locator(name === 'mix' ? '.ref .sol-table' : '.ref .series').count() >= 1, name + ': the reference must be beside the prediction');
     await page.click('.tiles .tile:has-text("' + rightText + '")');
     expect(await page.locator('.scene-svg').count() === 2, name + ': two animations');
     for (let k = 0; k < 2; k++) {
@@ -225,6 +239,8 @@ const fakeLMS = () => {
   expect((await rung()) === 'balance' && !/\((s|aq)\)/.test(await page.textContent('.ladder .given')), 'sr1: a single replacement has no states step and no state symbols');
   expect(await page.locator('.ladder.wide').count() === 1 && await page.locator('.bench .inv-row').count() > 0, 'sr1: the balancing bench with its inventory');
   await doRung(p, true);
+  expect(await page.locator('.ladder .scene-svg').count() === 1, 'sr1: the finished problem should show its picture');
+  await page.waitForTimeout(150);
   await snap('sr1-done');
   await next();
   /* Mg + HCl: H instead of H2 */
@@ -240,7 +256,7 @@ const fakeLMS = () => {
   expect(/Mg \+ 2 HCl → MgCl₂ \+ H₂/.test(await page.textContent('.final-eq')), 'sr2: the final equation, without states');
   await next();
 
-  expect(await page.locator('.ref .sol-table').count() === 2 && /slightly/.test(await page.textContent('.ref')), 'the solubility rules should be beside the drill');
+  expect(await page.locator('.ref .sol-table').count() === 2 && !/slightly/.test(await page.textContent('.ref')), 'the solubility rules should be beside the drill');
   await drill(await page.evaluate(() => Steps.SOL.map((f) => Ions.state(f) === 'aq')), 'sol');
   await watch('mix', 'Ag⁺ and Cl⁻');
   await solve(['products', 'states']);
@@ -299,11 +315,17 @@ const fakeLMS = () => {
         expect((await rung()) === at, 'reload inside a problem: opened at ' + (await rung()) + ', was at ' + at);
         for (const r of mid.rungs.slice(1)) { if (await doRung(mid, false)) r2++; }
       }
+      expect(await page.locator('.ladder .scene-svg').count() === 1, mid.id + ': the finished problem should show its picture');
+      kinds[mid.kind === 'dr' ? 'dr' : mid.sub] = 1;
       wantRight += r2; items += mid.rungs.length;
       i++;
     }
     await page.click('.ladder-next');
   }
+  /* none of the lesson's reactions comes back as a graded problem */
+  const reused = await page.evaluate(() => App.problems().filter((q) => Gen.SEEN[Gen.key(q.l)]).map((q) => q.id));
+  expect(reused.length === 0, 'lesson reactions in the graded set: ' + reused.join(', '));
+  expect(kinds.metal && kinds.dr && kinds.halogen && (kinds.acid || kinds.water), 'the pictures played: ' + Object.keys(kinds).join(', '));
   expect(items === TOTAL, 'the walkthrough answered ' + items + ' items');
 
   /* ---- results and what reached the LMS */

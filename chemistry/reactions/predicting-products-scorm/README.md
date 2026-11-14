@@ -6,7 +6,7 @@ the two balancing packages first.
 **Web version:** https://coachcherry1.github.io/Chemistry/chemistry/reactions/predicting-products-scorm/src/index.html
 (works once this branch is merged into `main`)
 
-**Upload to Schoology:** `dist/predicting-products-v2.zip`
+**Upload to Schoology:** `dist/predicting-products-v4.zip`
 
 ## What students do
 
@@ -19,7 +19,7 @@ and balance. Two kinds of reaction only:
   States matter here, so they are asked: (aq) or (s).
 
 The reference (activity series with the halogens, solubility rules) is drawn on screen beside every problem, drill and
-question. The same data makes the printable sheet, `../reference-sheet/Activity_Series_and_Solubility_Rules.pdf`.
+question. The same data makes two printable sheets in `../reference-sheet/`: the full one, and an assessment version with the same tables but not the rules for using them (students are to know those by heart).
 
 | Part | Steps | Graded |
 | --- | --- | --- |
@@ -36,6 +36,15 @@ question. The same data makes the printable sheet, `../reference-sheet/Activity_
 | Products | The new compound (pick its two ions, set how many of each) and the element set free (Cu or Cu₂? H or H₂?) | Both possible products, each built from a positive and a negative ion |
 | States | not asked: they do not matter in a single replacement | (aq) or (s) for each product, from the solubility rules |
 | Balance | The workbench of the balancing packages, inventory down the centre | The same |
+
+**The strip of steps is the same for every problem of a kind**, whether or not it reacts, so it never gives away a
+"no reaction" problem; a step that turns out not to be needed is marked so only when the problem is finished.
+
+**Every finished problem plays as particles** (also in the graded set): a metal strip in a salt solution, in an acid (H₂
+bubbles away) or in cold water (HOH leaves an OH⁻ behind), a halogen meeting halide ions, or two solutions mixing with the
+solid settling. With no reaction, the particles move about and nothing changes.
+
+**No reaction from the lesson comes back in the graded set.**
 
 Ions are shown with their charges; the student has to make the charges cancel. Feedback names the usual slips: subscripts
 copied from the reactant, a formula not in lowest terms, the reactants built again, H for H₂, a wrong state in a double replacement.
@@ -56,24 +65,25 @@ The teacher asked for the handout to be made more accurate. What changed from th
   (the old sheet had Rb, K, Cs). It now says what each metal replaces hydrogen from: Li to Na from cold water, Mg to Cd
   from steam, Co to Pb from acids only, Cu to Au from nothing. The halogens are listed: F₂ > Cl₂ > Br₂ > I₂.
 - **Solubility rules:** group 1 (lithium included) and ammonium are always soluble; bromide and iodide are listed with
-  chloride; Hg₂²⁺ is an exception for the halides and sulfate; PbI₂ is insoluble while PbCl₂ and PbBr₂ are only slightly
-  soluble; the sulfides of Ca, Sr and Ba are not insoluble. A third column marks the **slightly soluble** compounds
-  (CaSO₄, Ag₂SO₄, Ca(OH)₂, Sr(OH)₂, PbCl₂, PbBr₂, silver acetate).
+  chloride; Hg₂²⁺ is an exception for the halides and sulfate; the sulfides of Ca, Sr and Ba are not insoluble.
+- **Two answers only, as a novice would see them:** a compound either dissolves, (aq), or a solid is seen, (s). There is no
+  "slightly soluble": Ca(OH)₂, CaSO₄, Ag₂SO₄, Sr(OH)₂, PbCl₂ and PbBr₂ are insoluble, and now appear in the problems.
 
 ## Choices made in the problems
 
-- Slightly soluble compounds, and a few that react with water or do not exist, are never used as a reactant or a product:
-  `ANSWER_KEY.md` lists them.
+- A few compounds that react with water, do not exist or are too borderline to ask about (silver acetate) are never used as a
+  reactant or a product: `ANSWER_KEY.md` lists them.
 - Lone metals include the ones that react with water (K, Ba, Ca, Na) as well as Mg, Al, Zn, Fe, Pb, Cu and Ag: on paper
   the series decides. The ion each metal forms is the one on the series (iron forms Fe²⁺, lead Pb²⁺, copper Cu²⁺).
-- A metal in cold water: K, Na and Ba react (a hydroxide and H₂); Zn, Fe, Pb, Cu and Ag do not. Calcium is not asked
-  with water because Ca(OH)₂ is only slightly soluble.
+- A metal in cold water: K, Na, Ba and Ca react (a hydroxide and H₂; calcium's hydroxide is a solid, which a single
+  replacement does not show); Zn, Fe, Pb, Cu and Ag do not.
 - A double replacement may make two solids at once (Ba(OH)₂ + CuSO₄).
 
 ## Teacher links
 
 - `src/index.html?step=<id or number>` opens one step (ids: willit, plate, sr1, sr2, sol, mix, dr1, dr2, quiz, set, results).
-- `?step=set&seed=<n>&problem=<1 to 10>&rung=<n>` opens one graded problem of one student's set at one step.
+- `?step=set&seed=<n>&problem=<1 to 10>&rung=<n>` opens one graded problem of one student's set at one step; `&done` in
+  place of `&rung=<n>` opens it finished, with its animation.
 - `ANSWER_KEY.md` has the reference tables, every single replacement in the pools and the solids the double replacements make.
 
 ## How it is built

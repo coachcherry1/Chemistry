@@ -12,7 +12,9 @@
  * must be on screen together with the reference (the activity series or the
  * solubility table) beside them; on the balancing rung, the equation, both
  * particle boxes, the inventory and Check. The drills and the questions
- * must fit with the reference too, and each animation with its Play button.
+ * must fit with the reference too (so must each prediction), and each
+ * animation with its Play button. A finished problem must show its equation,
+ * its picture, Play and the way on together.
  * No step may scroll sideways.
  *
  * 1366x650 is a Chromebook's browser tab; 1366x520 and 1280x560 allow for the
@@ -47,6 +49,7 @@ const shots = process.env.SHOTS;
       if (seenShape[p.shape] && p !== long) return;
       seenShape[p.shape] = 1;
       p.rungs.forEach((r, k) => views.push({ id: 'set', kind: 'rung', rung: r, q: '&seed=' + seed + '&problem=' + p.i + '&rung=' + (k + 1), name: 'set-' + seed + '-' + p.i + '-' + r }));
+      views.push({ id: 'set', kind: 'done', q: '&seed=' + seed + '&problem=' + p.i + '&done', name: 'set-' + seed + '-' + p.i + '-done' });
     });
   }
   await page0.close();
@@ -96,6 +99,11 @@ const shots = process.env.SHOTS;
           /* an unfinished Check brings its message: it must fit too */
           if (rung !== 'react') { await page.click('.ladder .rung-check'); await fits(v, 'message', ctl.concat(['.ladder .fb.show', '.ref .ref-body']), '.ladder'); }
         }
+      } else if (v.kind === 'done') {
+        /* a finished problem: its equation, its picture, Play and the way on, together */
+        await fits(v, 'picture', ['.ladder .final-eq', '.ladder .scene-svg', '.ladder .scene-play', '.ladder .ladder-next'], '.ladder .final-eq');
+        await page.click('.ladder .scene-play');
+        await fits(v, 'played', ['.ladder .scene-svg', '.ladder .scene-play', '.ladder .scene-cap', '.ladder .ladder-next'], '.ladder .final-eq');
       } else if (v.kind === 'willit' || v.kind === 'sol') {
         await fits(v, 'card', ['.panel .pic-eq', '.panel .tile', '.ref .ref-body'], '.ladder');
       } else if (v.kind === 'quiz') {
@@ -106,7 +114,7 @@ const shots = process.env.SHOTS;
           if (k < 3) await page.click('.quiz .quiz-next');
         }
       } else if (v.kind === 'plate' || v.kind === 'mix') {
-        await fits(v, 'prediction', ['.panel .prompt', '.panel .tile'], '.stage .panel');
+        await fits(v, 'prediction', ['.panel .prompt', '.panel .tile', '.ref .ref-body'], '.ladder');
         await page.locator('.tiles .tile').first().click();
         await fits(v, 'animations', ['.scene-svg', '.scene-play'], '.grid2');
         await page.locator('.scene-play').first().click();

@@ -35,7 +35,7 @@ for checking each AP activity against how the exam asks; it is not an activity a
 | `chemistry/moles/hydrate-lab-scorm/` | Virtual lab (pre-lab, with a paper sheet): formula of a hydrate, CuSO₄·5H₂O heated to constant mass in a crucible, realistic data (about 25 min, no score) |
 | `chemistry/reactions/balancing-particles-scorm/` | Balancing with particle diagrams: a reactants box and a products box that follow the coefficients, the inventory down the centre, conservation of mass, polyatomic ions kept together (or not), 10 graded equations and 6 questions (about 30 min). Package 1 of 4; the plan for the rest is `chemistry/reactions/PLAN.md` |
 | `chemistry/reactions/balancing-reaction-types-scorm/` | Balancing and reaction types: the same workbench with six type buttons, every reaction balanced and classified by one Check (synthesis, decomposition, single and double replacement, combustion, neutralization), 4 questions and 10 reactions ending with nitroglycerin (about 35 min). Package 2 of 4, one code base with package 1 |
-| `chemistry/reactions/predicting-products-scorm/` | Predicting products: single replacement by the activity series (salts, acids, cold water, halogens; no state symbols), double replacement by the solubility rules (a solid, or no reaction; states asked); each problem worked step by step beside the reference; 4 questions and 10 problems (about 40 min). Package 3 of 4. `chemistry/reactions/reference-sheet/` is the printable PDF of the same reference |
+| `chemistry/reactions/predicting-products-scorm/` | Predicting products: single replacement by the activity series (salts, acids, cold water, halogens; no state symbols), double replacement by the solubility rules (a solid, or no reaction; states asked); each problem worked step by step beside the reference; 4 questions and 10 problems (about 40 min). Package 3 of 4. `chemistry/reactions/reference-sheet/` has the printable PDFs of the same reference (a full sheet, and an assessment sheet without the rules for using the tables) |
 
 **AP chemistry**
 
@@ -715,7 +715,7 @@ not the full page.
   `tools/load.js` loads them for the validator and answer key. Teacher links: `?step=<id or number>`,
   `?step=set&seed=<n>&problem=<1 to 10>`.
 
-## predicting-products-scorm (zip v2, SCHEMA 2) and reference-sheet
+## predicting-products-scorm (zip v4, SCHEMA 4) and reference-sheet
 
 - **Key objective:** from the reactants alone, decide whether a reaction happens, write the products from ion charges,
   balance. Only single replacement (activity series) and double replacement that makes a solid (solubility rules);
@@ -724,23 +724,28 @@ not the full page.
   + acid or cold water, 1 halogen, two of the five with no reaction; 5 double, one with no reaction).
 - **State symbols only where they matter (the teacher):** a single replacement has no states rung and its equations
   carry no state symbols anywhere (the validator checks); a double replacement asks (aq) or (s) for each product.
-- **The reference is the model (`ions.js`)**, drawn beside everything (`ref.js`) and printed as
-  `../reference-sheet/Activity_Series_and_Solubility_Rules.pdf` (`node build.js` there: one Letter page, Times-style
-  serif, made from `ions.js`; rebuild it after any change to the data, the validator checks it exists). It was
-  **corrected at the teacher's request**: the series is in the order of the standard potentials (Li, Cs, Rb, K ...; the
-  old handout had Rb, K, Cs) with tiers (`Ions.TIERS`: Li to Na react with cold water, Mg to Cd with steam, Co to Pb
-  with acids, Cu to Au nothing) and the halogens; the solubility rules have group 1 and NH₄⁺ always soluble, Br⁻ and I⁻
-  with Cl⁻, Hg₂²⁺ exceptions, and a **slightly soluble** column (`slight`). Rows marked `sheet` (chlorate, sulfite,
-  chromate, silicate, oxide) are on the printed sheet only. The validator re-sorts the series from potentials and types
-  the solubility of every usable ion pair a second time.
-- **Never used (`Ions.AVOID`):** every slightly soluble pair (CaSO₄, Ag₂SO₄, Ca(OH)₂, Sr(OH)₂, PbCl₂, PbBr₂, silver
-  acetate) and pairs that react with water or do not exist (AgOH, NH₄OH, CuI₂, Al₂(CO₃)₃, sulfides of Mg/Ca/Ba/Sr/Al,
-  most acetates, lithium salts of the insoluble anions).
+- **The reference is the model (`ions.js`)**, drawn beside everything (`ref.js`) and printed by `node build.js` in
+  `../reference-sheet/`: one Letter page each, Times-style serif, made from `ions.js` (rebuild after any change to the
+  data; the validator checks both exist and are current). **Two sheets (the teacher):** the full sheet, and
+  `Activity_Series_and_Solubility_Rules_Assessment.pdf`, the same two tables **without the rules for using them** (students
+  must have those memorized for assessments; the validator fails if the assessment sheet says "Using the", "below it" or
+  "no reaction"). The on-screen reference keeps its short how-to notes (it is for learning, not assessing).
+  The reference was **corrected at the teacher's request**: the series is in the order of the standard potentials (Li, Cs,
+  Rb, K ...; the old handout had Rb, K, Cs) with tiers (`Ions.TIERS`: Li to Na react with cold water, Mg to Cd with steam,
+  Co to Pb with acids, Cu to Au nothing) and the halogens; the solubility rules have group 1 and NH₄⁺ always soluble, Br⁻ and
+  I⁻ with Cl⁻, Hg₂²⁺ exceptions. Rows marked `sheet` (chlorate, sulfite, chromate, silicate, oxide) are on the printed sheets
+  only. The validator re-sorts the series from potentials and types the solubility of every usable ion pair a second time.
+- **The solubility table has two answers only (the teacher): "what would a novice chemist observe?"** A compound dissolves,
+  (aq), or a solid is seen, (s); there is **no "slightly soluble" category** (an earlier draft had one). Ca(OH)₂, CaSO₄,
+  Ag₂SO₄, Sr(OH)₂, PbCl₂ and PbBr₂ are therefore insoluble exceptions and are used in problems (the validator fails if a
+  `slight` field returns).
+- **Never used (`Ions.AVOID`):** pairs that react with water or do not exist (AgOH, NH₄OH, CuI₂, Al₂(CO₃)₃, sulfides of
+  Mg/Ca/Ba/Sr/Al, most acetates, lithium OH, S and acetate) and silver acetate (too borderline to ask about).
 - **Metals that react with water are included (the teacher):** lone metals are K, Ba, Ca, Na, Mg, Al, Zn, Fe, Pb, Cu, Ag;
   on paper the series decides, even for K in a salt solution. **Metal + cold water** is a problem kind (`sub: 'water'`,
   water written HOH as in the balancing packages): K, Na, Ba react (hydroxide + H₂), Zn, Fe, Pb, Cu, Ag do not
-  (`Gen.WATER_NO`); Ca is left out because Ca(OH)₂ is slightly soluble. A single replacement is asked only when the new
-  salt is soluble. Double replacements that make two solids are allowed.
+  (`Gen.WATER_NO`); calcium reacts too (its hydroxide is a solid, which a single replacement does not show). A single
+  replacement of a metal in a salt or an acid is asked only when the new salt is soluble. Double replacements that make two solids are allowed.
 - **The ladder (`ladder.js`):** rungs `react` (a choice and Submit answer), `products` (pick a positive and a negative
   ion with their charges shown, set how many of each; in a single replacement also the element set free, Cu or Cu₂, H or
   H₂), `states` (double replacement only), `balance` (the balancing packages' workbench, reference hidden for width).
@@ -748,12 +753,25 @@ not the full page.
   balance if a solid forms. The first answer to each rung counts; an unfinished Check is not counted; Show me after
   three misses. Slips named: charges not cancelling, not lowest terms, the reactants built again, a metal written
   diatomic, H for H₂.
-- **Animations (`scene.js`):** a metal strip in a solution (ions arrive and become atoms, atoms leave as ions; or
-  nothing) and two solutions mixing (the ions of the solid settle, the rest float; or nothing). Drawn from the problem,
-  roughly to scale only; reduced motion shows the end. Package 4 needs true ionic radii and constant motion instead.
+- **The strip of steps never gives the answer away (the teacher):** every problem of a kind shows the same pills
+  (`SHOWN` in `ladder.js`: single react, products, balance; double products, states, react, balance) whether or not it
+  reacts; unused steps are marked "not needed" only once the problem is finished. Scoring still counts only the steps
+  actually done (`p.rungs`).
+- **No lesson reaction is ever a graded problem (the teacher: it would bore, no desirable difficulty):** `Gen.LESSON` in
+  `problems.js` is the one list of the lesson's reactions (drill pairs, animations, the four worked problems; `app.js`
+  and `steps.js` read it) and `pools()` filters them out; the validator and the walkthrough check.
+- **Animations (`scene.js`, `Scene.show(host, problem, { auto, onDone })`), in the graded set too (the teacher: dual
+  coding):** every finished problem, lesson or graded, plays its reaction as particles under the final equation (once by
+  itself, then Play again; never before the answer). Kinds: a metal strip in a salt solution (ions arrive and become
+  atoms, atoms leave as ions), in an acid (H⁺ arrives, H₂ bubbles leave), in cold water (HOH arrives, goes back as OH⁻, H₂
+  leaves), a halogen molecule meeting two halide ions, and two solutions mixing (the ions of the solid settle, the rest
+  float). With no reaction the particles move about and nothing changes. Drawn from the problem, roughly to scale only;
+  reduced motion shows the end. Package 4 needs true ionic radii and constant motion instead.
+- **The reference is beside the two prediction steps too** (`plate`: series, `mix`: solubility rules), since the
+  prediction is made from it.
 - **Shared code:** `chem.js`, `bench.js`, `util.js`, `scorm.js` are the balancing packages' files unchanged (this
   validator fails if they differ: a fix goes into all three packages); `particles.js` is theirs plus strontium. `Rx`
   here is a small adapter in `ions.js` (name and particle tree built from the ions).
 - **Files:** `config.js`, `util.js`, `chem.js`, `ions.js`, `particles.js`, `problems.js` (`Gen.make`, `Gen.pools`, `Gen.set`,
   `Gen.quiz`), `ref.js`, `scene.js`, `bench.js`, `ladder.js`, `steps.js`, `scorm.js`, `app.js`. Teacher links:
-  `?step=<id or number>`, `?step=set&seed=<n>&problem=<1 to 10>&rung=<n>`.
+  `?step=<id or number>`, `?step=set&seed=<n>&problem=<1 to 10>&rung=<n>` (or `&done` for the finished problem with its animation).

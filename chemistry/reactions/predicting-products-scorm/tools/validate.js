@@ -75,8 +75,8 @@ const above = (a, b) => SERIES.indexOf(a) < SERIES.indexOf(b);
 /* S soluble, I insoluble, - never used. Columns: Cl Br I NO3 SO4 CO3 PO4 OH C2H3O2 S */
 const COLS = ['Cl', 'Br', 'I', 'NO3', 'SO4', 'CO3', 'PO4', 'OH', 'C2H3O2', 'S'];
 const REAL = {
-  Na: 'SSSSSSSSSS', K: 'SSSSSSSSSS', NH4: 'SSSSSSS-SS', Mg: 'SSSSSIII--', Ca: 'SSSS-II-S-', Ba: 'SSSSIIISS-', Sr: 'SSSSIII---',
-  Al: 'SSSSS-II--', Zn: 'SSSSSIII-I', Fe: 'SSSSSIII-I', Pb: '--ISIIIISI', Cu: 'SS-SSIII-I', Ag: 'IIIS-II--I'
+  Na: 'SSSSSSSSSS', K: 'SSSSSSSSSS', NH4: 'SSSSSSS-SS', Mg: 'SSSSSIII--', Ca: 'SSSSIIIIS-', Ba: 'SSSSIIISS-', Sr: 'SSSSIIII--',
+  Al: 'SSSSS-II--', Zn: 'SSSSSIII-I', Fe: 'SSSSSIII-I', Pb: 'IIISIIIISI', Cu: 'SS-SSIII-I', Ag: 'IIISIII--I'
 };
 ok(Gen.DR_CATS.join() === Object.keys(REAL).join() && Gen.DR_ANS.join() === COLS.join(), 'the ions of the double replacements');
 const real = (cat, an) => REAL[cat][COLS.indexOf(an)];
@@ -85,15 +85,15 @@ Object.keys(REAL).forEach((cat) => COLS.forEach((an) => {
   ok((r === '-') === !Ions.usable(cat, an), cat + ' ' + an + ': avoided or not?');
   if (r !== '-') ok((r === 'S') === Ions.soluble(cat, an), cat + ' ' + an + ': the table says ' + (Ions.soluble(cat, an) ? 'soluble' : 'insoluble') + ', it is ' + r);
 }));
-/* a compound marked slightly soluble must never be used, and the slight and exception lists never overlap */
+/* the table has two answers only: no slightly soluble category anywhere */
 Ions.TABLE.soluble.concat(Ions.TABLE.insoluble).forEach((r) => {
-  r.slight.forEach((c) => {
-    ok((r.not || r.but).indexOf(c) < 0, r.an + ': ' + c + ' is both an exception and slightly soluble');
-    if (Ions.CATIONS[c] && Ions.ANIONS[r.an]) ok(!Ions.usable(c, r.an), c + ' ' + r.an + ' is slightly soluble, so it must be avoided');
-  });
-  (r.not || r.but).concat(r.slight).forEach((c) => ok(Ions.CATIONS[c] || Ions.SHEET_IONS[c], r.an + ': unknown ion ' + c));
+  ok(!('slight' in r), r.an + ': a slightly soluble category is not allowed');
+  (r.not || r.but).forEach((c) => ok(Ions.CATIONS[c] || Ions.SHEET_IONS[c], r.an + ': unknown ion ' + c));
   ok(Ions.ANIONS[r.an] ? !r.sheet : r.sheet && Ions.SHEET_IONS[r.an], r.an + ': a rule for an ion the problems use must be on screen, others only on the sheet');
 });
+ok(!Ions.soluble('Ca', 'OH') && !Ions.soluble('Ca', 'SO4') && !Ions.soluble('Pb', 'Cl') && !Ions.soluble('Ag', 'SO4') && !Ions.soluble('Sr', 'OH') && !Ions.soluble('Pb', 'Br'),
+   'what a novice sees as a solid: Ca(OH)2, CaSO4, PbCl2, PbBr2, Ag2SO4, Sr(OH)2 are insoluble');
+ok(Ions.usable('Ca', 'OH') && Ions.usable('Pb', 'Cl') && Ions.BY['Ca(OH)2'] && Ions.BY['PbCl2'], 'those compounds are used in the problems now');
 ok(Ions.TABLE.always.join() === 'Li,Na,K,Rb,Cs,NH4', 'always soluble: group 1 and ammonium');
 /* the handout's own rows, and the agreed additions */
 ok(Ions.soluble('Ag', 'Cl') === false && Ions.soluble('Pb', 'I') === false && Ions.soluble('Ba', 'SO4') === false && Ions.soluble('Sr', 'SO4') === false, 'insoluble exceptions');
@@ -140,8 +140,8 @@ function checkProblem(p, where) {
       /* cold water: only the metals down to sodium */
       ok(p.l[1] === 'HOH' && (E0[lone] <= E0.Na) === p.reacts, tag + 'cold water');
       ok(p.products[0] === Ions.formula(lone, 'OH') && p.products[1] === 'H2', tag + 'a hydroxide and hydrogen');
-      if (p.reacts) ok(real(lone, 'OH') === 'S', tag + 'the hydroxide must be clearly soluble');
-      else ok(Gen.WATER_NO.indexOf(lone) >= 0, tag + 'only the listed metals are asked about with water');
+      /* a hydroxide that stays as a solid (calcium) is fine: a single replacement has no states */
+      if (!p.reacts) ok(Gen.WATER_NO.indexOf(lone) >= 0, tag + 'only the listed metals are asked about with water');
     } else {
       ok(above(lone, comp.cat) === p.reacts, tag + 'the series says ' + above(lone, comp.cat));
       ok(p.products[0] === Ions.formula(lone, comp.an) && p.products[1] === (comp.cat === 'H' ? 'H2' : comp.cat), tag + 'products');
@@ -186,6 +186,14 @@ ok(Gen.equation(Gen.make('Cl2', 'KBr'), true) === 'Cl₂ + 2 KBr → 2 KCl + Br�
 ok(Gen.equation(Gen.make('Pb(NO3)2', 'KI'), true) === 'Pb(NO₃)₂(aq) + 2 KI(aq) → PbI₂(s) + 2 KNO₃(aq)', 'Pb(NO3)2 + KI');
 
 /* ----------------------------------------------------------------- lesson */
+/* the lesson's reactions are listed once, and none of them is in a graded pool */
+const lessonPairs = Gen.LESSON.willit.concat(Gen.LESSON.plate, Gen.LESSON.mix, [Gen.LESSON.sr1, Gen.LESSON.sr2, Gen.LESSON.dr1, Gen.LESSON.dr2]);
+lessonPairs.forEach((l) => ok(Gen.SEEN[Gen.key(l)], l.join(' + ') + ' is in the lesson but not marked as seen'));
+Object.keys(P).forEach((k) => P[k].forEach((p) => ok(!Gen.SEEN[Gen.key(p.l)], k + ' ' + p.id + ': a lesson reaction in a graded pool')));
+ok(App.STEPS.filter((s) => s.kind === 'ladder').every((s) => lessonPairs.indexOf(s.l) >= 0), 'every worked problem comes from Gen.LESSON');
+const ladderSrc = fs.readFileSync(path.join(SRC, 'js', 'ladder.js'), 'utf8');
+ok(/SHOWN\.forEach/.test(ladderSrc) && !/p\.rungs\.forEach\(function \(r, k\) \{\s*var st/.test(ladderSrc), 'the strip of steps must be the same whether or not there is a reaction');
+ok(/Scene\.show\(area, p/.test(ladderSrc), 'a finished problem shows its reaction as particles');
 const ids = {};
 App.STEPS.forEach((s, i) => {
   ok(!ids[s.id], 'step id twice: ' + s.id); ids[s.id] = 1;
@@ -230,10 +238,17 @@ for (let seed = 1; seed <= 400; seed++) {
 ok(seen.srY.size >= 30 && seen.srN.size >= 25 && seen.drY.size >= 200 && seen.drN.size >= 100, 'too little variety across 400 students');
 ok(seen.water >= 100 && seen.two >= 5, 'metal + water and two-solid problems should both come up: ' + seen.water + ', ' + seen.two);
 /* the printed sheet is built from this data: it must be there and newer than the data */
-const SHEET = path.join(ROOT, '..', 'reference-sheet', 'Activity_Series_and_Solubility_Rules.html');
-if (fs.existsSync(path.dirname(SHEET))) {
-  const sh = fs.existsSync(SHEET) ? fs.readFileSync(SHEET, 'utf8') : '';
-  ok(/Cesium[\s\S]*Rubidium[\s\S]*Potassium/.test(sh) && /chromate/.test(sh) && fs.existsSync(SHEET.replace(/html$/, 'pdf')), 'the reference sheet is missing or out of date: run node build.js in reference-sheet/');
+const SHEETS = path.join(ROOT, '..', 'reference-sheet');
+if (fs.existsSync(SHEETS)) {
+  const read = (n) => (fs.existsSync(path.join(SHEETS, n + '.html')) ? fs.readFileSync(path.join(SHEETS, n + '.html'), 'utf8') : '');
+  const full = read('Activity_Series_and_Solubility_Rules'), test = read('Activity_Series_and_Solubility_Rules_Assessment');
+  [[full, 'Activity_Series_and_Solubility_Rules', 'the reference sheet'], [test, 'Activity_Series_and_Solubility_Rules_Assessment', 'the assessment sheet']].forEach(([sh, name, nm]) => {
+    ok(/Cesium[\s\S]*Rubidium[\s\S]*Potassium/.test(sh) && /chromate/.test(sh), nm + ' is missing or out of date: run node build.js in reference-sheet/');
+    ok(!/slightly/i.test(sh), nm + ' mentions slightly soluble');
+    ok(fs.existsSync(path.join(SHEETS, name + '.pdf')), nm + ': the pdf is missing');
+  });
+  ok(/Using the series/.test(full) && /Using the rules/.test(full), 'the full sheet keeps its rules for using the tables');
+  ok(!/Using the|replaces a halide|below it|no reaction/i.test(test), 'the assessment sheet must not say how to use the tables');
 }
 ok(App.totalItems.length === 0, 'App.totalItems');
 

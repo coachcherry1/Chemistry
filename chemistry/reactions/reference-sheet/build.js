@@ -2,7 +2,9 @@
  * same data the predicting-products package uses (its ions.js), so the sheet
  * and the activity can never disagree.
  *
- *   node build.js        ->  Activity_Series_and_Solubility_Rules.pdf (and .html)
+ *   node build.js   ->  Activity_Series_and_Solubility_Rules.pdf        (the full sheet, with how to use the tables)
+ *                       Activity_Series_and_Solubility_Rules_Assessment.pdf (the same tables, no rules for using them)
+ *                       and the .html each is printed from
  *
  * Needs Playwright (Chromium prints the page). The font is Times New Roman
  * where it is installed, otherwise Liberation Serif, which has the same
@@ -45,11 +47,12 @@ function solRows(list, key) {
   return list.map((r) => {
     const a = info(r.an, false);
     return '<tr><td class="an"><b>' + a[2] + '</b></td><td class="f">' + ion(r.an, false) + '</td><td>' + cations(r[key]) + (r.note ? ' <span class="note">(' + r.note + ')</span>' : '') +
-      '</td><td class="sl">' + (r.slight.length ? cations(r.slight) : '') + '</td></tr>';
+      '</td></tr>';
   }).join('\n');
 }
 
-const html = `<!DOCTYPE html>
+/* assess: the assessment sheet, the same tables without the rules for using them (students are to know those by heart) */
+const page = (assess) => `<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><title>Activity Series and Solubility Rules</title>
 <style>
   @page { size: Letter; margin: 0.55in 0.6in; }
@@ -75,8 +78,7 @@ const html = `<!DOCTYPE html>
   .hal { border: 1pt solid #000; padding: 4pt 7pt; margin-top: 8pt; font-size: 10.6pt; }
   .hal b { font-size: 11.5pt; }
   .sol td { border-bottom: 0.4pt solid #999; font-size: 10.4pt; }
-  .sol .an { width: 0.82in; } .sol .f { width: 0.68in; white-space: nowrap; } .sol .sl { width: 0.95in; font-style: italic; }
-  .sol th:last-child { font-style: italic; }
+  .sol .an { width: 0.82in; } .sol .f { width: 0.68in; white-space: nowrap; }
   .always { border: 1pt solid #000; padding: 4pt 7pt; margin: 0 0 6pt; font-size: 10.8pt; background: #f1f1f1; }
   .note { font-size: 9pt; font-style: italic; }
   .foot { font-size: 9.3pt; margin-top: 7pt; }
@@ -96,57 +98,57 @@ const html = `<!DOCTYPE html>
 ${seriesRows}
     </tbody>
   </table>
-  <div class="hal"><b>Halogens:</b> &nbsp; F<sub>2</sub> &nbsp;&gt;&nbsp; Cl<sub>2</sub> &nbsp;&gt;&nbsp; Br<sub>2</sub> &nbsp;&gt;&nbsp; I<sub>2</sub><br><span class="note">most active first; a halogen replaces a halide below it</span></div>
-  <h3>Using the series (single replacement)</h3>
+  <div class="hal"><b>Halogens:</b> &nbsp; F<sub>2</sub> &nbsp;&gt;&nbsp; Cl<sub>2</sub> &nbsp;&gt;&nbsp; Br<sub>2</sub> &nbsp;&gt;&nbsp; I<sub>2</sub><br><span class="note">most active first</span></div>
+  ${assess ? '' : `  <h3>Using the series (single replacement)</h3>
   <ul class="how">
     <li>A metal replaces any metal <b>below</b> it from a compound. If it is not below, there is <b>no reaction</b>.</li>
     <li>A metal above H<sub>2</sub> replaces the hydrogen of an acid; H<sub>2</sub> forms.</li>
     <li>Only the metals from Li to Na replace hydrogen from cold water (HOH); a metal hydroxide and H<sub>2</sub> form.</li>
-  </ul>
+  </ul>`}
 </section>
 <section>
   <h2>Solubility Rules for Ionic Compounds in Water</h2>
   <div class="always"><b>Always soluble:</b> compounds of the <b>Group 1</b> ions (Li<sup>+</sup>, Na<sup>+</sup>, K<sup>+</sup>, Rb<sup>+</sup>, Cs<sup>+</sup>) and of ammonium, NH<sub>4</sub><sup>+</sup>.</div>
   <h3>Compounds of these ions are soluble (aq) ...</h3>
   <table class="sol">
-    <thead><tr><th colspan="2">Negative ion</th><th>... except with (insoluble)</th><th>slightly soluble with</th></tr></thead>
+    <thead><tr><th colspan="2">Negative ion</th><th>... except with (insoluble)</th></tr></thead>
     <tbody>
 ${solRows(Ions.TABLE.soluble, 'not')}
     </tbody>
   </table>
   <h3>Compounds of these ions are insoluble (s) ...</h3>
   <table class="sol">
-    <thead><tr><th colspan="2">Negative ion</th><th>... except with (soluble)</th><th>slightly soluble with</th></tr></thead>
+    <thead><tr><th colspan="2">Negative ion</th><th>... except with (soluble)</th></tr></thead>
     <tbody>
 ${solRows(Ions.TABLE.insoluble, 'but')}
     </tbody>
   </table>
-  <h3>Using the rules (double replacement)</h3>
+  ${assess ? '' : `<h3>Using the rules (double replacement)</h3>
   <ul class="how">
     <li>Trade the partners of the two compounds and look up <b>both</b> products.</li>
     <li>Find the negative ion first, then check whether the positive ion is an exception.</li>
     <li>An insoluble product is a solid, (s): a reaction happens. If both products are soluble, (aq), there is <b>no reaction</b>.</li>
-  </ul>
+  </ul>`}
   <ul class="foot">
-    <li><i>Slightly soluble</i> compounds dissolve a little: a solid forms only from concentrated solutions.</li>
-    <li>Hg<sub>2</sub><sup>2+</sup> is the mercury(I) ion. PbCl<sub>2</sub> and PbBr<sub>2</sub> dissolve in hot water.</li>
-    <li>Li<sub>2</sub>CO<sub>3</sub> and Li<sub>3</sub>PO<sub>4</sub> are only slightly soluble. NH<sub>4</sub>OH is not a compound: it is NH<sub>3</sub> dissolved in water.</li>
+    <li>Hg<sub>2</sub><sup>2+</sup> is the mercury(I) ion.</li>
   </ul>
 </section>
 </div>
 </body></html>`;
 
 (async () => {
-  const out = path.join(__dirname, 'Activity_Series_and_Solubility_Rules');
-  fs.writeFileSync(out + '.html', html);
   const b = await chromium.launch();
-  const page = await b.newPage();
-  await page.setContent(html, { waitUntil: 'load' });
-  const font = await page.evaluate(() => document.fonts.check('11pt "Times New Roman"'));
-  await page.pdf({ path: out + '.pdf', format: 'Letter', printBackground: true, preferCSSPageSize: true });
-  /* one page only */
-  const pages = (fs.readFileSync(out + '.pdf', 'latin1').match(/\/Type\s*\/Page[^s]/g) || []).length;
+  for (const [assess, name] of [[false, 'Activity_Series_and_Solubility_Rules'], [true, 'Activity_Series_and_Solubility_Rules_Assessment']]) {
+    const out = path.join(__dirname, name), html = page(assess);
+    fs.writeFileSync(out + '.html', html);
+    const pg = await b.newPage();
+    await pg.setContent(html, { waitUntil: 'load' });
+    const font = await pg.evaluate(() => document.fonts.check('11pt "Times New Roman"'));
+    await pg.pdf({ path: out + '.pdf', format: 'Letter', printBackground: true, preferCSSPageSize: true });
+    const pages = (fs.readFileSync(out + '.pdf', 'latin1').match(/\/Type\s*\/Page[^s]/g) || []).length;
+    console.log('wrote ' + name + '.pdf: ' + pages + ' page(s); Times New Roman resolved: ' + font);
+    await pg.close();
+    if (pages !== 1) { await b.close(); process.exit(1); }
+  }
   await b.close();
-  console.log('wrote ' + path.basename(out) + '.pdf: ' + pages + ' page(s); Times New Roman resolved: ' + font);
-  if (pages !== 1) process.exit(1);
 })();
