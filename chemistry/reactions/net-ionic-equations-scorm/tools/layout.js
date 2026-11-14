@@ -1,0 +1,145 @@
+/* tools/layout.js: checks the page fits a school Chromebook. Optional: needs
+ * Playwright.
+ *
+ *   node tools/layout.js                      # the usual window sizes
+ *   node tools/layout.js 1366x520,900x600     # just these
+ *   SHOTS=dir node tools/layout.js            # also screenshot each checked view
+ *
+ * What a student works with must be on screen together without zooming. On
+ * every rung of a problem (the lesson's three, and graded ones of every kind
+ * over a few seeds): after scrolling the problem to the top of the window,
+ * the equation, the rung's controls and its Check must be on screen together
+ * with the reference beside them; on the balancing rung, the equation, both
+ * particle boxes, the inventory and Check. Each picture card with all its
+ * pictures; each split with its picture; each beaker with its Pour button and
+ * the prediction beside it; each question with its picture, its choices and
+ * Submit answer. A finished problem must show its net ionic equation, the
+ * beaker, Pour again and the way on together. No step may scroll sideways.
+ *
+ * 1366x650 is a Chromebook's browser tab; 1366x520 and 1280x560 allow for the
+ * LMS's own header around the frame. Narrow windows are checked for sideways
+ * scrolling only.
+ */
+const path = require('path');
+let chromium;
+try { ({ chromium } = require('playwright')); }
+catch (e) {
+  try { ({ chromium } = require('/opt/node22/lib/node_modules/playwright')); }
+  catch (e2) { console.error('Playwright is not installed; skipping.'); process.exit(0); }
+}
+const dir = path.join(__dirname, '..');
+const sizes = (process.argv[2] || '1366x650,1366x520,1280x560,1100x600,900x600,1536x750,1920x950')
+  .split(',').map((s) => s.split('x').map(Number));
+const shots = process.env.SHOTS;
+
+(async () => {
+  const b = await chromium.launch();
+  let bad = 0, checked = 0;
+  const page0 = await b.newPage();
+  await page0.goto('file://' + dir + '/src/index.html?step=1');
+  const steps = await page0.evaluate(() => App.STEPS.map((s) => ({ id: s.id, kind: s.kind })));
+  const views = steps.filter((s) => s.kind !== 'set').map((s) => ({ id: s.id, kind: s.kind, q: '&seed=1', name: s.id }));
+  /* graded problems: one of each shape, and the one with the longest formulas, over a few seeds */
+  const seenShape = {};
+  for (const seed of [1, 2, 3, 4, 5]) {
+    const list = await page0.evaluate((s) => Gen.set(s).map((p, i) => ({ i: i + 1, shape: p.kind, rungs: p.rungs, len: Net.ionicText(p).length })), seed);
+    const long = list.slice().sort((x, y) => y.len - x.len)[0];
+    list.forEach((p) => {
+      if (seenShape[p.shape] && p !== long) return;
+      seenShape[p.shape] = 1;
+      p.rungs.forEach((r, k) => views.push({ id: 'set', kind: 'rung', rung: r, q: '&seed=' + seed + '&problem=' + p.i + '&rung=' + (k + 1), name: 'set-' + seed + '-' + p.i + '-' + r }));
+      views.push({ id: 'set', kind: 'done', q: '&seed=' + seed + '&problem=' + p.i + '&done', name: 'set-' + seed + '-' + p.i + '-done' });
+    });
+  }
+  await page0.close();
+
+  for (const [w, hgt] of sizes) {
+    const page = await b.newPage({ viewport: { width: w, height: hgt } });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    const errs = []; page.on('pageerror', (e) => errs.push(e.message));
+    const out = [];
+    const together = w >= 1280;
+    async function fits(v, what, sels, top) {
+      const r = await page.evaluate(([list, topSel]) => {
+        const t = document.querySelector(topSel);
+        if (!t) return { missing: topSel };
+        window.scrollTo(0, t.getBoundingClientRect().top + window.scrollY - 4);
+        let worst = 0, name = '';
+        for (const sel of list) {
+          const els = Array.from(document.querySelectorAll(sel)).filter((e) => e.offsetParent !== null);
+          if (!els.length) return { missing: sel };
+          els.forEach((e) => { const bb = e.getBoundingClientRect(); if (bb.bottom > worst) { worst = bb.bottom; name = sel; } if (bb.top < -1) { worst = 1e6; name = sel + ' (above the window)'; } });
+        }
+        return { over: Math.round(worst - window.innerHeight), name };
+      }, [sels, top]);
+      checked++;
+      if (r.missing) { bad++; out.push(v.name + ' ' + what + ': ' + r.missing + ' not found'); }
+      else if (r.over > 0) { bad++; out.push(v.name + ' ' + what + ': ' + r.name + ' is ' + r.over + ' px below the window'); }
+      if (shots && together) { require('fs').mkdirSync(shots, { recursive: true }); await page.screenshot({ path: path.join(shots, w + 'x' + hgt + '-' + v.name + '-' + what + '.png') }); }
+    }
+    for (const v of views) {
+      await page.goto('file://' + dir + '/src/index.html?step=' + v.id + v.q);
+      await page.waitForTimeout(40);
+      const side = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      checked++;
+      if (side > 1) { bad++; out.push(v.name + ': scrolls sideways by ' + side + ' px'); }
+      if (!together) continue;
+      const rung = v.kind === 'ladder' ? await page.evaluate(() => App.ctl().problem.rungs[0]) : v.rung;
+      if (v.kind === 'rung' || v.kind === 'ladder') {
+        if (rung === 'balance') {
+          const bench = '.ladder .bench';
+          await fits(v, 'start', [bench + ' .eq', bench + ' .pbox', bench + ' .inv', bench + ' .bench-check'], bench);
+          await page.click(bench + ' .bench-check');
+          /* an equation that was already balanced is finished by that Check: nothing more to fit */
+          if (await page.locator(bench).count()) await fits(v, 'checked', [bench + ' .eq', bench + ' .pbox', bench + ' .inv'], bench);
+        } else {
+          const ctl = { states: ['.ladder .state-btn'], ionic: ['.ladder .io-row'], spectators: ['.ladder .ionic-line', '.ladder .none-btn'], net: ['.ladder .net-card', '.ladder .none-btn'] }[rung]
+            .concat(['.ladder .rung-check']);
+          await fits(v, 'start', ['.ladder .given', '.ladder .rungs'].concat(ctl, ['.ref .ref-tabs']), '.ladder');
+          /* an unfinished Check brings its message: it must fit too */
+          await page.click('.ladder .rung-check');
+          await fits(v, 'message', ctl.concat(['.ladder .fb.show']), '.ladder');
+        }
+      } else if (v.kind === 'done') {
+        /* a finished problem: its equations, the beaker, Pour again and the way on, together */
+        await fits(v, 'beaker', ['.ladder .final-eq', '.ladder .bk-svg', '.ladder .bk-play', '.ladder .ladder-next'], '.ladder .given');
+        await page.click('.ladder .bk-play');
+        await fits(v, 'played', ['.ladder .final-eq', '.ladder .bk-svg', '.ladder .bk-play', '.ladder .ladder-next'], '.ladder .given');
+      } else if (v.kind === 'aq') {
+        for (let k = 0; k < 3; k++) {
+          await fits(v, 'card-' + (k + 1), ['.panel .prompt', '.pic-choice', '.ref .ref-tabs'], '.ladder');
+          await page.locator('.pic-choice').first().click();
+          await fits(v, 'answered-' + (k + 1), ['.pic-choice', '.fb.show'], '.ladder');
+          if (k < 2) await page.click('.card-next');
+        }
+      } else if (v.kind === 'split') {
+        await fits(v, 'example', ['.io-row', '.split-pic svg', '.card-next'], '.ladder');
+        await page.click('.card-next');
+        await fits(v, 'card', ['.io-row', '.split-pic svg', '.rung-check'], '.ladder');
+        await page.click('.rung-check');
+        await fits(v, 'message', ['.io-row', '.rung-check', '.fb.show'], '.ladder');
+      } else if (v.kind === 'quiz') {
+        for (let k = 0; k < 4; k++) {
+          const pic = await page.locator('.quiz .q-pic').count();
+          await fits(v, 'question-' + (k + 1), ['.quiz .prompt', '.quiz .choice', '.quiz .submit-answer', '.ref .ref-tabs'].concat(pic ? ['.quiz .q-pic svg'] : []), '.ladder');
+          await page.locator('.quiz .choice').first().click();
+          await page.click('.quiz .submit-answer');
+          await fits(v, 'answered-' + (k + 1), ['.quiz .choice', '.quiz .fb.show', '.quiz .quiz-next'], '.ladder');
+          if (k < 3) await page.click('.quiz .quiz-next');
+        }
+      } else if (/^watch/.test(v.kind)) {
+        await fits(v, 'prediction', ['.bk-svg', '.bk-play', '.side-col .prompt', '.side-col .tile'], '.ladder');
+        await page.locator('.side-col .tile').first().click();
+        await fits(v, 'predicted', ['.bk-svg', '.bk-play', '.side-col .fb.show'], '.ladder');
+        await page.click('.bk-play');
+        await fits(v, 'played', ['.bk-svg', '.bk-play', '.bk-hi', '.bk-cap'], '.ladder');
+      }
+    }
+    if (errs.length) { bad++; out.push('page errors: ' + errs.join('; ')); }
+    console.log(w + 'x' + hgt + ': ' + (out.length ? out.length + ' problem(s)\n  ' + out.join('\n  ') : 'ok'));
+    await page.close();
+  }
+  await b.close();
+  console.log(bad ? bad + ' of ' + checked + ' layout checks FAILED' : 'All ' + checked + ' layout checks passed.');
+  process.exit(bad ? 1 : 0);
+})();
