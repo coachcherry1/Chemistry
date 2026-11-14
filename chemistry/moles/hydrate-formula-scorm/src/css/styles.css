@@ -150,6 +150,14 @@ h3 { font-size: 0.74rem; margin: 0; text-transform: uppercase; letter-spacing: 0
 .steps4 .st.now { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .steps4 .st.now .st-n { background: var(--on-accent); color: var(--accent); border-color: var(--on-accent); }
 .steps4 .st.right { color: var(--good); border-color: var(--good); background: var(--good-bg); }
+.steps4 .st.given { color: var(--muted); border-style: dashed; }
+.finder-toggle { margin-bottom: 4px; }
+.pf-note { margin: 0 0 2px; }
+.mlines { margin: 4px 0; padding-left: 0; list-style: none; font-size: 0.9rem; }
+.mlines li { padding: 3px 6px; border-bottom: 1px solid var(--line); }
+.mlines li.bad { background: var(--bad-bg); }
+.recall-picked { list-style: none; padding: 0; margin: 6px 0; }
+.recall-picked li { padding: 3px 0; font-weight: 700; }
 .steps4 .st.fixed { color: var(--ink); border-color: var(--tile-line); }
 
 /* the table: a row per part, a column per step */
@@ -227,6 +235,7 @@ input.blank::placeholder { font-weight: 500; font-size: 0.7rem; color: var(--mut
 .step-panel { margin-top: 6px; }
 .step-q { margin: 0; font-size: 0.88rem; }
 .choice.wrong { border-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
+.choice.selected { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
 .showme { border-color: var(--warn); color: var(--warn); }
 .sol-details { margin-top: 6px; }
 .sol-details summary, .review-body summary, details summary { cursor: pointer; font-size: 0.82rem; color: var(--accent); }

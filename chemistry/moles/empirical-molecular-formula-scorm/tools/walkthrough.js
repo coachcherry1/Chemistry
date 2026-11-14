@@ -116,7 +116,7 @@ const fakeLMS = () => {
 
   /* ---- the steps before the graded set */
   let guard = 0;
-  let warmCount = 0;
+  let warmCount = 0, usualDone = false;
   while ((await stepId()) !== 'set' && guard++ < 30) {
     const id = await stepId();
     const kind = await page.evaluate(() => App.STEPS[App.state().step].kind);
@@ -179,6 +179,24 @@ const fakeLMS = () => {
       const want0 = cards[0].round ? 'Round it' : 'Multiply';
       await page.click('.wcard >> nth=0 >> .tile:has-text("' + want0 + '")');
       await page.click('.drill .primary:has-text("Check")');
+    } else if (kind === 'mistake') {
+      const cards = await page.evaluate(() => Gen.mistakes().map((c) => ({ bad: c.bad, right: c.right, reasons: c.reasons })));
+      for (let i = 0; i < cards.length; i++) {
+        const c = cards[i];
+        await page.click('.tiles .tile:text-is("Step ' + (c.bad === 1 ? 2 : 1) + '")');
+        await page.click('.primary:has-text("Check")');
+        expect(/Step \d is right|earlier/.test(await say()), 'find the mistake: a wrong step is not answered');
+        await page.click('.tiles .tile:text-is("Step ' + c.bad + '")');
+        await page.click('.primary:has-text("Check")');
+        await page.click('.tiles .tile >> nth=' + c.right);
+        await page.click('.primary:has-text("Check")');
+        expect(/The right answer/.test(await page.textContent('.stage')), 'find the mistake: no fix shown');
+        await page.click('.primary:has-text("' + (i + 1 < cards.length ? 'Next problem' : 'Done') + '")');
+      }
+    } else if (kind === 'recall') {
+      await page.click('.tiles .tile:text-is("Divide by small")');
+      expect(/Not first/.test(await say()), 'recall: a wrong first step is not answered');
+      for (const n of ['Percents to grams', 'Grams to moles', 'Divide by small', 'Multiply if not whole']) await page.click('.tiles .tile:text-is("' + n + '")');
     } else if (kind === 'dall') {
       const list = await page.evaluate((s) => Gen.allRatios(s), seed);
       for (let i = 0; i < list.length; i++) {
@@ -210,12 +228,20 @@ const fakeLMS = () => {
     } else if (kind === 'warm') {
       warmCount++;
       const p = await prob(seed, 'warm', id);
-      if (warmCount === 1) {
+      const pf = await page.evaluate(() => App.STEPS[App.state().step].prefill || 0);
+      if (pf) {
+        /* a faded example: the first steps arrive worked, marked "worked for you" */
+        expect((await work()).s === pf && (await page.$$eval('.steps4 .st.given', (e) => e.length)) === pf, 'warm-up ' + id + ': ' + pf + ' steps not worked for the student');
+        await ctl('fillSolution');
+      } else if (!usualDone) {
+        usualDone = true;
         /* the usual mistakes, one at a time */
         const wrongChoice = p.choice === 'pct' ? 'Grams: use the grams' : 'Percents: assume 100 g';
         await page.click('.step-panel .choice:has-text("' + wrongChoice + '")');
+        await page.click('.step-panel .submit-answer');
         expect(/Look again/.test(await fb()), 'warm-up: the wrong Step 1 choice is not answered');
         await page.click('.step-panel .choice:has-text("' + (p.choice === 'pct' ? 'Percents: assume 100 g' : 'Grams: use the grams') + '")');
+        await page.click('.step-panel .submit-answer');
         if (p.rows.some((r) => r.typed)) {
           const r0 = p.rows.findIndex((r) => r.how === 'pct' || r.how === 'sub');
           if (p.rows[r0].how === 'pct') {
@@ -307,11 +333,21 @@ const fakeLMS = () => {
     const p = await prob(seed, 'set', i);
     await snap('set-' + (i + 1));
     if (i === 0) {
+      /* the fraction finder is one tap away in graded problems */
+      expect(await page.$eval('.finder-wrap', (e) => e.hidden) && !!(await page.$('.finder-toggle')), 'set: the fraction finder is not behind its button');
+      await page.click('.finder-toggle');
+      expect(!(await page.$eval('.finder-wrap', (e) => e.hidden)), 'set: Show fraction finder does not show it');
       const wrongChoice = p.choice === 'pct' ? 'Grams: use the grams' : 'Percents: assume 100 g';
+      /* Submit answer: a click only selects, the submit grades */
+      expect(await page.$eval('.step-panel .submit-answer', (b) => b.disabled), 'set: Submit answer is not disabled before a choice');
       await page.click('.step-panel .choice:has-text("' + wrongChoice + '")');
+      expect((await work()).g.grams === undefined && /selected/.test(await page.$eval('.step-panel .choice[aria-pressed="true"]', (b) => b.className)),
+        'set: clicking a choice graded it instead of selecting it');
+      await page.click('.step-panel .submit-answer');
       expect((await work()).g.grams === 0, 'set: a wrong first Step 1 was not counted');
       await ctl('fillSolution');
     } else if (i === 1) {
+      expect(await page.$$eval('.step-panel .submit-answer', (b) => b.length) === 1, 'set: the graded step has no Submit answer button');
       await page.evaluate(() => { const c = App.ctl(); c.fillStep(); c.check(); });
       await ctl('fillStep');
       const key = 'mol0';
@@ -319,10 +355,10 @@ const fakeLMS = () => {
       const short = Number(Number(full).toPrecision(2)).toString();
       if (short !== full) {
         await typeInto(key, short);
-        await page.click('.step-panel .primary:has-text("Check")');
+        await page.click('.step-panel .submit-answer');
         await typeInto(key, full);
       }
-      await page.click('.step-panel .primary:has-text("Check")');
+      await page.click('.step-panel .submit-answer');
       expect((await work()).g.moles === 1, 'set: moles to 2 significant figures counted as a miss');
       await ctl('fillSolution');
     } else if (i === 2) {
@@ -332,7 +368,7 @@ const fakeLMS = () => {
       await page.click('.pickbtn >> nth=' + big);
       for (let k = 0; k < 2; k++) {
         for (let r = 0; r < p.rows.length; r++) await typeInto('q' + r, '9.99');
-        await page.click('.step-panel .primary:has-text("Check")');
+        await page.click('.step-panel .submit-answer');
       }
       expect(!!(await page.$('.step-panel .showme')), 'set: no Show me after two misses');
       await page.click('.step-panel .showme');

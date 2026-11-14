@@ -214,5 +214,82 @@ var Drills = (function () {
     return { done: st.i >= list.length };
   }
 
-  return { fracDrill: fracDrill, wholeDrill: wholeDrill, allDrill: allDrill };
+  /* --------------------------------------------------- Find the mistake */
+
+  /* A finished problem with one wrong step (Gen.mistakes): pick the step, then
+     what went wrong; select then Check, as everywhere. */
+  function mistakeDrill(host, st, cb) {
+    var cards = Gen.mistakes();
+    st.i = st.i || 0;
+    var box = h('div');
+    host.appendChild(box);
+    var sel = null;
+    function paint() {
+      box.innerHTML = '';
+      if (st.i >= cards.length) {
+        box.appendChild(panel('Find the mistake', null, [h('p', { class: 'big-ok', text: 'Both mistakes found.' })]));
+        return;
+      }
+      var c = cards[st.i], stage = st.stage || 'step';
+      var lines = h('ol', { class: 'mlines' }, c.lines.map(function (l, j) {
+        return h('li', { class: stage !== 'step' && j + 1 === c.bad ? 'bad' : null }, [h('b', { text: 'Step ' + (j + 1) + ': ' }), l]);
+      }));
+      var kids = [h('p', { class: 'drill-q', text: c.prompt }), lines,
+        h('p', { class: 'drill-q' }, ['Their answer: ', h('b', { text: c.formula })])];
+      var opts = stage === 'step' ? [1, 2, 3, 4].map(function (n) { return { v: n, t: 'Step ' + n }; }) :
+        c.reasons.map(function (r, j) { return { v: j, t: r }; });
+      if (stage === 'done') {
+        kids.push(h('p', { class: 'drill-q' }, [h('b', { text: 'The fix: ' }), c.fix + ' Then Step ' + c.bad + ' and every step after it change.']));
+        kids.push(h('p', { class: 'drill-q' }, ['The right answer: ', h('b', { text: c.rightFormula })]));
+        kids.push(h('div', { class: 'btnrow' }, [h('button', { type: 'button', class: 'primary', text: st.i + 1 < cards.length ? 'Next problem' : 'Done',
+          onclick: function () { st.i++; st.stage = 'step'; sel = null; cb.save(); paint(); if (st.i >= cards.length) cb.complete('Both mistakes found. Check your own work the same way.'); } })]));
+      } else {
+        kids.push(h('p', { class: 'drill-q', text: stage === 'step' ? 'Which step has the mistake?' : 'What went wrong in Step ' + c.bad + '?' }));
+        kids.push(tiles(opts, sel, function (v) { sel = v; paint(); }, stage === 'step' ? 'step with the mistake' : 'what went wrong'));
+        kids.push(h('div', { class: 'btnrow' }, [h('button', { type: 'button', class: 'primary', text: 'Check', disabled: sel == null, onclick: check })]));
+      }
+      box.appendChild(panel('Find the mistake', 'problem ' + (st.i + 1) + ' of ' + cards.length, kids));
+    }
+    function check() {
+      var c = cards[st.i];
+      if ((st.stage || 'step') === 'step') {
+        if (sel !== c.bad) { cb.say(sel < c.bad ? 'Step ' + sel + ' is right. Keep reading: the mistake is later.' : 'The mistake is earlier: by Step ' + sel + ' the numbers are already off.', 'bad'); return; }
+        st.stage = 'reason'; sel = null; cb.save(); cb.say('Yes: Step ' + c.bad + '.', 'good'); paint(); return;
+      }
+      if (sel !== c.right) { cb.say('Not that: look at what Step ' + c.bad + ' actually does.', 'bad'); return; }
+      st.stage = 'done'; sel = null; cb.save(); cb.say('Right.', 'good'); paint();
+    }
+    paint();
+    return { done: st.i >= cards.length };
+  }
+
+  /* ------------------------------------------------- the four steps from memory */
+
+  function recallDrill(host, st, cb) {
+    var order = ['grams', 'moles', 'divide', 'multiply'].map(function (s) { return Work.STEP_NAMES[s]; });
+    var shown = UI.shuffle(order, UI.rng(19));
+    st.n = st.n || 0;
+    var box = h('div');
+    host.appendChild(box);
+    function paint() {
+      box.innerHTML = '';
+      var picked = h('ol', { class: 'recall-picked' }, order.slice(0, st.n).map(function (n, i) { return h('li', { text: (i + 1) + '. ' + n }); }));
+      box.appendChild(panel('The four steps from memory', st.n + ' of 4', [
+        h('p', { class: 'drill-q', text: st.n < 4 ? 'Tap the ' + ['first', 'second', 'third', 'fourth'][st.n] + ' step.' : 'All four, in order.' }),
+        picked,
+        h('div', { class: 'tiles', role: 'group', 'aria-label': 'the four steps' }, shown.map(function (n) {
+          var used = order.indexOf(n) < st.n;
+          return h('button', { type: 'button', class: 'tile', disabled: used, text: n, onclick: function () {
+            if (n !== order[st.n]) { cb.say(st.n ? 'Not yet: what do you do after ' + order[st.n - 1] + '?' : 'Not first: what do you do with the data the problem gives?', 'bad'); return; }
+            st.n++; cb.save(); cb.say('', null); paint();
+            if (st.n === 4) cb.complete('Percents to grams, grams to moles, divide by small, multiply if not whole. Use them on every graded problem.');
+          } });
+        }))
+      ]));
+    }
+    paint();
+    return { done: st.n >= 4 };
+  }
+
+  return { fracDrill: fracDrill, wholeDrill: wholeDrill, allDrill: allDrill, mistakeDrill: mistakeDrill, recallDrill: recallDrill };
 })();

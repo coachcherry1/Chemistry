@@ -537,6 +537,98 @@ var Gen = (function () {
     return steps;
   }
 
+  /* ------------------------------------------------------ find the mistake */
+
+  /* A problem worked the way a student would, with one mistake put in (err)
+     or none: the four steps as lines of text and the formula they give.
+     err: { g: {i, v, line} wrong grams, mm: {i, v} wrong molar mass,
+            noPer: i (the mole ratio left out), round: true (step 4 rounds) } */
+  function worked(p, err) {
+    err = err || {};
+    var nm = function (r) { return r.atom || (r.key === 'salt' ? p.salt : 'H2O'); };
+    var rows = p.rows.map(function (r, i) {
+      var g = err.g && err.g.i === i ? err.g.v : r.g;
+      var mm = err.mm && err.mm.i === i ? err.mm.v : Chem.mmValue(r.mmF);
+      var per = r.per ? (err.noPer === i ? 1 : r.per) : 1;
+      return { r: r, g: g, mm: mm, per: per, mol: Chem.roundSig(g * per / mm, 3) };
+    });
+    var min = Math.min.apply(null, rows.map(function (x) { return x.mol; }));
+    rows.forEach(function (x) { x.q = Chem.roundTo(x.mol / min, 2); });
+    var k = err.round ? 1 : Chem.multiplierFor(rows.map(function (x) { return x.q; }));
+    rows.forEach(function (x) { x.w = Math.round(x.q * k); });
+    var L = [];
+    if (p.choice === 'pct') L.push('Percents to grams: ' + rows.map(function (x) { return x.r.gStr + ' g ' + Chem.subs(nm(x.r)); }).join(', ') + '.');
+    else if (p.kind === 'lab') L.push('Grams: anhydrous salt (crucible + salt) − crucible = ' + g3(rows[0].g) + ' g; water ' +
+      (err.g ? err.g.line : '(crucible + hydrate) − (crucible + salt)') + ' = ' + g3(rows[1].g) + ' g.');
+    else if (p.kind === 'heat') L.push('Grams: anhydrous salt left ' + g3(rows[0].g) + ' g; water lost ' + g3(p.H) + ' − ' + g3(p.R) + ' = ' + g3(rows[1].g) + ' g.');
+    else L.push('No percents: ' + rows.map(function (x) { return x.r.gStr + ' g ' + Chem.subs(x.r.mmF); }).join(' and ') + ' are given.');
+    L.push('Grams to moles: ' + rows.map(function (x) {
+      return Chem.fmtDec(x.g, x.r.dp != null ? x.r.dp : 3) + ' g ' + Chem.subs(x.r.mmF) + ' × (1 mol / ' + Chem.fmtDec(x.mm, 1) + ' g)' +
+        (x.r.per ? ' × (' + x.per + ' mol ' + x.r.atom + ' / 1 mol ' + Chem.subs(x.r.mmF) + ')' : '') + ' = ' + Chem.fmtMol(x.mol) + ' mol ' + Chem.subs(nm(x.r));
+    }).join('; ') + '.');
+    L.push('Divide by small (' + Chem.fmtMol(min) + ' mol): ' + rows.map(function (x) { return Chem.subs(nm(x.r)) + ' ' + Chem.fmtQ(x.q); }).join(', ') + '.');
+    L.push((err.round ? 'Round each to a whole number: ' : k === 1 ? 'All within 0.1 of a whole number, × 1: ' : 'Multiply every row by ' + k + ': ') +
+      rows.map(function (x) { return Chem.subs(nm(x.r)) + ' ' + x.w; }).join(', ') + '.');
+    var formula;
+    if (p.mode === 'hydrate') formula = Chem.hydrateDisp(p.salt, rows[1].w / rows[0].w);
+    else {
+      var c = {};
+      p.order.forEach(function (x, i) { c[x] = rows[i].w; });
+      formula = Chem.subs(Chem.formulaOf(p.order, c));
+    }
+    return { lines: L, formula: formula };
+  }
+
+  /* Two per package: the slips the teacher named (rounding a fraction, O2 for O,
+     the 2 H in H2O) and their kin. The right reason is not always first. */
+  var MISTAKES = {
+    empirical: [
+      { find: 'C6H8O6', kind: 'pct', err: function () { return { round: true }; }, bad: 4, right: 0,
+        reasons: ['1.34 is not within 0.1 of a whole number: it is 1⅓, so every row is multiplied by 3, not rounded',
+                  'The moles were divided by the largest value, not the smallest', 'The percents should have been divided by 100 first'],
+        fix: '1.34 is 1⅓: multiply every row by 3.' },
+      { find: 'Fe2O3', kind: 'pct', err: function () { return { mm: { i: 1, v: 32.0 } }; }, bad: 2, right: 1,
+        reasons: ['The molar mass of Fe should be 26, its atomic number', 'O was given the molar mass of O₂ (32.0); the atoms here are O, 16.0 g/mol',
+                  '1.33 should have been rounded to 1'],
+        fix: 'Use 16.0 g/mol for O: these are O atoms in a compound, not O₂ molecules.' }
+    ],
+    hydrate: [
+      { find: 'CuSO4', kind: 'lab', err: function (p) { return { g: { i: 1, v: p.H, line: '(crucible + hydrate) − empty crucible' }, round: true }; }, bad: 1, right: 1,
+        reasons: ['The crucible’s mass should have been added, not subtracted', 'That is the whole hydrate. The water is only what was lost: (crucible + hydrate) − (crucible + salt)',
+                  'The molar mass of water is 16.0'],
+        fix: 'Water lost = (crucible + hydrate) − (crucible + anhydrous salt).' },
+      { find: 'CuSO4', kind: 'heat', err: function () { return { mm: { i: 0, v: 63.5 } }; }, bad: 2, right: 2,
+        reasons: ['The water should have been divided by 16.0, the mass of O', 'The smallest should have been the water',
+                  'That is the molar mass of Cu alone. CuSO₄ adds every atom: 63.5 + 32.1 + 4(16.0) = 159.6'],
+        fix: 'The molar mass of CuSO₄ adds every atom: 159.6 g/mol.' }
+    ],
+    combustion: [
+      { find: 'C3H8', kind: 'comb', err: function () { return { noPer: 1 }; }, bad: 2, right: 0,
+        reasons: ['Each H₂O holds 2 H, so the mole ratio is 2 mol H / 1 mol H₂O, not 1', 'Each CO₂ holds 2 C',
+                  'The grams of H₂O should have been divided by 2.0'],
+        fix: 'The mole ratio for H is 2 mol H / 1 mol H₂O.' },
+      { find: 'C4H10', kind: 'comb', err: function () { return { round: true }; }, bad: 4, right: 1,
+        reasons: ['The moles of CO₂ should have been doubled', '2.50 is 2½, not close to a whole number: multiply every row by 2, do not round',
+                  'The smallest value was H, not C'],
+        fix: '2.50 is 2½: multiply every row by 2.' }
+    ]
+  }[MODE];
+
+  var mistakeCache = null;
+  function mistakes() {
+    if (mistakeCache) return mistakeCache;
+    mistakeCache = MISTAKES.map(function (m, j) {
+      var c = catalogue().filter(function (x) { return keyOf(x) === m.find; })[0];
+      var p = null;
+      for (var t = 0; t < 40 && !p; t++) p = build(c, { kind: m.kind }, UI.rng(9000 + 31 * j + t));
+      finish(p, 'MX' + (j + 1));
+      var wrong = worked(p, m.err(p)), right = worked(p, {});
+      return { p: p, prompt: p.prompt + ' ' + p.ask, lines: wrong.lines, formula: wrong.formula, rightLines: right.lines,
+               rightFormula: right.formula, bad: m.bad, reasons: m.reasons, right: m.right, fix: m.fix };
+    });
+    return mistakeCache;
+  }
+
   /* The worked example of the first step, the same for every student. */
   function example() {
     var rand = UI.rng(2026);
@@ -549,7 +641,7 @@ var Gen = (function () {
   }
 
   return {
-    PLAN: PLAN, example: example, PLANS: PLANS, WARM: WARM, WARMS: WARMS, MODE: MODE,
+    PLAN: PLAN, example: example, mistakes: mistakes, worked: worked, PLANS: PLANS, WARM: WARM, WARMS: WARMS, MODE: MODE,
     set: set, warm: warm, model: model, solution: solution, clean: clean, allowance: allowance,
     molesWith: molesWith, quotients: quotients, multOf: multOf, make: make, catalogue: catalogue, keyOf: keyOf,
     fracCards: fracCards, wholeCards: wholeCards, allRatios: allRatios, texHydrate: texHydrate

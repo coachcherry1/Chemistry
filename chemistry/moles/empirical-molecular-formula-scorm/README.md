@@ -60,6 +60,11 @@ Beside every problem the fraction finder and its chart (decimal ending, fraction
 can be put on the ruler with a tap; in the graded problems the ruler and chart are a reference only, so reading the fraction is the
 student's own work.
 
+## Learning design (2026-11-14)
+
+Faded worked examples (the warm-ups hand over one step at a time), a Find the mistake step in Part 2, the fraction finder
+behind a button in graded problems, and the four steps recalled from memory before the graded set. See `LEARNING_REVIEW.md`.
+
 ## Grading
 
 The first Check of every step of every graded problem counts (the teacher's choice): the score is the steps right on the first check
@@ -88,12 +93,12 @@ with its typeset worked solution, and the big ideas.
 ```bash
 node tools/validate.js                    # must pass
 node tools/answer-key.js > ANSWER_KEY.md
-./build.sh                                # dist/empirical-molecular-formula-v3.zip
+./build.sh                                # dist/empirical-molecular-formula-v4.zip
 node tools/walkthrough.js                 # Playwright: plays the whole activity against a fake LMS (SEED=n: one student's problems)
 node tools/layout.js                      # Playwright: fits a Chromebook, 1366x650 and 1366x520
 ```
 
-Upload `dist/empirical-molecular-formula-v3.zip` in Schoology with **Add Materials > Add File/Link/External Tool > Add File** (or **Package**).
+Upload `dist/empirical-molecular-formula-v4.zip` in Schoology with **Add Materials > Add File/Link/External Tool > Add File** (or **Package**).
 `src/index.html?step=set&seed=5&problem=3` opens a step (ids in `ANSWER_KEY.md`, or numbers), a given set and one of its problems
 without saving anything.
 

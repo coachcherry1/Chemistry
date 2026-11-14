@@ -623,7 +623,7 @@ not the full page.
 - **Files:** `config.js`, `elements.js`, `substances.js`, `chem.js`, `problems.js`, `tex.js`, `map.js`, `ptable.js` (docked
   table), `work.js` (one problem, `Work.solutionHTML`), `scorm.js` (save key from config), `app.js`.
 
-## empirical-molecular-formula-scorm, hydrate-formula-scorm and combustion-analysis-scorm (zip v3, SCHEMA 2)
+## empirical-molecular-formula-scorm, hydrate-formula-scorm and combustion-analysis-scorm (zip v4, SCHEMA 3)
 
 - **Key objective:** fluency with the teacher's four steps, on screen in the teacher's words in every problem: **Percents to grams**
   (assume 100 g), **Grams to moles**, **Divide by small**, **Multiply if not whole**. The teacher's named hurdle is reading a
@@ -646,10 +646,16 @@ not the full page.
   smallest, then quotients to 2 decimals. Step 4 is one multiplier for every
   row; once it is right the whole numbers fill in (the teacher: typing them is tedious). Step 5: molecular formula (empirical formula mass, n, the subscripts) or the hydrate's Greek prefix.
 - **Teacher's choices:** the first Check of every step counts (score = steps right first / all steps; one interaction per step).
+  In graded problems that button reads **Submit answer** (`.submit-answer`), and Step 1's percents-or-grams choice only selects
+  (`selected`, `aria-pressed`) until it is submitted, in warm-ups too.
   Not an answer (told, check again): empty boxes, the right number rounded too far (moles under 3 significant figures, quotients under
   2 decimals, 3.99 for 4). Within 0.1 of a whole number rounds; otherwise halves, thirds, fourths and fifths only (`Chem.FRACS`), and
   the multiplier is the smallest that makes all whole. Hints free; Show me after two misses in a step. Combustion includes the
   molecular formula (the teacher asked). Hydrate names: salt name + mono to deca + hydrate.
+- **Learning design (Nov 2026, the teacher chose these):** faded worked examples (warm-up `prefill`: 2 steps, then 1, then
+  none; worked steps are `work.g[s] = 'w'`, shown "worked for you"); **Find the mistake** (`mistake` step in Part 2,
+  `Gen.mistakes`/`Gen.worked`: two cards per package, pick the step then the reason); in graded problems the finder is
+  behind a Show fraction finder button; `recall` (tap the four steps in order) just before the set. `LEARNING_REVIEW.md` per package.
 - **Fraction finder (`finder.js`):** a ruler of the decimal part with rows for halves to fifths and shaded "round" ends, plus a chart.
   Interactive in the drills and warm-ups (tap a quotient, the fraction lights up); a reference only in graded problems.
 - **One model:** `compounds.js` holds real compounds only (65 formulas, 29 hydrates, 26 hydrocarbons); `problems.js` computes every
