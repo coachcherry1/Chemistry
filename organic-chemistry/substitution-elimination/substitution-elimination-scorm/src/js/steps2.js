@@ -976,7 +976,7 @@
             U.say(WHY[bin], 'good');
             if (placed.length === SEL_CARDS.length) U.complete('All sorted.');
             paint();
-          } else U.say(MISS[c.bin], 'bad');
+          } else U.say(miss(bin, c.bin), 'bad');
         }
       });
     }
@@ -986,12 +986,21 @@
       stereosel: 'Stereoselective: the β carbon has two H atoms, so both stereoisomers can form; the one with the larger groups trans is major.',
       stereospec: 'Stereospecific: the substrate’s configuration decides the only stereoisomer that forms.'
     };
-    var MISS = {
-      regiosel: 'Look again: here two alkenes with the C=C in different places both form, one major and one minor.',
-      regiospec: 'Look again: only one alkene can form at all here, because only one β H is anti-coplanar to the leaving group.',
-      stereosel: 'Look again: here both stereoisomers of the same alkene form, one major and one minor.',
-      stereospec: 'Look again: only one stereoisomer forms, and the substrate’s configuration decides which.'
+    /* a wrong bin: what that bin means, then where on the card to look
+       (not the answer) */
+    var MEANS = {
+      regiosel: 'Regioselective means two alkenes with the C=C in different places form, and one is major.',
+      regiospec: 'Regiospecific means only one alkene can form at all, because only one β H can be anti-coplanar.',
+      stereosel: 'Stereoselective means both stereoisomers of one alkene form, and one is major.',
+      stereospec: 'Stereospecific means the substrate’s configuration decides the one stereoisomer that forms.'
     };
+    function miss(chosen, right) {
+      var regio = function (b) { return /^regio/.test(b); };
+      var tip = regio(chosen) !== regio(right)
+        ? ' Look at the products on the card: do they differ in where the C=C (or the new group) is, or only in their geometry?'
+        : ' Count the products on the card: is there one, or a major and a minor?';
+      return 'Not ' + BINS.filter(function (b) { return b[0] === chosen; })[0][1].toLowerCase() + '. ' + MEANS[chosen] + tip;
+    }
     paint();
     return { destroy: function () { if (picker) picker.destroy(); } };
   };

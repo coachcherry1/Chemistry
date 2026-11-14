@@ -180,316 +180,509 @@ Molecules: cis-1-bromo-4-tert-butylcyclohexane; trans-1-bromo-4-tert-butylcycloh
 
 Draws 4 of 13; always asks: a-nash, a-dbu.
 
-- **a-nash**: What is the function of NaSH?
+- **a-nash**: What is the function of NaSH? [NaSH (HS⁻)]
   - Answer: **Nucleophile only (strong nucleophile, weak base)**
   - Other choices: Strong nucleophile and strong base; Base only (strong base, weak nucleophile); Weak nucleophile, weak base
   - Why: HS⁻ has a negative charge on a large, polarizable S: a strong nucleophile. Its conjugate acid, H₂S, is a much stronger acid than water, so HS⁻ is a weak base.
-- **a-dbu**: What is the function of DBU?
+  - If Strong nucleophile and strong base: A strong nucleophile, yes, but not a strong base: its conjugate acid, H₂S, is a much stronger acid than water, so HS⁻ holds on to its pair. Ask the base question again.
+  - If Base only (strong base, weak nucleophile): It is the other way round: a negative charge on a large, polarizable S makes HS⁻ a strong nucleophile, and it is a weak base.
+  - If Weak nucleophile, weak base: HS⁻ carries a negative charge on a large, polarizable S, so it is a strong nucleophile. Start with the nucleophile question.
+- **a-dbu**: What is the function of DBU? [DBU]
   - Answer: **Base only (strong base, weak nucleophile)**
   - Other choices: Nucleophile only (strong nucleophile, weak base); Strong nucleophile and strong base; Weak nucleophile, weak base
   - Why: DBU is a strong base, but the N that would attack is crowded by the rings around it, so it is a weak nucleophile.
-- **a-naoet**: What is the function of NaOEt?
+  - If Nucleophile only (strong nucleophile, weak base): DBU is a strong base, and its N cannot reach a carbon easily: the rings around it get in the way. Which group is strong base, weak nucleophile?
+  - If Strong nucleophile and strong base: DBU is a strong base, but the rings around its N make it a weak nucleophile. Ask the nucleophile question again.
+  - If Weak nucleophile, weak base: DBU is neutral, but it is a strong base (Klein: its protonated form is stabilized). Ask the base question again.
+- **a-naoet**: What is the function of NaOEt? [NaOEt (EtO⁻)]
   - Answer: **Strong nucleophile and strong base**
   - Other choices: Nucleophile only (strong nucleophile, weak base); Base only (strong base, weak nucleophile); Weak nucleophile, weak base
   - Why: EtO⁻ is a strong base (its conjugate acid, ethanol, is a weak acid) and a strong nucleophile (a negative charge on an uncrowded O).
-- **a-etoh**: What is the function of ethanol, EtOH?
+  - If Nucleophile only (strong nucleophile, weak base): EtO⁻ is a strong base as well: its conjugate acid, ethanol, is a weak acid. Ask the base question again.
+  - If Base only (strong base, weak nucleophile): EtO⁻ is a strong nucleophile as well: a negative charge on an O that nothing blocks. Only a hindered base (t-BuO⁻) or a crowded one (DBU) is a weak nucleophile.
+  - If Weak nucleophile, weak base: NaOEt is not ethanol: its EtO⁻ carries a negative charge, so it is both a strong nucleophile and a strong base. Look at the charge.
+- **a-etoh**: What is the function of ethanol, EtOH? [EtOH]
   - Answer: **Weak nucleophile, weak base**
   - Other choices: Nucleophile only (strong nucleophile, weak base); Strong nucleophile and strong base; Base only (strong base, weak nucleophile)
   - Why: EtOH is neutral and its O is small and not polarizable: a weak nucleophile and a weak base.
-- **a-nacn**: What is the function of NaCN?
+  - If Nucleophile only (strong nucleophile, weak base): EtOH has no negative charge, and its O is small and not polarizable, so it is a weak nucleophile. Compare it with EtO⁻.
+  - If Strong nucleophile and strong base: That is EtO⁻ (from NaOEt). Ethanol is neutral: a weak nucleophile and a weak base.
+  - If Base only (strong base, weak nucleophile): Ethanol is not a strong base: as an acid it is weak, so it barely takes a proton. It is a weak nucleophile and a weak base.
+- **a-nacn**: What is the function of NaCN? [NaCN (⁻CN)]
   - Answer: **Nucleophile only (strong nucleophile, weak base)**
   - Other choices: Strong nucleophile and strong base; Base only (strong base, weak nucleophile); Weak nucleophile, weak base
   - Why: ⁻CN is a strong nucleophile and a weak base (far weaker than HO⁻), so with a 1° or 2° substrate it substitutes.
-- **a-tbuok**: t-BuOK and NaOEt are both strong nucleophiles and strong bases. What is different about t-BuOK?
+  - If Strong nucleophile and strong base: ⁻CN is a strong nucleophile, but it is a far weaker base than HO⁻, so Klein puts it with the nucleophiles only. Ask the base question again.
+  - If Base only (strong base, weak nucleophile): It is the other way round: ⁻CN is a strong nucleophile and a weak base.
+  - If Weak nucleophile, weak base: The negative charge on C makes ⁻CN a strong nucleophile. Start with the nucleophile question.
+- **a-tbuok**: t-BuOK and NaOEt are both strong nucleophiles and strong bases. What is different about t-BuOK? [t-BuOK (t-BuO⁻) and NaOEt (EtO⁻)]
   - Answer: **It is sterically hindered, so it favours E2**
   - Other choices: It is a weak base, so it substitutes; It is a weak nucleophile, so it never reacts; It only reacts by SN1 and E1
   - Why: t-BuO⁻ is crowded by its three CH₃ groups. It reaches an H more easily than a carbon, so it favours E2, even at a 1° carbon, and it takes the most accessible H (the Hofmann product).
-- **a-iweak**: Why is I⁻ a weak base?
+  - If It is a weak base, so it substitutes: t-BuO⁻ is a strong base, just as strong as EtO⁻: its conjugate acid is a weak acid too. What differs is its size.
+  - If It is a weak nucleophile, so it never reacts: t-BuO⁻ is still a strong nucleophile and it does react: its bulk only makes it reach an H more easily than a carbon.
+  - If It only reacts by SN1 and E1: SN1 and E1 need a weak nucleophile and weak base. t-BuO⁻ is a strong base, so it reacts by E2 (and some SN2).
+- **a-iweak**: Why is I⁻ a weak base? [NaI (I⁻)]
   - Answer: **Its conjugate acid, HI, is a strong acid**
   - Other choices: It has no lone pairs left to share with an H; It is too large and crowded to reach an H; It is neutral, so it cannot attract a proton
   - Why: The conjugate base of a strong acid is a weak base. HI is a strong acid, so I⁻ holds on to its electrons and hardly takes a proton. It is still a strong nucleophile: charged, large and polarizable.
-- **a-hostrong**: Why is HO⁻ a strong base?
+  - If It has no lone pairs left to share with an H: I⁻ has four lone pairs. Base strength comes from the conjugate acid: is HI a weak acid or a strong one?
+  - If It is too large and crowded to reach an H: I⁻ is large, but it is not crowded by groups around it. Base strength comes from the conjugate acid: think about HI.
+  - If It is neutral, so it cannot attract a proton: I⁻ has a negative charge, so it is not neutral. Look at its conjugate acid, HI, instead.
+- **a-hostrong**: Why is HO⁻ a strong base? [NaOH (HO⁻)]
   - Answer: **Water, its conjugate acid, is a weak acid**
   - Other choices: Its O is large and easily polarized, like S; It is sterically hindered, like t-BuO⁻; It comes from a strong acid, like HCl
   - Why: The weaker the conjugate acid, the stronger the base. Water is a weak acid, so HO⁻ is a strong base.
+  - If Its O is large and easily polarized, like S: Polarizability makes a strong nucleophile, not a strong base, and O is small. Base strength comes from the conjugate acid: water.
+  - If It is sterically hindered, like t-BuO⁻: HO⁻ is small; nothing hinders it. Base strength comes from its conjugate acid: is water a weak acid?
+  - If It comes from a strong acid, like HCl: HO⁻ does not come from HCl. Its conjugate acid is water, a weak acid: that is why HO⁻ is a strong base.
 - **a-pick-base**: Which reagent is a base only (strong base, weak nucleophile)?
-  - Answer: **NaH**
-  - Other choices: NaI; NaOMe; MeOH
+  - Answer: **NaH (H⁻)**
+  - Other choices: NaI (I⁻); NaOMe (MeO⁻); MeOH
   - Why: H⁻ is a very strong base (H₂ is an extremely weak acid) but small and not polarizable, so it is a weak nucleophile. NaI is a nucleophile only, NaOMe a strong nucleophile and strong base, MeOH weak at both.
+  - If NaI (I⁻): NaI is the other way round: I⁻ is a strong nucleophile and a weak base. Look for H⁻: a very strong base that is too small to be polarizable.
+  - If NaOMe (MeO⁻): NaOMe is a strong nucleophile and a strong base. Base only means strong base, weak nucleophile: which ion is too small and hard to be a nucleophile?
+  - If MeOH: MeOH is neutral: a weak nucleophile and a weak base. Base only means a strong base.
 - **a-pick-nuc**: Which reagent is a nucleophile only (strong nucleophile, weak base)?
-  - Answer: **NaN₃**
-  - Other choices: NaOH; DBN; H₂O
+  - Answer: **NaN₃ (N₃⁻)**
+  - Other choices: NaOH (HO⁻); DBN; H₂O
   - Why: N₃⁻ is a strong nucleophile and a weak base. NaOH is strong at both, DBN is a base only, and water is weak at both.
-- **a-spectator**: NaOMe reacts with an alkyl halide. Which part of it reacts?
+  - If NaOH (HO⁻): NaOH is a strong base as well as a strong nucleophile. Nucleophile only means a weak base: whose conjugate acid is a fairly strong acid?
+  - If DBN: DBN is the opposite: a strong base and a weak nucleophile.
+  - If H₂O: H₂O is neutral and its O is small: a weak nucleophile. Nucleophile only means a strong nucleophile.
+- **a-spectator**: NaOMe reacts with an alkyl halide. Which part of it reacts? [Na⁺ and NaOMe (MeO⁻)]
   - Answer: **MeO⁻; Na⁺ is a spectator**
   - Other choices: Na⁺; MeO⁻ is a spectator; Both, as one molecule; Neither; it is only a solvent
   - Why: Na⁺ and K⁺ are spectator ions. The function of the reagent belongs to the anion: here MeO⁻, a strong nucleophile and a strong base.
-- **a-h2s**: H₂S has no charge. Why is it still a strong nucleophile?
+  - If Na⁺; MeO⁻ is a spectator: Na⁺ has no lone pair to attack with and no electrons to share. The anion does the work.
+  - If Both, as one molecule: In solution NaOMe is two ions, Na⁺ and MeO⁻. Which one has the lone pairs and the negative charge?
+  - If Neither; it is only a solvent: NaOMe is the reagent; its MeO⁻ reacts. The solvent would be methanol, MeOH.
+- **a-h2s**: H₂S has no charge. Why is it still a strong nucleophile? [H₂S]
   - Answer: **Its S is large and polarizable**
   - Other choices: It is a strong base, stronger than HO⁻; It is sterically hindered; It is always used as the solvent
   - Why: Polarizability: the electron cloud of a large atom like S shifts easily toward the carbon it attacks. That makes H₂S and RSH strong nucleophiles even though they are neutral and weak bases.
+  - If It is a strong base, stronger than HO⁻: H₂S is a weak base, far weaker than HO⁻. Its strength as a nucleophile comes from its S: what is special about a large atom?
+  - If It is sterically hindered: H₂S is small and nothing hinders it. What makes S a good nucleophile is its size: think polarizability.
+  - If It is always used as the solvent: The solvent is not what makes a nucleophile strong. What is special about a large atom like S?
 - **a-degree**: What kind of substrate is 2-bromo-2-methylbutane? [2-bromo-2-methylbutane]
   - Answer: **3° (tertiary)**
   - Other choices: 2° (secondary); 1° (primary); Methyl
   - Why: The α carbon (the one with the Br) carries three carbons, so the substrate is tertiary.
+  - If 2° (secondary): Count the carbons bonded to the carbon that carries the Br, not the H atoms on it. The C–Br carbon here has three carbon neighbours.
+  - If 1° (primary): Look at the carbon bonded to the Br itself, not at the end of the chain. How many carbons are attached to it?
+  - If Methyl: Methyl means the C–Br carbon has no carbon neighbours. Here it has three.
 
 ### Checkpoint 2: substitution
 
 Draws 5 of 17; always asks: b-fn-nan3, b-sn2-product.
 
-- **b-fn-nan3**: What is the function of NaN₃?
+- **b-fn-nan3**: What is the function of NaN₃? [NaN₃ (N₃⁻)]
   - Answer: **Nucleophile only (strong nucleophile, weak base)**
   - Other choices: Strong nucleophile and strong base; Base only (strong base, weak nucleophile); Weak nucleophile, weak base
   - Why: N₃⁻ (azide) is a strong nucleophile and a weak base (its conjugate acid, HN₃, is a fairly strong acid).
+  - If Strong nucleophile and strong base: N₃⁻ is a weak base: its conjugate acid, HN₃, is a fairly strong acid. Ask the base question again.
+  - If Base only (strong base, weak nucleophile): It is the other way round: N₃⁻ is a strong nucleophile and a weak base.
+  - If Weak nucleophile, weak base: The negative charge makes N₃⁻ a strong nucleophile. Start with the nucleophile question.
 - **b-sn2-product**: What is the product of (R)-2-bromobutane with NaCN? [(R)-2-bromobutane + NaCN]
   - Answer: **(S)-2-methylbutanenitrile**
   - Other choices: (R)-2-methylbutanenitrile; (E)-but-2-ene
   - Why: A 2° substrate and a nucleophile only: SN2. Back-side attack inverts the configuration, so (R)-2-bromobutane gives (S)-2-methylbutanenitrile. Weak base: no elimination.
+  - If (R)-2-methylbutanenitrile: That keeps the configuration (retention): it would need attack from the front, where the Br is. SN2 attacks from the back side.
+  - If (E)-but-2-ene: An alkene needs a strong base. ⁻CN is a nucleophile only, a weak base, so it substitutes.
 - **b-sn2-mech**: Which describes the SN2 mechanism?
   - Answer: **One step: nucleophilic attack and loss of the leaving group together**
   - Other choices: Two steps: loss of the leaving group, then nucleophilic attack; Two steps: nucleophilic attack, then loss of the leaving group; One step: proton transfer and loss of the leaving group together
   - Why: SN2 is concerted: the nucleophile attacks as the leaving group leaves. Loss of the leaving group first is SN1; proton transfer with loss of the leaving group is E2.
+  - If Two steps: loss of the leaving group, then nucleophilic attack: That is SN1. In SN2 nothing happens first: the bond to the nucleophile forms as the bond to the leaving group breaks.
+  - If Two steps: nucleophilic attack, then loss of the leaving group: The carbon cannot take a fifth bond before the leaving group goes. In SN2 both happen at once, in one step.
+  - If One step: proton transfer and loss of the leaving group together: Proton transfer and loss of the leaving group together is E2. SN2 is nucleophilic attack and loss of the leaving group.
 - **b-backside**: Why does SN2 invert the configuration?
   - Answer: **The nucleophile attacks from the back side**
   - Other choices: The carbocation is attacked from either face; The nucleophile takes the leaving group’s place; The product is always R
   - Why: The nucleophile comes in opposite the leaving group, and the other three groups turn inside out, like an umbrella in the wind: inversion of configuration.
+  - If The carbocation is attacked from either face: Attack on either face is SN1, and it gives both configurations. SN2 has one direction of attack: which?
+  - If The nucleophile takes the leaving group’s place: Taking the leaving group’s place from the front would keep the configuration. Where does the nucleophile come in, compared with the leaving group?
+  - If The product is always R: R or S depends on the priorities of the groups, not on SN2. What happens to the three other groups as the nucleophile comes in from the back?
 - **b-rate**: Rank these alkyl bromides for SN2, fastest first.
   - Answer: **methyl > 1° > 2° > 3°**
   - Other choices: 3° > 2° > 1° > methyl; 2° > 1° > methyl > 3°; all the same
   - Why: Every carbon on the α carbon adds steric hindrance at the back side, so methyl is fastest and a 3° substrate does not react by SN2 at all.
+  - If 3° > 2° > 1° > methyl: That is the order for carbocations (SN1). SN2 needs the back side free, and every carbon on the α carbon blocks it.
+  - If 2° > 1° > methyl > 3°: Ask what each carbon on the α carbon does to the back side: steric hindrance rises from methyl to 3°.
+  - If all the same: Steric hindrance at the back side changes the rate: more carbons on the α carbon, slower SN2.
 - **b-3deg**: Why does 2-bromo-2-methylpropane not react by SN2? [2-bromo-2-methylpropane]
   - Answer: **Steric hindrance at the back side**
   - Other choices: It has no β H atoms for the base; Br⁻ is far too poor a leaving group; Its carbocation would be far too unstable
   - Why: Steric hindrance: the three CH₃ groups surround the back side of the α carbon, so the nucleophile cannot get in. (It has nine β H atoms, Br⁻ is a good leaving group, and its 3° carbocation is the most stable kind.)
-- **b-sn1-order**: In what order do the steps of an SN1 in ethanol happen?
+  - If It has no β H atoms for the base: It has nine β H atoms, and β H atoms matter for elimination, not substitution. What surrounds the back side of its α carbon?
+  - If Br⁻ is far too poor a leaving group: Br⁻ is a good leaving group. The problem is getting the nucleophile to the carbon: what is in the way?
+  - If Its carbocation would be far too unstable: A 3° carbocation is the most stable kind, and SN2 makes no carbocation anyway. What blocks the back side?
+- **b-sn1-order**: In what order do the steps of an SN1 in ethanol happen? [2-bromo-2-methylpropane + EtOH]
   - Answer: **Loss of a leaving group, nucleophilic attack, proton transfer**
   - Other choices: Nucleophilic attack, loss of a leaving group, proton transfer; Proton transfer, loss of a leaving group, nucleophilic attack; Nucleophilic attack and loss of a leaving group, at once
   - Why: The leaving group leaves first (the slow step), ethanol attacks the carbocation, and a second ethanol takes the proton from the oxonium ion.
+  - If Nucleophilic attack, loss of a leaving group, proton transfer: Ethanol cannot attack until there is a carbocation. Which step makes it?
+  - If Proton transfer, loss of a leaving group, nucleophilic attack: The proton transfer removes the H that ethanol brings, so it comes last. Which step comes first?
+  - If Nucleophilic attack and loss of a leaving group, at once: Both at once is SN2. SN1 goes through a carbocation, one step at a time.
 - **b-rds**: Which step of an SN1 is the rate-determining step?
   - Answer: **Loss of the leaving group**
   - Other choices: Nucleophilic attack; The final proton transfer; All three equally
   - Why: Forming the carbocation is the slow step, the highest hump on the energy diagram. Only the substrate takes part in it, so SN1 is unimolecular.
+  - If Nucleophilic attack: Attack on a carbocation is fast. The slow step is the one that makes the carbocation.
+  - If The final proton transfer: The final proton transfer is fast. Look at the energy diagram: which hill is the highest?
+  - If All three equally: One step is much slower than the others, and only the substrate is in it: the 1 in SN1.
 - **b-cation**: Which carbocation is the most stable?
-  - Answer: **3°**
-  - Other choices: 2°; 1°; methyl
+  - Answer: **a 3° carbocation**
+  - Other choices: a 2° carbocation; a 1° carbocation; the methyl carbocation
   - Why: Stability rises with the number of carbons on the C⁺: 3° > 2° > 1° > methyl. That is why SN1 and E1 need a 3° substrate.
+  - If a 2° carbocation: A 2° carbocation has two alkyl groups; a 3° has three, and each one helps stabilize the positive charge.
+  - If a 1° carbocation: A 1° carbocation has only one alkyl group to help. More alkyl groups, more stable.
+  - If the methyl carbocation: A methyl carbocation has no alkyl groups at all: the least stable.
 - **b-sn1-stereo**: (R)-3-Bromo-3-methylhexane reacts with ethanol by SN1. What forms? [(R)-3-bromo-3-methylhexane]
   - Answer: **(R)- and (S)-3-ethoxy-3-methylhexane, equally**
   - Other choices: Only (S)-3-ethoxy-3-methylhexane, by inversion; Only (R)-3-ethoxy-3-methylhexane, by retention; No product: a 3° substrate cannot react
   - Why: The carbocation is flat, and ethanol attacks either face equally: a racemic mixture. SN1 is not stereospecific.
-- **b-oxonium**: In a solvolysis in ethanol, what does nucleophilic attack produce?
+  - If Only (S)-3-ethoxy-3-methylhexane, by inversion: Inversion is SN2. The carbocation is flat, so ethanol can attack either face.
+  - If Only (R)-3-ethoxy-3-methylhexane, by retention: The Br has left before ethanol comes; nothing holds the old face. The carbocation is flat: either face.
+  - If No product: a 3° substrate cannot react: A 3° substrate does react in ethanol, by SN1, through its 3° carbocation.
+- **b-oxonium**: In a solvolysis in ethanol, what does nucleophilic attack produce? [curved arrows: ethanol’s O attacking the carbocation of 2-bromo-2-methylpropane, with its curved arrow]
   - Answer: **An oxonium ion**
   - Other choices: A carbocation; An alkene; An alkoxide ion
   - Why: Ethanol’s O bonds to the carbocation and carries the positive charge: an oxonium ion. A proton transfer to another ethanol then gives the neutral ether.
+  - If A carbocation: The carbocation forms before the attack, in the first step. Nucleophilic attack uses it up.
+  - If An alkene: An alkene comes from losing a proton (E1), not from attack by the O.
+  - If An alkoxide ion: Ethanol is neutral; when its O attacks, the O gains a bond and a positive charge. An alkoxide would be negative.
 - **b-shift-kind**: 3-Bromo-2,2-dimethylbutane loses Br⁻ in ethanol. How does its carbocation rearrange? [3-bromo-2,2-dimethylbutane]
   - Answer: **A methyl shift, giving a 3° carbocation**
   - Other choices: A hydride shift, giving a 3° carbocation; It does not rearrange; A methyl shift, giving a 1° carbocation
   - Why: The next carbon carries three CH₃ groups and no H. A CH₃ moves over with its bonding electrons, and the positive charge lands on that carbon, now 3°.
+  - If A hydride shift, giving a 3° carbocation: The carbon next to the C⁺ has no H atoms: it carries three CH₃ groups. So which group can move?
+  - If It does not rearrange: The carbocation is 2°, and a shift can make it 3°. Look at the neighbouring carbon: what can move?
+  - If A methyl shift, giving a 1° carbocation: A shift happens only if it makes a more stable carbocation. Moving to a 1° carbocation would make it less stable.
 - **b-shift-product**: What is the major substitution product of 2-bromo-3-methylbutane in ethanol? [2-bromo-3-methylbutane]
   - Answer: **2-ethoxy-2-methylbutane**
   - Other choices: 2-ethoxy-3-methylbutane; 2-methylbut-2-ene
   - Why: The 2° carbocation becomes 3° by a hydride shift, and ethanol attacks it there: 2-ethoxy-2-methylbutane. Without the shift you would get 2-ethoxy-3-methylbutane (minor).
+  - If 2-ethoxy-3-methylbutane: That is the product without a shift. The 2° carbocation rearranges first: can an H on the next carbon move over to make a 3° one?
+  - If 2-methylbut-2-ene: That is an E1 alkene. The question asks for the substitution product, after the carbocation has rearranged.
 - **b-sn2-arrows**: Which drawing shows the arrows of the SN2 of 2-bromobutane with HS⁻ correctly?
   - Answer: **curved arrows: lone pair on S to the α carbon, and the C–Br bond to Br**
   - Other choices: curved arrows: only the arrow from S to the α carbon; curved arrows: lone pair on S to Br, and the C–Br bond to Br; curved arrows: from the α carbon to S, and the C–Br bond to Br
   - Why: Two arrows, in one step: the lone pair on S attacks the α carbon (nucleophilic attack), and the C–Br bond’s electrons go to Br (loss of a leaving group). Arrows always start on electrons.
+  - If curved arrows: only the arrow from S to the α carbon: SN2 is concerted: the C–Br bond breaks as the S attacks. One arrow is missing.
+  - If curved arrows: lone pair on S to Br, and the C–Br bond to Br: The nucleophile attacks the α carbon, not the Br. Point the arrow from the S lone pair to the carbon that carries the Br.
+  - If curved arrows: from the α carbon to S, and the C–Br bond to Br: Arrows start where the electrons are: on the S lone pair, never on the carbon.
 - **b-ring**: cis-1-Bromo-4-methylcyclohexane reacts with NaSH. What is the product? [cis-1-bromo-4-methylcyclohexane]
   - Answer: **trans-4-methylcyclohexanethiol**
   - Other choices: cis-4-methylcyclohexanethiol
   - Why: SN2: the HS⁻ attacks the face opposite the Br, so the SH ends up on the other face from the CH₃. Cis becomes trans.
+  - If cis-4-methylcyclohexanethiol: Cis to cis would keep the configuration. SN2 attacks from the back side, so the SH ends up on the other face from where the Br was.
 - **b-stereospec**: Why is SN2 called stereospecific?
   - Answer: **The substrate decides the product’s configuration**
   - Other choices: It gives two stereoisomers, one of them major; It always gives a racemic mixture of enantiomers; It only happens on rings and other cyclic molecules
   - Why: Stereospecific: the configuration of the substrate decides the configuration of the product. SN2 always inverts.
+  - If It gives two stereoisomers, one of them major: Two stereoisomers with one major is stereoselective. SN2 gives one.
+  - If It always gives a racemic mixture of enantiomers: A racemic mixture comes from SN1’s flat carbocation. SN2 gives one stereoisomer.
+  - If It only happens on rings and other cyclic molecules: SN2 happens on chains too: (R)-2-bromobutane gives (S)-butane-2-thiol. What decides the product’s configuration?
 - **b-shift-arrow**: Which drawing shows the arrow for the hydride shift?
   - Answer: **curved arrows: the C–H bond to the carbocation**
   - Other choices: curved arrows: the C–H bond to its own carbon; curved arrows: from the carbocation to the H
   - Why: The H moves with its pair of electrons, so the arrow starts on the C–H bond and points at the carbocation next door.
+  - If curved arrows: the C–H bond to its own carbon: The C–H pair moves to the carbon with the positive charge, the carbocation, not back to its own carbon.
+  - If curved arrows: from the carbocation to the H: Arrows start where the electrons are. The carbocation has an empty p orbital, no electrons to give: start on the C–H bond.
 
 ### Checkpoint 3: elimination
 
 Draws 5 of 16; always asks: c-fn-tbuok, c-e2-major.
 
-- **c-fn-tbuok**: What is the function of t-BuOK?
+- **c-fn-tbuok**: What is the function of t-BuOK? [t-BuOK (t-BuO⁻)]
   - Answer: **Strong nucleophile and strong base**
   - Other choices: Nucleophile only (strong nucleophile, weak base); Base only (strong base, weak nucleophile); Weak nucleophile, weak base
   - Why: t-BuO⁻ is a strong base and a strong nucleophile, but it is sterically hindered: it prefers E2 even at a primary carbon, and it removes the most accessible H, giving the Hofmann product.
+  - If Nucleophile only (strong nucleophile, weak base): t-BuO⁻ is a strong base too: its conjugate acid is a weak acid.
+  - If Base only (strong base, weak nucleophile): Hindered is not the same as base only: t-BuO⁻ is still a strong nucleophile. It prefers E2 because of its bulk.
+  - If Weak nucleophile, weak base: t-BuO⁻ carries a negative charge: a strong base and a strong nucleophile.
 - **c-e2-major**: What is the major product of 2-bromo-2-methylbutane with NaOEt? [2-bromo-2-methylbutane + NaOEt]
   - Answer: **2-methylbut-2-ene**
   - Other choices: 2-methylbut-1-ene; 2-ethoxy-2-methylbutane
   - Why: A 3° substrate and a strong base: E2. Ethoxide is not hindered, so the Zaitsev product, the more substituted alkene, is major.
+  - If 2-methylbut-1-ene: That is the Hofmann product, the less substituted alkene. EtO⁻ is not hindered, so which alkene is major?
+  - If 2-ethoxy-2-methylbutane: No SN2 at a 3° carbon: steric hindrance. A strong base eliminates.
 - **c-e2-mech**: Which describes the E2 mechanism?
   - Answer: **One step: proton transfer and loss of the leaving group together**
   - Other choices: Two steps: loss of the leaving group, then proton transfer; One step: nucleophilic attack and loss of the leaving group together; Two steps: proton transfer, then loss of the leaving group
   - Why: E2 is concerted: the base takes a β H as the leaving group leaves. Two steps through a carbocation is E1; nucleophilic attack is substitution.
+  - If Two steps: loss of the leaving group, then proton transfer: That is E1, through a carbocation. E2 does it all in one step.
+  - If One step: nucleophilic attack and loss of the leaving group together: Nucleophilic attack and loss of the leaving group is SN2. In E2 the base takes a proton.
+  - If Two steps: proton transfer, then loss of the leaving group: The C–H electrons cannot form a π bond until the leaving group leaves. In E2 both happen at once.
 - **c-e2-arrows**: Which drawing shows the arrows of the E2 of 2-bromo-2-methylpropane with EtO⁻ correctly?
   - Answer: **curved arrows: base to H, C–H bond to the C–C bond, C–Br bond to Br**
   - Other choices: curved arrows: base to the α carbon, C–Br bond to Br; curved arrows: base to H, C–Br bond to Br; curved arrows: base to H, C–H bond to the C–C bond, C–Br bond to C
   - Why: Three arrows, one step: the base takes the β H, the C–H bond’s electrons become the π bond, and the C–Br bond’s electrons leave with Br.
+  - If curved arrows: base to the α carbon, C–Br bond to Br: The base takes an H on the β carbon; attacking the α carbon would be substitution.
+  - If curved arrows: base to H, C–Br bond to Br: The C–H pair has to go somewhere: it becomes the π bond. One arrow is missing.
+  - If curved arrows: base to H, C–H bond to the C–C bond, C–Br bond to C: The C–Br pair goes to Br, the more electronegative atom, which leaves as Br⁻.
 - **c-anti**: For E2, the H and the leaving group must be…
   - Answer: **anti-coplanar**
   - Other choices: syn-coplanar; gauche; on one carbon
   - Why: Anti-coplanar: on opposite sides of the C–C bond, in one plane. That is staggered, so it is the low-energy way.
+  - If syn-coplanar: Syn-coplanar is eclipsed and high in energy, so E2 almost never goes that way. Turn the back carbon in your head: where should the H be?
+  - If gauche: Gauche is not in one plane, so the orbitals cannot line up into the π bond.
+  - If on one carbon: The H must be on the β carbon, next to the carbon with the leaving group, not on the same carbon.
 - **c-syn**: Why does E2 almost never go through the syn-coplanar arrangement?
   - Answer: **It is eclipsed, so it is high in energy**
   - Other choices: The H is too far away for the base to reach; It gives a substitution product instead; It needs a carbocation to form first
   - Why: Syn-coplanar means the H and the leaving group are eclipsed. Eclipsed conformations are much higher in energy than the staggered, anti-coplanar one.
-- **c-zaitsev**: What is the Zaitsev product?
+  - If The H is too far away for the base to reach: The base reaches a syn H just as easily. Think about the energy of that conformation: staggered or eclipsed?
+  - If It gives a substitution product instead: Syn or anti, it is still an elimination. What is wrong with the syn conformation itself?
+  - If It needs a carbocation to form first: E2 makes no carbocation. Think about the energy of the eclipsed conformation.
+- **c-zaitsev**: What is the Zaitsev product? [2-methylbut-2-ene and 2-methylbut-1-ene]
   - Answer: **The more substituted alkene**
   - Other choices: The less substituted alkene; The substitution product; The (Z) alkene
   - Why: Zaitsev: the more substituted alkene, major with an ordinary base. Hofmann: the less substituted alkene, major with a sterically hindered base.
+  - If The less substituted alkene: That is the Hofmann product.
+  - If The substitution product: Zaitsev and Hofmann are both alkenes, from E2 or E1.
+  - If The (Z) alkene: Z is about the geometry of one C=C; Zaitsev is about where the C=C forms. Count the carbons on the C=C.
 - **c-hofmann**: What is the major product of 2-bromo-2-methylbutane with t-BuOK? [2-bromo-2-methylbutane + t-BuOK]
   - Answer: **2-methylbut-1-ene**
   - Other choices: 2-methylbut-2-ene; 2-tert-butoxy-2-methylbutane
   - Why: t-BuO⁻ is sterically hindered: it takes an H from the less crowded CH₃, giving the Hofmann product, the less substituted alkene. No SN2 at a 3° carbon.
+  - If 2-methylbut-2-ene: That is the Zaitsev product. t-BuO⁻ is sterically hindered: which H does it reach more easily?
+  - If 2-tert-butoxy-2-methylbutane: No SN2 at a 3° carbon, and t-BuO⁻ is too bulky anyway. It eliminates.
 - **c-regiosel**: An E2 gives two alkenes with the C=C in different places, one of them major. The reaction is…
   - Answer: **regioselective**
   - Other choices: regiospecific; stereoselective; stereospecific
   - Why: Regioselective: more than one regiochemical product can form, and one is major.
+  - If regiospecific: Regiospecific means only one alkene can form. Here two form, one major.
+  - If stereoselective: Stereoselective is about stereoisomers (E and Z) of one alkene. Here the C=C is in different places.
+  - If stereospecific: Stereospecific is about the substrate deciding one stereoisomer. Here the question is where the C=C forms.
 - **c-stereosel**: What is the major product of 3-bromopentane with NaOEt? [3-bromopentane + NaOEt]
   - Answer: **(E)-pent-2-ene**
   - Other choices: (Z)-pent-2-ene; 3-ethoxypentane
   - Why: C2 has two H atoms, so both (E)- and (Z)-pent-2-ene can form. The E isomer, with its larger groups trans, comes from the less crowded transition state: major. The SN2 product is minor.
-- **c-stereosel-why**: Why is (E)-pent-2-ene the major alkene from 3-bromopentane?
+  - If (Z)-pent-2-ene: The (Z) alkene forms, but as the minor product: its anti conformation puts the two larger groups gauche.
+  - If 3-ethoxypentane: At a 2° carbon a strong base mostly eliminates; the SN2 product is minor.
+- **c-stereosel-why**: Why is (E)-pent-2-ene the major alkene from 3-bromopentane? [3-bromopentane]
   - Answer: **Its anti conformation is less crowded**
   - Other choices: C2 has only one H that can be removed; The (Z) alkene cannot form at all; Ethoxide is a sterically hindered base
   - Why: With the H that gives the E alkene anti-coplanar, the CH₃ and the CH₂CH₃ are not gauche to each other. That transition state is lower in energy, so the E alkene forms faster.
+  - If C2 has only one H that can be removed: C2 has two H atoms (it is a CH₂), so either one can be anti to the Br.
+  - If The (Z) alkene cannot form at all: The (Z) alkene does form, as the minor product. Why is one transition state lower than the other?
+  - If Ethoxide is a sterically hindered base: Ethoxide is not hindered. Look at the groups on the two carbons in each anti conformation.
 - **c-stereospec**: What is the major product of (2R,3S)-2-bromo-3-methylpentane with NaOEt? [(2R,3S)-2-bromo-3-methylpentane]
   - Answer: **(Z)-3-methylpent-2-ene**
   - Other choices: (E)-3-methylpent-2-ene; 3-methylpent-1-ene
   - Why: C3 has one H, so only one conformation puts it anti-coplanar to the Br, and only one stereoisomer of the Zaitsev alkene can form: here the (Z) alkene. Stereospecific.
-- **c-stereospec-why**: Why is the E2 of (2R,3S)-2-bromo-3-methylpentane stereospecific?
+  - If (E)-3-methylpent-2-ene: That is the alkene from the other diastereomer. With one H on C3, put that H anti to the Br: which groups end up on the same side?
+  - If 3-methylpent-1-ene: C1 has three H atoms, but the C=C toward C3 is more substituted, and EtO⁻ is not hindered. Which alkene is Zaitsev?
+- **c-stereospec-why**: Why is the E2 of (2R,3S)-2-bromo-3-methylpentane stereospecific? [(2R,3S)-2-bromo-3-methylpentane]
   - Answer: **C3 has only one H that can be anti to the Br**
   - Other choices: C3 has two H atoms, and either one can leave; It goes through a flat carbocation first; Ethoxide is a sterically hindered base
   - Why: Only one H on C3 means only one anti-coplanar conformation, which decides the alkene’s geometry. The other diastereomer gives the other stereoisomer.
+  - If C3 has two H atoms, and either one can leave: C3 has one H (it also carries a CH₃ and an ethyl group). With only one H, only one anti conformation can eliminate.
+  - If It goes through a flat carbocation first: E2 has no carbocation. The H anti to the Br decides the geometry: how many H atoms does C3 have?
+  - If Ethoxide is a sterically hindered base: Ethoxide is not hindered, and a hindered base changes regiochemistry, not stereochemistry. Count the H atoms on C3.
 - **c-e1-order**: In what order do the steps of E1 happen?
   - Answer: **Loss of a leaving group, then proton transfer**
   - Other choices: Proton transfer, then loss of a leaving group; Both at once; Nucleophilic attack, then proton transfer
   - Why: E1 goes through the carbocation: the leaving group leaves first (the slow step), then the solvent takes a β H.
+  - If Proton transfer, then loss of a leaving group: The base cannot take the proton until the carbocation is there: its empty p orbital takes the C–H pair.
+  - If Both at once: Both at once is E2. E1 goes one step at a time, through a carbocation.
+  - If Nucleophilic attack, then proton transfer: Nucleophilic attack gives substitution (SN1). E1 starts like SN1, then a proton is removed.
 - **c-e1-sn1**: What is the major product of 2-bromo-2-methylbutane in ethanol? [2-bromo-2-methylbutane + EtOH]
   - Answer: **2-methylbut-2-ene**
   - Other choices: 2-ethoxy-2-methylbutane; 2-methylbut-1-ene
   - Why: A 3° substrate in ethanol, a weak nucleophile and weak base: SN1 and E1. The Zaitsev alkene, 2-methylbut-2-ene, is trisubstituted, so E1 is favoured over SN1 here (Klein). The ether and the Hofmann alkene are minor.
+  - If 2-ethoxy-2-methylbutane: The SN1 product forms, but here it is minor: 2-methylbut-2-ene is trisubstituted, so E1 is favoured over SN1 (Klein).
+  - If 2-methylbut-1-ene: E1 always favours the Zaitsev product. This alkene is the less substituted one.
 - **c-e1-hofmann**: Why can a bulky base not turn E1 toward the Hofmann product?
   - Answer: **The base is not in the slow step**
   - Other choices: E1 has no proton transfer; E1 always gives substitution; E1 is stereospecific
   - Why: In E1 the carbocation forms first, without the base. It then loses the H that gives the more stable alkene, so the Zaitsev product is major whatever the base.
+  - If E1 has no proton transfer: E1 does have a proton transfer: it is the second step. Which step decides the rate?
+  - If E1 always gives substitution: E1 gives an alkene. SN1 is the substitution beside it.
+  - If E1 is stereospecific: E1 goes through a flat carbocation, so it is not stereospecific. Think about which step the base is in.
 
 ### Checkpoint 4: E2 in rings
 
 Draws 4 of 12; always asks: d-fn-nah, d-locked.
 
-- **d-fn-nah**: What is the function of NaH?
+- **d-fn-nah**: What is the function of NaH? [NaH (H⁻)]
   - Answer: **Base only (strong base, weak nucleophile)**
   - Other choices: Nucleophile only (strong nucleophile, weak base); Strong nucleophile and strong base; Weak nucleophile, weak base
   - Why: H⁻ is a very strong base (its conjugate acid, H₂, is an extremely weak acid), but it is small and not polarizable, so it is a weak nucleophile.
+  - If Nucleophile only (strong nucleophile, weak base): H⁻ is small and not polarizable: a weak nucleophile, and a very strong base.
+  - If Strong nucleophile and strong base: H⁻ is a very strong base (its conjugate acid, H₂, is an extremely weak acid), but a weak nucleophile.
+  - If Weak nucleophile, weak base: H⁻ is a very strong base: H₂ is an extremely weak acid.
 - **d-locked**: Which reacts much faster by E2 with NaOEt?
   - Answer: **cis-1-bromo-4-tert-butylcyclohexane**
   - Other choices: trans-1-bromo-4-tert-butylcyclohexane
   - Why: The tert-butyl group stays equatorial. In the cis isomer that leaves the Br axial, trans-diaxial to H atoms on C2 and C6: fast. The trans isomer is locked with its Br equatorial: drastically slower.
+  - If trans-1-bromo-4-tert-butylcyclohexane: In trans the tert-butyl and the Br are both equatorial in the only chair it can take, so there is no axial Br for E2.
 - **d-diaxial**: For E2 on a cyclohexane, the leaving group must be…
   - Answer: **axial, with an axial H next to it**
   - Other choices: equatorial, with an equatorial H; axial, with an equatorial H next to it; either axial or equatorial
   - Why: Anti-coplanar on a ring means trans-diaxial: the leaving group axial and an axial H on the next carbon, on the other face.
-- **d-count**: Chlorocyclohexane in the chair with its Cl axial: how many H atoms are anti-coplanar to the Cl?
+  - If equatorial, with an equatorial H: Equatorial bonds point out from the ring; an equatorial Cl has no H anti to it. Which position points straight up or down?
+  - If axial, with an equatorial H next to it: An equatorial H is not opposite an axial Cl. Anti-coplanar on a ring means both axial, on opposite faces.
+  - If either axial or equatorial: An equatorial leaving group has no anti-coplanar H. The ring must flip to put it axial first.
+- **d-count**: Chlorocyclohexane in the chair with its Cl axial: how many H atoms are anti-coplanar to the Cl? [chair of chlorocyclohexane]
   - Answer: **Two**
   - Other choices: One; Four; None
   - Why: The axial H on C2 and the axial H on C6, both on the face opposite the Cl. The equatorial H atoms point out from the ring.
+  - If One: There is an axial H on each side: on C2 and on C6, both pointing the other way.
+  - If Four: Only axial H atoms on the next carbons, on the other face, are anti. C2 and C6 have one each.
+  - If None: An axial Cl always has axial H atoms on the next carbons, pointing the other way. Look at C2 and C6.
 - **d-cis**: What is the major product of cis-1-chloro-2-methylcyclohexane with NaOEt? [cis-1-chloro-2-methylcyclohexane]
   - Answer: **1-methylcyclohexene**
   - Other choices: 3-methylcyclohexene; methylenecyclohexane
   - Why: With the Cl axial, both C2 and C6 have an axial H anti-coplanar to it, so both alkenes can form. The more substituted one, 1-methylcyclohexene (Zaitsev), is major.
+  - If 3-methylcyclohexene: That alkene forms too, but it is less substituted. In cis, H atoms on both sides can be trans-diaxial: which alkene is Zaitsev?
+  - If methylenecyclohexane: The C=C forms between the α carbon (the one with the Cl) and a ring carbon next to it, never to the CH₃ outside the ring.
 - **d-trans**: What is the major product of trans-1-chloro-2-methylcyclohexane with NaOEt? [trans-1-chloro-2-methylcyclohexane]
   - Answer: **3-methylcyclohexene**
   - Other choices: 1-methylcyclohexene; methylenecyclohexane
   - Why: With the Cl axial, the CH₃ on C2 is axial too, so C2 has no axial H. Only the H on C6 is anti-coplanar: 3-methylcyclohexene is the only alkene, even though it is the less substituted one.
-- **d-regiospec**: trans-1-Chloro-2-methylcyclohexane gives only one alkene. That E2 is…
+  - If 1-methylcyclohexene: With the Cl axial, the H on C2 is equatorial, so it cannot be trans-diaxial. Only the H on C6 can leave.
+  - If methylenecyclohexane: The C=C forms between the α carbon and a β carbon; the CH₃ is not bonded to the α carbon.
+- **d-regiospec**: trans-1-Chloro-2-methylcyclohexane gives only one alkene. That E2 is… [trans-1-chloro-2-methylcyclohexane]
   - Answer: **regiospecific**
   - Other choices: regioselective; stereoselective; not an E2 at all
   - Why: Regiospecific: only one regiochemical product can form, because only one β H can be anti-coplanar to the leaving group.
-- **d-trans-slow**: Why is the E2 of trans-1-chloro-2-methylcyclohexane slow?
+  - If regioselective: Regioselective means two alkenes form, one major. Here only one alkene can form.
+  - If stereoselective: Stereoselective is about E and Z. The question here is where the C=C forms.
+  - If not an E2 at all: It is an E2 (a strong base with a 2° substrate). Only one β H can be trans-diaxial to the Cl.
+- **d-trans-slow**: Why is the E2 of trans-1-chloro-2-methylcyclohexane slow? [trans-1-chloro-2-methylcyclohexane]
   - Answer: **Its reactive chair has both groups axial**
   - Other choices: It has no β H atoms on either side; Cl⁻ is a much poorer leaving group than Br⁻; Its CH₃ group reacts with the base first
   - Why: The Cl is axial only in the chair with the CH₃ axial too, the less stable chair. Few molecules sit in that chair at any moment, so the reaction is slower.
+  - If It has no β H atoms on either side: It has β H atoms on C2 and C6. The question is how often the Cl is axial.
+  - If Cl⁻ is a much poorer leaving group than Br⁻: It is the same Cl as in the cis isomer, which reacts fast. Look at its chairs.
+  - If Its CH₃ group reacts with the base first: The base reacts with H atoms, not with the CH₃ group. In which chair can E2 happen?
 - **d-locked-why**: Why is the E2 of trans-1-bromo-4-tert-butylcyclohexane drastically slower? [trans-1-bromo-4-tert-butylcyclohexane]
   - Answer: **The ring is locked with the Br equatorial**
   - Other choices: The tert-butyl group acts as a hindered base; Its Br is held axial, too crowded to leave; C2 and C6 have no H atoms to remove
   - Why: A tert-butyl group is far too big to be axial, so it locks the ring in the chair where the Br is equatorial. No H is anti-coplanar to an equatorial Br.
+  - If The tert-butyl group acts as a hindered base: The tert-butyl group is part of the substrate, not the base. What does it do to the ring?
+  - If Its Br is held axial, too crowded to leave: In trans, the tert-butyl group is equatorial, so the Br is equatorial too, not axial.
+  - If C2 and C6 have no H atoms to remove: C2 and C6 do have H atoms. Are any of them anti to an equatorial Br?
 - **d-k718**: Klein problem 7.18: which undergoes E2 more rapidly?
   - Answer: **trans-1-tert-butyl-3-chlorocyclohexane**
   - Other choices: cis-1-tert-butyl-3-chlorocyclohexane
   - Why: With the tert-butyl group equatorial, the trans isomer has its Cl axial (fast E2); the cis isomer has its Cl equatorial and locked there (very slow).
+  - If cis-1-tert-butyl-3-chlorocyclohexane: In cis the tert-butyl group is equatorial and so is the Cl: locked with the Cl equatorial, E2 is very slow.
 - **d-menthyl**: Neomenthyl chloride gives mostly the more substituted alkene; menthyl chloride gives only the less substituted one. Why? [neomenthyl chloride and menthyl chloride]
   - Answer: **Only one β H of menthyl chloride can be trans-diaxial**
   - Other choices: Menthyl chloride has no β H atoms next to its Cl; Neomenthyl chloride reacts by SN1 instead of E2; Menthyl chloride needs a sterically hindered base
   - Why: Menthyl chloride can only put its Cl axial in the chair with every group axial, and there the isopropyl side has no axial H anti to the Cl. Only one β H qualifies: regiospecific. Neomenthyl chloride has its Cl axial in its stable chair, with axial H atoms on both sides.
+  - If Menthyl chloride has no β H atoms next to its Cl: Menthyl chloride has β H atoms; only one of them can be trans-diaxial to the Cl.
+  - If Neomenthyl chloride reacts by SN1 instead of E2: Both react by E2 with a strong base. Which β H atoms can be trans-diaxial in each?
+  - If Menthyl chloride needs a sterically hindered base: No hindered base is needed. Which β H can be trans-diaxial to the Cl?
 - **d-ccmh**: What is the major product of 1-chloro-1-methylcyclohexane with t-BuOK? [1-chloro-1-methylcyclohexane]
   - Answer: **methylenecyclohexane**
   - Other choices: 1-methylcyclohexene; 3-methylcyclohexene
   - Why: t-BuO⁻ is sterically hindered, so it takes an H from the CH₃: methylenecyclohexane, the Hofmann product. Ethoxide would give 1-methylcyclohexene.
+  - If 1-methylcyclohexene: That is the Zaitsev product. t-BuO⁻ is sterically hindered: which H atoms are easiest to reach?
+  - If 3-methylcyclohexene: The C=C forms to a carbon bonded to the α carbon; C3 is not bonded to C1.
 
 ### Checkpoint 5: predicting the products
 
 Draws 5 of 15; always asks: e-fn-h2o, e-klein.
 
-- **e-fn-h2o**: What is the function of H₂O?
+- **e-fn-h2o**: What is the function of H₂O? [H₂O]
   - Answer: **Weak nucleophile, weak base**
   - Other choices: Nucleophile only (strong nucleophile, weak base); Strong nucleophile and strong base; Base only (strong base, weak nucleophile)
   - Why: H₂O is neutral and its O is small and not polarizable: a weak nucleophile and a weak base.
+  - If Nucleophile only (strong nucleophile, weak base): Water is neutral and its O is small and not polarizable: a weak nucleophile.
+  - If Strong nucleophile and strong base: Water has no charge: a weak nucleophile and a weak base. HO⁻ is the strong one.
+  - If Base only (strong base, weak nucleophile): Water is a weak base: as an acid it is weak, so it barely takes a proton.
 - **e-klein**: Klein’s worked example: what is the major product of (R)-2-chloropentane with NaOEt? [(R)-2-chloropentane + NaOEt]
   - Answer: **(E)-pent-2-ene**
   - Other choices: (Z)-pent-2-ene; pent-1-ene; (S)-2-ethoxypentane
   - Why: Strong nucleophile and strong base, 2° substrate: E2 major, SN2 minor. Zaitsev regiochemistry, and the E isomer is favoured: (E)-pent-2-ene. The others all form, as minor products.
+  - If (Z)-pent-2-ene: The (Z) alkene forms, but less: its larger groups are cis. C3 has two H atoms, so either can be anti.
+  - If pent-1-ene: That is the Hofmann product, the less substituted alkene; EtO⁻ is not hindered.
+  - If (S)-2-ethoxypentane: At a 2° carbon a strong base mostly eliminates. The SN2 product forms, but it is minor.
 - **e-not-formed**: (R)-2-Chloropentane reacts with NaOEt. Which of these does NOT form? [(R)-2-chloropentane + NaOEt]
   - Answer: **(R)-2-ethoxypentane**
   - Other choices: (S)-2-ethoxypentane; (Z)-pent-2-ene; pent-1-ene
   - Why: The SN2 product forms by back-side attack, so it is (S)-2-ethoxypentane, with inverted configuration. (R)-2-ethoxypentane would need attack from the front.
+  - If (S)-2-ethoxypentane: This one forms: SN2 with inversion, as a minor product. Look for the one that needs attack from the front.
+  - If (Z)-pent-2-ene: This one forms, as a minor product: C3 has two H atoms, so either can be anti. Look for the one SN2 cannot make.
+  - If pent-1-ene: This one forms, as the minor Hofmann product. Look for the one SN2 cannot make.
 - **e-mech-1both**: A 1° alkyl halide reacts with NaOEt. What does Klein’s table predict? [1-bromobutane + NaOEt]
   - Answer: **SN2, some E2**
   - Other choices: E2, some SN2; SN1; E2
   - Why: Little steric hindrance at a 1° carbon: a strong nucleophile and strong base mostly substitutes (SN2), with some E2.
+  - If E2, some SN2: That is a hindered base like t-BuOK. NaOEt is not hindered: at a 1° carbon there is little steric hindrance, so SN2 wins.
+  - If SN1: SN1 needs a weak nucleophile and a stable carbocation; a 1° carbocation is not stable.
+  - If E2: At a 1° carbon EtO⁻ reaches the back side easily, so it substitutes as well. Which is major?
 - **e-mech-2both**: A 2° alkyl halide reacts with NaOMe. What does Klein’s table predict? [2-bromopentane + NaOMe]
   - Answer: **E2, some SN2**
   - Other choices: SN2, some E2; SN1 and E1; SN2
   - Why: At a 2° carbon the strong base mostly eliminates: E2 major, SN2 minor.
+  - If SN2, some E2: At a 2° carbon there is more steric hindrance at the back side, so the strong base mostly eliminates.
+  - If SN1 and E1: NaOMe is a strong nucleophile and strong base: no carbocation, no SN1 or E1.
+  - If SN2: At a 2° carbon a strong base also eliminates, and more than it substitutes.
 - **e-mech-3weak**: A 3° alkyl halide in ethanol. What does Klein’s table predict? [2-bromo-2-methylbutane + EtOH]
   - Answer: **SN1 and E1**
   - Other choices: E2; SN2; No reaction
   - Why: Weak nucleophile, weak base, 3° substrate: the carbocation forms, then SN1 and E1 compete. E1 is favoured when its alkene is tri- or tetrasubstituted, as here; otherwise SN1.
+  - If E2: Ethanol is a weak base: E2 needs a strong one. It waits for the carbocation.
+  - If SN2: A 3° carbon blocks SN2: steric hindrance at the back side.
+  - If No reaction: A 3° substrate in ethanol does react, slowly, through its carbocation.
 - **e-mech-3nuc**: A 3° alkyl halide with NaSH. What does Klein’s table predict? [2-bromo-2-methylbutane + NaSH]
   - Answer: **SN1**
   - Other choices: SN2; E2; No reaction
   - Why: A nucleophile only cannot do SN2 at a 3° carbon and is too weak a base for E2, so it waits for the carbocation: SN1.
+  - If SN2: A 3° carbon blocks back-side attack: steric hindrance. So the nucleophile waits for the carbocation.
+  - If E2: HS⁻ is a weak base, so it does not eliminate. It is a strong nucleophile: by which route can it substitute at a 3° carbon?
+  - If No reaction: It does react: a 3° carbocation forms, and HS⁻ attacks it.
 - **e-mech-tbuok**: 1-Bromobutane with t-BuOK. What happens? [1-bromobutane + t-BuOK]
   - Answer: **E2, some SN2**
   - Other choices: SN2, some E2; SN1; No reaction
   - Why: t-BuOK is a strong nucleophile and a strong base, but sterically hindered: unlike the others, at a 1° carbon it mostly eliminates.
+  - If SN2, some E2: That is right for NaOEt, but t-BuO⁻ is sterically hindered: it reaches an H more easily than a carbon.
+  - If SN1: t-BuOK is a strong base and a strong nucleophile: no carbocation, no SN1.
+  - If No reaction: A strong base reacts with a 1° alkyl halide. The question is which way.
 - **e-ethanol**: What is the major product of bromoethane with NaOH? [bromoethane + NaOH]
   - Answer: **ethanol**
   - Other choices: ethene
   - Why: A 1° substrate with a strong nucleophile and strong base: SN2 major (ethanol), E2 minor (ethene).
+  - If ethene: At a 1° carbon there is little steric hindrance, so HO⁻ mostly substitutes; ethene is minor.
 - **e-azide**: What is the product of 2-iodopropane with NaN₃? [2-iodopropane + NaN₃]
   - Answer: **2-azidopropane**
   - Other choices: propene
   - Why: Azide is a nucleophile only, and the substrate is 2°: SN2. Azide is too weak a base to eliminate.
+  - If propene: N₃⁻ is a weak base, so it does not eliminate. It is a strong nucleophile.
 - **e-dbu**: What is the product of bromocyclohexane with DBU? [bromocyclohexane + DBU]
   - Answer: **Cyclohexene, by E2**
   - Other choices: A substitution product, by SN2; A substitution product, by SN1; No reaction
   - Why: DBU is a base only: a strong base but a weak nucleophile, so it eliminates: E2 gives cyclohexene.
+  - If A substitution product, by SN2: DBU is a weak nucleophile: the rings around its N get in the way. It acts as a base.
+  - If A substitution product, by SN1: DBU is a strong base, so nothing waits for a carbocation.
+  - If No reaction: A strong base reacts with a 2° alkyl halide.
 - **e-thiol**: What is the product of (R)-2-bromopentane with NaSH? [(R)-2-bromopentane + NaSH]
   - Answer: **(S)-pentane-2-thiol**
   - Other choices: (R)-pentane-2-thiol; (E)-pent-2-ene
   - Why: A nucleophile only at a 2° carbon: SN2, with inversion of configuration: (S)-pentane-2-thiol.
+  - If (R)-pentane-2-thiol: That keeps the configuration (retention). SN2 attacks from the back side and inverts it.
+  - If (E)-pent-2-ene: HS⁻ is a weak base, so there is no elimination. It substitutes.
 - **e-tbuok-1**: What is the major product of 1-chloro-2-methylpropane with t-BuOK? [1-chloro-2-methylpropane + t-BuOK]
   - Answer: **2-methylpropene**
   - Other choices: 1-tert-butoxy-2-methylpropane
   - Why: A 1° substrate, but t-BuOK is sterically hindered: E2 is major (2-methylpropene) and SN2 minor.
+  - If 1-tert-butoxy-2-methylpropane: That forms, but t-BuO⁻ is sterically hindered: even at a 1° carbon it mostly eliminates.
 - **e-tetra**: What is the major product of 2-bromo-2,3-dimethylbutane with NaOEt? [2-bromo-2,3-dimethylbutane + NaOEt]
   - Answer: **2,3-dimethylbut-2-ene**
   - Other choices: 2,3-dimethylbut-1-ene; 2-ethoxy-2,3-dimethylbutane
   - Why: A 3° substrate and an unhindered strong base: E2, Zaitsev product: 2,3-dimethylbut-2-ene, with four carbons on the C=C.
+  - If 2,3-dimethylbut-1-ene: That is the Hofmann product. EtO⁻ is not hindered: which alkene is more substituted?
+  - If 2-ethoxy-2,3-dimethylbutane: No SN2 at a 3° carbon, and a strong base does not wait for a carbocation. It eliminates.
 - **e-hofmann-2**: What is the major product of (R)-2-bromopentane with t-BuOK? [(R)-2-bromopentane + t-BuOK]
   - Answer: **pent-1-ene**
   - Other choices: (E)-pent-2-ene; (Z)-pent-2-ene
   - Why: E2 with a sterically hindered base: the Hofmann product, pent-1-ene, is major.
+  - If (E)-pent-2-ene: That is a Zaitsev product. t-BuO⁻ is sterically hindered: which H does it reach more easily?
+  - If (Z)-pent-2-ene: That is a Zaitsev product, and the minor stereoisomer of it. t-BuO⁻ is sterically hindered.
 

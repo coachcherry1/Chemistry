@@ -1,5 +1,26 @@
 # Learning review
 
+## 2026-11-14 (latest): suggestions 1 to 4 built (zip v6, SCHEMA 3)
+
+The teacher chose suggestions 1 to 4 of the full review below. Steps and pool are unchanged (27 steps; 23 graded from 73).
+
+- **Predictions shuffled.** Each student sees the choices in a seeded order (the same after a reload). The arrow-pushing
+  activity's predictions are shuffled too (its zip v3).
+- **No opt out and per-choice feedback.** A wrong checkpoint answer counts, is struck out with its own feedback (193
+  lines, one per wrong choice, naming the misconception and the next move), and the student picks again until right
+  before Next. A reload keeps the question open. Show me now shows the right arrows beside the drawing to copy. A wrong
+  drop in the Part 4 sort says what the chosen bin means and where on the card to look, instead of describing the right bin.
+- **Retrieval, not recognition.** The three reference drawers are closed and hidden during checkpoints.
+- **Drawn.** Every question that names a molecule or a reagent draws it (was 12 of 13 words only in Checkpoint 1):
+  each reagent's reacting part with lone pairs and charge, Na⁺ beside MeO⁻, the four carbocations as the choices, the
+  chair with its axial Cl, the attack that makes the oxonium ion, and the substrates of three why questions.
+
+### Still open (suggestions 5 to 9)
+- Elaboration and interleaving: a why in every core; decision questions in Checkpoints 2 to 4; SN1 stereochemistry
+  and a rearrangement in Checkpoint 5.
+- Prerequisites card, six Vocabulary terms, the first step split in two.
+- Worked example, then fading, in Predict the products; a prediction before each watched-only play; Welcome back.
+
 ## 2026-11-14 (later): full review against the Learning design rule (zip v5, SCHEMA 3)
 
 The teacher asked for a cognitive science review of the whole activity: 27 steps and the 73-question pool. It is read from

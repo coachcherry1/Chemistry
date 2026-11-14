@@ -210,7 +210,7 @@ var App = (function () {
       var ids = core.concat(rest.slice(0, Q.draw - core.length));
       draws[k] = Q.pool.map(function (q) { return q.id; }).filter(function (id) { return ids.indexOf(id) >= 0; });
     });
-    return { v: SCHEMA, seed: seed, step: 0, max: 0, draws: draws, ans: {}, pick: {}, pr: {}, done: {}, fin: 0, best: 0, att: 1 };
+    return { v: SCHEMA, seed: seed, step: 0, max: 0, draws: draws, ans: {}, pick: {}, fix: {}, pr: {}, done: {}, fin: 0, best: 0, att: 1 };
   }
 
   function restore(saved) {
@@ -220,6 +220,7 @@ var App = (function () {
         return QZ[k].pool.some(function (q) { return q.id === id; });
       });
     });
+    if (ok) saved.fix = saved.fix || {};
     return ok ? saved : null;
   }
 
@@ -293,9 +294,16 @@ var App = (function () {
     var s = STEPS[i];
     el.stepTitle.textContent = s.title;
     el.counter.textContent = 'Step ' + (i + 1) + ' of ' + STEPS.length;
-    var text = s.kind === 'quiz' ? 'Graded: your first answer to each question counts. Read the explanation after each one.' : s.text;
+    var text = s.kind === 'quiz' ? 'Graded, from memory: your first answer to each question counts. If it is wrong, read why and pick again until you have the right one.' : s.text;
     el.instructions.textContent = text;
     el.instructions.hidden = !text;
+    /* a checkpoint is recall: the reference drawers (mechanisms, Klein's
+       three steps, Vocabulary) are closed and hidden until it is over */
+    var refs = document.querySelectorAll('details.reference');
+    for (var r = 0; r < refs.length; r++) {
+      if (s.kind === 'quiz') refs[r].open = false;
+      refs[r].hidden = s.kind === 'quiz';
+    }
     el.stage.innerHTML = '';
     el.stage.className = 'stage stage-' + s.kind;
     say('');
@@ -327,8 +335,12 @@ var App = (function () {
       h('p', { class: 'q-text', text: p.q })
     ]);
     var row = h('div', { class: 'q-choices' + (p.compact ? ' compact' : '') });
-    p.choices.forEach(function (c, i) {
-      var b = h('button', { type: 'button', class: 'choice' + (chosen === i ? ' picked' : ''), disabled: chosen != null },
+    /* shuffled for each student (seeded, so a reload keeps the order): the
+       right answer is not always first */
+    var order = shuffle(p.choices.map(function (c, i) { return i; }), rng(state.seed ^ hash(p.q)));
+    order.forEach(function (i) {
+      var c = p.choices[i];
+      var b = h('button', { type: 'button', class: 'choice' + (chosen === i ? ' picked' : ''), disabled: chosen != null, 'data-choice': i },
         [h('span', { class: 'choice-text', text: c })]);
       b.addEventListener('click', function () { onPick(i); });
       row.appendChild(b);
@@ -547,7 +559,8 @@ var App = (function () {
     var legend = h('ol', { class: 'pattern-list', hidden: true });
     var help = h('button', { type: 'button', class: 'ghostbtn', text: 'Show me', hidden: true });
     var playHost = h('div', { class: 'play-host', hidden: true });
-    var node = h('div', null, [tool.node, playHost, h('div', { class: 'btnrow' }, [help]), legend]);
+    var copy = h('div', { class: 'copy-arrows', hidden: true });
+    var node = h('div', null, [tool.node, playHost, h('div', { class: 'btnrow' }, [help]), copy, legend]);
     var box = { node: node, tool: tool, pb: null };
     function finish(fresh) {
       tool.done();
@@ -555,6 +568,7 @@ var App = (function () {
       tool.legend().forEach(function (t) { legend.appendChild(h('li', { text: t.replace(/^\d+\s+/, '') })); });
       legend.hidden = false;
       help.hidden = true;
+      copy.hidden = true;
       /* the student's own arrows, played */
       box.pb = playBox(scene, { arrows: tool.drawn(), badges: true, onInput: o.onPlay, done: o.onPlayed });
       playHost.innerHTML = '';
@@ -577,11 +591,16 @@ var App = (function () {
       say(r.msg, 'bad');
       if (pr[key + 'm'] >= (o.misses || 3)) help.hidden = false;
     }
+    /* No opt out: Show me shows the right arrows in a still picture beside
+       the drawing, clears the drawing, and the student draws them. */
     help.addEventListener('click', function () {
-      tool.show(true);
-      pr[key] = 1; persist();
-      say('These are the arrows. Each one is numbered; the list underneath names its pattern.', '');
-      finish(true);
+      tool.set([]);
+      copy.innerHTML = '';
+      copy.appendChild(h('p', { class: 'muted', text: 'The right arrows. Copy them onto your drawing, then press Check:' }));
+      copy.appendChild(h('div', { class: 'mol-wrap small' }, [Arrows.figure(scene, scene.arrows.map(function (a) { return { from: a.from[0], to: a.to[0] }; }),
+        { label: scene.title + ': the right curved arrows' })]));
+      copy.hidden = false;
+      say('These are the right arrows. Now draw them yourself, then press Check.', '');
     });
     if (pr[key]) { tool.show(true); finish(false); }
     else if (pr[key + 'm'] >= (o.misses || 3)) help.hidden = false;
@@ -638,6 +657,18 @@ var App = (function () {
       return Arrows.figure(sc, list, { label: spec.label });
     }
     if (spec.text) return h('div', { class: 'fig-text', text: spec.text });
+    if (spec.reagent) {
+      /* the part of a reagent that reacts, with its lone pairs and charge */
+      var R = React.REAGENTS[spec.reagent];
+      var rm = Mol.parse(R.draw || R.species);
+      var lps = rm.atoms.map(function (a, i) { return i; }).filter(function (i) { return rm.lonePairs(i) > 0; });
+      var rs = Draw.mol(rm, { mech: true, full: true, lp: lps, cls: cls, label: R.text + (R.ion ? ', drawn as ' + R.ion : '') + ', with its lone pairs' });
+      var cap = spec.caption != null ? spec.caption : R.text + (R.ion ? ': ' + R.ion : '');
+      return h('figure', { class: 'mol-card' }, [rs, cap ? h('figcaption', { class: 'name', text: cap }) : null]);
+    }
+    if (spec.chair) {
+      return h('figure', { class: 'mol-card chair-fig' }, [Draw.chair(MOLS[spec.chair].ring, spec.t || 0, { show: spec.show || 'all', cls: cls })]);
+    }
     var m = figMol(spec);
     var nm = spec.noName ? '' : molName(m);
     var s = Draw.mol(m, { label: 'Bond-line formula' + (nm ? ' of ' + nm : ''), numbers: spec.numbers, cls: cls });
@@ -649,6 +680,9 @@ var App = (function () {
     if (spec.pair) return spec.pair.map(figureText).join(' Beside it: ');
     if (spec.text) return spec.text;
     if (spec.mech) return spec.label || 'a mechanism with curved arrows';
+    if (spec.label) return spec.label;
+    if (spec.reagent) return React.REAGENTS[spec.reagent].text + (React.REAGENTS[spec.reagent].ion ? ', drawn as ' + React.REAGENTS[spec.reagent].ion : '');
+    if (spec.chair) return 'a chair of ' + MOLS[spec.chair].name;
     var m = figMol(spec);
     return m ? 'the bond-line formula of ' + molName(m) : '';
   }
@@ -736,11 +770,16 @@ var App = (function () {
       else say('Checkpoint finished: ' + right + ' / ' + ids.length + '.', 'good');
     }
 
+    /* No opt out: a wrong answer counts as wrong, then the student keeps
+       going until they pick the right one (state.fix marks that). */
+    function settled(id) { return state.ans[id] === 1 || (state.ans[id] === 0 && state.fix[id]); }
+
     function ask(n) {
       var id = ids[n];
       if (id == null) { summary(); return; }
-      if (state.ans[id] != null) { ask(n + 1); return; }
+      if (settled(id)) { ask(n + 1); return; }
       var q = question(id);
+      var redo = state.ans[id] === 0;          /* counted wrong, not yet put right */
       var order = shuffle(q.choices.map(function (c, i) { return i; }), rng(state.seed ^ hash(id)));
       box.innerHTML = '';
       box.setAttribute('data-qid', id);
@@ -751,7 +790,9 @@ var App = (function () {
       var figs = typeof q.choices[0] !== 'string';
       var row = h('div', { class: 'q-choices' + (figs ? ' figs' : q.compact ? ' compact' : '') });
       var why = h('p', { class: 'q-why', hidden: true });
+      var fb = h('p', { class: 'q-wrong', hidden: true, 'aria-live': 'polite' });
       var next = h('button', { type: 'button', class: 'primary', hidden: true, text: n + 1 < ids.length ? 'Next question →' : 'Finish checkpoint' });
+      next.addEventListener('click', function () { ask(n + 1); });
       order.forEach(function (ci, pos) {
         var c = q.choices[ci];
         var letter = String.fromCharCode(65 + pos);
@@ -760,10 +801,11 @@ var App = (function () {
           typeof c === 'string' ? h('span', { class: 'choice-text', text: c }) : figure(Object.assign({ noName: c.noName }, c), 'choice-fig')
         ]);
         if (typeof c !== 'string') b.setAttribute('aria-label', 'Choice ' + letter + ': ' + figureText(c));
-        b.addEventListener('click', function () { choose(ci); });
+        b.addEventListener('click', function () { if (state.ans[id] == null) choose(ci); else retry(ci); });
         row.appendChild(b);
       });
       box.appendChild(row);
+      box.appendChild(fb);
       box.appendChild(why);
       /* Graded, so a click only selects; Submit answer grades it (the first submit counts). */
       var selCi = null;
@@ -786,8 +828,30 @@ var App = (function () {
         for (var i = 0; i < nodes.length; i++) { nodes[i].classList.remove('selected'); nodes[i].removeAttribute('aria-pressed'); }
         answer(selCi);
       });
-      box.appendChild(h('div', { class: 'btnrow' }, [submit, next]));
+      box.appendChild(h('div', { class: 'btnrow' }, [redo ? null : submit, next]));
 
+      function mark(ci) {
+        var nodes = row.querySelectorAll('.choice');
+        for (var i = 0; i < nodes.length; i++) if (+nodes[i].getAttribute('data-choice') === ci) {
+          nodes[i].classList.add(ci === 0 ? 'right' : 'wrong');
+          nodes[i].disabled = true;
+        }
+      }
+      function lockAll() {
+        var nodes = row.querySelectorAll('.choice');
+        for (var i = 0; i < nodes.length; i++) nodes[i].disabled = true;
+      }
+      function fixed() {
+        if (state.ans[id] === 0 && !state.fix[id]) { state.fix[id] = 1; persist(); }
+        lockAll();
+        fb.hidden = true;
+        why.hidden = false;
+        why.textContent = q.why;
+        next.hidden = false;
+        next.focus({ preventScroll: true });
+      }
+      /* each wrong choice has its own feedback: the misconception and the next move */
+      function wrongText(ci) { return (q.wrong && q.wrong[ci - 1]) || ''; }
       function answer(ci) {
         if (state.ans[id] != null) return;
         var right = ci === 0;
@@ -796,21 +860,28 @@ var App = (function () {
         persist();
         reportScore();
         if (!preview) SCORM.recordAnswer(id, String.fromCharCode(97 + ci), 'a', right);
-        var nodes = row.querySelectorAll('.choice');
-        for (var i = 0; i < nodes.length; i++) {
-          var c = +nodes[i].getAttribute('data-choice');
-          nodes[i].disabled = true;
-          if (c === 0) nodes[i].classList.add('right');
-          else if (c === ci) nodes[i].classList.add('wrong');
-        }
-        why.hidden = false;
-        why.textContent = q.why;
-        say(right ? 'Correct.' : 'Not quite. The correct answer is highlighted.', right ? 'good' : 'bad');
         paintParts();
-        next.hidden = false;
-        next.focus({ preventScroll: true });
+        mark(ci);
+        if (right) { say('Correct.', 'good'); fixed(); return; }
+        fb.hidden = false;
+        fb.textContent = wrongText(ci);
+        say('Not quite. That answer counted. Read why, then pick the right answer.', 'bad');
       }
-      next.addEventListener('click', function () { ask(n + 1); });
+      /* after the counted answer: pick again (not graded) until right */
+      function retry(ci) {
+        if (settled(id)) return;
+        mark(ci);
+        if (ci === 0) { say('Now you have it. (Your first answer is the one that counted.)', 'good'); fixed(); return; }
+        fb.hidden = false;
+        fb.textContent = wrongText(ci);
+        say('Not that one either. Read why, then pick again.', 'bad');
+      }
+      if (redo) {
+        mark(state.pick[id]);
+        fb.hidden = false;
+        fb.textContent = wrongText(state.pick[id]);
+        say('This one counted as wrong. Pick the right answer to go on.', 'bad');
+      }
     }
     ask(0);
   };

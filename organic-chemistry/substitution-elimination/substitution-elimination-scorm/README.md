@@ -40,7 +40,10 @@ answer gets specific feedback and another try, for example:
 - *an equatorial H clicked in a chair:* "That H is equatorial: it points out from the ring, not opposite the Cl."
 - *SN2 put in the 3° row of the table:* "At a 3° carbon, steric hindrance blocks back-side attack: never SN2."
 
-After three wrong checks an arrow drawing offers **Show me**. Arrows are drawn by tapping the electrons (a
+After three wrong checks an arrow drawing offers **Show me**: the right arrows appear in a picture beside the
+drawing, the drawing is cleared, and the student draws them. Predictions are shuffled for each student, so the
+right answer is not always first. A wrong drop in the Part 4 sort says what the chosen bin means and where on the
+card to look. Arrows are drawn by tapping the electrons (a
 lone pair or a bond) and then where they go (an atom, or a bond for a new π bond), by dragging from one to the
 other, or with Tab and Enter. Tapping an arrow removes it; Undo and Clear work too. The finished arrows are
 numbered and each is named by its pattern.
@@ -131,10 +134,17 @@ each configuration, cis or trans for each E or Z.
 
 - 23 graded questions in five checkpoints (4 + 5 + 5 + 4 + 5) from a pool of 73; every checkpoint's core has a
   reagent-function question. First answer counts; retakes keep the best score.
+- **No opt out:** a wrong answer counts, then is struck out with its own feedback (the misconception and the next
+  move; `wrong` in `quiz.js`, one line per wrong choice), and the student picks again until right before Next
+  appears. A reload keeps the question open.
+- **From memory:** the reference drawers (the four mechanisms, Klein's three steps, Vocabulary) are hidden during
+  checkpoints.
+- **Drawn:** every question that names a molecule or a reagent draws it: the reagent's reacting part with its lone
+  pairs and charge (DBN and DBU as their fused rings), the carbocations, the chair; the validator checks it.
 - Score 0–100 to `cmi.core.score.raw`, `completed` at the results screen, no masteryscore.
 - Saves only in `cmi.suspend_data` (localStorage only when standalone), key `substitution-elimination-state`,
   identifiers `SUBELIM_*`, `SCHEMA` 3 in `app.js`.
-- Zip: `dist/substitution-elimination-v5.zip` (v5: the four-pattern warm-up from the arrow-pushing activity; v4: checked against Klein's chapter 7, SN1 beside E1 by Klein's rule,
+- Zip: `dist/substitution-elimination-v6.zip` (v6: the learning review's suggestions 1 to 4; v5: the four-pattern warm-up from the arrow-pushing activity; v4: checked against Klein's chapter 7, SN1 beside E1 by Klein's rule,
   cleaner animations; v2: every reaction played, steric hindrance, the sort drawn out).
 
 ## Before every commit (in this folder)
