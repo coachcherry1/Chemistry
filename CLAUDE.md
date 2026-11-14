@@ -623,7 +623,7 @@ not the full page.
 - **Files:** `config.js`, `elements.js`, `substances.js`, `chem.js`, `problems.js`, `tex.js`, `map.js`, `ptable.js` (docked
   table), `work.js` (one problem, `Work.solutionHTML`), `scorm.js` (save key from config), `app.js`.
 
-## empirical-molecular-formula-scorm, hydrate-formula-scorm and combustion-analysis-scorm (zip v3, SCHEMA 2)
+## empirical-molecular-formula-scorm, hydrate-formula-scorm and combustion-analysis-scorm (zip v4, SCHEMA 3)
 
 - **Key objective:** fluency with the teacher's four steps, on screen in the teacher's words in every problem: **Percents to grams**
   (assume 100 g), **Grams to moles**, **Divide by small**, **Multiply if not whole**. The teacher's named hurdle is reading a
@@ -652,6 +652,10 @@ not the full page.
   2 decimals, 3.99 for 4). Within 0.1 of a whole number rounds; otherwise halves, thirds, fourths and fifths only (`Chem.FRACS`), and
   the multiplier is the smallest that makes all whole. Hints free; Show me after two misses in a step. Combustion includes the
   molecular formula (the teacher asked). Hydrate names: salt name + mono to deca + hydrate.
+- **Learning design (Nov 2026, the teacher chose these):** faded worked examples (warm-up `prefill`: 2 steps, then 1, then
+  none; worked steps are `work.g[s] = 'w'`, shown "worked for you"); **Find the mistake** (`mistake` step in Part 2,
+  `Gen.mistakes`/`Gen.worked`: two cards per package, pick the step then the reason); in graded problems the finder is
+  behind a Show fraction finder button; `recall` (tap the four steps in order) just before the set. `LEARNING_REVIEW.md` per package.
 - **Fraction finder (`finder.js`):** a ruler of the decimal part with rows for halves to fifths and shaded "round" ends, plus a chart.
   Interactive in the drills and warm-ups (tap a quotient, the fraction lights up); a reference only in graded problems.
 - **One model:** `compounds.js` holds real compounds only (65 formulas, 29 hydrates, 26 hydrocarbons); `problems.js` computes every

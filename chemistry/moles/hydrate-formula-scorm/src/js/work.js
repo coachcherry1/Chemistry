@@ -76,9 +76,19 @@ var Work = (function () {
     host.appendChild(root);
 
     var finder = Finder.create({ interactive: !opts.graded, compact: true });
-    side.appendChild(h('h3', { text: 'Fraction finder' }));
-    side.appendChild(finder.el);
-    side.appendChild(Finder.chart());
+    var finderBox = h('div', { class: 'finder-wrap', id: 'finder-' + (p.id || 'x') }, [finder.el, Finder.chart()]);
+    if (opts.graded) {
+      /* fading the support (expertise reversal): in graded problems the finder is one tap away, not always open */
+      finderBox.hidden = true;
+      var tog = h('button', { type: 'button', class: 'mini finder-toggle', 'aria-expanded': 'false', 'aria-controls': finderBox.id, text: 'Show fraction finder' });
+      tog.addEventListener('click', function () {
+        finderBox.hidden = !finderBox.hidden;
+        tog.setAttribute('aria-expanded', finderBox.hidden ? 'false' : 'true');
+        tog.textContent = finderBox.hidden ? 'Show fraction finder' : 'Hide fraction finder';
+      });
+      side.appendChild(tog);
+    } else side.appendChild(h('h3', { text: 'Fraction finder' }));
+    side.appendChild(finderBox);
 
     function cur() { return steps[work.s]; }
     function done() { return work.s >= steps.length; }
@@ -133,9 +143,9 @@ var Work = (function () {
       strip.innerHTML = '';
       steps.forEach(function (s, i) {
         var g = work.g[s];
-        var state = i < work.s ? (g === 0 ? ' fixed' : ' right') : i === work.s ? ' now' : '';
+        var state = i < work.s ? (g === 'w' ? ' given' : g === 0 ? ' fixed' : ' right') : i === work.s ? ' now' : '';
         strip.appendChild(h('li', { class: 'st' + state, 'aria-current': i === work.s ? 'step' : null }, [
-          h('span', { class: 'st-n', text: i < work.s ? (g === 0 ? '✓' : '★') : String(i + 1) }),
+          h('span', { class: 'st-n', text: i < work.s ? (g === 'w' ? '✓' : g === 0 ? '✓' : '★') : String(i + 1) }),
           h('span', { class: 'st-t', text: STEP_NAMES[s] })
         ]));
       });
@@ -340,6 +350,8 @@ var Work = (function () {
       if (opts.demo) { paintDemo(); return; }
       if (done()) { paintDone(); return; }
       var s = cur();
+      if (work.pf && work.s === work.pf) panel.appendChild(h('p', { class: 'muted pf-note', text: (work.pf === 1 ? 'Step 1 was worked for you (look at it). ' :
+        'Steps 1 and 2 were worked for you (look at them). ') + 'Your turn from here.' }));
       panel.appendChild(h('p', { class: 'step-q' }, [h('b', { text: 'Step ' + (work.s + 1) + ': ' + STEP_NAMES[s] + '. ' }), stepText(s)]));
       var row = h('div', { class: 'btnrow' });
       /* Submit answer on everything graded (the teacher): a click on a choice only selects it */
@@ -653,6 +665,23 @@ var Work = (function () {
       var top = pt.getBoundingClientRect().top, r = tableWrap.getBoundingClientRect();
       var down = r.bottom - (top - 8);
       if (down > 0) window.scrollBy(0, Math.min(down, r.top - 4));
+    }
+
+    /* Faded worked example: the first steps arrive already done (marked "worked for you") */
+    function prefillStep() {
+      var s = cur();
+      fillStep(s);
+      if (s === 'grams') {
+        work.c1 = work.sel1 = p.choice;
+        work.n.g = p.rows.map(function (r, i) { return r.typed ? Chem.parseNum(val('g' + i)) : r.g; });
+      } else JUDGE[s]().accept();
+      work.g[s] = 'w';
+      work.s++;
+    }
+    if (opts.prefill && !work.s && !work.pf) {
+      for (var pi = 0; pi < opts.prefill && !done(); pi++) prefillStep();
+      work.pf = opts.prefill;
+      save();
     }
 
     render();

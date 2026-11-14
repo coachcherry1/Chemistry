@@ -94,7 +94,7 @@ const shots = process.env.SHOTS;
             visible([document.querySelector('.pstrip'), document.querySelector('.prob-head'), document.querySelector('.steps4'),
               document.querySelector('table.four'), document.querySelector('.extra .molbox'), document.querySelector('.extra .namebox'), btn].filter((x) => x !== null),
               'the problem, its table and its button');
-            if (wide) visible([document.querySelector('.work-side .finder')], 'the fraction finder');
+            if (wide) visible([document.querySelector('.pstrip') ? document.querySelector('.finder-toggle') : document.querySelector('.work-side .finder')], 'the fraction finder');
             return { fails };
           }
           if (kind === 'results') return { fails };

@@ -375,6 +375,15 @@ for (let seed = 1; seed <= SEEDS; seed++) {
     r.rows.forEach((row) => { if (row.sub !== hnd.ef[row.sym]) bad('seed ' + seed + ': ratio ' + r.f + ' ' + row.sym); });
   });
 }
+/* find the mistake: each card's mistake changes the answer, the unchanged work gives the right one */
+Gen.mistakes().forEach((c, j) => {
+  const want = MODE === 'hydrate' ? c.p.fDisp : c.p.efDisp;
+  if (c.rightFormula !== want) bad('mistake ' + (j + 1) + ': the unchanged work gives ' + c.rightFormula + ', not ' + want);
+  if (c.formula === want) bad('mistake ' + (j + 1) + ': the mistake does not change the answer');
+  if (!(c.bad >= 1 && c.bad <= 4) || c.reasons.length !== 3 || !(c.right >= 0 && c.right < 3)) bad('mistake ' + (j + 1) + ': step or reasons');
+  c.lines.forEach((l, k) => { if (k + 1 < c.bad && l !== c.rightLines[k]) bad('mistake ' + (j + 1) + ': step ' + (k + 1) + ' differs before the mistake'); });
+  if (c.lines[c.bad - 1] === c.rightLines[c.bad - 1]) bad('mistake ' + (j + 1) + ': step ' + c.bad + ' is not the wrong one');
+});
 ['example'].forEach(() => {
   const ex = Gen.example();
   checkData(ex, 'example'); checkJudges(ex, 'example'); checkTex(ex, 'example');
