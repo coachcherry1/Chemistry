@@ -104,32 +104,20 @@ const fakeLMS = () => {
     net: p.net && { left: p.net.left.map((t) => ({ key: Net.termKey(t), n: t.n, s: t.t === 'ion' ? 'aq' : t.s })), right: p.net.right.map((t) => ({ key: Net.termKey(t), n: t.n, s: t.t === 'ion' ? 'aq' : t.s })) } }; });
   const rung = () => page.evaluate(() => { const c = App.ctl(); return c.work.r ? 'done' : c.problem.rungs[c.work.i]; });
   async function check() { await page.click('.ladder .rung-check'); await page.waitForTimeout(20); }
-  /* set one row of the ionic rung (or the split drill) */
-  async function setRow(row, f, c, st, how) {
-    const want = await page.evaluate(([f, c]) => Net.split(f, c, 'aq').map((t) => ({ n: t.n, q: t.q })), [f, c]);
-    if (how === 'keep' || (st !== 'aq' && how !== 'split')) { await row.locator('.io-btn[data-sp="keep"]').click(); return; }
-    await row.locator('.io-btn[data-sp="split"]').click();
-    for (let k = 0; k < 2; k++) {
-      let n = want[k].n, q = Math.abs(want[k].q);
-      if (how === 'onecoef' && k === 1) n = n / c;
-      if (how === 'charge' && k === 0) q = q === 1 ? 2 : 1;
-      const ion = row.locator('.io-ion').nth(k);
-      const read = async (kind) => (await ion.locator('.stepper.' + kind + ' .sub-n').textContent()).replace(/[^0-9]/g, '') || (/[+−]/.test(await ion.locator('.stepper.' + kind + ' .sub-n').textContent()) ? '1' : '0');
-      for (const [kind, val] of [['n', n], ['q', q]]) {
-        let cur = +(await read(kind));
-        while (cur < val) { await ion.locator('.stepper.' + kind + ' .inc').click(); cur = +(await read(kind)); }
-        while (cur > val) { await ion.locator('.stepper.' + kind + ' .dec').click(); cur = +(await read(kind)); }
-      }
-    }
+  /* one row of the ionic rung (or the split drill): splits into ions or stays together */
+  async function setRow(row, st, how) {
+    const sp = how || (st === 'aq' ? 'split' : 'keep');
+    await row.locator('.io-btn[data-sp="' + sp + '"]').click();
   }
-  async function netBuild(p, mult) {
+  /* the net ionic step: set each coefficient (they start as the complete ionic ones) */
+  async function netSet(p, mult) {
     for (const [k, side] of [[0, 'left'], [1, 'right']]) {
       for (const t of p.net[side]) {
-        const id = k + ':' + t.key;
-        await page.click('.net-in[data-id="' + id + '"]');
-        const card = page.locator('.net-card', { has: page.locator('.net-in[data-id="' + id + '"]') });
-        for (let i = 1; i < t.n * (mult || 1); i++) await card.locator('.stp.inc').click();
-        await card.locator('.state-btn.mini', { hasText: '(' + t.s + ')' }).click();
+        const term = page.locator('.net-term[data-id="' + k + ':' + t.key + '"]');
+        const want = t.n * (mult || 1);
+        let cur = +(await term.locator('.sub-n').textContent());
+        while (cur > want) { await term.locator('.stp.dec').click(); cur = +(await term.locator('.sub-n').textContent()); }
+        while (cur < want) { await term.locator('.stp.inc').click(); cur = +(await term.locator('.sub-n').textContent()); }
       }
     }
   }
@@ -157,10 +145,11 @@ const fakeLMS = () => {
       const rows = page.locator('.io-row');
       for (let j = 0; j < p.sp.length; j++) {
         const st = j < 2 ? 'aq' : p.states[p.sp[j]];
-        await setRow(rows.nth(j), p.sp[j], p.coefs[j], st, miss && j === 0 ? (st === 'aq' ? 'keep' : 'split') : null);
+        await setRow(rows.nth(j), st, miss && j === 0 ? 'keep' : null);
       }
       await check();
-      if (miss) { expect(/is \(aq\)|stays together|solid/.test(await fb('.ladder')), p.id + ' ionic: ' + await fb('.ladder')); await setRow(rows.nth(0), p.sp[0], p.coefs[0], 'aq', null); await check(); }
+      if (miss) { expect(/is \(aq\)/.test(await fb('.ladder')), p.id + ' ionic: ' + await fb('.ladder')); await setRow(rows.nth(0), 'aq', null); await check(); }
+      expect(!miss || /→/.test(await page.textContent('.ladder .done-line')), p.id + ': past the ionic step');
       return !miss;
     }
     if (r === 'spectators') {
@@ -177,21 +166,22 @@ const fakeLMS = () => {
       return !miss;
     }
     if (r === 'net') {
-      if (miss) {
-        if (p.net) await page.click('.none-btn');
-        else {
-          /* a complete (wrong) equation: one term on each side, each with a state */
-          for (const side of ['0:', '1:']) {
-            const id = await page.locator('.net-in[data-id^="' + side + '"]').first().getAttribute('data-id');
-            await page.click('.net-in[data-id="' + id + '"]');
-            await page.locator('.net-card', { has: page.locator('.net-in[data-id="' + id + '"]') }).locator('.state-btn.mini').first().click();
-          }
-        }
+      expect((await page.locator('.net-term').count()) === (p.net ? p.net.left.length + p.net.right.length : 0), p.id + ': the net step should start with what is left');
+      if (!p.net) {
+        /* nothing is left: a Check without "No reaction" is not an answer; a miss is not possible here */
         await check();
-        expect(/Not everything cancels|Every ion here is a spectator|state/.test(await fb('.ladder')), p.id + ' net: ' + await fb('.ladder'));
-        if (p.net) await page.click('.none-btn'); else while (await page.locator('.net-in.selected').count()) await page.locator('.net-in.selected').first().click();
+        expect(/not counted/.test(await fb('.ladder')), p.id + ': an empty net ionic Check should not count: ' + await fb('.ladder'));
+        await page.click('.none-btn');
+        await check();
+        return true;
       }
-      if (p.net) await netBuild(p); else await page.click('.none-btn');
+      if (miss) {
+        await page.click('.none-btn');
+        await check();
+        expect(/Not everything cancels/.test(await fb('.ladder')), p.id + ' net: ' + await fb('.ladder'));
+        await page.click('.none-btn');
+      }
+      await netSet(p);
       await check();
       return !miss;
     }
@@ -240,16 +230,19 @@ const fakeLMS = () => {
   await page.click('.card-next');
   for (let i = 1; i < splits.length; i++) {
     const s = splits[i], row = page.locator('.io-row').first();
-    expect(i >= 4 || await page.locator('.split-pic svg').count() === 1, 'split ' + i + ': the picture should come first');
-    expect(i < 4 || await page.locator('.split-pic svg').count() === 0, 'split ' + i + ': the picture should come after the answer');
+    expect(await page.locator('.split-pic svg').count() === 0, 'split ' + i + ': the picture should come after the answer');
     if (i === 1) { await page.click('.rung-check'); expect(/Choose/.test(await fb()), 'split: an empty Check should ask for an answer: ' + await fb()); }
-    if (i === 2) { await setRow(row, s.f, s.c, s.st, 'onecoef'); await page.click('.rung-check'); expect(/Multiply by the coefficient/.test(await fb()), 'split: the coefficient left out: ' + await fb()); }
-    if (i === 3) { await setRow(row, s.f, s.c, s.st, 'charge'); await page.click('.rung-check'); expect(/a charge of/.test(await fb()), 'split: a wrong charge: ' + await fb()); }
-    if (s.st === 's') { await setRow(row, s.f, s.c, s.st, 'split'); await page.click('.rung-check'); expect(/solid/.test(await fb()), 'split: a solid split into ions: ' + await fb()); }
-    await setRow(row, s.f, s.c, s.st, null);
+    if (i === 2) { await setRow(row, s.st, 'keep'); await page.click('.rung-check'); expect(/is \(aq\)/.test(await fb()), 'split: an (aq) kept together: ' + await fb()); }
+    if (s.st !== 'aq') {
+      await setRow(row, s.st, 'split'); await page.click('.rung-check');
+      expect(s.f === 'H2O' ? /covalent molecule/.test(await fb()) : /solid/.test(await fb()), 'split: ' + s.f + ' split into ions: ' + await fb());
+    }
+    await setRow(row, s.st, null);
+    expect(s.st !== 'aq' || /→/.test(await row.textContent()), 'split ' + s.f + ': the ions should be written once it splits');
     await page.click('.rung-check');
     expect(/^Right/.test(await fb()), 'split ' + s.f + ': ' + await fb());
     expect(await page.locator('.split-pic svg').count() === 1, 'split ' + i + ': the picture after the answer');
+    if (s.f === 'H2O') expect(await page.evaluate(() => document.querySelectorAll('.split-pic .bk-p[data-key="HOH"]').length > 0), 'split: water drawn as HOH molecules');
     if (i === 4) await snap('split');
     if (i < splits.length - 1) await page.click('.card-next');
   }
@@ -277,24 +270,19 @@ const fakeLMS = () => {
     await doRung(p, kind === 'solid');            /* ionic */
     await doRung(p, kind !== 'none');             /* spectators */
     if (kind === 'water') {
-      /* the net ionic equation not in lowest terms */
-      await netBuild(p, 2);
+      /* the coefficients carried over are not in lowest terms */
       await check();
       expect(/lowest whole numbers/.test(await fb('.ladder')), id + ': not in lowest terms: ' + await fb('.ladder'));
-      while (await page.locator('.net-in.selected').count()) await page.locator('.net-in.selected').first().click();
-      await netBuild(p);
+      await netSet(p);
       await check();
     } else if (kind === 'solid') {
-      /* a spectator kept */
-      await netBuild(p);
-      const sp = await page.evaluate(() => '0:ion:' + App.ctl().problem.spect[0]);
-      await page.click('.net-in[data-id="' + sp + '"]');
-      await page.locator('.net-card', { has: page.locator('.net-in[data-id="' + sp + '"]') }).locator('.state-btn.mini', { hasText: '(aq)' }).click();
+      /* one coefficient changed alone */
+      await page.locator('.net-term .stp.inc').first().click();
       await check();
-      expect(/is a spectator/.test(await fb('.ladder')), id + ': a spectator kept: ' + await fb('.ladder'));
-      await page.click('.net-in[data-id="' + sp + '"]');
+      expect(/same way/.test(await fb('.ladder')), id + ': one coefficient changed alone: ' + await fb('.ladder'));
+      await netSet(p);
       await check();
-    } else await doRung(p, true);
+    } else await doRung(p, false);
     expect((await rung()) === 'done', id + ': not finished');
     expect(/No reaction|→/.test(await page.textContent('.final-eq')), id + ': the net ionic equation at the end');
     await pour('.ladder .final-pic', id + ' done');

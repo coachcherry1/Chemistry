@@ -6,14 +6,16 @@ done the two balancing packages and predicting products first.
 **Web version:** https://coachcherry1.github.io/Chemistry/chemistry/reactions/net-ionic-equations-scorm/src/index.html
 (works once this branch is merged into `main`)
 
-**Upload to Schoology:** `dist/net-ionic-equations-v1.zip`
+**Upload to Schoology:** `dist/net-ionic-equations-v2.zip`
 
 ## What students do
 
 Two solutions are poured together in a beaker drawn **to scale**: every ion at its real size (Shannon ionic radii; in a
 polyatomic ion each oxygen at 140 pm around the centre atom, at the real bond length), a 200 pm scale bar on every
-picture. The ions drift and bounce the whole time. The ones that react find each other, come together in the solid's
-ratio and sink, stacking on the bottom; H⁺ joins OH⁻ as a water molecule, HOH, which keeps moving. The **spectators keep
+picture; each name sits beside its ion, not inside it. The ions drift and bounce the whole time. The ones that react find each other, come together in the solid's
+ratio and sink, stacking on the bottom; H⁺ joins OH⁻ as a water molecule, HOH, drawn as the covalent molecule it is
+(O and two H at their van der Waals radii, bent at 104.5°), which keeps moving. The poured solution enters spread
+across the surface, each ion moving its own way. The **spectators keep
 moving the whole time**. With no reaction, everything just keeps moving. The solvent's own water molecules are not
 drawn. Tap any ion to name it; **Highlight spectators** rings them; Pour again, and a speed slider. With reduced motion,
 Before and After stills.
@@ -24,9 +26,9 @@ Then students write it the chemist's way, in five steps that every problem has:
 | --- | --- |
 | 1 Balance | The balancing packages' workbench, inventory down the centre (water as HOH: an H and an OH) |
 | 2 States | (aq), (s) or (l) for each product, from the solubility rules beside them |
-| 3 Complete ionic | For each substance: splits into ions or stays together; how many of each ion (the coefficient counts) and its charge |
+| 3 Complete ionic | For each substance: splits into ions or stays together. Once chosen it is written that way by itself, coefficients in front (the molecular equation is already balanced) |
 | 4 Spectators | Tap the ions that are in the solution, unchanged, on both sides; each is struck out on both sides at once (or: there are none) |
-| 5 Net ionic | Build what is left from the terms, with coefficients and states, in lowest whole numbers; or choose No reaction |
+| 5 Net ionic | What is left after the spectators is already written, coefficients first, with states; the student writes it in lowest whole numbers, or chooses No reaction when nothing is left |
 
 **Every problem gives the unbalanced molecular equation** (the teacher's choice) and shows the same five steps, so the
 strip never gives away a "no reaction" problem. **Every finished problem plays in the beaker**, in the graded set too.
@@ -34,7 +36,7 @@ strip never gives away a "no reaction" problem. **Every finished problem plays i
 
 | Part | Steps | Graded |
 | --- | --- | --- |
-| 1 Dissolved ions | What (aq) looks like: three picture cards (words to picture); writing a substance as its ions: eight cards with the picture beside them (picture to words), the first a worked example, the picture only after the answer for the last four | no |
+| 1 Dissolved ions | What (aq) looks like: three picture cards (words to picture); splits into ions or stays together: eight cards (salts, H₂SO₄, a solid, water), the first a worked example, each then written out and drawn in water | no |
 | 2 A solid forms | Predict, then pour AgNO₃ into NaCl; Pb(NO₃)₂ + KI worked through the five steps, with hints | no |
 | 3 Water forms | Predict, then pour HCl into NaOH; H₂SO₄ + KOH (reduced to H⁺ + OH⁻ → HOH) | no |
 | 4 No reaction | Predict, then pour KCl into NaNO₃; CuSO₄ + NaNO₃ (everything cancels) | no |
@@ -47,7 +49,7 @@ student's job).
 
 ## Scope (the teacher's)
 
-- Reactants are strong electrolytes only: soluble salts, the strong acids HCl, HBr, HI, HNO₃, H₂SO₄ (split as 2 H⁺ + SO₄²⁻)
+- Reactants split completely into ions: soluble salts, the strong acids HCl, HBr, HI, HNO₃, H₂SO₄ (split as 2 H⁺ + SO₄²⁻)
   and the strong bases LiOH, NaOH, KOH, Ba(OH)₂.
 - Products are a solid, water, or nothing. **No weak acids or bases and no gases**: an acid never meets a carbonate or a
   phosphate; ammonium, acetate and sulfide are not used. The validator fails on any weak acid.
@@ -61,8 +63,8 @@ student's job).
   of solid), 2 that make water (one of them must be reduced to lowest terms), 2 with no reaction (never the first), and
   the challenge last. Score = items right the first time / 44.
 - A Check with something left unchosen is not counted. After a miss the student keeps going until the step is right (Show
-  me after three misses). Feedback names the slip: the coefficient left out, a wrong charge, a solid or water split into
-  ions, a non-spectator struck out, a spectator kept, not lowest terms, the wrong state.
+  me after three misses). Feedback names the slip: a dissolved compound kept together, a solid or water split into
+  ions, a non-spectator struck out, a spectator missed, not lowest terms, a coefficient changed alone, the wrong state.
 - Retakes give new questions and problems; the gradebook keeps the best score. Progress is saved in `cmi.suspend_data`.
 
 ## Teacher links

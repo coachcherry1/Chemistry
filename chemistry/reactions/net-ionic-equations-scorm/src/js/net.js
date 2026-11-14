@@ -1,6 +1,6 @@
 /* net.js: the model of this package. No DOM.
  *
- * A problem is two solutions mixed: two strong electrolytes, each written as
+ * A problem is two solutions mixed: two compounds that split into ions in water, each written as
  * a formula. Everything else is worked out here from package 3's data
  * (ions.js, unchanged: the same solubility rules and ions):
  *
@@ -11,7 +11,7 @@
  *   Net.beaker(p)      how many of each ion the beaker draws, and which of
  *                      them come together as a solid or as water
  *
- * Scope (the teacher's): the reactants are strong electrolytes only: soluble
+ * Scope (the teacher's): the reactants split completely into ions: soluble
  * salts, the strong acids HCl, HBr, HI, HNO3 and H2SO4, and the strong bases
  * LiOH, NaOH, KOH and Ba(OH)2. The products are a solid, water, or nothing.
  * No weak acids or bases, no gases: an acid is never mixed with a carbonate

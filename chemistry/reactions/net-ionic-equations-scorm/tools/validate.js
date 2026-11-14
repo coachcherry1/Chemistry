@@ -47,7 +47,7 @@ textFiles.forEach((f) => { if (fs.readFileSync(f, 'utf8').indexOf('\u2014') >= 0
 const OWN = ['config', 'data', 'net', 'problems', 'ref', 'beaker', 'ladder', 'steps', 'app'].map((f) => path.join(SRC, 'js', f + '.js'))
   .concat([path.join(SRC, 'index.html'), path.join(SRC, 'css', 'styles.css')]);
 const srcText = OWN.map((f) => fs.readFileSync(f, 'utf8')).join('\n');
-[/slightly soluble/i, /H₂O/, /H3O\+|H₃O|hydronium/i, /CH3COOH|acetic acid/i, /\bHF\b/, /H2CO3|H3PO4|NH3\b/, /spontaneous/i].forEach((re) => {
+[/slightly soluble/i, /electrolyte/i, /H₂O/, /H3O\+|H₃O|hydronium/i, /CH3COOH|acetic acid/i, /\bHF\b/, /H2CO3|H3PO4|NH3\b/, /spontaneous/i].forEach((re) => {
   if (re.test(srcText)) fail('banned word or formula in src/: ' + re);
 });
 const html = fs.readFileSync(path.join(SRC, 'index.html'), 'utf8');
@@ -187,7 +187,7 @@ const L = Gen.LESSON;
 if (!Gen.reduces(Net.make(L.exWater[0], L.exWater[1]))) fail('the lesson\'s water problem does not need reducing');
 L.aq.forEach((f) => { if (Net.state(f) === 'aq' && !Net.reactantOK(f)) fail('lesson picture ' + f + ' is not a strong electrolyte'); });
 if (Net.state(L.aq[2]) !== 's') fail('the third picture card should be a solid');
-L.split.forEach(([f, n]) => { if (f !== 'H2O' && Net.state(f) === 'aq' && !Net.reactantOK(f)) fail('split card ' + f + ' is not a strong electrolyte'); });
+L.split.forEach(([f, n]) => { if (f !== 'H2O' && Net.state(f) === 'aq' && !Net.reactantOK(f)) fail('split card ' + f + ' is not a soluble salt, strong acid or strong base'); });
 
 /* ------------------------------------------------------------ sizes */
 const T = Data;
@@ -195,16 +195,25 @@ function sizeCheck(key) {
   const sh = T.shape(key);
   sh.atoms.forEach((a, i) => {
     let want;
-    if (a.el === 'H') want = T.COVALENT.H;
+    if (key === 'HOH') want = a.el === 'O' ? 152 : 120;          /* Bondi's van der Waals radii: water is a covalent molecule */
+    else if (a.el === 'H') want = T.COVALENT.H;
     else if (sh.atoms.length === 1) want = T.IONIC[key];
     else if (key === 'OH') want = T.IONIC.OH;
     else if (a.el === 'O') want = T.IONIC.O;
     else want = T.COVALENT[a.el];
     if (a.r !== want) fail('size of ' + key + ' atom ' + i + ' (' + a.el + ') is ' + a.r + ' pm, the table says ' + want);
-    if (i && sh.atoms.length > 1 && a.el !== 'H' && Math.abs(Math.hypot(a.x, a.y) - (key === 'SO4' || key === 'PO4' ? 0.816 : 1) * T.BOND[key]) > 0.5 && a.el === 'O') fail('bond length in ' + key);
+    if (key !== 'HOH' && i && sh.atoms.length > 1 && a.el !== 'H' && Math.abs(Math.hypot(a.x, a.y) - (key === 'SO4' || key === 'PO4' ? 0.816 : 1) * T.BOND[key]) > 0.5 && a.el === 'O') fail('bond length in ' + key);
   });
 }
 Net.CATS.concat(Net.ANS, ['H', 'HOH']).forEach(sizeCheck);
+/* water drawn as the bent covalent molecule, the H atoms standing out from the O */
+(() => {
+  const w = T.shape('HOH').atoms, hs = w.filter((a) => a.el === 'H'), o = w.find((a) => a.el === 'O');
+  if (w[0].el !== 'O') fail('water: the H atoms should be drawn in front of the O');
+  const ang = Math.acos((hs[0].x * hs[1].x + hs[0].y * hs[1].y) / (Math.hypot(hs[0].x, hs[0].y) * Math.hypot(hs[1].x, hs[1].y))) * 180 / Math.PI;
+  if (Math.abs(ang - 104.5) > 0.1) fail('water is not bent at 104.5 degrees: ' + ang);
+  hs.forEach((a) => { if (Math.hypot(a.x, a.y) + a.r <= o.r + 20) fail('water: an H atom does not stand out from the O'); });
+})();
 const SHANNON = { Li: 76, Na: 102, K: 138, Ag: 115, Mg: 72, Ca: 100, Sr: 118, Ba: 135, Zn: 74, Fe: 78, Pb: 119, Cu: 73, Al: 53.5, Cl: 181, Br: 196, I: 220, OH: 137, O: 140 };
 Object.keys(SHANNON).forEach((k) => { if (T.IONIC[k] !== SHANNON[k]) fail('ionic radius of ' + k + ' is not Shannon\'s ' + SHANNON[k]); });
 if (!/Shannon/.test(fs.readFileSync(path.join(SRC, 'js', 'data.js'), 'utf8'))) fail('data.js does not name its source');

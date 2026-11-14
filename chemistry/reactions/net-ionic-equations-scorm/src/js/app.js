@@ -17,7 +17,7 @@ var App = (function () {
 
   /* Bump whenever the steps, the pools or the handout data change: a save
      from an older release is then discarded. */
-  var SCHEMA = 1;
+  var SCHEMA = 2;
 
   var h = UI.h;
 
@@ -26,7 +26,7 @@ var App = (function () {
     { id: 'aq', part: 1, kind: 'aq', title: 'What (aq) looks like',
       text: 'A dissolved salt, a strong acid or a strong base is not molecules floating about: its ions come apart in the water. Pick the picture that matches. Not graded.' },
     { id: 'split', part: 1, kind: 'split', title: 'Writing a substance as its ions',
-      text: 'Each (aq) substance is written as its ions: how many of each (the coefficient counts) and the charge. A solid (s) and water (l) stay together. Not graded.' },
+      text: 'In water, a dissolved compound of ions, a strong acid or a strong base splits into its ions. A solid (s) and water, HOH(l), stay together. Decide which, then see it. Not graded.' },
     { id: 'mixsolid', part: 2, kind: 'watchSolid', title: 'Watch a solid form',
       text: 'A spectator ion is in the solution, unchanged, before and after mixing: it watches but takes no part. Predict first, then press Pour. Tap any ion to name it.' },
     { id: 'exsolid', part: 2, kind: 'ladder', l: Gen.LESSON.exSolid, title: 'Net ionic equation: a solid forms',

@@ -93,10 +93,12 @@ const shots = process.env.SHOTS;
           /* an equation that was already balanced is finished by that Check: nothing more to fit */
           if (await page.locator(bench).count()) await fits(v, 'checked', [bench + ' .eq', bench + ' .pbox', bench + ' .inv'], bench);
         } else {
-          const ctl = { states: ['.ladder .state-btn'], ionic: ['.ladder .io-row'], spectators: ['.ladder .ionic-line', '.ladder .none-btn'], net: ['.ladder .net-card', '.ladder .none-btn'] }[rung]
+          const ctl = { states: ['.ladder .state-btn'], ionic: ['.ladder .io-row'], spectators: ['.ladder .ionic-line', '.ladder .none-btn'], net: ['.ladder .net-eq', '.ladder .none-btn'] }[rung]
             .concat(['.ladder .rung-check']);
           await fits(v, 'start', ['.ladder .given', '.ladder .rungs'].concat(ctl, ['.ref .ref-tabs']), '.ladder');
           /* an unfinished Check brings its message: it must fit too */
+          /* (on the net ionic step the carried-over coefficients may already be right: say No reaction to get a message) */
+          if (rung === 'net' && await page.locator('.ladder .net-term').count()) await page.click('.ladder .none-btn');
           await page.click('.ladder .rung-check');
           await fits(v, 'message', ctl.concat(['.ladder .fb.show']), '.ladder');
         }
@@ -107,17 +109,18 @@ const shots = process.env.SHOTS;
         await fits(v, 'played', ['.ladder .final-eq', '.ladder .bk-svg', '.ladder .bk-play', '.ladder .ladder-next'], '.ladder .given');
       } else if (v.kind === 'aq') {
         for (let k = 0; k < 3; k++) {
-          await fits(v, 'card-' + (k + 1), ['.panel .prompt', '.pic-choice', '.ref .ref-tabs'], '.ladder');
+          await fits(v, 'card-' + (k + 1), ['.panel .prompt', '.pic-choice'], '.aq-cards');
           await page.locator('.pic-choice').first().click();
-          await fits(v, 'answered-' + (k + 1), ['.pic-choice', '.fb.show'], '.ladder');
+          await fits(v, 'answered-' + (k + 1), ['.pic-choice', '.fb.show'], '.aq-cards');
           if (k < 2) await page.click('.card-next');
         }
       } else if (v.kind === 'split') {
         await fits(v, 'example', ['.io-row', '.split-pic svg', '.card-next'], '.ladder');
         await page.click('.card-next');
-        await fits(v, 'card', ['.io-row', '.split-pic svg', '.rung-check'], '.ladder');
+        await fits(v, 'card', ['.io-row', '.rung-check'], '.ladder');
+        await page.click('.io-btn[data-sp="split"]');
         await page.click('.rung-check');
-        await fits(v, 'message', ['.io-row', '.rung-check', '.fb.show'], '.ladder');
+        await fits(v, 'answered', ['.io-row', '.split-pic svg', '.fb.show'], '.ladder');
       } else if (v.kind === 'quiz') {
         for (let k = 0; k < 4; k++) {
           const pic = await page.locator('.quiz .q-pic').count();

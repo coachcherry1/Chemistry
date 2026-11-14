@@ -1,6 +1,6 @@
 # Reactions unit: plan for four SCORM packages (honors chemistry)
 
-Status: **the teacher has reviewed the plan (answers below). Packages 1, 2 and 3 are merged into main; package 4 is built (v1) and waiting for the teacher's review.**
+Status: **the teacher has reviewed the plan (answers below). Packages 1, 2 and 3 are merged into main; package 4 is built (v2, after the teacher's first look) and waiting for the teacher's review.**
 Where this plan and "The teacher's answers" disagree, the answers win.
 
 ## The teacher's answers (review of this plan)
@@ -243,6 +243,12 @@ with the reasons:
   (drawn after mixing), the net ionic equation, and what happens (both drawn before mixing).
 - **Ion charges are not listed on screen** (the solubility table shows the polyatomic ions with their charges); getting
   the charge right is one of the graded slips. Open question for the teacher, in `LEARNING_REVIEW.md`.
+
+**v2 (SCHEMA 2), the teacher's first look:** the complete ionic step only asks *splits into ions* or *stays together* (the
+ions then write themselves, coefficients in front: counting them again was tedious, not a desirable difficulty); the net
+ionic step starts with what is left, coefficients first, and asks for lowest terms or no reaction; water is drawn as the
+covalent molecule (van der Waals radii, bent); poured ions enter spread out; names beside the ions; larger beakers and
+pictures; no "strong electrolyte" (not the class's term); no table of ion charges (the class knows them).
 
 **Learning design** (added with the November 2026 rule; how package 4 meets the three checks):
 

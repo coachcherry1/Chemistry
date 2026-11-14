@@ -44,7 +44,8 @@ var Beaker = (function () {
     var g = s('g', { class: 'bk-p', tabindex: '0', role: 'button' });
     var spin = s('g');
     var ring = s('circle', { class: 'bk-ring', cx: 0, cy: 0 });
-    var txt = s('text', { class: 'bk-t', 'text-anchor': 'middle', 'dominant-baseline': 'central' });
+    /* the name sits beside the particle, never inside it, and does not turn with it */
+    var txt = s('text', { class: 'bk-t' });
     g.appendChild(ring); g.appendChild(spin); g.appendChild(txt);
     var me = { g: g, x: 0, y: 0, a: 0, va: 0, vx: 0, vy: 0, shown: true };
     me.as = function (k, qq) {
@@ -57,19 +58,25 @@ var Beaker = (function () {
           fill: colour(t.el), class: 'bk-atom' + (t.el === 'H' ? ' bk-h' : '') }));
       });
       ring.setAttribute('r', (me.r + 3).toFixed(1));
-      var mono = sh.atoms.length === 1 && k !== 'H';
       txt.textContent = label(k, qq);
-      txt.setAttribute('class', 'bk-t' + (mono ? ' in' : ' over'));
-      txt.setAttribute('font-size', mono ? Math.max(7, Math.min(13, me.r * 0.62)).toFixed(1) : '11');
-      txt.setAttribute('y', k === 'H' ? -me.r - 7 : 0);
-      if (mono && Particles.EL[k]) txt.setAttribute('fill', Particles.EL[k][3]);
-      else txt.removeAttribute('fill');
+      me.side();
       g.setAttribute('data-key', k);
       g.setAttribute('aria-label', k === 'HOH' ? 'HOH, a water molecule' : label(k, qq) + ', ' + Net.ionName(k, qq));
       return me;
     };
+    /* put the name at the upper right, or the upper left near the right wall */
+    me.edge = R;
+    me.side = function () {
+      var flip = me.x > me.edge - me.r - 34, d = me.r * 0.72 + 1;
+      if (flip === me.flip && txt.getAttribute('y')) return;
+      me.flip = flip;
+      txt.setAttribute('x', (flip ? -d : d).toFixed(1));
+      txt.setAttribute('y', (-d).toFixed(1));
+      txt.setAttribute('text-anchor', flip ? 'end' : 'start');
+    };
     me.at = function (x, y) {
       me.x = x; me.y = y;
+      me.side();
       g.setAttribute('transform', 'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ')');
       spin.setAttribute('transform', 'rotate(' + me.a.toFixed(1) + ')');
       return me;
@@ -171,10 +178,11 @@ var Beaker = (function () {
     wd.B.forEach(function (x) {
       if (x.state !== 'pour') return;
       if (t < x.pour) return;
-      if (!x.shown) { x.show(true); x.at(48 + rand() * 50, top - x.r - 4); x.vx = 40 + rand() * 50; x.vy = 60; }
-      x.vy += 260 * dt;
-      x.at(x.x + x.vx * dt, x.y + x.vy * dt);
-      if (x.y > top + x.r + 10) { x.state = 'free'; x.vy *= 0.25; }
+      /* each one enters at its own place across the surface, moving its own way */
+      if (!x.shown) { x.show(true); x.at(L + x.r + rand() * (R - L - 2 * x.r), top - x.r - 2); var a0 = rand() * Math.PI; x.vx = Math.cos(a0) * 40; x.vy = 40 + Math.sin(a0) * 30; }
+      x.vy += 120 * dt;
+      x.at(clamp(x.x + x.vx * dt, L + x.r, R - x.r), x.y + x.vy * dt);
+      if (x.y > top + x.r + 6) { x.state = 'free'; x.vy *= 0.3; }
     });
     /* reactions */
     wd.groups.forEach(function (g) {
@@ -382,7 +390,7 @@ var Beaker = (function () {
     var f = frameSvg('still' + (small ? ' small' : ''), small ? SMALL : null), G = f.g;
     var rand = UI.rng(UI.hash(JSON.stringify(spec)));
     var list = [];
-    function add(key, q) { var x = particle(key, q); x.g.removeAttribute('tabindex'); x.g.removeAttribute('role'); f.svg.appendChild(x.g); list.push(x); return x; }
+    function add(key, q) { var x = particle(key, q); x.edge = G.r; x.g.removeAttribute('tabindex'); x.g.removeAttribute('role'); f.svg.appendChild(x.g); list.push(x); return x; }
     if (spec.free) {
       spec.free.forEach(function (t) { for (var i = 0; i < t.n; i++) add(t.key, t.q); });
       list.forEach(function (x) { x.a = rand() * 360; });
@@ -394,7 +402,7 @@ var Beaker = (function () {
         Net.solution(sp.f, 1).forEach(function (t) { for (var i = 0; i < t.n; i++) mem.push(add(t.key, t.q)); });
         units.push(mem);
       }
-      if (spec.solid) { lattice(units, G.l, G.r, G.bot, 0.62); list.forEach(function (x) { x.at(x.sx, x.sy); }); }
+      if (spec.solid) { lattice(units, G.l, G.r, G.bot, 0.96); list.forEach(function (x) { x.at(x.sx, x.sy); }); }
       else {
         /* each unit joined together, the units apart */
         lattice(units, G.l, G.r, G.bot);
@@ -422,6 +430,7 @@ var Beaker = (function () {
         f.svg.appendChild(s('text', { x: (x0 + x1) / 2, y: 28, 'text-anchor': 'middle', class: 'bk-lbl big', text: Net.pretty(p.l[k]) + '(aq)' }));
         var mine = [];
         ions.forEach(function (t) { for (var i = 0; i < t.n; i++) mine.push(add(t.key, t.q)); });
+        mine.forEach(function (x) { x.edge = x1; });
         scatter(mine, { x0: x0, y0: top, x1: x1, y1: bot }, rand);
       });
     } else if (spec.after) {

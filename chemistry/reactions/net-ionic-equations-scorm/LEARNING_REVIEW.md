@@ -2,6 +2,39 @@
 
 Reviews against the three checks in `CLAUDE.md` (Learning design), newest first. Not part of the zip.
 
+## 2026-11-14: v2, after the teacher's first look
+
+The teacher could not finish v1 and asked for these changes; each is made.
+
+- **The complete ionic step was busywork** (counting ions and clicking charges again after the molecular equation was
+  already balanced). Now the student only decides, for each substance, *splits into ions* or *stays together*; it is
+  then written that way by itself, coefficients in front. The decision is the chemistry; the counting was not.
+- **The net ionic step asked again what was already struck out.** Now it starts with what is left, coefficients first and
+  with states; the student writes it in lowest whole numbers, or says no reaction when nothing is left.
+- **Water drawn like an ion.** HOH is now the covalent molecule: O and two H at their van der Waals radii, bent at 104.5°.
+- **Poured ions arrived in a clump.** They now enter spread across the surface, each moving its own way.
+- **Too small.** Names sit beside the ions, never inside them; the beakers are about half again as large, the picture cards
+  take the full width (the table is not needed there), the questions show their pictures two by two, and the text is larger.
+- **"Strong electrolyte"** is not the class's term: it is gone from every student screen, and the validator bans it.
+- **Ion charges:** the class knows them, so no table of charges is added (the open question from v1 is closed).
+
+### 1. Write for a novice chemist
+
+- Strong: the steps ask only for the new idea of each step (does it split; which ions are spectators; lowest terms).
+- Watch: with the charges written for them, students no longer practise writing ions here. That is the teacher's choice
+  (they know their charges); the ionic naming package is where it is practised.
+
+### 2. Use the best cognitive science
+
+- Strong: the effort is now on the chemistry, not the interface (desirable difficulty); each step still counts its first answer.
+- Watch: the net ionic step is quick when nothing reduces (Check confirms it is already in lowest terms). It still catches
+  the real slip (2 H⁺ + 2 OH⁻ → 2 HOH) and the no-reaction decision.
+
+### 3. Dual-code everything
+
+- Strong: the water molecule now looks like what it is; the split drill draws every substance in water after the answer,
+  so the words and the picture meet on every card.
+
 ## 2026-11-14: v1, as first built
 
 Prerequisites named in the plan: ion names and charges (the ionic naming package), balancing with the inventory

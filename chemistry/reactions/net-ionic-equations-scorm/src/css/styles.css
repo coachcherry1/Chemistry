@@ -75,7 +75,7 @@ body {
   padding: 8px 14px 18px;
   background: var(--bg);
   color: var(--ink);
-  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -525,3 +525,26 @@ input.coef.inv-in { width: 34px; height: 24px; font-size: 1rem; border: 1.5px so
 .final-grid .bk-svg { max-height: 210px; }
 .bk-lbl.big { font-size: 22px; font-weight: 700; }
 .q-pic .bk-svg.before { max-height: 140px; }
+
+/* v2: larger pictures, names beside the particles (the teacher) */
+.bk-t { font: 700 15px system-ui, sans-serif; fill: var(--ink); paint-order: stroke; stroke: var(--paper); stroke-width: 3.5px; stroke-linejoin: round; dominant-baseline: auto; }
+.bk-svg.still .bk-t { font-size: 15px; }
+.ladder.watch .bk-svg { max-height: 360px; }
+.final-grid { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.3fr); }
+.final-grid .bk-svg { max-height: 330px; }
+.pic-choice .bk-svg { max-height: 180px; }
+.aq-cards .pic-choices.n4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.quiz .pic-choices.n4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.q-pic { max-width: 720px; }
+.q-pic .bk-svg, .q-pic .bk-svg.before { max-height: 210px; }
+.split-pic .bk-svg { max-height: 250px; }
+.io-shown { font-weight: 700; font-size: 1.1rem; }
+.io-row { padding: 6px 10px; }
+.net-eq { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 6px 0; font-size: 1.15rem; }
+.net-eq.off { opacity: 0.4; }
+.net-term { display: inline-flex; align-items: center; gap: 6px; padding: 3px 6px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); }
+.net-name { font-size: 1.15rem; }
+.eq-arrow.big, .eq-plus.big { font-size: 1.3rem; font-weight: 700; color: var(--muted); }
+.net-empty { margin: 4px 0; font-weight: 600; color: var(--muted); }
+.quiz .pic-choice .bk-svg { max-height: 156px; }
+.bk-atom.bk-h { stroke-width: 1.4; }

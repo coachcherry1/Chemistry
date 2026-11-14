@@ -26,70 +26,33 @@ var Ladder = (function () {
   var pretty = Net.pretty;
 
   /* ------------------------------------------------- splitting one substance */
-  /* c f(st) -> splits into ions or stays together; v (saved): { sp: 'split' | 'keep', n: [a, b], q: [a, b] }.
+  /* c f(st): does it split into ions or stay together? v (saved): { sp: 'split' | 'keep' }. Once the
+     choice is made the substance is written that way by itself, coefficients in front (the teacher: the
+     molecular equation is already balanced, so counting ions again is tedious, not a desirable difficulty).
      Used by the ionic rung and by the lesson's split drill. */
   function splitRow(f, c, st, v, save) {
-    v.n = v.n || [0, 0]; v.q = v.q || [0, 0];
-    var pr = Net.partsOf(f), syms = [Net.ionSym(pr.cat, true), Net.ionSym(pr.an, false)];
     var head = (c > 1 ? c + ' ' : '') + pretty(f) + '(' + st + ')';
-    function stepper(k, kind, label) {
-      var val = h('span', { class: 'sub-n' });
-      function text() {
-        if (kind === 'n') return v.n[k] ? String(v.n[k]) : '?';
-        return v.q[k] ? (Math.abs(v.q[k]) > 1 ? Math.abs(v.q[k]) : '') + (k ? '−' : '+') : '?';
-      }
-      function bump(d) {
-        if (kind === 'n') v.n[k] = Math.max(1, Math.min(12, (v.n[k] || (d > 0 ? 0 : 2)) + d));
-        else { var a = Math.max(1, Math.min(3, (Math.abs(v.q[k]) || (d > 0 ? 0 : 2)) + d)); v.q[k] = k ? -a : a; }
-        val.textContent = text(); el.classList.remove('wrong'); save();
-      }
-      val.textContent = text();
-      return h('span', { class: 'stepper sub ' + kind, role: 'group', 'aria-label': label }, [
-        h('button', { type: 'button', class: 'stp dec', 'aria-label': label + ': less', text: '−', onclick: function () { bump(-1); } }), val,
-        h('button', { type: 'button', class: 'stp inc', 'aria-label': label + ': more', text: '+', onclick: function () { bump(1); } })]);
-    }
-    var ionsBox = h('span', { class: 'io-ions' });
-    var keepBox = h('span', { class: 'io-keep', text: head });
-    [0, 1].forEach(function (k) {
-      if (k) ionsBox.appendChild(h('span', { class: 'io-plus', text: '+' }));
-      ionsBox.appendChild(h('span', { class: 'io-ion' }, [
-        stepper(k, 'n', 'How many ' + Chem.pretty(syms[k]) + ' ions'),
-        h('b', { class: 'io-sym', text: Chem.pretty(syms[k]) }),
-        stepper(k, 'q', 'Charge on ' + Chem.pretty(syms[k]))]));
-    });
+    var shown = h('span', { class: 'io-shown' });
     var btns = [['split', 'Splits into ions'], ['keep', 'Stays together']].map(function (b) {
       return h('button', { type: 'button', class: 'state-btn io-btn', 'data-sp': b[0], 'aria-pressed': 'false', text: b[1], onclick: function () { v.sp = b[0]; paint(); el.classList.remove('wrong'); save(); } });
     });
     function paint() {
-      ionsBox.hidden = v.sp !== 'split'; keepBox.hidden = v.sp !== 'keep';
+      shown.textContent = v.sp === 'split' ? '→  ' + Net.sideText(Net.split(f, c, 'aq')) : v.sp === 'keep' ? '→  ' + head : '';
       btns.forEach(function (b) { var on = b.getAttribute('data-sp') === v.sp; b.classList.toggle('selected', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
     }
-    var el = h('div', { class: 'io-row', 'data-f': f }, [h('b', { class: 'io-f', text: head }), h('span', { class: 'io-arrow', text: '→' }),
-      h('span', { class: 'ion-pick', role: 'group', 'aria-label': head }, btns), ionsBox, keepBox]);
+    var el = h('div', { class: 'io-row', 'data-f': f }, [h('b', { class: 'io-f', text: head }),
+      h('span', { class: 'ion-pick', role: 'group', 'aria-label': head }, btns), shown]);
     paint();
     /* fill in the right answer (a worked example) */
-    function solve() {
-      if (st !== 'aq') v.sp = 'keep';
-      else { var w = Net.split(f, c, 'aq'); v.sp = 'split'; v.n = [w[0].n, w[1].n]; v.q = [w[0].q, w[1].q]; }
-    }
+    function solve() { v.sp = st === 'aq' ? 'split' : 'keep'; paint(); }
     return { el: el, solve: solve };
   }
-  /* why a row is wrong: '' if right, 'empty' if unfinished */
+  /* why a choice is wrong: '' if right, 'empty' if not made */
   function judgeSplit(f, c, st, v) {
     if (!v || !v.sp) return 'empty';
-    if (st !== 'aq') return v.sp === 'keep' ? '' : f === 'H2O' ? 'HOH is water, a liquid: it stays together. Only dissolved (aq) compounds of ions split.' :
-      pretty(f) + ' is a solid, (s): its ions are locked together, so it stays together.';
-    if (v.sp === 'keep') return pretty(f) + ' is (aq): it is dissolved, so it is written as its separate ions.';
-    if (!v.n[0] || !v.n[1] || !v.q[0] || !v.q[1]) return 'empty';
-    var want = Net.split(f, c, 'aq'), one = Net.split(f, 1, 'aq');
-    for (var k = 0; k < 2; k++) {
-      var t = want[k];
-      if (v.q[k] !== t.q) return Net.ionName(t.key, t.q).replace(/^./, function (x) { return x.toUpperCase(); }) + ' is ' + Net.ionText(t.key, t.q) + ': a charge of ' + Math.abs(t.q) + (t.q > 0 ? '+' : '−') + '.';
-      if (v.n[k] !== t.n) {
-        if (v.n[k] === one[k].n && c > 1) return 'Multiply by the coefficient: ' + c + ' ' + pretty(f) + ' gives ' + c + ' × ' + one[k].n + ' = ' + t.n + ' ' + Net.ionText(t.key, t.q) + '.';
-        return 'Count again: each ' + pretty(f) + ' has ' + one[k].n + ' ' + Net.ionText(t.key, t.q) + (c > 1 ? ', and there are ' + c + ' of them' : '') + '.';
-      }
-    }
+    if (st !== 'aq') return v.sp === 'keep' ? '' : f === 'H2O' ? 'HOH is water, a covalent molecule: it does not split into ions. It stays together.' :
+      pretty(f) + ' is a solid, (s): its ions are locked together in the solid, so it stays together.';
+    if (v.sp === 'keep') return pretty(f) + ' is (aq): it is dissolved, and its ions have come apart, so it is written as its ions.';
     return '';
   }
 
@@ -205,18 +168,18 @@ var Ladder = (function () {
       var cr;
       function check() {
         var msgs = p.sp.map(function (f, j) { return judgeSplit(f, p.coefs[j], j < 2 ? 'aq' : p.states[f], work.v.io[j]); });
-        if (msgs.indexOf('empty') >= 0) { tell(fb, 'Decide for every substance whether it splits, and set every number and charge (?), then Check. (This Check was not counted.)', 'tip'); return; }
+        if (msgs.indexOf('empty') >= 0) { tell(fb, 'Decide for every substance whether it splits into ions or stays together, then Check. (This Check was not counted.)', 'tip'); return; }
         var bad = msgs.filter(Boolean)[0];
-        if (count('ionic')) first('ionic', !bad, work.v.io.map(function (v, j) { return p.sp[j] + ':' + v.sp + (v.sp === 'split' ? ' ' + v.n.join('/') + ' ' + v.q.join('/') : ''); }).join('; '), Net.ionicText(p));
+        if (count('ionic')) first('ionic', !bad, work.v.io.map(function (v, j) { return p.sp[j] + ':' + v.sp; }).join('; '), Net.ionicText(p));
         rows.forEach(function (r, j) { r.el.classList.toggle('wrong', !!msgs[j]); });
         if (!bad) { advance(); return; }
         miss('ionic', fb, bad, cr.show);
       }
       cr = checkRow(check, 'ionic');
-      ref.show('strong');
+      ref.show('table');
       area.appendChild(h('div', { class: 'rung-ionic' }, [
-        h('p', { class: 'rung-q', text: 'Write the complete ionic equation. Every dissolved (aq) substance splits into its ions; a solid (s) and water (l) stay together. Set how many of each ion and its charge.' }),
-        hint('The coefficient counts too: 3 CaCl₂(aq) is 3 Ca²⁺ and 6 Cl⁻. Polyatomic ions such as SO₄²⁻ stay in one piece.'),
+        h('p', { class: 'rung-q', text: 'The complete ionic equation: does each substance split into its ions, or stay together? Once you choose, it is written that way for you.' }),
+        hint('Dissolved (aq) compounds of ions, and the strong acids and bases, split into ions. A solid (s) and water, HOH(l), stay together.'),
         h('div', { class: 'io-side' }, [h('span', { class: 'io-head', text: 'Reactants' })].concat(rows.slice(0, 2).map(function (r) { return r.el; }))),
         h('div', { class: 'io-side' }, [h('span', { class: 'io-head', text: 'Products' })].concat(rows.slice(2).map(function (r) { return r.el; }))),
         cr.row, fb]));
@@ -282,95 +245,68 @@ var Ladder = (function () {
     }
 
     /* ------------------------------------------------------------------ net */
+    /* What is left once the spectators are struck out is already written here, coefficients first and
+       with its states (the teacher: no need to confirm again what belongs). The student writes it in the
+       lowest whole numbers, or, when nothing is left, says there is no reaction. */
     function rungNet() {
       var fb = fbEl();
-      work.v.net = work.v.net || { inc: {}, no: false };
-      var V = work.v.net;
-      var preview = h('span', { class: 'net-preview' });
-      var struck = {};
-      p.spect.forEach(function (k) { struck[k] = 1; });
+      var left = [p.ionic.left.filter(function (t) { return p.spect.indexOf(t.key) < 0; }),
+                  p.ionic.right.filter(function (t) { return t.t !== 'ion' || p.spect.indexOf(t.key) < 0; })];
       function id(t, k) { return k + ':' + Net.termKey(t); }
-      var cand = [p.ionic.left, p.ionic.right];
+      if (!work.v.net) {
+        work.v.net = { n: {}, no: false };
+        left.forEach(function (list, k) { list.forEach(function (t) { work.v.net.n[id(t, k)] = t.n; }); });
+      }
+      var V = work.v.net, empty = !left[0].length && !left[1].length;
       var noBtn = h('button', { type: 'button', class: 'state-btn none-btn', 'aria-pressed': 'false', text: 'No reaction: everything cancels', onclick: function () {
-        V.no = !V.no; if (V.no) V.inc = {}; paintAll(); save();
+        V.no = !V.no; paint(); save();
       } });
-      var cols = h('div', { class: 'net-cols' });
-      function built(k) {
-        return cand[k].filter(function (t) { return V.inc[id(t, k)]; }).map(function (t) { var c = V.inc[id(t, k)]; return { t: t.t, key: t.key, q: t.q, f: t.f, s: c.s, n: c.n, real: t }; });
+      var eq = h('div', { class: 'net-eq' });
+      function term(t, k) {
+        var key = id(t, k), name = Net.termText(t, false);
+        var val = h('span', { class: 'sub-n', text: String(V.n[key]) });
+        function bump(d) { V.n[key] = Math.max(1, Math.min(12, V.n[key] + d)); val.textContent = V.n[key]; save(); }
+        return h('span', { class: 'net-term', 'data-id': key }, [
+          h('span', { class: 'stepper sub', role: 'group', 'aria-label': 'Coefficient of ' + name }, [
+            h('button', { type: 'button', class: 'stp dec', 'aria-label': 'Coefficient of ' + name + ': less', text: '−', onclick: function () { bump(-1); } }), val,
+            h('button', { type: 'button', class: 'stp inc', 'aria-label': 'Coefficient of ' + name + ': more', text: '+', onclick: function () { bump(1); } })]),
+          h('b', { class: 'net-name', text: name })]);
       }
-      function paintPreview() {
-        if (V.no) { preview.textContent = 'No reaction'; return; }
-        var L = built(0), R = built(1);
-        function txt(list) { return list.map(function (t) { return (t.n > 1 ? t.n + ' ' : '') + (t.t === 'ion' ? Net.ionText(t.key, t.q) : pretty(t.f)) + (t.s ? '(' + t.s + ')' : '(?)'); }).join(' + ') || '…'; }
-        preview.textContent = txt(L) + ' → ' + txt(R);
-      }
-      function card(t, k) {
-        var key = id(t, k), c = V.inc[key];
-        var name = t.t === 'ion' ? Net.ionText(t.key, t.q) : pretty(t.f);
-        var inBtn = h('button', { type: 'button', class: 'ion-btn net-in' + (c ? ' selected' : ''), 'aria-pressed': c ? 'true' : 'false', 'data-id': key, text: name, onclick: function () {
-          if (V.inc[key]) delete V.inc[key]; else { V.inc[key] = { n: 1, s: null }; V.no = false; }
-          paintAll(); save();
-        } });
-        var kids = [inBtn];
-        if (c) {
-          var val = h('span', { class: 'sub-n', text: String(c.n) });
-          kids.push(h('span', { class: 'stepper sub', role: 'group', 'aria-label': 'Coefficient of ' + name }, [
-            h('button', { type: 'button', class: 'stp dec', 'aria-label': 'Coefficient of ' + name + ': less', text: '−', onclick: function () { c.n = Math.max(1, c.n - 1); val.textContent = c.n; paintPreview(); save(); } }), val,
-            h('button', { type: 'button', class: 'stp inc', 'aria-label': 'Coefficient of ' + name + ': more', text: '+', onclick: function () { c.n = Math.min(12, c.n + 1); val.textContent = c.n; paintPreview(); save(); } })]));
-          var sb = ['aq', 's', 'l'].map(function (st) {
-            return h('button', { type: 'button', class: 'state-btn mini' + (c.s === st ? ' selected' : ''), 'aria-pressed': c.s === st ? 'true' : 'false', 'aria-label': name + ' ' + STATE_WORD[st], text: '(' + st + ')',
-              onclick: function () { c.s = st; paintAll(); save(); } });
-          });
-          kids.push(h('span', { class: 'ion-pick', role: 'group', 'aria-label': 'State of ' + name }, sb));
-        }
-        return h('div', { class: 'net-card' + (c ? ' on' : '') + (t.t === 'ion' && struck[t.key] ? ' was-struck' : '') }, kids);
-      }
-      function paintAll() {
-        cols.innerHTML = '';
-        ['Reactant side', 'Product side'].forEach(function (title, k) {
-          cols.appendChild(h('div', { class: 'net-col' }, [h('span', { class: 'io-head', text: title })].concat(cand[k].map(function (t) { return card(t, k); }))));
+      function paint() {
+        eq.innerHTML = '';
+        if (empty) eq.appendChild(h('p', { class: 'net-empty', text: 'Every ion was struck out: nothing is left on either side.' }));
+        else left.forEach(function (list, k) {
+          if (k) eq.appendChild(h('span', { class: 'eq-arrow big', text: '→' }));
+          list.forEach(function (t, j) { if (j) eq.appendChild(h('span', { class: 'eq-plus big', text: '+' })); eq.appendChild(term(t, k)); });
         });
+        eq.classList.toggle('off', !!V.no);
         noBtn.classList.toggle('selected', !!V.no); noBtn.setAttribute('aria-pressed', V.no ? 'true' : 'false');
-        paintPreview();
       }
-      paintAll();
+      paint();
       var cr;
-      function typed() { return V.no ? 'no reaction' : preview.textContent; }
+      function typed() {
+        if (V.no) return 'no reaction';
+        return left.map(function (list, k) { return list.map(function (t) { return V.n[id(t, k)] + ' ' + Net.termText(t, false); }).join(' + '); }).join(' -> ');
+      }
       function judge() {
         if (V.no) return p.net ? 'Not everything cancels here: ' + (p.kind === 'water' ? 'H⁺ and OH⁻ become HOH.' : p.kind === 'both' ? 'a solid and water form.' : pretty(p.solids[0]) + ' forms as a solid.') : '';
-        var L = built(0), R = built(1);
-        if (!p.net) return 'Every ion here is a spectator: they all cancel and nothing is left. Choose "No reaction".';
-        var want = [p.net.left, p.net.right], got = [L, R];
-        for (var k = 0; k < 2; k++) {
-          var extra = got[k].filter(function (t) { return !want[k].some(function (w) { return Net.termKey(w) === Net.termKey(t); }); })[0];
-          if (extra) return (extra.t === 'ion' ? Net.ionText(extra.key, extra.q) : pretty(extra.f)) + ' is a spectator: it cancels, so it is not in the net ionic equation.';
-          var lack = want[k].filter(function (w) { return !got[k].some(function (t) { return Net.termKey(w) === Net.termKey(t); }); })[0];
-          if (lack) return 'Something that changes is missing on the ' + (k ? 'product' : 'reactant') + ' side: ' + (lack.t === 'ion' ? Net.ionText(lack.key, lack.q) : pretty(lack.f)) + '.';
-        }
-        /* the same terms: now the coefficients, then the states */
-        var all = L.concat(R), wantAll = want[0].concat(want[1]);
+        if (!p.net) return 'Everything cancelled: nothing is left, so there is no reaction.';
         var ratio = null, same = true;
-        all.forEach(function (t) {
-          var w = wantAll.filter(function (x) { return Net.termKey(x) === Net.termKey(t); })[0];
-          if (ratio == null) ratio = t.n / w.n;
-          if (Math.abs(t.n / w.n - ratio) > 1e-9) same = false;
+        left.forEach(function (list, k) {
+          list.forEach(function (t) {
+            var w = p.net[k ? 'right' : 'left'].filter(function (x) { return Net.termKey(x) === Net.termKey(t); })[0];
+            var r = V.n[id(t, k)] / w.n;
+            if (ratio == null) ratio = r;
+            if (Math.abs(r - ratio) > 1e-9) same = false;
+          });
         });
-        if (same && ratio > 1 && Math.round(ratio) === ratio) return 'The right particles in the right ratio, but use the lowest whole numbers: divide every coefficient by ' + ratio + '.';
-        if (!same || ratio !== 1) {
-          var qL = L.reduce(function (s, t) { return s + (t.t === 'ion' ? t.q * t.n : 0); }, 0);
-          return 'Check the coefficients: the charges on the left add up to ' + (qL > 0 ? '+' : '') + qL + ', and what forms must use exactly those ions' + (p.kind !== 'water' ? ' in the ratio of the formula.' : '.');
-        }
-        var badS = all.filter(function (t) { return t.s !== (t.t === 'ion' ? 'aq' : t.real.s); })[0];
-        if (badS) return badS.t === 'ion' ? 'Ions in solution are (aq).' : pretty(badS.f) === 'HOH' ? 'Water is a liquid: HOH(l).' : pretty(badS.f) + ' is the solid: (s).';
+        if (!same) return 'Change every coefficient the same way: divide all of them by the same number, so the equation stays balanced.';
+        if (ratio > 1 && Math.round(ratio) === ratio) return 'Use the lowest whole numbers: every coefficient can be divided by ' + ratio + '.';
+        if (ratio !== 1) return 'Those are not whole numbers in the right ratio. Start again from the complete ionic coefficients.';
         return '';
       }
       function check() {
-        if (!V.no) {
-          var L = built(0), R = built(1);
-          if (!L.length || !R.length || L.concat(R).some(function (t) { return !t.s; })) {
-            tell(fb, 'Choose what is on each side and give every term a state, or choose "No reaction", then Check. (This Check was not counted.)', 'tip'); return;
-          }
-        }
+        if (empty && !V.no) { tell(fb, 'Nothing is left. Choose "No reaction", then Check. (This Check was not counted.)', 'tip'); return; }
         var bad = judge();
         if (count('net')) first('net', !bad, typed(), Net.netText(p));
         if (!bad) { advance(); return; }
@@ -379,11 +315,10 @@ var Ladder = (function () {
       cr = checkRow(check, 'net');
       ref.show('table');
       area.appendChild(h('div', { class: 'rung-net' }, [
-        h('p', { class: 'rung-q', text: 'Write the net ionic equation: only what changes, in the lowest whole numbers, with states. If everything cancelled, there is no reaction.' }),
-        ionicLine(struck, null),
-        hint('Leave out every struck-out spectator. Then divide by any number that goes into every coefficient.'),
-        cols, h('p', { class: 'net-built' }, [h('span', { class: 'io-head', text: 'Your net ionic equation: ' }), preview]),
-        cr.row, fb]));
+        h('p', { class: 'rung-q', text: 'The net ionic equation is what is left. Write it in the lowest whole numbers, or, if nothing is left, say there is no reaction.' }),
+        ionicLine((function () { var o = {}; p.spect.forEach(function (k) { o[k] = 1; }); return o; })(), null),
+        hint('If every coefficient can be divided by the same number, divide them all.'),
+        eq, cr.row, fb]));
       cr.row.insertBefore(noBtn, cr.row.children[1]);
     }
 

@@ -37,7 +37,7 @@ var Steps = (function () {
       var free = { t: 'the ions apart', pic: { free: ions } };
       var same = { t: 'the ions apart, one of each', pic: { free: ions.map(function (t) { return { key: t.key, q: t.q, n: n }; }) } };
       var joined = { t: 'the ions still joined', pic: { units: { f: f, n: n } } };
-      var solid = { t: 'a solid on the bottom', pic: { solid: { f: f, n: 3 } } };
+      var solid = { t: 'a solid on the bottom', pic: { solid: { f: f, n: n } } };
       var c1 = Net.ionText(pr.cat, Net.charge(pr.cat, true)), a1 = Net.ionText(pr.an, Net.charge(pr.an, false));
       var r1 = Ions.ratio(pr.cat, pr.an);
       if (st === 'aq') {
@@ -58,8 +58,9 @@ var Steps = (function () {
   function aq(host, st, cb) {
     var list = aqCards();
     st.a = st.a || [];
-    var box = h('div');
-    host.appendChild(beside(box, 'table'));
+    /* the card names the state, so no table is needed here: the pictures get the whole width */
+    var box = h('div', { class: 'aq-cards' });
+    host.appendChild(box);
     function show(i) {
       box.innerHTML = '';
       var c = list[i], last = i === list.length - 1, answered = st.a[i] != null;
@@ -89,40 +90,45 @@ var Steps = (function () {
   }
 
   /* --------------------------------------------------------- split: the ions */
+  /* Splits into ions or stays together? The substance is then written that way, and drawn in water
+     (words to picture). The first card is a worked example. */
   function split(host, st, cb) {
     var list = Gen.LESSON.split;
     st.v = st.v || list.map(function () { return {}; });
     st.ok = st.ok || [];
     var box = h('div');
-    host.appendChild(beside(box, 'strong'));
+    host.appendChild(beside(box, 'table'));
     function show(i) {
       box.innerHTML = '';
-      var f = list[i][0], c = list[i][1], s = Net.state(f), last = i === list.length - 1;
-      var worked = i === 0, early = i < 4;
+      var f = list[i][0], c = list[i][1], s = Net.state(f), last = i === list.length - 1, worked = i === 0;
       var fb = h('p', { class: 'fb' });
       var v = st.v[i];
       var row = Ladder.splitRow(f, c, s, v, cb.save);
       if (worked && !st.ok[0]) { row.solve(); st.ok[0] = 1; cb.save(); }
-      var row2 = worked ? Ladder.splitRow(f, c, s, v, cb.save) : row;
-      var pic = s === 'aq' ? { free: Net.solution(f, c) } : f === 'H2O' ? { free: [{ key: 'HOH', q: 0, n: c }] } : { solid: { f: f, n: c * 2 } };
+      var pic = s === 'aq' ? { free: Net.solution(f, c) } : f === 'H2O' ? { free: [{ key: 'HOH', q: 0, n: c + 1 }] } : { solid: { f: f, n: c * 3 } };
       var picBox = h('div', { class: 'split-pic' });
       function showPic() { if (!picBox.firstChild) picBox.appendChild(Beaker.picture(pic)); }
-      if (early || st.ok[i]) showPic();
+      if (st.ok[i]) showPic();
+      function said() {
+        return s === 'aq' ? (c > 1 ? c + ' ' : '') + pretty(f) + '(aq) is ' + Net.sideText(Net.split(f, c, 'aq')) + ': the ions are apart in the water.'
+          : f === 'H2O' ? 'HOH is water, a covalent molecule: it stays together as molecules.'
+          : pretty(f) + '(s) is a solid: its ions stay locked together on the bottom.';
+      }
       var nextBtn = h('button', { type: 'button', class: 'primary card-next', hidden: !st.ok[i] || last, text: 'Next one →', onclick: function () { show(i + 1); } });
       var check = h('button', { type: 'button', class: 'primary rung-check', hidden: !!st.ok[i], text: 'Check', onclick: function () {
         var bad = Ladder.judgeSplit(f, c, s, v);
-        if (bad === 'empty') { fb.textContent = 'Choose splits or stays together, and set every number and charge, then Check.'; fb.className = 'fb show tip'; return; }
+        if (bad === 'empty') { fb.textContent = 'Choose splits into ions or stays together, then Check.'; fb.className = 'fb show tip'; return; }
         if (bad) { fb.textContent = bad; fb.className = 'fb show bad'; row.el.classList.add('wrong'); return; }
         st.ok[i] = 1; cb.save();
-        fb.textContent = 'Right. ' + (s === 'aq' ? (c > 1 ? c + ' ' : '') + pretty(f) + '(aq) is ' + Net.sideText(Net.split(f, c, 'aq')) + '.' : pretty(f) + '(' + s + ') stays together.');
+        fb.textContent = 'Right. ' + said();
         fb.className = 'fb show good';
         check.hidden = true; showPic();
-        if (last) { st.r = 1; cb.complete('Dissolved substances split into their ions (the coefficient counts); solids and water stay together.'); } else { nextBtn.hidden = false; nextBtn.focus(); }
+        if (last) { st.r = 1; cb.complete('Dissolved compounds of ions and the strong acids and bases split into ions; solids and water stay together.'); } else { nextBtn.hidden = false; nextBtn.focus(); }
       } });
-      var kids = [h('p', { class: 'prompt', text: worked ? 'A worked example: ' + pretty(f) + '(aq) is dissolved, so it splits into 2 Na⁺ and 1 SO₄²⁻. The sulfate ion stays in one piece. Count them in the picture.'
-        : early ? 'Read the picture: how many of each ion, and what charge? Then write it.' : 'Write it, then check yourself against the picture.' }),
-        h('div', { class: 'split-work' }, [h('div', null, [row2.el, h('div', { class: 'btnrow' }, [check, nextBtn]), fb]), picBox])];
-      if (worked) { fb.textContent = 'Press Next one to try it yourself.'; fb.className = 'fb show tip'; nextBtn.hidden = false; check.hidden = true; }
+      var kids = [h('p', { class: 'prompt', text: worked ? 'A worked example: ' + pretty(f) + '(aq) is dissolved, so it splits into its ions, 2 Na⁺ and 1 SO₄²⁻. The sulfate ion stays in one piece. Count them in the picture.'
+        : 'Does it split into ions in water, or stay together? Then see it in the water.' }),
+        h('div', { class: 'split-work' }, [h('div', null, [row.el, h('div', { class: 'btnrow' }, [check, nextBtn]), fb]), picBox])];
+      if (worked) { fb.textContent = said() + ' Press Next one to try it yourself.'; fb.className = 'fb show tip'; nextBtn.hidden = false; check.hidden = true; }
       box.appendChild(panel('Substance ' + (i + 1) + ' of ' + list.length, worked ? 'worked example' : 'not graded', kids));
     }
     var at = 0;

@@ -117,7 +117,7 @@ var Gen = (function () {
     var r1 = { t: 'Picture with the ions apart, ' + rt[0] + ' and ' + rt[1], pic: { free: ions } };
     var w1 = { t: 'Picture with the ions apart, the same number of each', pic: { free: ions.map(function (t) { return { key: t.key, q: t.q, n: units }; }) } };
     var w2 = { t: 'Picture with the ions still joined as ' + Net.pretty(f), pic: { units: { f: f, n: units } } };
-    var w3 = { t: 'Picture with a solid on the bottom', pic: { solid: { f: f, n: units * 3 } } };
+    var w3 = { t: 'Picture with a solid on the bottom', pic: { solid: { f: f, n: units } } };
     var q1 = shuffled(r1, [w1, w2, w3], Net.pretty(f) + '(aq) is dissolved: its ions move apart. Each ' + Net.pretty(f) + ' gives ' +
       rt[0] / units + ' ' + Net.ionText(pr.cat, Net.charge(pr.cat, true)) + ' and ' + rt[1] / units + ' ' + Net.ionText(pr.an, Net.charge(pr.an, false)) +
       ', so ' + units + ' of them give ' + rt[0] + ' and ' + rt[1] + '. Joined ions or a solid on the bottom would be (s).');
