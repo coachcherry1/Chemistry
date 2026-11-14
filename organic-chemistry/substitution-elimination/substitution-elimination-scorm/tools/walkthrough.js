@@ -203,7 +203,7 @@ const fakeLMS = () => {
   async function quiz(reloadOnWrong) {
     const id = await stepId();
     /* a checkpoint is recall: the reference drawers are hidden */
-    expect(await page.evaluate(() => [...document.querySelectorAll('details.reference')].every((d) => d.hidden)), `${id}: reference drawers open during a checkpoint`);
+    for (const d of await page.$$('details.reference')) expect(!(await d.isVisible()), `${id}: a reference drawer is visible during a checkpoint`);
     for (;;) {
       const q = await page.$('.quiz .choice');
       if (!q) break;

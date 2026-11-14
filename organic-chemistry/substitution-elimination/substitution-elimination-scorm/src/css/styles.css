@@ -909,6 +909,7 @@ h3 { font-size: 0.8rem; margin: 0; text-transform: uppercase; letter-spacing: 0.
 /* a wrong checkpoint answer: its own feedback, struck out, then pick again */
 .q-wrong { margin: 12px 0 0; padding: 9px 12px; border-left: 3px solid var(--bad); background: var(--bad-bg); font-size: 0.88rem; }
 .choice.wrong .choice-text { text-decoration: line-through; text-decoration-thickness: 1px; }
-.copy-arrows { margin-top: 8px; padding: 6px 10px; border: 1px dashed var(--accent); border-radius: var(--radius); }
-.copy-arrows .muted { margin: 0 0 4px; }
-.copy-arrows .mol { max-height: 150px; width: auto; max-width: 100%; }
+.copy-arrows { margin-top: 4px; padding: 4px 10px; border: 1px dashed var(--accent); border-radius: var(--radius); }
+.copy-arrows .muted { margin: 0; font-size: 0.8rem; }
+.copy-arrows .mol-wrap { min-height: 0; }
+.copy-arrows .mol { max-height: 112px; width: auto; max-width: 100%; }

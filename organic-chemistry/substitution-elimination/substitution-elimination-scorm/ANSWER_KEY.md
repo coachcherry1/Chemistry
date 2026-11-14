@@ -199,7 +199,7 @@ Draws 4 of 13; always asks: a-nash, a-dbu.
   - Other choices: Nucleophile only (strong nucleophile, weak base); Base only (strong base, weak nucleophile); Weak nucleophile, weak base
   - Why: EtO⁻ is a strong base (its conjugate acid, ethanol, is a weak acid) and a strong nucleophile (a negative charge on an uncrowded O).
   - If Nucleophile only (strong nucleophile, weak base): EtO⁻ is a strong base as well: its conjugate acid, ethanol, is a weak acid. Ask the base question again.
-  - If Base only (strong base, weak nucleophile): EtO⁻ is a strong nucleophile as well: a negative charge on an O that nothing blocks. Only a hindered base (t-BuO⁻) or a crowded one (DBU) is a weak nucleophile.
+  - If Base only (strong base, weak nucleophile): EtO⁻ is a strong nucleophile as well: a negative charge on an O that nothing blocks. Base only (strong base, weak nucleophile) is DBN, DBU and NaH.
   - If Weak nucleophile, weak base: NaOEt is not ethanol: its EtO⁻ carries a negative charge, so it is both a strong nucleophile and a strong base. Look at the charge.
 - **a-etoh**: What is the function of ethanol, EtOH? [EtOH]
   - Answer: **Weak nucleophile, weak base**
@@ -207,12 +207,12 @@ Draws 4 of 13; always asks: a-nash, a-dbu.
   - Why: EtOH is neutral and its O is small and not polarizable: a weak nucleophile and a weak base.
   - If Nucleophile only (strong nucleophile, weak base): EtOH has no negative charge, and its O is small and not polarizable, so it is a weak nucleophile. Compare it with EtO⁻.
   - If Strong nucleophile and strong base: That is EtO⁻ (from NaOEt). Ethanol is neutral: a weak nucleophile and a weak base.
-  - If Base only (strong base, weak nucleophile): Ethanol is not a strong base: as an acid it is weak, so it barely takes a proton. It is a weak nucleophile and a weak base.
+  - If Base only (strong base, weak nucleophile): Ethanol is a weak base: it is neutral, and its conjugate acid (protonated ethanol) is a strong acid. It is a weak nucleophile and a weak base.
 - **a-nacn**: What is the function of NaCN? [NaCN (⁻CN)]
   - Answer: **Nucleophile only (strong nucleophile, weak base)**
   - Other choices: Strong nucleophile and strong base; Base only (strong base, weak nucleophile); Weak nucleophile, weak base
   - Why: ⁻CN is a strong nucleophile and a weak base (far weaker than HO⁻), so with a 1° or 2° substrate it substitutes.
-  - If Strong nucleophile and strong base: ⁻CN is a strong nucleophile, but it is a far weaker base than HO⁻, so Klein puts it with the nucleophiles only. Ask the base question again.
+  - If Strong nucleophile and strong base: ⁻CN is a strong nucleophile, but a far weaker base than HO⁻, so here it goes with the nucleophiles only. Ask the base question again.
   - If Base only (strong base, weak nucleophile): It is the other way round: ⁻CN is a strong nucleophile and a weak base.
   - If Weak nucleophile, weak base: The negative charge on C makes ⁻CN a strong nucleophile. Start with the nucleophile question.
 - **a-tbuok**: t-BuOK and NaOEt are both strong nucleophiles and strong bases. What is different about t-BuOK? [t-BuOK (t-BuO⁻) and NaOEt (EtO⁻)]
@@ -241,7 +241,7 @@ Draws 4 of 13; always asks: a-nash, a-dbu.
   - Other choices: NaI (I⁻); NaOMe (MeO⁻); MeOH
   - Why: H⁻ is a very strong base (H₂ is an extremely weak acid) but small and not polarizable, so it is a weak nucleophile. NaI is a nucleophile only, NaOMe a strong nucleophile and strong base, MeOH weak at both.
   - If NaI (I⁻): NaI is the other way round: I⁻ is a strong nucleophile and a weak base. Look for H⁻: a very strong base that is too small to be polarizable.
-  - If NaOMe (MeO⁻): NaOMe is a strong nucleophile and a strong base. Base only means strong base, weak nucleophile: which ion is too small and hard to be a nucleophile?
+  - If NaOMe (MeO⁻): NaOMe is a strong nucleophile and a strong base. Base only means strong base, weak nucleophile: which ion is a very strong base but too small and not polarizable to attack a carbon well?
   - If MeOH: MeOH is neutral: a weak nucleophile and a weak base. Base only means a strong base.
 - **a-pick-nuc**: Which reagent is a nucleophile only (strong nucleophile, weak base)?
   - Answer: **NaN₃ (N₃⁻)**
@@ -595,7 +595,7 @@ Draws 5 of 15; always asks: e-fn-h2o, e-klein.
   - Why: H₂O is neutral and its O is small and not polarizable: a weak nucleophile and a weak base.
   - If Nucleophile only (strong nucleophile, weak base): Water is neutral and its O is small and not polarizable: a weak nucleophile.
   - If Strong nucleophile and strong base: Water has no charge: a weak nucleophile and a weak base. HO⁻ is the strong one.
-  - If Base only (strong base, weak nucleophile): Water is a weak base: as an acid it is weak, so it barely takes a proton.
+  - If Base only (strong base, weak nucleophile): Water is a weak base: it is neutral, and its conjugate acid, H₃O⁺, is a strong acid. It is a weak nucleophile too.
 - **e-klein**: Klein’s worked example: what is the major product of (R)-2-chloropentane with NaOEt? [(R)-2-chloropentane + NaOEt]
   - Answer: **(E)-pent-2-ene**
   - Other choices: (Z)-pent-2-ene; pent-1-ene; (S)-2-ethoxypentane
