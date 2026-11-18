@@ -444,7 +444,7 @@ not the full page.
   strongest first, predict each `[prop, most]`, then run the liquid bench (drop on plastic, pipet draining, drop left
   out). Reduced motion shows a still partway through with the order in words.
 
-## arrow-pushing-scorm (branch `claude/charming-gauss-ear0ac`, zip v2, SCHEMA 5)
+## arrow-pushing-scorm (branch `claude/charming-gauss-ear0ac`, zip v3, SCHEMA 5)
 
 - **Key objective:** recognise and draw Klein's four patterns (6.8): nucleophilic attack, loss of a leaving group,
   proton transfer, carbocation rearrangement; vocabulary adoption. Comes before `substitution-elimination-scorm/`.
@@ -470,6 +470,9 @@ not the full page.
     the word asked for). The validator checks the words.
   - **One idea per step:** `favor` (read exergonic or endergonic) and `dg` (ΔG = ΔH − TΔS) are two steps; `concerted` and
     `seqread` are two steps. Prerequisites on the intro screen (`PREREQS`). "Base" and "Hydride shift" in Vocabulary.
+  - **Products first (zip v3, the teacher: Klein shows them):** every arrow-drawing exercise (`arrowBox`, quiz drawings included)
+    shows reactants, an arrow and the step's products (`.product-fig`) before the arrows are drawn; `noProduct` turns it off
+    only in Figure 6.31's step, whose row already shows every structure.
   - Teacher link `?step=quiz-C&all` shows every question of a pool.
 - **Teacher's wording:** AP Chemistry trained. Never "spontaneous": ΔG < 0 is thermodynamically favorable, ΔG > 0 not
   thermodynamically favorable; ΔG kept; exergonic and endergonic used. No ΔH calculated, but "bond breaking is

@@ -1,5 +1,19 @@
 # Learning review
 
+## 2026-11-18: products shown before the arrows are asked for (zip v3, SCHEMA 5 unchanged)
+
+The teacher: Klein shows the products of a step when it asks for the arrows; asking for arrows with no products on screen was
+too much of a stretch and an undesirable difficulty. Every arrow-drawing exercise now shows **reactants, an arrow, then the
+products** (`.product-fig`, drawn from the step's `after`): the pattern steps, the concerted step and every graded drawing
+in the checkpoints and the final check. Figure 6.31's own step keeps its row of structures (it already shows every product).
+The products never give the answer away: the arrows are still the student's to draw. The walkthrough checks the products are
+beside every drawing; the layout check still fits 1366 x 520.
+
+- Check 1 (novice): the task is now the textbook's, so a student can see what the arrows must make.
+- Check 2 (cognitive science): effort stays on choosing the arrows (desirable difficulty), not on guessing the product.
+- Check 3 (dual code): reactants and products on screen together, with the arrows added between them.
+- Same change to consider in `substitution-elimination-scorm/` (its arrow steps also show reactants only).
+
 ## 2026-11-14 (later): all six suggestions built (zip v2, SCHEMA 5)
 
 The teacher chose all six suggestions of the first review (below). 28 steps (was 25); the graded set is unchanged in size

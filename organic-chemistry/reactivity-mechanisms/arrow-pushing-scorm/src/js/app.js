@@ -453,6 +453,7 @@ var App = (function () {
      o.worked: a worked example (the arrows are drawn; the student plays it)
      o.given:  this many of the step's arrows are drawn for the student
      o.tail:   the tail of the first arrow is marked
+     o.noProduct: do not draw the products beside the reactants (Figure 6.31's row already shows them)
      o.graded(r): called on the first Check with something drawn (graded) */
   function arrowBox(sc, pr, key, done, o) {
     o = o || {};
@@ -464,6 +465,17 @@ var App = (function () {
     var note = o.worked ? h('p', { class: 'worked-note', text: 'Worked for you: these are the arrows. Play the step and watch the electrons follow them.' })
       : o.given ? h('p', { class: 'worked-note', text: (o.given === 1 ? 'The first arrow is drawn for you' : 'Some arrows are drawn for you') + ' (grey). Draw the rest.' })
       : o.tail ? h('p', { class: 'worked-note', text: 'The ringed electrons are where the arrow starts. Where do they go?' }) : null;
+    /* The products are on screen before the arrows are asked for, as in the
+       textbook: reactants, an arrow, products. */
+    var prod = o.noProduct ? null : h('div', { class: 'product-fig' }, [h('p', { class: 'product-cap', text: 'Products' }),
+      Render.draw(sc.after, { scale: 30, label: 'The products of this step' })]);
+    var row = h('div', { class: 'arrow-row' });
+    tool.node.insertBefore(row, tool.svg);
+    row.appendChild(tool.svg);
+    if (prod) {
+      row.appendChild(h('span', { class: 'arrow-row-to', 'aria-hidden': 'true', text: '→' }));
+      row.appendChild(prod);
+    }
     var node = h('div', null, [note, tool.node, h('div', { class: 'btnrow' }, [help]), yours, legend]);
     function finish(fresh) {
       tool.lock();

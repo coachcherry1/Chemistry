@@ -513,7 +513,7 @@
           paintRight();
           if (doneCount() === steps.length) { if (!U.isDone(s.id)) U.complete('All four patterns in one mechanism. Play the whole thing below.'); paintBottom(); }
           else if (fresh) { k++; paint(); U.say(PN[sc.patterns[0]] + ': done. On to step ' + (k + 1) + '.', 'good'); }
-        });
+        }, { noProduct: true });
         body.push(ab.node);
       }
       left.appendChild(U.panel('Step ' + (k + 1) + ' of 4', '3,3-dimethylbutan-2-ol and HBr', body));

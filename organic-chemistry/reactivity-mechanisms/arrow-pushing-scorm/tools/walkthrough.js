@@ -111,6 +111,9 @@ const fakeLMS = () => {
     expect(want, 'no arrow scene on ' + (await stepId()));
     if (!want) return;
     const click = (k) => page.click(`${root} [data-key="${k}"] >> nth=0`, { force: true });
+    /* the products are on screen before the arrows are asked for (the textbook's way) */
+    if (root !== '.arrow-tool' || !(await page.$('.stage-quiz'))) { /* every drawing, quiz included */ }
+    expect(await page.$(`${root} .product-fig`) || (await stepId()) === 'sequence', 'no products beside the reactants on ' + (await stepId()));
     /* a worked example: the arrows are drawn and the tool is locked */
     if (await page.$(`${root} svg.locked`)) {
       expect(await page.$('.worked-note'), 'a locked drawing that is not a worked example on ' + (await stepId()));
