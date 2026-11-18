@@ -92,7 +92,7 @@ const fakeLMS = () => {
   }
   async function good(what) { const c = await fbClass(); expect(c.includes('good'), what + ': ' + (await feedback())); }
   async function bad(what) { const c = await fbClass(); expect(c.includes('bad'), what + ' was accepted: ' + (await feedback())); }
-  const predict = (n) => page.click(`.predict .choice >> nth=${n || 0}`);
+  const predict = (n) => page.click(`.predict .choice[data-choice="${n || 0}"] >> nth=0`);
   const setRange = (sel, v) => page.$eval(sel, (el, x) => { el.value = x; el.dispatchEvent(new Event('input')); }, String(v));
   const saved = () => page.evaluate(() => JSON.parse(JSON.parse(sessionStorage.getItem('lms'))['cmi.suspend_data']));
   /* answer every card: the right choice index for each, from the page's own model */

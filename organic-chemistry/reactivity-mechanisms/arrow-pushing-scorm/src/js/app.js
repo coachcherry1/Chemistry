@@ -310,8 +310,12 @@ var App = (function () {
       h('p', { class: 'q-text', text: p.q })
     ]);
     var row = h('div', { class: 'q-choices' + (p.compact ? ' compact' : '') });
-    p.choices.forEach(function (c, i) {
-      var b = h('button', { type: 'button', class: 'choice' + (chosen === i ? ' picked' : ''), disabled: chosen != null },
+    /* shuffled for each student (seeded, so a reload keeps the order): the
+       right answer is not always first */
+    var order = shuffle(p.choices.map(function (c, i) { return i; }), rng(state.seed ^ hash(p.q)));
+    order.forEach(function (i) {
+      var c = p.choices[i];
+      var b = h('button', { type: 'button', class: 'choice' + (chosen === i ? ' picked' : ''), disabled: chosen != null, 'data-choice': i },
         [h('span', { class: 'choice-text', text: c })]);
       b.addEventListener('click', function () { onPick(i); });
       row.appendChild(b);

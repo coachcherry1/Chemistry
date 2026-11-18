@@ -139,8 +139,58 @@ var Layout = (function () {
     return [at, at + 60, at - 60];
   }
 
+  /* Two rings sharing one bond (DBN, DBU): each ring a regular polygon on
+     its own side of the shared bond. null if m is not that shape. */
+  function fused(m) {
+    var heavy = m.atoms.filter(function (a) { return a.el !== 'H'; }).length;
+    if (m.bonds.length - heavy + 1 !== 2) return null;
+    var deg = function (i) { return m.nb(i).length; };
+    var shared = m.bonds.filter(function (b) { return deg(b.a) === 3 && deg(b.b) === 3; })[0];
+    if (!shared) return null;
+    var a = shared.a, b = shared.b;
+    /* the two other paths from a to b */
+    function path(avoid) {
+      var prev = {}, queue = [a], seen = {};
+      seen[a] = 1;
+      while (queue.length) {
+        var x = queue.shift();
+        var nbs = m.nb(x);
+        for (var k = 0; k < nbs.length; k++) {
+          var y = nbs[k].j;
+          if (x === a && y === b) continue;
+          if (seen[y] || avoid[y]) continue;
+          seen[y] = 1; prev[y] = x;
+          if (y === b) { var out = [b]; while (out[0] !== a) out.unshift(prev[out[0]]); return out; }
+          queue.push(y);
+        }
+      }
+      return null;
+    }
+    var p1 = path({});
+    if (!p1) return null;
+    var avoid = {};
+    p1.slice(1, -1).forEach(function (i) { avoid[i] = 1; });
+    var p2 = path(avoid);
+    if (!p2 || p1.length + p2.length - 2 !== heavy) return null;
+    var pos = {};
+    pos[a] = [0, -0.5]; pos[b] = [0, 0.5];
+    [[p1, -1], [p2, 1]].forEach(function (pp) {
+      var ring = pp[0], side = pp[1], n = ring.length;
+      var R = 1 / (2 * Math.sin(Math.PI / n)), ap = 1 / (2 * Math.tan(Math.PI / n));
+      var cx = side * ap, cy = 0;
+      var a0 = Math.atan2(pos[a][1] - cy, pos[a][0] - cx), a1 = Math.atan2(pos[b][1] - cy, pos[b][0] - cx);
+      var step = 2 * Math.PI / n, dir = ((a1 - a0 + 3 * Math.PI) % (2 * Math.PI)) - Math.PI > 0 ? -1 : 1;
+      ring.forEach(function (i, k) { if (i !== a && i !== b) pos[i] = [cx + R * Math.cos(a0 + dir * step * k), cy + R * Math.sin(a0 + dir * step * k)]; });
+    });
+    var adj = {};
+    m.atoms.forEach(function (x, i) { adj[i] = m.nb(i); });
+    return { pos: pos, wedge: {}, abbr: {}, hidden: {}, adj: adj, ring: null, main: null, handed: function () { return 0; } };
+  }
+
   function layout(m, opts) {
     opts = opts || {};
+    var fz = fused(m);
+    if (fz) return fz;
     var abbr = abbreviations(m, opts);
     var T = drawable(m, abbr);
     var pos = {};
@@ -205,9 +255,11 @@ var Layout = (function () {
       for (var k = 0; k + 1 < main.length; k++) angles.push(main.length === 2 ? 0 : 30 * (k % 2 ? -1 : 1));
       function build(ph) {
         var ang = angles.map(function (a) { return a * ph; });
-        /* a triple bond is straight on from the bond before it */
+        /* a triple bond, or a second double bond in a row (azide, N=N=N), is
+           straight on from the bond before it */
         for (var tq = 1; tq < ang.length; tq++) {
-          if (m.bonds[m.bondBetween(main[tq], main[tq + 1])].order === 3) {
+          var o1 = m.bonds[m.bondBetween(main[tq], main[tq + 1])].order, o0 = m.bonds[m.bondBetween(main[tq - 1], main[tq])].order;
+          if (o1 === 3 || (o1 === 2 && o0 === 2)) {
             var shift = ang[tq - 1] - ang[tq];
             for (var tr = tq; tr < ang.length; tr++) ang[tr] += shift;
           }

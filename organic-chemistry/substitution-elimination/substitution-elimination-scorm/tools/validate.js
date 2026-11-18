@@ -300,7 +300,7 @@ Object.keys(QUIZZES).forEach((k) => {
     if (!ck) return;
     const figName = (c) => name(App.figure ? (c.mol ? mol(c.mol) : c.smiles ? Mol.parse(c.smiles) : Mol.fromRing(c.ring, c.ene)) : null);
     if (ck.fn && q.choices[0] !== FNTEXT[React.REAGENTS[ck.fn].fn]) fail(`${q.id}: first choice is not ${ck.fn}'s function`);
-    if (ck.fnPick) q.choices.forEach((c, i) => { const r = React.REAGENTS[TEXT_REAGENT[c]]; if (!r) fail(`${q.id}: unknown reagent ${c}`); else if ((r.fn === ck.fnPick) !== (i === 0)) fail(`${q.id}: ${c} is ${r.fn}`); });
+    if (ck.fnPick) q.choices.forEach((c, i) => { const r = React.REAGENTS[typeof c === 'string' ? TEXT_REAGENT[c] : c.reagent]; if (!r) fail(`${q.id}: unknown reagent ${JSON.stringify(c)}`); else if ((r.fn === ck.fnPick) !== (i === 0)) fail(`${q.id}: ${r.text} is ${r.fn}`); });
     if (ck.major) {
       /* a 2° substrate in ethanol is past Klein's table: use the SN1 path itself */
       const maj = ck.major[2] === 'shift' ? React.sn1Products(mol(ck.major[0]), ck.major[1]).list.map((p) => name(p.mol))
@@ -362,7 +362,24 @@ walk(path.join(root, 'src'), []).concat(walk(path.join(root, 'tools'), [])).conc
 const studentText = [];
 App.STEPS.forEach((s) => studentText.push(s.title, s.text));
 Object.keys(P).forEach((k) => studentText.push(P[k].q, ...P[k].choices));
-Object.keys(QUIZZES).forEach((k) => QUIZZES[k].pool.forEach((q) => { studentText.push(q.q, q.why); q.choices.forEach((c) => { if (typeof c === 'string') studentText.push(c); }); }));
+Object.keys(QUIZZES).forEach((k) => QUIZZES[k].pool.forEach((q) => { studentText.push(q.q, q.why); (q.wrong || []).forEach((w) => studentText.push(w)); q.choices.forEach((c) => { if (typeof c === 'string') studentText.push(c); }); }));
+/* dual-code: a question that names a molecule or a reagent draws it (in the
+   question or as its choices) */
+{
+  const NAMED = Object.keys(MOLS).map((id) => MOLS[id].name.toLowerCase())
+    .concat(Object.keys(React.REAGENTS).map((k) => React.REAGENTS[k].text), Object.keys(React.REAGENTS).map((k) => React.REAGENTS[k].ion).filter(Boolean))
+    .concat(['ethanol', 'methanol', 'water', 'carbocation']);
+  Object.keys(QUIZZES).forEach((k) => QUIZZES[k].pool.forEach((q) => {
+    const text = q.q.toLowerCase(), raw = q.q;
+    const hit = NAMED.find((n) => n === n.toLowerCase() ? new RegExp('(^|[^a-z])' + n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '($|[^a-z])').test(text) : raw.indexOf(n) >= 0);
+    if (hit && !q.fig && typeof q.choices[0] === 'string') fail(`${q.id}: names ${hit} but draws nothing`);
+  }));
+}
+/* plan for error: every wrong choice has its own feedback (the misconception and the next move) */
+Object.keys(QUIZZES).forEach((k) => QUIZZES[k].pool.forEach((q) => {
+  if (!(q.wrong && q.wrong.length === q.choices.length - 1 && q.wrong.every((w) => typeof w === 'string' && w.length > 20)))
+    fail(`${q.id}: every wrong choice needs its own feedback (wrong: one line per choice after the first)`);
+}));
 App.VOCAB.forEach((v) => studentText.push(v[0], v[1]));
 App.BIG_IDEAS.forEach((t) => studentText.push(t));
 ['steps1.js', 'steps2.js', 'steps3.js', 'mech.js', 'react.js'].forEach((f) => {

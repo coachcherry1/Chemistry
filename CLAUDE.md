@@ -384,12 +384,17 @@ not the full page.
 - **Walkthrough harness (both new packages):** the fake LMS reads and writes sessionStorage on every call and never stages
   the next load's data; staging made the reload check fail at random (still the case in the older packages' walkthroughs).
 
-## substitution-elimination-scorm (branch `claude/compassionate-allen-hwn3ov`, zip v5, SCHEMA 3)
+## substitution-elimination-scorm (branch `claude/compassionate-allen-hwn3ov`, zip v6, SCHEMA 3)
 
 - **Key objective:** Klein's three steps (7.9): the function of the reagent, the substrate and Klein's table, then
   regio- and stereochemistry; major and minor products.
 - 27 steps in 5 parts; 23 graded questions (4+5+5+4+5) from a pool of 73. Every checkpoint's core has a
   reagent-function question. No reference table beside the checkpoints (the teacher's choice).
+- **Learning design (zip v6, the teacher chose suggestions 1 to 4 of `LEARNING_REVIEW.md`):** predictions shuffled per
+  student; no opt out in the checkpoints (a wrong answer counts, then is struck with its own `wrong` line and the
+  student picks again; `state.fix`); reference drawers hidden during checkpoints; every question naming a molecule or
+  reagent draws it (`figure` `{ reagent }`, `{ chair }`; DBN/DBU via `Layout` `fused`); Show me shows arrows to copy;
+  the Part 4 sort's wrong drop says what the chosen bin means. The validator requires the `wrong` lines and the pictures.
 - **Warm-up first** (`warmup`, from the arrow-pushing learning review): name the pattern, from memory, in four steps of this
   activity's own mechanisms (`MECHFIG` `sn1loss`, `sn1attack`, `sn1pt`, `shiftH`); never graded; the validator checks one of each.
 - **Klein's wording:** SN2 is nucleophilic attack and loss of the leaving group, concerted, back-side attack,
@@ -444,7 +449,7 @@ not the full page.
   strongest first, predict each `[prop, most]`, then run the liquid bench (drop on plastic, pipet draining, drop left
   out). Reduced motion shows a still partway through with the order in words.
 
-## arrow-pushing-scorm (branch `claude/charming-gauss-ear0ac`, zip v3, SCHEMA 5)
+## arrow-pushing-scorm (branch `claude/charming-gauss-ear0ac`, zip v4, SCHEMA 5)
 
 - **Key objective:** recognise and draw Klein's four patterns (6.8): nucleophilic attack, loss of a leaving group,
   proton transfer, carbocation rearrangement; vocabulary adoption. Comes before `substitution-elimination-scorm/`.
@@ -470,7 +475,7 @@ not the full page.
     the word asked for). The validator checks the words.
   - **One idea per step:** `favor` (read exergonic or endergonic) and `dg` (ΔG = ΔH − TΔS) are two steps; `concerted` and
     `seqread` are two steps. Prerequisites on the intro screen (`PREREQS`). "Base" and "Hydride shift" in Vocabulary.
-  - **Products first (zip v3, the teacher: Klein shows them):** every arrow-drawing exercise (`arrowBox`, quiz drawings included)
+  - **Products first (zip v4, the teacher: Klein shows them):** every arrow-drawing exercise (`arrowBox`, quiz drawings included)
     shows reactants, an arrow and the step's products (`.product-fig`) before the arrows are drawn; `noProduct` turns it off
     only in Figure 6.31's step, whose row already shows every structure.
   - Teacher link `?step=quiz-C&all` shows every question of a pool.

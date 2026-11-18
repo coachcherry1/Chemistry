@@ -154,7 +154,8 @@ var Mol = (function () {
   /* Lone pairs on atom i, from its valence electrons, bonds and charge. */
   M.prototype.lonePairs = function (i) {
     var a = this.atoms[i], e = ELEMENTS[a.el];
-    if (!e || a.el === 'H') return 0;
+    if (!e) return 0;
+    if (a.el === 'H') return a.charge === -1 ? 1 : 0;      /* hydride, H⁻ */
     var bonds = a.h + this.nb(i).reduce(function (s, x) { return s + x.order; }, 0);
     return Math.max(0, Math.round((e.ve - a.charge - bonds) / 2));
   };
